@@ -679,9 +679,7 @@ The output of the above, providing a "hello world" file, yields:
 
 ## How to work with Azure OpenAI
 
-The OpenAI .NET library is extensibly designed for specialized use of the OpenAI REST API, including by Microsoft's Azure OpenAI Service. The [Azure.AI.OpenAI library](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI) serves as a companion library to the OpenAI .NET library, retaining full parity functionality while also providing sub-clients that connect to Azure OpenAI, as well as strongly-typed support for Azure-specific features.
-
-To use the OpenAI .NET library with Azure OpenAI, please include the Azure.AI.OpenAI companion library and see that project's README for more details.
+Details for using the OpenAI .NET library with [Azure OpenAI](https://learn.microsoft.com/azure/ai-services/openai/overview) are coming soon. Please watch here and the [Azure.AI.OpenAI project](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI) for updates.
 
 ## Advanced scenarios
 
