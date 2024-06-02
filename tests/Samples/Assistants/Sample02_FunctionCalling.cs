@@ -5,14 +5,12 @@ using System.ClientModel;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenAI.Samples;
 
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample02_FunctionCalling()
     {
         #region

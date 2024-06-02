@@ -3,14 +3,13 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
-using System.Threading.Tasks;
 
 namespace OpenAI.Samples;
+
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
-    public async Task Sample05_AssistantsWithGpt4oVisionAsync()
+    public void Sample05_AssistantsWithVision()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
 #pragma warning disable OPENAI001
@@ -18,12 +17,12 @@ public partial class AssistantSamples
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
-        OpenAIFileInfo pictureOfAppleFile = await fileClient.UploadFileAsync(
+        OpenAIFileInfo pictureOfAppleFile = fileClient.UploadFile(
             "picture-of-apple.jpg",
             FileUploadPurpose.Vision);
         Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
 
-        Assistant assistant = await assistantClient.CreateAssistantAsync(
+        Assistant assistant = assistantClient.CreateAssistant(
             "gpt-4o",
             new AssistantCreationOptions()
             {
@@ -31,7 +30,7 @@ public partial class AssistantSamples
                     + "Prefer one-sentence answers whenever feasible."
             });
 
-        AssistantThread thread = await assistantClient.CreateThreadAsync(new ThreadCreationOptions()
+        AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions()
         {
             InitialMessages =
                 {
@@ -44,7 +43,7 @@ public partial class AssistantSamples
                 }
         });
 
-        AsyncResultCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreamingAsync(
+        ResultCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
             thread,
             assistant,
             new RunCreationOptions()
@@ -52,7 +51,7 @@ public partial class AssistantSamples
                 AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
             });
 
-        await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+        foreach (StreamingUpdate streamingUpdate in streamingUpdates)
         {
             if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
             {
@@ -64,8 +63,9 @@ public partial class AssistantSamples
             }
         }
 
-        _ = await fileClient.DeleteFileAsync(pictureOfAppleFile);
-        _ = await assistantClient.DeleteThreadAsync(thread);
-        _ = await assistantClient.DeleteAssistantAsync(assistant);
+        // Delete temporary resources, if desired
+        _ = fileClient.DeleteFile(pictureOfAppleFile);
+        _ = assistantClient.DeleteThread(thread);
+        _ = assistantClient.DeleteAssistant(assistant);
     }
 }

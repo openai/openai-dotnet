@@ -4,10 +4,10 @@ using System;
 using System.ClientModel;
 
 namespace OpenAI.Samples;
+
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample03_ListAssistantsWithPagination()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.

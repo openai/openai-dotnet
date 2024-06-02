@@ -4,23 +4,21 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace OpenAI.Samples
+namespace OpenAI.Samples;
+
+public partial class AudioSamples
 {
-    public partial class AudioSamples
+    [Test]
+    public async Task Sample01_SimpleTextToSpeechAsync()
     {
-        [Test]
-        [Ignore("Compilation validation only")]
-        public async Task Sample01_SimpleTextToSpeechAsync()
-        {
-            AudioClient client = new("tts-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        AudioClient client = new("tts-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-            string input = "The sun rises in the east and sets in the west. This simple fact has been"
-                + " observed by humans for thousands of years.";
+        string input = "The sun rises in the east and sets in the west. This simple fact has been"
+            + " observed by humans for thousands of years.";
 
-            BinaryData speech = await client.GenerateSpeechFromTextAsync(input, GeneratedSpeechVoice.Alloy);
+        BinaryData speech = await client.GenerateSpeechFromTextAsync(input, GeneratedSpeechVoice.Alloy);
 
-            using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.mp3");
-            speech.ToStream().CopyTo(stream);
-        }
+        using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.mp3");
+        speech.ToStream().CopyTo(stream);
     }
 }

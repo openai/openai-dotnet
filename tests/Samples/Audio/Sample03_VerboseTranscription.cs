@@ -7,7 +7,6 @@ namespace OpenAI.Samples;
 public partial class AudioSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample03_VerboseTranscription()
     {
         AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));

@@ -13,7 +13,6 @@ namespace OpenAI.Samples;
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public async Task Sample01_RetrievalAugmentedGenerationAsync()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.

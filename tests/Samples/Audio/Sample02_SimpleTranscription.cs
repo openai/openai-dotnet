@@ -3,23 +3,21 @@ using OpenAI.Audio;
 using System;
 using System.IO;
 
-namespace OpenAI.Samples
+namespace OpenAI.Samples;
+
+public partial class AudioSamples
 {
-    public partial class AudioSamples
+    [Test]
+    public void Sample02_SimpleTranscription()
     {
-        [Test]
-        [Ignore("Compilation validation only")]
-        public void Sample02_SimpleTranscription()
-        {
-            AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-            string audioFilename = "speed-talking.wav";
-            string audioPath = Path.Combine("Assets", audioFilename);
-            using Stream audio = File.OpenRead(audioPath);
+        string audioFilename = "speed-talking.wav";
+        string audioPath = Path.Combine("Assets", audioFilename);
+        using Stream audio = File.OpenRead(audioPath);
 
-            AudioTranscription transcription = client.TranscribeAudio(audio, audioFilename);
+        AudioTranscription transcription = client.TranscribeAudio(audio, audioFilename);
 
-            Console.WriteLine($"{transcription.Text}");
-        }
+        Console.WriteLine($"{transcription.Text}");
     }
 }

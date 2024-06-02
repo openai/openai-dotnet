@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
-using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace OpenAI.Samples;
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Only verifying compilation")]
     public void Sample04_AllTheTools()
     {
 #pragma warning disable OPENAI001

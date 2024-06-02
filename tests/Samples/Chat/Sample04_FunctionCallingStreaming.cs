@@ -10,10 +10,9 @@ namespace OpenAI.Samples;
 
 public partial class ChatSamples
 {
-    // See the synchronous, non-streaming sample file for the tool and function definitions used here.
+    // See Sample03_FunctionCalling.cs for the tool and function definitions.
 
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample04_FunctionCallingStreaming()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));

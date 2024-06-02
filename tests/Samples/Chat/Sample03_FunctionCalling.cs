@@ -52,7 +52,6 @@ public partial class ChatSamples
     #endregion
 
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample03_FunctionCalling()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));

@@ -8,15 +8,15 @@ namespace OpenAI.Samples;
 public partial class ChatSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public void Sample02_SimpleChatStreaming()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResultCollection<StreamingChatCompletionUpdate> chatUpdates = client.CompleteChatStreaming(
-            [
-                new UserChatMessage("Say 'this is a test.'"),
-            ]);
+        ResultCollection<StreamingChatCompletionUpdate> chatUpdates 
+            = client.CompleteChatStreaming(
+                [
+                    new UserChatMessage("Say 'this is a test.'"),
+                ]);
 
         foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
         {

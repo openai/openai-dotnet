@@ -4,7 +4,6 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Samples;
@@ -12,7 +11,6 @@ namespace OpenAI.Samples;
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation validation only")]
     public async Task Sample02_FunctionCallingAsync()
     {
         #region

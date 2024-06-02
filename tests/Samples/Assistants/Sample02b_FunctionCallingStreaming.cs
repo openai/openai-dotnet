@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Samples;
+
 public partial class AssistantSamples
 {
     [Test]
-    [Ignore("Compilation verification only")]
     public async Task Sample02b_FunctionCallingStreaming()
     {
         // This sample parallels the content at the following location:
