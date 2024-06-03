@@ -23,17 +23,21 @@ public partial class AudioExamples
 
         AudioTranscription transcription = await client.TranscribeAudioAsync(audioFilePath, options);
 
-        Console.WriteLine($"[TRANSCRIPTION]: {transcription.Text}");
-        Console.WriteLine($"[WORDS]:");
-        foreach (TranscribedWord wordItem in transcription.Words)
+        Console.WriteLine("Transcription:");
+        Console.WriteLine($"{transcription.Text}");
+
+        Console.WriteLine();
+        Console.WriteLine($"Words:");
+        foreach (TranscribedWord word in transcription.Words)
         {
-            Console.WriteLine($"  {wordItem.Word,10}: {wordItem.Start.TotalMilliseconds,4:0} - {wordItem.End.TotalMilliseconds,4:0}");
+            Console.WriteLine($"  {word.Word,15} : {word.Start.TotalMilliseconds,5:0} - {word.End.TotalMilliseconds,5:0}");
         }
-        Console.WriteLine($"[SEGMENTS]:");
-        foreach (TranscribedSegment segmentItem in transcription.Segments)
+
+        Console.WriteLine();
+        Console.WriteLine($"Segments:");
+        foreach (TranscribedSegment segment in transcription.Segments)
         {
-            Console.WriteLine($"  {segmentItem.Id,10}: {segmentItem.Text}: "
-                + $"{segmentItem.Start.TotalMilliseconds,4:0} - {segmentItem.End.TotalMilliseconds,4:0}");
+            Console.WriteLine($"  {segment.Text,90} : {segment.Start.TotalMilliseconds,5:0} - {segment.End.TotalMilliseconds,5:0}");
         }
     }
 }

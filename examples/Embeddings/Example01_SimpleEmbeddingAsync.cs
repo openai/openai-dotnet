@@ -23,7 +23,7 @@ public partial class EmbeddingExamples
         Console.WriteLine($"Floats: ");
         for (int i = 0; i < vector.Length; i++)
         {
-            Console.WriteLine($"  [{i}] = {vector.Span[i]}");
+            Console.WriteLine($"  [{i,4}] = {vector.Span[i]}");
         }
     }
 }
