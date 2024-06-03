@@ -20,11 +20,11 @@ Add the client library to your .NET project with [NuGet](https://www.nuget.org/)
 dotnet add package OpenAI --prerelease
 ```
 
-Note that the code samples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some of the demonstrated usage may depend on newer language features.
+Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some of the demonstrated usage may depend on newer language features.
 
 ## Using the client library
 
-The full API of this library can be found in the [api.md](https://github.com/openai/openai-dotnet/api.md) file, and there are many [code samples](https://github.com/openai/openai-dotnet/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
+The full API of this library can be found in the [api.md](https://github.com/openai/openai-dotnet/api/api.md) file, and there are many [code examples](https://github.com/openai/openai-dotnet/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
 
 ```csharp
 using OpenAI.Chat;
@@ -93,7 +93,7 @@ AudioClient whisperClient = client.GetAudioClient("whisper-1");
 
 When you request a chat completion, the default behavior is for the server to generate it in its entirety before sending it back in a single response. Consequently, long chat completions can require waiting for several seconds before hearing back from the server. To mitigate this, the OpenAI REST API supports the ability to stream partial results back as they are being generated, allowing you to start processing the beginning of the completion before it is finished.
 
-The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the sample from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
+The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```csharp
 ResultCollection<StreamingChatCompletionUpdate> chatUpdates = client.CompleteChatStreaming(
@@ -134,7 +134,7 @@ await foreach (StreamingChatCompletionUpdate chatUpdate in asyncChatUpdates)
 
 ## How to use chat completions with tools and function calling
 
-In this sample, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want chat completions to be able to call these functions if the model deems it necessary to have this information in order to respond to a user request. For illustrative purposes, consider the following:
+In this example, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want chat completions to be able to call these functions if the model deems it necessary to have this information in order to respond to a user request. For illustrative purposes, consider the following:
 
 ```csharp
 private static string GetCurrentLocation()
@@ -284,7 +284,7 @@ do
 
 ## How to generate text embeddings
 
-In this sample, you want to create a trip-planning website that allows customers to write a prompt describing the kind of hotel that they are looking for and then offers hotel recommendations that closely match this description. To achieve this, it is possible to use text embeddings to measure the relatedness of text strings. In summary, you can get embeddings of the hotel descriptions, store them in a vector database, and use them to build a search index that you can query using the embedding of a given customer's prompt.
+In this example, you want to create a trip-planning website that allows customers to write a prompt describing the kind of hotel that they are looking for and then offers hotel recommendations that closely match this description. To achieve this, it is possible to use text embeddings to measure the relatedness of text strings. In summary, you can get embeddings of the hotel descriptions, store them in a vector database, and use them to build a search index that you can query using the embedding of a given customer's prompt.
 
 To generate a text embedding, use `EmbeddingClient` from the `OpenAI.Embeddings` namespace:
 
@@ -312,7 +312,7 @@ Embedding embedding = client.GenerateEmbedding(description, options);
 
 ## How to generate images
 
-In this sample, you want to build an app to help interior designers prototype new ideas based on the latest design trends. As part of the creative process, an interior designer can use this app to generate images for inspiration simply by describing the scene in their head as a prompt. As expected, high-quality, strikingly dramatic images with finer details deliver the best results for this application.
+In this example, you want to build an app to help interior designers prototype new ideas based on the latest design trends. As part of the creative process, an interior designer can use this app to generate images for inspiration simply by describing the scene in their head as a prompt. As expected, high-quality, strikingly dramatic images with finer details deliver the best results for this application.
 
 To generate an image, use `ImageClient` from the `OpenAI.Images` namespace:
 
@@ -358,7 +358,7 @@ bytes.ToStream().CopyTo(stream);
 
 ## How to use assistants with retrieval augmented generation (RAG)
 
-In this sample, you have a JSON document with the monthly sales information of different products, and you want to build an assistant capable of analyzing it and answering questions about it.
+In this example, you have a JSON document with the monthly sales information of different products, and you want to build an assistant capable of analyzing it and answering questions about it.
 
 To achieve this, use both `FileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
@@ -551,7 +551,7 @@ The graph above visualizes this trend, showing a peak in sales during February.
 
 ## How to use streaming and GPT-4o vision with assistants
 
-This sample shows how to use the v2 Assistants API to provide image data to an assistant and then stream the run's response.
+This example shows how to use the v2 Assistants API to provide image data to an assistant and then stream the run's response.
 
 As before, you will use a `FileClient` and an `AssistantClient`:
 
@@ -634,7 +634,7 @@ The first image shows a red apple with a smooth skin and a single leaf, while th
 
 ## How to transcribe audio
 
-In this sample, an audio file is transcribed using the Whisper speech-to-text model, including both word- and audio-segment-level timestamp information.
+In this example, an audio file is transcribed using the Whisper speech-to-text model, including both word- and audio-segment-level timestamp information.
 
 ```csharp
 using OpenAI.Audio;
