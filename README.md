@@ -29,7 +29,7 @@ The full API of this library can be found in the [api.md](https://github.com/ope
 ```csharp
 using OpenAI.Chat;
 
-ChatClient client = new("gpt-3.5-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 ChatCompletion chatCompletion = client.CompleteChat(
     [
@@ -96,15 +96,17 @@ When you request a chat completion, the default behavior is for the server to ge
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```csharp
-ResultCollection<StreamingChatCompletionUpdate> chatUpdates = client.CompleteChatStreaming(
-    [
-        new UserChatMessage("Say 'this is a test.'"),
-    ]);
+ResultCollection<StreamingChatCompletionUpdate> chatUpdates
+    = client.CompleteChatStreaming(
+        [
+            new UserChatMessage("Say 'this is a test.'"),
+        ]);
 ```
 
 Notice that the returned value is a `ResultCollection<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
 ```csharp
+Console.WriteLine($"[ASSISTANT]:");
 foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
 {
     foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
@@ -123,6 +125,7 @@ AsyncResultCollection<StreamingChatCompletionUpdate> asyncChatUpdates
             new UserChatMessage("Say 'this is a test.'"),
         ]);
 
+Console.WriteLine($"[ASSISTANT]:");
 await foreach (StreamingChatCompletionUpdate chatUpdate in asyncChatUpdates)
 {
     foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
@@ -185,9 +188,6 @@ Next, create a `ChatCompletionOptions` instance and add both to its `Tools` prop
 
 ```csharp
 List<ChatMessage> messages = [
-    new SystemChatMessage(
-        "Don't make assumptions about what values to plug into functions."
-        + " Ask for clarification if a user request is ambiguous."),
     new UserChatMessage("What's the weather like today?"),
 ];
 
@@ -293,10 +293,9 @@ using OpenAI.Embeddings;
 
 EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-string description =
-    "Best hotel in town if you like luxury hotels. They have an amazing infinity pool, a spa,"
-    + " and a really helpful concierge. The location is perfect -- right downtown, close to all"
-    + " the tourist attractions. We highly recommend this hotel.";
+string description = "Best hotel in town if you like luxury hotels. They have an amazing infinity pool, a spa,"
+    + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
+    + " attractions. We highly recommend this hotel.";
 
 Embedding embedding = client.GenerateEmbedding(description);
 ReadOnlyMemory<float> vector = embedding.Vector;
@@ -354,6 +353,43 @@ For illustrative purposes, you could then save the generated image to local stor
 ```csharp
 using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");
 bytes.ToStream().CopyTo(stream);
+```
+
+## How to transcribe audio
+
+In this example, an audio file is transcribed using the Whisper speech-to-text model, including both word- and audio-segment-level timestamp information.
+
+```csharp
+using OpenAI.Audio;
+
+AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+string audioFilePath = Path.Combine("Assets", "audio_houseplant_care.mp3");
+
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Verbose,
+    Granularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
+};
+
+AudioTranscription transcription = client.TranscribeAudio(audioFilePath, options);
+
+Console.WriteLine("Transcription:");
+Console.WriteLine($"{transcription.Text}");
+
+Console.WriteLine();
+Console.WriteLine($"Words:");
+foreach (TranscribedWord word in transcription.Words)
+{
+    Console.WriteLine($"  {word.Word,15} : {word.Start.TotalMilliseconds,5:0} - {word.End.TotalMilliseconds,5:0}");
+}
+
+Console.WriteLine();
+Console.WriteLine($"Segments:");
+foreach (TranscribedSegment segment in transcription.Segments)
+{
+    Console.WriteLine($"  {segment.Text,90} : {segment.Start.TotalMilliseconds,5:0} - {segment.End.TotalMilliseconds,5:0}");
+}
 ```
 
 ## How to use assistants with retrieval augmented generation (RAG)
@@ -632,51 +668,6 @@ This will yield streamed output from the run like the following:
 The first image shows a red apple with a smooth skin and a single leaf, while the second image depicts an orange with a rough, textured skin and a leaf with droplets of water. Comparing them might seem impossible - it's like apples and oranges!
 ```
 
-## How to transcribe audio
-
-In this example, an audio file is transcribed using the Whisper speech-to-text model, including both word- and audio-segment-level timestamp information.
-
-```csharp
-using OpenAI.Audio;
-
-AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
-AudioTranscriptionOptions options = new()
-{
-    ResponseFormat = AudioTranscriptionFormat.Verbose,
-    Granularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
-};
-AudioTranscription transcription = client.TranscribeAudio("recorded-talking.m4a", options);
-
-Console.WriteLine($"[TRANSCRIPTION]: {transcription.Text}");
-Console.WriteLine($"[WORDS]:");
-foreach (TranscribedWord wordItem in transcription.Words)
-{
-    Console.WriteLine($"  {wordItem.Word,10}: {wordItem.Start.TotalMilliseconds,4:0} - {wordItem.End.TotalMilliseconds,4:0}");
-}
-Console.WriteLine($"[SEGMENTS]:");
-foreach (TranscribedSegment segmentItem in transcription.Segments)
-{
-    Console.WriteLine($"  {segmentItem.Id,10}: {segmentItem.Text}: "
-        + $"{segmentItem.Start.TotalMilliseconds,4:0} - {segmentItem.End.TotalMilliseconds,4:0}");
-}
-```
-
-The output of the above, providing a "hello world" file, yields:
-
-```text
-[TRANSCRIPTION]: Hello world, this is a test.
-[WORDS]:
-        Hello:  620 - 1200
-        world: 1200 - 1540
-         this: 1600 - 1940
-           is: 1940 - 2000
-            a: 2000 - 2140
-         test: 2140 - 2380
-[SEGMENTS]:
-            0:  Hello world, this is a test.:  620 - 2380
-```
-
 ## How to work with Azure OpenAI
 
 Details for using the OpenAI .NET library with [Azure OpenAI](https://learn.microsoft.com/azure/ai-services/openai/overview) are coming soon. Please watch here and the [Azure.AI.OpenAI project](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI) for updates.
@@ -690,9 +681,11 @@ In addition to the client methods that use strongly-typed request and response o
 For example, to use the protocol method variant of the `ChatClient`'s `CompleteChat` method, pass the request body as `BinaryContent`:
 
 ```csharp
+ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
 BinaryData input = BinaryData.FromString("""
     {
-       "model": "gpt-3.5-turbo",
+       "model": "gpt-4o",
        "messages": [
            {
                "role": "user",
