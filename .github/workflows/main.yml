@@ -34,7 +34,7 @@ jobs:
           --filter="TestCategory~${{ github.event_name == 'pull_request' && 'Offline' || 'Online' }}"
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
         env:
-          SECRET_VALUE: ${{ secrets.OPENAI_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Pack
         run: dotnet pack
