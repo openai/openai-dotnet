@@ -24,9 +24,8 @@ jobs:
 
       - name: Build
         run: dotnet build
-          -c Release
+          --configuration Release
           ${{ env.version_suffix_args }}
-        working-directory: .dotnet
 
       - name: Test
         run: dotnet test
@@ -36,7 +35,6 @@ jobs:
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
         env:
           SECRET_VALUE: ${{ secrets.OPENAI_TOKEN }}
-        working-directory: .dotnet
 
       - name: Pack
         run: dotnet pack
@@ -44,7 +42,6 @@ jobs:
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
           ${{ env.version_suffix_args }}
-        working-directory: .dotnet
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -60,7 +57,6 @@ jobs:
           --username ${{ github.actor }}
           --password ${{ secrets.GITHUB_TOKEN }}
           --store-password-in-clear-text
-        working-directory: .dotnet
 
       - name: Publish
         if: github.event_name != 'pull_request'
@@ -69,4 +65,3 @@ jobs:
           --source "github"
           --api-key ${{ secrets.GITHUB_TOKEN }}
           --skip-duplicate
-        working-directory: .dotnet
