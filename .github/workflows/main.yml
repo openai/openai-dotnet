@@ -49,19 +49,19 @@ jobs:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
 
-      - name: NuGet Autenticate
-        if: github.event_name != 'pull_request'
-        run: dotnet nuget add source
-          "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          --name "github"
-          --username ${{ github.actor }}
-          --password ${{ secrets.GITHUB_TOKEN }}
-          --store-password-in-clear-text
+      # - name: NuGet Autenticate
+      #   if: github.event_name != 'pull_request'
+      #   run: dotnet nuget add source
+      #     "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+      #     --name "github"
+      #     --username ${{ github.actor }}
+      #     --password ${{ secrets.GITHUB_TOKEN }}
+      #     --store-password-in-clear-text
 
-      - name: Publish
-        if: github.event_name != 'pull_request'
-        run: dotnet nuget push
-          ${{github.workspace}}/artifacts/packages/*.nupkg
-          --source "github"
-          --api-key ${{ secrets.GITHUB_TOKEN }}
-          --skip-duplicate
+      # - name: Publish
+      #   if: github.event_name != 'pull_request'
+      #   run: dotnet nuget push
+      #     ${{github.workspace}}/artifacts/packages/*.nupkg
+      #     --source "github"
+      #     --api-key ${{ secrets.GITHUB_TOKEN }}
+      #     --skip-duplicate

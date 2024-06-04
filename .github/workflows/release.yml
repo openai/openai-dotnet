@@ -51,13 +51,13 @@ jobs:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
 
-      - name: NuGet Autenticate
-        run: dotnet nuget add source
-          "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          --name "github"
-          --username ${{ github.actor }}
-          --password ${{ secrets.GITHUB_TOKEN }}
-          --store-password-in-clear-text
+      # - name: NuGet Autenticate
+      #   run: dotnet nuget add source
+      #     "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+      #     --name "github"
+      #     --username ${{ github.actor }}
+      #     --password ${{ secrets.GITHUB_TOKEN }}
+      #     --store-password-in-clear-text
 
       # - name: Publish
       #   run: dotnet nuget push
