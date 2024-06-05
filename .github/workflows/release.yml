@@ -1,0 +1,53 @@
+name: Release package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x' # SDK Version to use.
+
+      # Pack the client nuget package and include urls back to the repository and release tag
+      - name: Build and Pack
+        run: dotnet pack
+          --configuration Release
+          --output "${{github.workspace}}/artifacts/packages"
+          /p:RepositoryUrl="${{ github.repository }}"
+          /p:PackageProjectUrl="${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
+
+      - name: Test
+        run: dotnet test
+          --configuration Release
+          --filter="TestCategory~Online"
+          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      # Append the nuget package to the github release that triggered this workflow
+      - name: Upload release asset
+        run: gh release upload ${{ github.event.release.tag_name }}
+          ${{github.workspace}}/artifacts/packages/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: ${{github.workspace}}/artifacts
+
+      # - name: Publish
+      #   run: dotnet nuget push
+      #     ${{github.workspace}}/artifacts/packages/*.nupkg
+      #     --source https://api.nuget.org/v3/index.json
+      #     --api-key ${{ secrets.NUGET_API_KEY }}
+      #     --skip-duplicate

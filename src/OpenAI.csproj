@@ -2,14 +2,39 @@
   <PropertyGroup>
     <Description>This is the OpenAI client library for developing .NET applications with rich experience.</Description>
     <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
-    <Version>2.0.0-beta.1</Version>
     <PackageTags>OpenAI</PackageTags>
+
+    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionSuffix>beta.1</VersionSuffix>
+
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+
+    <!-- Sign the assembly with the specified key file. -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>OpenAI.snk</AssemblyOriginatorKeyFile>
+
+    <!-- Generate an XML documentation file for the project. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <SignAssembly>False</SignAssembly>
+    
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Create a .snupkg file in addition to the .nupkg file. -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+   
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+</PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!-- Normalize stored file paths in symbols when in a CI build. -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.ClientModel" Version="1.1.0-beta.4" />
     <PackageReference Include="System.Text.Json" Version="8.0.2" />
   </ItemGroup>
