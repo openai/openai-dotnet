@@ -17,7 +17,7 @@ jobs:
           dotnet-version: '8.x' # SDK Version to use.
 
       # Pack the client nuget package and include urls back to the repository and release tag
-      - name: Pack
+      - name: Build and Pack
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"

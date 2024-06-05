@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Pack
+      - name: Build and Pack
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
