@@ -2,7 +2,7 @@
 
 [![NuGet version](https://img.shields.io/nuget/v/openai.svg)](https://www.nuget.org/packages/OpenAI/)
 
-The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. It includes scenario-specific client abstractions built atop the [System.ClientModel](https://learn.microsoft.com/dotnet/api/overview/azure/system.clientmodel-readme) library, well-defined types for OpenAI request and response models, and targeted adaptations of direct REST usage patterns to aid ease of use and better align with .NET conventions.
+The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. 
 
 It is generated from our [OpenAPI specification](https://github.com/openai/openai-openapi) in collaboration with Microsoft.
 
@@ -20,7 +20,7 @@ Add the client library to your .NET project with [NuGet](https://www.nuget.org/)
 dotnet add package OpenAI --prerelease
 ```
 
-Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some of the demonstrated usage may depend on newer language features.
+Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some of code examples in this document may depend on newer language features.
 
 ## Using the client library
 
@@ -29,7 +29,7 @@ The full API of this library can be found in the [api.md](https://github.com/ope
 ```csharp
 using OpenAI.Chat;
 
-ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 ChatCompletion chatCompletion = client.CompleteChat(
     [
@@ -39,7 +39,9 @@ ChatCompletion chatCompletion = client.CompleteChat(
 
 While you can pass your API key directly as a string, it is highly recommended to keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
 
-For convenience, the client library is organized by feature area into separate namespaces, each with a corresponding client class:
+### Namespace organization
+
+The library is organized into several namespaces corresponding to OpenAI feature areas. Each namespace contains corresponding client class.
 
 | Namespace                     | Client class                 | Notes               |
 | ------------------------------|------------------------------|---------------------|
@@ -57,7 +59,7 @@ For convenience, the client library is organized by feature area into separate n
 
 ### Using the async API
 
-Every client method that performs a synchronous API call has an asynchronous variant in the same client class. For instance, the asynchronous variant of the `ChatClient`'s `CompleteChat` method is `CompleteChatAsync`. To rewrite the call above using the asynchronous counterpart, simply `await` the corresponding call from an async method:
+Every client method that performs a synchronous API call has an asynchronous variant in the same client class. For instance, the asynchronous variant of the `ChatClient`'s `CompleteChat` method is `CompleteChatAsync`. To rewrite the call above using the asynchronous counterpart, simply `await` the call to the corresponding async variant:
 
 ```csharp
 ChatCompletion chatCompletion = await client.CompleteChatAsync(
@@ -74,7 +76,7 @@ In addition to the namespaces mentioned above, there is also the parent `OpenAI`
 using OpenAI;
 ```
 
-This namespace contains the `OpenAIClient` class, which offers certain conveniences when you need to work with multiple feature area clients. Specifically, you can use an instance of this class to create instances of the other clients and have them share the same HTTP pipeline.
+This namespace contains the `OpenAIClient` class, which offers certain conveniences when you need to work with multiple feature area clients. Specifically, you can use an instance of this class to create instances of the other clients and have them share the same implementation details, which might be more efficient.
 
 You can create an `OpenAIClient` by specifying the API key that all clients will use for authentication:
 
@@ -82,7 +84,7 @@ You can create an `OpenAIClient` by specifying the API key that all clients will
 OpenAIClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 ```
 
-Next, to create an instance of an `AudioClient`, for example, you can call the `OpenAIClient`'s `GetAudioClient` method by passing the OpenAI model that the `AudioClient` will use in its API calls—just as if you were using the `AudioClient` constructor directly. If necessary, you can create additional clients of the same type to target different models.
+Next, to create an instance of an `AudioClient`, for example, you can call the `OpenAIClient`'s `GetAudioClient` method by passing the OpenAI model that the `AudioClient` will use, just as if you were using the `AudioClient` constructor directly. If necessary, you can create additional clients of the same type to target different models.
 
 ```csharp
 AudioClient ttsClient = client.GetAudioClient("tts-1");
@@ -291,7 +293,7 @@ To generate a text embedding, use `EmbeddingClient` from the `OpenAI.Embeddings`
 ```csharp
 using OpenAI.Embeddings;
 
-EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+EmbeddingClient client = new(model: "text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 string description = "Best hotel in town if you like luxury hotels. They have an amazing infinity pool, a spa,"
     + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
@@ -318,7 +320,7 @@ To generate an image, use `ImageClient` from the `OpenAI.Images` namespace:
 ```csharp
 using OpenAI.Images;
 
-ImageClient client = new("dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ImageClient client = new(model: "dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 ```
 
 Generating an image always requires a `prompt` that describes what should be generated. To further tailor the image generation to your specific needs, you can create an instance of the `ImageGenerationOptions` class and set the `Quality`, `Size`, and `Style` properties accordingly. Note that you can also set the `ResponseFormat` property of `ImageGenerationOptions` to `GeneratedImageFormat.Bytes` in order to receive the resulting PNG as `BinaryData` (instead of the default remote `Uri`) if this is convenient for your use case.
@@ -362,7 +364,7 @@ In this example, an audio file is transcribed using the Whisper speech-to-text m
 ```csharp
 using OpenAI.Audio;
 
-AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+AudioClient client = new(model: "whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 string audioFilePath = Path.Combine("Assets", "audio_houseplant_care.mp3");
 
@@ -612,7 +614,7 @@ Next, create a new assistant with a vision-capable model like `gpt-4o` and a thr
 
 ```csharp
 Assistant assistant = assistantClient.CreateAssistant(
-    "gpt-4o",
+    model: "gpt-4o",
     new AssistantCreationOptions()
     {
         Instructions = "When asked a question, attempt to answer very concisely. "
@@ -622,14 +624,14 @@ Assistant assistant = assistantClient.CreateAssistant(
 AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions()
 {
     InitialMessages =
-        {
-            new ThreadInitializationMessage(
-                [
-                    "Hello, assistant! Please compare these two images for me:",
-                    MessageContent.FromImageFileId(pictureOfAppleFile.Id),
-                    MessageContent.FromImageUrl(linkToPictureOfOrange),
-                ]),
-        }
+    {
+        new ThreadInitializationMessage(
+        [
+            "Hello, assistant! Please compare these two images for me:",
+            MessageContent.FromImageFileId(pictureOfAppleFile.Id),
+            MessageContent.FromImageUrl(linkToPictureOfOrange),
+        ]),
+    }
 });
 ```
 
@@ -683,27 +685,27 @@ For example, to use the protocol method variant of the `ChatClient`'s `CompleteC
 ```csharp
 ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-BinaryData input = BinaryData.FromString("""
-    {
-       "model": "gpt-4o",
-       "messages": [
-           {
-               "role": "user",
-               "content": "How does AI work? Explain it in simple terms."
-           }
-       ]
-    }
-    """);
+BinaryData input = BinaryData.FromBytes("""
+{  
+    "model": "gpt-4o",
+    "messages": [
+       {
+           "role": "user",
+           "content": "How does AI work? Explain it in simple terms."
+       }
+    ]
+}
+"""u8.ToArray());
 
 using BinaryContent content = BinaryContent.Create(input);
 ClientResult result = client.CompleteChat(content);
 BinaryData output = result.GetRawResponse().Content;
 
-using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
+using JsonDocument outputAsJson = JsonDocument.Parse(output);
 string message = outputAsJson.RootElement
-    .GetProperty("choices")[0]
-    .GetProperty("message")
-    .GetProperty("content")
+    .GetProperty("choices"u8)[0]
+    .GetProperty("message"u8)
+    .GetProperty("content"u8)
     .GetString();
 ```
 
