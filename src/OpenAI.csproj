@@ -31,6 +31,9 @@
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+    <!-- Disable missing XML documentation warnings -->
+    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
