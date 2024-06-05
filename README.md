@@ -41,7 +41,7 @@ While you can pass your API key directly as a string, it is highly recommended t
 
 ### Namespace organization
 
-The library is organized into several namespaces corresponding to OpenAI feature areas. Each namespace contains corresponding client class.
+The library is organized into several namespaces corresponding to OpenAI feature areas. Each namespace contains a corresponding client class.
 
 | Namespace                     | Client class                 | Notes               |
 | ------------------------------|------------------------------|---------------------|
