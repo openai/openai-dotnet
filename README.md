@@ -20,7 +20,7 @@ Add the client library to your .NET project with [NuGet](https://www.nuget.org/)
 dotnet add package OpenAI --prerelease
 ```
 
-Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some of code examples in this document may depend on newer language features.
+Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some code examples in this document may depend on newer language features.
 
 ## Using the client library
 
