@@ -16,9 +16,13 @@ jobs:
         with:
           dotnet-version: '8.x' # SDK Version to use.
 
-      - name: Build
-        run: dotnet build
+      # Pack the client nuget package and include urls back to the repository and release tag
+      - name: Pack
+        run: dotnet pack
           --configuration Release
+          --output "${{github.workspace}}/artifacts/packages"
+          /p:RepositoryUrl="${{ github.repository }}"
+          /p:PackageProjectUrl="${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
 
       - name: Test
         run: dotnet test
@@ -28,15 +32,6 @@ jobs:
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-      # Pack the client nuget package and include urls back to the repository and release tag
-      - name: Pack
-        run: dotnet pack
-          --no-build
-          --configuration Release
-          --output "${{github.workspace}}/artifacts/packages"
-          /p:RepositoryUrl="${{ github.repository }}"
-          /p:PackageProjectUrl="${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
 
       # Append the nuget package to the github release that triggered this workflow
       - name: Upload release asset

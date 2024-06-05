@@ -22,9 +22,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build
-        run: dotnet build
+      - name: Pack
+        run: dotnet pack
           --configuration Release
+          --output "${{github.workspace}}/artifacts/packages"
           ${{ env.version_suffix_args }}
 
       - name: Test
@@ -35,13 +36,6 @@ jobs:
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-      - name: Pack
-        run: dotnet pack
-          --no-build
-          --configuration Release
-          --output "${{github.workspace}}/artifacts/packages"
-          ${{ env.version_suffix_args }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
