@@ -16,13 +16,12 @@ jobs:
         with:
           dotnet-version: '8.x' # SDK Version to use.
 
-      # Pack the client nuget package and include urls back to the repository and release tag
+      # Pack the client nuget package and include url back to the repository and release tag
       - name: Build and Pack
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
-          /p:RepositoryUrl="${{ github.repository }}"
-          /p:PackageProjectUrl="${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
+          /p:PackageProjectUrl="${{ github.server_url }}/${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
 
       - name: Test
         run: dotnet test
