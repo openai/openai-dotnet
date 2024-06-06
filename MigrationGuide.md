@@ -247,7 +247,7 @@ string text = result.Value.Content[0].Text;
 Console.WriteLine(text);
 ```
 
-### Audio: speech-to-text
+### Audio: Speech-to-text
 
 OpenAI 1.11.0:
 ```cs
