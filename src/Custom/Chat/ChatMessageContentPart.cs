@@ -124,4 +124,10 @@ public partial class ChatMessageContentPart
 
         return new(imageBytes, imageBytesMediaType, imageDetail);
     }
+
+    /// <summary>
+    /// Returns text representation of this part.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString() => Text;
 }

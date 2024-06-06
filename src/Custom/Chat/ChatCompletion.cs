@@ -60,4 +60,10 @@ public partial class ChatCompletion
 
     // CUSTOM: Flattened choice message property.
     public ChatFunctionCall FunctionCall => Choices[0].Message.FunctionCall;
+
+    /// <summary>
+    /// Returns text representation of the first part of the first choice.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString() => Content[0].Text;
 }
