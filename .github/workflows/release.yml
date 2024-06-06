@@ -34,7 +34,7 @@ jobs:
       # Append the nuget package to the github release that triggered this workflow
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }}
-          ${{github.workspace}}/artifacts/packages/*.nupkg
+          ${{github.workspace}}/artifacts/packages/*.*nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -44,9 +44,9 @@ jobs:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
 
-      # - name: Publish
-      #   run: dotnet nuget push
-      #     ${{github.workspace}}/artifacts/packages/*.nupkg
-      #     --source https://api.nuget.org/v3/index.json
-      #     --api-key ${{ secrets.NUGET_API_KEY }}
-      #     --skip-duplicate
+      - name: Publish
+        run: dotnet nuget push
+          ${{github.workspace}}/artifacts/packages/*.*nupkg
+          --source https://api.nuget.org/v3/index.json
+          --api-key ${{ secrets.NUGET_API_KEY }}
+          --skip-duplicate
