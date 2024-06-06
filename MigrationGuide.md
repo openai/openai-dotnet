@@ -140,7 +140,7 @@ foreach (ChatMessage message in messages)
 }
 ```
 
-### Chat Completions: streaming
+### Chat Completions: Streaming
 
 OpenAI 1.11.0:
 ```cs
