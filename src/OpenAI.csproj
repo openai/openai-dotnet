@@ -19,6 +19,8 @@
     
     <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageIcon>OpenAI.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- Create a .snupkg file in addition to the .nupkg file. -->
     <IncludeSymbols>true</IncludeSymbols>
@@ -35,6 +37,11 @@
     <!-- Disable missing XML documentation warnings -->
     <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
