@@ -22,6 +22,7 @@ jobs:
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
           /p:PackageProjectUrl="${{ github.server_url }}/${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
+          /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
 
       - name: Test
         run: dotnet test
@@ -46,7 +47,7 @@ jobs:
 
       - name: Publish
         run: dotnet nuget push
-          ${{github.workspace}}/artifacts/packages/*.*nupkg
+          ${{github.workspace}}/artifacts/packages/*.nupkg
           --source https://api.nuget.org/v3/index.json
           --api-key ${{ secrets.NUGET_API_KEY }}
           --skip-duplicate

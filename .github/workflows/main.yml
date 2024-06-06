@@ -54,7 +54,7 @@ jobs:
       - name: Publish
         if: github.event_name != 'pull_request'
         run: dotnet nuget push
-          ${{github.workspace}}/artifacts/packages/*.*nupkg
+          ${{github.workspace}}/artifacts/packages/*.nupkg
           --source "github"
           --api-key ${{ secrets.GITHUB_TOKEN }}
           --skip-duplicate
