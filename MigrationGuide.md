@@ -296,7 +296,7 @@ BinaryData data = result.Value;
 await File.WriteAllBytesAsync("<file-path>", data.ToArray());
 ```
 
-### Image: image generation
+### Image: Image generation
 
 OpenAI 1.11.0:
 ```cs
