@@ -1,6 +1,6 @@
-# Guide for migrating to Microsoft's OpenAI library from OpenAI 1.11.0
+# Guide for migrating to OpenAI 2.0.0-beta.1 from OpenAI 1.11.0
 
-This guide is intended to assist in the migration to Microsoft's OpenAI library (1.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries. In this document, these are often referred to as the 'new' and the 'old' OpenAI libraries, respectively.
+This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries. In this document, these are often referred to as the 'new' and the 'old' OpenAI libraries, respectively.
 
 Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any OpenAI SDK for .NET, please refer to the [README][readme] rather than this guide.
 
