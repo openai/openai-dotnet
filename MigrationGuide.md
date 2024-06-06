@@ -15,7 +15,7 @@ Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any Open
     - [Audio: speech-to-text](#audio-speech-to-text)
     - [Audio: text-to-speech](#audio-text-to-speech)
     - [Image: image generation](#image-image-generation)
-- [Additional samples](#additional-samples)
+- [Additional examples](#additional-examples)
 
 ## Client usage
 
@@ -326,10 +326,10 @@ Uri imageUri = result.Value.ImageUri;
 Console.WriteLine(imageUri.AbsoluteUri);
 ```
 
-## Additional samples
+## Additional examples
 
-For additional samples, see [OpenAI Samples][samples].
+For additional examples, see [OpenAI Examples][examples].
 
 [readme]: https://github.com/openai/openai-dotnet/blob/main/README.md
-[samples]: https://github.com/openai/openai-dotnet/tree/main/examples
+[examples]: https://github.com/openai/openai-dotnet/tree/main/examples
 [openai_1110]: https://aka.ms/openai1110
