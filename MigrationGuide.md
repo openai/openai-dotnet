@@ -1,6 +1,6 @@
 # Guide for migrating to OpenAI 2.0.0-beta.1 from OpenAI 1.11.0
 
-This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries.
+This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries. Prior to 2.0.0-beta.1, the `OpenAI` package was a community library not officially supported by OpenAI. See the [CHANGELOG][changelog] for more details.
 
 Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any OpenAI library for .NET, see the [README][readme] rather than this guide.
 
@@ -334,5 +334,6 @@ Console.WriteLine(imageUri.AbsoluteUri);
 For additional examples, see [OpenAI Examples][examples].
 
 [readme]: https://github.com/openai/openai-dotnet/blob/main/README.md
+[changelog]: https://github.com/openai/openai-dotnet/blob/main/CHANGELOG.md
 [examples]: https://github.com/openai/openai-dotnet/tree/main/examples
 [openai_1110]: https://aka.ms/openai1110
