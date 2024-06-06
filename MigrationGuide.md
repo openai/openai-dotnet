@@ -1,6 +1,6 @@
 # Guide for migrating to OpenAI 2.0.0-beta.1 from OpenAI 1.11.0
 
-This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries. In this document, these are often referred to as the 'new' and the 'old' OpenAI libraries, respectively.
+This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries.
 
 Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any OpenAI SDK for .NET, please refer to the [README][readme] rather than this guide.
 
@@ -19,23 +19,23 @@ Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any Open
 
 ## Client usage
 
-The client usage has considerably changed between libraries. While the old library had a single client, `OpenAIAPI`, from which multiple APIs could be accessed, the new library keeps a separate client per API. The following snippets illustrate this difference when invoking the image generation capability from the Image API:
+The client usage has considerably changed between libraries. While the OpenAI 1.11.0 had a single client, `OpenAIAPI`, from which multiple APIs could be accessed, OpenAI 2.0.0-beta.1 keeps a separate client per API. The following snippets illustrate this difference when invoking the image generation capability from the Image API:
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 ImageResult result = await api.ImageGenerations.CreateImageAsync("Draw a quick brown fox jumping over a lazy dog.", Model.DALLE3);
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ImageClient client = new ImageClient("dall-e-3", "<api-key>");
 ClientResult<GeneratedImage> result = await client.GenerateImageAsync("Draw a quick brown fox jumping over a lazy dog.");
 ```
 
-Another major difference highlighted in the snippets above is that the new library requires the model to be explicitly set during client instantiation, while the old client allows a model to be specified per call.
+Another major difference highlighted in the snippets above is that OpenAI 2.0.0-beta.1 requires the model to be explicitly set during client instantiation, while the `OpenAIAPI` client allows a model to be specified per call.
 
-The table below illustrates to which client each endpoint of `OpenAIAPI` was ported. Note that the deprecated Completions API is not supported by the new library:
+The table below illustrates to which client each endpoint of `OpenAIAPI` was ported. Note that the deprecated Completions API is not supported in 2.0.0-beta.1:
 
 Old library's endpoint|New library's client
 |-|-
@@ -54,7 +54,7 @@ Old library's endpoint|New library's client
 
 In order to authenticate to OpenAI you must set an API key when creating a client.
 
-The old library allowed setting the API key in three different ways: directly from a string, from an environment variable, or from a configuration file.
+OpenAI 1.11.0 allowed setting the API key in three different ways: directly from a string, from an environment variable, or from a configuration file.
 
 ```cs
 OpenAIAPI api;
@@ -69,7 +69,7 @@ api = new OpenAIAPI(APIAuthentication.LoadFromEnv());
 api = new OpenAIAPI(APIAuthentication.LoadFromPath("<directory>", "<filename>"));
 ```
 
-The new library only supports setting it from a string or from an environment variable. The following snippet illustrates the behavior with the `ChatClient`, but other clients behave the same:
+OpenAI 2.0.0-beta.1 only supports setting it from a string or from an environment variable. The following snippet illustrates the behavior with the `ChatClient`, but other clients behave the same:
 
 ```cs
 ChatClient client;
@@ -81,7 +81,7 @@ client = new ChatClient("gpt-3.5-turbo", "<api-key>");
 client = new ChatClient("gpt-3.5-turbo");
 ```
 
-Note that, unlike the old library, the new library will never attempt to load the API key from the `OPENAI_KEY` environment variable. Only `OPENAI_API_KEY` is supported.
+Note that, unlike the OpenAI 1.11.0, OpenAI 2.0.0-beta.1 will never attempt to load the API key from the `OPENAI_KEY` environment variable. Only `OPENAI_API_KEY` is supported.
 
 ## Highlighted scenarios
 
@@ -89,7 +89,7 @@ The following sections illustrate side-by-side comparisons for similar operation
 
 ### Chat Completions: text generation
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 Conversation conversation = api.Chat.CreateConversation();
@@ -110,7 +110,7 @@ foreach (ChatMessage message in conversation.Messages)
 }
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ChatClient client = new ChatClient("gpt-3.5-turbo", "<api-key>");
 List<ChatMessage> messages = new List<ChatMessage>()
@@ -139,7 +139,7 @@ foreach (ChatMessage message in messages)
 
 ### Chat Completions: streaming
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 Conversation conversation = api.Chat.CreateConversation();
@@ -153,7 +153,7 @@ await foreach (string response in conversation.StreamResponseEnumerableFromChatb
 }
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ChatClient client = new ChatClient("gpt-3.5-turbo", "<api-key>");
 List<ChatMessage> messages = new List<ChatMessage>()
@@ -172,7 +172,7 @@ await foreach (StreamingChatCompletionUpdate chatUpdate in client.CompleteChatSt
 
 ### Chat Completions: JSON mode
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 ChatRequest request = new ChatRequest()
@@ -191,7 +191,7 @@ ChatResult result = await api.Chat.CreateChatCompletionAsync(request);
 Console.WriteLine(result);
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ChatClient client = new ChatClient("gpt-3.5-turbo", "<api-key>");
 List<ChatMessage> messages = new List<ChatMessage>()
@@ -212,7 +212,7 @@ Console.WriteLine(text);
 
 ### Chat Completions: vision
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 Conversation conversation = api.Chat.CreateConversation();
@@ -226,7 +226,7 @@ string response = await conversation.GetResponseFromChatbotAsync();
 Console.WriteLine(response);
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ChatClient client = new ChatClient("gpt-4-vision-preview", "<api-key>");
 using FileStream file = File.OpenRead("<file-path>");
@@ -246,7 +246,7 @@ Console.WriteLine(text);
 
 ### Audio: speech-to-text
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 string result = await api.Transcriptions.GetTextAsync("<file-path>", "fr");
@@ -254,7 +254,7 @@ string result = await api.Transcriptions.GetTextAsync("<file-path>", "fr");
 Console.WriteLine(result);
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 AudioClient client = new AudioClient("whisper-1", "<api-key>");
 AudioTranscriptionOptions options = new AudioTranscriptionOptions()
@@ -270,7 +270,7 @@ Console.WriteLine(text);
 
 ### Audio: text-to-speech
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 TextToSpeechRequest request = new TextToSpeechRequest()
@@ -283,7 +283,7 @@ TextToSpeechRequest request = new TextToSpeechRequest()
 await api.TextToSpeech.SaveSpeechToFileAsync(request, "<file-path>");
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 AudioClient client = new AudioClient("tts-1", "<api-key>");
 
@@ -295,7 +295,7 @@ await File.WriteAllBytesAsync("<file-path>", data.ToArray());
 
 ### Image: image generation
 
-Old library:
+OpenAI 1.11.0:
 ```cs
 OpenAIAPI api = new OpenAIAPI("<api-key>");
 ImageGenerationRequest request = new ImageGenerationRequest()
@@ -311,7 +311,7 @@ ImageResult result = await api.ImageGenerations.CreateImageAsync(request);
 Console.WriteLine(result.Data[0].Url);
 ```
 
-New library:
+OpenAI 2.0.0-beta.1:
 ```cs
 ImageClient client = new ImageClient("dall-e-3", "<api-key>");
 ImageGenerationOptions options = new ImageGenerationOptions()
