@@ -54,7 +54,10 @@ Old library's endpoint|New library's client
 
 To authenticate to OpenAI, you must set an API key when creating a client.
 
-OpenAI 1.11.0 allowed setting the API key in three different ways: directly from a string, from an environment variable, or from a configuration file.
+OpenAI 1.11.0 allowed setting the API key in 3 different ways:
+- Directly from a string
+- From an environment variable
+- From a configuration file
 
 ```cs
 OpenAIAPI api;
