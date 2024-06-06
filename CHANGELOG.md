@@ -8,4 +8,4 @@ This is the official OpenAI client library for C# / .NET. It provides convenient
 
 ### Breaking Changes
 
-If you are a user migrating from version 1.11.0 or earlier, consider checking out our [migration guide]() to help you get started.
+If you are a user migrating from version 1.11.0 or earlier, we will soon share a migration guide to help you get started.
