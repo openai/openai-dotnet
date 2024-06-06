@@ -90,7 +90,7 @@ Note that, unlike the OpenAI 1.11.0, OpenAI 2.0.0-beta.1 will never attempt to l
 
 The following sections illustrate side-by-side comparisons for similar operations between the two libraries, highlighting common scenarios.
 
-### Chat Completions: text generation
+### Chat Completions: Text generation
 
 OpenAI 1.11.0:
 ```cs
