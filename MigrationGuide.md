@@ -2,7 +2,7 @@
 
 This guide is intended to assist in the migration to the official OpenAI library (2.0.0-beta.1) from [OpenAI 1.11.0][openai_1110], focusing on side-by-side comparisons for similar operations between libraries.
 
-Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any OpenAI SDK for .NET, please refer to the [README][readme] rather than this guide.
+Familiarity with the OpenAI 1.11.0 package is assumed. For those new to any OpenAI library for .NET, see the [README][readme] rather than this guide.
 
 ## Table of contents
 - [Client usage](#client-usage)
