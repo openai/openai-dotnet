@@ -213,7 +213,7 @@ string text = result.Value.Content[0].Text;
 Console.WriteLine(text);
 ```
 
-### Chat Completions: vision
+### Chat Completions: Vision
 
 OpenAI 1.11.0:
 ```cs
