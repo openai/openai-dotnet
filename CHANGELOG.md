@@ -4,7 +4,7 @@
 
 ### Bugs fixed
 
-- Removed a vestigial package reference [5874f53](https://github.com/openai/openai-dotnet/commit/5874f533722ab46a3e077dacb6c3474e0ecca96e)
+- Removed a vestigial package reference ([5874f53](https://github.com/openai/openai-dotnet/commit/5874f533722ab46a3e077dacb6c3474e0ecca96e))
 
 ## 2.0.0-beta.2 (2024-06-06)
 
