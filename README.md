@@ -6,6 +6,27 @@ The OpenAI .NET library provides convenient access to the OpenAI REST API from .
 
 It is generated from our [OpenAPI specification](https://github.com/openai/openai-openapi) in collaboration with Microsoft.
 
+## Table of Contents
+
+- [Getting started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install the NuGet package](#install-the-nuget-package)
+- [Using the client library](#using-the-client-library)
+  - [Namespace organization](#namespace-organization)
+  - [Using the async API](#using-the-async-api)
+  - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
+- [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
+- [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
+- [How to generate text embeddings](#how-to-generate-text-embeddings)
+- [How to generate images](#how-to-generate-images)
+- [How to transcribe audio](#how-to-transcribe-audio)
+- [How to use assistants with retrieval augmented generation (RAG)](#how-to-use-assistants-with-retrieval-augmented-generation-rag)
+- [How to use streaming and GPT-4o vision with assistants](#how-to-use-streaming-and-gpt-4o-vision-with-assistants)
+- [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
+- [Advanced scenarios](#advanced-scenarios)
+  - [Using protocol methods](#using-protocol-methods)
+  - [Automatically retrying errors](#automatically-retrying-errors)
+
 ## Getting started
 
 ### Prerequisites
