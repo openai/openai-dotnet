@@ -1,5 +1,11 @@
 # Release History
 
+## 2.0.0-beta.3 ()
+
+### Bugs fixed
+
+- Removed a vestigial package reference ()
+
 ## 2.0.0-beta.2 (2024-06-06)
 
 ### Bugs fixed
