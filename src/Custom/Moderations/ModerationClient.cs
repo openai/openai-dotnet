@@ -74,7 +74,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
+        CreateModerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await ClassifyTextInputsAsync(content, (RequestOptions)null).ConfigureAwait(false);
@@ -90,7 +90,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
+        CreateModerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = ClassifyTextInputs(content, (RequestOptions)null);
@@ -107,7 +107,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
+        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await ClassifyTextInputsAsync(content, (RequestOptions)null).ConfigureAwait(false);
@@ -123,7 +123,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
+        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = ClassifyTextInputs(content, (RequestOptions)null);
