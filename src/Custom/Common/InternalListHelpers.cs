@@ -12,9 +12,7 @@ internal static class InternalListHelpers
     internal delegate ClientResult ListResponseFunc(string continuationToken, int? pageSize);
 
     internal static AsyncPageableCollection<T> CreateAsyncPageable<T,
-#if NET6_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-#endif
         TInternalList>(AsyncListResponseFunc listResponseFunc)
         where TInternalList : IJsonModel<TInternalList>, IInternalListResponse<T>
     {
@@ -24,9 +22,7 @@ internal static class InternalListHelpers
     }
 
     internal static PageableCollection<T> CreatePageable<T,
-#if NET6_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-#endif
         TInternalList>(ListResponseFunc listResponseFunc)
         where TInternalList : IJsonModel<TInternalList>, IInternalListResponse<T>
     {
@@ -37,9 +33,7 @@ internal static class InternalListHelpers
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ResultPage<TInstance> GetPageFromProtocol<TInstance,
-#if NET6_0_OR_GREATER
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-#endif
         TInternalList>(ClientResult protocolResult)
             where TInternalList : IJsonModel<TInternalList>, IInternalListResponse<TInstance>
     {
