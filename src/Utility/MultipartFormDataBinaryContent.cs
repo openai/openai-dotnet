@@ -14,8 +14,8 @@ internal class MultipartFormDataBinaryContent : BinaryContent
 {
     private readonly MultipartFormDataContent _multipartContent;
 
-    private static Random _random = new();
-    private static readonly char[] _boundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".ToCharArray();
+    private const int BoundaryLength = 70;
+    private const string BoundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 
     public MultipartFormDataBinaryContent()
     {
@@ -120,27 +120,46 @@ internal class MultipartFormDataBinaryContent : BinaryContent
         content.Headers.ContentType = header;
     }
 
+#if NET
+    private static string CreateBoundary() =>
+        string.Create(BoundaryLength, 0, (chars, _) =>
+        {
+            Span<byte> random = stackalloc byte[BoundaryLength];
+            Random.Shared.NextBytes(random);
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = BoundaryValues[random[i] % BoundaryValues.Length];
+            }
+        });
+#else
+    private static readonly Random _random = new();
+
     private static string CreateBoundary()
     {
-        Span<char> chars = new char[70];
+        Span<char> chars = stackalloc char[BoundaryLength];
 
-        byte[] random = new byte[70];
-        _random.NextBytes(random);
+        byte[] random = new byte[BoundaryLength];
+        lock (_random)
+        {
+            _random.NextBytes(random);
+        }
 
         // The following will sample evenly from the possible values.
         // This is important to ensuring that the odds of creating a boundary
         // that occurs in any content part are astronomically small.
-        int mask = 255 >> 2;
+        const int Mask = 255 >> 2;
 
-        Debug.Assert(_boundaryValues.Length - 1 == mask);
+        Debug.Assert(BoundaryValues.Length - 1 == Mask);
 
-        for (int i = 0; i < 70; i++)
+        for (int i = 0; i < random.Length; i++)
         {
-            chars[i] = _boundaryValues[random[i] & mask];
+            chars[i] = BoundaryValues[random[i] & Mask];
         }
 
         return chars.ToString();
     }
+#endif
 
     public override bool TryComputeLength(out long length)
     {
@@ -161,19 +180,19 @@ internal class MultipartFormDataBinaryContent : BinaryContent
         // TODO: polyfill sync-over-async for netstandard2.0 for Azure clients.
         // Tracked by https://github.com/Azure/azure-sdk-for-net/issues/42674
 
-#if NET6_0_OR_GREATER
+#if NET
         _multipartContent.CopyTo(stream, default, cancellationToken);
 #else
-    _multipartContent.CopyToAsync(stream).GetAwaiter().GetResult();
+        _multipartContent.CopyToAsync(stream).GetAwaiter().GetResult();
 #endif
     }
 
     public override async Task WriteToAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-#if NET6_0_OR_GREATER
+#if NET
         await _multipartContent.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
 #else
-    await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
+        await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
 #endif
     }
 
