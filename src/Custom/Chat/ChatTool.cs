@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat;
 
@@ -86,5 +87,38 @@ public partial class ChatTool
         };
 
         return new(function);
+    }
+
+    public static ChatTool[] CreateFunctionTools(Type functionsHolder)
+    {
+        List<ChatTool> tools = new();
+        return tools.ToArray();
+
+        //private static readonly ChatTool getCurrentLocationTool = ChatTool.CreateFunctionTool(
+        //    functionName: nameof(MyFunctions.GetCurrentLocation),
+        //    functionDescription: "Get the user's current location"
+        //);
+
+        //private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
+        //    functionName: nameof(MyFunctions.GetCurrentWeather),
+        //    functionDescription: "Get the current weather in a given location",
+        //    functionParameters: BinaryData.FromString("""
+        //        {
+        //            "type": "object",
+        //            "properties": {
+        //                "location": {
+        //                    "type": "string",
+        //                    "description": "The city and state, e.g. Boston, MA"
+        //                },
+        //                "unit": {
+        //                    "type": "string",
+        //                    "enum": [ "celsius", "fahrenheit" ],
+        //                    "description": "The temperature unit to use. Infer this from the specified location."
+        //                }
+        //            },
+        //            "required": [ "location" ]
+        //        }
+        //        """)
+        //);
     }
 }
