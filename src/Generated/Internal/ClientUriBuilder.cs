@@ -47,7 +47,6 @@ namespace OpenAI
             }
 
             PathBuilder.Append(value);
-            UriBuilder.Path = PathBuilder.ToString();
         }
 
         public void AppendPath(bool value, bool escape = false)
