@@ -8,6 +8,14 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("InternalChatCompletionRequestMessageContentPartImageImageUrl", typeof(string))]
 internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
 {
+#if NET8_0_OR_GREATER
+    [GeneratedRegex(@"^data:(?<type>.+?);base64,(?<data>.+)$")]
+    private static partial Regex ParseDataUriRegex();
+#else
+    private static Regex ParseDataUriRegex() => s_parseDataUriRegex;
+    private static readonly Regex s_parseDataUriRegex = new(@"^data:(?<type>.+?);base64,(?<data>.+)$", RegexOptions.Compiled);
+#endif
+
     private readonly Uri _imageUri = default;
     private readonly BinaryData _imageBytes = default;
     private readonly string _imageBytesMediaType = default;
@@ -47,7 +55,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
     internal InternalChatCompletionRequestMessageContentPartImageImageUrl(string url, ImageChatMessageContentPartDetail? detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        Match parsedDataUri = Regex.Match(url, @"^data:(?<type>.+?);base64,(?<data>.+)$");
+        Match parsedDataUri = ParseDataUriRegex().Match(url);
         
         if (parsedDataUri.Success)
         {
