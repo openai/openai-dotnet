@@ -83,13 +83,10 @@ public partial class AssistantExamples
         {
             InitialMessages =
             {
-                new ThreadInitializationMessage(
-                    [
-                        "Create a graph of a line with a slope that's my father's favorite number "
-                        + "and an offset that's my mother's favorite number.",
-                        "Include people's names in your response and cite where you found them."
-                    ]),
-            },
+                "Create a graph of a line with a slope that's my father's favorite number "
+                + "and an offset that's my mother's favorite number.",
+                "Include people's names in your response and cite where you found them."
+            }
         });
 
         ThreadRun run = client.CreateRun(thread, assistant);

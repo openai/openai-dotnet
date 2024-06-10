@@ -484,13 +484,7 @@ Next, create a new thread. For illustrative purposes, you could include an initi
 ```csharp
 ThreadCreationOptions threadOptions = new()
 {
-    InitialMessages =
-    {
-        new ThreadInitializationMessage(new List<MessageContent>()
-        {
-            MessageContent.FromText("How well did product 113045 sell in February? Graph its trend over time."),
-        }),
-    },  
+    InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
 };
 
 ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOptions);

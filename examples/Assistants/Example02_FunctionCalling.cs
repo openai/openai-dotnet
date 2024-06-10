@@ -82,7 +82,7 @@ public partial class AssistantExamples
         // Create a thread with an initial user message and run it.
         ThreadCreationOptions threadOptions = new()
         {
-            InitialMessages = { new ThreadInitializationMessage(["What's the weather like today?"]), },
+            InitialMessages = { "What's the weather like today?" }
         };
 
         ThreadRun run = client.CreateThreadAndRun(assistant.Id, threadOptions);
