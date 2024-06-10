@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using nunit = NUnit.Framework;
 
 namespace OpenAI.Examples;
 
@@ -33,25 +32,19 @@ internal static class MyFunctions {
 
 public partial class ChatExamples
 {
-    [nunit.Test]
+    [NUnit.Framework.Test]
     public void Example03_FunctionCalling()
     {
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
-        #region
-        List<ChatMessage> messages = [
-            new UserChatMessage("What's the weather like today?"),
-        ];
 
         ChatCompletionOptions options = new()
         {
             Tools = ChatTool.CreateFunctionTools(typeof(MyFunctions))
         };
-        #endregion
 
         #region
         bool requiresAction;
-
+        List<ChatMessage> messages = ["What's the weather like today?"];
         do
         {
             requiresAction = false;
@@ -86,7 +79,7 @@ public partial class ChatExamples
                                 case nameof(MyFunctions.GetCurrentWeather):
                                     {
                                         var location = toolCall.GetFunctionArgument<string>("location");
-                                        var unit = toolCall.GetFunctionArgument("unit", MyFunctions.TemperatureUnit.Celsius);
+                                        var unit = toolCall.GetFunctionArgument("unit", defaultValue: MyFunctions.TemperatureUnit.Celsius);
                                         string toolResult = MyFunctions.GetCurrentWeather(location, unit);
                                         messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
                                         break;

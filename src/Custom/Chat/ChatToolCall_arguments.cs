@@ -51,7 +51,7 @@ public partial class ChatToolCall
         if (typeof(T).IsEnum)
         {
             var enumValueName = reader.GetString();
-            readValue = Enum.Parse(typeof(T), enumValueName, true);
+            readValue = Enum.Parse(typeof(T), enumValueName, ignoreCase: true);
         }
         else if (typeof(T) == typeof(string))
         {

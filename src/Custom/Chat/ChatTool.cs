@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Reflection;
+using System.Text.Json;
 
 namespace OpenAI.Chat;
 
@@ -91,34 +95,101 @@ public partial class ChatTool
 
     public static ChatTool[] CreateFunctionTools(Type functionsHolder)
     {
-        List<ChatTool> tools = new();
+        List<ChatTool> tools = [];
+
+        foreach (MethodInfo method in functionsHolder.GetMethods(BindingFlags.Public | BindingFlags.Static))
+        {
+            string name = method.Name;
+            string description = method.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            BinaryData parametersJson = null;
+            ParameterInfo[] parameters = method.GetParameters();
+            if (parameters.Length > 0)
+            {
+                var memoryStream = new MemoryStream();
+                Utf8JsonWriter json = new Utf8JsonWriter(memoryStream);
+                json.WriteStartObject();
+                json.WriteString("type"u8, "object"u8);
+                json.WritePropertyName("properties"u8);
+                json.WriteStartObject(); // start of "properties"
+
+                List<string> requiredParameters = new List<string>();
+                foreach (var parameter in parameters)
+                {
+                    if (!parameter.IsOptional)
+                    {
+                        requiredParameters.Add(parameter.Name);
+                    }
+                    json.WritePropertyName(parameter.Name);
+                    json.WriteStartObject();
+                    WriteParameterType(ref json, parameter.ParameterType);
+                    string parameterDescription = parameter.GetCustomAttribute<DescriptionAttribute>()?.Description;
+                    if (parameterDescription != null)
+                    {
+                        json.WriteString("description"u8, parameterDescription);
+                    }
+                    json.WriteEndObject();
+                }
+                json.WriteEndObject(); // end of "properties"
+                if (requiredParameters.Count > 0)
+                {
+                    json.WritePropertyName("required"u8);
+                    json.WriteStartArray();
+                    foreach (var parameter in requiredParameters)
+                    {
+                        json.WriteStringValue(parameter);
+                    }
+                    json.WriteEndArray();
+                }
+                json.WriteEndObject();
+                json.Flush();
+
+                var buffer = memoryStream.GetBuffer();
+                parametersJson = new BinaryData(buffer.AsMemory(0, (int)memoryStream.Length));
+
+            }
+            ChatTool tool = CreateFunctionTool(name, description, parametersJson);
+            tools.Add(tool);
+        }
+
         return tools.ToArray();
 
-        //private static readonly ChatTool getCurrentLocationTool = ChatTool.CreateFunctionTool(
-        //    functionName: nameof(MyFunctions.GetCurrentLocation),
-        //    functionDescription: "Get the user's current location"
-        //);
+        void WriteParameterType(ref Utf8JsonWriter json, Type type)
+        {
+            if (type == typeof(string))
+            {
+                json.WriteString("type"u8, "string"u8);
+                return;
+            }
+            if (type == typeof(Boolean))
+            {
+                json.WriteString("type"u8, "boolean"u8);
+                return;
+            }
+            if (type == typeof(Int32) ||  type == typeof(Int64) || type == typeof(Int16) || type == typeof(SByte) ||
+                type == typeof(UInt32) ||  type == typeof(UInt64) || type == typeof(UInt16) || type == typeof(Byte)
+            ) {
+                json.WriteString("type"u8, "integer"u8);
+                return;
+            }
+            if (type == typeof(Single) ||  type == typeof(Double) || type == typeof(Decimal))
+            {
+                json.WriteString("type"u8, "number"u8);
+                return;
+            }
+            if (type.IsEnum)
+            {
+                json.WriteString("type"u8, "string"u8);
+                json.WritePropertyName("enum");
+                json.WriteStartArray();
+                foreach (var enumValue in type.GetEnumNames())
+                {
+                    json.WriteStringValue(enumValue);
+                }
+                json.WriteEndArray();
+                return;
+            }
 
-        //private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
-        //    functionName: nameof(MyFunctions.GetCurrentWeather),
-        //    functionDescription: "Get the current weather in a given location",
-        //    functionParameters: BinaryData.FromString("""
-        //        {
-        //            "type": "object",
-        //            "properties": {
-        //                "location": {
-        //                    "type": "string",
-        //                    "description": "The city and state, e.g. Boston, MA"
-        //                },
-        //                "unit": {
-        //                    "type": "string",
-        //                    "enum": [ "celsius", "fahrenheit" ],
-        //                    "description": "The temperature unit to use. Infer this from the specified location."
-        //                }
-        //            },
-        //            "required": [ "location" ]
-        //        }
-        //        """)
-        //);
+            throw new NotSupportedException("only string, numbers, boolean, and enum parameters are supported.");
+        }
     }
 }
