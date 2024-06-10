@@ -9,14 +9,10 @@ public partial class ChatExamples
     [Test]
     public void Example01_SimpleChat()
     {
-        ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ChatCompletion chatCompletion = client.CompleteChat(
-            [
-                new UserChatMessage("Say 'this is a test.'"),
-            ]);
+        ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
 
-        Console.WriteLine($"[ASSISTANT]:");
-        Console.WriteLine($"{chatCompletion.Content[0].Text}");
+        Console.WriteLine($"[ASSISTANT]: {completion}");
     }
 }
