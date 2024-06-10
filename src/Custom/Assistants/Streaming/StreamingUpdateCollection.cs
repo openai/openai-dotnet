@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.ServerSentEvents;
 
 #nullable enable
 
@@ -30,7 +31,7 @@ internal class StreamingUpdateCollection : ResultCollection<StreamingUpdate>
 
     private sealed class StreamingUpdateEnumerator : IEnumerator<StreamingUpdate>
     {
-        private const string _terminalData = "[DONE]";
+        private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
         private readonly Func<ClientResult> _getResult;
         private readonly StreamingUpdateCollection _enumerable;
@@ -42,7 +43,7 @@ internal class StreamingUpdateCollection : ResultCollection<StreamingUpdate>
         //       // get _updates from sse event
         //       foreach (var update in _updates) { ... }
         //   }
-        private IEnumerator<ServerSentEvent>? _events;
+        private IEnumerator<SseItem<byte[]>>? _events;
         private IEnumerator<StreamingUpdate>? _updates;
 
         private StreamingUpdate? _current;
@@ -81,7 +82,7 @@ internal class StreamingUpdateCollection : ResultCollection<StreamingUpdate>
 
             if (_events.MoveNext())
             {
-                if (_events.Current.Data == _terminalData)
+                if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
                     return false;
@@ -101,7 +102,7 @@ internal class StreamingUpdateCollection : ResultCollection<StreamingUpdate>
             return false;
         }
 
-        private IEnumerator<ServerSentEvent> CreateEventEnumerator()
+        private IEnumerator<SseItem<byte[]>> CreateEventEnumerator()
         {
             ClientResult result = _getResult();
             PipelineResponse response = result.GetRawResponse();
@@ -112,7 +113,7 @@ internal class StreamingUpdateCollection : ResultCollection<StreamingUpdate>
                 throw new InvalidOperationException("Unable to create result from response with null ContentStream");
             }
 
-            ServerSentEventEnumerable enumerable = new(response.ContentStream);
+            IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
             return enumerable.GetEnumerator();
         }
 
