@@ -1,5 +1,9 @@
 using System;
+using System.Buffers;
+using System.Buffers.Binary;
+using System.Buffers.Text;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OpenAI.Embeddings;
 
@@ -89,13 +93,43 @@ public partial class Embedding
     // CUSTOM: Implemented custom logic to transform from BinaryData to ReadOnlyMemory<float>.
     private ReadOnlyMemory<float> ConvertToVectorOfFloats(BinaryData binaryData)
     {
-        string base64EncodedVector = binaryData.ToString();
-        base64EncodedVector = base64EncodedVector.Substring(1, base64EncodedVector.Length - 2);
+        ReadOnlySpan<byte> base64 = binaryData.ToMemory().Span;
 
-        byte[] bytes = Convert.FromBase64String(base64EncodedVector);
-        float[] vector = new float[bytes.Length / sizeof(float)];
-        Buffer.BlockCopy(bytes, 0, vector, 0, bytes.Length);
+        // Remove quotes around base64 string.
+        if (base64.Length < 2 || base64[0] != (byte)'"' || base64[base64.Length - 1] != (byte)'"')
+        {
+            ThrowInvalidData();
+        }
+        base64 = base64.Slice(1, base64.Length - 2);
 
+        // Decode base64 string to bytes.
+        byte[] bytes = ArrayPool<byte>.Shared.Rent(Base64.GetMaxDecodedFromUtf8Length(base64.Length));
+        OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
+        if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
+        {
+            ThrowInvalidData();
+        }
+
+        // Interpret bytes as floats
+        float[] vector = new float[bytesWritten / sizeof(float)];
+        bytes.AsSpan(0, bytesWritten).CopyTo(MemoryMarshal.AsBytes(vector.AsSpan()));
+        if (!BitConverter.IsLittleEndian)
+        {
+            Span<int> ints = MemoryMarshal.Cast<float, int>(vector.AsSpan());
+#if NET8_0_OR_GREATER
+            BinaryPrimitives.ReverseEndianness(ints, ints);
+#else
+            for (int i = 0; i < ints.Length; i++)
+            {
+                ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
+            }
+#endif
+        }
+
+        ArrayPool<byte>.Shared.Return(bytes);
         return new ReadOnlyMemory<float>(vector);
+
+        static void ThrowInvalidData() =>
+            throw new FormatException("The input is not a valid Base64 string of encoded floats.");
     }
 }
