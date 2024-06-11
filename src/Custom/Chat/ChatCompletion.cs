@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace OpenAI.Chat;
 
@@ -65,5 +66,19 @@ public partial class ChatCompletion
     /// Returns text representation of the first part of the first choice.
     /// </summary>
     /// <returns></returns>
-    public override string ToString() => Content[0].Text;
+    public override string ToString()
+    {
+        IReadOnlyList<ChatMessageContentPart> content = Content;
+        if (content.Count == 1)
+        {
+            return content[0].ToString();
+        }
+
+        StringBuilder sb = new();
+        foreach (var part in content)
+        {
+            sb.AppendLine(part.ToString());
+        }
+        return sb.ToString();
+    }
 }

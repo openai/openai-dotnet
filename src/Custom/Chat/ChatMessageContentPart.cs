@@ -129,7 +129,13 @@ public partial class ChatMessageContentPart
     /// Returns text representation of this part.
     /// </summary>
     /// <returns></returns>
-    public override string ToString() => Text;
+    public override string ToString()
+    {
+        if (Kind == ChatMessageContentPartKind.Text) {
+            return String.IsNullOrWhiteSpace(Text) ? "<empty>" : Text;
+        }
+        return $"<{Kind.ToString().ToLowerInvariant()}>";
+    }
 
     /// <summary>
     /// Implicitly creates a new <see cref="ChatMessageContentPart"/> instance from an item of plain text.
