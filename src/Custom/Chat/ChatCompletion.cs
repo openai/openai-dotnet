@@ -74,11 +74,6 @@ public partial class ChatCompletion
             return content[0].ToString();
         }
 
-        StringBuilder sb = new();
-        foreach (var part in content)
-        {
-            sb.AppendLine(part.ToString());
-        }
-        return sb.ToString();
+        return string.Join(Environment.NewLine, content);
     }
 }
