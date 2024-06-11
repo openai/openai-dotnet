@@ -34,10 +34,10 @@ internal partial class MessageDeltaContentImageUrlObjectImageUrl
 }
 
 [CodeGenModel("MessageDeltaContentImageFileObject")]
-internal partial class MessageDeltaContentImageFileObject { private readonly string Type; }
+internal partial class MessageDeltaContentImageFileObject { private readonly new string Type; }
 
 [CodeGenModel("MessageDeltaContentImageUrlObject")]
-internal partial class MessageDeltaContentImageUrlObject { private readonly string Type; }
+internal partial class MessageDeltaContentImageUrlObject { private readonly new string Type; }
 
 [CodeGenModel("MessageDeltaObjectDelta")]
 internal partial class MessageDeltaObjectDelta

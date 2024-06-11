@@ -11,9 +11,9 @@ namespace OpenAI.Chat;
 public partial class ChatMessageContentPart
 {
     private readonly ChatMessageContentPartKind _kind;
-    private readonly string _text = default;
-    private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUrl = default;
-    private readonly string _dataUri = default;
+    private readonly string _text;
+    private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUrl;
+    private readonly string _dataUri;
 
     internal ChatMessageContentPart(string text)
     {

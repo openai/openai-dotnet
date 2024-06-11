@@ -28,14 +28,22 @@
    
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-</PropertyGroup>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Disable missing XML documentation warnings -->
+    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
+    
+    <!-- Disable obsolete warnings -->
+    <NoWarn>$(NoWarn),0618</NoWarn>
+
+    <!-- Disable unused fields warnings -->
+    <NoWarn>$(NoWarn),0169</NoWarn>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-
-    <!-- Disable missing XML documentation warnings -->
-    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
