@@ -85,6 +85,14 @@ public partial class ChatClient
     /// Generates a single chat completion result for a provided set of input chat messages.
     /// </summary>
     /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
+    /// <returns> A result for a single chat completion. </returns>
+    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(params ChatMessage[] messages)
+        => await CompleteChatAsync(messages, default(ChatCompletionOptions)).ConfigureAwait(false);
+
+    /// <summary>
+    /// Generates a single chat completion result for a provided set of input chat messages.
+    /// </summary>
+    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
     /// <param name="options"> Additional options for the chat completion request. </param>
     /// <returns> A result for a single chat completion. </returns>
     public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null)
@@ -99,6 +107,14 @@ public partial class ChatClient
         return ClientResult.FromValue(ChatCompletion.FromResponse(result.GetRawResponse()), result.GetRawResponse());
 
     }
+
+    /// <summary>
+    /// Generates a single chat completion result for a provided set of input chat messages.
+    /// </summary>
+    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
+    /// <returns> A result for a single chat completion. </returns>
+    public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages)
+        => CompleteChat(messages, default(ChatCompletionOptions));
 
     /// <summary>
     /// Begins a streaming response for a chat completion request using the provided chat messages as input and
@@ -130,6 +146,19 @@ public partial class ChatClient
     /// history.
     /// </summary>
     /// <remarks>
+    /// <see cref="AsyncResultCollection{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
+    /// <see cref="IAsyncEnumerable{T}"/> interface.
+    /// </remarks>
+    /// <param name="messages"> The messages to provide as input for chat completion. </param>
+    /// <returns> A streaming result with incremental chat completion updates. </returns>
+    public virtual AsyncResultCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages)
+        => CompleteChatStreamingAsync(messages, default(ChatCompletionOptions));
+
+    /// <summary>
+    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
+    /// history.
+    /// </summary>
+    /// <remarks>
     /// <see cref="ResultCollection{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
     /// <see cref="IEnumerable{T}"/> interface.
     /// </remarks>
@@ -148,6 +177,19 @@ public partial class ChatClient
         ClientResult getResult() => CompleteChat(content, requestOptions);
         return new StreamingChatCompletionUpdateCollection(getResult);
     }
+
+    /// <summary>
+    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
+    /// history.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ResultCollection{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
+    /// <see cref="IEnumerable{T}"/> interface.
+    /// </remarks>
+    /// <param name="messages"> The messages to provide as input for chat completion. </param>
+    /// <returns> A streaming result with incremental chat completion updates. </returns>
+    public virtual ResultCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages)
+        => CompleteChatStreaming(messages, default(ChatCompletionOptions));
 
     private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)
     {
