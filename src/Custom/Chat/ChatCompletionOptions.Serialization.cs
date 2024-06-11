@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -49,7 +50,7 @@ public partial class ChatCompletionOptions
         writer.WriteStartObject();
         foreach (var item in LogitBiases)
         {
-            writer.WritePropertyName(item.Key.ToString());
+            writer.WritePropertyName(item.Key.ToString(CultureInfo.InvariantCulture));
             writer.WriteNumberValue(item.Value);
         }
         writer.WriteEndObject();
@@ -68,7 +69,7 @@ public partial class ChatCompletionOptions
             Dictionary<int, int> dictionary = new Dictionary<int, int>();
             foreach (var property0 in property.Value.EnumerateObject())
             {
-                dictionary.Add(int.Parse(property0.Name), property0.Value.GetInt32());
+                dictionary.Add(int.Parse(property0.Name, CultureInfo.InvariantCulture), property0.Value.GetInt32());
             }
             logitBias = dictionary;
         }

@@ -5,7 +5,7 @@ using System;
 namespace OpenAI;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true, Inherited = true)]
-internal class CodeGenSerializationAttribute : Attribute
+internal sealed class CodeGenSerializationAttribute : Attribute
 {
     /// <summary>
     /// Gets or sets the property name which these hooks should apply to

@@ -16,9 +16,9 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     private static readonly Regex s_parseDataUriRegex = new(@"^data:(?<type>.+?);base64,(?<data>.+)$", RegexOptions.Compiled);
 #endif
 
-    private readonly Uri _imageUri = default;
-    private readonly BinaryData _imageBytes = default;
-    private readonly string _imageBytesMediaType = default;
+    private readonly Uri _imageUri;
+    private readonly BinaryData _imageBytes;
+    private readonly string _imageBytesMediaType;
 
     // CUSTOM: Changed type from Uri to string to be able to support data URIs properly.
     /// <summary> Either a URL of the image or the base64 encoded image data. </summary>
