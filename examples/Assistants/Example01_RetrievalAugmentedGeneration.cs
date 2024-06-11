@@ -85,13 +85,7 @@ public partial class AssistantExamples
         // Now we'll create a thread with a user query about the data already associated with the assistant, then run it
         ThreadCreationOptions threadOptions = new()
         {
-            InitialMessages =
-            {
-                new ThreadInitializationMessage(new List<MessageContent>()
-                {
-                    MessageContent.FromText("How well did product 113045 sell in February? Graph its trend over time."),
-                }),
-            },
+            InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
         };
 
         ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOptions);

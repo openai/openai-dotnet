@@ -10,20 +10,17 @@ public partial class ChatExamples
     [Test]
     public void Example02_SimpleChatStreaming()
     {
-        ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResultCollection<StreamingChatCompletionUpdate> chatUpdates
-            = client.CompleteChatStreaming(
-                [
-                    new UserChatMessage("Say 'this is a test.'"),
-                ]);
+        ResultCollection<StreamingChatCompletionUpdate> updates
+            = client.CompleteChatStreaming("Say 'this is a test.'");
 
         Console.WriteLine($"[ASSISTANT]:");
-        foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
+        foreach (StreamingChatCompletionUpdate update in updates)
         {
-            foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
+            foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
             {
-                Console.Write(contentPart.Text);
+                Console.Write(updatePart);
             }
         }
     }

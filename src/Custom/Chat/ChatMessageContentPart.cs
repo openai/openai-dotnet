@@ -124,4 +124,20 @@ public partial class ChatMessageContentPart
 
         return new(imageBytes, imageBytesMediaType, imageDetail);
     }
+
+    /// <summary>
+    /// Returns text representation of this part.
+    /// </summary>
+    /// <returns></returns>
+    public override string ToString() => Text;
+
+    /// <summary>
+    /// Implicitly creates a new <see cref="ChatMessageContentPart"/> instance from an item of plain text.
+    /// </summary>
+    /// <remarks>
+    /// Using a <see cref="string"/> in the position of a <see cref="ChatMessageContentPart"/> is equivalent to
+    /// calling the <see cref="CreateTextMessageContentPart(string)"/> method.
+    /// </remarks>
+    /// <param name="content"> The text content to use as this content part. </param>
+    public static implicit operator ChatMessageContentPart(string content) => new(content);
 }

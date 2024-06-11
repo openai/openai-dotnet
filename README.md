@@ -52,10 +52,9 @@ using OpenAI.Chat;
 
 ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-ChatCompletion chatCompletion = client.CompleteChat(
-    [
-        new UserChatMessage("Say 'this is a test.'"),
-    ]);
+ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
+
+Console.WriteLine($"[ASSISTANT]: {completion}");
 ```
 
 While you can pass your API key directly as a string, it is highly recommended to keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
@@ -83,10 +82,7 @@ The library is organized into several namespaces corresponding to OpenAI feature
 Every client method that performs a synchronous API call has an asynchronous variant in the same client class. For instance, the asynchronous variant of the `ChatClient`'s `CompleteChat` method is `CompleteChatAsync`. To rewrite the call above using the asynchronous counterpart, simply `await` the call to the corresponding async variant:
 
 ```csharp
-ChatCompletion chatCompletion = await client.CompleteChatAsync(
-    [
-        new UserChatMessage("Say 'this is a test.'"),
-    ]);
+ChatCompletion completion = await client.CompleteChatAsync("Say 'this is a test.'");
 ```
 
 ### Using the `OpenAIClient` class
@@ -119,22 +115,19 @@ When you request a chat completion, the default behavior is for the server to ge
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```csharp
-ResultCollection<StreamingChatCompletionUpdate> chatUpdates
-    = client.CompleteChatStreaming(
-        [
-            new UserChatMessage("Say 'this is a test.'"),
-        ]);
+ResultCollection<StreamingChatCompletionUpdate> updates
+    = client.CompleteChatStreaming("Say 'this is a test.'");
 ```
 
 Notice that the returned value is a `ResultCollection<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
 ```csharp
 Console.WriteLine($"[ASSISTANT]:");
-foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
+foreach (StreamingChatCompletionUpdate update in updates)
 {
-    foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
+    foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
     {
-        Console.Write(contentPart.Text);
+        Console.Write(updatePart);
     }
 }
 ```
@@ -142,18 +135,15 @@ foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
 Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncResultCollection<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
 
 ```csharp
-AsyncResultCollection<StreamingChatCompletionUpdate> asyncChatUpdates
-    = client.CompleteChatStreamingAsync(
-        [
-            new UserChatMessage("Say 'this is a test.'"),
-        ]);
+AsyncResultCollection<StreamingChatCompletionUpdate> updates
+    = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
 Console.WriteLine($"[ASSISTANT]:");
-await foreach (StreamingChatCompletionUpdate chatUpdate in asyncChatUpdates)
+await foreach (StreamingChatCompletionUpdate update in updates)
 {
-    foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
+    foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
     {
-        Console.Write(contentPart.Text);
+        Console.Write(updatePart.Text);
     }
 }
 ```
@@ -515,13 +505,7 @@ Next, create a new thread. For illustrative purposes, you could include an initi
 ```csharp
 ThreadCreationOptions threadOptions = new()
 {
-    InitialMessages =
-    {
-        new ThreadInitializationMessage(new List<MessageContent>()
-        {
-            MessageContent.FromText("How well did product 113045 sell in February? Graph its trend over time."),
-        }),
-    },  
+    InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
 };
 
 ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOptions);

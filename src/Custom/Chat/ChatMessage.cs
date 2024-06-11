@@ -89,4 +89,10 @@ public abstract partial class ChatMessage
 
     /// <inheritdoc cref="FunctionChatMessage(string, string)"/>
     public static FunctionChatMessage CreateFunctionMessage(string functionName, string content) => new FunctionChatMessage(functionName, content);
+
+    /// <summary>
+    /// Creates UserChatMessage.
+    /// </summary>
+    /// <param name="userMessage"></param>
+    public static implicit operator ChatMessage(string userMessage) => new UserChatMessage(userMessage);
 }
