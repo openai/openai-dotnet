@@ -16,7 +16,7 @@ internal static class MyFunctions {
 
     [Description("Get the current weather in a given location")]
     public static string GetCurrentWeather(
-        [Description("The city and state, e.g. Boston, MA")]string location,
+        [Description("The city and state, e.g. Boston, MA")] string location,
         [Description("The temperature unit to use.Infer this from the specified location.")] TemperatureUnit unit = TemperatureUnit.Celsius)
     {
         // Call the weather API here.
