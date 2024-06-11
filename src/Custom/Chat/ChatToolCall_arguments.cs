@@ -11,8 +11,18 @@ namespace OpenAI.Chat;
 /// </summary>
 public partial class ChatToolCall
 {
+    /// <summary>
+    /// Parses a specific argument from function call arguments.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="parameterName"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public T GetFunctionArgument<T>(string parameterName, T defaultValue)
     {
+        if (parameterName == null) throw new ArgumentNullException(nameof(parameterName));
+
         if (TryReadArgumentValue<T>(parameterName, out var value))
         {
             return value;
@@ -20,8 +30,18 @@ public partial class ChatToolCall
         return defaultValue;
     }
 
+    /// <summary>
+    /// Parses a specific argument from function call arguments.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="parameterName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public T GetFunctionArgument<T>(string parameterName)
     {
+        if (parameterName == null) throw new ArgumentNullException(nameof(parameterName));
+
         if (TryReadArgumentValue<T>(parameterName, out var value))
         {
             return value;
@@ -33,6 +53,9 @@ public partial class ChatToolCall
     {
         // TODO: FunctionArguments should return BinaryData. Once it does, eliminate the transcoding call. 
         Utf8JsonReader reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(FunctionArguments));
+
+        if (!reader.Read()) throw new InvalidOperationException("Malformed JSON");
+        if (reader.TokenType != JsonTokenType.StartObject) throw new InvalidOperationException("Malformed JSON");
 
         while (reader.Read())
         {
@@ -47,57 +70,57 @@ public partial class ChatToolCall
     }
     private static bool TryReadValue<T>(ref Utf8JsonReader reader, out T value)
     {
-        object? readValue = null;
-        if (typeof(T).IsEnum)
+        object readValue = null;
+        if (typeof(T).IsEnum  && reader.TokenType == JsonTokenType.String)
         {
             var enumValueName = reader.GetString();
             readValue = Enum.Parse(typeof(T), enumValueName, ignoreCase: true);
         }
-        else if (typeof(T) == typeof(string))
+        else if (typeof(T) == typeof(string) && reader.TokenType == JsonTokenType.String)
         {
             readValue = (object)reader.GetString();
         }
-        else if (typeof(T) == typeof(bool))
+        else if (typeof(T) == typeof(bool) && (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False))
         {
             readValue = (object)reader.GetBoolean();
         }
-        else if (typeof(T) == typeof(double))
+        else if (typeof(T) == typeof(double) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetDouble();
         }
-        else if (typeof(T) == typeof(float))
+        else if (typeof(T) == typeof(float) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetSingle();
         }
-        else if (typeof(T) == typeof(int))
+        else if (typeof(T) == typeof(int) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetInt32();
         }
-        else if (typeof(T) == typeof(long))
+        else if (typeof(T) == typeof(long) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (T)(object)reader.GetInt64();
         }
-        else if (typeof(T) == typeof(short))
+        else if (typeof(T) == typeof(short) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetInt16();
         }
-        else if (typeof(T) == typeof(sbyte))
+        else if (typeof(T) == typeof(sbyte) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetSByte();
         }
-        else if (typeof(T) == typeof(ulong))
+        else if (typeof(T) == typeof(ulong) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetUInt64();
         }
-        else if (typeof(T) == typeof(uint))
+        else if (typeof(T) == typeof(uint) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetUInt32();
         }
-        else if (typeof(T) == typeof(ushort))
+        else if (typeof(T) == typeof(ushort) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetUInt16();
         }
-        else if (typeof(T) == typeof(byte))
+        else if (typeof(T) == typeof(byte) && reader.TokenType == JsonTokenType.Number)
         {
             readValue = (object)reader.GetByte();
         }

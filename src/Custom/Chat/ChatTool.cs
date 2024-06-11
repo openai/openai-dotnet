@@ -93,8 +93,17 @@ public partial class ChatTool
         return new(function);
     }
 
+    /// <summary>
+    /// Creates tools from public static methods of a type.
+    /// </summary>
+    /// <param name="functionsHolder"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public static ChatTool[] CreateFunctionTools(Type functionsHolder)
     {
+        if (functionsHolder == null) throw new ArgumentNullException(nameof(functionsHolder));
+
         List<ChatTool> tools = [];
 
         foreach (MethodInfo method in functionsHolder.GetMethods(BindingFlags.Public | BindingFlags.Static))
@@ -179,7 +188,7 @@ public partial class ChatTool
             if (type.IsEnum)
             {
                 json.WriteString("type"u8, "string"u8);
-                json.WritePropertyName("enum");
+                json.WritePropertyName("enum"u8);
                 json.WriteStartArray();
                 foreach (var enumValue in type.GetEnumNames())
                 {
@@ -189,7 +198,7 @@ public partial class ChatTool
                 return;
             }
 
-            throw new NotSupportedException("only string, numbers, boolean, and enum parameters are supported.");
+            throw new NotSupportedException($"{type.Name} is not a supported parameter type. Only string, bool, int, uint, long, ulong, short, ushort, byte, sbyte, and enum parameters are supported.");
         }
     }
 }
