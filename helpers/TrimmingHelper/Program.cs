@@ -1,0 +1,1 @@
+Console.WriteLine("Build, rebuild or publish this app to see trimming warnings.");
