@@ -15,7 +15,7 @@ public partial class ImageExamples
 
         string imageFilePath = Path.Combine("Assets", "images_flower_vase.png");
         string prompt = "A vase full of beautiful flowers.";
-        string maskFilePath = Path.Combine("Assets", "images_flower_vase_mask.png");
+        string maskFilePath = Path.Combine("Assets", "images_flower_vase_with_mask.png");
 
         ImageEditOptions options = new()
         {
