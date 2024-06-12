@@ -1,10 +1,12 @@
+
 using System.ClientModel.Primitives;
 using System.Threading;
 
-public  static class RequestOptionsHelpers
+internal static class RequestOptionsExtensions
 {
     public static RequestOptions ToRequestOptions(this CancellationToken cancellationToken)
     {
-        if (cancellationToken == null) return null;
+        if (cancellationToken == default) return null;
         return new RequestOptions() { CancellationToken = cancellationToken };
+    }
 }
