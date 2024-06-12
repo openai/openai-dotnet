@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Audio;
@@ -85,8 +86,9 @@ public partial class AudioClient
     /// <param name="text"> The text for the voice to speak. </param>
     /// <param name="voice"> The voice to use. </param>
     /// <param name="options"> Additional options to tailor the text-to-speech request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The generated audio in the specified output format. </returns>
-    public virtual async Task<ClientResult<BinaryData>> GenerateSpeechFromTextAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null)
+    public virtual async Task<ClientResult<BinaryData>> GenerateSpeechFromTextAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(text, nameof(text));
 
@@ -94,7 +96,7 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateSpeechFromTextAsync(content, null).ConfigureAwait(false);
+        ClientResult result = await GenerateSpeechFromTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
 
@@ -108,8 +110,9 @@ public partial class AudioClient
     /// <param name="text"> The text for the voice to speak. </param>
     /// <param name="voice"> The voice to use. </param>
     /// <param name="options"> Additional options to tailor the text-to-speech request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The generated audio in the specified output format. </returns>
-    public virtual ClientResult<BinaryData> GenerateSpeechFromText(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null)
+    public virtual ClientResult<BinaryData> GenerateSpeechFromText(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(text, nameof(text));
 
@@ -117,7 +120,7 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateSpeechFromText(content, (RequestOptions)null);
+        ClientResult result = GenerateSpeechFromText(content, cancellationToken.ToRequestOptions()); ;
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
 
@@ -135,10 +138,11 @@ public partial class AudioClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the audio transcription request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The audio transcription. </returns>
-    public virtual async Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null)
+    public virtual async Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
@@ -147,7 +151,7 @@ public partial class AudioClient
         CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
-        ClientResult result = await TranscribeAudioAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -161,10 +165,11 @@ public partial class AudioClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the audio transcription request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The audio transcription. </returns>
-    public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null)
+    public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
@@ -173,7 +178,7 @@ public partial class AudioClient
         CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
-        ClientResult result = TranscribeAudio(content, content.ContentType);
+        ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -229,10 +234,11 @@ public partial class AudioClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the audio translation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The audio translation. </returns>
-    public virtual async Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null)
+    public virtual async Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
@@ -241,7 +247,7 @@ public partial class AudioClient
         CreateAudioTranslationOptions(audio, audioFilename, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
-        ClientResult result = await TranslateAudioAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await TranslateAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(AudioTranslation.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -253,10 +259,11 @@ public partial class AudioClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the audio translation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The audio translation. </returns>
-    public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null)
+    public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
@@ -265,7 +272,7 @@ public partial class AudioClient
         CreateAudioTranslationOptions(audio, audioFilename, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
-        ClientResult result = TranslateAudio(content, content.ContentType);
+        ClientResult result = TranslateAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(AudioTranslation.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
