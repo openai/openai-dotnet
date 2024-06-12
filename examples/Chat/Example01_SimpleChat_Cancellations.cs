@@ -17,13 +17,23 @@ public partial class ChatExamples
         CancellationTokenSource ct = new CancellationTokenSource();
         RequestOptions options = new() { CancellationToken = ct.Token };
 
+        ChatMessage message = ChatMessage.CreateUserMessage("Say 'this is a test.'");
+        var body = new {
+            model = "gpt-4o",
+            messages = new[] { 
+                new
+                {
+                    role = "user",
+                    content = "Say \u0027this is a test.\u0027"
+                }
+            }
+        };
+        
+        BinaryData json = BinaryData.FromObjectAsJson(body);
+        ClientResult result = client.CompleteChat(BinaryContent.Create(json), options);
+
         // The following code will be simplified in the future.
         var wireFormat = new ModelReaderWriterOptions("W");
-        ChatMessage message = ChatMessage.CreateUserMessage("Say 'this is a test.'");
-        BinaryData json = ModelReaderWriter.Write(message, wireFormat);
-
-        ClientResult result = client.CompleteChat(BinaryContent.Create(json), options);
-        
         ChatCompletion completion = ModelReaderWriter.Read<ChatCompletion>(result.GetRawResponse().Content, wireFormat);
         Console.WriteLine($"[ASSISTANT]: {completion}");
     }
