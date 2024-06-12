@@ -1,6 +1,7 @@
+#nullable enable
+
 using System;
 using System.ClientModel.Primitives;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 

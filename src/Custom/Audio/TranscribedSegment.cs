@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OpenAI.Audio;
 
 [CodeGenModel("TranscriptionSegment")]
+[StructLayout(LayoutKind.Auto)]
 public readonly partial struct TranscribedSegment
 {
     // CUSTOM: Rename.
