@@ -6,6 +6,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.InternalListHelpers;
 
@@ -77,23 +78,25 @@ public partial class VectorStoreClient
 
     /// <summary> Creates a vector store. </summary>
     /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
     /// <remarks> Create vector store. </remarks>
-    public virtual async Task<ClientResult<VectorStore>> CreateVectorStoreAsync(VectorStoreCreationOptions vectorStore = null)
+    public virtual async Task<ClientResult<VectorStore>> CreateVectorStoreAsync(VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
     {
         using BinaryContent content = vectorStore?.ToBinaryContent();
-        ClientResult result = await CreateVectorStoreAsync(content, null).ConfigureAwait(false);
+        ClientResult result = await CreateVectorStoreAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Creates a vector store. </summary>
     /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
     /// <remarks> Create vector store. </remarks>
-    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore = null)
+    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
     {
         using BinaryContent content = vectorStore?.ToBinaryContent();
-        ClientResult result = CreateVectorStore(content, null);
+        ClientResult result = CreateVectorStore(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -101,12 +104,13 @@ public partial class VectorStoreClient
     /// Deletes a vector store.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion operation was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteVectorStoreAsync(string vectorStoreId)
+    public virtual async Task<ClientResult<bool>> DeleteVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        ClientResult protocolResult = await DeleteVectorStoreAsync(vectorStoreId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await DeleteVectorStoreAsync(vectorStoreId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse rawProtocolResponse = protocolResult?.GetRawResponse();
         InternalDeleteVectorStoreResponse internalResponse = InternalDeleteVectorStoreResponse.FromResponse(rawProtocolResponse);
         return ClientResult.FromValue(internalResponse.Deleted, rawProtocolResponse);
@@ -116,12 +120,13 @@ public partial class VectorStoreClient
     /// Deletes a vector store.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion operation was successful. </returns>
-    public virtual ClientResult<bool> DeleteVectorStore(string vectorStoreId)
+    public virtual ClientResult<bool> DeleteVectorStore(string vectorStoreId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        ClientResult protocolResult = DeleteVectorStore(vectorStoreId, null);
+        ClientResult protocolResult = DeleteVectorStore(vectorStoreId, cancellationToken.ToRequestOptions());
         PipelineResponse rawProtocolResponse = protocolResult?.GetRawResponse();
         InternalDeleteVectorStoreResponse internalResponse = InternalDeleteVectorStoreResponse.FromResponse(rawProtocolResponse);
         return ClientResult.FromValue(internalResponse.Deleted, rawProtocolResponse);
@@ -134,14 +139,15 @@ public partial class VectorStoreClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStore"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null)
+    public virtual AsyncPageableCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -151,13 +157,14 @@ public partial class VectorStoreClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStore"/> instances that can be synchronously enumerated via <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null)
+    public virtual PageableCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreatePageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -165,13 +172,14 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
     /// </returns>
-    public virtual async Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId)
+    public virtual async Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        ClientResult protocolResult = await AddFileToVectorStoreAsync(vectorStoreId, internalRequest.ToBinaryContent(), null).ConfigureAwait(false);
+        ClientResult protocolResult = await AddFileToVectorStoreAsync(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         VectorStoreFileAssociation fileAssociation = VectorStoreFileAssociation.FromResponse(protocolResponse);
         return ClientResult.FromValue(fileAssociation, protocolResponse);
@@ -182,13 +190,14 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
     /// </returns>
-    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(string vectorStoreId, string fileId)
+    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        ClientResult protocolResult = AddFileToVectorStore(vectorStoreId, internalRequest.ToBinaryContent(), null);
+        ClientResult protocolResult = AddFileToVectorStore(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions());
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         VectorStoreFileAssociation fileAssociation = VectorStoreFileAssociation.FromResponse(protocolResponse);
         return ClientResult.FromValue(fileAssociation, protocolResponse);
@@ -208,6 +217,7 @@ public partial class VectorStoreClient
     /// <param name="filter">
     /// A status filter that file associations must match to be included in the collection.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
@@ -215,12 +225,13 @@ public partial class VectorStoreClient
     public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
+        VectorStoreFileStatusFilter? filter = null, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
             (continuationToken, pageSize) => GetFileAssociationsAsync(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), null));
+                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -237,16 +248,17 @@ public partial class VectorStoreClient
     /// <param name="filter">
     /// A status filter that file associations must match to be included in the collection.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null)
+    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
             (continuationToken, pageSize) => GetFileAssociations(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), null));
+                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -255,15 +267,17 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store associated with the file. </param>
     /// <param name="fileId"> The ID of the file associated with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual async Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(
         string vectorStoreId,
-        string fileId)
+        string fileId, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-        ClientResult result = await GetFileAssociationAsync(vectorStoreId, fileId, null).ConfigureAwait(false);
+        ClientResult result = await GetFileAssociationAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreFileAssociation value = VectorStoreFileAssociation.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -275,15 +289,17 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store associated with the file. </param>
     /// <param name="fileId"> The ID of the file associated with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(
         string vectorStoreId,
-        string fileId)
+        string fileId, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-        ClientResult result = GetFileAssociation(vectorStoreId, fileId, null);
+        ClientResult result = GetFileAssociation(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreFileAssociation value = VectorStoreFileAssociation.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -298,10 +314,11 @@ public partial class VectorStoreClient
     /// </remarks>
     /// <param name="vectorStoreId"> The ID of the vector store that the file should be removed from. </param>
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the removal operation was successful. </returns>
-    public virtual async Task<ClientResult<bool>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId)
+    public virtual async Task<ClientResult<bool>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await RemoveFileFromStoreAsync(vectorStoreId, fileId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await RemoveFileFromStoreAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         InternalDeleteVectorStoreFileResponse internalDeletion = InternalDeleteVectorStoreFileResponse.FromResponse(protocolResponse);
         return ClientResult.FromValue(internalDeletion.Deleted, protocolResponse);
@@ -316,10 +333,11 @@ public partial class VectorStoreClient
     /// </remarks>
     /// <param name="vectorStoreId"> The ID of the vector store that the file should be removed from. </param>
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the removal operation was successful. </returns>
-    public virtual ClientResult<bool> RemoveFileFromStore(string vectorStoreId, string fileId)
+    public virtual ClientResult<bool> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = RemoveFileFromStore(vectorStoreId, fileId, null);
+        ClientResult protocolResult = RemoveFileFromStore(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         InternalDeleteVectorStoreFileResponse internalDeletion = InternalDeleteVectorStoreFileResponse.FromResponse(protocolResponse);
         return ClientResult.FromValue(internalDeletion.Deleted, protocolResponse);
@@ -330,14 +348,15 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(string vectorStoreId, IEnumerable<string> fileIds)
+    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
         BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
-        ClientResult result = await CreateBatchFileJobAsync(vectorStoreId, content, null).ConfigureAwait(false);
+        ClientResult result = await CreateBatchFileJobAsync(vectorStoreId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -348,14 +367,15 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(string vectorStoreId, IEnumerable<string> fileIds)
+    public virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
         BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
-        ClientResult result = CreateBatchFileJob(vectorStoreId, content, null);
+        ClientResult result = CreateBatchFileJob(vectorStoreId, content, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -366,13 +386,14 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store into which the batch of files was started. </param>
     /// <param name="batchJobId"> The ID of the batch operation adding files to the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the ingestion operation. </returns>
-    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId)
+    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        ClientResult result = await GetBatchFileJobAsync(vectorStoreId, batchJobId, null).ConfigureAwait(false);
+        ClientResult result = await GetBatchFileJobAsync(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -383,13 +404,14 @@ public partial class VectorStoreClient
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store into which the batch of files was started. </param>
     /// <param name="batchJobId"> The ID of the batch operation adding files to the vector store. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the ingestion operation. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId)
+    public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        ClientResult result = GetBatchFileJob(vectorStoreId, batchJobId, null);
+        ClientResult result = GetBatchFileJob(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -404,13 +426,14 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the <see cref="VectorStoreBatchFileJob"/> that should be canceled. 
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> An updated <see cref="VectorStoreBatchFileJob"/> instance. </returns>
-    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(string vectorStoreId, string batchJobId)
+    public virtual async Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        ClientResult result = await CancelBatchFileJobAsync(vectorStoreId, batchJobId, null).ConfigureAwait(false);
+        ClientResult result = await CancelBatchFileJobAsync(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -425,13 +448,14 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the <see cref="VectorStoreBatchFileJob"/> that should be canceled. 
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> An updated <see cref="VectorStoreBatchFileJob"/> instance. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(string vectorStoreId, string batchJobId)
+    public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        ClientResult result = CancelBatchFileJob(vectorStoreId, batchJobId, null);
+        ClientResult result = CancelBatchFileJob(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
         VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
         return ClientResult.FromValue(value, response);
@@ -454,6 +478,7 @@ public partial class VectorStoreClient
     /// <param name="filter">
     /// A status filter that file associations must match to be included in the collection.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
@@ -462,14 +487,15 @@ public partial class VectorStoreClient
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
+        VectorStoreFileStatusFilter? filter = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
         return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
             (continuationToken, pageSize) => GetFileAssociationsAsync
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), null));
+                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -489,6 +515,7 @@ public partial class VectorStoreClient
     /// <param name="filter">
     /// A status filter that file associations must match to be included in the collection.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns>
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
@@ -497,13 +524,14 @@ public partial class VectorStoreClient
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
+        VectorStoreFileStatusFilter? filter = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
         return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
             (continuationToken, pageSize) => GetFileAssociations
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), null));
+                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 }
