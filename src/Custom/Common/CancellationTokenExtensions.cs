@@ -1,7 +1,7 @@
 using System.ClientModel.Primitives;
 using System.Threading;
 
-internal static class RequestOptionsExtensions
+internal static class CancellationTokenExtensions
 {
     public static RequestOptions ToRequestOptions(this CancellationToken cancellationToken, bool streaming = false)
     {

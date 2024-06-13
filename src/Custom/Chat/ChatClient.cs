@@ -140,13 +140,9 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
-        RequestOptions requestOptions = new() { 
-            BufferResponse = false,
-            CancellationToken = cancellationToken
-        };
 
         async Task<ClientResult> getResultAsync() =>
-            await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
+            await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
         return new AsyncStreamingChatCompletionUpdateCollection(getResultAsync);
     }
 
@@ -183,11 +179,7 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
-        RequestOptions requestOptions = new() { 
-            BufferResponse = false, 
-            CancellationToken = cancellationToken
-        };
-        ClientResult getResult() => CompleteChat(content, requestOptions);
+        ClientResult getResult() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
         return new StreamingChatCompletionUpdateCollection(getResult);
     }
 

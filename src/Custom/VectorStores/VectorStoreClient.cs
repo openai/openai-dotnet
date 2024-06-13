@@ -93,12 +93,19 @@ public partial class VectorStoreClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
     /// <remarks> Create vector store. </remarks>
-    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
+    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore, CancellationToken cancellationToken)
     {
         using BinaryContent content = vectorStore?.ToBinaryContent();
         ClientResult result = CreateVectorStore(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
+
+    /// <summary> Creates a vector store. </summary>
+    /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
+    /// <remarks> Create vector store. </remarks>
+    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore = null)
+        => CreateVectorStore(vectorStore, CancellationToken.None);
 
     /// <summary>
     /// Deletes a vector store.
