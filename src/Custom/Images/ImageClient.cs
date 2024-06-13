@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Images;
@@ -81,10 +82,11 @@ public partial class ImageClient
     /// </summary>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -92,7 +94,7 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -101,10 +103,11 @@ public partial class ImageClient
     /// </summary>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -112,7 +115,7 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, (RequestOptions)null);
+        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -122,10 +125,11 @@ public partial class ImageClient
     /// <param name="prompt"> A text description of the desired images. </param>
     /// <param name="imageCount"> The number of images to generate. </param>
     /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -133,7 +137,7 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -143,10 +147,11 @@ public partial class ImageClient
     /// <param name="prompt"> A text description of the desired images. </param>
     /// <param name="imageCount"> The number of images to generate. </param>
     /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -154,7 +159,7 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, (RequestOptions)null);
+        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -174,10 +179,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -187,7 +193,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -203,10 +209,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -216,7 +223,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -282,10 +289,11 @@ public partial class ImageClient
     /// do not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -297,7 +305,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -321,10 +329,11 @@ public partial class ImageClient
     /// do not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -336,7 +345,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -409,10 +418,11 @@ public partial class ImageClient
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="imageCount"> The number of edit or extended images to generate. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -422,7 +432,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -439,10 +449,11 @@ public partial class ImageClient
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="imageCount"> The number of edit or extended images to generate. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -452,7 +463,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -521,10 +532,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="imageCount"> The number of edit or extended images to generate. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -536,7 +548,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -561,10 +573,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="imageCount"> The number of edit or extended images to generate. </param>
     /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The edited or extended images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -576,7 +589,7 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -652,10 +665,11 @@ public partial class ImageClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image variation. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -664,7 +678,7 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -678,10 +692,11 @@ public partial class ImageClient
     /// not match.
     /// </param>
     /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image variation. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -690,7 +705,7 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = GenerateImageVariations(content, content.ContentType);
+        ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -741,10 +756,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
     /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image variations. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -753,7 +769,7 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -768,10 +784,11 @@ public partial class ImageClient
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
     /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
     /// <returns> The generated image variations. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -780,7 +797,7 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = GenerateImageVariations(content, content.ContentType);
+        ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
