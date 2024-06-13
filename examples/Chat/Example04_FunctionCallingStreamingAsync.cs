@@ -25,7 +25,7 @@ public partial class ChatExamples
 
         ChatCompletionOptions options = new()
         {
-            Tools = { getCurrentLocationTool, getCurrentWeatherTool },
+            Tools = ChatTool.CreateFunctionTools(typeof(MyFunctions))
         };
         #endregion
 
@@ -110,31 +110,18 @@ public partial class ChatExamples
                             {
                                 switch (toolCall.FunctionName)
                                 {
-                                    case nameof(GetCurrentLocation):
+                                    case nameof(MyFunctions.GetCurrentLocation):
                                         {
-                                            string toolResult = GetCurrentLocation();
+                                            string toolResult = MyFunctions.GetCurrentLocation();
                                             messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
                                             break;
                                         }
 
-                                    case nameof(GetCurrentWeather):
+                                    case nameof(MyFunctions.GetCurrentWeather):
                                         {
-                                            // The arguments that the model wants to use to call the function are specified as a
-                                            // stringified JSON object based on the schema defined in the tool definition. Note that
-                                            // the model may hallucinate arguments too. Consequently, it is important to do the
-                                            // appropriate parsing and validation before calling the function.
-                                            using JsonDocument argumentsJson = JsonDocument.Parse(toolCall.FunctionArguments);
-                                            bool hasLocation = argumentsJson.RootElement.TryGetProperty("location", out JsonElement location);
-                                            bool hasUnit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unit);
-
-                                            if (!hasLocation)
-                                            {
-                                                throw new ArgumentNullException(nameof(location), "The location argument is required.");
-                                            }
-
-                                            string toolResult = hasUnit
-                                                ? GetCurrentWeather(location.GetString(), unit.GetString())
-                                                : GetCurrentWeather(location.GetString());
+                                            var location = toolCall.GetFunctionArgument<string>("location");
+                                            var unit = toolCall.GetFunctionArgument("unit", MyFunctions.TemperatureUnit.Celsius);
+                                            string toolResult = MyFunctions.GetCurrentWeather(location, unit);
                                             messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
                                             break;
                                         }

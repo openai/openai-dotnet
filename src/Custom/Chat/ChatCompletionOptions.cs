@@ -101,4 +101,7 @@ public partial class ChatCompletionOptions
     /// </summary>
     [CodeGenMember("FunctionCall")]
     public ChatFunctionChoice FunctionChoice { get; init; }
+
+    [CodeGenMember("Tools")]
+    public IList<ChatTool> Tools { get; init; }
 }
