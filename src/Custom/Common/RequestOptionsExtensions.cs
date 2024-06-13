@@ -4,9 +4,20 @@ using System.Threading;
 
 internal static class RequestOptionsExtensions
 {
-    public static RequestOptions ToRequestOptions(this CancellationToken cancellationToken)
+    public static RequestOptions ToRequestOptions(this CancellationToken cancellationToken, bool streaming = false)
     {
-        if (cancellationToken == default) return null;
-        return new RequestOptions() { CancellationToken = cancellationToken };
+        if (cancellationToken == default)
+        {
+            if (!streaming) return null;
+            return StreamRequestOptions;
+        }
+
+        return new RequestOptions() { 
+            CancellationToken = cancellationToken,
+            BufferResponse = !streaming,
+        };
     }
+
+    private static RequestOptions StreamRequestOptions => _streamRequestOptions ??= new() { BufferResponse = false };
+    private static RequestOptions _streamRequestOptions;
 }
