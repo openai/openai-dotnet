@@ -507,7 +507,9 @@ public partial class ChatClientTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+#pragma warning disable CS0618
             choice = new ChatFunctionChoice(new ChatFunction(functionName));
+#pragma warning restore CS0618
         }
 
         BinaryData serializedChoice = ModelReaderWriter.Write(choice);

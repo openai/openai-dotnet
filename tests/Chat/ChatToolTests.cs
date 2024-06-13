@@ -64,6 +64,7 @@ public partial class ChatToolTests : SyncAsyncTestBase
 
     private const string GetFavoriteColorForMonthFunctionName = "get_favorite_color_for_month";
 
+#pragma warning disable CS0618
     private static ChatFunction s_getFavoriteColorForMonthFunction = new ChatFunction(
         GetFavoriteColorForMonthToolFunctionName,
         "gets the caller's favorite color for a given month",
@@ -80,6 +81,7 @@ public partial class ChatToolTests : SyncAsyncTestBase
             }
             """)
     );
+#pragma warning restore CS0618
 
     private const string GetWeatherForCityToolName = "get_weather_for_city";
 
@@ -232,7 +234,9 @@ public partial class ChatToolTests : SyncAsyncTestBase
         Assert.That(argumentsJson.ContainsKey("month_name"));
         Assert.That(argumentsJson["month_name"].ToString().ToLowerInvariant(), Is.EqualTo("february"));
         messages.Add(new AssistantChatMessage(result.Value));
+#pragma warning disable CS0618
         messages.Add(new FunctionChatMessage(GetFavoriteColorForMonthFunctionName, "chartreuse"));
+#pragma warning restore CS0618
         result = IsAsync
             ? await client.CompleteChatAsync(messages, options)
             : client.CompleteChat(messages, options);
