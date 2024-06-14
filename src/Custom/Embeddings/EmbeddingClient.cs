@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Embeddings;
@@ -74,9 +75,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="input"> The string that will be turned into an embedding. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<Embedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<Embedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -84,7 +86,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -92,9 +94,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="input"> The string that will be turned into an embedding. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<Embedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<Embedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -102,7 +105,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -110,9 +113,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="inputs"> The strings that will be turned into embeddings. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -120,7 +124,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
 
     }
@@ -129,9 +133,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="inputs"> The strings that will be turned into embeddings. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -139,7 +144,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -147,9 +152,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="inputs"> The strings that will be turned into embeddings. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -157,7 +163,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -165,9 +171,10 @@ public partial class EmbeddingClient
     /// <summary> Creates an embedding vector representing the input text. </summary>
     /// <param name="inputs"> The strings that will be turned into embeddings. </param>
     /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -175,7 +182,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 

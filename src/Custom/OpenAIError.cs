@@ -35,10 +35,10 @@ internal partial class OpenAIError
     public string ToExceptionMessage(int httpStatus)
     {
         StringBuilder messageBuilder = new();
-        messageBuilder.AppendLine($"HTTP {httpStatus} ({Type}: {Code})");
+        messageBuilder.Append("HTTP ").Append(httpStatus).Append(" (").Append(Type).Append(": ").Append(Code).AppendLine(")");
         if (!string.IsNullOrEmpty(Param))
         {
-            messageBuilder.AppendLine($"Parameter: {Param}");
+            messageBuilder.Append("Parameter: ").AppendLine(Param);
         }
         messageBuilder.AppendLine();
         messageBuilder.Append(Message);

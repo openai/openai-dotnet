@@ -34,10 +34,10 @@ internal partial class MessageDeltaContentImageUrlObjectImageUrl
 }
 
 [CodeGenModel("MessageDeltaContentImageFileObject")]
-internal partial class MessageDeltaContentImageFileObject { private readonly string Type; }
+internal partial class MessageDeltaContentImageFileObject { private readonly new string Type; }
 
 [CodeGenModel("MessageDeltaContentImageUrlObject")]
-internal partial class MessageDeltaContentImageUrlObject { private readonly string Type; }
+internal partial class MessageDeltaContentImageUrlObject { private readonly new string Type; }
 
 [CodeGenModel("MessageDeltaObjectDelta")]
 internal partial class MessageDeltaObjectDelta
@@ -421,3 +421,6 @@ internal partial class InternalThreadObjectToolResourcesCodeInterpreter { }
 
 [CodeGenModel("ThreadObjectToolResourcesFileSearch")]
 internal partial class InternalThreadObjectToolResourcesFileSearch { }
+
+[CodeGenModel("AssistantToolsFileSearchTypeOnly")]
+internal readonly partial struct InternalAssistantToolsFileSearchTypeOnly { }

@@ -39,14 +39,17 @@ public partial class FunctionToolDefinition : ToolDefinition
     /// </summary>
     [SetsRequiredMembers]
     public FunctionToolDefinition(string name, string description = null, BinaryData parameters = null)
-        : this("function", null, new InternalFunctionDefinition(description, name, parameters, null))
-    {}
+        : base("function")
+    {
+        Argument.AssertNotNullOrEmpty(name, nameof(name));
+        _internalFunction = new(description, name, parameters, null);
+    }
 
     /// <summary>
     /// Creates a new instance of <see cref="FunctionToolDefinition"/>. 
     /// </summary>
     public FunctionToolDefinition()
-        : base("function", null)
+        : base("function")
     {
         _internalFunction = new InternalFunctionDefinition();
     }

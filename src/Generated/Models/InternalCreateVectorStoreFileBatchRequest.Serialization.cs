@@ -28,6 +28,18 @@ namespace OpenAI.VectorStores
                 writer.WriteStringValue(item);
             }
             writer.WriteEndArray();
+            if (Optional.IsDefined(ChunkingStrategy))
+            {
+                writer.WritePropertyName("chunking_strategy"u8);
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(ChunkingStrategy);
+#else
+                using (JsonDocument document = JsonDocument.Parse(ChunkingStrategy))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
             if (true && _serializedAdditionalRawData != null)
             {
                 foreach (var item in _serializedAdditionalRawData)
@@ -67,6 +79,7 @@ namespace OpenAI.VectorStores
                 return null;
             }
             IList<string> fileIds = default;
+            BinaryData chunkingStrategy = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -81,13 +94,22 @@ namespace OpenAI.VectorStores
                     fileIds = array;
                     continue;
                 }
+                if (property.NameEquals("chunking_strategy"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    chunkingStrategy = BinaryData.FromString(property.Value.GetRawText());
+                    continue;
+                }
                 if (true)
                 {
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateVectorStoreFileBatchRequest(fileIds, serializedAdditionalRawData);
+            return new InternalCreateVectorStoreFileBatchRequest(fileIds, chunkingStrategy, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalCreateVectorStoreFileBatchRequest>.Write(ModelReaderWriterOptions options)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.InternalListHelpers;
 
@@ -72,28 +73,30 @@ public partial class AssistantClient
     /// <summary> Creates a new assistant. </summary>
     /// <param name="model"> The default model that the assistant should use. </param>
     /// <param name="options"> The additional <see cref="AssistantCreationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is null or empty. </exception>
-    public virtual async Task<ClientResult<Assistant>> CreateAssistantAsync(string model, AssistantCreationOptions options = null)
+    public virtual async Task<ClientResult<Assistant>> CreateAssistantAsync(string model, AssistantCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         options ??= new();
         options.Model = model;
 
-        ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), null).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
     }
 
     /// <summary> Creates a new assistant. </summary>
     /// <param name="model"> The default model that the assistant should use. </param>
     /// <param name="options"> The additional <see cref="AssistantCreationOptions"/> to use. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is null or empty. </exception>
-    public virtual ClientResult<Assistant> CreateAssistant(string model, AssistantCreationOptions options = null)
+    public virtual ClientResult<Assistant> CreateAssistant(string model, AssistantCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         options ??= new();
         options.Model = model;
 
-        ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), null);
+        ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
     }
 
@@ -104,11 +107,12 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null)
+    public virtual AsyncPageableCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreateAsyncPageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
-            => GetAssistantsAsync(pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetAssistantsAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -118,23 +122,25 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<Assistant> GetAssistants(ListOrder? resultOrder = null)
+    public virtual PageableCollection<Assistant> GetAssistants(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreatePageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
-            => GetAssistants(pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetAssistants(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
     /// </summary>
     /// <param name="assistantId"> The ID of the assistant to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteAssistantAsync(string assistantId)
+    public virtual async Task<ClientResult<bool>> DeleteAssistantAsync(string assistantId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
-        ClientResult protocolResult = await DeleteAssistantAsync(assistantId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await DeleteAssistantAsync(assistantId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response
             => InternalDeleteAssistantResponse.FromResponse(response).Deleted);
     }
@@ -143,12 +149,13 @@ public partial class AssistantClient
     /// Deletes an existing <see cref="Assistant"/>. 
     /// </summary>
     /// <param name="assistantId"> The ID of the assistant to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteAssistant(string assistantId)
+    public virtual ClientResult<bool> DeleteAssistant(string assistantId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
-        ClientResult protocolResult = DeleteAssistant(assistantId, (RequestOptions)null);
+        ClientResult protocolResult = DeleteAssistant(assistantId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response
             => InternalDeleteAssistantResponse.FromResponse(response).Deleted);
     }
@@ -157,10 +164,11 @@ public partial class AssistantClient
     /// Creates a new <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="options"> Additional options to use when creating the thread. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new thread. </returns>
-    public virtual async Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null)
+    public virtual async Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await CreateThreadAsync(options?.ToBinaryContent(), null).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateThreadAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -168,10 +176,11 @@ public partial class AssistantClient
     /// Creates a new <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="options"> Additional options to use when creating the thread. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new thread. </returns>
-    public virtual ClientResult<AssistantThread> CreateThread(ThreadCreationOptions options = null)
+    public virtual ClientResult<AssistantThread> CreateThread(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = CreateThread(options?.ToBinaryContent(), null);
+        ClientResult protocolResult = CreateThread(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -179,12 +188,13 @@ public partial class AssistantClient
     /// Gets an existing <see cref="AssistantThread"/>, retrieved via a known ID.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing thread instance. </returns>
-    public virtual async Task<ClientResult<AssistantThread>> GetThreadAsync(string threadId)
+    public virtual async Task<ClientResult<AssistantThread>> GetThreadAsync(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        ClientResult protocolResult = await GetThreadAsync(threadId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await GetThreadAsync(threadId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -192,12 +202,13 @@ public partial class AssistantClient
     /// Gets an existing <see cref="AssistantThread"/>, retrieved via a known ID.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing thread instance. </returns>
-    public virtual ClientResult<AssistantThread> GetThread(string threadId)
+    public virtual ClientResult<AssistantThread> GetThread(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        ClientResult protocolResult = GetThread(threadId, null);
+        ClientResult protocolResult = GetThread(threadId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -206,13 +217,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to modify. </param>
     /// <param name="options"> The modifications to apply to the thread. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The updated <see cref="AssistantThread"/> instance. </returns>
-    public virtual async Task<ClientResult<AssistantThread>> ModifyThreadAsync(string threadId, ThreadModificationOptions options)
+    public virtual async Task<ClientResult<AssistantThread>> ModifyThreadAsync(string threadId, ThreadModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = await ModifyThreadAsync(threadId, options?.ToBinaryContent(), null).ConfigureAwait(false);
+        ClientResult protocolResult = await ModifyThreadAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -221,13 +233,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to modify. </param>
     /// <param name="options"> The modifications to apply to the thread. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The updated <see cref="AssistantThread"/> instance. </returns>
-    public virtual ClientResult<AssistantThread> ModifyThread(string threadId, ThreadModificationOptions options)
+    public virtual ClientResult<AssistantThread> ModifyThread(string threadId, ThreadModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = ModifyThread(threadId, options?.ToBinaryContent(), null);
+        ClientResult protocolResult = ModifyThread(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, AssistantThread.FromResponse);
     }
 
@@ -235,12 +248,13 @@ public partial class AssistantClient
     /// Deletes an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteThreadAsync(string threadId)
+    public virtual async Task<ClientResult<bool>> DeleteThreadAsync(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        ClientResult protocolResult = await DeleteThreadAsync(threadId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await DeleteThreadAsync(threadId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response
             => InternalDeleteThreadResponse.FromResponse(response).Deleted);
     }
@@ -249,12 +263,13 @@ public partial class AssistantClient
     /// Deletes an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to delete. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteThread(string threadId)
+    public virtual ClientResult<bool> DeleteThread(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        ClientResult protocolResult = DeleteThread(threadId, null);
+        ClientResult protocolResult = DeleteThread(threadId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response
             => InternalDeleteThreadResponse.FromResponse(response).Deleted);
     }
@@ -265,11 +280,13 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread to associate the new message with. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual async Task<ClientResult<ThreadMessage>> CreateMessageAsync(
         string threadId,
         IEnumerable<MessageContent> content,
-        MessageCreationOptions options = null)
+        MessageCreationOptions options = null, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         options ??= new();
@@ -279,7 +296,7 @@ public partial class AssistantClient
             options.Content.Add(contentItem);
         }
 
-        ClientResult protocolResult = await CreateMessageAsync(threadId, options?.ToBinaryContent(), null)
+        ClientResult protocolResult = await CreateMessageAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
@@ -290,11 +307,13 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread to associate the new message with. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual ClientResult<ThreadMessage> CreateMessage(
         string threadId,
         IEnumerable<MessageContent> content,
-        MessageCreationOptions options = null)
+        MessageCreationOptions options = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         options ??= new();
@@ -304,7 +323,7 @@ public partial class AssistantClient
             options.Content.Add(contentItem);
         }
 
-        ClientResult protocolResult = CreateMessage(threadId, options?.ToBinaryContent(), null);
+        ClientResult protocolResult = CreateMessage(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
 
@@ -316,15 +335,17 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageableCollection<ThreadMessage> GetMessagesAsync(
         string threadId,
-        ListOrder? resultOrder = null)
+        ListOrder? resultOrder = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         return CreateAsyncPageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-            => GetMessagesAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetMessagesAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -335,15 +356,17 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageableCollection<ThreadMessage> GetMessages(
         string threadId,
-        ListOrder? resultOrder = null)
+        ListOrder? resultOrder = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         return CreatePageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-            => GetMessages(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetMessages(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -351,13 +374,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve the message from. </param>
     /// <param name="messageId"> The ID of the message to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadMessage"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadMessage>> GetMessageAsync(string threadId, string messageId)
+    public virtual async Task<ClientResult<ThreadMessage>> GetMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
-        ClientResult protocolResult = await GetMessageAsync(threadId, messageId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await GetMessageAsync(threadId, messageId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
 
@@ -366,13 +390,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve the message from. </param>
     /// <param name="messageId"> The ID of the message to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadMessage"/> instance. </returns>
-    public virtual ClientResult<ThreadMessage> GetMessage(string threadId, string messageId)
+    public virtual ClientResult<ThreadMessage> GetMessage(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
-        ClientResult protocolResult = GetMessage(threadId, messageId, null);
+        ClientResult protocolResult = GetMessage(threadId, messageId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
 
@@ -382,14 +407,15 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the message to modify. </param>
     /// <param name="messageId"> The ID of the message to modify. </param>
     /// <param name="options"> The changes to apply to the message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The updated <see cref="ThreadMessage"/>. </returns>
-    public virtual async Task<ClientResult<ThreadMessage>> ModifyMessageAsync(string threadId, string messageId, MessageModificationOptions options)
+    public virtual async Task<ClientResult<ThreadMessage>> ModifyMessageAsync(string threadId, string messageId, MessageModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = await ModifyMessageAsync(threadId, messageId, options?.ToBinaryContent(), null)
+        ClientResult protocolResult = await ModifyMessageAsync(threadId, messageId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
@@ -400,14 +426,15 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the message to modify. </param>
     /// <param name="messageId"> The ID of the message to modify. </param>
     /// <param name="options"> The changes to apply to the message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The updated <see cref="ThreadMessage"/>. </returns>
-    public virtual ClientResult<ThreadMessage> ModifyMessage(string threadId, string messageId, MessageModificationOptions options)
+    public virtual ClientResult<ThreadMessage> ModifyMessage(string threadId, string messageId, MessageModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = ModifyMessage(threadId, messageId, options?.ToBinaryContent(), null);
+        ClientResult protocolResult = ModifyMessage(threadId, messageId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadMessage.FromResponse);
     }
 
@@ -416,13 +443,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the message. </param>
     /// <param name="messageId"> The ID of the message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteMessageAsync(string threadId, string messageId)
+    public virtual async Task<ClientResult<bool>> DeleteMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
-        ClientResult protocolResult = await DeleteMessageAsync(threadId, messageId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await DeleteMessageAsync(threadId, messageId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response =>
             InternalDeleteMessageResponse.FromResponse(response).Deleted);
     }
@@ -432,13 +460,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the message. </param>
     /// <param name="messageId"> The ID of the message. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteMessage(string threadId, string messageId)
+    public virtual ClientResult<bool> DeleteMessage(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
-        ClientResult protocolResult = DeleteMessage(threadId, messageId, null);
+        ClientResult protocolResult = DeleteMessage(threadId, messageId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response =>
             InternalDeleteMessageResponse.FromResponse(response).Deleted);
     }
@@ -450,8 +479,9 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> CreateRunAsync(string threadId, string assistantId, RunCreationOptions options = null)
+    public virtual async Task<ClientResult<ThreadRun>> CreateRunAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -459,7 +489,7 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = null;
 
-        ClientResult protocolResult = await CreateRunAsync(threadId, options.ToBinaryContent(), null)
+        ClientResult protocolResult = await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
@@ -471,8 +501,9 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> CreateRun(string threadId, string assistantId, RunCreationOptions options = null)
+    public virtual ClientResult<ThreadRun> CreateRun(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -480,7 +511,7 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = null;
 
-        ClientResult protocolResult = CreateRun(threadId, options.ToBinaryContent(), null);
+        ClientResult protocolResult = CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -491,10 +522,12 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual AsyncResultCollection<StreamingUpdate> CreateRunStreamingAsync(
         string threadId,
         string assistantId,
-        RunCreationOptions options = null)
+        RunCreationOptions options = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -504,7 +537,7 @@ public partial class AssistantClient
         options.Stream = true;
 
         async Task<ClientResult> getResultAsync() =>
-            await CreateRunAsync(threadId, options.ToBinaryContent(), StreamRequestOptions)
+            await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
         return new AsyncStreamingUpdateCollection(getResultAsync);
@@ -517,10 +550,12 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual ResultCollection<StreamingUpdate> CreateRunStreaming(
         string threadId,
         string assistantId,
-        RunCreationOptions options = null)
+        RunCreationOptions options = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -529,7 +564,7 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), StreamRequestOptions);
+        ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
 
         return new StreamingUpdateCollection(getResult);
     }
@@ -540,16 +575,18 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
     public virtual async Task<ClientResult<ThreadRun>> CreateThreadAndRunAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
+        RunCreationOptions runOptions = null,
+        CancellationToken cancellationToken = default)
     {
         runOptions ??= new();
         runOptions.Stream = null;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        ClientResult protocolResult = await CreateThreadAndRunAsync(protocolContent, null).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -559,16 +596,18 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
     public virtual ClientResult<ThreadRun> CreateThreadAndRun(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
+        RunCreationOptions runOptions = null,
+        CancellationToken cancellationToken = default)
     {
         runOptions ??= new();
         runOptions.Stream = null;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        ClientResult protocolResult = CreateThreadAndRun(protocolContent, null);
+        ClientResult protocolResult = CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -578,10 +617,12 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual AsyncResultCollection<StreamingUpdate> CreateThreadAndRunStreamingAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
+        RunCreationOptions runOptions = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
@@ -590,7 +631,7 @@ public partial class AssistantClient
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
         async Task<ClientResult> getResultAsync() => 
-            await CreateThreadAndRunAsync(protocolContent, StreamRequestOptions)
+            await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
         return new AsyncStreamingUpdateCollection(getResultAsync);
@@ -602,10 +643,12 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual ResultCollection<StreamingUpdate> CreateThreadAndRunStreaming(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
+        RunCreationOptions runOptions = null,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
@@ -613,7 +656,7 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        ClientResult getResult() => CreateThreadAndRun(protocolContent, StreamRequestOptions);
+        ClientResult getResult() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
 
         return new StreamingUpdateCollection(getResult);
     }
@@ -626,15 +669,17 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageableCollection<ThreadRun> GetRunsAsync(
         string threadId,
-        ListOrder? resultOrder = default)
+        ListOrder? resultOrder = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         return CreateAsyncPageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-            => GetRunsAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetRunsAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -645,15 +690,17 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageableCollection<ThreadRun> GetRuns(
         string threadId,
-        ListOrder? resultOrder = default)
+        ListOrder? resultOrder = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         return CreatePageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-            => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -661,13 +708,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
     /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId)
+    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ClientResult protocolResult = await GetRunAsync(threadId, runId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -676,13 +724,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
     /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId)
+    public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ClientResult protocolResult = GetRun(threadId, runId, null);
+        ClientResult protocolResult = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -694,17 +743,19 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
     public virtual async Task<ClientResult<ThreadRun>> SubmitToolOutputsToRunAsync(
         string threadId,
         string runId,
-        IEnumerable<ToolOutput> toolOutputs)
+        IEnumerable<ToolOutput> toolOutputs,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = await SubmitToolOutputsToRunAsync(threadId, runId, content, null)
+        ClientResult protocolResult = await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
@@ -717,17 +768,19 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
     public virtual ClientResult<ThreadRun> SubmitToolOutputsToRun(
         string threadId,
         string runId,
-        IEnumerable<ToolOutput> toolOutputs)
+        IEnumerable<ToolOutput> toolOutputs,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = SubmitToolOutputsToRun(threadId, runId, content, null);
+        ClientResult protocolResult = SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -739,10 +792,12 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual AsyncResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
         string threadId,
         string runId,
-        IEnumerable<ToolOutput> toolOutputs)
+        IEnumerable<ToolOutput> toolOutputs,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -751,7 +806,7 @@ public partial class AssistantClient
             .ToBinaryContent();
 
         async Task<ClientResult> getResultAsync() =>
-            await SubmitToolOutputsToRunAsync(threadId, runId, content, StreamRequestOptions)
+            await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
         return new AsyncStreamingUpdateCollection(getResultAsync);
@@ -765,10 +820,12 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     public virtual ResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreaming(
         string threadId,
         string runId,
-        IEnumerable<ToolOutput> toolOutputs)
+        IEnumerable<ToolOutput> toolOutputs,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -776,7 +833,7 @@ public partial class AssistantClient
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
             .ToBinaryContent();
 
-        ClientResult getResult() => SubmitToolOutputsToRun(threadId, runId, content, StreamRequestOptions);
+        ClientResult getResult() => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
 
         return new StreamingUpdateCollection(getResult);
     }
@@ -786,13 +843,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to cancel. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> CancelRunAsync(string threadId, string runId)
+    public virtual async Task<ClientResult<ThreadRun>> CancelRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ClientResult protocolResult = await CancelRunAsync(threadId, runId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await CancelRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -801,13 +859,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to cancel. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
-    public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId)
+    public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ClientResult protocolResult = CancelRun(threadId, runId, null);
+        ClientResult protocolResult = CancelRun(threadId, runId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -820,17 +879,19 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageableCollection<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default)
+        ListOrder? resultOrder = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         return CreateAsyncPageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
-            => GetRunStepsAsync(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetRunStepsAsync(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -842,17 +903,19 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageableCollection<RunStep> GetRunSteps(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default)
+        ListOrder? resultOrder = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         return CreatePageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
-            => GetRunSteps(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, null));
+            => GetRunSteps(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -861,10 +924,11 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run. </param>
     /// <param name="stepId"> The ID of the run step. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
-    public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId)
+    public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await GetRunStepAsync(threadId, runId, stepId, null).ConfigureAwait(false);
+        ClientResult protocolResult = await GetRunStepAsync(threadId, runId, stepId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 
@@ -874,10 +938,11 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run. </param>
     /// <param name="stepId"> The ID of the run step. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
-    public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId)
+    public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = GetRunStep(threadId, runId, stepId, null);
+        ClientResult protocolResult = GetRunStep(threadId, runId, stepId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 
@@ -903,6 +968,7 @@ public partial class AssistantClient
             runOptions.MaxCompletionTokens,
             runOptions.TruncationStrategy,
             runOptions.ToolConstraint,
+            runOptions.ParallelToolCallsEnabled,
             runOptions.ResponseFormat,
             serializedAdditionalRawData: null);
         return internalRequest.ToBinaryContent();
@@ -915,7 +981,4 @@ public partial class AssistantClient
         T deserializedResultValue = responseDeserializer.Invoke(pipelineResponse);
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }
-
-    private static RequestOptions StreamRequestOptions => _streamRequestOptions ??= new() { BufferResponse = false };
-    private static RequestOptions _streamRequestOptions;
 }

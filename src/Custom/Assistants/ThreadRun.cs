@@ -44,4 +44,14 @@ public partial class ThreadRun
     /// </summary>
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; }
+
+    /// <summary>
+    /// Whether parallel function calling is enabled during tool use for the thread. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? ParallelToolCallsEnabled { get; init; }
+
 }

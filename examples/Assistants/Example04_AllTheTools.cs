@@ -159,7 +159,6 @@ public partial class AssistantExamples
                         foreach (TextAnnotation annotation in contentItem.TextAnnotations)
                         {
                             Console.WriteLine($"* File ID used by file_search: {annotation.InputFileId}");
-                            Console.WriteLine($"* file_search quote from file: {annotation.InputQuote}");
                             Console.WriteLine($"* File ID created by code_interpreter: {annotation.OutputFileId}");
                             Console.WriteLine($"* Text to replace: {annotation.TextToReplace}");
                             Console.WriteLine($"* Message content index range: {annotation.StartIndex}-{annotation.EndIndex}");

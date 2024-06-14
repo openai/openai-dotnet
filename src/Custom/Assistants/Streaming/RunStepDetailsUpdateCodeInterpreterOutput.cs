@@ -7,7 +7,7 @@ public partial class RunStepUpdateCodeInterpreterOutput
     public int OutputIndex => AsLogs?.Index ?? AsImage?.Index ?? 0;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject.InternalLogs"/>
-    public string Logs => AsLogs?.Logs;
+    public string Logs => AsLogs?.InternalLogs;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage.FileId"/>
     public string ImageFileId => AsImage?.Image?.FileId;

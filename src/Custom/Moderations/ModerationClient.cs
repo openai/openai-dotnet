@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Moderations;
@@ -67,9 +68,10 @@ public partial class ModerationClient
 
     /// <summary> Classifies if text is potentially harmful. </summary>
     /// <param name="input"> The text to classify. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<ModerationResult>> ClassifyTextInputAsync(string input)
+    public virtual async Task<ClientResult<ModerationResult>> ClassifyTextInputAsync(string input, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -77,15 +79,16 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await ClassifyTextInputsAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await ClassifyTextInputsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
     /// <summary> Classifies if text is potentially harmful. </summary>
     /// <param name="input"> The text to classify. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<ModerationResult> ClassifyTextInput(string input)
+    public virtual ClientResult<ModerationResult> ClassifyTextInput(string input, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -93,16 +96,17 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = ClassifyTextInputs(content, (RequestOptions)null);
+        ClientResult result = ClassifyTextInputs(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
 
     /// <summary> Classifies if text is potentially harmful. </summary>
     /// <param name="inputs"> The text to classify. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<ModerationCollection>> ClassifyTextInputsAsync(IEnumerable<string> inputs)
+    public virtual async Task<ClientResult<ModerationCollection>> ClassifyTextInputsAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -110,15 +114,16 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await ClassifyTextInputsAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await ClassifyTextInputsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Classifies if text is potentially harmful. </summary>
     /// <param name="inputs"> The text to classify. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<ModerationCollection> ClassifyTextInputs(IEnumerable<string> inputs)
+    public virtual ClientResult<ModerationCollection> ClassifyTextInputs(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -126,7 +131,7 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = ClassifyTextInputs(content, (RequestOptions)null);
+        ClientResult result = ClassifyTextInputs(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 

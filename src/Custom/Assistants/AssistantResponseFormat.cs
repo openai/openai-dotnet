@@ -73,15 +73,15 @@ public partial class AssistantResponseFormat
     /// <inheritdoc />
     public static implicit operator AssistantResponseFormat(string value)
     {
-        if (string.Equals(value, AutoValue, StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(value, AutoValue, StringComparison.OrdinalIgnoreCase))
         {
             return Auto;
         }
-        if (string.Equals(value, TextValue, StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(value, TextValue, StringComparison.OrdinalIgnoreCase))
         {
             return Text;
         }
-        if (string.Equals(value, JsonObjectValue, StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(value, JsonObjectValue, StringComparison.OrdinalIgnoreCase))
         {
             return JsonObject;
         }
