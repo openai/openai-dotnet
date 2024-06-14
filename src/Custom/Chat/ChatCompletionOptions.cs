@@ -101,4 +101,13 @@ public partial class ChatCompletionOptions
     /// </summary>
     [CodeGenMember("FunctionCall")]
     public ChatFunctionChoice FunctionChoice { get; init; }
+
+    /// <summary>
+    /// Whether to enable parallel function calling during tool use. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? ParallelToolCallsEnabled { get; init; }
 }

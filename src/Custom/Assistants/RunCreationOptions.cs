@@ -67,6 +67,15 @@ public partial class RunCreationOptions
     }
 
     /// <summary>
+    /// Whether to enable parallel function calling during tool use. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? ParallelToolCallsEnabled { get; init; }
+
+    /// <summary>
     /// A run-specific collection of tool definitions that will override the assistant-level defaults. If not provided,
     /// the assistant's defined tools will be used. Available tools include:
     /// <para>

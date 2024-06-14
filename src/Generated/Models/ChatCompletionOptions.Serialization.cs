@@ -199,6 +199,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue<ChatToolChoice>(ToolChoice, options);
             }
+            if (Optional.IsDefined(ParallelToolCallsEnabled))
+            {
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(ParallelToolCallsEnabled.Value);
+            }
             if (Optional.IsDefined(User))
             {
                 writer.WritePropertyName("user"u8);
@@ -275,6 +280,7 @@ namespace OpenAI.Chat
             float? topP = default;
             IList<ChatTool> tools = default;
             ChatToolChoice toolChoice = default;
+            bool? parallelToolCalls = default;
             string user = default;
             ChatFunctionChoice functionCall = default;
             IList<ChatFunction> functions = default;
@@ -449,6 +455,15 @@ namespace OpenAI.Chat
                     toolChoice = ChatToolChoice.DeserializeChatToolChoice(property.Value, options);
                     continue;
                 }
+                if (property.NameEquals("parallel_tool_calls"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    parallelToolCalls = property.Value.GetBoolean();
+                    continue;
+                }
                 if (property.NameEquals("user"u8))
                 {
                     user = property.Value.GetString();
@@ -502,6 +517,7 @@ namespace OpenAI.Chat
                 topP,
                 tools ?? new ChangeTrackingList<ChatTool>(),
                 toolChoice,
+                parallelToolCalls,
                 user,
                 functionCall,
                 functions ?? new ChangeTrackingList<ChatFunction>(),

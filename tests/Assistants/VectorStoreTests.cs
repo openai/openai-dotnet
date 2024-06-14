@@ -237,6 +237,61 @@ public partial class VectorStoreTests
         }
     }
 
+    public enum ChunkingStrategyKind { Auto, Static }
+
+    [Test]
+    [TestCase(ChunkingStrategyKind.Auto)]
+    [TestCase(ChunkingStrategyKind.Static)]
+    public async Task CanApplyChunkingStrategy(ChunkingStrategyKind strategyKind)
+    {
+        IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
+
+        VectorStoreClient client = GetTestClient();
+
+        FileChunkingStrategy chunkingStrategy = strategyKind switch
+        {
+            ChunkingStrategyKind.Auto => FileChunkingStrategy.Auto,
+            ChunkingStrategyKind.Static => FileChunkingStrategy.CreateStaticStrategy(1200, 250),
+            _ => throw new NotImplementedException(),
+        };
+
+        if (chunkingStrategy is StaticFileChunkingStrategy inputStaticStrategy)
+        {
+            Assert.That(inputStaticStrategy.MaxTokensPerChunk, Is.EqualTo(1200));
+            Assert.That(inputStaticStrategy.OverlappingTokenCount, Is.EqualTo(250));
+        }
+
+        VectorStore vectorStore = await client.CreateVectorStoreAsync(new VectorStoreCreationOptions()
+        {
+            FileIds = testFiles.Select(file => file.Id).ToList(),
+            ChunkingStrategy = chunkingStrategy,
+        });
+        Validate(vectorStore);
+        Assert.That(vectorStore.FileCounts.Total, Is.EqualTo(5));
+
+        AsyncPageableCollection<VectorStoreFileAssociation> associations = client.GetFileAssociationsAsync(vectorStore);
+
+        await foreach (VectorStoreFileAssociation association in associations)
+        {
+            Assert.That(testFiles.Any(file => file.Id == association.FileId), Is.True);
+            Assert.That(association.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
+            StaticFileChunkingStrategy staticStrategy = association.ChunkingStrategy as StaticFileChunkingStrategy;
+
+            Assert.That(staticStrategy.MaxTokensPerChunk, Is.EqualTo(strategyKind switch
+            {
+                ChunkingStrategyKind.Auto => 800,
+                ChunkingStrategyKind.Static => 1200,
+                _ => throw new NotImplementedException()
+            }));
+            Assert.That(staticStrategy.OverlappingTokenCount, Is.EqualTo(strategyKind switch
+            {
+                ChunkingStrategyKind.Auto => 400,
+                ChunkingStrategyKind.Static => 250,
+                _ => throw new NotImplementedException()
+            }));
+        }
+    }
+
     private IReadOnlyList<OpenAIFileInfo> GetNewTestFiles(int count)
     {
         List<OpenAIFileInfo> files = [];
@@ -254,6 +309,7 @@ public partial class VectorStoreTests
 
         return files;
     }
+
     [TearDown]
     protected void Cleanup()
     {

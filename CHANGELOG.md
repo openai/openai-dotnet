@@ -1,5 +1,17 @@
 # Release History
 
+## 2.0.0-beta.5 (Unreleased)
+
+## Features Added
+
+- API updates, current to [openai/openai-openapi@dd73070b](https://github.com/openai/openai-openapi/commit/dd73070b1d507645d24c249a63ebebd3ec38c0cb) ()
+  - This includes `MaxResults` for Assistants `FileSearchToolDefinition`, `ParallelToolCallsEnabled` for function tools in Assistants and Chat, and `FileChunkingStrategy` for Assistants VectorStores
+
+## Breaking Changes
+
+**Assistants**:
+- `InputQuote` is removed from Assistants `TextAnnotation` and `TextAnnotationUpdate`, per [openai/openai-openapi@dd73070b](https://github.com/openai/openai-openapi/commit/dd73070b1d507645d24c249a63ebebd3ec38c0cb) ()
+
 ## 2.0.0-beta.4 (2024-06-10)
 
 ## Features Added

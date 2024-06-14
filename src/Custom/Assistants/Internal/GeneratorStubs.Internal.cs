@@ -421,3 +421,6 @@ internal partial class InternalThreadObjectToolResourcesCodeInterpreter { }
 
 [CodeGenModel("ThreadObjectToolResourcesFileSearch")]
 internal partial class InternalThreadObjectToolResourcesFileSearch { }
+
+[CodeGenModel("AssistantToolsFileSearchTypeOnly")]
+internal readonly partial struct InternalAssistantToolsFileSearchTypeOnly { }

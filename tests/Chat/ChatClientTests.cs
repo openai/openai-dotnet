@@ -201,20 +201,18 @@ public partial class ChatClientTests : SyncAsyncTestBase
 
         List<ChatMessage> messages =
         [
-            new UserChatMessage("What are ten of the most common colors, including the brightest and darkest?"),
+            new UserChatMessage("In geometry, what are the different kinds of triangles, as defined by lengths of their sides?"),
         ];
         ClientResult<ChatCompletion> firstResult = IsAsync
             ? await client.CompleteChatAsync(messages)
             : client.CompleteChat(messages);
         Assert.That(firstResult?.Value, Is.Not.Null);
-        Assert.That(firstResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("white"));
-        Assert.That(firstResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("black"));
+        Assert.That(firstResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("isosceles"));
         messages.Add(new AssistantChatMessage(firstResult.Value));
-        messages.Add(new UserChatMessage("Which of those are considered brightest, aligning with hexadecimal rgb notation?"));
+        messages.Add(new UserChatMessage("Which of those is the one where exactly two sides are the same length?"));
         ClientResult<ChatCompletion> secondResult = client.CompleteChat(messages);
         Assert.That(secondResult?.Value, Is.Not.Null);
-        Assert.That(secondResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("white"));
-        Assert.That(secondResult.Value.Content[0].Text.ToLowerInvariant(), Does.Not.Contains("black"));
+        Assert.That(secondResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("isosceles"));
     }
 
     [Test]

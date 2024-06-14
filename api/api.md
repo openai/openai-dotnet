@@ -229,6 +229,7 @@ namespace OpenAI.Assistants {
         public IDictionary<string, string> Metadata { get; }
         public string ModelOverride { get; init; }
         public float? NucleusSamplingFactor { get; init; }
+        public bool? ParallelToolCallsEnabled { get; init; }
         public AssistantResponseFormat ResponseFormat { get; init; }
         public float? Temperature { get; init; }
         public ToolConstraint ToolConstraint { get; init; }
@@ -292,6 +293,7 @@ namespace OpenAI.Assistants {
     }
     public class FileSearchToolDefinition : ToolDefinition {
         public FileSearchToolDefinition();
+        public int? MaxResults { get; init; }
     }
     public class FileSearchToolResources {
         public FileSearchToolResources();
@@ -368,7 +370,6 @@ namespace OpenAI.Assistants {
     public class MessageTextContentAnnotation {
         public int EndIndex { get; }
         public string InputFileId { get; }
-        public string InputQuote { get; }
         public string OutputFileId { get; }
         public int StartIndex { get; }
         public string TextToReplace { get; }
@@ -563,7 +564,6 @@ namespace OpenAI.Assistants {
     public class TextAnnotation {
         public int EndIndex { get; }
         public string InputFileId { get; }
-        public string InputQuote { get; }
         public string OutputFileId { get; }
         public int StartIndex { get; }
         public string TextToReplace { get; }
@@ -572,13 +572,13 @@ namespace OpenAI.Assistants {
         public int ContentIndex { get; }
         public int? EndIndex { get; }
         public string InputFileId { get; }
-        public string InputQuote { get; }
         public string OutputFileId { get; }
         public int? StartIndex { get; }
         public string TextToReplace { get; }
     }
     public class ThreadInitializationMessage : MessageCreationOptions {
         public ThreadInitializationMessage(IEnumerable<MessageContent> content);
+        public static implicit operator ThreadInitializationMessage(string initializationMessage);
     }
     public class ThreadMessage {
         public string AssistantId { get; }
@@ -611,6 +611,7 @@ namespace OpenAI.Assistants {
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string Model { get; }
         public float? NucleusSamplingFactor { get; }
+        public bool? ParallelToolCallsEnabled { get; init; }
         public IReadOnlyList<RequiredAction> RequiredActions { get; }
         public AssistantResponseFormat ResponseFormat { get; }
         public DateTimeOffset? StartedAt { get; }
@@ -635,9 +636,10 @@ namespace OpenAI.Assistants {
         public static ToolConstraint Required { get; }
     }
     public abstract class ToolDefinition {
+        protected ToolDefinition(string type);
         protected ToolDefinition();
         public static CodeInterpreterToolDefinition CreateCodeInterpreter();
-        public static FileSearchToolDefinition CreateFileSearch();
+        public static FileSearchToolDefinition CreateFileSearch(int? maxResults = null);
         public static FunctionToolDefinition CreateFunction(string name, string description = null, BinaryData parameters = null);
     }
     public class ToolOutput {
@@ -839,11 +841,15 @@ namespace OpenAI.Chat {
         protected ChatClient();
         public virtual ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null);
+        public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null);
+        public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(params ChatMessage[] messages);
         public virtual Task<ClientResult> CompleteChatAsync(BinaryContent content, RequestOptions options = null);
         public virtual ResultCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null);
+        public virtual ResultCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages);
         public virtual AsyncResultCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null);
+        public virtual AsyncResultCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages);
     }
     public class ChatCompletionOptions {
         public ChatCompletionOptions();
@@ -853,6 +859,7 @@ namespace OpenAI.Chat {
         public bool? IncludeLogProbabilities { get; init; }
         public IDictionary<int, int> LogitBiases { get; }
         public int? MaxTokens { get; init; }
+        public bool? ParallelToolCallsEnabled { get; init; }
         public float? PresencePenalty { get; init; }
         public ChatResponseFormat ResponseFormat { get; init; }
         public long? Seed { get; init; }
@@ -885,6 +892,7 @@ namespace OpenAI.Chat {
         public string SystemFingerprint { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         public ChatTokenUsage Usage { get; }
+        public override string ToString();
     }
     [Obsolete("This field is marked as deprecated.")]
     public class ChatFunction {
@@ -916,6 +924,7 @@ namespace OpenAI.Chat {
         public static UserChatMessage CreateUserMessage(string content);
         public static UserChatMessage CreateUserMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public static UserChatMessage CreateUserMessage(params ChatMessageContentPart[] contentParts);
+        public static implicit operator ChatMessage(string userMessage);
     }
     public class ChatMessageContentPart {
         public BinaryData ImageBytes { get; }
@@ -927,6 +936,8 @@ namespace OpenAI.Chat {
         public static ChatMessageContentPart CreateImageMessageContentPart(Uri imageUri, ImageChatMessageContentPartDetail? imageDetail = null);
         public static ChatMessageContentPart CreateImageMessageContentPart(BinaryData imageBytes, string imageBytesMediaType, ImageChatMessageContentPartDetail? imageDetail = null);
         public static ChatMessageContentPart CreateTextMessageContentPart(string text);
+        public static implicit operator ChatMessageContentPart(string content);
+        public override string ToString();
     }
     public readonly struct ChatMessageContentPartKind : IEquatable<ChatMessageContentPartKind> {
         public ChatMessageContentPartKind(string value);
@@ -1481,6 +1492,7 @@ namespace OpenAI.VectorStores {
     }
     public class VectorStoreCreationOptions {
         public VectorStoreCreationOptions();
+        public FileChunkingStrategy ChunkingStrategy { get; init; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; init; }
         public IList<string> FileIds { get; init; }
         public IDictionary<string, string> Metadata { get; }
@@ -1491,6 +1503,17 @@ namespace OpenAI.VectorStores {
         public VectorStoreExpirationPolicy ExpirationPolicy { get; init; }
         public IDictionary<string, string> Metadata { get; }
         public string Name { get; init; }
+    }
+    public abstract class FileChunkingStrategy {
+        protected FileChunkingStrategy();
+        public static FileChunkingStrategy Auto { get; }
+        public static FileChunkingStrategy Unknown { get; }
+        public static FileChunkingStrategy CreateStaticStrategy(int maxTokensPerChunk, int overlappingTokenCount);
+    }
+    public class StaticFileChunkingStrategy : FileChunkingStrategy {
+        public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount);
+        public int MaxTokensPerChunk { get; }
+        public int OverlappingTokenCount { get; }
     }
     public class VectorStore {
         public DateTimeOffset CreatedAt { get; }
@@ -1533,6 +1556,7 @@ namespace OpenAI.VectorStores {
         public required int Days { get; init; }
     }
     public class VectorStoreFileAssociation {
+        public FileChunkingStrategy ChunkingStrategy { get; }
         public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }
         public VectorStoreFileAssociationError? LastError { get; }

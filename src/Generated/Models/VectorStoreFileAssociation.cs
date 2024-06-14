@@ -24,7 +24,7 @@ namespace OpenAI.VectorStores
             LastError = lastError;
         }
 
-        internal VectorStoreFileAssociation(string fileId, InternalVectorStoreFileObjectObject @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError? lastError, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreFileAssociation(string fileId, InternalVectorStoreFileObjectObject @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError? lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
             Object = @object;
@@ -33,6 +33,7 @@ namespace OpenAI.VectorStores
             VectorStoreId = vectorStoreId;
             Status = status;
             LastError = lastError;
+            ChunkingStrategy = chunkingStrategy;
             _serializedAdditionalRawData = serializedAdditionalRawData;
         }
 
