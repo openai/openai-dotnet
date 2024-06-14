@@ -9,9 +9,9 @@ namespace OpenAI.Chat;
 public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
 {
     void IJsonModel<ChatMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance(this, SerializeChatMessageContentPart, writer, options);
+        => CustomSerializationHelpers.SerializeInstance(this, WriteCoreContentPart, writer, options);
 
-    internal static void SerializeChatMessageContentPart(ChatMessageContentPart instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal static void WriteCoreContentPart(ChatMessageContentPart instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
 

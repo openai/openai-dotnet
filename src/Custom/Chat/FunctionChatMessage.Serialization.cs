@@ -13,24 +13,29 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
 
     internal static void SerializeFunctionChatMessage(FunctionChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+        instance.WriteCore(writer, options);
+    }
+
+    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
         writer.WriteStartObject();
         writer.WritePropertyName("name"u8);
-        writer.WriteStringValue(instance.FunctionName);
+        writer.WriteStringValue(FunctionName);
         writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(instance.Role);
-        if (Optional.IsCollectionDefined(instance.Content))
+        writer.WriteStringValue(Role);
+        if (Optional.IsCollectionDefined(Content))
         {
-            if (instance.Content[0] != null)
+            if (Content[0] != null)
             {
                 writer.WritePropertyName("content"u8);
-                writer.WriteStringValue(instance.Content[0].Text);
+                writer.WriteStringValue(Content[0].Text);
             }
             else
             {
                 writer.WriteNull("content");
             }
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

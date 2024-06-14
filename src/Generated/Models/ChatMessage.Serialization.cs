@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using OpenAI.FineTuning;
 
 namespace OpenAI.Chat
 {
@@ -22,6 +23,29 @@ namespace OpenAI.Chat
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatMessage(document.RootElement, options);
+        }
+
+        internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+        {
+            options ??= ModelSerializationExtensions.WireOptions;
+
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            if (element.TryGetProperty("role", out JsonElement discriminator))
+            {
+                switch (discriminator.GetString())
+                {
+                    case null: return InternalFineTuneChatCompletionRequestAssistantMessage.DeserializeInternalFineTuneChatCompletionRequestAssistantMessage(element, options);
+                    case "assistant": return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
+                    case "function": return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
+                    case "system": return SystemChatMessage.DeserializeSystemChatMessage(element, options);
+                    case "tool": return ToolChatMessage.DeserializeToolChatMessage(element, options);
+                    case "user": return UserChatMessage.DeserializeUserChatMessage(element, options);
+                }
+            }
+            return UnknownChatMessage.DeserializeUnknownChatMessage(element, options);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options)

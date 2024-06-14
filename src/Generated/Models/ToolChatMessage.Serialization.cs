@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat
@@ -21,6 +22,45 @@ namespace OpenAI.Chat
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeToolChatMessage(document.RootElement, options);
+        }
+
+        internal static ToolChatMessage DeserializeToolChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+        {
+            options ??= ModelSerializationExtensions.WireOptions;
+
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            string toolCallId = default;
+            string role = default;
+            IList<ChatMessageContentPart> content = default;
+            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+            foreach (var property in element.EnumerateObject())
+            {
+                if (property.NameEquals("tool_call_id"u8))
+                {
+                    toolCallId = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("role"u8))
+                {
+                    role = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(property, ref content);
+                    continue;
+                }
+                if (true)
+                {
+                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                }
+            }
+            serializedAdditionalRawData = rawDataDictionary;
+            return new ToolChatMessage(role, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData, toolCallId);
         }
 
         BinaryData IPersistableModel<ToolChatMessage>.Write(ModelReaderWriterOptions options)

@@ -12,37 +12,6 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageImageUrlContent : IJsonModel<InternalMessageImageUrlContent>
     {
-        void IJsonModel<InternalMessageImageUrlContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageUrlContent>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalMessageImageUrlContent)} does not support writing '{format}' format.");
-            }
-
-            writer.WriteStartObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(_type);
-            writer.WritePropertyName("image_url"u8);
-            writer.WriteObjectValue<InternalMessageContentImageUrlObjectImageUrl>(_imageUrl, options);
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
-                {
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
-        }
-
         InternalMessageImageUrlContent IJsonModel<InternalMessageImageUrlContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageUrlContent>)this).GetFormatFromOptions(options) : options.Format;

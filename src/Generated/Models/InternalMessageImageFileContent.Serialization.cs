@@ -12,37 +12,6 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageImageFileContent : IJsonModel<InternalMessageImageFileContent>
     {
-        void IJsonModel<InternalMessageImageFileContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalMessageImageFileContent)} does not support writing '{format}' format.");
-            }
-
-            writer.WriteStartObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(_type);
-            writer.WritePropertyName("image_file"u8);
-            writer.WriteObjectValue<InternalMessageContentItemFileObjectImageFile>(_imageFile, options);
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
-                {
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
-        }
-
         InternalMessageImageFileContent IJsonModel<InternalMessageImageFileContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;

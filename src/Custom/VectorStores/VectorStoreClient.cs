@@ -16,6 +16,10 @@ namespace OpenAI.VectorStores;
 /// The service client for OpenAI vector store operations.
 /// </summary>
 [CodeGenClient("VectorStores")]
+[CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions))]
+[CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions))]
+[CodeGenSuppress("DeleteVectorStoreAsync", typeof(string))]
+[CodeGenSuppress("DeleteVectorStore", typeof(string))]
 [CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
 [CodeGenSuppress("GetVectorStores", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
 [CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(ListOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]

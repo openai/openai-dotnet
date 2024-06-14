@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI.Chat;
 
-namespace OpenAI.Internal.FineTuning
+namespace OpenAI.FineTuning
 {
     internal partial class InternalFinetuneChatRequestInput : IJsonModel<InternalFinetuneChatRequestInput>
     {
