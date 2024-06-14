@@ -1,6 +1,6 @@
 # OpenAI .NET API library
 
-[![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/)
+[![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
 
 The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. 
 
