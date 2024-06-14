@@ -11,19 +11,16 @@ namespace OpenAI.Assistants
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
-        public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId, string quote)
+        public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
-            Argument.AssertNotNull(quote, nameof(quote));
 
             FileId = fileId;
-            Quote = quote;
         }
 
-        internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId, string quote, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
-            Quote = quote;
             _serializedAdditionalRawData = serializedAdditionalRawData;
         }
 
@@ -32,6 +29,5 @@ namespace OpenAI.Assistants
         }
 
         public string FileId { get; set; }
-        public string Quote { get; set; }
     }
 }

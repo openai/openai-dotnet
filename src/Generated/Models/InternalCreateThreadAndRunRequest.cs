@@ -20,7 +20,7 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string model, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolChoice, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string model, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolChoice, bool? parallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             AssistantId = assistantId;
             Thread = thread;
@@ -36,6 +36,7 @@ namespace OpenAI.Assistants
             MaxCompletionTokens = maxCompletionTokens;
             TruncationStrategy = truncationStrategy;
             ToolChoice = toolChoice;
+            ParallelToolCalls = parallelToolCalls;
             ResponseFormat = responseFormat;
             _serializedAdditionalRawData = serializedAdditionalRawData;
         }
@@ -55,5 +56,6 @@ namespace OpenAI.Assistants
         public int? MaxPromptTokens { get; set; }
         public int? MaxCompletionTokens { get; set; }
         public RunTruncationStrategy TruncationStrategy { get; set; }
+        public bool? ParallelToolCalls { get; set; }
     }
 }

@@ -8,9 +8,6 @@
 [CodeGenModel("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition : ToolDefinition { }
 
-[CodeGenModel("AssistantToolsFileSearch")]
-public partial class FileSearchToolDefinition : ToolDefinition { }
-
 [CodeGenModel("ThreadMessageStatus")]
 public readonly partial struct MessageStatus { }
 

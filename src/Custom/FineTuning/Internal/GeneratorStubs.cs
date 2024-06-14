@@ -80,3 +80,23 @@ internal partial class InternalListPaginatedFineTuningJobsResponse { }
 [CodeGenModel("ListPaginatedFineTuningJobsResponseObject")]
 internal readonly partial struct InternalListPaginatedFineTuningJobsResponseObject { }
 
+[CodeGenModel("FinetuneCompletionRequestInput")]
+internal partial class InternalFinetuneCompletionRequestInput { }
+
+[CodeGenModel("FinetuneChatRequestInput")]
+internal partial class InternalFinetuneChatRequestInput { }
+
+[CodeGenModel("FineTuneChatCompletionRequestAssistantMessage")]
+internal partial class InternalFineTuneChatCompletionRequestAssistantMessage { }
+
+[CodeGenModel("FineTuneChatCompletionRequestAssistantMessageFunctionCall")]
+internal partial class InternalFineTuneChatCompletionRequestAssistantMessageFunctionCall { }
+
+[CodeGenModel("FineTuneChatCompletionRequestAssistantMessageRole")]
+internal readonly partial struct InternalFineTuneChatCompletionRequestAssistantMessageRole { }
+
+[CodeGenModel("FineTuneChatCompletionRequestAssistantMessageWeight")]
+internal readonly partial struct InternalFineTuneChatCompletionRequestAssistantMessageWeight { }
+
+[CodeGenModel("FineTuneChatCompletionRequestFunctionMessage")]
+internal partial class InternalFineTuneChatCompletionRequestFunctionMessage { }

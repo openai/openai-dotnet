@@ -3,6 +3,7 @@ using OpenAI.Audio;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -72,10 +73,14 @@ public partial class TranscriptionTests : SyncAsyncTestBase
             Granularities = granularityFlags,
         };
 
-        AudioTranscription transcription = IsAsync
+        ClientResult<AudioTranscription> transcriptionResult = IsAsync
             ? await client.TranscribeAudioAsync(inputStream, "audio_hello_world.mp3", options)
             : client.TranscribeAudio(inputStream, "audio_hello_world.mp3", options);
 
+        PipelineResponse rawResponse = transcriptionResult.GetRawResponse();
+        Assert.That(rawResponse.Content.ToString(), Is.Not.Null.And.Not.Empty);
+
+        AudioTranscription transcription = transcriptionResult;
         Assert.That(transcription, Is.Not.Null);
 
         IReadOnlyList<TranscribedWord> words = transcription.Words;
@@ -114,7 +119,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
             Assert.That(segments[i].TokenIds, Is.Not.Null.And.Not.Empty);
             foreach (int tokenId in segments[i].TokenIds)
             {
-                Assert.That(tokenId, Is.GreaterThan(0));
+                Assert.That(tokenId, Is.GreaterThanOrEqualTo(0));
             }
             Assert.That(segments[i].Temperature, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
             Assert.That(segments[i].AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));

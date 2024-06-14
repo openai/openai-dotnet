@@ -183,6 +183,11 @@ namespace OpenAI.Assistants
                     writer.WriteNull("tool_choice");
                 }
             }
+            if (Optional.IsDefined(ParallelToolCalls))
+            {
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(ParallelToolCalls.Value);
+            }
             if (Optional.IsDefined(ResponseFormat))
             {
                 if (ResponseFormat != null)
@@ -247,6 +252,7 @@ namespace OpenAI.Assistants
             int? maxCompletionTokens = default;
             RunTruncationStrategy truncationStrategy = default;
             ToolConstraint toolChoice = default;
+            bool? parallelToolCalls = default;
             AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -394,6 +400,15 @@ namespace OpenAI.Assistants
                     toolChoice = ToolConstraint.DeserializeToolConstraint(property.Value, options);
                     continue;
                 }
+                if (property.NameEquals("parallel_tool_calls"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    parallelToolCalls = property.Value.GetBoolean();
+                    continue;
+                }
                 if (property.NameEquals("response_format"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
@@ -425,6 +440,7 @@ namespace OpenAI.Assistants
                 maxCompletionTokens,
                 truncationStrategy,
                 toolChoice,
+                parallelToolCalls,
                 responseFormat,
                 serializedAdditionalRawData);
         }
