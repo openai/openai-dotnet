@@ -22,7 +22,8 @@ public partial class SystemChatMessage : ChatMessage
         Argument.AssertNotNull(content, nameof(content));
 
         Role = "system";
-        Content = [ChatMessageContentPart.CreateTextMessageContentPart(content)];
+        Content = new ChangeTrackingList<ChatMessageContentPart>(
+            (IList<ChatMessageContentPart>)[ChatMessageContentPart.CreateTextMessageContentPart(content)]);
     }
 
     /// <summary>

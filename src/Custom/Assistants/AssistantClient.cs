@@ -19,6 +19,8 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateAssistantAsync", typeof(AssistantCreationOptions))]
 [CodeGenSuppress("CreateAssistant", typeof(AssistantCreationOptions))]
+[CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
+[CodeGenSuppress("DeleteAssistant", typeof(string))]
 [CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
 [CodeGenSuppress("GetAssistants", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
 public partial class AssistantClient

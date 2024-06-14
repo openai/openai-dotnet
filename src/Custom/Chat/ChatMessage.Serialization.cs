@@ -18,40 +18,25 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void DeserializeContentValue(JsonProperty property, ref IList<ChatMessageContentPart> content, ModelReaderWriterOptions options = null)
     {
-        throw new NotImplementedException();
+        content ??= new ChangeTrackingList<ChatMessageContentPart>();
+        if (property.Value.ValueKind == JsonValueKind.String)
+        {
+            content.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
+        }
+        else
+        {
+            foreach (var item in property.Value.EnumerateArray())
+            {
+                content.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+            }
+        }
     }
 
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance(this, SerializeChatMessage, writer, options);
+        => CustomSerializationHelpers.SerializeInstance(this, WriteCore, writer, options);
 
-    internal static void SerializeChatMessage(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
-    {
-        writer.WriteStartObject();
-        writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(instance.Role);
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
-        writer.WriteEndObject();
-    }
+    internal static void WriteCore(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => instance.WriteCore(writer, options);
 
-    internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
-    {
-        options ??= ModelSerializationExtensions.WireOptions;
-
-        if (element.ValueKind == JsonValueKind.Null)
-        {
-            return null;
-        }
-        if (element.TryGetProperty("role", out JsonElement discriminator))
-        {
-            switch (discriminator.GetString())
-            {
-                case "assistant": return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
-                case "function": return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
-                case "system": return SystemChatMessage.DeserializeSystemChatMessage(element, options);
-                case "tool": return ToolChatMessage.DeserializeToolChatMessage(element, options);
-                case "user": return UserChatMessage.DeserializeUserChatMessage(element, options);
-            }
-        }
-        return UnknownChatMessage.DeserializeUnknownChatMessage(element, options);
-    }
+    protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 }

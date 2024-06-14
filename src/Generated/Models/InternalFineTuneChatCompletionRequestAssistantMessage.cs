@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenAI.Chat;
 
-namespace OpenAI.Internal.FineTuning
+namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuneChatCompletionRequestAssistantMessage : AssistantChatMessage
     {

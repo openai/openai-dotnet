@@ -9,24 +9,29 @@ namespace OpenAI.Chat;
 internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
 {
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance<ChatMessage,UnknownChatMessage>(this, SerializeChatMessage, writer, options);
+        => CustomSerializationHelpers.SerializeInstance<ChatMessage,UnknownChatMessage>(this, WriteCore, writer, options);
 
-    internal static void SerializeChatMessage(UnknownChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal static void WriteCore(UnknownChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        instance.WriteCore(writer, options);
+    }
+
+    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(instance.Role);
-        if (Optional.IsCollectionDefined(instance.Content))
+        writer.WriteStringValue(Role);
+        if (Optional.IsCollectionDefined(Content))
         {
             writer.WritePropertyName("content"u8);
             writer.WriteStartArray();
-            foreach (var item in instance.Content)
+            foreach (var item in Content)
             {
                 writer.WriteObjectValue(item, options);
             }
             writer.WriteEndArray();
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

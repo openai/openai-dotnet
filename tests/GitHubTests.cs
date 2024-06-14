@@ -7,6 +7,7 @@ public partial class GitHubTests
 {
     [Test(Description = "Test that we can use a GitHub secret")]
     [Category("Online")]
+    [Ignore("Placeholder")]
     public void CanUseGitHubSecret()
     {
         string gitHubSecretString = Environment.GetEnvironmentVariable("SECRET_VALUE");
@@ -15,6 +16,7 @@ public partial class GitHubTests
 
     [Test(Description = "That that we can run some tests without secrets")]
     [Category("Offline")]
+    [Ignore("Placeholder")]
     public void CanTestWithoutSecretAccess()
     {
         int result = 2 + 1;
