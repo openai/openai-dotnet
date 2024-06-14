@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Chat;
@@ -68,8 +69,9 @@ public partial class ChatClient
     /// </summary>
     /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
     /// <param name="options"> Additional options for the chat completion request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A result for a single chat completion. </returns>
-    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null)
+    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
 
@@ -77,7 +79,8 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await CompleteChatAsync(content, null).ConfigureAwait(false);
+
+        ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(ChatCompletion.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -94,8 +97,9 @@ public partial class ChatClient
     /// </summary>
     /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
     /// <param name="options"> Additional options for the chat completion request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A result for a single chat completion. </returns>
-    public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null)
+    public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
 
@@ -103,7 +107,7 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = CompleteChat(content, null);
+        ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(ChatCompletion.FromResponse(result.GetRawResponse()), result.GetRawResponse());
 
     }
@@ -126,8 +130,9 @@ public partial class ChatClient
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
     /// <param name="options"> Additional options for the chat completion request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual AsyncResultCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null)
+    public virtual AsyncResultCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
 
@@ -135,9 +140,9 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
-        RequestOptions requestOptions = new() { BufferResponse = false };
+
         async Task<ClientResult> getResultAsync() =>
-            await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
+            await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
         return new AsyncStreamingChatCompletionUpdateCollection(getResultAsync);
     }
 
@@ -164,8 +169,9 @@ public partial class ChatClient
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
     /// <param name="options"> Additional options for the chat completion request. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual ResultCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null)
+    public virtual ResultCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
 
@@ -173,8 +179,7 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
-        RequestOptions requestOptions = new() { BufferResponse = false };
-        ClientResult getResult() => CompleteChat(content, requestOptions);
+        ClientResult getResult() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
         return new StreamingChatCompletionUpdateCollection(getResult);
     }
 

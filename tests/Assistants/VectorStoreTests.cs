@@ -31,7 +31,7 @@ public partial class VectorStoreTests
 
         IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
 
-        vectorStore = client.CreateVectorStore(new()
+        vectorStore = client.CreateVectorStore(new VectorStoreCreationOptions()
         {
             FileIds = { testFiles[0].Id },
             Name = "test vector store",
@@ -73,7 +73,7 @@ public partial class VectorStoreTests
         Assert.That(deleted, Is.True);
         _vectorStoresToDelete.RemoveAt(_vectorStoresToDelete.Count - 1);
 
-        vectorStore = client.CreateVectorStore(new()
+        vectorStore = client.CreateVectorStore(new VectorStoreCreationOptions ()
         {
             FileIds = testFiles.Select(file => file.Id).ToList()
         });

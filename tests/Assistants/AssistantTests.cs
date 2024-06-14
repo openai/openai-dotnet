@@ -225,7 +225,7 @@ public partial class AssistantTests
         });
         Validate(assistant);
 
-        AssistantThread thread = client.CreateThread(new()
+        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
         {
             InitialMessages = { new(["Please graph the equation y = 3x + 4"]), },
         });
@@ -375,7 +375,7 @@ public partial class AssistantTests
         Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
         Validate(assistant);
 
-        AssistantThread thread = await client.CreateThreadAsync(new()
+        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
         {
             InitialMessages = { new(["Hello there, assistant! How are you today?"]), },
         });
