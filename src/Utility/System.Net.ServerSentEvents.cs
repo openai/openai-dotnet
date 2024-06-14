@@ -6,10 +6,13 @@
 // Once the System.Net.ServerSentEvents package is available, this file should be removed and replaced with a package reference.
 //
 // The only changes made to this code from the original are:
+// - Enabled nullable reference types at file scope, and use a few null suppression operators to work around the lack of [NotNull]
 // - Put into a single file for ease of management (it should not be edited in this repo).
 // - Changed public types to be internal.
 // - Removed a use of a [NotNull] attribute to assist in netstandard2.0 compilation.
 // - Replaced a reference to a .resx string with an inline constant.
+
+#nullable enable
 
 using System.Buffers;
 using System.Collections.Generic;
@@ -381,7 +384,7 @@ namespace System.Net.ServerSentEvents
                 }
                 else if (_lineLength == _lineBuffer.Length)
                 {
-                    GrowBuffer(ref _lineBuffer, _lineBuffer.Length * 2);
+                    GrowBuffer(ref _lineBuffer!, _lineBuffer.Length * 2);
                 }
             }
         }
@@ -468,7 +471,7 @@ namespace System.Net.ServerSentEvents
                 // Then copy the field value to the data buffer
                 if (_dataAppended)
                 {
-                    _dataBuffer[_dataLength++] = LF;
+                    _dataBuffer![_dataLength++] = LF;
                 }
                 fieldValue.CopyTo(_dataBuffer.AsSpan(_dataLength));
                 _dataLength += fieldValue.Length;
