@@ -41,6 +41,13 @@
     <NoWarn>$(NoWarn),0169</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <!-- Allow use of unsafe code, for System.Net.ServerSentEvents polyfill on netstandard2.0
+         TODO https://github.com/openai/openai-dotnet/issues/41: Remove once polyfill for
+         System.Net.ServerSentEvents is removed in favor of referencing the package -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>

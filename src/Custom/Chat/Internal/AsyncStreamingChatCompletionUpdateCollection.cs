@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ internal class AsyncStreamingChatCompletionUpdateCollection : AsyncResultCollect
 
     private sealed class AsyncStreamingChatUpdateEnumerator : IAsyncEnumerator<StreamingChatCompletionUpdate>
     {
-        private const string _terminalData = "[DONE]";
+        private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
         private readonly Func<Task<ClientResult>> _getResultAsync;
         private readonly AsyncStreamingChatCompletionUpdateCollection _enumerable;
@@ -45,7 +46,7 @@ internal class AsyncStreamingChatCompletionUpdateCollection : AsyncResultCollect
         //       // get _updates from sse event
         //       foreach (var update in _updates) { ... }
         //   }
-        private IAsyncEnumerator<ServerSentEvent>? _events;
+        private IAsyncEnumerator<SseItem<byte[]>>? _events;
         private IEnumerator<StreamingChatCompletionUpdate>? _updates;
 
         private StreamingChatCompletionUpdate? _current;
@@ -85,7 +86,7 @@ internal class AsyncStreamingChatCompletionUpdateCollection : AsyncResultCollect
 
             if (await _events.MoveNextAsync().ConfigureAwait(false))
             {
-                if (_events.Current.Data == _terminalData)
+                if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
                     return false;
@@ -106,7 +107,7 @@ internal class AsyncStreamingChatCompletionUpdateCollection : AsyncResultCollect
             return false;
         }
 
-        private async Task<IAsyncEnumerator<ServerSentEvent>> CreateEventEnumeratorAsync()
+        private async Task<IAsyncEnumerator<SseItem<byte[]>>> CreateEventEnumeratorAsync()
         {
             ClientResult result = await _getResultAsync().ConfigureAwait(false);
             PipelineResponse response = result.GetRawResponse();
@@ -117,7 +118,7 @@ internal class AsyncStreamingChatCompletionUpdateCollection : AsyncResultCollect
                 throw new InvalidOperationException("Unable to create result from response with null ContentStream");
             }
 
-            AsyncServerSentEventEnumerable enumerable = new(response.ContentStream);
+            IAsyncEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(response.ContentStream, (_, bytes) => bytes.ToArray()).EnumerateAsync();
             return enumerable.GetAsyncEnumerator(_cancellationToken);
         }
 

@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 
 #nullable enable
@@ -31,7 +32,7 @@ internal class StreamingChatCompletionUpdateCollection : ResultCollection<Stream
 
     private sealed class StreamingChatUpdateEnumerator : IEnumerator<StreamingChatCompletionUpdate>
     {
-        private const string _terminalData = "[DONE]";
+        private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
         private readonly Func<ClientResult> _getResult;
         private readonly StreamingChatCompletionUpdateCollection _enumerable;
@@ -43,7 +44,7 @@ internal class StreamingChatCompletionUpdateCollection : ResultCollection<Stream
         //       // get _updates from sse event
         //       foreach (var update in _updates) { ... }
         //   }
-        private IEnumerator<ServerSentEvent>? _events;
+        private IEnumerator<SseItem<byte[]>>? _events;
         private IEnumerator<StreamingChatCompletionUpdate>? _updates;
 
         private StreamingChatCompletionUpdate? _current;
@@ -82,7 +83,7 @@ internal class StreamingChatCompletionUpdateCollection : ResultCollection<Stream
 
             if (_events.MoveNext())
             {
-                if (_events.Current.Data == _terminalData)
+                if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
                     return false;
@@ -103,7 +104,7 @@ internal class StreamingChatCompletionUpdateCollection : ResultCollection<Stream
             return false;
         }
 
-        private IEnumerator<ServerSentEvent> CreateEventEnumerator()
+        private IEnumerator<SseItem<byte[]>> CreateEventEnumerator()
         {
             ClientResult result = _getResult();
             PipelineResponse response = result.GetRawResponse();
@@ -114,7 +115,7 @@ internal class StreamingChatCompletionUpdateCollection : ResultCollection<Stream
                 throw new InvalidOperationException("Unable to create result from response with null ContentStream");
             }
 
-            ServerSentEventEnumerable enumerable = new(response.ContentStream);
+            IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
             return enumerable.GetEnumerator();
         }
 

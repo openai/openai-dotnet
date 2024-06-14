@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -38,7 +39,7 @@ public abstract partial class StreamingUpdate
         UpdateKind = updateKind;
     }
 
-    internal static IEnumerable<StreamingUpdate> FromEvent(ServerSentEvent sseItem)
+    internal static IEnumerable<StreamingUpdate> FromEvent(SseItem<byte[]> sseItem)
     {
         StreamingUpdateReason updateKind = StreamingUpdateReasonExtensions.FromSseEventLabel(sseItem.EventType);
         using JsonDocument dataDocument = JsonDocument.Parse(sseItem.Data);
