@@ -5,7 +5,7 @@ using System;
 namespace OpenAI;
 
 [AttributeUsage(AttributeTargets.Class)]
-internal class CodeGenClientAttribute : CodeGenTypeAttribute
+internal sealed class CodeGenClientAttribute : CodeGenTypeAttribute
 {
     public Type? ParentClient { get; set; }
 

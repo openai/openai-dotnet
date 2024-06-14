@@ -91,7 +91,7 @@ public partial class Embedding
     public ReadOnlyMemory<float> Vector { get; }
 
     // CUSTOM: Implemented custom logic to transform from BinaryData to ReadOnlyMemory<float>.
-    private ReadOnlyMemory<float> ConvertToVectorOfFloats(BinaryData binaryData)
+    private static ReadOnlyMemory<float> ConvertToVectorOfFloats(BinaryData binaryData)
     {
         ReadOnlySpan<byte> base64 = binaryData.ToMemory().Span;
 

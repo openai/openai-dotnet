@@ -5,7 +5,7 @@ using System;
 namespace OpenAI;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-internal class CodeGenMemberAttribute : CodeGenTypeAttribute
+internal sealed class CodeGenMemberAttribute : CodeGenTypeAttribute
 {
     public CodeGenMemberAttribute() : base(null)
     {

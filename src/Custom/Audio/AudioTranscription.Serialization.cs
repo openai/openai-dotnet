@@ -9,7 +9,8 @@ public partial class AudioTranscription
     internal static AudioTranscription FromResponse(PipelineResponse response)
     {
         // Customization: handle plain text responses (SRT/VTT formats)
-        if (response?.Headers?.TryGetValue("Content-Type", out string contentType) == true && contentType.StartsWith("text/plain"))
+        if (response?.Headers?.TryGetValue("Content-Type", out string contentType) == true &&
+            contentType.StartsWith("text/plain", StringComparison.Ordinal))
         {
             return new AudioTranscription(
                 InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
