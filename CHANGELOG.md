@@ -1,5 +1,13 @@
 # Release History
 
+## 2.0.0-beta.6 (Unreleased)
+
+## Bugs Fixed
+
+- Added optional `CancellationToken` parameters to methods for `AssistantClient` and `VectorStore` client, consistent with past changes in [19a65a0](https://github.com/openai/openai-dotnet/commit/19a65a0a943fa3bef1ec8504708aaa526a1ee03a) (commit_link_)
+- Fixed Assistants `FileSearchToolDefinition`'s `MaxResults` parameter to appropriate serialize and deserialize the value (commit_link)
+- Added missing `[EditorBrowsable(EditorBrowsableState.Never)]` attributes to `AssistantClient` protocol methods, which should improve discoverability of the strongly typed methods (commit_link)
+
 ## 2.0.0-beta.5 (2024-06-14)
 
 ## Features Added

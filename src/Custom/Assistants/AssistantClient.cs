@@ -19,6 +19,10 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateAssistantAsync", typeof(AssistantCreationOptions))]
 [CodeGenSuppress("CreateAssistant", typeof(AssistantCreationOptions))]
+[CodeGenSuppress("GetAssistantAsync", typeof(string))]
+[CodeGenSuppress("GetAssistant", typeof(string))]
+[CodeGenSuppress("ModifyAssistantAsync", typeof(string), typeof(AssistantModificationOptions))]
+[CodeGenSuppress("ModifyAssistant", typeof(string), typeof(AssistantModificationOptions))]
 [CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
 [CodeGenSuppress("DeleteAssistant", typeof(string))]
 [CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
@@ -130,6 +134,69 @@ public partial class AssistantClient
     {
         return CreatePageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
             => GetAssistants(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+    }
+
+    /// <summary>
+    /// Gets an instance representing an existing <see cref="Assistant"/> based on its ID.
+    /// </summary>
+    /// <param name="assistantId"> The ID of the Assistant to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns>An <see cref="Assistant"/> instance representing the state of the Assistant with the provided ID.</returns>
+    public virtual async Task<ClientResult<Assistant>> GetAssistantAsync(string assistantId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+        ClientResult protocolResult = await GetAssistantAsync(assistantId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
+    }
+
+    /// <summary>
+    /// Gets an instance representing an existing <see cref="Assistant"/> based on its ID.
+    /// </summary>
+    /// <param name="assistantId"> The ID of the Assistant to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns>An <see cref="Assistant"/> instance representing the state of the Assistant with the provided ID.</returns>
+    public virtual ClientResult<Assistant> GetAssistant(string assistantId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+        ClientResult protocolResult = GetAssistant(assistantId, cancellationToken.ToRequestOptions());
+        return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
+    }
+
+    /// <summary>
+    /// Modifies an existing <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="assistantId"> The ID of the Assistant to retrieve. </param>
+    /// <param name="options"> The new options to apply to the existing Assistant. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> An updated <see cref="Assistant"/> instance representing the state of the Assistant with the provided ID. </returns>
+    public virtual async Task<ClientResult<Assistant>> ModifyAssistantAsync(string assistantId, AssistantModificationOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        Argument.AssertNotNull(options, nameof(options));
+
+        using BinaryContent content = options.ToBinaryContent();
+        ClientResult protocolResult
+            = await ModifyAssistantAsync(assistantId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
+    }
+
+    /// <summary>
+    /// Modifies an existing <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="assistantId"> The ID of the Assistant to retrieve. </param>
+    /// <param name="options"> The new options to apply to the existing Assistant. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> An updated <see cref="Assistant"/> instance representing the state of the Assistant with the provided ID. </returns>
+    public virtual ClientResult<Assistant> ModifyAssistant(string assistantId, AssistantModificationOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        Argument.AssertNotNull(options, nameof(options));
+
+        using BinaryContent content = options.ToBinaryContent();
+        ClientResult protocolResult = ModifyAssistant(assistantId, content, null);
+        return CreateResultFromProtocol(protocolResult, Assistant.FromResponse);
     }
 
     /// <summary>

@@ -31,42 +31,6 @@ namespace OpenAI.VectorStores
             _endpoint = endpoint;
         }
 
-        public virtual async Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId)
-        {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-            ClientResult result = await GetVectorStoreAsync(vectorStoreId, null).ConfigureAwait(false);
-            return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId)
-        {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-            ClientResult result = GetVectorStore(vectorStoreId, null);
-            return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual async Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions vectorStore)
-        {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNull(vectorStore, nameof(vectorStore));
-
-            using BinaryContent content = vectorStore.ToBinaryContent();
-            ClientResult result = await ModifyVectorStoreAsync(vectorStoreId, content, null).ConfigureAwait(false);
-            return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions vectorStore)
-        {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNull(vectorStore, nameof(vectorStore));
-
-            using BinaryContent content = vectorStore.ToBinaryContent();
-            ClientResult result = ModifyVectorStore(vectorStoreId, content, null);
-            return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
         internal PipelineMessage CreateGetVectorStoresRequest(int? limit, string order, string after, string before, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();
