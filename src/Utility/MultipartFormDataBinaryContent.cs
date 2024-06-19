@@ -34,18 +34,17 @@ internal class MultipartFormDataBinaryContent : BinaryContent
 
     internal HttpContent HttpContent => _multipartContent;
 
-    public void Add(Stream content, string name, string fileName = default, string contentType = null)
+    public void Add(Stream stream, string name, string fileName = default, string contentType = null)
     {
-        Argument.AssertNotNull(content, nameof(content));
-        Argument.AssertNotNullOrEmpty(name, nameof(name));
+        Argument.AssertNotNull(stream, nameof(stream));
 
-        Add(new StreamContent(content), name, fileName, contentType);
+        StreamContent content = new(stream);
+        if (contentType is not null)
+        {
+            content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+        }
+        Add(content, name, fileName);
     }
-
-    //public void Add(Stream stream, string name, string fileName = default)
-    //{
-    //    Add(new StreamContent(stream), name, fileName);
-    //}
 
     public void Add(string content, string name, string fileName = default)
     {
@@ -76,48 +75,19 @@ internal class MultipartFormDataBinaryContent : BinaryContent
         Add(new ByteArrayContent(content.ToArray()), name, fileName);
     }
 
-    private void Add(HttpContent content, string name, string filename, string contentType)
+    private void Add(HttpContent content, string name, string filename)
     {
-        if (filename != null)
+        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNull(name, nameof(name));
+
+        if (filename is not null)
         {
-            Argument.AssertNotNullOrEmpty(filename, nameof(filename));
-            AddFileNameHeader(content, name, filename);
+            _multipartContent.Add(content, name, filename);
         }
-        if (contentType != null)
+        else
         {
-            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
-            AddContentTypeHeader(content, contentType);
+            _multipartContent.Add(content, name);
         }
-        _multipartContent.Add(content, name);
-    }
-
-    private void Add(HttpContent content, string name, string fileName)
-    {
-        if (fileName is not null)
-        {
-            AddFileNameHeader(content, name, fileName);
-        }
-
-        _multipartContent.Add(content, name);
-    }
-
-    private static void AddFileNameHeader(HttpContent content, string name, string filename)
-    {
-        // Add the content header manually because the default implementation
-        // adds a `filename*` parameter to the header, which RFC 7578 says not
-        // to do.  We are following up with the BCL team per correctness.
-        ContentDispositionHeaderValue header = new("form-data")
-        {
-            Name = name,
-            FileName = filename
-        };
-        content.Headers.ContentDisposition = header;
-    }
-
-    public static void AddContentTypeHeader(HttpContent content, string contentType)
-    {
-        MediaTypeHeaderValue header = new MediaTypeHeaderValue(contentType);
-        content.Headers.ContentType = header;
     }
 
 #if NET6_0_OR_GREATER
