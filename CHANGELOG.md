@@ -6,10 +6,6 @@
 
 - ([#72](https://github.com/openai/openai-dotnet/issues/72)) Fixed `filename` request encoding in operations using `multipart/form-data`, including `files` and `audio`
 
-## Breaking Changes
-
-- To properly support non-ASCII filenames, `multipart/form-data` requests now use the default behavior of `System.Net.Http.MultipartFormDataContent` for `Content-Disposition` content part headers; this will now include the `filename*` header, aligned with [RFC 6266](https://www.rfc-editor.org/rfc/rfc6266#section-4.3) but contrary to [RFC 7578](https://www.rfc-editor.org/rfc/rfc7578#section-4.2). This has no adverse impact with the OpenAI V1 endpoint but could affect API gateways or other intermediaries. `filename` continues to be provided.
-
 ## 2.0.0-beta.5 (2024-06-14)
 
 ## Features Added
