@@ -75,14 +75,14 @@ internal class MultipartFormDataBinaryContent : BinaryContent
         Add(new ByteArrayContent(content.ToArray()), name, fileName);
     }
 
-    private void Add(HttpContent content, string name, string filename)
+    private void Add(HttpContent content, string name, string fileName)
     {
         Argument.AssertNotNull(content, nameof(content));
         Argument.AssertNotNull(name, nameof(name));
 
-        if (filename is not null)
+        if (fileName is not null)
         {
-            _multipartContent.Add(content, name, filename);
+            _multipartContent.Add(content, name, fileName);
         }
         else
         {
