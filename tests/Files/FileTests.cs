@@ -83,5 +83,17 @@ public partial class FileTests : SyncAsyncTestBase
         // TODO: Add this test.
     }
 
+    [Test]
+    public async Task NonAsciiFilename()
+    {
+        FileClient client = GetTestClient();
+        string filename = "你好.txt";
+        BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
+        OpenAIFileInfo uploadedFile = IsAsync
+            ? await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants)
+            : client.UploadFile(fileContent, filename, FileUploadPurpose.Assistants);
+        Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));
+    }
+
     private static FileClient GetTestClient() => GetTestClient<FileClient>(TestScenario.Files);
 }

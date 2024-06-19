@@ -1,5 +1,11 @@
 # Release History
 
+## 2.0.0-beta.6 (Unreleased)
+
+## Bugs Fixed
+
+- ([#72](https://github.com/openai/openai-dotnet/issues/72)) Fixed `filename` request encoding in operations using `multipart/form-data`, including `files` and `audio`
+
 ## 2.0.0-beta.5 (2024-06-14)
 
 ## Features Added
