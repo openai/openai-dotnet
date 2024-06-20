@@ -6,17 +6,13 @@ using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
 using OpenAI.Images;
-using OpenAI.LegacyCompletions;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Runtime.Versioning;
 
 namespace OpenAI;
 
@@ -264,9 +260,9 @@ public partial class OpenAIClient
     {
         return new GenericActionPipelinePolicy((message) =>
         {
-            if (message?.Request?.Headers?.TryGetValue(OpenAIBetaFeatureHeaderKey, out string _) == false)
+            if (message?.Request?.Headers?.TryGetValue(OpenAIBetaFeatureHeaderName, out string _) == false)
             {
-                message.Request.Headers.Set(OpenAIBetaFeatureHeaderKey, OpenAIBetaAssistantsV1HeaderValue);
+                message.Request.Headers.Set(OpenAIBetaFeatureHeaderName, OpenAIBetaAssistantsV1HeaderValue);
             }
         });
     }
@@ -276,26 +272,28 @@ public partial class OpenAIClient
         TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.ApplicationId);
         return new GenericActionPipelinePolicy((message) =>
         {
-            if (message?.Request?.Headers?.TryGetValue(UserAgentHeaderKey, out string _) == false)
+            if (message?.Request?.Headers?.TryGetValue(UserAgentHeaderName, out string _) == false)
             {
-                message.Request.Headers.Set(UserAgentHeaderKey, telemetryDetails.ToString());
+                message.Request.Headers.Set(UserAgentHeaderName, telemetryDetails.ToString());
             }
 
             if (!string.IsNullOrEmpty(options.OrganizationId))
             {
-                message.Request.Headers.Set("OpenAI-Organization", options.OrganizationId);
+                message.Request.Headers.Set(OpenAIOrganizationHeaderName, options.OrganizationId);
             }
             if (!string.IsNullOrEmpty(options.ProjectId))
             {
-                message.Request.Headers.Set("OpenAI-Project", options.ProjectId);
+                message.Request.Headers.Set(OpenAIProjectHeaderName, options.ProjectId);
             }
         });
     }
 
-    private const string OpenAIBetaFeatureHeaderKey = "OpenAI-Beta";
+    private const string OpenAIBetaFeatureHeaderName = "OpenAI-Beta";
+    private const string OpenAIOrganizationHeaderName = "OpenAI-Organization";
+    private const string OpenAIProjectHeaderName = "OpenAI-Project";
     private const string OpenAIBetaAssistantsV1HeaderValue = "assistants=v2";
     private const string OpenAIEndpointEnvironmentVariable = "OPENAI_ENDPOINT";
     private const string OpenAIApiKeyEnvironmentVariable = "OPENAI_API_KEY";
     private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
-    private const string UserAgentHeaderKey = "User-Agent";
+    private const string UserAgentHeaderName = "User-Agent";
 }
