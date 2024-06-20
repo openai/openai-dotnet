@@ -18,4 +18,14 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
     /// An optional application ID to use as part of the request User-Agent header.
     /// </summary>
     public string ApplicationId { get; init; }
+
+    /// <summary>
+    /// An optional ID added to OpenAI-Organization header
+    /// </summary>
+    public string OrganizationId { get; init; }
+
+    /// <summary>
+    /// An optional ID added to OpenAI-Project header
+    /// </summary>
+    public string ProjectId { get; init; }
 }

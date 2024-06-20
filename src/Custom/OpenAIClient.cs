@@ -220,12 +220,13 @@ public partial class OpenAIClient
     {
         return ClientPipeline.Create(
             options ?? new(),
-            perCallPolicies: [],
+            perCallPolicies: [
+                CreateAddBetaFeatureHeaderPolicy(),
+                CreateAddCustomHeadersPolicy(options),
+            ],
             perTryPolicies:
             [
-                ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix),
-                CreateAddBetaFeatureHeaderPolicy(),
-                CreateAddUserAgentHeaderPolicy(options),
+                ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix)
             ],
             beforeTransportPolicies: []);
     }
@@ -270,7 +271,7 @@ public partial class OpenAIClient
         });
     }
 
-    private static PipelinePolicy CreateAddUserAgentHeaderPolicy(OpenAIClientOptions options = null)
+    private static PipelinePolicy CreateAddCustomHeadersPolicy(OpenAIClientOptions options = null)
     {
         TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.ApplicationId);
         return new GenericActionPipelinePolicy((message) =>
@@ -278,6 +279,15 @@ public partial class OpenAIClient
             if (message?.Request?.Headers?.TryGetValue(UserAgentHeaderKey, out string _) == false)
             {
                 message.Request.Headers.Set(UserAgentHeaderKey, telemetryDetails.ToString());
+            }
+
+            if (!string.IsNullOrEmpty(options.OrganizationId))
+            {
+                message.Request.Headers.Set("OpenAI-Organization", options.OrganizationId);
+            }
+            if (!string.IsNullOrEmpty(options.ProjectId))
+            {
+                message.Request.Headers.Set("OpenAI-Project", options.ProjectId);
             }
         });
     }
