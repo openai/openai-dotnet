@@ -11,6 +11,11 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(Content), SerializationValueHook=nameof(SerializeContent))]
 public partial class MessageCreationOptions
 {
+    // CUSTOM: role is hidden, as this required property is promoted to a method parameter
+
+    [CodeGenMember("Role")]
+    internal MessageRole Role { get; set; }
+
     // CUSTOM: content is hidden to allow the promotion of required request information into top-level
     //          method signatures.
 

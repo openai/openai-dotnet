@@ -84,6 +84,7 @@ public partial class AssistantExamples
         AssistantThread thread = await client.CreateThreadAsync();
         ThreadMessage message = await client.CreateMessageAsync(
             thread,
+            MessageRole.User,
             [
                 "What's the weather in San Francisco today and the likelihood it'll rain?"
             ]);

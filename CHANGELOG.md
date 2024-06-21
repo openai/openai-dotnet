@@ -4,7 +4,14 @@
 
 ## Bugs Fixed
 
-- ([#72](https://github.com/openai/openai-dotnet/issues/72)) Fixed `filename` request encoding in operations using `multipart/form-data`, including `files` and `audio`
+- ([#72](https://github.com/openai/openai-dotnet/issues/72)) Fixed `filename` request encoding in operations using `multipart/form-data`, including `files` and `audio` (commit_hash)
+- ([#79](https://github.com/openai/openai-dotnet/issues/79)) Fixed hard-coded `user` role for caller-created Assistants API messages on threads (commit_hash)
+- Fixed non-streaming Assistants API run step details not reporting code interpreter logs when present
+
+## Breaking Changes
+
+**Assistants (beta)**:
+- `AssistantClient.CreateMessage()` and the explicit constructor for `ThreadInitializationMessage` now require a `MessageRole` parameter. This properly enables the ability to create an Assistant message representing conversation history on a new thread.
 
 ## 2.0.0-beta.5 (2024-06-14)
 
@@ -22,7 +29,7 @@
 
 ## Breaking Changes
 
-**Assistants**:
+**Assistants (beta)**:
 - `InputQuote` is removed from Assistants `TextAnnotation` and `TextAnnotationUpdate`, per [openai/openai-openapi@dd73070b](https://github.com/openai/openai-openapi/commit/dd73070b1d507645d24c249a63ebebd3ec38c0cb) ([1af6569](https://github.com/openai/openai-dotnet/commit/1af6569e2ceae9d840b8826e42d7e3b2569b43f6))
 
 ## Other Changes

@@ -280,18 +280,21 @@ public partial class AssistantClient
     /// Creates a new <see cref="ThreadMessage"/> on an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to associate the new message with. </param>
+    /// <param name="role"> The role to associate with the new message. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual async Task<ClientResult<ThreadMessage>> CreateMessageAsync(
         string threadId,
+        MessageRole role,
         IEnumerable<MessageContent> content,
         MessageCreationOptions options = null, 
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         options ??= new();
+        options.Role = role;
         options.Content.Clear();
         foreach (MessageContent contentItem in content)
         {
@@ -307,18 +310,21 @@ public partial class AssistantClient
     /// Creates a new <see cref="ThreadMessage"/> on an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to associate the new message with. </param>
+    /// <param name="role"> The role to associate with the new message. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual ClientResult<ThreadMessage> CreateMessage(
         string threadId,
+        MessageRole role,
         IEnumerable<MessageContent> content,
         MessageCreationOptions options = null,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         options ??= new();
+        options.Role = role;
         options.Content.Clear();
         foreach (MessageContent contentItem in content)
         {
