@@ -207,13 +207,6 @@ internal readonly partial struct InternalListRunStepsResponseObject {}
 [CodeGenModel("RunStepDetailsToolCallsFileSearchObject")]
 internal partial class InternalRunStepFileSearchToolCallDetails { }
 
-[CodeGenModel("RunStepDetailsToolCallsCodeOutputLogsObject")]
-internal partial class InternalRunStepDetailsToolCallsCodeOutputLogsObject
-{
-    [CodeGenMember("Logs")]
-    internal string InternalLogs { get; }
-}
-
 [CodeGenModel("RunTruncationStrategyType")]
 internal readonly partial struct InternalRunTruncationStrategyType { }
 

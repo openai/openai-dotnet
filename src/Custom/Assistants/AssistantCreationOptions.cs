@@ -50,6 +50,5 @@ public partial class AssistantCreationOptions
     {
         Metadata = new ChangeTrackingDictionary<string, string>();
         Tools = new ChangeTrackingList<ToolDefinition>();
-        ToolResources = new();
     }
 }

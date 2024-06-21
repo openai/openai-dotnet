@@ -20,8 +20,6 @@ namespace OpenAI.Assistants
             Metadata = metadata;
             _serializedAdditionalRawData = serializedAdditionalRawData;
         }
-
-        public MessageRole Role { get; }
         public IList<MessageCreationAttachment> Attachments { get; }
         public IDictionary<string, string> Metadata { get; }
     }

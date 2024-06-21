@@ -35,6 +35,7 @@ public partial class AssistantExamples
             InitialMessages =
                 {
                     new ThreadInitializationMessage(
+                        MessageRole.User,
                         [
                             "Hello, assistant! Please compare these two images for me:",
                             MessageContent.FromImageFileId(pictureOfAppleFile.Id),

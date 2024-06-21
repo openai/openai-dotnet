@@ -99,27 +99,31 @@ public partial class AssistantClient
     /// Creates a new <see cref="ThreadMessage"/> on an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to associate the new message with. </param>
+    /// <param name="role"> The role to associate with the new message. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual Task<ClientResult<ThreadMessage>> CreateMessageAsync(
         AssistantThread thread,
+        MessageRole role,
         IEnumerable<MessageContent> content,
         MessageCreationOptions options = null)
-            => CreateMessageAsync(thread?.Id, content, options);
+            => CreateMessageAsync(thread?.Id, role, content, options);
 
     /// <summary>
     /// Creates a new <see cref="ThreadMessage"/> on an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to associate the new message with. </param>
+    /// <param name="role"> The role to associate with the new message. </param>
     /// <param name="content"> The collection of <see cref="MessageContent"/> items for the message. </param>
     /// <param name="options"> Additional options to apply to the new message. </param>
     /// <returns> A new <see cref="ThreadMessage"/>. </returns>
     public virtual ClientResult<ThreadMessage> CreateMessage(
         AssistantThread thread,
+        MessageRole role,
         IEnumerable<MessageContent> content,
         MessageCreationOptions options = null)
-            => CreateMessage(thread?.Id, content, options);
+            => CreateMessage(thread?.Id, role, content, options);
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
