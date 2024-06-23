@@ -277,11 +277,11 @@ public partial class OpenAIClient
                 message.Request.Headers.Set(UserAgentHeaderName, telemetryDetails.ToString());
             }
 
-            if (!string.IsNullOrEmpty(options.OrganizationId))
+            if (!string.IsNullOrEmpty(options?.OrganizationId))
             {
                 message.Request.Headers.Set(OpenAIOrganizationHeaderName, options.OrganizationId);
             }
-            if (!string.IsNullOrEmpty(options.ProjectId))
+            if (!string.IsNullOrEmpty(options?.ProjectId))
             {
                 message.Request.Headers.Set(OpenAIProjectHeaderName, options.ProjectId);
             }
