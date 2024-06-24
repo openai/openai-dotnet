@@ -1,5 +1,11 @@
 # Release History
 
+## 2.0.0-beta.7 (Unreleased)
+
+## Bugs Fixed
+
+- ([#84](https://github.com/openai/openai-dotnet/issues/84)) Fixed a `NullReferenceException` thrown when adding the custom headers policy while `OpenAIClientOptions` is null (commit_hash)
+
 ## 2.0.0-beta.6 (2024-06-21)
 
 ## Features Added
