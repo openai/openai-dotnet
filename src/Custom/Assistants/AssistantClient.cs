@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.InternalListHelpers;
+//using static OpenAI.InternalListHelpers;
 
 namespace OpenAI.Assistants;
 
@@ -111,7 +111,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreateAsyncPageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
             => GetAssistantsAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
@@ -126,7 +126,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<Assistant> GetAssistants(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreatePageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
             => GetAssistants(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
@@ -345,7 +345,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadMessage> GetMessagesAsync(
+    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         string threadId,
         ListOrder? resultOrder = null,
         CancellationToken cancellationToken = default)
@@ -366,7 +366,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadMessage> GetMessages(
+    public virtual PageCollection<ThreadMessage> GetMessages(
         string threadId,
         ListOrder? resultOrder = null,
         CancellationToken cancellationToken = default)
@@ -531,7 +531,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateRunStreamingAsync(
+    public virtual AsyncResultValueCollection<StreamingUpdate> CreateRunStreamingAsync(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -559,7 +559,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> CreateRunStreaming(
+    public virtual ResultValueCollection<StreamingUpdate> CreateRunStreaming(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -626,7 +626,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    public virtual AsyncResultValueCollection<StreamingUpdate> CreateThreadAndRunStreamingAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -652,7 +652,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> CreateThreadAndRunStreaming(
+    public virtual ResultValueCollection<StreamingUpdate> CreateThreadAndRunStreaming(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -679,7 +679,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadRun> GetRunsAsync(
+    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         string threadId,
         ListOrder? resultOrder = default,
         CancellationToken cancellationToken = default)
@@ -700,7 +700,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadRun> GetRuns(
+    public virtual PageCollection<ThreadRun> GetRuns(
         string threadId,
         ListOrder? resultOrder = default,
         CancellationToken cancellationToken = default)
@@ -801,7 +801,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    public virtual AsyncResultValueCollection<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -829,7 +829,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreaming(
+    public virtual ResultValueCollection<StreamingUpdate> SubmitToolOutputsToRunStreaming(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -889,7 +889,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<RunStep> GetRunStepsAsync(
+    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
         ListOrder? resultOrder = default,
@@ -913,7 +913,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<RunStep> GetRunSteps(
+    public virtual PageCollection<RunStep> GetRunSteps(
         string threadId,
         string runId,
         ListOrder? resultOrder = default,

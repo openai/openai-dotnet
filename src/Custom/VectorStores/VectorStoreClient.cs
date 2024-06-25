@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.InternalListHelpers;
+//using static OpenAI.InternalListHelpers;
 
 namespace OpenAI.VectorStores;
 
@@ -148,7 +148,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStore"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
             => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
@@ -165,7 +165,7 @@ public partial class VectorStoreClient
     /// <returns>
     /// A collection of <see cref="VectorStore"/> instances that can be synchronously enumerated via <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual PageCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         return CreatePageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
             => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
@@ -226,7 +226,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null, 
@@ -257,7 +257,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
@@ -487,7 +487,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,
@@ -524,7 +524,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,
