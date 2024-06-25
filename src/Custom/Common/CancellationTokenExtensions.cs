@@ -1,6 +1,8 @@
 using System.ClientModel.Primitives;
 using System.Threading;
 
+namespace OpenAI;
+
 internal static class CancellationTokenExtensions
 {
     public static RequestOptions ToRequestOptions(this CancellationToken cancellationToken, bool streaming = false)
