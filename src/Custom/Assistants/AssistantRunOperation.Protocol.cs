@@ -4,19 +4,8 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-public class AssistantRunOperation // TODO: inherit from SCM ResultValueOperation type
+public partial class AssistantRunOperation // TODO: inherit from SCM ResultValueOperation type
 {
-    private readonly string _threadId;
-    private readonly string _runId;
-    private readonly InternalAssistantRunClient _runSubClient;
-
-    internal AssistantRunOperation(string threadId, string runId, InternalAssistantRunClient runSubClient)
-    {
-        _threadId = threadId;
-        _runId = runId;
-        _runSubClient = runSubClient;
-    }
-
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
     public virtual Task<ClientResult> GetRunAsync(RequestOptions options)
         => _runSubClient.GetRunAsync(_threadId, _runId, options);
@@ -64,5 +53,4 @@ public class AssistantRunOperation // TODO: inherit from SCM ResultValueOperatio
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunStep"/>
     public virtual ClientResult GetRunStep(string stepId, RequestOptions options)
         => _runSubClient.GetRunStep(_threadId, _runId, stepId, options);
-
 }

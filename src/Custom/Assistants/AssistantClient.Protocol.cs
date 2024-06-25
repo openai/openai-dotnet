@@ -267,54 +267,6 @@ public partial class AssistantClient
     public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
-    public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
-        => _runSubClient.GetRunAsync(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRun"/>
-    public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
-        => _runSubClient.GetRun(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.ModifyRunAsync"/>
-    public virtual Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.ModifyRunAsync(threadId, runId, content, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.ModifyRun"/>
-    public virtual ClientResult ModifyRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.ModifyRun(threadId, runId, content, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.CancelRunAsync"/>
-    public virtual Task<ClientResult> CancelRunAsync(string threadId, string runId, RequestOptions options)
-        => _runSubClient.CancelRunAsync(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.CancelRun"/>
-    public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options)
-        => _runSubClient.CancelRun(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.SubmitToolOutputsToRunAsync"/>
-    public virtual Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.SubmitToolOutputsToRunAsync(threadId, runId, content, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.SubmitToolOutputsToRun"/>
-    public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepsAsync"/>
-    public virtual Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunSteps"/>
-    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunSteps(threadId, runId, limit, order, after, before, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepAsync"/>
-    public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options)
-        => _runSubClient.GetRunStepAsync(threadId, runId, stepId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStep"/>
-    public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions options)
-        => _runSubClient.GetRunStep(threadId, runId, stepId, options);
-
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)
         => _threadSubClient.CreateThreadAsync(content, options);
