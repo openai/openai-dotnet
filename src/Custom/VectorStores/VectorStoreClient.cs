@@ -150,8 +150,9 @@ public partial class VectorStoreClient
     /// </returns>
     public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
-        return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+        //return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
+        //    => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -167,8 +168,10 @@ public partial class VectorStoreClient
     /// </returns>
     public virtual PageCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
-        return CreatePageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+
+        //return CreatePageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
+        //    => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -233,9 +236,11 @@ public partial class VectorStoreClient
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociationsAsync(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+
+        throw new NotImplementedException();
+        //return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
+        //    (continuationToken, pageSize) => GetFileAssociationsAsync(
+        //        vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -260,9 +265,11 @@ public partial class VectorStoreClient
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociations(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+
+        throw new NotImplementedException();
+        //return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
+        //    (continuationToken, pageSize) => GetFileAssociations(
+        //        vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -497,9 +504,10 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociationsAsync
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+        //return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
+        //    (continuationToken, pageSize) => GetFileAssociationsAsync
+        //        (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -534,8 +542,9 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociations
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+        //return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
+        //    (continuationToken, pageSize) => GetFileAssociations
+        //        (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
     }
 }
