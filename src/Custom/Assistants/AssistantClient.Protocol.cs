@@ -243,21 +243,25 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRunAsync"/>
-    public virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateThreadAndRunAsync(content, options);
-
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
-    public virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateThreadAndRun(content, options = null);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
-    public virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateRunAsync(threadId, content, options);
+    public virtual AssistantRunOperation CreateThreadAndRun(
+        ReturnWhen returnWhen,
+        BinaryContent content, RequestOptions options = null)
+    {
+        ClientResult result =  _runSubClient.CreateThreadAndRun(content, options = null);
+        ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
+        return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
-    public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateRun(threadId, content, options);
+    public virtual AssistantRunOperation CreateRun(
+        ReturnWhen returnWhen,
+        string threadId, BinaryContent content, RequestOptions options = null) 
+    {
+        ClientResult result = _runSubClient.CreateRun(threadId, content, options);
+        ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
+        return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>
     public virtual Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)

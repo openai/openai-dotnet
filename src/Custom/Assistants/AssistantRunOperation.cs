@@ -12,18 +12,27 @@ using static OpenAI.CancellationTokenExtensions;
 
 namespace OpenAI.Assistants;
 
-public partial class AssistantRunOperation // TODO: inherit from SCM ResultValueOperation type
+public partial class AssistantRunOperation : ResultValueOperation
 {
     private readonly string _threadId;
     private readonly string _runId;
     private readonly InternalAssistantRunClient _runSubClient;
 
-    internal AssistantRunOperation(string threadId, string runId, InternalAssistantRunClient runSubClient)
+    internal AssistantRunOperation(string threadId, string runId,
+        InternalAssistantRunClient runSubClient,
+        PipelineResponse response)
+        : base(GetRehydrationToken(threadId, runId), response)
     {
         _threadId = threadId;
         _runId = runId;
         _runSubClient = runSubClient;
     }
+
+    public string ThreadId => _threadId;
+    public string RunId => _runId;
+
+    // TODO: implement polling and status checking progress
+    // TODO: from this, set HasCompleted at appropriate time
 
     /// <summary>
     /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
@@ -209,4 +218,7 @@ public partial class AssistantRunOperation // TODO: inherit from SCM ResultValue
         T deserializedResultValue = responseDeserializer.Invoke(pipelineResponse);
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }
+
+    private static BinaryData GetRehydrationToken(string threadId, string runId)
+        => AssistantRunOperationToken.ToBytes(threadId, runId);
 }
