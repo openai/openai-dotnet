@@ -16,11 +16,12 @@ internal class OpenAIPageCollectionHelpers
 
     public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
         ClientToken firstPageToken,
-        GetPageValuesAsync getPageValuesAsync)
+        GetPageValuesAsync getPageValuesAsync,
+        RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken, RequestOptions? options)
+        async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
@@ -43,11 +44,12 @@ internal class OpenAIPageCollectionHelpers
 
     public static PageCollection<TValue> Create<TValue, TList>(
         ClientToken firstPageToken,
-        GetPageValues getPageValues)
+        GetPageValues getPageValues,
+        RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        PageResult<TValue> getPage(ClientToken pageToken, RequestOptions? options)
+        PageResult<TValue> getPage(ClientToken pageToken)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
