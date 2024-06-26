@@ -30,6 +30,8 @@ internal class OpenAIPageToken
         using MemoryStream stream = new();
         using Utf8JsonWriter writer = new(stream);
 
+        writer.WriteStartObject();
+
         if (Limit.HasValue)
         {
             writer.WriteNumber("limit", Limit.Value);
@@ -50,6 +52,8 @@ internal class OpenAIPageToken
             writer.WriteString("before", Before);
         }
 
+        writer.WriteEndObject();
+
         writer.Flush();
         stream.Position = 0;
         return BinaryData.FromStream(stream);
@@ -60,6 +64,11 @@ internal class OpenAIPageToken
 
     public static OpenAIPageToken FromBytes(BinaryData data)
     {
+        if (data.ToMemory().Length == 0)
+        {
+            return new(default, default, default, default);
+        }
+
         Utf8JsonReader reader = new(data);
 
         int? limit = null;
@@ -67,8 +76,16 @@ internal class OpenAIPageToken
         string? after = null;
         string? before = null;
 
+        reader.Read();
+        Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
+
         while (reader.Read())
         {
+            if (reader.TokenType == JsonTokenType.EndObject)
+            {
+                break;
+            }
+
             Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
             string propertyName = reader.GetString()!;
 

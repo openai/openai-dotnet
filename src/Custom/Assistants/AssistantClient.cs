@@ -134,9 +134,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-    {
-        return new AssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
-    }
+        => new AssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
@@ -295,7 +293,7 @@ public partial class AssistantClient
         string threadId,
         MessageRole role,
         IEnumerable<MessageContent> content,
-        MessageCreationOptions options = null, 
+        MessageCreationOptions options = null,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -646,7 +644,7 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        async Task<ClientResult> getResultAsync() => 
+        async Task<ClientResult> getResultAsync() =>
             await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 

@@ -51,7 +51,8 @@ public partial class AssistantTests
             },
         });
         Assert.That(modifiedAssistant.Id, Is.EqualTo(assistant.Id));
-        IEnumerable<Assistant> recentAssistants = client.GetAssistants().GetAllValues();
+        PageCollection<Assistant> pages = client.GetAssistants();
+        IEnumerable<Assistant> recentAssistants = pages.GetAllValues();
         Assistant listedAssistant = recentAssistants.FirstOrDefault(pageItem => pageItem.Id == assistant.Id);
         Assert.That(listedAssistant, Is.Not.Null);
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");

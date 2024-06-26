@@ -97,9 +97,7 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        return new ProtocolAssistantPageCollection(this, limit, order, after, before, options);
-    }
+        => new ProtocolAssistantPageCollection(this, limit, order, after, before, options);
 
     // This needs to be internal now
     internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
