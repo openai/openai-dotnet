@@ -60,6 +60,9 @@ internal class OpenAIPageToken : ClientToken
         return BinaryData.FromStream(stream);
     }
 
+    public OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
+        => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
+
     public static OpenAIPageToken FromListOptions(int? limit, string? order, string? after, string? before)
         => new OpenAIPageToken(limit, order, after, before);
 
@@ -120,13 +123,13 @@ internal class OpenAIPageToken : ClientToken
         return new(limit, order, after, before);
     }
 
-    public static OpenAIPageToken? GetNextPageToken(OpenAIPageToken token, bool hasMore, string? lastId)
+    public static OpenAIPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
     {
-        if (!hasMore || lastId is null)
+        if (!hasMore || after is null)
         {
             return null;
         }
 
-        return new OpenAIPageToken(token.Limit, token.Order, lastId, token.Before);
+        return new OpenAIPageToken(limit, order, after, before);
     }
 }
