@@ -104,7 +104,7 @@ public partial class AssistantClient
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
@@ -113,9 +113,9 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId);
+        OpenAIPageToken pageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync, cancellationToken.ToRequestOptions());
     }
 
@@ -127,18 +127,14 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        if (firstPageToken is not OpenAIPageToken pageToken)
-        {
-            pageToken = OpenAIPageToken.FromToken(firstPageToken);
-        }
-
+        OpenAIPageToken pageToken = OpenAIPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync, cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
@@ -147,9 +143,9 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+    public virtual PageCollection<Assistant> GetAssistants(ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId);
+        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPage, cancellationToken.ToRequestOptions());
     }
 
@@ -161,11 +157,7 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        if (firstPageToken is not OpenAIPageToken pageToken)
-        {
-            pageToken = OpenAIPageToken.FromToken(firstPageToken);
-        }
-
+        OpenAIPageToken pageToken = OpenAIPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPage, cancellationToken.ToRequestOptions());
     }
 

@@ -23,7 +23,7 @@ internal class OpenAIPageCollectionHelpers
     {
         async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken)
         {
-            OpenAIPageToken token = (OpenAIPageToken)pageToken;
+            OpenAIPageToken token = OpenAIPageToken.FromToken(pageToken);
 
             ClientResult result = await getPageValuesAsync(
                 limit: token.Limit,
@@ -51,7 +51,7 @@ internal class OpenAIPageCollectionHelpers
     {
         PageResult<TValue> getPage(ClientToken pageToken)
         {
-            OpenAIPageToken token = (OpenAIPageToken)pageToken;
+            OpenAIPageToken token = OpenAIPageToken.FromToken(pageToken);
 
             ClientResult result = getPageValues(
                 limit: token.Limit,

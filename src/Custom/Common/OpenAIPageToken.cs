@@ -68,6 +68,11 @@ internal class OpenAIPageToken : ClientToken
 
     public static OpenAIPageToken FromToken(ClientToken token)
     {
+        if (token is OpenAIPageToken openAIPageToken)
+        {
+            return openAIPageToken;
+        }
+
         BinaryData data = token.ToBytes();
         
         if (data.ToMemory().Length == 0)
