@@ -19,10 +19,10 @@ internal class PageCollectionHelpers
         Func<ClientToken, RequestOptions?, ClientPage<T>> getPage) where T : notnull
         => new FuncPageCollection<T>(firstPageToken, getPage);
 
-    public static IEnumerable<ClientResult> CreatePrototol(RequestOptions? options,
-            Func<RequestOptions?, ClientResult> getPage,
-            Func<ClientResult, bool> isLastPage)
-        => new FuncResultEnumerable(options, getPage, isLastPage);
+    public static IEnumerable<ClientResult> CreatePrototol(ClientToken firstPageToken,
+            Func<ClientToken, ClientResult> getPage,
+            Func<ClientResult, ClientToken?> getNextPageToken)
+        => new FuncResultEnumerable(firstPageToken, getPage, getNextPageToken);
 
     private class FuncAsyncPageCollection<T> : AsyncPageCollection<T> where T : notnull
     {
@@ -60,32 +60,30 @@ internal class PageCollectionHelpers
 
     private class FuncResultEnumerable : IEnumerable<ClientResult>
     {
-        private readonly RequestOptions? _options;
+        private readonly ClientToken _firstPageToken;
+        private readonly Func<ClientToken, ClientResult> _getPage;
+        private readonly Func<ClientResult, ClientToken?> _getNextPageToken;
 
-        private readonly Func<RequestOptions?, ClientResult> _getPage;
-        private readonly Func<ClientResult, bool> _isLastPage;
-
-        public FuncResultEnumerable(RequestOptions? options,
-            Func<RequestOptions?, ClientResult> getPage,
-            Func<ClientResult, bool> isLastPage)
+        public FuncResultEnumerable(ClientToken firstPageToken,
+            Func<ClientToken, ClientResult> getPage,
+            Func<ClientResult, ClientToken?> getNextPageToken)
         {
-            _options = options;
+            _firstPageToken = firstPageToken;
             _getPage = getPage;
-            _isLastPage = isLastPage;
+            _getNextPageToken = getNextPageToken;
         }
 
         public IEnumerator<ClientResult> GetEnumerator()
         {
-            bool lastPage = false;
+            ClientToken? pageToken = _firstPageToken;
 
             do
             {
-                ClientResult result = _getPage(_options);
+                ClientResult result = _getPage(pageToken);
                 yield return result;
-
-                lastPage = _isLastPage(result);
+                pageToken = _getNextPageToken(result);
             }
-            while (!lastPage);
+            while (pageToken != null);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
