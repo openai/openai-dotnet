@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,7 +18,8 @@ public partial class AssistantExamples
 
         int count = 0;
 
-        IAsyncEnumerable<Assistant> assistants = client.GetAssistantsAsync().GetAllValuesAsync();
+        AsyncPageCollection<Assistant> assitantPages = client.GetAssistantsAsync();
+        IAsyncEnumerable<Assistant> assistants = assitantPages.GetAllValuesAsync();
         await foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

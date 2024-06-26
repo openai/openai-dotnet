@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿
+using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
 using OpenAI.VectorStores;
@@ -808,7 +809,6 @@ public partial class AssistantTests
         Assert.That(count, Is.GreaterThanOrEqualTo(10));
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
     }
-
 
     [Test]
     public async Task MessagesWithRoles()

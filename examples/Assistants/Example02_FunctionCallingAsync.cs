@@ -151,10 +151,11 @@ public partial class AssistantExamples
         // With the run complete, list the messages and display their content
         if (run.Status == RunStatus.Completed)
         {
-            AsyncPageCollection<ThreadMessage> messages
+            AsyncPageCollection<ThreadMessage> messagePages
                 = client.GetMessagesAsync(run.ThreadId, resultOrder: ListOrder.OldestFirst);
+            IAsyncEnumerable<ThreadMessage> messages = messagePages.GetAllValuesAsync();
 
-            await foreach (ThreadMessage message in messages.GetAllValuesAsync())
+            await foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");
                 foreach (MessageContent contentItem in message.Content)

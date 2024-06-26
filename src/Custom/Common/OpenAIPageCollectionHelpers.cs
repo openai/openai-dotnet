@@ -3,19 +3,20 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using OpenAI.Utility;
 
 #nullable enable
 
 namespace OpenAI;
 
-internal class OpenAIPagingHelpers
+internal class OpenAIPageCollectionHelpers
 {
     public delegate Task<ClientResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
     public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
         ClientToken firstPageToken,
-        GetPageValuesAsync getListValuesAsync)
+        GetPageValuesAsync getPageValuesAsync)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
@@ -23,7 +24,7 @@ internal class OpenAIPagingHelpers
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
-            ClientResult result = await getListValuesAsync(
+            ClientResult result = await getPageValuesAsync(
                 limit: token.Limit,
                 order: token.Order,
                 after: token.After,
@@ -42,7 +43,7 @@ internal class OpenAIPagingHelpers
 
     public static PageCollection<TValue> Create<TValue, TList>(
         ClientToken firstPageToken,
-        GetPageValues getListValues)
+        GetPageValues getPageValues)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
@@ -50,7 +51,7 @@ internal class OpenAIPagingHelpers
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
-            ClientResult result = getListValues(
+            ClientResult result = getPageValues(
                 limit: token.Limit,
                 order: token.Order,
                 after: token.After,

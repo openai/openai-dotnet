@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 #nullable enable
 
-namespace OpenAI;
+namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
