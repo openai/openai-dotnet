@@ -133,6 +133,15 @@ public partial class AssistantClient
         => new AssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
 
     /// <summary>
+    /// Rehydrates a collection of <see cref="Assistant"/> instances.
+    /// </summary>
+    /// <param name="firstPageToken">Page token indicating the first page of the collection to rehydrate.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual PageCollection<Assistant> GetAssistants(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+        => new AssistantPageCollection(this, firstPageToken);
+
+    /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
     /// </summary>
     /// <param name="assistantId"> The ID of the assistant to delete. </param>

@@ -19,6 +19,12 @@ internal class AssistantPageCollection : PageCollection<Assistant>
         FirstPageToken = OpenAIPageToken.FromListOptions(limit, order, after, before);
     }
 
+    public AssistantPageCollection(AssistantClient client, BinaryData firstPageToken)
+    {
+        _client = client;
+        FirstPageToken = firstPageToken;
+    }
+
     public override BinaryData FirstPageToken { get; }
 
     public override ClientPage<Assistant> GetPage(BinaryData pageToken, RequestOptions? options)
