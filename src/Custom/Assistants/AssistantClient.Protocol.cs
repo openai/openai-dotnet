@@ -65,7 +65,7 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
-    => new AsyncProtocolAssistantPageCollection(this, limit, order, after, before, options);
+        => new AsyncProtocolAssistantPageCollection(this, limit, order, after, before, options);
 
     internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -98,7 +98,7 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
-        => new ProtocolAssistantPageCollection(this, limit, order, after, before, options);
+        => OpenAIPagingHelpers.CreateProtocol(limit, order, after, before, options, GetAssistantsPage);
 
     // This needs to be internal now
     internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)

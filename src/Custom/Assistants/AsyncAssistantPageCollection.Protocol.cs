@@ -35,7 +35,6 @@ internal class AsyncProtocolAssistantPageCollection : IAsyncEnumerable<ClientRes
 
     public async IAsyncEnumerator<ClientResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-
         string? after = _after;
         bool hasMore = false;
 
