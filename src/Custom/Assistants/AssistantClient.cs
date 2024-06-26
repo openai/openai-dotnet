@@ -118,6 +118,15 @@ public partial class AssistantClient
         => new AsyncAssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
 
     /// <summary>
+    /// Rehydrates a collection of <see cref="Assistant"/> instances.
+    /// </summary>
+    /// <param name="firstPageToken">Page token indicating the first page of the collection to rehydrate.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+        => new AsyncAssistantPageCollection(this, firstPageToken);
+
+    /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
     /// <param name="resultOrder">

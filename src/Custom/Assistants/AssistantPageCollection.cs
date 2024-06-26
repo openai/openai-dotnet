@@ -19,6 +19,7 @@ internal class AssistantPageCollection : PageCollection<Assistant>
         FirstPageToken = OpenAIPageToken.FromListOptions(limit, order, after, before);
     }
 
+    // rehydration constructor
     public AssistantPageCollection(AssistantClient client, BinaryData firstPageToken)
     {
         _client = client;

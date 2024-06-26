@@ -20,6 +20,13 @@ internal class AsyncAssistantPageCollection : AsyncPageCollection<Assistant>
         FirstPageToken = OpenAIPageToken.FromListOptions(limit, order, after, before);
     }
 
+    // rehydration constructor
+    public AsyncAssistantPageCollection(AssistantClient client, BinaryData firstPageToken)
+    {
+        _client = client;
+        FirstPageToken = firstPageToken;
+    }
+
     public override BinaryData FirstPageToken { get; }
 
     public override async Task<ClientPage<Assistant>> GetPageAsync(BinaryData pageToken, RequestOptions? options)
