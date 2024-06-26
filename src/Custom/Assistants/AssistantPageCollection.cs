@@ -46,6 +46,7 @@ internal class AssistantPageCollection : PageCollection<Assistant>
             token,
             list.HasMore,
             list.LastId);
+
         return ClientPage<Assistant>.Create(list.Data, pageToken, nextPageToken, response);
     }
 }
