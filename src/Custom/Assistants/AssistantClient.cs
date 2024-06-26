@@ -115,16 +115,22 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-        => GetAssistantsAsync(OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId));
+    {
+        OpenAIPageToken pageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId);
+        return OpenAIPagingHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync);
+    }
 
     /// <summary>
-    /// Rehydrates a collection of <see cref="Assistant"/> instances.
+    /// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
     /// </summary>
-    /// <param name="firstPageToken">Page token indicating the first page of the collection to rehydrate.</param>
+    /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
-        => OpenAIPagingHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPageAsync);
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+    {
+        OpenAIPageToken pageToken = OpenAIPageToken.FromBytes(firstPageToken);
+        return OpenAIPagingHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync);
+    }
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
@@ -139,16 +145,22 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-        => GetAssistants(OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId));
+    {
+        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId);
+        return OpenAIPagingHelpers.Create<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPage);
+    }
 
     /// <summary>
-    /// Rehydrates a collection of <see cref="Assistant"/> instances.
+    /// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
     /// </summary>
-    /// <param name="firstPageToken">Page token indicating the first page of the collection to rehydrate.</param>
+    /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
-        => OpenAIPagingHelpers.Create<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPage);
+    public virtual PageCollection<Assistant> GetAssistants(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+    {
+        OpenAIPageToken pageToken = OpenAIPageToken.FromBytes(firstPageToken);
+        return OpenAIPagingHelpers.Create<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPage);
+    }
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
