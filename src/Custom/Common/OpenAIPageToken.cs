@@ -66,8 +66,10 @@ internal class OpenAIPageToken : ClientToken
     public static OpenAIPageToken FromListOptions(int? limit, string? order, string? after, string? before)
         => new OpenAIPageToken(limit, order, after, before);
 
-    public static OpenAIPageToken FromBytes(BinaryData data)
+    public static OpenAIPageToken FromToken(ClientToken token)
     {
+        BinaryData data = token.ToBytes();
+        
         if (data.ToMemory().Length == 0)
         {
             return new(default, default, default, default);

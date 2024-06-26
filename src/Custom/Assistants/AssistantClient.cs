@@ -126,9 +126,13 @@ public partial class AssistantClient
     /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromBytes(firstPageToken);
+        if (firstPageToken is not OpenAIPageToken pageToken)
+        {
+            pageToken = OpenAIPageToken.FromToken(firstPageToken);
+        }
+
         return OpenAIPagingHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync);
     }
 
@@ -156,9 +160,13 @@ public partial class AssistantClient
     /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(BinaryData firstPageToken, CancellationToken cancellationToken = default)
+    public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromBytes(firstPageToken);
+        if (firstPageToken is not OpenAIPageToken pageToken)
+        {
+            pageToken = OpenAIPageToken.FromToken(firstPageToken);
+        }
+
         return OpenAIPagingHelpers.Create<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPage);
     }
 
