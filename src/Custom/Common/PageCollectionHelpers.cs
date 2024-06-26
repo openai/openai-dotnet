@@ -13,11 +13,11 @@ namespace OpenAI;
 internal class PageCollectionHelpers
 {
     public static AsyncPageCollection<T> CreateAsync<T>(ClientToken firstPageToken,
-        Func<ClientToken, RequestOptions?, Task<ClientPage<T>>> getPageAsync) where T : notnull
+        Func<ClientToken, RequestOptions?, Task<PageResult<T>>> getPageAsync) where T : notnull
         => new AsyncFuncPageCollection<T>(firstPageToken, getPageAsync);
 
     public static PageCollection<T> Create<T>(ClientToken firstPageToken,
-        Func<ClientToken, RequestOptions?, ClientPage<T>> getPage) where T : notnull
+        Func<ClientToken, RequestOptions?, PageResult<T>> getPage) where T : notnull
         => new FuncPageCollection<T>(firstPageToken, getPage);
 
     public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ClientToken firstPageToken,
@@ -33,9 +33,9 @@ internal class PageCollectionHelpers
     private class AsyncFuncPageCollection<T> : AsyncPageCollection<T> where T : notnull
     {
         private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken, RequestOptions?, Task<ClientPage<T>>> _getPageAsync;
+        private readonly Func<ClientToken, RequestOptions?, Task<PageResult<T>>> _getPageAsync;
 
-        public AsyncFuncPageCollection(ClientToken firstPageToken, Func<ClientToken, RequestOptions?, Task<ClientPage<T>>> getPageAsync)
+        public AsyncFuncPageCollection(ClientToken firstPageToken, Func<ClientToken, RequestOptions?, Task<PageResult<T>>> getPageAsync)
         {
             _firstPageToken = firstPageToken;
             _getPageAsync = getPageAsync;
@@ -43,16 +43,16 @@ internal class PageCollectionHelpers
 
         public override ClientToken FirstPageToken => _firstPageToken;
 
-        public override async Task<ClientPage<T>> GetPageAsync(ClientToken pageToken, RequestOptions? options = null)
+        public override async Task<PageResult<T>> GetPageAsync(ClientToken pageToken, RequestOptions? options = null)
             => await _getPageAsync(pageToken, options).ConfigureAwait(false);
     }
 
     private class FuncPageCollection<T> : PageCollection<T> where T : notnull
     {
         private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken, RequestOptions?, ClientPage<T>> _getPage;
+        private readonly Func<ClientToken, RequestOptions?, PageResult<T>> _getPage;
 
-        public FuncPageCollection(ClientToken firstPageToken, Func<ClientToken, RequestOptions?, ClientPage<T>> getPage)
+        public FuncPageCollection(ClientToken firstPageToken, Func<ClientToken, RequestOptions?, PageResult<T>> getPage)
         {
             _firstPageToken = firstPageToken;
             _getPage = getPage;
@@ -60,7 +60,7 @@ internal class PageCollectionHelpers
 
         public override ClientToken FirstPageToken => _firstPageToken;
 
-        public override ClientPage<T> GetPage(ClientToken pageToken, RequestOptions? options = null)
+        public override PageResult<T> GetPage(ClientToken pageToken, RequestOptions? options = null)
             => _getPage(pageToken, options);
     }
 

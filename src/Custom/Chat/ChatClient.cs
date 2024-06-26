@@ -132,7 +132,7 @@ public partial class ChatClient
     /// <param name="options"> Additional options for the chat completion request. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual AsyncResultValueCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
 
@@ -156,7 +156,7 @@ public partial class ChatClient
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual AsyncResultValueCollection<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages)
+    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages)
         => CompleteChatStreamingAsync(messages, default(ChatCompletionOptions));
 
     /// <summary>
@@ -171,7 +171,7 @@ public partial class ChatClient
     /// <param name="options"> Additional options for the chat completion request. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual ResultValueCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
 
@@ -193,7 +193,7 @@ public partial class ChatClient
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
     /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual ResultValueCollection<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages)
+    public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages)
         => CompleteChatStreaming(messages, default(ChatCompletionOptions));
 
     private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)

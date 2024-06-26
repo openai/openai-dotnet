@@ -269,7 +269,7 @@ public partial class AssistantTests
         Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
         PageCollection<RunStep> pages = client.GetRunSteps(run);
-        ClientPage<RunStep> firstPage = pages.First();
+        PageResult<RunStep> firstPage = pages.First();
 
         IEnumerable<RunStep> runSteps = pages.GetAllValues();
         Assert.That(runSteps.Count, Is.GreaterThan(1));
@@ -414,7 +414,7 @@ public partial class AssistantTests
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncResultValueCollection<StreamingUpdate> streamingResult
+        AsyncCollectionResult<StreamingUpdate> streamingResult
             = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
@@ -461,7 +461,7 @@ public partial class AssistantTests
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncResultValueCollection<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
             assistant,
             new()
             {
@@ -680,7 +680,7 @@ public partial class AssistantTests
         
         int lastIdSeen = int.MaxValue;
 
-        await foreach (ClientPage<Assistant> page in pages)
+        await foreach (PageResult<Assistant> page in pages)
         {
             foreach (Assistant assistant in page.Values)
             {
@@ -734,7 +734,7 @@ public partial class AssistantTests
         int pageCount = 0;
         int lastIdSeen = int.MaxValue;
 
-        await foreach (ClientPage<Assistant> page in rehydratedPages)
+        await foreach (PageResult<Assistant> page in rehydratedPages)
         {
             foreach (Assistant assistant in page.Values)
             {
@@ -784,7 +784,7 @@ public partial class AssistantTests
         int pageCount = 0;
         int lastIdSeen = int.MaxValue;
 
-        await foreach (ClientPage<Assistant> page in rehydratedPages)
+        await foreach (PageResult<Assistant> page in rehydratedPages)
         {
             foreach (Assistant assistant in page.Values)
             {

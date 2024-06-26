@@ -19,7 +19,7 @@ internal class OpenAIPagingHelpers
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        async Task<ClientPage<TValue>> getPageAsync(ClientToken pageToken, RequestOptions? options)
+        async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken, RequestOptions? options)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
@@ -34,7 +34,7 @@ internal class OpenAIPagingHelpers
             IInternalListResponse<TValue> list = ModelReaderWriter.Read<TList>(response.Content)!;
             OpenAIPageToken? nextPageToken = token.GetNextPageToken(list.HasMore, list.LastId);
 
-            return ClientPage<TValue>.Create(list.Data, pageToken, nextPageToken, response);
+            return PageResult<TValue>.Create(list.Data, pageToken, nextPageToken, response);
         }
 
         return PageCollectionHelpers.CreateAsync(firstPageToken, getPageAsync);
@@ -46,7 +46,7 @@ internal class OpenAIPagingHelpers
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        ClientPage<TValue> getPage(ClientToken pageToken, RequestOptions? options)
+        PageResult<TValue> getPage(ClientToken pageToken, RequestOptions? options)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
@@ -61,7 +61,7 @@ internal class OpenAIPagingHelpers
             IInternalListResponse<TValue> list = ModelReaderWriter.Read<TList>(response.Content)!;
             OpenAIPageToken? nextPageToken = token.GetNextPageToken(list.HasMore, list.LastId);
 
-            return ClientPage<TValue>.Create(list.Data, pageToken, nextPageToken, response);
+            return PageResult<TValue>.Create(list.Data, pageToken, nextPageToken, response);
         }
 
         return PageCollectionHelpers.Create(firstPageToken, getPage);

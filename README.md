@@ -115,11 +115,11 @@ When you request a chat completion, the default behavior is for the server to ge
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```csharp
-ResultValueCollection<StreamingChatCompletionUpdate> updates
+CollectionResult<StreamingChatCompletionUpdate> updates
     = client.CompleteChatStreaming("Say 'this is a test.'");
 ```
 
-Notice that the returned value is a `ResultValueCollection<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
+Notice that the returned value is a `CollectionResult<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
 ```csharp
 Console.WriteLine($"[ASSISTANT]:");
@@ -132,10 +132,10 @@ foreach (StreamingChatCompletionUpdate update in updates)
 }
 ```
 
-Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncResultValueCollection<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
+Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncCollectionResult<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
 
 ```csharp
-AsyncResultValueCollection<StreamingChatCompletionUpdate> updates
+AsyncCollectionResult<StreamingChatCompletionUpdate> updates
     = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
 Console.WriteLine($"[ASSISTANT]:");
@@ -640,10 +640,10 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
 });
 ```
 
-With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `ResultValueCollection<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncResultValueCollection<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
+With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `CollectionResult<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncCollectionResult<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
 
 ```csharp
-ResultValueCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
     thread,
     assistant,
     new RunCreationOptions()
