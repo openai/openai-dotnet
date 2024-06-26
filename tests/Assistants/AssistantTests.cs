@@ -705,6 +705,61 @@ public partial class AssistantTests
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
     }
 
+
+    [Test]
+    public async Task CanRehydratePageCollection()
+    {
+        AssistantClient client = GetTestClient();
+
+        // Create assistant collection
+        for (int i = 0; i < 10; i++)
+        {
+            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            {
+                Name = $"Test Assistant {i}"
+            });
+            Validate(assistant);
+            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+        
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = pages.FirstPageToken.ToBytes();
+        ClientToken rehydrationToken = ClientToken.FromBytes(rehydrationBytes);
+
+        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
+
+        int count = 0;
+        int pageCount = 0;
+        int lastIdSeen = int.MaxValue;
+
+        await foreach (ClientPage<Assistant> page in rehydratedPages)
+        {
+            foreach (Assistant assistant in page.Values)
+            {
+                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+                if (assistant.Name?.StartsWith("Test Assistant ") == true)
+                {
+                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
+                    Assert.That(seenId, Is.LessThan(lastIdSeen));
+                    lastIdSeen = seenId;
+                }
+                count++;
+            }
+
+            pageCount++;
+            if (lastIdSeen == 0 || count > 100)
+            {
+                break;
+            }
+        }
+
+        Assert.That(count, Is.GreaterThanOrEqualTo(10));
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
+    }
+
+
     [Test]
     public async Task MessagesWithRoles()
     {
