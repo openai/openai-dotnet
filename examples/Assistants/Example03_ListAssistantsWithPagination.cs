@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using System;
-using System.ClientModel;
+using System.Collections.Generic;
 
 namespace OpenAI.Examples;
 
@@ -16,7 +16,7 @@ public partial class AssistantExamples
 
         int count = 0;
 
-        PageableCollection<Assistant> assistants = client.GetAssistants();
+        IEnumerable<Assistant> assistants = client.GetAssistants().GetAllValues();
         foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

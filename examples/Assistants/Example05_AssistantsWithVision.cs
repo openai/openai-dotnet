@@ -44,7 +44,7 @@ public partial class AssistantExamples
                 }
         });
 
-        ResultCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+        ResultValueCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
             thread,
             assistant,
             new RunCreationOptions()

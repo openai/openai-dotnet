@@ -99,10 +99,10 @@ public partial class AssistantExamples
         } while (!threadRun.Status.IsTerminal);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
-        AsyncPageableCollection<ThreadMessage> messages
+        AsyncPageCollection<ThreadMessage> messages
             = assistantClient.GetMessagesAsync(threadRun.ThreadId, ListOrder.OldestFirst);
 
-        await foreach (ThreadMessage message in messages)
+        await foreach (ThreadMessage message in messages.GetAllValuesAsync())
         {
             Console.Write($"[{message.Role.ToString().ToUpper()}]: ");
             foreach (MessageContent contentItem in message.Content)

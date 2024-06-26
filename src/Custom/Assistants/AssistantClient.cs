@@ -109,9 +109,12 @@ public partial class AssistantClient
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
         //return CreateAsyncPageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
@@ -130,7 +133,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder, int? pageSize, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+    public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         return new AssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
     }

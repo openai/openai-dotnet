@@ -51,7 +51,7 @@ public partial class AssistantTests
             },
         });
         Assert.That(modifiedAssistant.Id, Is.EqualTo(assistant.Id));
-        PageableCollection<Assistant> recentAssistants = client.GetAssistants();
+        IEnumerable<Assistant> recentAssistants = client.GetAssistants().GetAllValues();
         Assistant listedAssistant = recentAssistants.FirstOrDefault(pageItem => pageItem.Id == assistant.Id);
         Assert.That(listedAssistant, Is.Not.Null);
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
@@ -128,7 +128,7 @@ public partial class AssistantTests
         });
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
-        PageableCollection<ThreadMessage> messagePage = client.GetMessages(thread);
+        IEnumerable<ThreadMessage> messagePage = client.GetMessages(thread).GetAllValues();
         Assert.That(messagePage.Count, Is.EqualTo(1));
         Assert.That(messagePage.First().Id, Is.EqualTo(message.Id));
         Assert.That(messagePage.First().Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
@@ -159,7 +159,7 @@ public partial class AssistantTests
         };
         AssistantThread thread = client.CreateThread(options);
         Validate(thread);
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.OldestFirst);
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.OldestFirst).GetAllValues();
         Assert.That(messages.Count, Is.EqualTo(2));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.User));
         Assert.That(messages.First().Content?.Count, Is.EqualTo(1));
@@ -179,7 +179,7 @@ public partial class AssistantTests
         Validate(assistant);
         AssistantThread thread = client.CreateThread();
         Validate(thread);
-        PageableCollection<ThreadRun> runs = client.GetRuns(thread);
+        IEnumerable<ThreadRun> runs = client.GetRuns(thread).GetAllValues();
         Assert.That(runs.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
@@ -189,11 +189,11 @@ public partial class AssistantTests
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-        runs = client.GetRuns(thread);
+        runs = client.GetRuns(thread).GetAllValues();
         Assert.That(runs.Count, Is.EqualTo(1));
         Assert.That(runs.First().Id, Is.EqualTo(run.Id));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread);
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
@@ -207,7 +207,7 @@ public partial class AssistantTests
         Assert.That(run.FailedAt, Is.Null);
         Assert.That(run.IncompleteDetails, Is.Null);
 
-        messages = client.GetMessages(thread);
+        messages = client.GetMessages(thread).GetAllValues();
         Assert.That(messages.Count, Is.EqualTo(2));
 
         Assert.That(messages.ElementAt(0).Role, Is.EqualTo(MessageRole.Assistant));
@@ -267,7 +267,10 @@ public partial class AssistantTests
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageableCollection<RunStep> runSteps = client.GetRunSteps(run);
+        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        ClientPage<RunStep> firstPage = pages.First();
+
+        IEnumerable<RunStep> runSteps = pages.GetAllValues();
         Assert.That(runSteps.Count, Is.GreaterThan(1));
         Assert.Multiple(() =>
         {
@@ -280,7 +283,7 @@ public partial class AssistantTests
         RunStepDetails details = runSteps.First().Details;
         Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
-        string rawContent = runSteps.GetRawResponse().Content.ToString();
+        string rawContent = firstPage.GetRawResponse().Content.ToString();
         details = runSteps.ElementAt(1).Details;
         Assert.Multiple(() =>
         {
@@ -387,7 +390,7 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(run.ThreadId, resultOrder: ListOrder.NewestFirst);
+        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, resultOrder: ListOrder.NewestFirst).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);
@@ -410,7 +413,7 @@ public partial class AssistantTests
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncResultCollection<StreamingUpdate> streamingResult
+        AsyncResultValueCollection<StreamingUpdate> streamingResult
             = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
@@ -457,7 +460,7 @@ public partial class AssistantTests
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncResultCollection<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncResultValueCollection<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
             assistant,
             new()
             {
@@ -596,7 +599,7 @@ public partial class AssistantTests
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.NewestFirst);
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.NewestFirst).GetAllValues();
         foreach (ThreadMessage message in messages)
         {
             foreach (MessageContent content in message.Content)
@@ -630,7 +633,7 @@ public partial class AssistantTests
 
         // Page through collection
         int count = 0;
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst);
+        IAsyncEnumerable<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst).GetAllValuesAsync();
 
         int lastIdSeen = int.MaxValue;
 
@@ -672,14 +675,13 @@ public partial class AssistantTests
         // Page through collection
         int count = 0;
         int pageCount = 0;
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst);
-        IAsyncEnumerable<ResultPage<Assistant>> pages = assistants.AsPages(pageSizeHint: 2);
-
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+        
         int lastIdSeen = int.MaxValue;
 
-        await foreach (ResultPage<Assistant> page in pages)
+        await foreach (ClientPage<Assistant> page in pages)
         {
-            foreach (Assistant assistant in page)
+            foreach (Assistant assistant in page.Values)
             {
                 Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
                 if (assistant.Name?.StartsWith("Test Assistant ") == true)
@@ -721,7 +723,7 @@ public partial class AssistantTests
         async Task RefreshMessageListAsync()
         {
             messages.Clear();
-            await foreach (ThreadMessage message in client.GetMessagesAsync(thread))
+            await foreach (ThreadMessage message in client.GetMessagesAsync(thread).GetAllValuesAsync())
             {
                 messages.Add(message);
             }
