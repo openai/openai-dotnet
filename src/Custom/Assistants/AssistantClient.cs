@@ -115,7 +115,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-        => new AsyncAssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
+        => GetAssistantsAsync(OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId));
 
     /// <summary>
     /// Rehydrates a collection of <see cref="Assistant"/> instances.
@@ -124,7 +124,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
-        => new AsyncAssistantPageCollection(this, firstPageToken);
+        => OpenAIPageHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPageAsync);
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
@@ -139,7 +139,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-        => new AssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
+        => GetAssistants(OpenAIPageToken.FromListOptions(limit: pageSize, order: resultOrder?.ToString(), after: afterId, before: beforeId));
 
     /// <summary>
     /// Rehydrates a collection of <see cref="Assistant"/> instances.
@@ -148,7 +148,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
-        => new AssistantPageCollection(this, firstPageToken);
+        => OpenAIPageHelpers.Create<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPage);
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
