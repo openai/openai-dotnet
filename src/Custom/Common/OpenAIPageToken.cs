@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ClientModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -7,7 +8,7 @@ using System.Text.Json;
 
 namespace OpenAI;
 
-internal class OpenAIPageToken
+internal class OpenAIPageToken : ClientToken
 {
     public OpenAIPageToken(int? limit, string? order, string? after, string? before)
     {
@@ -25,7 +26,7 @@ internal class OpenAIPageToken
 
     public string? Before { get; }
 
-    public BinaryData ToBytes()
+    public override BinaryData ToBytes()
     {
         using MemoryStream stream = new();
         using Utf8JsonWriter writer = new(stream);
@@ -59,8 +60,8 @@ internal class OpenAIPageToken
         return BinaryData.FromStream(stream);
     }
 
-    public static BinaryData FromListOptions(int? limit, string? order, string? after, string? before)
-        => new OpenAIPageToken(limit, order, after, before).ToBytes();
+    public static OpenAIPageToken FromListOptions(int? limit, string? order, string? after, string? before)
+        => new OpenAIPageToken(limit, order, after, before);
 
     public static OpenAIPageToken FromBytes(BinaryData data)
     {
@@ -119,13 +120,13 @@ internal class OpenAIPageToken
         return new(limit, order, after, before);
     }
 
-    public static BinaryData? GetNextPageToken(OpenAIPageToken token, bool hasMore, string? lastId)
+    public static OpenAIPageToken? GetNextPageToken(OpenAIPageToken token, bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)
         {
             return null;
         }
 
-        return new OpenAIPageToken(token.Limit, token.Order, lastId, token.Before).ToBytes();
+        return new OpenAIPageToken(token.Limit, token.Order, lastId, token.Before);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using OpenAI.Assistants;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System;
 
 #nullable enable
 
@@ -20,17 +19,17 @@ internal class AssistantPageCollection : PageCollection<Assistant>
     }
 
     // rehydration constructor
-    public AssistantPageCollection(AssistantClient client, BinaryData firstPageToken)
+    public AssistantPageCollection(AssistantClient client, ClientToken firstPageToken)
     {
         _client = client;
         FirstPageToken = firstPageToken;
     }
 
-    public override BinaryData FirstPageToken { get; }
+    public override ClientToken FirstPageToken { get; }
 
-    public override ClientPage<Assistant> GetPage(BinaryData pageToken, RequestOptions? options)
+    public override ClientPage<Assistant> GetPage(ClientToken pageToken, RequestOptions? options)
     {
-        OpenAIPageToken token = OpenAIPageToken.FromBytes(pageToken);
+        OpenAIPageToken token = (OpenAIPageToken)pageToken;
 
         ClientResult result = _client.GetAssistantsPage(
             limit: token.Limit,
@@ -42,7 +41,7 @@ internal class AssistantPageCollection : PageCollection<Assistant>
         PipelineResponse response = result.GetRawResponse();
         InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
 
-        BinaryData? nextPageToken = OpenAIPageToken.GetNextPageToken(
+        OpenAIPageToken? nextPageToken = OpenAIPageToken.GetNextPageToken(
             token,
             list.HasMore,
             list.LastId);
