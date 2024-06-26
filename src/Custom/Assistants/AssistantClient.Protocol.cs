@@ -65,11 +65,12 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    => new AsyncProtocolAssistantPageCollection(this, limit, order, after, before, options);
+
+    internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        throw new NotImplementedException();
-        //return new ProtocolAssistantPageCollection(this, limit, order, after, before, options);
-        //using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        //return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>

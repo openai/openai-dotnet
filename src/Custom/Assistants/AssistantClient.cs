@@ -115,11 +115,7 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = default, int? pageSize = default, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-        //return CreateAsyncPageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
-        //    => GetAssistantsAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
-    }
+        => new AsyncAssistantPageCollection(this, pageSize, resultOrder?.ToString(), afterId, beforeId);
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
