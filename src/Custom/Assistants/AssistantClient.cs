@@ -120,12 +120,13 @@ public partial class AssistantClient
         string beforeId = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPageAsync,
-            GetAssistantsPageToken.FromToken,
-            cancellationToken.ToRequestOptions());
+        throw new NotImplementedException();
+        //GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        //return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
+        //    firstPageToken,
+        //    GetAssistantsPageAsync,
+        //    GetAssistantsPageToken.FromToken,
+        //    cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
@@ -138,12 +139,13 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPageAsync,
-            GetAssistantsPageToken.FromToken,
-            cancellationToken.ToRequestOptions());
+        throw new NotImplementedException();
+        //GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
+        //return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
+        //    firstPageToken,
+        //    GetAssistantsPageAsync,
+        //    GetAssistantsPageToken.FromToken,
+        //    cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
@@ -158,19 +160,28 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual CollectionResult<Assistant> GetAssistants(
+    public virtual PageResult<Assistant> GetAssistantsPage(
         ListOrder? order = null,
         int? pageSize = null,
         string afterId = default,
         string beforeId = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
-        return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPage,
-            GetAssistantsPageToken.FromToken,
-            cancellationToken.ToRequestOptions());
+        throw new NotImplementedException();
+        //ClientResult result = GetAssistantsPage(pageSize, order?.ToString(), afterId, beforeId, cancellationToken.ToRequestOptions());
+        //GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        //return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
+        //    firstPageToken,
+        //    GetAssistantsPage,
+        //    GetAssistantsPageToken.FromToken,
+        //    cancellationToken.ToRequestOptions());
+    }
+
+    public virtual PageResult<Assistant> GetAssistantsPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     ///// <summary>
