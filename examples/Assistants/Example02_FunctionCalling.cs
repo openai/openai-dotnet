@@ -152,7 +152,7 @@ public partial class AssistantExamples
         if (run.Status == RunStatus.Completed)
         {
             PageCollection<ThreadMessage> messagePages
-                = client.GetMessages(run.ThreadId, resultOrder: ListOrder.OldestFirst);
+                = client.GetMessages(run.ThreadId, ListOrder.OldestFirst);
             IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
             foreach (ThreadMessage message in messages)

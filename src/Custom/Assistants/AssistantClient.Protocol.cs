@@ -65,7 +65,10 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
-        => OpenAIPageCollectionHelpers.CreateProtocolAsync(limit, order, after, before, options, GetAssistantsPageAsync);
+    {
+        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, GetAssistantsPageToken.FromToken, options);
+    }
 
     internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -98,7 +101,10 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
-        => OpenAIPageCollectionHelpers.CreateProtocol(limit, order, after, before, options, GetAssistantsPage);
+    {
+        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, GetAssistantsPageToken.FromToken, options);
+    }
 
     internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
     {

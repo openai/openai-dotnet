@@ -15,14 +15,13 @@ internal class OpenAIPageCollectionHelpers
     public delegate Task<ClientResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
-    public static AsyncPageCollection<TValue> CreateAsync<TValue, TList, TToken>(
+    public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
         ClientToken firstPageToken,
         GetPageValuesAsync getPageValuesAsync,
-        Func<ClientToken, TToken> getToken,
+        Func<ClientToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
-            where TToken : OpenAIPageToken
     {
         async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken)
         {
@@ -48,13 +47,14 @@ internal class OpenAIPageCollectionHelpers
     public static PageCollection<TValue> Create<TValue, TList>(
         ClientToken firstPageToken,
         GetPageValues getPageValues,
+        Func<ClientToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
         PageResult<TValue> getPage(ClientToken pageToken)
         {
-            OpenAIPageToken token = OpenAIPageToken.FromToken(pageToken);
+            OpenAIPageToken token = getToken(pageToken);
 
             ClientResult result = getPageValues(
                 limit: token.Limit,
@@ -74,52 +74,54 @@ internal class OpenAIPageCollectionHelpers
     }
 
     public static IAsyncEnumerable<ClientResult> CreateProtocolAsync(
-        int? limit, string? order, string? after, string? before, RequestOptions? options,
-        GetPageValuesAsync getPageValuesAsync)
+        ClientToken firstPageToken,
+        GetPageValuesAsync getPageValuesAsync,
+        Func<ClientToken, OpenAIPageToken> getToken,
+        RequestOptions? options)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromOptions(limit, order, after, before);
-
         async Task<ClientResult> getPageAsync(ClientToken pageToken)
         {
-            OpenAIPageToken token = (OpenAIPageToken)pageToken;
+            OpenAIPageToken token = getToken(pageToken);
             return await getPageValuesAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
         }
 
-        ClientToken? getNextPageToken(ClientResult result)
+        ClientToken? getNextPageToken(ClientToken pageToken, ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
 
             using JsonDocument doc = JsonDocument.Parse(response.Content);
             bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
-            after = doc.RootElement.GetProperty("last_id"u8).GetString();
+            string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-            return OpenAIPageToken.GetNextPageToken(limit, order, after, before, hasMore);
+            OpenAIPageToken token = getToken(pageToken);
+            return token.GetNextPageToken(hasMore, lastId);
         }
 
         return PageCollectionHelpers.CreatePrototolAsync(firstPageToken, getPageAsync, getNextPageToken);
     }
 
     public static IEnumerable<ClientResult> CreateProtocol(
-        int? limit, string? order, string? after, string? before, RequestOptions? options,
-        GetPageValues getPageValues)
+        ClientToken firstPageToken,
+        GetPageValues getPageValues,
+        Func<ClientToken, OpenAIPageToken> getToken,
+        RequestOptions? options)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromOptions(limit, order, after, before);
-
         ClientResult getPage(ClientToken pageToken)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
             return getPageValues(token.Limit, token.Order, token.After, token.Before, options);
         }
 
-        ClientToken? getNextPageToken(ClientResult result)
+        ClientToken? getNextPageToken(ClientToken pageToken, ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
 
             using JsonDocument doc = JsonDocument.Parse(response.Content);
             bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
-            after = doc.RootElement.GetProperty("last_id"u8).GetString();
+            string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-            return OpenAIPageToken.GetNextPageToken(limit, order, after, before, hasMore);
+            OpenAIPageToken token = getToken(pageToken);
+            return token.GetNextPageToken(hasMore, lastId);
         }
 
         return PageCollectionHelpers.CreatePrototol(firstPageToken, getPage, getNextPageToken);

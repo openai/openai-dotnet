@@ -392,7 +392,7 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, resultOrder: ListOrder.NewestFirst).GetAllValues();
+        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, ListOrder.NewestFirst).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);

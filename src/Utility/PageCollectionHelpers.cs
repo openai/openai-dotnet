@@ -21,12 +21,12 @@ internal class PageCollectionHelpers
 
     public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ClientToken firstPageToken,
         Func<ClientToken, Task<ClientResult>> getPageAsync,
-        Func<ClientResult, ClientToken?> getNextPageToken)
+        Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
         => new AsyncFuncResultEnumerable(firstPageToken, getPageAsync, getNextPageToken);
 
     public static IEnumerable<ClientResult> CreatePrototol(ClientToken firstPageToken,
             Func<ClientToken, ClientResult> getPage,
-            Func<ClientResult, ClientToken?> getNextPageToken)
+            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
         => new FuncResultEnumerable(firstPageToken, getPage, getNextPageToken);
 
     private class AsyncFuncPageCollection<T> : AsyncPageCollection<T> where T : notnull
@@ -69,11 +69,11 @@ internal class PageCollectionHelpers
     {
         private readonly ClientToken _firstPageToken;
         private readonly Func<ClientToken, Task<ClientResult>> _getPageAsync;
-        private readonly Func<ClientResult, ClientToken?> _getNextPageToken;
+        private readonly Func<ClientToken, ClientResult, ClientToken?> _getNextPageToken;
 
         public AsyncFuncResultEnumerable(ClientToken firstPageToken,
             Func<ClientToken, Task<ClientResult>> getPageAsync,
-            Func<ClientResult, ClientToken?> getNextPageToken)
+            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
         {
             _firstPageToken = firstPageToken;
             _getPageAsync = getPageAsync;
@@ -88,7 +88,7 @@ internal class PageCollectionHelpers
             {
                 ClientResult result = await _getPageAsync(pageToken).ConfigureAwait(false);
                 yield return result;
-                pageToken = _getNextPageToken(result);
+                pageToken = _getNextPageToken(pageToken, result);
             }
             while (pageToken != null);
         }
@@ -98,11 +98,11 @@ internal class PageCollectionHelpers
     {
         private readonly ClientToken _firstPageToken;
         private readonly Func<ClientToken, ClientResult> _getPage;
-        private readonly Func<ClientResult, ClientToken?> _getNextPageToken;
+        private readonly Func<ClientToken, ClientResult, ClientToken?> _getNextPageToken;
 
         public FuncResultEnumerable(ClientToken firstPageToken,
             Func<ClientToken, ClientResult> getPage,
-            Func<ClientResult, ClientToken?> getNextPageToken)
+            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
         {
             _firstPageToken = firstPageToken;
             _getPage = getPage;
@@ -117,7 +117,7 @@ internal class PageCollectionHelpers
             {
                 ClientResult result = _getPage(pageToken);
                 yield return result;
-                pageToken = _getNextPageToken(result);
+                pageToken = _getNextPageToken(pageToken, result);
             }
             while (pageToken != null);
         }
