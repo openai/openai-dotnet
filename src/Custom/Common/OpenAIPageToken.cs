@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ClientModel;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -8,7 +7,7 @@ using System.Text.Json;
 
 namespace OpenAI;
 
-internal class OpenAIPageToken : ClientToken
+internal abstract class OpenAIPageToken : ClientToken
 {
     public OpenAIPageToken(int? limit, string? order, string? after, string? before)
     {
@@ -60,83 +59,82 @@ internal class OpenAIPageToken : ClientToken
         return BinaryData.FromStream(stream);
     }
 
-    public OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
-        => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
+    public abstract OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId);
 
-    public static OpenAIPageToken FromListOptions(int? limit, string? order, string? after, string? before)
-        => new OpenAIPageToken(limit, order, after, before);
+    //public static OpenAIPageToken FromOptions(int? limit, string? order, string? after, string? before)
+    //    => new OpenAIPageToken(limit, order, after, before);
 
-    public static OpenAIPageToken FromToken(ClientToken token)
-    {
-        if (token is OpenAIPageToken openAIPageToken)
-        {
-            return openAIPageToken;
-        }
+    //public static OpenAIPageToken FromToken(ClientToken token)
+    //{
+    //    if (token is OpenAIPageToken openAIPageToken)
+    //    {
+    //        return openAIPageToken;
+    //    }
 
-        BinaryData data = token.ToBytes();
+    //    BinaryData data = token.ToBytes();
         
-        if (data.ToMemory().Length == 0)
-        {
-            return new(default, default, default, default);
-        }
+    //    if (data.ToMemory().Length == 0)
+    //    {
+    //        return new(default, default, default, default);
+    //    }
 
-        Utf8JsonReader reader = new(data);
+    //    Utf8JsonReader reader = new(data);
 
-        int? limit = null;
-        string? order = null;
-        string? after = null;
-        string? before = null;
+    //    int? limit = null;
+    //    string? order = null;
+    //    string? after = null;
+    //    string? before = null;
 
-        reader.Read();
-        Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
+    //    reader.Read();
+    //    Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
 
-        while (reader.Read())
-        {
-            if (reader.TokenType == JsonTokenType.EndObject)
-            {
-                break;
-            }
+    //    while (reader.Read())
+    //    {
+    //        if (reader.TokenType == JsonTokenType.EndObject)
+    //        {
+    //            break;
+    //        }
 
-            Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
-            string propertyName = reader.GetString()!;
+    //        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+    //        string propertyName = reader.GetString()!;
 
-            switch (propertyName)
-            {
-                case "limit":
-                    reader.Read();
-                    Debug.Assert(reader.TokenType == JsonTokenType.Number);
-                    limit = reader.GetInt32();
-                    break;
-                case "order":
-                    reader.Read();
-                    Debug.Assert(reader.TokenType == JsonTokenType.String);
-                    order = reader.GetString();
-                    break;
-                case "after":
-                    reader.Read();
-                    Debug.Assert(reader.TokenType == JsonTokenType.String);
-                    after = reader.GetString();
-                    break;
-                case "before":
-                    reader.Read();
-                    Debug.Assert(reader.TokenType == JsonTokenType.String);
-                    before = reader.GetString();
-                    break;
-                default:
-                    throw new JsonException($"Unrecognized property '{propertyName}'.");
-            }
-        }
+    //        switch (propertyName)
+    //        {
+    //            case "limit":
+    //                reader.Read();
+    //                Debug.Assert(reader.TokenType == JsonTokenType.Number);
+    //                limit = reader.GetInt32();
+    //                break;
+    //            case "order":
+    //                reader.Read();
+    //                Debug.Assert(reader.TokenType == JsonTokenType.String);
+    //                order = reader.GetString();
+    //                break;
+    //            case "after":
+    //                reader.Read();
+    //                Debug.Assert(reader.TokenType == JsonTokenType.String);
+    //                after = reader.GetString();
+    //                break;
+    //            case "before":
+    //                reader.Read();
+    //                Debug.Assert(reader.TokenType == JsonTokenType.String);
+    //                before = reader.GetString();
+    //                break;
+    //            default:
+    //                throw new JsonException($"Unrecognized property '{propertyName}'.");
+    //        }
+    //    }
 
-        return new(limit, order, after, before);
-    }
+    //    return new(limit, order, after, before);
+    //}
 
-    public static OpenAIPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
-    {
-        if (!hasMore || after is null)
-        {
-            return null;
-        }
+    //public static OpenAIPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    //{
+    //    if (!hasMore || after is null)
+    //    {
+    //        return null;
+    //    }
 
-        return new OpenAIPageToken(limit, order, after, before);
-    }
+    //    return new OpenAIPageToken(limit, order, after, before);
+    //}
 }

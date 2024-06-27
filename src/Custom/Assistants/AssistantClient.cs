@@ -115,8 +115,31 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync, cancellationToken.ToRequestOptions());
+        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse, GetAssistantsPageToken>(
+            firstPageToken,
+            GetAssistantsPageAsync,
+            GetAssistantsPageToken.FromToken,
+            cancellationToken.ToRequestOptions());
+
+        //async Task<PageResult<Assistant>> getPageAsync(ClientToken pageToken)
+        //{
+        //    GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
+
+        //    ClientResult result = await GetAssistantsPageAsync(
+        //        limit: token.Limit,
+        //        order: token.Order,
+        //        after: token.After,
+        //        before: token.Before,
+        //        cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+
+        //    PipelineResponse response = result.GetRawResponse();
+        //    InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
+        //    OpenAIPageToken nextPageToken = token.GetNextPageToken(list.HasMore, list.LastId);
+
+        //    return PageResult<Assistant>.Create(list.Data, pageToken, nextPageToken, response);
+        //}
+        //return PageCollectionHelpers.CreateAsync(firstPageToken, getPageAsync);
     }
 
     /// <summary>
@@ -127,8 +150,12 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPageAsync, cancellationToken.ToRequestOptions());
+        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
+        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse, GetAssistantsPageToken>(
+            firstPageToken,
+            GetAssistantsPageAsync,
+            GetAssistantsPageToken.FromToken,
+            cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
@@ -145,7 +172,7 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(firstPageToken, GetAssistantsPage, cancellationToken.ToRequestOptions());
     }
 
@@ -157,7 +184,7 @@ public partial class AssistantClient
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
     {
-        OpenAIPageToken pageToken = OpenAIPageToken.FromToken(firstPageToken);
+        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(pageToken, GetAssistantsPage, cancellationToken.ToRequestOptions());
     }
 
@@ -368,16 +395,18 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         string threadId,
-        ListOrder? resultOrder = null,
-        CancellationToken cancellationToken = default)
+        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -390,16 +419,18 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
         string threadId,
-        ListOrder? resultOrder = null,
-        CancellationToken cancellationToken = default)
+        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -704,16 +735,18 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         string threadId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -726,16 +759,18 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadRun> GetRuns(
         string threadId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -916,17 +951,19 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -941,17 +978,19 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<RunStep> GetRunSteps(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));

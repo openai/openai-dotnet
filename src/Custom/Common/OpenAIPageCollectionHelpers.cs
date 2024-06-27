@@ -1,3 +1,4 @@
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -14,16 +15,18 @@ internal class OpenAIPageCollectionHelpers
     public delegate Task<ClientResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
-    public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
+    public static AsyncPageCollection<TValue> CreateAsync<TValue, TList, TToken>(
         ClientToken firstPageToken,
         GetPageValuesAsync getPageValuesAsync,
+        Func<ClientToken, TToken> getToken,
         RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
+            where TToken : OpenAIPageToken
     {
         async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken)
         {
-            OpenAIPageToken token = OpenAIPageToken.FromToken(pageToken);
+            OpenAIPageToken token = getToken(pageToken);
 
             ClientResult result = await getPageValuesAsync(
                 limit: token.Limit,
@@ -74,7 +77,7 @@ internal class OpenAIPageCollectionHelpers
         int? limit, string? order, string? after, string? before, RequestOptions? options,
         GetPageValuesAsync getPageValuesAsync)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit, order, after, before);
+        OpenAIPageToken firstPageToken = OpenAIPageToken.FromOptions(limit, order, after, before);
 
         async Task<ClientResult> getPageAsync(ClientToken pageToken)
         {
@@ -100,7 +103,7 @@ internal class OpenAIPageCollectionHelpers
         int? limit, string? order, string? after, string? before, RequestOptions? options,
         GetPageValues getPageValues)
     {
-        OpenAIPageToken firstPageToken = OpenAIPageToken.FromListOptions(limit, order, after, before);
+        OpenAIPageToken firstPageToken = OpenAIPageToken.FromOptions(limit, order, after, before);
 
         ClientResult getPage(ClientToken pageToken)
         {
