@@ -43,7 +43,7 @@ internal class PageCollectionHelpers
 
         public override ClientToken FirstPageToken => _firstPageToken;
 
-        public override async Task<PageResult<T>> GetPageAsync(ClientToken pageToken)
+        public override async Task<PageResult<T>> GetPageAsyncCore(ClientToken pageToken)
             => await _getPageAsync(pageToken).ConfigureAwait(false);
     }
 
@@ -61,7 +61,7 @@ internal class PageCollectionHelpers
 
         public override ClientToken FirstPageToken => _firstPageToken;
 
-        public override PageResult<T> GetPage(ClientToken pageToken)
+        public override PageResult<T> GetPageCore(ClientToken pageToken)
             => _getPage(pageToken);
     }
 
