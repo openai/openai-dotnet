@@ -1,79 +1,53 @@
-﻿using OpenAI.Assistants;
-using System;
+﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 #nullable enable
 
-namespace OpenAI;
+namespace OpenAI.Assistants;
 
-// Question: can I write it in such a way that it calls through to the
-// protocol mini client?
-
-internal class GetAssistantsPageResult : PageResult<Assistant>
+// Protocol method version
+internal class GetAssistantsPageResult : PageResult
 {
-    private readonly Func<ContinuationToken, GetAssistantsPageToken> _getToken;
-    private readonly GetAssistantsProtocolPageResult _protocolPageResult;
+    private readonly string? _lastId;
+
+    private readonly Func<string?, Task<GetAssistantsPageResult>> _getNextAsync;
+    private readonly Func<string?, GetAssistantsPageResult> _getNext;
 
     private GetAssistantsPageResult(
-        IReadOnlyList<Assistant> values,
-        ContinuationToken pageToken,
-        ContinuationToken? nextPageToken,
-        Func<ContinuationToken, GetAssistantsPageToken> getToken,
-        GetAssistantsProtocolPageResult protocolPageResult)
-        : base(values, pageToken, nextPageToken, protocolPageResult.GetRawResponse())
+        bool hasNext,
+        string? lastId,
+        PipelineResponse response,
+        Func<string?, Task<GetAssistantsPageResult>> getNextAsync,
+        Func<string?, GetAssistantsPageResult> getNext)
+        : base(hasNext, response)
     {
-        _getToken = getToken;
-        _protocolPageResult = protocolPageResult;
+        _lastId = lastId;
+
+        _getNextAsync = getNextAsync;
+        _getNext = getNext;
     }
+
+    public string? LastId { get { return _lastId; } }
 
     protected override async Task<PageResult> GetNextAsyncCore()
-    {
-        GetAssistantsProtocolPageResult nextPageResult = (GetAssistantsProtocolPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
-        return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
-    }
+        => await _getNextAsync(_lastId).ConfigureAwait(false);
 
     protected override PageResult GetNextCore()
-    {
-        GetAssistantsProtocolPageResult nextPageResult = (GetAssistantsProtocolPageResult)_protocolPageResult.GetNext();
-        return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
-    }
+        => _getNext(_lastId);
 
-    public static GetAssistantsPageResult FromProtocolPageResult(
-        PageResult pageResult,
-        GetAssistantsPageToken pageToken,
-        Func<ContinuationToken, GetAssistantsPageToken> getToken)
+    public static GetAssistantsPageResult Create(ClientResult result,
+        Func<string?, Task<GetAssistantsPageResult>> getNextAsync,
+        Func<string?, GetAssistantsPageResult> getNext)
     {
-        GetAssistantsProtocolPageResult result = (GetAssistantsProtocolPageResult)pageResult;
-
         PipelineResponse response = result.GetRawResponse();
-        InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
-        OpenAIPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
 
-        return new GetAssistantsPageResult(list.Data, pageToken, nextPageToken, getToken, result);
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
+        string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
+
+        return new(hasMore, lastId, response, getNextAsync, getNext);
     }
-
-    //private readonly Func<ContinuationToken, GetAssistantsPageResult> _getNext;
-    //private readonly Func<ContinuationToken, Task<GetAssistantsPageResult>> _getNextAsync;
-
-    //public GetAssistantsPageResult(
-    //    IReadOnlyList<Assistant> values,
-    //    ContinuationToken pageToken,
-    //    ContinuationToken? nextPageToken,
-    //    PipelineResponse response,
-    //    Func<ContinuationToken, GetAssistantsPageResult> getNext,
-    //    Func<ContinuationToken, Task<GetAssistantsPageResult>> getNextAsync)
-    //    : base(values, pageToken, nextPageToken, response)
-    //{
-    //    _getNext = getNext;
-    //    _getNextAsync = getNextAsync;
-    //}
-
-    //protected override async Task<PageResult> GetNextAsyncCore()
-    //    => await _getNextAsync(NextPageToken!).ConfigureAwait(false);
-
-    //protected override PageResult GetNextCore()
-    //    => _getNext(NextPageToken!);
 }

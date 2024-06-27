@@ -1,8 +1,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -70,19 +68,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
 
-        async Task<GetAssistantsProtocolPageResult> GetNextAsync(string lastId)
+        async Task<GetAssistantsPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantsProtocolPageResult GetNext(string lastId)
+        GetAssistantsPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantsProtocolPageResult.Create(result, GetNextAsync, GetNext);
+        return GetAssistantsPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
@@ -114,19 +112,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
 
-        async Task<GetAssistantsProtocolPageResult> GetNextAsync(string lastId)
+        async Task<GetAssistantsPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantsProtocolPageResult GetNext(string lastId)
+        GetAssistantsPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantsProtocolPageResult.Create(result, GetNextAsync, GetNext);
+        return GetAssistantsPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
