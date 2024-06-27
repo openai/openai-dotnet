@@ -134,7 +134,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
         ListOrder? resultOrder = default)
     {
@@ -152,7 +152,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<ThreadMessage> GetMessages(
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         AssistantThread thread, 
         ListOrder? resultOrder = default)
     {
@@ -318,7 +318,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         AssistantThread thread,
         ListOrder? resultOrder = default)
     {
@@ -336,7 +336,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<ThreadRun> GetRuns(
+    public virtual CollectionResult<ThreadRun> GetRuns(
         AssistantThread thread,
         ListOrder? resultOrder = default)
     {
@@ -436,7 +436,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
+    public virtual CollectionResult<RunStep> GetRunSteps(
         ThreadRun run,
         ListOrder? resultOrder = default)
     {
@@ -454,7 +454,7 @@ public partial class AssistantClient
     /// timestamp.
     /// </param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         ThreadRun run,
         ListOrder? resultOrder = default)
     {

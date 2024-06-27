@@ -52,8 +52,7 @@ public partial class AssistantTests
             },
         });
         Assert.That(modifiedAssistant.Id, Is.EqualTo(assistant.Id));
-        PageCollection<Assistant> pages = client.GetAssistants();
-        IEnumerable<Assistant> recentAssistants = pages.GetAllValues();
+        CollectionResult<Assistant> recentAssistants = client.GetAssistants();
         Assistant listedAssistant = recentAssistants.FirstOrDefault(pageItem => pageItem.Id == assistant.Id);
         Assert.That(listedAssistant, Is.Not.Null);
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
@@ -269,7 +268,7 @@ public partial class AssistantTests
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        CollectionResult<RunStep> pages = client.GetRunSteps(run);
         PageResult<RunStep> firstPage = pages.First();
 
         IEnumerable<RunStep> runSteps = pages.GetAllValues();
@@ -677,7 +676,7 @@ public partial class AssistantTests
         // Page through collection
         int count = 0;
         int pageCount = 0;
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+        AsyncCollectionResult<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
         
         int lastIdSeen = int.MaxValue;
 
@@ -723,13 +722,13 @@ public partial class AssistantTests
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
         }
         
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+        AsyncCollectionResult<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
 
         // Simulate rehydration of the collection
         BinaryData rehydrationBytes = pages.FirstPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
+        AsyncCollectionResult<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
 
         int count = 0;
         int pageCount = 0;
@@ -776,10 +775,10 @@ public partial class AssistantTests
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
         }
 
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+        AsyncCollectionResult<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
 
         // Call the rehydration method, passing a typed OpenAIPageToken
-        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(pages.FirstPageToken);
+        AsyncCollectionResult<Assistant> rehydratedPages = client.GetAssistantsAsync(pages.FirstPageToken);
 
         int count = 0;
         int pageCount = 0;

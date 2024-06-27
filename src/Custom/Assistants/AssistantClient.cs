@@ -113,7 +113,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
+    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
         ListOrder? order = null,
         int? pageSize = null,
         string afterId = default,
@@ -134,7 +134,7 @@ public partial class AssistantClient
     /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
+    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
@@ -158,7 +158,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(
+    public virtual CollectionResult<Assistant> GetAssistants(
         ListOrder? order = null,
         int? pageSize = null,
         string afterId = default,
@@ -173,23 +173,23 @@ public partial class AssistantClient
             cancellationToken.ToRequestOptions());
     }
 
-    /// <summary>
-    /// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
-    /// </summary>
-    /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(
-        ContinuationToken firstPageToken, 
-        CancellationToken cancellationToken = default)
-    {
-        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-            pageToken,
-            GetAssistantsPage,
-            GetAssistantsPageToken.FromToken,
-            cancellationToken.ToRequestOptions());
-    }
+    ///// <summary>
+    ///// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
+    ///// </summary>
+    ///// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    ///// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    //public virtual CollectionResult<Assistant> GetAssistants(
+    //    ContinuationToken firstPageToken, 
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
+    //    return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
+    //        pageToken,
+    //        GetAssistantsPage,
+    //        GetAssistantsPageToken.FromToken,
+    //        cancellationToken.ToRequestOptions());
+    //}
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 
@@ -407,7 +407,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         string threadId,
         ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
@@ -431,7 +431,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<ThreadMessage> GetMessages(
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         string threadId,
         ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
@@ -747,7 +747,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         string threadId,
         ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
@@ -771,7 +771,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<ThreadRun> GetRuns(
+    public virtual CollectionResult<ThreadRun> GetRuns(
         string threadId,
         ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
@@ -963,7 +963,7 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
 ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
@@ -990,7 +990,7 @@ ListOrder? order = null, int? pageSize = null, string afterId = default, string 
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
+    public virtual CollectionResult<RunStep> GetRunSteps(
         string threadId,
         string runId,
 ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)

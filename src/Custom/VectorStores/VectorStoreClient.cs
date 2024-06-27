@@ -147,7 +147,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStore"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
         //return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
@@ -165,7 +165,7 @@ public partial class VectorStoreClient
     /// <returns>
     /// A collection of <see cref="VectorStore"/> instances that can be synchronously enumerated via <c>foreach</c>.
     /// </returns>
-    public virtual PageCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
 
@@ -228,7 +228,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null, 
@@ -261,7 +261,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
@@ -493,7 +493,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,
@@ -531,7 +531,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
+    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
         string vectorStoreId,
         string batchJobId,
         ListOrder? resultOrder = null,

@@ -11,13 +11,13 @@ namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
-    public static AsyncPageCollection<T> CreateAsync<T>(ContinuationToken firstPageToken,
+    public static AsyncCollectionResult<T> CreateAsync<T>(ContinuationToken firstPageToken,
         Func<ContinuationToken, Task<PageResult<T>>> getPageAsync) where T : notnull
-        => new AsyncFuncPageCollection<T>(firstPageToken, getPageAsync);
+        => new AsyncFuncCollectionResult<T>(firstPageToken, getPageAsync);
 
-    public static PageCollection<T> Create<T>(ContinuationToken firstPageToken,
+    public static CollectionResult<T> Create<T>(ContinuationToken firstPageToken,
         Func<ContinuationToken, PageResult<T>> getPage) where T : notnull
-        => new FuncPageCollection<T>(firstPageToken, getPage);
+        => new FuncCollectionResult<T>(firstPageToken, getPage);
 
     public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ContinuationToken firstPageToken,
         Func<ContinuationToken, Task<ClientResult>> getPageAsync,
@@ -29,7 +29,7 @@ internal class PageCollectionHelpers
             Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         => new FuncResultEnumerable(firstPageToken, getPage, getNextPageToken);
 
-    private class AsyncFuncPageCollection<T> : AsyncPageCollection<T> where T : notnull
+    private class AsyncFuncCollectionResult<T> : AsyncCollectionResult<T> where T : notnull
     {
         private readonly ContinuationToken _firstPageToken;
         private readonly Func<ContinuationToken,  Task<PageResult<T>>> _getPageAsync;
@@ -47,7 +47,7 @@ internal class PageCollectionHelpers
             => await _getPageAsync(pageToken).ConfigureAwait(false);
     }
 
-    private class FuncPageCollection<T> : PageCollection<T> where T : notnull
+    private class FuncCollectionResult<T> : CollectionResult<T> where T : notnull
     {
         private readonly ContinuationToken _firstPageToken;
         private readonly Func<ContinuationToken,  PageResult<T>> _getPage;

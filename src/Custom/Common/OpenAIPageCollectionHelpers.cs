@@ -15,7 +15,7 @@ internal class OpenAIPageCollectionHelpers
     public delegate Task<ClientResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
-    public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
+    public static AsyncCollectionResult<TValue> CreateAsync<TValue, TList>(
         ContinuationToken firstPageToken,
         GetPageValuesAsync getPageValuesAsync,
         Func<ContinuationToken, OpenAIPageToken> getToken,
@@ -44,7 +44,7 @@ internal class OpenAIPageCollectionHelpers
         return PageCollectionHelpers.CreateAsync(firstPageToken, getPageAsync);
     }
 
-    public static PageCollection<TValue> Create<TValue, TList>(
+    public static CollectionResult<TValue> Create<TValue, TList>(
         ContinuationToken firstPageToken,
         GetPageValues getPageValues,
         Func<ContinuationToken, OpenAIPageToken> getToken,

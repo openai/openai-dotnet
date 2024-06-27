@@ -269,7 +269,7 @@ public partial class VectorStoreTests
         Validate(vectorStore);
         Assert.That(vectorStore.FileCounts.Total, Is.EqualTo(5));
 
-        AsyncPageCollection<VectorStoreFileAssociation> associations = client.GetFileAssociationsAsync(vectorStore);
+        AsyncCollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociationsAsync(vectorStore);
 
         await foreach (VectorStoreFileAssociation association in associations.GetAllValuesAsync())
         {
