@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -64,16 +65,24 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    //public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
-    //{
-    //    GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
-    //    return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, GetAssistantsPageToken.FromToken, options);
-    //}
-
-    public virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual async Task<PageResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+
+        async Task<GetAssistantProtocolPageResult> GetNextAsync(string lastId)
+        {
+            ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
+            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+        }
+
+        GetAssistantProtocolPageResult GetNext(string lastId)
+        {
+            ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
+            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+        }
+
+        return GetAssistantProtocolPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
@@ -100,16 +109,24 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    //public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
-    //{
-    //    GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
-    //    return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, GetAssistantsPageToken.FromToken, options);
-    //}
-
-    public virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual PageResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+
+        async Task<GetAssistantProtocolPageResult> GetNextAsync(string lastId)
+        {
+            ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
+            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+        }
+
+        GetAssistantProtocolPageResult GetNext(string lastId)
+        {
+            ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
+            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+        }
+
+        return GetAssistantProtocolPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
