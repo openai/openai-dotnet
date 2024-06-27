@@ -121,30 +121,33 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
+    /// Returns a page of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
+    /// <param name="options">TBD.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-        //GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
-        //return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
-        //    firstPageToken,
-        //    GetAssistantsPageAsync,
-        //    GetAssistantsPageToken.FromToken,
-        //    cancellationToken.ToRequestOptions());
-    }
-
-    public virtual CollectionResult<Assistant> GetAssistants(
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual async Task<PageResult<Assistant>> GetAssistantsPageAsync(
         GetAssistantsOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        PageResult<Assistant> page = GetAssistantsPage(options, cancellationToken);
-        return CollectionResult<Assistant>.FromPage(page);
+        GetAssistantsPageToken token = GetAssistantsPageToken.FromOptions(options);
+        PageResult result = await GetAssistantsPageAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
+    }
+
+    /// <summary>
+    /// Returns the page of <see cref="Assistant"/> instances corresponding to the provided page token.
+    /// </summary>
+    /// <param name="pageToken">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual async Task<PageResult<Assistant>> GetAssistantsPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
+        PageResult result = await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
     }
 
     /// <summary>
@@ -153,22 +156,43 @@ public partial class AssistantClient
     /// <param name="options">TBD.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual CollectionResult<Assistant> GetAssistants(
+        GetAssistantsOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        // must defer first request
+        PageResult<Assistant> page = GetAssistantsPage(options, cancellationToken);
+        return CollectionResult<Assistant>.FromPage(page);
+    }
+
+    /// <summary>
+    /// Returns a page of <see cref="Assistant"/> instances.
+    /// </summary>
+    /// <param name="options">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageResult<Assistant> GetAssistantsPage(
         GetAssistantsOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantPageToken token = GetAssistantPageToken.FromOptions(options);
+        GetAssistantsPageToken token = GetAssistantsPageToken.FromOptions(options);
         PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantPageToken.FromToken);
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
     }
 
+    /// <summary>
+    /// Returns the page of <see cref="Assistant"/> instances corresponding to the provided page token.
+    /// </summary>
+    /// <param name="pageToken">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageResult<Assistant> GetAssistantsPage(
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantPageToken token = GetAssistantPageToken.FromToken(pageToken);
+        GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
         PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
-        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantPageToken.FromToken);
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
     }
 
     /// <summary>

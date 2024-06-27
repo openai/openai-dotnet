@@ -70,19 +70,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
 
-        async Task<GetAssistantProtocolPageResult> GetNextAsync(string lastId)
+        async Task<GetAssistantsProtocolPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantProtocolPageResult GetNext(string lastId)
+        GetAssistantsProtocolPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantProtocolPageResult.Create(result, GetNextAsync, GetNext);
+        return GetAssistantsProtocolPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
@@ -114,19 +114,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
 
-        async Task<GetAssistantProtocolPageResult> GetNextAsync(string lastId)
+        async Task<GetAssistantsProtocolPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantProtocolPageResult GetNext(string lastId)
+        GetAssistantsProtocolPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return GetAssistantsProtocolPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantProtocolPageResult.Create(result, GetNextAsync, GetNext);
+        return GetAssistantsProtocolPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>

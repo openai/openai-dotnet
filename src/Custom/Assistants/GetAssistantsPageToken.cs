@@ -7,9 +7,9 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class GetAssistantPageToken : OpenAIPageToken
+internal class GetAssistantsPageToken : OpenAIPageToken
 {
-    public GetAssistantPageToken(int? limit, string? order, string? after, string? before)
+    public GetAssistantsPageToken(int? limit, string? order, string? after, string? before)
         : base(limit, order, after, before)
     {
     }
@@ -17,15 +17,15 @@ internal class GetAssistantPageToken : OpenAIPageToken
     public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
 
-    public static GetAssistantPageToken FromOptions(GetAssistantsOptions options)
+    public static GetAssistantsPageToken FromOptions(GetAssistantsOptions options)
         => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
 
     //public static GetAssistantPageToken FromOptions(int? limit, string? order, string? after, string? before)
     //    => new GetAssistantPageToken(limit, order, after, before);
 
-    public static GetAssistantPageToken FromToken(ContinuationToken token)
+    public static GetAssistantsPageToken FromToken(ContinuationToken token)
     {
-        if (token is GetAssistantPageToken pageToken)
+        if (token is GetAssistantsPageToken pageToken)
         {
             return pageToken;
         }
@@ -87,13 +87,13 @@ internal class GetAssistantPageToken : OpenAIPageToken
         return new(limit, order, after, before);
     }
 
-    public static GetAssistantPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    public static GetAssistantsPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
     {
         if (!hasMore || after is null)
         {
             return null;
         }
 
-        return new GetAssistantPageToken(limit, order, after, before);
+        return new GetAssistantsPageToken(limit, order, after, before);
     }
 }

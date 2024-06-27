@@ -14,15 +14,15 @@ namespace OpenAI;
 
 internal class GetAssistantsPageResult : PageResult<Assistant>
 {
-    private readonly Func<ContinuationToken, GetAssistantPageToken> _getToken;
-    private readonly GetAssistantProtocolPageResult _protocolPageResult;
+    private readonly Func<ContinuationToken, GetAssistantsPageToken> _getToken;
+    private readonly GetAssistantsProtocolPageResult _protocolPageResult;
 
     private GetAssistantsPageResult(
         IReadOnlyList<Assistant> values,
         ContinuationToken pageToken,
         ContinuationToken? nextPageToken,
-        Func<ContinuationToken, GetAssistantPageToken> getToken,
-        GetAssistantProtocolPageResult protocolPageResult)
+        Func<ContinuationToken, GetAssistantsPageToken> getToken,
+        GetAssistantsProtocolPageResult protocolPageResult)
         : base(values, pageToken, nextPageToken, protocolPageResult.GetRawResponse())
     {
         _getToken = getToken;
@@ -31,22 +31,22 @@ internal class GetAssistantsPageResult : PageResult<Assistant>
 
     protected override async Task<PageResult> GetNextAsyncCore()
     {
-        GetAssistantProtocolPageResult nextPageResult = (GetAssistantProtocolPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
+        GetAssistantsProtocolPageResult nextPageResult = (GetAssistantsProtocolPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 
     protected override PageResult GetNextCore()
     {
-        GetAssistantProtocolPageResult nextPageResult = (GetAssistantProtocolPageResult)_protocolPageResult.GetNext();
+        GetAssistantsProtocolPageResult nextPageResult = (GetAssistantsProtocolPageResult)_protocolPageResult.GetNext();
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 
     public static GetAssistantsPageResult FromProtocolPageResult(
         PageResult pageResult,
-        GetAssistantPageToken pageToken,
-        Func<ContinuationToken, GetAssistantPageToken> getToken)
+        GetAssistantsPageToken pageToken,
+        Func<ContinuationToken, GetAssistantsPageToken> getToken)
     {
-        GetAssistantProtocolPageResult result = (GetAssistantProtocolPageResult)pageResult;
+        GetAssistantsProtocolPageResult result = (GetAssistantsProtocolPageResult)pageResult;
 
         PipelineResponse response = result.GetRawResponse();
         InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;

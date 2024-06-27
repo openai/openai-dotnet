@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal class GetAssistantProtocolPageResult : PageResult
+internal class GetAssistantsProtocolPageResult : PageResult
 {
     private readonly string? _lastId;
 
-    private readonly Func<string?, Task<GetAssistantProtocolPageResult>> _getNextAsync;
-    private readonly Func<string?, GetAssistantProtocolPageResult> _getNext;
+    private readonly Func<string?, Task<GetAssistantsProtocolPageResult>> _getNextAsync;
+    private readonly Func<string?, GetAssistantsProtocolPageResult> _getNext;
 
-    private GetAssistantProtocolPageResult(
+    private GetAssistantsProtocolPageResult(
         bool hasNext,
         string? lastId,
         PipelineResponse response,
-        Func<string?, Task<GetAssistantProtocolPageResult>> getNextAsync,
-        Func<string?, GetAssistantProtocolPageResult> getNext)
+        Func<string?, Task<GetAssistantsProtocolPageResult>> getNextAsync,
+        Func<string?, GetAssistantsProtocolPageResult> getNext)
         : base(hasNext, response)
     {
         _lastId = lastId;
@@ -37,9 +37,9 @@ internal class GetAssistantProtocolPageResult : PageResult
     protected override PageResult GetNextCore()
         => _getNext(_lastId);
 
-    public static GetAssistantProtocolPageResult Create(ClientResult result,
-        Func<string?, Task<GetAssistantProtocolPageResult>> getNextAsync,
-        Func<string?, GetAssistantProtocolPageResult> getNext)
+    public static GetAssistantsProtocolPageResult Create(ClientResult result,
+        Func<string?, Task<GetAssistantsProtocolPageResult>> getNextAsync,
+        Func<string?, GetAssistantsProtocolPageResult> getNext)
     {
         PipelineResponse response = result.GetRawResponse();
 
