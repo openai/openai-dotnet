@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal class AsyncGetAssistantsCollection : AsyncCollectionResult<Assistant>
+internal class AsyncAssistantCollection : AsyncCollectionResult<Assistant>
 {
-    private readonly Func<Task<GetAssistantsPage>> _getFirstAsync;
+    private readonly Func<Task<AssistantCollectionPage>> _getFirstAsync;
 
-    public AsyncGetAssistantsCollection(Func<Task<GetAssistantsPage>> getFirstPageAsync)
+    public AsyncAssistantCollection(Func<Task<AssistantCollectionPage>> getFirstPageAsync)
     {
         _getFirstAsync = getFirstPageAsync;
     }
 
     public override async IAsyncEnumerator<Assistant> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        GetAssistantsPage page = await _getFirstAsync().ConfigureAwait(false);
+        AssistantCollectionPage page = await _getFirstAsync().ConfigureAwait(false);
 
         while (page.HasNext)
         {
@@ -25,7 +25,7 @@ internal class AsyncGetAssistantsCollection : AsyncCollectionResult<Assistant>
             {
                 yield return value;
 
-                page = (GetAssistantsPage)await page.GetNextAsync().ConfigureAwait(false);
+                page = (AssistantCollectionPage)await page.GetNextAsync().ConfigureAwait(false);
             }
         }
     }

@@ -108,10 +108,10 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
-        GetAssistantsOptions options = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-        => new AsyncGetAssistantsCollection(getFirstPageAsync: async () =>
-            (GetAssistantsPage)await GetAssistantsPageAsync(options, cancellationToken).ConfigureAwait(false));
+        => new AsyncAssistantCollection(getFirstPageAsync: async () =>
+            (AssistantCollectionPage)await GetAssistantsPageAsync(options, cancellationToken).ConfigureAwait(false));
 
     /// <summary>
     /// Returns a page of <see cref="Assistant"/> instances.
@@ -120,12 +120,12 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual async Task<PageResult<Assistant>> GetAssistantsPageAsync(
-        GetAssistantsOptions options = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken token = GetAssistantsPageToken.FromOptions(options);
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = await GetAssistantsPageAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return OpenAI.GetAssistantsPage.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
+        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>
@@ -138,9 +138,9 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return OpenAI.GetAssistantsPage.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
+        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>
@@ -150,10 +150,10 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual CollectionResult<Assistant> GetAssistants(
-        GetAssistantsOptions options = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-        => new GetAssistantsCollection(getFirstPage: () =>
-            (GetAssistantsPage)GetAssistantsPage(options, cancellationToken));
+        => new AssistantCollection(getFirstPage: () =>
+            (AssistantCollectionPage)GetAssistantsPage(options, cancellationToken));
 
     /// <summary>
     /// Returns a page of <see cref="Assistant"/> instances.
@@ -162,12 +162,12 @@ public partial class AssistantClient
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageResult<Assistant> GetAssistantsPage(
-        GetAssistantsOptions options = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken token = GetAssistantsPageToken.FromOptions(options);
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-        return OpenAI.GetAssistantsPage.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
+        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>
@@ -180,9 +180,9 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
-        return OpenAI.GetAssistantsPage.FromProtocolPageResult(result, token, GetAssistantsPageToken.FromToken);
+        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>

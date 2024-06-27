@@ -68,19 +68,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
 
-        async Task<GetAssistantsPageResult> GetNextAsync(string lastId)
+        async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantsPageResult GetNext(string lastId)
+        AssistantCollectionPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantsPageResult.Create(result, GetNextAsync, GetNext);
+        return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
@@ -112,19 +112,19 @@ public partial class AssistantClient
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
 
-        async Task<GetAssistantsPageResult> GetNextAsync(string lastId)
+        async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
         {
             ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        GetAssistantsPageResult GetNext(string lastId)
+        AssistantCollectionPageResult GetNext(string lastId)
         {
             ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return GetAssistantsPageResult.Create(nextResult, GetNextAsync, GetNext);
+            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
         }
 
-        return GetAssistantsPageResult.Create(result, GetNextAsync, GetNext);
+        return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>

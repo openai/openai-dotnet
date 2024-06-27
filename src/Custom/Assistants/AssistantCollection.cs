@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants;
 
-internal class GetAssistantsCollection : CollectionResult<Assistant>
+internal class AssistantCollection : CollectionResult<Assistant>
 {
-    private readonly Func<GetAssistantsPage> _getFirst;
+    private readonly Func<AssistantCollectionPage> _getFirst;
 
-    public GetAssistantsCollection(Func<GetAssistantsPage> getFirstPage)
+    public AssistantCollection(Func<AssistantCollectionPage> getFirstPage)
     {
         _getFirst = getFirstPage;
     }
 
     public override IEnumerator<Assistant> GetEnumerator()
     {
-        GetAssistantsPage page = _getFirst();
+        AssistantCollectionPage page = _getFirst();
 
         while (page.HasNext)
         {
@@ -23,7 +23,7 @@ internal class GetAssistantsCollection : CollectionResult<Assistant>
             {
                 yield return value;
 
-                page = (GetAssistantsPage)page.GetNext();
+                page = (AssistantCollectionPage)page.GetNext();
             }
         }
     }

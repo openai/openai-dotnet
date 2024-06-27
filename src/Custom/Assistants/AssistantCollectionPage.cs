@@ -14,17 +14,17 @@ namespace OpenAI;
 
 
 // Convenience method version
-internal class GetAssistantsPage : PageResult<Assistant>
+internal class AssistantCollectionPage : PageResult<Assistant>
 {
-    private readonly Func<ContinuationToken, GetAssistantsPageToken> _getToken;
-    private readonly GetAssistantsPageResult _protocolPageResult;
+    private readonly Func<ContinuationToken, AssistantCollectionPageToken> _getToken;
+    private readonly AssistantCollectionPageResult _protocolPageResult;
 
-    private GetAssistantsPage(
+    private AssistantCollectionPage(
         IReadOnlyList<Assistant> values,
         ContinuationToken pageToken,
         ContinuationToken? nextPageToken,
-        Func<ContinuationToken, GetAssistantsPageToken> getToken,
-        GetAssistantsPageResult protocolPageResult)
+        Func<ContinuationToken, AssistantCollectionPageToken> getToken,
+        AssistantCollectionPageResult protocolPageResult)
         : base(values, pageToken, nextPageToken, protocolPageResult.GetRawResponse())
     {
         _getToken = getToken;
@@ -33,28 +33,28 @@ internal class GetAssistantsPage : PageResult<Assistant>
 
     protected override async Task<PageResult> GetNextAsyncCore()
     {
-        GetAssistantsPageResult nextPageResult = (GetAssistantsPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
+        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 
     protected override PageResult GetNextCore()
     {
-        GetAssistantsPageResult nextPageResult = (GetAssistantsPageResult)_protocolPageResult.GetNext();
+        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)_protocolPageResult.GetNext();
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 
-    public static GetAssistantsPage FromProtocolPageResult(
+    public static AssistantCollectionPage FromProtocolPageResult(
         PageResult pageResult,
-        GetAssistantsPageToken pageToken,
-        Func<ContinuationToken, GetAssistantsPageToken> getToken)
+        AssistantCollectionPageToken pageToken,
+        Func<ContinuationToken, AssistantCollectionPageToken> getToken)
     {
-        GetAssistantsPageResult result = (GetAssistantsPageResult)pageResult;
+        AssistantCollectionPageResult result = (AssistantCollectionPageResult)pageResult;
 
         PipelineResponse response = result.GetRawResponse();
         InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
         OpenAIPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
 
-        return new GetAssistantsPage(list.Data, pageToken, nextPageToken, getToken, result);
+        return new AssistantCollectionPage(list.Data, pageToken, nextPageToken, getToken, result);
     }
 
     //private readonly Func<ContinuationToken, GetAssistantsPageResult> _getNext;

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace OpenAI.Assistants;
 
-public class GetAssistantsOptions
+public class AssistantCollectionOptions
 {
-    public GetAssistantsOptions() { }
+    public AssistantCollectionOptions() { }
 
     /// <summary>
     /// The <c>order</c> that results should appear in the list according to

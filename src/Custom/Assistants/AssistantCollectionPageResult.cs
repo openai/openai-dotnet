@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Protocol method version
-internal class GetAssistantsPageResult : PageResult
+internal class AssistantCollectionPageResult : PageResult
 {
     private readonly string? _lastId;
 
-    private readonly Func<string?, Task<GetAssistantsPageResult>> _getNextAsync;
-    private readonly Func<string?, GetAssistantsPageResult> _getNext;
+    private readonly Func<string?, Task<AssistantCollectionPageResult>> _getNextAsync;
+    private readonly Func<string?, AssistantCollectionPageResult> _getNext;
 
-    private GetAssistantsPageResult(
+    private AssistantCollectionPageResult(
         bool hasNext,
         string? lastId,
         PipelineResponse response,
-        Func<string?, Task<GetAssistantsPageResult>> getNextAsync,
-        Func<string?, GetAssistantsPageResult> getNext)
+        Func<string?, Task<AssistantCollectionPageResult>> getNextAsync,
+        Func<string?, AssistantCollectionPageResult> getNext)
         : base(hasNext, response)
     {
         _lastId = lastId;
@@ -38,9 +38,9 @@ internal class GetAssistantsPageResult : PageResult
     protected override PageResult GetNextCore()
         => _getNext(_lastId);
 
-    public static GetAssistantsPageResult Create(ClientResult result,
-        Func<string?, Task<GetAssistantsPageResult>> getNextAsync,
-        Func<string?, GetAssistantsPageResult> getNext)
+    public static AssistantCollectionPageResult Create(ClientResult result,
+        Func<string?, Task<AssistantCollectionPageResult>> getNextAsync,
+        Func<string?, AssistantCollectionPageResult> getNext)
     {
         PipelineResponse response = result.GetRawResponse();
 
