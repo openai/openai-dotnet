@@ -16,14 +16,14 @@ internal class OpenAIPageCollectionHelpers
     public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
     public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
-        ClientToken firstPageToken,
+        ContinuationToken firstPageToken,
         GetPageValuesAsync getPageValuesAsync,
-        Func<ClientToken, OpenAIPageToken> getToken,
+        Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        async Task<PageResult<TValue>> getPageAsync(ClientToken pageToken)
+        async Task<PageResult<TValue>> getPageAsync(ContinuationToken pageToken)
         {
             OpenAIPageToken token = getToken(pageToken);
 
@@ -45,14 +45,14 @@ internal class OpenAIPageCollectionHelpers
     }
 
     public static PageCollection<TValue> Create<TValue, TList>(
-        ClientToken firstPageToken,
+        ContinuationToken firstPageToken,
         GetPageValues getPageValues,
-        Func<ClientToken, OpenAIPageToken> getToken,
+        Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
             where TList : IJsonModel<TList>, IInternalListResponse<TValue>
     {
-        PageResult<TValue> getPage(ClientToken pageToken)
+        PageResult<TValue> getPage(ContinuationToken pageToken)
         {
             OpenAIPageToken token = getToken(pageToken);
 
@@ -74,18 +74,18 @@ internal class OpenAIPageCollectionHelpers
     }
 
     public static IAsyncEnumerable<ClientResult> CreateProtocolAsync(
-        ClientToken firstPageToken,
+        ContinuationToken firstPageToken,
         GetPageValuesAsync getPageValuesAsync,
-        Func<ClientToken, OpenAIPageToken> getToken,
+        Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
     {
-        async Task<ClientResult> getPageAsync(ClientToken pageToken)
+        async Task<ClientResult> getPageAsync(ContinuationToken pageToken)
         {
             OpenAIPageToken token = getToken(pageToken);
             return await getPageValuesAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
         }
 
-        ClientToken? getNextPageToken(ClientToken pageToken, ClientResult result)
+        ContinuationToken? getNextPageToken(ContinuationToken pageToken, ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
 
@@ -101,18 +101,18 @@ internal class OpenAIPageCollectionHelpers
     }
 
     public static IEnumerable<ClientResult> CreateProtocol(
-        ClientToken firstPageToken,
+        ContinuationToken firstPageToken,
         GetPageValues getPageValues,
-        Func<ClientToken, OpenAIPageToken> getToken,
+        Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
     {
-        ClientResult getPage(ClientToken pageToken)
+        ClientResult getPage(ContinuationToken pageToken)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
             return getPageValues(token.Limit, token.Order, token.After, token.Before, options);
         }
 
-        ClientToken? getNextPageToken(ClientToken pageToken, ClientResult result)
+        ContinuationToken? getNextPageToken(ContinuationToken pageToken, ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
 

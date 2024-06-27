@@ -727,7 +727,7 @@ public partial class AssistantTests
 
         // Simulate rehydration of the collection
         BinaryData rehydrationBytes = pages.FirstPageToken.ToBytes();
-        ClientToken rehydrationToken = ClientToken.FromBytes(rehydrationBytes);
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
         AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
 

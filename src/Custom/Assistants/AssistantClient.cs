@@ -113,7 +113,13 @@ public partial class AssistantClient
     /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
+        ListOrder? order = null, 
+        int? pageSize = null, 
+        string afterId = default, 
+        string beforeId = default,
+
+        CancellationToken cancellationToken = default)
     {
         GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
@@ -122,7 +128,7 @@ public partial class AssistantClient
             GetAssistantsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
 
-        //async Task<PageResult<Assistant>> getPageAsync(ClientToken pageToken)
+        //async Task<PageResult<Assistant>> getPageAsync(ContinuationToken pageToken)
         //{
         //    GetAssistantsPageToken token = GetAssistantsPageToken.FromToken(pageToken);
 
@@ -148,7 +154,7 @@ public partial class AssistantClient
     /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ClientToken firstPageToken, CancellationToken cancellationToken = default)
+    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default)
     {
         GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
@@ -186,7 +192,7 @@ public partial class AssistantClient
     /// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(ClientToken firstPageToken, CancellationToken cancellationToken = default)
+    public virtual PageCollection<Assistant> GetAssistants(ContinuationToken firstPageToken, CancellationToken cancellationToken = default)
     {
         GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(

@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace OpenAI;
 
-internal abstract class OpenAIPageToken : ClientToken
+internal abstract class OpenAIPageToken : ContinuationToken
 {
     public OpenAIPageToken(int? limit, string? order, string? after, string? before)
     {
@@ -64,7 +64,7 @@ internal abstract class OpenAIPageToken : ClientToken
     //public static OpenAIPageToken FromOptions(int? limit, string? order, string? after, string? before)
     //    => new OpenAIPageToken(limit, order, after, before);
 
-    //public static OpenAIPageToken FromToken(ClientToken token)
+    //public static OpenAIPageToken FromToken(ContinuationToken token)
     //{
     //    if (token is OpenAIPageToken openAIPageToken)
     //    {

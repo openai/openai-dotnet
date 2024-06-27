@@ -11,69 +11,69 @@ namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
-    public static AsyncPageCollection<T> CreateAsync<T>(ClientToken firstPageToken,
-        Func<ClientToken, Task<PageResult<T>>> getPageAsync) where T : notnull
+    public static AsyncPageCollection<T> CreateAsync<T>(ContinuationToken firstPageToken,
+        Func<ContinuationToken, Task<PageResult<T>>> getPageAsync) where T : notnull
         => new AsyncFuncPageCollection<T>(firstPageToken, getPageAsync);
 
-    public static PageCollection<T> Create<T>(ClientToken firstPageToken,
-        Func<ClientToken, PageResult<T>> getPage) where T : notnull
+    public static PageCollection<T> Create<T>(ContinuationToken firstPageToken,
+        Func<ContinuationToken, PageResult<T>> getPage) where T : notnull
         => new FuncPageCollection<T>(firstPageToken, getPage);
 
-    public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ClientToken firstPageToken,
-        Func<ClientToken, Task<ClientResult>> getPageAsync,
-        Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
+    public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ContinuationToken firstPageToken,
+        Func<ContinuationToken, Task<ClientResult>> getPageAsync,
+        Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         => new AsyncFuncResultEnumerable(firstPageToken, getPageAsync, getNextPageToken);
 
-    public static IEnumerable<ClientResult> CreatePrototol(ClientToken firstPageToken,
-            Func<ClientToken, ClientResult> getPage,
-            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
+    public static IEnumerable<ClientResult> CreatePrototol(ContinuationToken firstPageToken,
+            Func<ContinuationToken, ClientResult> getPage,
+            Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         => new FuncResultEnumerable(firstPageToken, getPage, getNextPageToken);
 
     private class AsyncFuncPageCollection<T> : AsyncPageCollection<T> where T : notnull
     {
-        private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken,  Task<PageResult<T>>> _getPageAsync;
+        private readonly ContinuationToken _firstPageToken;
+        private readonly Func<ContinuationToken,  Task<PageResult<T>>> _getPageAsync;
 
-        public AsyncFuncPageCollection(ClientToken firstPageToken,
-            Func<ClientToken, Task<PageResult<T>>> getPageAsync)
+        public AsyncFuncPageCollection(ContinuationToken firstPageToken,
+            Func<ContinuationToken, Task<PageResult<T>>> getPageAsync)
         {
             _firstPageToken = firstPageToken;
             _getPageAsync = getPageAsync;
         }
 
-        public override ClientToken FirstPageToken => _firstPageToken;
+        public override ContinuationToken FirstPageToken => _firstPageToken;
 
-        public override async Task<PageResult<T>> GetPageAsyncCore(ClientToken pageToken)
+        public override async Task<PageResult<T>> GetPageAsyncCore(ContinuationToken pageToken)
             => await _getPageAsync(pageToken).ConfigureAwait(false);
     }
 
     private class FuncPageCollection<T> : PageCollection<T> where T : notnull
     {
-        private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken,  PageResult<T>> _getPage;
+        private readonly ContinuationToken _firstPageToken;
+        private readonly Func<ContinuationToken,  PageResult<T>> _getPage;
 
-        public FuncPageCollection(ClientToken firstPageToken,
-            Func<ClientToken, PageResult<T>> getPage)
+        public FuncPageCollection(ContinuationToken firstPageToken,
+            Func<ContinuationToken, PageResult<T>> getPage)
         {
             _firstPageToken = firstPageToken;
             _getPage = getPage;
         }
 
-        public override ClientToken FirstPageToken => _firstPageToken;
+        public override ContinuationToken FirstPageToken => _firstPageToken;
 
-        public override PageResult<T> GetPageCore(ClientToken pageToken)
+        public override PageResult<T> GetPageCore(ContinuationToken pageToken)
             => _getPage(pageToken);
     }
 
     private class AsyncFuncResultEnumerable : IAsyncEnumerable<ClientResult>
     {
-        private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken, Task<ClientResult>> _getPageAsync;
-        private readonly Func<ClientToken, ClientResult, ClientToken?> _getNextPageToken;
+        private readonly ContinuationToken _firstPageToken;
+        private readonly Func<ContinuationToken, Task<ClientResult>> _getPageAsync;
+        private readonly Func<ContinuationToken, ClientResult, ContinuationToken?> _getNextPageToken;
 
-        public AsyncFuncResultEnumerable(ClientToken firstPageToken,
-            Func<ClientToken, Task<ClientResult>> getPageAsync,
-            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
+        public AsyncFuncResultEnumerable(ContinuationToken firstPageToken,
+            Func<ContinuationToken, Task<ClientResult>> getPageAsync,
+            Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         {
             _firstPageToken = firstPageToken;
             _getPageAsync = getPageAsync;
@@ -82,7 +82,7 @@ internal class PageCollectionHelpers
 
         public async IAsyncEnumerator<ClientResult> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            ClientToken? pageToken = _firstPageToken;
+            ContinuationToken? pageToken = _firstPageToken;
 
             do
             {
@@ -96,13 +96,13 @@ internal class PageCollectionHelpers
 
     private class FuncResultEnumerable : IEnumerable<ClientResult>
     {
-        private readonly ClientToken _firstPageToken;
-        private readonly Func<ClientToken, ClientResult> _getPage;
-        private readonly Func<ClientToken, ClientResult, ClientToken?> _getNextPageToken;
+        private readonly ContinuationToken _firstPageToken;
+        private readonly Func<ContinuationToken, ClientResult> _getPage;
+        private readonly Func<ContinuationToken, ClientResult, ContinuationToken?> _getNextPageToken;
 
-        public FuncResultEnumerable(ClientToken firstPageToken,
-            Func<ClientToken, ClientResult> getPage,
-            Func<ClientToken, ClientResult, ClientToken?> getNextPageToken)
+        public FuncResultEnumerable(ContinuationToken firstPageToken,
+            Func<ContinuationToken, ClientResult> getPage,
+            Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         {
             _firstPageToken = firstPageToken;
             _getPage = getPage;
@@ -111,7 +111,7 @@ internal class PageCollectionHelpers
 
         public IEnumerator<ClientResult> GetEnumerator()
         {
-            ClientToken? pageToken = _firstPageToken;
+            ContinuationToken? pageToken = _firstPageToken;
 
             do
             {

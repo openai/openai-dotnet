@@ -20,7 +20,7 @@ internal class GetAssistantsPageToken : OpenAIPageToken
     public static GetAssistantsPageToken FromOptions(int? limit, string? order, string? after, string? before)
         => new GetAssistantsPageToken(limit, order, after, before);
 
-    public static GetAssistantsPageToken FromToken(ClientToken token)
+    public static GetAssistantsPageToken FromToken(ContinuationToken token)
     {
         if (token is GetAssistantsPageToken pageToken)
         {
