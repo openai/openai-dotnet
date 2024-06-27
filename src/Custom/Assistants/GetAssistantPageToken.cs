@@ -7,9 +7,9 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class GetAssistantsPageToken : OpenAIPageToken
+internal class GetAssistantPageToken : OpenAIPageToken
 {
-    public GetAssistantsPageToken(int? limit, string? order, string? after, string? before)
+    public GetAssistantPageToken(int? limit, string? order, string? after, string? before)
         : base(limit, order, after, before)
     {
     }
@@ -17,12 +17,15 @@ internal class GetAssistantsPageToken : OpenAIPageToken
     public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
 
-    public static GetAssistantsPageToken FromOptions(int? limit, string? order, string? after, string? before)
-        => new GetAssistantsPageToken(limit, order, after, before);
+    public static GetAssistantPageToken FromOptions(GetAssistantsOptions options)
+        => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
 
-    public static GetAssistantsPageToken FromToken(ContinuationToken token)
+    //public static GetAssistantPageToken FromOptions(int? limit, string? order, string? after, string? before)
+    //    => new GetAssistantPageToken(limit, order, after, before);
+
+    public static GetAssistantPageToken FromToken(ContinuationToken token)
     {
-        if (token is GetAssistantsPageToken pageToken)
+        if (token is GetAssistantPageToken pageToken)
         {
             return pageToken;
         }
@@ -84,13 +87,13 @@ internal class GetAssistantsPageToken : OpenAIPageToken
         return new(limit, order, after, before);
     }
 
-    public static GetAssistantsPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    public static GetAssistantPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
     {
         if (!hasMore || after is null)
         {
             return null;
         }
 
-        return new GetAssistantsPageToken(limit, order, after, before);
+        return new GetAssistantPageToken(limit, order, after, before);
     }
 }

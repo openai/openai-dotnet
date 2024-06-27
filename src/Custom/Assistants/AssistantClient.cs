@@ -139,59 +139,37 @@ public partial class AssistantClient
         //    cancellationToken.ToRequestOptions());
     }
 
+    public virtual CollectionResult<Assistant> GetAssistants(
+        GetAssistantsOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        PageResult<Assistant> page = GetAssistantsPage(options, cancellationToken);
+        return CollectionResult<Assistant>.FromPage(page);
+    }
+
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">TBD.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageResult<Assistant> GetAssistantsPage(
-        ListOrder? order = null,
-        int? pageSize = null,
-        string afterId = default,
-        string beforeId = default,
+        GetAssistantsOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-        //ClientResult result = GetAssistantsPage(pageSize, order?.ToString(), afterId, beforeId, cancellationToken.ToRequestOptions());
-        //GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
-        //return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-        //    firstPageToken,
-        //    GetAssistantsPage,
-        //    GetAssistantsPageToken.FromToken,
-        //    cancellationToken.ToRequestOptions());
+        GetAssistantPageToken token = GetAssistantPageToken.FromOptions(options);
+        PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantPageToken.FromToken);
     }
 
     public virtual PageResult<Assistant> GetAssistantsPage(
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        GetAssistantPageToken token = GetAssistantPageToken.FromToken(pageToken);
+        PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return GetAssistantsPageResult.FromProtocolPageResult(result, token, GetAssistantPageToken.FromToken);
     }
-
-    ///// <summary>
-    ///// Rehydrates a collection of <see cref="Assistant"/> instances a page token's serialized bytes.
-    ///// </summary>
-    ///// <param name="firstPageToken">Serialized page token indicating the first page of the collection to rehydrate.</param>
-    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    ///// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    //public virtual CollectionResult<Assistant> GetAssistants(
-    //    ContinuationToken firstPageToken, 
-    //    CancellationToken cancellationToken = default)
-    //{
-    //    GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
-    //    return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-    //        pageToken,
-    //        GetAssistantsPage,
-    //        GetAssistantsPageToken.FromToken,
-    //        cancellationToken.ToRequestOptions());
-    //}
 
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>. 

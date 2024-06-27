@@ -29,22 +29,13 @@ internal class GetAssistantProtocolPageResult : PageResult
         _getNext = getNext;
     }
 
+    public string? LastId { get { return _lastId; } }
+
     protected override async Task<PageResult> GetNextAsyncCore()
         => await _getNextAsync(_lastId).ConfigureAwait(false);
 
     protected override PageResult GetNextCore()
         => _getNext(_lastId);
-
-    //public static GetAssistantProtocolPageResult Create(ClientResult result)
-    //{
-    //    PipelineResponse response = result.GetRawResponse();
-
-    //    using JsonDocument doc = JsonDocument.Parse(response.Content);
-    //    bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
-    //    string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
-
-    //    return new(hasMore, lastId, response, getNextAsync, getNext);
-    //}
 
     public static GetAssistantProtocolPageResult Create(ClientResult result,
         Func<string?, Task<GetAssistantProtocolPageResult>> getNextAsync,
@@ -59,32 +50,3 @@ internal class GetAssistantProtocolPageResult : PageResult
         return new(hasMore, lastId, response, getNextAsync, getNext);
     }
 }
-
-//private readonly string? _lastId;
-
-//private readonly Func<ClientResult, GetAssistantProtocolPageResult> _getNext;
-//private readonly Func<ClientResult, Task<GetAssistantProtocolPageResult>> _getNextAsync;
-
-//public GetAssistantProtocolPageResult(
-//    ClientResult result,
-//    Func<ClientResult, GetAssistantProtocolPageResult> getNext,
-//    Func<ClientResult, Task<GetAssistantProtocolPageResult>> getNextAsync)
-//    : base(GetHasNext(result), result.GetRawResponse())
-//{
-//    _getNext = getNext;
-//    _getNextAsync = getNextAsync;
-//}
-
-//protected override async Task<PageResult> GetNextAsyncCore()
-//    => await _getNextAsync(_lastId).ConfigureAwait(false);
-
-//protected override PageResult GetNextCore()
-//    => _getNext();
-
-//private static bool GetHasNext(ClientResult result)
-//{
-//    PipelineResponse response = result.GetRawResponse();
-//    using JsonDocument doc = JsonDocument.Parse(response.Content);
-//    return doc.RootElement.GetProperty("has_more"u8).GetBoolean();
-//}
-
