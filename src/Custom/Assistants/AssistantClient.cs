@@ -137,6 +137,8 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
@@ -177,6 +179,8 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
         return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
@@ -407,6 +411,8 @@ public partial class AssistantClient
         MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
         PageResult result = await GetMessagesPageAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
     }
@@ -415,6 +421,8 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
         MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
         PageResult result = await GetMessagesPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
@@ -450,6 +458,8 @@ public partial class AssistantClient
         ContinuationToken pageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
         MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
         PageResult result = GetMessagesPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
         return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
@@ -751,53 +761,78 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        throw new NotImplementedException();
-        //return CreateAsyncPageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-        //    => GetRunsAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollectionAsync(async () => await GetRunsPageAsync(threadId, options, cancellationToken).ConfigureAwait(false));
+    }
+
+    public async Task<PageResult<ThreadRun>> GetRunsPageAsync(
+        string threadId,
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(threadId, nameof(threadId));
+
+        PageResult result = await GetRunsPageAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
+    }
+
+    public async Task<PageResult<ThreadRun>> GetRunsPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        PageResult result = await GetRunsPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual CollectionResult<ThreadRun> GetRuns(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        throw new NotImplementedException();
-        //return CreatePageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-        //    => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollection(() => GetRunsPage(threadId, options, cancellationToken));
     }
 
-    public PageResult<ThreadRun> GetRunsPage(AssistantThread thread)
+    public PageResult<ThreadRun> GetRunsPage(
+        string threadId,
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        Argument.AssertNotNull(threadId, nameof(threadId));
+
+        PageResult result = GetRunsPage(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
+    }
+
+    public PageResult<ThreadRun> GetRunsPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        PageResult result = GetRunsPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
     }
 
     /// <summary>

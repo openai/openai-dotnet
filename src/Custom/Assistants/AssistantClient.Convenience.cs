@@ -325,36 +325,48 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRunsAsync(thread.Id, resultOrder);
+        return GetRunsAsync(thread.Id, options);
+    }
+
+    public virtual Task<PageResult<ThreadRun>> GetRunsPageAsync(
+        AssistantThread thread,
+        RunCollectionOptions options = default)
+    {
+        Argument.AssertNotNull(thread, nameof(thread));
+
+        return GetRunsPageAsync(thread.Id, options);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual CollectionResult<ThreadRun> GetRuns(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRuns(thread.Id, resultOrder);
+        return GetRuns(thread.Id, options);
+    }
+
+    public PageResult<ThreadRun> GetRunsPage(
+        AssistantThread thread,
+        RunCollectionOptions options = default)
+    {
+        Argument.AssertNotNull(thread, nameof(thread));
+
+        return GetRunsPage(thread.Id, options);
     }
 
     /// <summary>

@@ -138,7 +138,7 @@ public partial class AssistantExamples
         if (run.Status == RunStatus.Completed)
         {
             CollectionResult<ThreadMessage> messages
-                = client.GetMessages(run.ThreadId, ListOrder.OldestFirst);
+                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
 
             foreach (ThreadMessage message in messages)
             {

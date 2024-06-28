@@ -152,7 +152,7 @@ public partial class AssistantExamples
         if (run.Status == RunStatus.Completed)
         {
             AsyncCollectionResult<ThreadMessage> messages
-                = client.GetMessagesAsync(run.ThreadId, ListOrder.OldestFirst);
+                = client.GetMessagesAsync(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
 
             await foreach (ThreadMessage message in messages)
             {
