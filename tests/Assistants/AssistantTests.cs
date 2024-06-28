@@ -128,7 +128,7 @@ public partial class AssistantTests
         });
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
-        PageResult<ThreadMessage> messagePage = client.GetMessagePage(thread);
+        PageResult<ThreadMessage> messagePage = client.GetMessagesPage(thread);
         Assert.That(messagePage.Values.Count, Is.EqualTo(1));
         Assert.That(messagePage.Values[0].Id, Is.EqualTo(message.Id));
         Assert.That(messagePage.Values[0].Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
@@ -159,7 +159,7 @@ public partial class AssistantTests
         };
         AssistantThread thread = client.CreateThread(options);
         Validate(thread);
-        PageResult<ThreadMessage> messagesPage = client.GetMessagesPage(thread, resultOrder: ListOrder.OldestFirst);
+        PageResult<ThreadMessage> messagesPage = client.GetMessagesPage(thread, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
         Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
         Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.User));
         Assert.That(messagesPage.Values[0].Content?.Count, Is.EqualTo(1));
@@ -387,7 +387,7 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        CollectionResult<ThreadMessage> messages = client.GetMessages(run.ThreadId, ListOrder.NewestFirst);
+        CollectionResult<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);
@@ -596,7 +596,7 @@ public partial class AssistantTests
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        CollectionResult<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.NewestFirst);
+        CollectionResult<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst });
         foreach (ThreadMessage message in messages)
         {
             foreach (MessageContent content in message.Content)

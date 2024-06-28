@@ -25,39 +25,39 @@ internal abstract class OpenAIPageToken : ContinuationToken
 
     public string? Before { get; }
 
-    public override BinaryData ToBytes()
-    {
-        using MemoryStream stream = new();
-        using Utf8JsonWriter writer = new(stream);
+    //public override BinaryData ToBytes()
+    //{
+    //    using MemoryStream stream = new();
+    //    using Utf8JsonWriter writer = new(stream);
 
-        writer.WriteStartObject();
+    //    writer.WriteStartObject();
 
-        if (Limit.HasValue)
-        {
-            writer.WriteNumber("limit", Limit.Value);
-        }
+    //    if (Limit.HasValue)
+    //    {
+    //        writer.WriteNumber("limit", Limit.Value);
+    //    }
 
-        if (Order is not null)
-        {
-            writer.WriteString("order", Order);
-        }
+    //    if (Order is not null)
+    //    {
+    //        writer.WriteString("order", Order);
+    //    }
 
-        if (After is not null)
-        {
-            writer.WriteString("after", After);
-        }
+    //    if (After is not null)
+    //    {
+    //        writer.WriteString("after", After);
+    //    }
 
-        if (Before is not null)
-        {
-            writer.WriteString("before", Before);
-        }
+    //    if (Before is not null)
+    //    {
+    //        writer.WriteString("before", Before);
+    //    }
 
-        writer.WriteEndObject();
+    //    writer.WriteEndObject();
 
-        writer.Flush();
-        stream.Position = 0;
-        return BinaryData.FromStream(stream);
-    }
+    //    writer.Flush();
+    //    stream.Position = 0;
+    //    return BinaryData.FromStream(stream);
+    //}
 
     public abstract OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId);
 	

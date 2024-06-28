@@ -129,36 +129,48 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessagesAsync(thread.Id, resultOrder);
+        return GetMessagesAsync(thread.Id, options);
+    }
+
+    public virtual Task<PageResult<ThreadMessage>> GetMessagesPageAsync(
+        AssistantThread thread,
+        MessageCollectionOptions options = default)
+    {
+        Argument.AssertNotNull(thread, nameof(thread));
+
+        return GetMessagesPageAsync(thread.Id, options);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual CollectionResult<ThreadMessage> GetMessages(
-        AssistantThread thread, 
-        ListOrder? resultOrder = default)
+        AssistantThread thread,
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessages(thread.Id, resultOrder);
+        return GetMessages(thread.Id, options);
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(
+        AssistantThread thread,
+        MessageCollectionOptions options = default)
+    {
+        Argument.AssertNotNull(thread, nameof(thread));
+
+        return GetMessagesPage(thread.Id, options);
     }
 
     /// <summary>

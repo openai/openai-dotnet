@@ -123,7 +123,6 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = await GetAssistantsPageAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
@@ -164,7 +163,6 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
         return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
@@ -391,48 +389,70 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        throw new NotImplementedException();
-        //return CreateAsyncPageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-        //    => GetMessagesAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollectionAsync(async () => await GetMessagesPageAsync(threadId, options, cancellationToken).ConfigureAwait(false));
+    }
+
+    public async Task<PageResult<ThreadMessage>> GetMessagesPageAsync(
+        string threadId,
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        PageResult result = await GetMessagesPageAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
+    }
+
+    public async Task<PageResult<ThreadMessage>> GetMessagesPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        PageResult result = await GetMessagesPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual CollectionResult<ThreadMessage> GetMessages(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        MessageCollectionOptions options = default, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        throw new NotImplementedException();
-        //return CreatePageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-        //    => GetMessages(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollection(() => GetMessagesPage(threadId, options, cancellationToken));
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(
+        string threadId,
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        PageResult result = GetMessagesPage(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        PageResult result = GetMessagesPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
     }
 
     /// <summary>
@@ -775,6 +795,11 @@ public partial class AssistantClient
         //    => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
+    public PageResult<ThreadRun> GetRunsPage(AssistantThread thread)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
     /// </summary>
@@ -1060,23 +1085,4 @@ ListOrder? order = null, int? pageSize = null, string afterId = default, string 
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }
 
-    public PageResult<ThreadMessage> GetMessagePage(AssistantThread thread)
-    {
-        throw new NotImplementedException();
-    }
-
-    public PageResult<ThreadMessage> GetMessagesPage(AssistantThread thread, ListOrder resultOrder)
-    {
-        throw new NotImplementedException();
-    }
-
-    public PageResult<ThreadRun> GetRunsPage(AssistantThread thread)
-    {
-        throw new NotImplementedException();
-    }
-
-    public PageResult<ThreadMessage> GetMessagesPage(AssistantThread thread)
-    {
-        throw new NotImplementedException();
-    }
 }

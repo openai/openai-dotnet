@@ -11,8 +11,8 @@ namespace OpenAI;
 
 internal class OpenAIPageHelpers
 {
-    public delegate Task<PageResult> GetPageResultAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
-    public delegate PageResult GetPageResult(int? limit, string? order, string? after, string? before, RequestOptions? options);
+    public delegate Task<PageResult> GetPageResultAsync(OpenAIPageToken pageToken, RequestOptions? options);
+    public delegate PageResult GetPageResult(OpenAIPageToken pageToken, RequestOptions? options);
 
     // Convenience method version
     public static PageResult<TValue> CreatePage<TValue, TList>(PageResult pageResult)
@@ -48,7 +48,7 @@ internal class OpenAIPageHelpers
                 throw new InvalidOperationException("Cannot get next page result when NextPageToken is null.");
             }
 
-            ClientResult nextResult = await getPageValuesAsync(nextPageToken.Limit, nextPageToken.Order, nextPageToken.After, nextPageToken.Before, options).ConfigureAwait(false);
+            ClientResult nextResult = await getPageValuesAsync(nextPageToken, options).ConfigureAwait(false);
             return CreatePageResult(nextPageToken, options, nextResult, getPageValuesAsync, getPageValues);
         }
 
@@ -59,7 +59,7 @@ internal class OpenAIPageHelpers
                 throw new InvalidOperationException("Cannot get next page result when NextPageToken is null.");
             }
 
-            ClientResult nextResult = getPageValues(nextPageToken.Limit, nextPageToken.Order, nextPageToken.After, nextPageToken.Before, options);
+            ClientResult nextResult = getPageValues(nextPageToken, options);
             return CreatePageResult(nextPageToken, options, nextResult, getPageValuesAsync, getPageValues);
         }
 

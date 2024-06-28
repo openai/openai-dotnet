@@ -72,6 +72,12 @@ public partial class AssistantClient
         return OpenAIPageHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
     }
 
+    internal virtual async Task<PageResult> GetAssistantsPageAsync(ContinuationToken pageToken, RequestOptions options)
+    {
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        return await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+    }
+
     /// <summary>
     /// [Protocol Method] Returns a list of assistants.
     /// </summary>
@@ -103,6 +109,12 @@ public partial class AssistantClient
 
         AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
         return OpenAIPageHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
+    }
+
+    internal virtual PageResult GetAssistantsPage(ContinuationToken pageToken, RequestOptions options)
+    {
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        return GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, options);
     }
 
     /// <summary>
@@ -220,12 +232,34 @@ public partial class AssistantClient
         => _messageSubClient.CreateMessage(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessagesAsync"/>
-    public virtual Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options);
+    public virtual async Task<PageResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        ClientResult result = await _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
+
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageHelpers.CreatePageResult(pageToken, options, result,GetMessagesPageAsync, GetMessagesPage);
+    }
+
+    internal virtual async Task<PageResult> GetMessagesPageAsync(ContinuationToken pageToken, RequestOptions options)
+    {
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        return await GetMessagesPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+    }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    public virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+    public virtual PageResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        ClientResult result = _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageHelpers.CreatePageResult(pageToken, options, result, GetMessagesPageAsync, GetMessagesPage);
+    }
+
+    internal virtual PageResult GetMessagesPage(ContinuationToken pageToken, RequestOptions options)
+    {
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        return GetMessagesPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options);
+    }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)

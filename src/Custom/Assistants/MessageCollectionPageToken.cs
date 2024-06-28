@@ -8,15 +8,15 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class AssistantCollectionPageToken : OpenAIPageToken
+internal class MessageCollectionPageToken : OpenAIPageToken
 {
-    public AssistantCollectionPageToken(int? limit, string? order, string? after, string? before)
+    public MessageCollectionPageToken(string threadId, int? limit, string? order, string? after, string? before)
         : base(limit, order, after, before)
     {
+        ThreadId = threadId;
     }
 
-    public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
-         => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
+    public string ThreadId { get; }
 
     public override BinaryData ToBytes()
     {
@@ -24,6 +24,7 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
         using Utf8JsonWriter writer = new(stream);
 
         writer.WriteStartObject();
+        writer.WriteString("threadId", ThreadId);
 
         if (Limit.HasValue)
         {
@@ -52,28 +53,32 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
 
         return BinaryData.FromStream(stream);
     }
+    
+    public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
+         => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
 
     //// Convenience - first page request
-    //public static AssistantCollectionPageToken FromOptions(AssistantCollectionOptions options)
-    //    => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
+    //public static MessageCollectionPageToken FromOptions(string threadId, MessageCollectionOptions options)
+    //    => new(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
 
     // Convenience - continuation page request
-    public static AssistantCollectionPageToken FromToken(ContinuationToken token)
+    public static MessageCollectionPageToken FromToken(ContinuationToken pageToken)
     {
-        if (token is AssistantCollectionPageToken pageToken)
+        if (pageToken is MessageCollectionPageToken token)
         {
-            return pageToken;
+            return token;
         }
 
-        BinaryData data = token.ToBytes();
+        BinaryData data = pageToken.ToBytes();
 
         if (data.ToMemory().Length == 0)
         {
-            return new(default, default, default, default);
+            return new(string.Empty, default, default, default, default);
         }
 
         Utf8JsonReader reader = new(data);
 
+        string threadId = null!;
         int? limit = null;
         string? order = null;
         string? after = null;
@@ -94,6 +99,11 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
 
             switch (propertyName)
             {
+                case "threadId":
+                    reader.Read();
+                    Debug.Assert(reader.TokenType == JsonTokenType.String);
+                    threadId = reader.GetString()!;
+                    break;
                 case "limit":
                     reader.Read();
                     Debug.Assert(reader.TokenType == JsonTokenType.Number);
@@ -119,20 +129,25 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
             }
         }
 
-        return new(limit, order, after, before);
+        if (threadId is null)
+        {
+            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+        }
+
+        return new(threadId, limit, order, after, before);
     }
 
     // Protocol
-    public static AssistantCollectionPageToken FromOptions(int? limit, string? order, string? after, string? before)
-        => new AssistantCollectionPageToken(limit, order, after, before);
+    public static MessageCollectionPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
+        => new MessageCollectionPageToken(threadId, limit, order, after, before);
 
-    private static AssistantCollectionPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    private static MessageCollectionPageToken? GetNextPageToken(string threadId, int? limit, string? order, string? after, string? before, bool hasMore)
     {
         if (!hasMore || after is null)
         {
             return null;
         }
 
-        return new AssistantCollectionPageToken(limit, order, after, before);
+        return new MessageCollectionPageToken(threadId, limit, order, after, before);
     }
 }
