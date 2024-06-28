@@ -1,8 +1,6 @@
-﻿using OpenAI.Assistants;
-using System;
+﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Utility;
 
-internal class PaginationHelpers
+internal class PageHelpers
 {
+    public static AsyncCollectionResult<T> CreateCollectionAsync<T>(Func<Task<PageResult<T>>> getfirstPageAsync)
+        => new AsyncFuncPagedCollection<T>(getfirstPageAsync);
+
+    public static CollectionResult<T> CreateCollection<T>(Func<PageResult<T>> getfirstPage)
+        => new FuncPagedCollection<T>(getfirstPage);
+
     public static PageResult<T> CreatePage<T>(
         IReadOnlyList<T> values,
         PageResult result,
@@ -28,12 +32,63 @@ internal class PaginationHelpers
 
         => new FuncPageResult(pageToken, nextPageToken, response, getNextResultAsync, getNextResult);
 
+    private class AsyncFuncPagedCollection<T> : AsyncCollectionResult<T>
+    {
+        private readonly Func<Task<PageResult<T>>> _getfirstPageAsync;
+
+        public AsyncFuncPagedCollection(Func<Task<PageResult<T>>> getfirstPageAsync)
+        {
+            _getfirstPageAsync = getfirstPageAsync;
+        }
+
+        public override async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            PageResult<T> page = await _getfirstPageAsync().ConfigureAwait(false);
+
+            while (page.NextPageToken is not null)
+            {
+                foreach (T value in page.Values)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    yield return value;
+                }
+
+                page = (PageResult<T>)await page.GetNextResultAsync().ConfigureAwait(false);
+            }
+        }
+    }
+
+    private class FuncPagedCollection<T> : CollectionResult<T>
+    {
+        private readonly Func<PageResult<T>> _getfirstPage;
+
+        public FuncPagedCollection(Func<PageResult<T>> getfirstPage)
+        {
+            _getfirstPage = getfirstPage;
+        }
+
+        public override IEnumerator<T> GetEnumerator()
+        {
+            PageResult<T> page = _getfirstPage();
+
+            while (page.NextPageToken is not null)
+            {
+                foreach (T value in page.Values)
+                {
+                    yield return value;
+                }
+
+                page = (PageResult<T>)page.GetNextResult();
+            }
+        }
+    }
+
     private class FuncPage<T> : PageResult<T>
     {
         private readonly PageResult _result;
         private readonly Func<PageResult, PageResult<T>> _toPage;
 
-        // TODO: can it be simplified?
         public FuncPage(
             
             // page params

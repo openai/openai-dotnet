@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-internal class OpenAIPaginationHelpers
+internal class OpenAIPageHelpers
 {
     public delegate Task<PageResult> GetPageResultAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate PageResult GetPageResult(int? limit, string? order, string? after, string? before, RequestOptions? options);
@@ -22,7 +22,7 @@ internal class OpenAIPaginationHelpers
         PipelineResponse response = pageResult.GetRawResponse();
         IInternalListResponse<TValue> list = ModelReaderWriter.Read<TList>(response.Content)!;
 
-        return PaginationHelpers.CreatePage(list.Data, pageResult, CreatePage<TValue, TList>);
+        return PageHelpers.CreatePage(list.Data, pageResult, CreatePage<TValue, TList>);
     }
 
     // Protocol method version
@@ -63,7 +63,7 @@ internal class OpenAIPaginationHelpers
             return CreatePageResult(nextPageToken, options, nextResult, getPageValuesAsync, getPageValues);
         }
 
-        return PaginationHelpers.CreatePageResult(
+        return PageHelpers.CreatePageResult(
             pageToken, nextPageToken, result.GetRawResponse(),
             GetNextAsync, GetNext);
     }

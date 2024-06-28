@@ -1,3 +1,4 @@
+using OpenAI.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -110,8 +111,7 @@ public partial class AssistantClient
     public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-        => new AsyncAssistantCollection(getFirstPageAsync: async () =>
-            (AssistantCollectionPage)await GetAssistantsPageAsync(options, cancellationToken).ConfigureAwait(false));
+        => PageHelpers.CreateCollectionAsync(async () => await GetAssistantsPageAsync(options, cancellationToken).ConfigureAwait(false));
 
     /// <summary>
     /// Returns a page of <see cref="Assistant"/> instances.
@@ -125,7 +125,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = await GetAssistantsPageAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>
@@ -152,8 +152,7 @@ public partial class AssistantClient
     public virtual CollectionResult<Assistant> GetAssistants(
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-        => new AssistantCollection(getFirstPage: () =>
-            (AssistantCollectionPage)GetAssistantsPage(options, cancellationToken));
+        => PageHelpers.CreateCollection(() => GetAssistantsPage(options, cancellationToken));
 
     /// <summary>
     /// Returns a page of <see cref="Assistant"/> instances.
@@ -167,7 +166,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-        return AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>
@@ -182,7 +181,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
-        return AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>

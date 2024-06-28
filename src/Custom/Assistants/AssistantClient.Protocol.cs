@@ -69,7 +69,7 @@ public partial class AssistantClient
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
 
         AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPaginationHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
+        return OpenAIPageHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public partial class AssistantClient
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
 
         AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPaginationHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
+        return OpenAIPageHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
     }
 
     /// <summary>
