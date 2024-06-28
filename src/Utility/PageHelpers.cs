@@ -84,6 +84,7 @@ internal class PageHelpers
         }
     }
 
+    // Convenience page result
     private class FuncPage<T> : PageResult<T>
     {
         private readonly PageResult _result;
@@ -110,6 +111,7 @@ internal class PageHelpers
             => _toPage(_result.GetNextResult());
     }
 
+    // Protocol page result
     private class FuncPageResult : PageResult
     {
         private readonly Func<Task<PageResult>> _getNextResultAsync;
@@ -138,4 +140,23 @@ internal class PageHelpers
         protected override PageResult GetNextResultCore()
             => _getNextResult();
     }
+
+    // TODO - can we generalize page token too?
+    //private class FuncPageToken<TToken> : ContinuationToken
+    //{
+    //    private readonly Func<BinaryData> _toBytes;
+    //    private readonly Func<TToken?> _getNextPageToken;
+
+    //    public FuncPageToken(
+    //        Func<BinaryData> toBytes,
+    //        Func<TToken?> getNextPageToken)
+    //    {
+    //        _toBytes = toBytes;
+    //        _getNextPageToken = getNextPageToken;
+    //    }
+
+    //    public override BinaryData ToBytes() => _toBytes();
+
+    //    public TToken? GetNextPageToken() => _getNextPageToken();
+    //}
 }

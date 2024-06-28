@@ -17,12 +17,11 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
     public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
 
+    // Convenience - first page request
     public static AssistantCollectionPageToken FromOptions(AssistantCollectionOptions options)
         => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
 
-    public static AssistantCollectionPageToken FromOptions(int? limit, string? order, string? after, string? before)
-        => new AssistantCollectionPageToken(limit, order, after, before);
-
+    // Convenience - continuation page request
     public static AssistantCollectionPageToken FromToken(ContinuationToken token)
     {
         if (token is AssistantCollectionPageToken pageToken)
@@ -87,7 +86,11 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
         return new(limit, order, after, before);
     }
 
-    public static AssistantCollectionPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    // Protocol
+    public static AssistantCollectionPageToken FromOptions(int? limit, string? order, string? after, string? before)
+        => new AssistantCollectionPageToken(limit, order, after, before);
+
+    private static AssistantCollectionPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
     {
         if (!hasMore || after is null)
         {

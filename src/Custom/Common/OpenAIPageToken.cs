@@ -60,10 +60,7 @@ internal abstract class OpenAIPageToken : ContinuationToken
     }
 
     public abstract OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId);
-
-    //public static OpenAIPageToken FromOptions(int? limit, string? order, string? after, string? before)
-    //    => new OpenAIPageToken(limit, order, after, before);
-
+	
     //public static OpenAIPageToken FromToken(ContinuationToken token)
     //{
     //    if (token is OpenAIPageToken openAIPageToken)
@@ -126,15 +123,5 @@ internal abstract class OpenAIPageToken : ContinuationToken
     //    }
 
     //    return new(limit, order, after, before);
-    //}
-
-    //public static OpenAIPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
-    //{
-    //    if (!hasMore || after is null)
-    //    {
-    //        return null;
-    //    }
-
-    //    return new OpenAIPageToken(limit, order, after, before);
     //}
 }
