@@ -31,15 +31,15 @@ internal class AssistantCollectionPage : PageResult<Assistant>
         _protocolPageResult = protocolPageResult;
     }
 
-    protected override async Task<PageResult> GetNextAsyncCore()
+    protected override async Task<PageResult> GetNextResultAsyncCore()
     {
-        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)await _protocolPageResult.GetNextAsync().ConfigureAwait(false);
+        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)await _protocolPageResult.GetNextResultAsync().ConfigureAwait(false);
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 
-    protected override PageResult GetNextCore()
+    protected override PageResult GetNextResultCore()
     {
-        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)_protocolPageResult.GetNext();
+        AssistantCollectionPageResult nextPageResult = (AssistantCollectionPageResult)_protocolPageResult.GetNextResult();
         return FromProtocolPageResult(nextPageResult, _getToken(NextPageToken!), _getToken);
     }
 

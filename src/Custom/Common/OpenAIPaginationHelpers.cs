@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-internal class OpenAIPageHelpers
+internal class OpenAIPaginationHelpers
 {
     public delegate Task<PageResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
     public delegate PageResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
 
-    public static PageResult CreatePageProtocol(ClientResult result,
+    public static PageResult CreatePageResult(ClientResult result,
         int? limit, string order, string after, string before, RequestOptions options,
         GetPageValuesAsync getPageValuesAsync,
         GetPageValues getPageValues)
@@ -28,15 +28,15 @@ internal class OpenAIPageHelpers
         {
             after = lastId;
             ClientResult nextResult = await getPageValuesAsync(limit, order, after, before, options).ConfigureAwait(false);
-            return CreatePageProtocol(nextResult, limit, order, after, before, options, getPageValuesAsync, getPageValues);
+            return CreatePageResult(nextResult, limit, order, after, before, options, getPageValuesAsync, getPageValues);
         }
 
         PageResult GetNext()
         {
             ClientResult nextResult = getPageValues(limit, order, lastId, before, options);
-            return CreatePageProtocol(nextResult, limit, order, after, before, options, getPageValuesAsync, getPageValues);
+            return CreatePageResult(nextResult, limit, order, after, before, options, getPageValuesAsync, getPageValues);
         }
 
-        return CollectionPageHelpers.CreatePageProtocol(GetNextAsync, GetNext, hasMore, result.GetRawResponse());
+        return PaginationHelpers.CreatePageResult(GetNextAsync, GetNext, hasMore, result.GetRawResponse());
     }
 }

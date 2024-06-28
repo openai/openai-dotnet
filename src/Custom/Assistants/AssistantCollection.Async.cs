@@ -26,7 +26,7 @@ internal class AsyncAssistantCollection : AsyncCollectionResult<Assistant>
                 yield return value;
             }
 
-            page = (AssistantCollectionPage)await page.GetNextAsync().ConfigureAwait(false);
+            page = (AssistantCollectionPage)await page.GetNextResultAsync().ConfigureAwait(false);
         }
     }
 }

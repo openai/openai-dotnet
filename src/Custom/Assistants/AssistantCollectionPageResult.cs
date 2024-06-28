@@ -32,10 +32,10 @@ internal class AssistantCollectionPageResult : PageResult
 
     public string? LastId { get { return _lastId; } }
 
-    protected override async Task<PageResult> GetNextAsyncCore()
+    protected override async Task<PageResult> GetNextResultAsyncCore()
         => await _getNextAsync(_lastId).ConfigureAwait(false);
 
-    protected override PageResult GetNextCore()
+    protected override PageResult GetNextResultCore()
         => _getNext(_lastId);
 
     public static AssistantCollectionPageResult Create(ClientResult result,

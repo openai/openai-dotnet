@@ -24,7 +24,7 @@ internal class AssistantCollection : CollectionResult<Assistant>
                 yield return value;
             }
 
-            page = (AssistantCollectionPage)page.GetNext();
+            page = (AssistantCollectionPage)page.GetNextResult();
         }
     }
 }

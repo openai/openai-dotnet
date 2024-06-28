@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Utility;
 
-internal class CollectionPageHelpers
+internal class PaginationHelpers
 {
-    public static PageResult CreatePageProtocol(
+    public static PageResult CreatePageResult(
             Func<Task<PageResult>> getNextAsync,
             Func<PageResult> getNext,
             bool hasNext,
@@ -36,10 +36,10 @@ internal class CollectionPageHelpers
             _getNext = getNext;
         }
 
-        protected override async Task<PageResult> GetNextAsyncCore()
+        protected override async Task<PageResult> GetNextResultAsyncCore()
             => await _getNextAsync().ConfigureAwait(false);
 
-        protected override PageResult GetNextCore()
+        protected override PageResult GetNextResultCore()
             => _getNext();
     }
 
