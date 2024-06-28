@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -67,7 +68,11 @@ public partial class AssistantClient
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, GetAssistantsPageToken.FromToken, options);
+        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
+            firstPageToken,
+            GetAssistantsPageAsync,
+            GetAssistantsPageToken.FromToken,
+            options);
     }
 
     internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
