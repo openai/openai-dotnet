@@ -1060,4 +1060,24 @@ ListOrder? order = null, int? pageSize = null, string afterId = default, string 
         T deserializedResultValue = responseDeserializer.Invoke(pipelineResponse);
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }
+
+    public PageResult<ThreadMessage> GetMessagePage(AssistantThread thread)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(AssistantThread thread, ListOrder resultOrder)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PageResult<ThreadRun> GetRunsPage(AssistantThread thread)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(AssistantThread thread)
+    {
+        throw new NotImplementedException();
+    }
 }

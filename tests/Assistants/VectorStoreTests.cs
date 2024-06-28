@@ -102,7 +102,7 @@ public partial class VectorStoreTests
         int lastIdSeen = int.MaxValue;
         int count = 0;
 
-        foreach (VectorStore vectorStore in client.GetVectorStores(ListOrder.NewestFirst).GetAllValues())
+        foreach (VectorStore vectorStore in client.GetVectorStores(ListOrder.NewestFirst))
         {
             Assert.That(vectorStore.Id, Is.Not.Null);
             if (vectorStore.Name?.StartsWith("Test Vector Store ") == true)
@@ -139,7 +139,7 @@ public partial class VectorStoreTests
         int lastIdSeen = int.MaxValue;
         int count = 0;
 
-        await foreach (VectorStore vectorStore in client.GetVectorStoresAsync(ListOrder.NewestFirst).GetAllValuesAsync())
+        await foreach (VectorStore vectorStore in client.GetVectorStoresAsync(ListOrder.NewestFirst))
         {
             Assert.That(vectorStore.Id, Is.Not.Null);
             if (vectorStore.Name?.StartsWith("Test Vector Store ") == true)
@@ -190,7 +190,7 @@ public partial class VectorStoreTests
         Thread.Sleep(1000);
 
         int count = 0;
-        foreach (VectorStoreFileAssociation association in client.GetFileAssociations(vectorStore).GetAllValues())
+        foreach (VectorStoreFileAssociation association in client.GetFileAssociations(vectorStore))
         {
             count++;
             Assert.That(association.FileId, Is.Not.EqualTo(files[0].Id));
@@ -223,7 +223,7 @@ public partial class VectorStoreTests
             Thread.Sleep(500);
         }
 
-        foreach (VectorStoreFileAssociation association in client.GetFileAssociations(batchJob).GetAllValues())
+        foreach (VectorStoreFileAssociation association in client.GetFileAssociations(batchJob))
         {
             Assert.Multiple(() =>
             {
@@ -271,7 +271,7 @@ public partial class VectorStoreTests
 
         AsyncCollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociationsAsync(vectorStore);
 
-        await foreach (VectorStoreFileAssociation association in associations.GetAllValuesAsync())
+        await foreach (VectorStoreFileAssociation association in associations)
         {
             Assert.That(testFiles.Any(file => file.Id == association.FileId), Is.True);
             Assert.That(association.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
