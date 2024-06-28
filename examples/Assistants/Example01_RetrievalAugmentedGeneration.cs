@@ -3,7 +3,6 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -98,8 +97,8 @@ public partial class AssistantExamples
         } while (!threadRun.Status.IsTerminal);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
-        PageableCollection<ThreadMessage> messages
-            = assistantClient.GetMessages(threadRun.ThreadId, ListOrder.OldestFirst);
+        CollectionResult<ThreadMessage> messages
+            = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
 
         foreach (ThreadMessage message in messages)
         {

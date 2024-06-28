@@ -1,3 +1,4 @@
+using OpenAI.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.InternalListHelpers;
 
 namespace OpenAI.Assistants;
 
@@ -105,31 +105,85 @@ public partial class AssistantClient
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<Assistant> GetAssistantsAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
+        AssistantCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+        => PageHelpers.CreateCollectionAsync(async () => await GetAssistantsPageAsync(options, cancellationToken).ConfigureAwait(false));
+
+    /// <summary>
+    /// Returns a page of <see cref="Assistant"/> instances.
+    /// </summary>
+    /// <param name="options">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual async Task<PageResult<Assistant>> GetAssistantsPageAsync(
+        AssistantCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
-        return CreateAsyncPageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
-            => GetAssistantsAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        PageResult result = await GetAssistantsPageAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
+    }
+
+    /// <summary>
+    /// Returns the page of <see cref="Assistant"/> instances corresponding to the provided page token.
+    /// </summary>
+    /// <param name="pageToken">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual async Task<PageResult<Assistant>> GetAssistantsPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        PageResult result = await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">TBD.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<Assistant> GetAssistants(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<Assistant> GetAssistants(
+        AssistantCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+        => PageHelpers.CreateCollection(() => GetAssistantsPage(options, cancellationToken));
+
+    /// <summary>
+    /// Returns a page of <see cref="Assistant"/> instances.
+    /// </summary>
+    /// <param name="options">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual PageResult<Assistant> GetAssistantsPage(
+        AssistantCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
-        return CreatePageable<Assistant, InternalListAssistantsResponse>((continuationToken, pageSize)
-            => GetAssistants(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
+    }
+
+    /// <summary>
+    /// Returns the page of <see cref="Assistant"/> instances corresponding to the provided page token.
+    /// </summary>
+    /// <param name="pageToken">TBD.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
+    public virtual PageResult<Assistant> GetAssistantsPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<Assistant, InternalListAssistantsResponse>(result);
     }
 
     /// <summary>
@@ -289,7 +343,7 @@ public partial class AssistantClient
         string threadId,
         MessageRole role,
         IEnumerable<MessageContent> content,
-        MessageCreationOptions options = null, 
+        MessageCreationOptions options = null,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -339,42 +393,76 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadMessage> GetMessagesAsync(
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         string threadId,
-        ListOrder? resultOrder = null,
+        MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return CreateAsyncPageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-            => GetMessagesAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollectionAsync(async () => await GetMessagesPageAsync(threadId, options, cancellationToken).ConfigureAwait(false));
+    }
+
+    public async Task<PageResult<ThreadMessage>> GetMessagesPageAsync(
+        string threadId,
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        PageResult result = await GetMessagesPageAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
+    }
+
+    public async Task<PageResult<ThreadMessage>> GetMessagesPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        PageResult result = await GetMessagesPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadMessage> GetMessages(
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         string threadId,
-        ListOrder? resultOrder = null,
+        MessageCollectionOptions options = default, 
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return CreatePageable<ThreadMessage, InternalListMessagesResponse>((continuationToken, pageSize)
-            => GetMessages(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollection(() => GetMessagesPage(threadId, options, cancellationToken));
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(
+        string threadId,
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        PageResult result = GetMessagesPage(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
+    }
+
+    public PageResult<ThreadMessage> GetMessagesPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
+        PageResult result = GetMessagesPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadMessage, InternalListMessagesResponse>(result);
     }
 
     /// <summary>
@@ -531,7 +619,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -559,7 +647,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> CreateRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -626,7 +714,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -638,7 +726,7 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        async Task<ClientResult> getResultAsync() => 
+        async Task<ClientResult> getResultAsync() =>
             await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
@@ -652,7 +740,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> CreateThreadAndRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -673,42 +761,78 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadRun> GetRunsAsync(
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         string threadId,
-        ListOrder? resultOrder = default,
+        RunCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return CreateAsyncPageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-            => GetRunsAsync(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollectionAsync(async () => await GetRunsPageAsync(threadId, options, cancellationToken).ConfigureAwait(false));
+    }
+
+    public async Task<PageResult<ThreadRun>> GetRunsPageAsync(
+        string threadId,
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(threadId, nameof(threadId));
+
+        PageResult result = await GetRunsPageAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
+    }
+
+    public async Task<PageResult<ThreadRun>> GetRunsPageAsync(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        PageResult result = await GetRunsPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadRun> GetRuns(
+    public virtual CollectionResult<ThreadRun> GetRuns(
         string threadId,
-        ListOrder? resultOrder = default,
+        RunCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return CreatePageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-            => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        return PageHelpers.CreateCollection(() => GetRunsPage(threadId, options, cancellationToken));
+    }
+
+    public PageResult<ThreadRun> GetRunsPage(
+        string threadId,
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(threadId, nameof(threadId));
+
+        PageResult result = GetRunsPage(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
+    }
+
+    public PageResult<ThreadRun> GetRunsPage(
+        ContinuationToken pageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(pageToken, nameof(pageToken));
+
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        PageResult result = GetRunsPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
+        return OpenAIPageHelpers.CreatePage<ThreadRun, InternalListRunsResponse>(result);
     }
 
     /// <summary>
@@ -801,7 +925,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -829,7 +953,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual ResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -883,23 +1007,26 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<RunStep> GetRunStepsAsync(
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return CreateAsyncPageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
-            => GetRunStepsAsync(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+        //return CreateAsyncPageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
+        //    => GetRunStepsAsync(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -907,23 +1034,26 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
     /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="resultOrder">
+    /// <param name="order">
     /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
     /// timestamp.
     /// </param>
+    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
+    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
+    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<RunStep> GetRunSteps(
+    public virtual CollectionResult<RunStep> GetRunSteps(
         string threadId,
         string runId,
-        ListOrder? resultOrder = default,
-        CancellationToken cancellationToken = default)
+ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return CreatePageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
-            => GetRunSteps(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        throw new NotImplementedException();
+        //return CreatePageable<RunStep, InternalListRunStepsResponse>((continuationToken, pageSize)
+        //    => GetRunSteps(threadId, runId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
     }
 
     /// <summary>
@@ -989,4 +1119,5 @@ public partial class AssistantClient
         T deserializedResultValue = responseDeserializer.Invoke(pipelineResponse);
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }
+
 }

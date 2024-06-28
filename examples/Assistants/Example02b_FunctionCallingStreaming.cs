@@ -91,8 +91,7 @@ public partial class AssistantExamples
         #endregion
 
         #region Step 3 - Initiate a streaming run
-        // TODO: replace this with finalized enumerable result pattern
-        AsyncResultCollection<StreamingUpdate> asyncUpdates
+        AsyncCollectionResult<StreamingUpdate> asyncUpdates
             = client.CreateRunStreamingAsync(thread, assistant);
 
         ThreadRun currentRun = null;
