@@ -153,7 +153,7 @@ public partial class AssistantExamples
         {
             CollectionResult<ThreadMessage> messages
                 = client.GetMessages(run.ThreadId, ListOrder.OldestFirst);
-            
+
             foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");

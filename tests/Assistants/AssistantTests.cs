@@ -1,5 +1,4 @@
-﻿
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
 using OpenAI.VectorStores;

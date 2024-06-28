@@ -3,7 +3,6 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -100,7 +99,7 @@ public partial class AssistantExamples
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         CollectionResult<ThreadMessage> messages
             = assistantClient.GetMessages(threadRun.ThreadId, ListOrder.OldestFirst);
-        
+
         foreach (ThreadMessage message in messages)
         {
             Console.Write($"[{message.Role.ToString().ToUpper()}]: ");
