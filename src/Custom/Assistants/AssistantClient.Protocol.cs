@@ -67,20 +67,22 @@ public partial class AssistantClient
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return OpenAIPageHelpers.CreatePageProtocol(result, limit, order, after, before, options,
+            GetAssistantsPageAsync, GetAssistantsPage);
 
-        async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
-        {
-            ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        }
+        //async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
+        //{
+        //    ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
+        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
+        //}
 
-        AssistantCollectionPageResult GetNext(string lastId)
-        {
-            ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        }
+        //AssistantCollectionPageResult GetNext(string lastId)
+        //{
+        //    ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
+        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
+        //}
 
-        return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
+        //return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
@@ -111,20 +113,22 @@ public partial class AssistantClient
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return OpenAIPageHelpers.CreatePageProtocol(result, limit, order, after, before, options,
+            GetAssistantsPageAsync, GetAssistantsPage);
 
-        async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
-        {
-            ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        }
+        //async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
+        //{
+        //    ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
+        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
+        //}
 
-        AssistantCollectionPageResult GetNext(string lastId)
-        {
-            ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-            return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        }
+        //AssistantCollectionPageResult GetNext(string lastId)
+        //{
+        //    ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
+        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
+        //}
 
-        return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
+        //return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
     }
 
     /// <summary>
