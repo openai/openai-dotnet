@@ -20,8 +20,8 @@ internal class AssistantCollectionPageToken : OpenAIPageToken
     public static AssistantCollectionPageToken FromOptions(AssistantCollectionOptions options)
         => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
 
-    //public static GetAssistantPageToken FromOptions(int? limit, string? order, string? after, string? before)
-    //    => new GetAssistantPageToken(limit, order, after, before);
+    public static AssistantCollectionPageToken FromOptions(int? limit, string? order, string? after, string? before)
+        => new AssistantCollectionPageToken(limit, order, after, before);
 
     public static AssistantCollectionPageToken FromToken(ContinuationToken token)
     {

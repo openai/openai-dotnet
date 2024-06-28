@@ -13,82 +13,74 @@ namespace OpenAI.Utility;
 
 internal class PaginationHelpers
 {
+    public static PageResult<T> CreatePage<T>(
+        IReadOnlyList<T> values,
+        PageResult result,
+        Func<PageResult, PageResult<T>> toPage)
+        => new FuncPage<T>(values, result, toPage);
+
     public static PageResult CreatePageResult(
-            Func<Task<PageResult>> getNextAsync,
-            Func<PageResult> getNext,
-            bool hasNext,
-            PipelineResponse response)
-        => new FuncPageResult(getNextAsync, getNext, hasNext, response);
+            ContinuationToken pageToken,
+            ContinuationToken? nextPageToken,
+            PipelineResponse response,
+            Func<Task<PageResult>> getNextResultAsync,
+            Func<PageResult> getNextResult)
 
-    private class FuncPageResult : PageResult
+        => new FuncPageResult(pageToken, nextPageToken, response, getNextResultAsync, getNextResult);
+
+    private class FuncPage<T> : PageResult<T>
     {
-        private readonly Func<Task<PageResult>> _getNextAsync;
-        private readonly Func<PageResult> _getNext;
+        private readonly PageResult _result;
+        private readonly Func<PageResult, PageResult<T>> _toPage;
 
-        public FuncPageResult(
-            Func<Task<PageResult>> getNextAsync,
-            Func<PageResult> getNext,
-            bool hasNext,
-            PipelineResponse response)
-            : base(hasNext, response)
+        // TODO: can it be simplified?
+        public FuncPage(
+            
+            // page params
+            IReadOnlyList<T> values,
+            PageResult result,
+
+            // convenience layer conversion params
+            Func<PageResult, PageResult<T>> toPage)
+            : base(values, result.PageToken, result.NextPageToken, result.GetRawResponse())
         {
-            _getNextAsync = getNextAsync;
-            _getNext = getNext;
+            _result = result;
+            _toPage = toPage;
         }
 
         protected override async Task<PageResult> GetNextResultAsyncCore()
-            => await _getNextAsync().ConfigureAwait(false);
+            => _toPage(await _result.GetNextResultAsync().ConfigureAwait(false));
 
         protected override PageResult GetNextResultCore()
-            => _getNext();
+            => _toPage(_result.GetNextResult());
     }
 
-    //public static AsyncCollectionResult<T> CreateAsync<T>(ContinuationToken firstPageToken,
-    //    Func<ContinuationToken, Task<PageResult<T>>> getPageAsync) where T : notnull
-    //    => new AsyncFuncCollectionResult<T>(firstPageToken, getPageAsync);
+    private class FuncPageResult : PageResult
+    {
+        private readonly Func<Task<PageResult>> _getNextResultAsync;
+        private readonly Func<PageResult> _getNextResult;
 
-    //public static CollectionResult<T> Create<T>(ContinuationToken firstPageToken,
-    //    Func<ContinuationToken, PageResult<T>> getPage) where T : notnull
-    //    => new FuncCollectionResult<T>(firstPageToken, getPage);
+        public FuncPageResult(
+            
+            // page params
+            ContinuationToken pageToken,
+            ContinuationToken? nextPageToken,
+            PipelineResponse response,
 
-    //private class AsyncFuncCollectionResult<T> : AsyncCollectionResult<T> where T : notnull
-    //{
-    //    //private readonly ContinuationToken _firstPageToken;
-    //    //private readonly Func<ContinuationToken, Task<PageResult<T>>> _getPageAsync;
+            // subclient params
+            Func<Task<PageResult>> getNextResultAsync,
+            Func<PageResult> getNextResult)
 
-    //    //public AsyncFuncPageCollection(ContinuationToken firstPageToken,
-    //    //    Func<ContinuationToken, Task<PageResult<T>>> getPageAsync)
-    //    //{
-    //    //    _firstPageToken = firstPageToken;
-    //    //    _getPageAsync = getPageAsync;
-    //    //}
+            : base(pageToken, nextPageToken, response)
+        {
+            _getNextResultAsync = getNextResultAsync;
+            _getNextResult = getNextResult;
+        }
 
-    //    //public override ContinuationToken FirstPageToken => _firstPageToken;
+        protected override async Task<PageResult> GetNextResultAsyncCore()
+            => await _getNextResultAsync().ConfigureAwait(false);
 
-    //    //public override async Task<PageResult<T>> GetPageAsyncCore(ContinuationToken pageToken)
-    //    //    => await _getPageAsync(pageToken).ConfigureAwait(false);
-    //}
-
-    //private class FuncCollectionResult<T> : CollectionResult<T> where T : notnull
-    //{
-    //    //private readonly ContinuationToken _firstPageToken;
-    //    //private readonly Func<ContinuationToken, PageResult<T>> _getPage;
-
-    //    //public FuncPageCollection(ContinuationToken firstPageToken,
-    //    //    Func<ContinuationToken, PageResult<T>> getPage)
-    //    //{
-    //    //    _firstPageToken = firstPageToken;
-    //    //    _getPage = getPage;
-    //    //}
-
-    //    //public override ContinuationToken FirstPageToken => _firstPageToken;
-
-    //    //public override PageResult<T> GetPageCore(ContinuationToken pageToken)
-    //    //    => _getPage(pageToken);
-
-    //    public override IEnumerator<T> GetEnumerator()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+        protected override PageResult GetNextResultCore()
+            => _getNextResult();
+    }
 }

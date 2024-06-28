@@ -167,7 +167,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromOptions(options);
         PageResult result = GetAssistantsPage(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public partial class AssistantClient
     {
         AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
         PageResult result = GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, cancellationToken.ToRequestOptions());
-        return OpenAI.AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
+        return AssistantCollectionPage.FromProtocolPageResult(result, token, AssistantCollectionPageToken.FromToken);
     }
 
     /// <summary>

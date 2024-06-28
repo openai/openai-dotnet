@@ -17,7 +17,7 @@ internal class AssistantCollection : CollectionResult<Assistant>
     {
         AssistantCollectionPage page = _getFirst();
 
-        while (page.HasNext)
+        while (page.NextPageToken is not null)
         {
             foreach (Assistant value in page.Values)
             {

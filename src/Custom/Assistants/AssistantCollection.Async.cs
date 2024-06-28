@@ -19,7 +19,7 @@ internal class AsyncAssistantCollection : AsyncCollectionResult<Assistant>
     {
         AssistantCollectionPage page = await _getFirstAsync().ConfigureAwait(false);
 
-        while (page.HasNext)
+        while (page.NextPageToken is not null)
         {
             foreach (Assistant value in page.Values)
             {

@@ -67,22 +67,9 @@ public partial class AssistantClient
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        return OpenAIPaginationHelpers.CreatePageResult(result, limit, order, after, before, options,
-            GetAssistantsPageAsync, GetAssistantsPage);
 
-        //async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
-        //{
-        //    ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        //}
-
-        //AssistantCollectionPageResult GetNext(string lastId)
-        //{
-        //    ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        //}
-
-        //return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPaginationHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
     }
 
     /// <summary>
@@ -113,22 +100,9 @@ public partial class AssistantClient
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         ClientResult result = ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-        return OpenAIPaginationHelpers.CreatePageResult(result, limit, order, after, before, options,
-            GetAssistantsPageAsync, GetAssistantsPage);
 
-        //async Task<AssistantCollectionPageResult> GetNextAsync(string lastId)
-        //{
-        //    ClientResult nextResult = await GetAssistantsPageAsync(limit, order, lastId, before, options).ConfigureAwait(false);
-        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        //}
-
-        //AssistantCollectionPageResult GetNext(string lastId)
-        //{
-        //    ClientResult nextResult = GetAssistantsPage(limit, order, lastId, before, options);
-        //    return AssistantCollectionPageResult.Create(nextResult, GetNextAsync, GetNext);
-        //}
-
-        //return AssistantCollectionPageResult.Create(result, GetNextAsync, GetNext);
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPaginationHelpers.CreatePageResult(pageToken, options, result, GetAssistantsPageAsync, GetAssistantsPage);
     }
 
     /// <summary>
