@@ -24,9 +24,9 @@ internal class AsyncAssistantCollection : AsyncCollectionResult<Assistant>
             foreach (Assistant value in page.Values)
             {
                 yield return value;
-
-                page = (AssistantCollectionPage)await page.GetNextAsync().ConfigureAwait(false);
             }
+
+            page = (AssistantCollectionPage)await page.GetNextAsync().ConfigureAwait(false);
         }
     }
 }
