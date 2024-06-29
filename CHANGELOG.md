@@ -1,10 +1,16 @@
 # Release History
 
-## 2.0.0-beta.7 (Unreleased)
+## 2.0.0-beta.8 (Unreleased)
 
 ## Bugs Fixed
 
-- ([#84](https://github.com/openai/openai-dotnet/issues/84)) Fixed a `NullReferenceException` thrown when adding the custom headers policy while `OpenAIClientOptions` is null (commit_hash)
+- Removed the project's multi-target to net6.0 to improve compatibility when calling via a netstandard2.x class library (commit_hash)
+
+## 2.0.0-beta.7 (2024-06-24)
+
+## Bugs Fixed
+
+- ([#84](https://github.com/openai/openai-dotnet/issues/84)) Fixed a `NullReferenceException` thrown when adding the custom headers policy while `OpenAIClientOptions` is null ([0b97311](https://github.com/openai/openai-dotnet/commit/0b97311f58dfb28bd883d990f68d548da040a807))
 
 ## 2.0.0-beta.6 (2024-06-21)
 
