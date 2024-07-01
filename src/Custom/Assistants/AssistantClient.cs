@@ -104,27 +104,18 @@ public partial class AssistantClient
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
-        ListOrder? order = null,
-        int? pageSize = null,
-        string afterId = default,
-        string beforeId = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(options);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPageAsync,
-            GetAssistantsPageToken.FromToken,
+            AssistantCollectionPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -138,38 +129,29 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPageAsync,
-            GetAssistantsPageToken.FromToken,
+            AssistantCollectionPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
     /// Returns a collection of <see cref="Assistant"/> instances.
     /// </summary>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of assistants that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<Assistant> GetAssistants(
-        ListOrder? order = null,
-        int? pageSize = null,
-        string afterId = default,
-        string beforeId = default,
+        AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit: pageSize, order: order?.ToString(), after: afterId, before: beforeId);
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(options);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPage,
-            GetAssistantsPageToken.FromToken,
+            AssistantCollectionPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -183,11 +165,11 @@ public partial class AssistantClient
         ContinuationToken firstPageToken, 
         CancellationToken cancellationToken = default)
     {
-        GetAssistantsPageToken pageToken = GetAssistantsPageToken.FromToken(firstPageToken);
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
             pageToken,
             GetAssistantsPage,
-            GetAssistantsPageToken.FromToken,
+            AssistantCollectionPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 

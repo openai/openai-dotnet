@@ -41,7 +41,7 @@ internal class PageCollectionHelpers
             _getPageAsync = getPageAsync;
         }
 
-        public override ContinuationToken FirstPageToken => _firstPageToken;
+        protected override ContinuationToken FirstPageToken => _firstPageToken;
 
         public override async Task<PageResult<T>> GetPageAsyncCore(ContinuationToken pageToken)
             => await _getPageAsync(pageToken).ConfigureAwait(false);
@@ -59,9 +59,9 @@ internal class PageCollectionHelpers
             _getPage = getPage;
         }
 
-        public override ContinuationToken FirstPageToken => _firstPageToken;
+        protected override ContinuationToken FirstPageToken => _firstPageToken;
 
-        public override PageResult<T> GetPageCore(ContinuationToken pageToken)
+        protected override PageResult<T> GetPageCore(ContinuationToken pageToken)
             => _getPage(pageToken);
     }
 

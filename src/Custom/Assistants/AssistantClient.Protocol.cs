@@ -67,11 +67,11 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPageAsync,
-            GetAssistantsPageToken.FromToken,
+            AssistantCollectionPageToken.FromToken,
             options);
     }
 
@@ -107,8 +107,8 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        GetAssistantsPageToken firstPageToken = GetAssistantsPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, GetAssistantsPageToken.FromToken, options);
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, AssistantCollectionPageToken.FromToken, options);
     }
 
     internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.ClientModel;
 using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 
 #nullable enable
 
 namespace OpenAI.Assistants;
 
-internal class GetAssistantsPageToken : OpenAIPageToken
+internal class AssistantCollectionPageToken : OpenAIPageToken
 {
-    public GetAssistantsPageToken(int? limit, string? order, string? after, string? before)
+    public AssistantCollectionPageToken(int? limit, string? order, string? after, string? before)
         : base(limit, order, after, before)
     {
     }
@@ -17,12 +18,49 @@ internal class GetAssistantsPageToken : OpenAIPageToken
     public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(Limit, Order, lastId, Before, hasMore);
 
-    public static GetAssistantsPageToken FromOptions(int? limit, string? order, string? after, string? before)
-        => new GetAssistantsPageToken(limit, order, after, before);
-
-    public static GetAssistantsPageToken FromToken(ContinuationToken token)
+    public override BinaryData ToBytes()
     {
-        if (token is GetAssistantsPageToken pageToken)
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartObject();
+
+        if (Limit.HasValue)
+        {
+            writer.WriteNumber("limit", Limit.Value);
+        }
+
+        if (Order is not null)
+        {
+            writer.WriteString("order", Order);
+        }
+
+        if (After is not null)
+        {
+            writer.WriteString("after", After);
+        }
+
+        if (Before is not null)
+        {
+            writer.WriteString("before", Before);
+        }
+
+        writer.WriteEndObject();
+
+        writer.Flush();
+        stream.Position = 0;
+
+        return BinaryData.FromStream(stream);
+    }
+
+    // Convenience - first page request
+    public static AssistantCollectionPageToken FromOptions(AssistantCollectionOptions options)
+        => new(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
+
+    // Convenience - continuation page request
+    public static AssistantCollectionPageToken FromToken(ContinuationToken token)
+    {
+        if (token is AssistantCollectionPageToken pageToken)
         {
             return pageToken;
         }
@@ -84,13 +122,17 @@ internal class GetAssistantsPageToken : OpenAIPageToken
         return new(limit, order, after, before);
     }
 
-    public static GetAssistantsPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
+    // Protocol
+    public static AssistantCollectionPageToken FromOptions(int? limit, string? order, string? after, string? before)
+        => new AssistantCollectionPageToken(limit, order, after, before);
+
+    private static AssistantCollectionPageToken? GetNextPageToken(int? limit, string? order, string? after, string? before, bool hasMore)
     {
         if (!hasMore || after is null)
         {
             return null;
         }
 
-        return new GetAssistantsPageToken(limit, order, after, before);
+        return new AssistantCollectionPageToken(limit, order, after, before);
     }
 }

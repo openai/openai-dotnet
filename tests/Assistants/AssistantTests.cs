@@ -129,10 +129,10 @@ public partial class AssistantTests
         });
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
-        IEnumerable<ThreadMessage> messagePage = client.GetMessages(thread).GetAllValues();
-        Assert.That(messagePage.Count, Is.EqualTo(1));
-        Assert.That(messagePage.First().Id, Is.EqualTo(message.Id));
-        Assert.That(messagePage.First().Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
+        PageResult<ThreadMessage> messagePage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagePage.Values.Count, Is.EqualTo(1));
+        Assert.That(messagePage.Values[0].Id, Is.EqualTo(message.Id));
+        Assert.That(messagePage.Values[0].Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
     }
 
     [Test]
@@ -160,16 +160,16 @@ public partial class AssistantTests
         };
         AssistantThread thread = client.CreateThread(options);
         Validate(thread);
-        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.OldestFirst).GetAllValues();
-        Assert.That(messages.Count, Is.EqualTo(2));
-        Assert.That(messages.First().Role, Is.EqualTo(MessageRole.User));
-        Assert.That(messages.First().Content?.Count, Is.EqualTo(1));
-        Assert.That(messages.First().Content[0].Text, Is.EqualTo("Hello, world!"));
-        Assert.That(messages.ElementAt(1).Content?.Count, Is.EqualTo(2));
-        Assert.That(messages.ElementAt(1).Content[0], Is.Not.Null);
-        Assert.That(messages.ElementAt(1).Content[0].Text, Is.EqualTo("Can you describe this image for me?"));
-        Assert.That(messages.ElementAt(1).Content[1], Is.Not.Null);
-        Assert.That(messages.ElementAt(1).Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread, new MessageCollectionOptions() { Order = ListOrder.OldestFirst }).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[0].Content?.Count, Is.EqualTo(1));
+        Assert.That(messagesPage.Values[0].Content[0].Text, Is.EqualTo("Hello, world!"));
+        Assert.That(messagesPage.Values[1].Content?.Count, Is.EqualTo(2));
+        Assert.That(messagesPage.Values[1].Content[0], Is.Not.Null);
+        Assert.That(messagesPage.Values[1].Content[0].Text, Is.EqualTo("Can you describe this image for me?"));
+        Assert.That(messagesPage.Values[1].Content[1], Is.Not.Null);
+        Assert.That(messagesPage.Values[1].Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
     [Test]
@@ -180,8 +180,8 @@ public partial class AssistantTests
         Validate(assistant);
         AssistantThread thread = client.CreateThread();
         Validate(thread);
-        IEnumerable<ThreadRun> runs = client.GetRuns(thread).GetAllValues();
-        Assert.That(runs.Count, Is.EqualTo(0));
+        PageResult<ThreadRun> runsPage = client.GetRunsPage(thread);
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
         ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
@@ -190,12 +190,12 @@ public partial class AssistantTests
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-        runs = client.GetRuns(thread).GetAllValues();
-        Assert.That(runs.Count, Is.EqualTo(1));
-        Assert.That(runs.First().Id, Is.EqualTo(run.Id));
+        runsPage = client.GetRunsPage(thread);
+        Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(thread).GetAllValues();
-        Assert.That(messages.Count, Is.GreaterThanOrEqualTo(1));
+        PageResult<ThreadMessage> messagesPage = client.GetMessagesPage(thread);
+        Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
             Thread.Sleep(500);
@@ -208,12 +208,12 @@ public partial class AssistantTests
         Assert.That(run.FailedAt, Is.Null);
         Assert.That(run.IncompleteDetails, Is.Null);
 
-        messages = client.GetMessages(thread).GetAllValues();
-        Assert.That(messages.Count, Is.EqualTo(2));
+        messagesPage = client.GetMessagesPage(thread);
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
 
-        Assert.That(messages.ElementAt(0).Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(messages.ElementAt(1).Role, Is.EqualTo(MessageRole.User));
-        Assert.That(messages.ElementAt(1).Id, Is.EqualTo(message.Id));
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
     [Test]
@@ -269,7 +269,7 @@ public partial class AssistantTests
         Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
         PageCollection<RunStep> pages = client.GetRunSteps(run);
-        PageResult<RunStep> firstPage = pages.First();
+        PageResult<RunStep> firstPage = pages.GetCurrentPage();
 
         IEnumerable<RunStep> runSteps = pages.GetAllValues();
         Assert.That(runSteps.Count, Is.GreaterThan(1));
@@ -391,7 +391,7 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, ListOrder.NewestFirst).GetAllValues();
+        CollectionResult<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);
@@ -600,7 +600,7 @@ public partial class AssistantTests
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.NewestFirst).GetAllValues();
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
         foreach (ThreadMessage message in messages)
         {
             foreach (MessageContent content in message.Content)
