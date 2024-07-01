@@ -425,6 +425,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
+        // Call protocol method to get protocol subclient
         IEnumerable<ClientResult> enumerable = GetMessages(
             threadId,
             options?.PageSize,
@@ -432,8 +433,12 @@ public partial class AssistantClient
             options?.AfterId,
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        // Create convenience subclient
         MessagePageEnumerator enumerator = new(enumerable.GetEnumerator());
-        return PageCollectionHelpers.Create<ThreadMessage>(enumerator);
+
+        // Wrap it in the outer collection
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
