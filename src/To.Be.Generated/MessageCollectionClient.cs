@@ -1,56 +1,68 @@
-﻿using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Text.Json;
+﻿//using System.ClientModel;
+//using System.ClientModel.Primitives;
+//using System.Text.Json;
 
-namespace OpenAI.Assistants;
+//#nullable enable
 
-internal class MessageCollectionClient : PageResultEnumerator
-{
-    private readonly InternalAssistantMessageClient _messageSubClient;
+//namespace OpenAI.Assistants;
 
-    private readonly string _threadId;
-    private readonly int? _limit;
-    private readonly string _order;
-    private readonly string _after;
-    private readonly string _before;
-    private readonly RequestOptions _options;
+//internal class MessageCollectionClient : PageResultEnumerator
+//{
+//    private readonly InternalAssistantMessageClient _messageSubClient;
 
-    public MessageCollectionClient(InternalAssistantMessageClient subclient, string threadId, int? limit, string order, string after, string before, RequestOptions options)
-    {
-        _threadId = threadId;
-        _limit = limit;
-        _order = order;
-        _after = after;
-        _before = before;
-        _options = options;
+//    private readonly string _threadId;
+//    private readonly int? _limit;
+//    private readonly string _order;
+//    private readonly string _after;
+//    private readonly string _before;
+//    private readonly RequestOptions _options;
 
-        _messageSubClient = subclient;
-    }
+//    public MessageCollectionClient(InternalAssistantMessageClient subclient, string threadId, int? limit, string order, string after, string before, RequestOptions options)
+//    {
+//        _threadId = threadId;
+//        _limit = limit;
+//        _order = order;
+//        _after = after;
+//        _before = before;
+//        _options = options;
 
-    public override ClientResult GetFirst()
-        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+//        _messageSubClient = subclient;
+//    }
 
-    public override ClientResult GetNext(ClientResult result)
-    {
-        PipelineResponse response = result.GetRawResponse();
+//    public override ClientResult GetFirst()
+//        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
+//    public override ClientResult GetNext(ClientResult result)
+//    {
+//        PipelineResponse response = result.GetRawResponse();
 
-        return GetMessagesPage(_threadId, _limit, _order, lastId, _before, _options);
-    }
+//        using JsonDocument doc = JsonDocument.Parse(response.Content);
+//        string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-    public override bool HasNext(ClientResult result)
-    {
-        PipelineResponse response = result.GetRawResponse();
+//        return GetMessagesPage(_threadId, _limit, _order, lastId, _before, _options);
+//    }
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
+//    public override bool HasNext(ClientResult result)
+//    {
+//        PipelineResponse response = result.GetRawResponse();
 
-        return hasMore;
-    }
+//        using JsonDocument doc = JsonDocument.Parse(response.Content);
+//        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
-}
+//        return hasMore;
+//    }
+
+//    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
+//    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+//        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+
+//    //// This could live in a different class
+//    //public PageResult<ThreadMessage> GetPageFromResult(ClientResult result)
+//    //{
+//    //    PipelineResponse response = result.GetRawResponse();
+//    //    InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
+//    //    MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(_threadId, _limit, _order, )
+//    //    return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
+
+//    //}
+//}

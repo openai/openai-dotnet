@@ -8,22 +8,22 @@ namespace OpenAI;
 
 internal abstract class PageEnumerator<T> : IEnumerator<PageResult<T>>
 {
-    private readonly PageResultEnumerator _resultEnumerator;
-
-    public PageEnumerator(PageResultEnumerator resultEnumerator)
+    public PageEnumerator(IEnumerator<ClientResult> resultEnumerator)
     {
-        _resultEnumerator = resultEnumerator;
+        ResultEnumerator = resultEnumerator;
     }
+
+    public IEnumerator<ClientResult> ResultEnumerator { get; }
 
     public abstract PageResult<T> GetPageFromResult(ClientResult result);
 
-    public PageResult<T> Current => GetPageFromResult(_resultEnumerator.Current);
+    public PageResult<T> Current => GetPageFromResult(ResultEnumerator.Current);
 
     object IEnumerator.Current => Current;
 
-    public bool MoveNext() => _resultEnumerator.MoveNext();
+    public bool MoveNext() => ResultEnumerator.MoveNext();
 
-    public void Reset() => _resultEnumerator.Reset();
+    public void Reset() => ResultEnumerator.Reset();
 
-    public void Dispose() => _resultEnumerator.Dispose();
+    public void Dispose() => ResultEnumerator.Dispose();
 }

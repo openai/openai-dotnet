@@ -257,8 +257,8 @@ public partial class AssistantClient
 
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        IEnumerator<ClientResult> subclient = new MessageCollectionClient(_messageSubClient, threadId, limit, order, after, before, options);
-        return PageCollectionHelpers.CreateProtocol(subclient);
+        IEnumerator<ClientResult> enumerator = new MessagePageResultEnumerator(_messageSubClient, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateProtocol(enumerator);
     }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>

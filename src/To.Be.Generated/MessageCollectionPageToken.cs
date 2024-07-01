@@ -8,15 +8,27 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class MessageCollectionPageToken : OpenAIPageToken
+internal class MessageCollectionPageToken : ContinuationToken
 {
     public MessageCollectionPageToken(string threadId, int? limit, string? order, string? after, string? before)
-        : base(limit, order, after, before)
     {
         ThreadId = threadId;
+
+        Limit = limit;
+        Order = order;
+        After = after;
+        Before = before;
     }
 
     public string ThreadId { get; }
+
+    public int? Limit { get; }
+
+    public string? Order { get; }
+
+    public string? After { get; }
+
+    public string? Before { get; }
 
     public override BinaryData ToBytes()
     {
@@ -54,7 +66,7 @@ internal class MessageCollectionPageToken : OpenAIPageToken
         return BinaryData.FromStream(stream);
     }
     
-    public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
+    public MessageCollectionPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
 
     // Convenience - first page request

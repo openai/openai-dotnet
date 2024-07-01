@@ -1,9 +1,5 @@
-﻿using System;
-using System.ClientModel;
-using System.Collections;
+﻿using System.ClientModel;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 #nullable enable
 
@@ -11,8 +7,8 @@ namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
-    public static PageCollection<T> Create<T>(IEnumerator<PageResult<T>> enumerator)
-        => new PageCollectionClient<T>(enumerator);
+    public static PageCollection<T> Create<T>(PageEnumerator<T> enumerator)
+        => new FuncPageCollection<T>(enumerator);
 
     public static IEnumerable<ClientResult> CreateProtocol(IEnumerator<ClientResult> enumerator)
     {
@@ -22,11 +18,11 @@ internal class PageCollectionHelpers
         }
     }
 
-    private class PageCollectionClient<T> : PageCollection<T>
+    private class FuncPageCollection<T> : PageCollection<T>
     {
-        private readonly IEnumerator<PageResult<T>> _enumerator;
-
-        public PageCollectionClient(IEnumerator<PageResult<T>> enumerator)
+        private readonly PageEnumerator<T> _enumerator;
+        
+        public FuncPageCollection(PageEnumerator<T> enumerator)
         {
             _enumerator = enumerator;
         }
@@ -35,7 +31,8 @@ internal class PageCollectionHelpers
         {
             while (_enumerator.MoveNext())
             {
-                yield return _enumerator.Current;
+                ClientResult result = _enumerator.Current;
+                yield return _enumerator.GetPageFromResult(result);
             }
         }
     }

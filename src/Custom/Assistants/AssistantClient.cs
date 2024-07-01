@@ -1,3 +1,4 @@
+using OpenAI.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -424,12 +425,15 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionPageToken firstPageToken = MessageCollectionPageToken.FromOptions(threadId, options);
-        return OpenAIPageCollectionHelpers.Create<ThreadMessage, InternalListMessagesResponse>(
-            firstPageToken,
-            GetMessagesPage,
-            MessageCollectionPageToken.FromToken,
+        IEnumerable<ClientResult> enumerable = GetMessages(
+            threadId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+        MessagePageEnumerator enumerator = new(enumerable.GetEnumerator());
+        return PageCollectionHelpers.Create<ThreadMessage>(enumerator);
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
