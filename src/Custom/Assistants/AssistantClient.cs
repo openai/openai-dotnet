@@ -425,8 +425,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        // Call protocol method to get protocol subclient
-        IEnumerable<ClientResult> enumerable = GetMessages(
+        MessageCollectionClient enumerator = new(_messageSubClient,
             threadId,
             options?.PageSize,
             options?.Order?.ToString(),
@@ -434,11 +433,8 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        // Create convenience subclient
-        MessagePageResultEnumerator enumerator = (MessagePageResultEnumerator)enumerable.GetEnumerator();
-
-        // Wrap it in the outer collection
-        return PageCollectionHelpers.Create(enumerator, result => MessagePageResultEnumerator.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.Create(enumerator, 
+            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
@@ -449,8 +445,7 @@ public partial class AssistantClient
 
         MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
 
-        // Call protocol method to get protocol subclient
-        IEnumerable<ClientResult> enumerable = GetMessages(
+        MessageCollectionClient enumerator = new(_messageSubClient,
             pageToken.ThreadId,
             pageToken.Limit,
             pageToken.Order,
@@ -458,11 +453,8 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        // Create convenience subclient
-        MessagePageResultEnumerator enumerator = (MessagePageResultEnumerator)enumerable.GetEnumerator();
-
-        // Wrap it in the outer collection
-        return PageCollectionHelpers.Create(enumerator, result => MessagePageResultEnumerator.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.Create(enumerator,
+            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
     }
 
     /// <summary>

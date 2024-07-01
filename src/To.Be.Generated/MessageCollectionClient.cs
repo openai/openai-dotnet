@@ -1,68 +1,92 @@
-﻿//using System.ClientModel;
-//using System.ClientModel.Primitives;
-//using System.Text.Json;
+﻿using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Text.Json;
 
-//#nullable enable
+#nullable enable
 
-//namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
-//internal class MessageCollectionClient : PageResultEnumerator
-//{
-//    private readonly InternalAssistantMessageClient _messageSubClient;
+internal class MessageCollectionClient : PageResultEnumerator
+{
+    private readonly InternalAssistantMessageClient _messageSubClient;
 
-//    private readonly string _threadId;
-//    private readonly int? _limit;
-//    private readonly string _order;
-//    private readonly string _after;
-//    private readonly string _before;
-//    private readonly RequestOptions _options;
+    private readonly string _threadId;
+    private readonly int? _limit;
+    private readonly string _order;
 
-//    public MessageCollectionClient(InternalAssistantMessageClient subclient, string threadId, int? limit, string order, string after, string before, RequestOptions options)
-//    {
-//        _threadId = threadId;
-//        _limit = limit;
-//        _order = order;
-//        _after = after;
-//        _before = before;
-//        _options = options;
+    // Note: this one is special
+    private string _after;
 
-//        _messageSubClient = subclient;
-//    }
+    private readonly string _before;
+    private readonly RequestOptions _options;
 
-//    public override ClientResult GetFirst()
-//        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+    public MessageCollectionClient(InternalAssistantMessageClient subclient, string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        _threadId = threadId;
+        _limit = limit;
+        _order = order;
+        _after = after;
+        _before = before;
+        _options = options;
 
-//    public override ClientResult GetNext(ClientResult result)
-//    {
-//        PipelineResponse response = result.GetRawResponse();
+        _messageSubClient = subclient;
+    }
 
-//        using JsonDocument doc = JsonDocument.Parse(response.Content);
-//        string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
+    // TODO: do we need these in so many places?
+    public string ThreadId => _threadId;
 
-//        return GetMessagesPage(_threadId, _limit, _order, lastId, _before, _options);
-//    }
+    public int? Limit => _limit;
 
-//    public override bool HasNext(ClientResult result)
-//    {
-//        PipelineResponse response = result.GetRawResponse();
+    public string? Order => _order;
 
-//        using JsonDocument doc = JsonDocument.Parse(response.Content);
-//        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
+    public string? After => _after;
 
-//        return hasMore;
-//    }
+    public string? Before => _before;
 
-//    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-//    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-//        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+    public override ClientResult GetFirst()
+        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
 
-//    //// This could live in a different class
-//    //public PageResult<ThreadMessage> GetPageFromResult(ClientResult result)
-//    //{
-//    //    PipelineResponse response = result.GetRawResponse();
-//    //    InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
-//    //    MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(_threadId, _limit, _order, )
-//    //    return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
+    public override ClientResult GetNext(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
 
-//    //}
-//}
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
+
+        return GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+    }
+
+    public override bool HasNext(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
+
+        return hasMore;
+    }
+    
+    // Note: this is the protocol method
+    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+
+    // Note: this is the static page deserialization method
+    public static PageResult<ThreadMessage> GetPageFromResult(
+        MessageCollectionClient resultEnumerator,
+        ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+        InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
+
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(
+            resultEnumerator.ThreadId,
+            resultEnumerator.Limit,
+            resultEnumerator.Order,
+            resultEnumerator.After,
+            resultEnumerator.Before);
+
+        MessageCollectionPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
+
+        return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
+    }
+}

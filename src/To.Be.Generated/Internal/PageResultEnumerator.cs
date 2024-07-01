@@ -36,6 +36,7 @@ internal abstract class PageResultEnumerator : IEnumerator<ClientResult>
     // Idea is that this is generated on the client
     public abstract ClientResult GetNext(ClientResult result);
 
+    // Idea is that this is generated on the client
     public abstract bool HasNext(ClientResult result);
 
     public virtual void Dispose() { }
