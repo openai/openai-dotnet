@@ -28,7 +28,6 @@ public partial class AssistantClient
     public virtual ClientResult<Assistant> ModifyAssistant(Assistant assistant, AssistantModificationOptions options)
         => ModifyAssistant(assistant?.Id, options);
 
-
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>.
     /// </summary>
@@ -130,7 +129,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
     /// <param name="options">Options describing the collection to return.</param>
-    /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
+    /// <returns></returns>
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
         MessageCollectionOptions options = default)
@@ -145,7 +144,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
     /// <param name="options">Options describing the collection to return.</param>
-    /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
+    /// <returns></returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
         AssistantThread thread, 
         MessageCollectionOptions options = default)
@@ -308,7 +307,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
     /// <param name="options">Options describing the collection to return.</param>
-    /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
+    /// <returns></returns>
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         AssistantThread thread,
         RunCollectionOptions options = default)
@@ -323,7 +322,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
     /// <param name="options">Options describing the collection to return.</param>
-    /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
+    /// <returns></returns>
     public virtual PageCollection<ThreadRun> GetRuns(
         AssistantThread thread,
         RunCollectionOptions options = default)
@@ -332,7 +331,6 @@ public partial class AssistantClient
 
         return GetRuns(thread.Id, options);
     }
-
 
     /// <summary>
     /// Gets a refreshed instance of an existing <see cref="ThreadRun"/>.
@@ -420,35 +418,29 @@ public partial class AssistantClient
     /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
+    /// <param name="options">Options describing the collection to return.</param>
+    /// <returns></returns>
     public virtual PageCollection<RunStep> GetRunSteps(
         ThreadRun run,
-        ListOrder? resultOrder = default)
+        RunStepCollectionOptions options = default)
     {
         Argument.AssertNotNull(run, nameof(run));
 
-        return GetRunSteps(run.ThreadId, run.Id, resultOrder);
+        return GetRunSteps(run.ThreadId, run.Id, options);
     }
 
     /// <summary>
     /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
+    /// <param name="options">Options describing the collection to return.</param>
+    /// <returns></returns>
     public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
         ThreadRun run,
-        ListOrder? resultOrder = default)
+        RunStepCollectionOptions options = default)
     {
         Argument.AssertNotNull(run, nameof(run));
 
-        return GetRunStepsAsync(run.ThreadId, run.Id, resultOrder);
+        return GetRunStepsAsync(run.ThreadId, run.Id, options);
     }
 }

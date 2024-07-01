@@ -57,6 +57,10 @@ internal class RunCollectionPageToken : OpenAIPageToken
     public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
 
+    // Convenience - first page request
+    public static RunCollectionPageToken FromOptions(string threadId, RunCollectionOptions options)
+        => new(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
+
     // Convenience - continuation page request
     public static RunCollectionPageToken FromToken(ContinuationToken pageToken)
     {
