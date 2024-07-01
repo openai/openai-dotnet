@@ -634,7 +634,7 @@ public partial class AssistantTests
 
         // Page through collection
         int count = 0;
-        IAsyncEnumerable<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst).GetAllValuesAsync();
+        IAsyncEnumerable<Assistant> assistants = client.GetAssistantsAsync(new AssistantCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValuesAsync();
 
         int lastIdSeen = int.MaxValue;
 
@@ -676,8 +676,13 @@ public partial class AssistantTests
         // Page through collection
         int count = 0;
         int pageCount = 0;
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
-        
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
+
         int lastIdSeen = int.MaxValue;
 
         await foreach (PageResult<Assistant> page in pages)
@@ -720,11 +725,17 @@ public partial class AssistantTests
             Validate(assistant);
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
         }
-        
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
 
         // Simulate rehydration of the collection
-        BinaryData rehydrationBytes = pages.FirstPageToken.ToBytes();
+        // TODO: too complicated?
+        BinaryData rehydrationBytes = (await pages.GetCurrentPageAsync().ConfigureAwait(false)).PageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
         AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
@@ -774,10 +785,16 @@ public partial class AssistantTests
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
         }
 
-        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(ListOrder.NewestFirst, pageSize: 2);
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
 
         // Call the rehydration method, passing a typed OpenAIPageToken
-        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(pages.FirstPageToken);
+        PageResult<Assistant> firstPage = await pages.GetCurrentPageAsync().ConfigureAwait(false);
+        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(firstPage.PageToken);
 
         int count = 0;
         int pageCount = 0;

@@ -12,12 +12,12 @@ namespace OpenAI;
 
 internal class OpenAIPageCollectionHelpers
 {
-    public delegate Task<ClientResult> GetPageValuesAsync(int? limit, string? order, string? after, string? before, RequestOptions? options);
-    public delegate ClientResult GetPageValues(int? limit, string? order, string? after, string? before, RequestOptions? options);
+    public delegate Task<ClientResult> GetPageResultAsync(OpenAIPageToken pageToken, RequestOptions? options);
+    public delegate ClientResult GetPageResult(OpenAIPageToken pageToken, RequestOptions? options);
 
     public static AsyncPageCollection<TValue> CreateAsync<TValue, TList>(
         ContinuationToken firstPageToken,
-        GetPageValuesAsync getPageValuesAsync,
+        GetPageResultAsync getPageResultAsync,
         Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
@@ -27,11 +27,8 @@ internal class OpenAIPageCollectionHelpers
         {
             OpenAIPageToken token = getToken(pageToken);
 
-            ClientResult result = await getPageValuesAsync(
-                limit: token.Limit,
-                order: token.Order,
-                after: token.After,
-                before: token.Before,
+            ClientResult result = await getPageResultAsync(
+                token,
                 options).ConfigureAwait(false);
 
             PipelineResponse response = result.GetRawResponse();
@@ -46,7 +43,7 @@ internal class OpenAIPageCollectionHelpers
 
     public static PageCollection<TValue> Create<TValue, TList>(
         ContinuationToken firstPageToken,
-        GetPageValues getPageValues,
+        GetPageResult getPageResult,
         Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
             where TValue : notnull
@@ -56,11 +53,8 @@ internal class OpenAIPageCollectionHelpers
         {
             OpenAIPageToken token = getToken(pageToken);
 
-            ClientResult result = getPageValues(
-                limit: token.Limit,
-                order: token.Order,
-                after: token.After,
-                before: token.Before,
+            ClientResult result = getPageResult(
+                token,
                 options);
 
             PipelineResponse response = result.GetRawResponse();
@@ -75,14 +69,14 @@ internal class OpenAIPageCollectionHelpers
 
     public static IAsyncEnumerable<ClientResult> CreateProtocolAsync(
         ContinuationToken firstPageToken,
-        GetPageValuesAsync getPageValuesAsync,
+        GetPageResultAsync getPageResultAsync,
         Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
     {
         async Task<ClientResult> getPageAsync(ContinuationToken pageToken)
         {
             OpenAIPageToken token = getToken(pageToken);
-            return await getPageValuesAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+            return await getPageResultAsync(token, options).ConfigureAwait(false);
         }
 
         ContinuationToken? getNextPageToken(ContinuationToken pageToken, ClientResult result)
@@ -102,14 +96,14 @@ internal class OpenAIPageCollectionHelpers
 
     public static IEnumerable<ClientResult> CreateProtocol(
         ContinuationToken firstPageToken,
-        GetPageValues getPageValues,
+        GetPageResult getPageResult,
         Func<ContinuationToken, OpenAIPageToken> getToken,
         RequestOptions? options)
     {
         ClientResult getPage(ContinuationToken pageToken)
         {
             OpenAIPageToken token = (OpenAIPageToken)pageToken;
-            return getPageValues(token.Limit, token.Order, token.After, token.Before, options);
+            return getPageResult(token, options);
         }
 
         ContinuationToken? getNextPageToken(ContinuationToken pageToken, ClientResult result)

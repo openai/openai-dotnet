@@ -380,18 +380,14 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+
+        MessageCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -404,18 +400,13 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        MessageCollectionOptions options = default, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -720,18 +711,13 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -744,18 +730,13 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
-    /// <param name="order">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="pageSize">The number of values to return in a single page in the page collection.</param>
-    /// <param name="afterId">The id of the item preceeding the first item in the collection.</param>
-    /// <param name="beforeId">The id of the item following the last item in the collection.</param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadRun> GetRuns(
         string threadId,
-        ListOrder? order = null, int? pageSize = null, string afterId = default, string beforeId = default, CancellationToken cancellationToken = default)
+        RunCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 

@@ -129,36 +129,30 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessagesAsync(thread.Id, resultOrder);
+        return GetMessagesAsync(thread.Id, options);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
         AssistantThread thread, 
-        ListOrder? resultOrder = default)
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessages(thread.Id, resultOrder);
+        return GetMessages(thread.Id, options);
     }
 
     /// <summary>
@@ -313,37 +307,32 @@ public partial class AssistantClient
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRunsAsync(thread.Id, resultOrder);
+        return GetRunsAsync(thread.Id, options);
     }
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options">Options describing the collection to return.</param>
     /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
     public virtual PageCollection<ThreadRun> GetRuns(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRuns(thread.Id, resultOrder);
+        return GetRuns(thread.Id, options);
     }
+
 
     /// <summary>
     /// Gets a refreshed instance of an existing <see cref="ThreadRun"/>.
