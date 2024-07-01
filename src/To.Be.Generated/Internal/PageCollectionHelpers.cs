@@ -1,4 +1,5 @@
-﻿using System.ClientModel;
+﻿using System;
+using System.ClientModel;
 using System.Collections.Generic;
 
 #nullable enable
@@ -7,8 +8,10 @@ namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
-    public static PageCollection<T> Create<T>(PageEnumerator<T> enumerator)
-        => new FuncPageCollection<T>(enumerator);
+    public static PageCollection<T> Create<T>(
+        IEnumerator<ClientResult> enumerator,
+        Func<ClientResult, PageResult<T>> getPageFromResult)
+        => new FuncPageCollection<T>(enumerator, getPageFromResult);
 
     public static IEnumerable<ClientResult> CreateProtocol(IEnumerator<ClientResult> enumerator)
     {
@@ -20,19 +23,22 @@ internal class PageCollectionHelpers
 
     private class FuncPageCollection<T> : PageCollection<T>
     {
-        private readonly PageEnumerator<T> _enumerator;
-        
-        public FuncPageCollection(PageEnumerator<T> enumerator)
+        private readonly IEnumerator<ClientResult> _enumerator;
+        private readonly Func<ClientResult, PageResult<T>> _getPageFromResult;
+
+        public FuncPageCollection(
+            IEnumerator<ClientResult> enumerator,
+            Func<ClientResult, PageResult<T>> getPageFromResult)
         {
             _enumerator = enumerator;
+            _getPageFromResult = getPageFromResult;
         }
 
         public override IEnumerator<PageResult<T>> GetEnumerator()
         {
             while (_enumerator.MoveNext())
             {
-                ClientResult result = _enumerator.Current;
-                yield return _enumerator.GetPageFromResult(result);
+                yield return _getPageFromResult(_enumerator.Current);
             }
         }
     }

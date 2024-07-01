@@ -435,22 +435,34 @@ public partial class AssistantClient
             cancellationToken.ToRequestOptions());
 
         // Create convenience subclient
-        MessagePageEnumerator enumerator = new(enumerable.GetEnumerator());
+        MessagePageResultEnumerator enumerator = (MessagePageResultEnumerator)enumerable.GetEnumerator();
 
         // Wrap it in the outer collection
-        return PageCollectionHelpers.Create(enumerator);
+        return PageCollectionHelpers.Create(enumerator, result => MessagePageResultEnumerator.GetPageFromResult(enumerator, result));
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
         MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.Create<ThreadMessage, InternalListMessagesResponse>(
-            firstPageToken,
-            GetMessagesPage,
-            MessageCollectionPageToken.FromToken,
+
+        // Call protocol method to get protocol subclient
+        IEnumerable<ClientResult> enumerable = GetMessages(
+            pageToken.ThreadId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        // Create convenience subclient
+        MessagePageResultEnumerator enumerator = (MessagePageResultEnumerator)enumerable.GetEnumerator();
+
+        // Wrap it in the outer collection
+        return PageCollectionHelpers.Create(enumerator, result => MessagePageResultEnumerator.GetPageFromResult(enumerator, result));
     }
 
     /// <summary>

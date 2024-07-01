@@ -69,4 +69,24 @@ internal class MessagePageResultEnumerator : PageResultEnumerator
     // Note: this is the protocol method
     internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+
+    // Note: this is the static page deserialization method
+    public static PageResult<ThreadMessage> GetPageFromResult(
+        MessagePageResultEnumerator resultEnumerator,
+        ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+        InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
+
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(
+            resultEnumerator.ThreadId,
+            resultEnumerator.Limit,
+            resultEnumerator.Order,
+            resultEnumerator.After,
+            resultEnumerator.Before);
+
+        MessageCollectionPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
+
+        return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
+    }
 }
