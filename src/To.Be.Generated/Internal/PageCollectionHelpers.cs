@@ -34,7 +34,7 @@ internal class PageCollectionHelpers
             _getPageFromResult = getPageFromResult;
         }
 
-        public override IEnumerator<PageResult<T>> GetEnumerator()
+        protected override IEnumerator<PageResult<T>> GetEnumeratorCore()
         {
             while (_enumerator.MoveNext())
             {
