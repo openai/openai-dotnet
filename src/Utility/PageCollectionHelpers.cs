@@ -11,15 +11,18 @@ namespace OpenAI.Utility;
 
 internal class PageCollectionHelpers
 {
-    public static AsyncPageCollection<T> CreateAsync<T>(ContinuationToken firstPageToken,
+    public static AsyncPageCollection<T> CreateAsync<T>(
+        ContinuationToken firstPageToken,
         Func<ContinuationToken, Task<PageResult<T>>> getPageAsync) where T : notnull
         => new AsyncFuncPageCollection<T>(firstPageToken, getPageAsync);
 
-    public static PageCollection<T> Create<T>(ContinuationToken firstPageToken,
+    public static PageCollection<T> Create<T>(
+        ContinuationToken firstPageToken,
         Func<ContinuationToken, PageResult<T>> getPage) where T : notnull
         => new FuncPageCollection<T>(firstPageToken, getPage);
 
-    public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(ContinuationToken firstPageToken,
+    public static IAsyncEnumerable<ClientResult> CreatePrototolAsync(
+        ContinuationToken firstPageToken,
         Func<ContinuationToken, Task<ClientResult>> getPageAsync,
         Func<ContinuationToken, ClientResult, ContinuationToken?> getNextPageToken)
         => new AsyncFuncResultEnumerable(firstPageToken, getPageAsync, getNextPageToken);
@@ -31,17 +34,23 @@ internal class PageCollectionHelpers
 
     private class AsyncFuncPageCollection<T> : AsyncPageCollection<T> where T : notnull
     {
-        private readonly ContinuationToken _firstPageToken;
-        private readonly Func<ContinuationToken,  Task<PageResult<T>>> _getPageAsync;
+        private readonly Func<ContinuationToken, Task<PageResult<T>>> _getPageAsync;
 
-        public AsyncFuncPageCollection(ContinuationToken firstPageToken,
+        private ContinuationToken _currentPageToken;
+
+        public AsyncFuncPageCollection(
+            ContinuationToken firstPageToken,
             Func<ContinuationToken, Task<PageResult<T>>> getPageAsync)
         {
-            _firstPageToken = firstPageToken;
+            _currentPageToken = firstPageToken;
             _getPageAsync = getPageAsync;
         }
 
-        protected override ContinuationToken FirstPageToken => _firstPageToken;
+        protected override ContinuationToken CurrentPageToken
+        {
+            get => _currentPageToken;
+            set => _currentPageToken = value;
+        }
 
         public override async Task<PageResult<T>> GetPageAsyncCore(ContinuationToken pageToken)
             => await _getPageAsync(pageToken).ConfigureAwait(false);
@@ -49,17 +58,23 @@ internal class PageCollectionHelpers
 
     private class FuncPageCollection<T> : PageCollection<T> where T : notnull
     {
-        private readonly ContinuationToken _firstPageToken;
-        private readonly Func<ContinuationToken,  PageResult<T>> _getPage;
+        private readonly Func<ContinuationToken, PageResult<T>> _getPage;
 
-        public FuncPageCollection(ContinuationToken firstPageToken,
+        private ContinuationToken _currentPageToken;
+
+        public FuncPageCollection(
+            ContinuationToken firstPageToken,
             Func<ContinuationToken, PageResult<T>> getPage)
         {
-            _firstPageToken = firstPageToken;
+            _currentPageToken = firstPageToken;
             _getPage = getPage;
         }
 
-        protected override ContinuationToken FirstPageToken => _firstPageToken;
+        protected override ContinuationToken CurrentPageToken
+        {
+            get => _currentPageToken;
+            set => _currentPageToken = value;
+        }
 
         protected override PageResult<T> GetPageCore(ContinuationToken pageToken)
             => _getPage(pageToken);

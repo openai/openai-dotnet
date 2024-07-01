@@ -27,9 +27,7 @@ internal class OpenAIPageCollectionHelpers
         {
             OpenAIPageToken token = getToken(pageToken);
 
-            ClientResult result = await getPageResultAsync(
-                token,
-                options).ConfigureAwait(false);
+            ClientResult result = await getPageResultAsync(token, options).ConfigureAwait(false);
 
             PipelineResponse response = result.GetRawResponse();
             IInternalListResponse<TValue> list = ModelReaderWriter.Read<TList>(response.Content)!;
@@ -53,9 +51,7 @@ internal class OpenAIPageCollectionHelpers
         {
             OpenAIPageToken token = getToken(pageToken);
 
-            ClientResult result = getPageResult(
-                token,
-                options);
+            ClientResult result = getPageResult(token, options);
 
             PipelineResponse response = result.GetRawResponse();
             IInternalListResponse<TValue> list = ModelReaderWriter.Read<TList>(response.Content)!;
