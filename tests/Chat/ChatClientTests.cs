@@ -76,8 +76,8 @@ public partial class ChatClientTests : SyncAsyncTestBase
         TimeSpan? latestTokenReceiptTime = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        ResultCollection<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
-        Assert.That(streamingResult, Is.InstanceOf<ResultCollection<StreamingChatCompletionUpdate>>());
+        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
+        Assert.That(streamingResult, Is.InstanceOf<CollectionResult<StreamingChatCompletionUpdate>>());
         int updateCount = 0;
 
         foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
@@ -108,8 +108,8 @@ public partial class ChatClientTests : SyncAsyncTestBase
         TimeSpan? latestTokenReceiptTime = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        AsyncResultCollection<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
-        Assert.That(streamingResult, Is.InstanceOf<AsyncResultCollection<StreamingChatCompletionUpdate>>());
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
+        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
         int updateCount = 0;
         ChatTokenUsage usage = null;
 
@@ -336,7 +336,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
             options = new();
         }
 
-        AsyncResultCollection<StreamingChatCompletionUpdate> chatCompletionUpdates = client.CompleteChatStreamingAsync(messages, options);
+        AsyncCollectionResult<StreamingChatCompletionUpdate> chatCompletionUpdates = client.CompleteChatStreamingAsync(messages, options);
         Assert.That(chatCompletionUpdates, Is.Not.Null);
 
         await foreach (StreamingChatCompletionUpdate chatCompletionUpdate in chatCompletionUpdates)

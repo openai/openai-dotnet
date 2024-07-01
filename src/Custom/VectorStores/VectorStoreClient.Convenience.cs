@@ -98,7 +98,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         VectorStore vectorStore,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null)
@@ -122,7 +122,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         VectorStore vectorStore,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null)
@@ -243,7 +243,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
     /// <c>await foreach</c>.
     /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         VectorStoreBatchFileJob batchJob,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null)
@@ -265,7 +265,7 @@ public partial class VectorStoreClient
     /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
     /// <c>foreach</c>.
     /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         VectorStoreBatchFileJob batchJob,
         ListOrder? resultOrder = null,
         VectorStoreFileStatusFilter? filter = null)
