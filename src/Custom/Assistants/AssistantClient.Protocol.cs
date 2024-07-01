@@ -1,8 +1,8 @@
+using OpenAI.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -257,19 +257,9 @@ public partial class AssistantClient
 
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        MessageCollectionPageToken firstPageToken = MessageCollectionPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetMessagesPage, MessageCollectionPageToken.FromToken, options);
+        IEnumerator<ClientResult> subclient = new MessageCollectionClient(_messageSubClient, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateProtocol(subclient);
     }
-
-    internal virtual ClientResult GetMessagesPage(ContinuationToken pageToken, RequestOptions options)
-    {
-        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
-        return GetMessagesPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options);
-    }
-
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)
