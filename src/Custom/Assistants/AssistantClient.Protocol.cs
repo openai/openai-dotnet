@@ -241,19 +241,9 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        MessageCollectionPageToken firstPageToken = MessageCollectionPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetMessagesPageAsync, MessageCollectionPageToken.FromToken, options);
+        IAsyncEnumerator<ClientResult> enumerator = new MessageCollectionClient(_messageSubClient, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateProtocolAsync(enumerator);
     }
-
-    internal virtual async Task<ClientResult> GetMessagesPageAsync(ContinuationToken pageToken, RequestOptions options)
-    {
-        MessageCollectionPageToken token = MessageCollectionPageToken.FromToken(pageToken);
-        return await GetMessagesPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
-    }
-
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessagesAsync"/>
-    internal virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => await _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
 
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {

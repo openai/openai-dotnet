@@ -391,12 +391,16 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionPageToken firstPageToken = MessageCollectionPageToken.FromOptions(threadId, options);
-        return OpenAIPageCollectionHelpers.CreateAsync<ThreadMessage, InternalListMessagesResponse>(
-            firstPageToken,
-            GetMessagesPageAsync,
-            MessageCollectionPageToken.FromToken,
+        MessageCollectionClient enumerator = new(_messageSubClient,
+            threadId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator,
+            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
     }
 
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
@@ -404,11 +408,17 @@ public partial class AssistantClient
         CancellationToken cancellationToken = default)
     {
         MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.CreateAsync<ThreadMessage, InternalListMessagesResponse>(
-            firstPageToken,
-            GetMessagesPageAsync,
-            MessageCollectionPageToken.FromToken,
+
+        MessageCollectionClient enumerator = new(_messageSubClient,
+            pageToken.ThreadId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator,
+            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
     }
 
     /// <summary>

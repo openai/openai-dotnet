@@ -1,6 +1,7 @@
 ﻿using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 #nullable enable
 
@@ -43,8 +44,21 @@ internal class MessageCollectionClient : PageResultEnumerator
 
     public string? Before => _before;
 
+    public override async Task<ClientResult> GetFirstAsync()
+        => await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+
     public override ClientResult GetFirst()
         => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+
+    public override async Task<ClientResult> GetNextAsync(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
+
+        return await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+    }
 
     public override ClientResult GetNext(ClientResult result)
     {
@@ -65,8 +79,11 @@ internal class MessageCollectionClient : PageResultEnumerator
 
         return hasMore;
     }
-    
-    // Note: this is the protocol method
+
+    // Note: these are the protocol methods - they are generated here
+    internal virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    => await _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
+
     internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
 
