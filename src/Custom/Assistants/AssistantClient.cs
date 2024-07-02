@@ -1,4 +1,3 @@
-using OpenAI.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -435,7 +434,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionClient enumerator = new(_messageSubClient,
+        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
             threadId,
             options?.PageSize,
             options?.Order?.ToString(),
@@ -455,7 +454,7 @@ public partial class AssistantClient
 
         MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
 
-        MessageCollectionClient enumerator = new(_messageSubClient,
+        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
             pageToken.Order,

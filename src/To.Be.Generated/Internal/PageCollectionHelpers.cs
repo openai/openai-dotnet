@@ -5,7 +5,7 @@ using System.Threading;
 
 #nullable enable
 
-namespace OpenAI.Utility;
+namespace OpenAI;
 
 internal class PageCollectionHelpers
 {

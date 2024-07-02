@@ -69,10 +69,6 @@ internal class MessageCollectionPageToken : ContinuationToken
     public MessageCollectionPageToken? GetNextPageToken(bool hasMore, string? lastId)
          => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
 
-    // Convenience - first page request
-    public static MessageCollectionPageToken FromOptions(string threadId, MessageCollectionOptions options)
-        => new(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
-
     // Convenience - continuation page request
     public static MessageCollectionPageToken FromToken(ContinuationToken pageToken)
     {
@@ -149,7 +145,7 @@ internal class MessageCollectionPageToken : ContinuationToken
         return new(threadId, limit, order, after, before);
     }
 
-    // Protocol
+    // Protocol - called from subclient
     public static MessageCollectionPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
         => new MessageCollectionPageToken(threadId, limit, order, after, before);
 

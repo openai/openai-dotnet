@@ -1,6 +1,9 @@
-﻿using System.ClientModel;
+﻿using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -9,7 +12,8 @@ namespace OpenAI.Assistants;
 
 internal class MessageCollectionClient : PageResultEnumerator
 {
-    private readonly InternalAssistantMessageClient _messageSubClient;
+    private readonly ClientPipeline _pipeline; 
+    private readonly Uri _endpoint;
 
     private readonly string _threadId;
     private readonly int? _limit;
@@ -21,16 +25,21 @@ internal class MessageCollectionClient : PageResultEnumerator
     private readonly string _before;
     private readonly RequestOptions _options;
 
-    public MessageCollectionClient(InternalAssistantMessageClient subclient, string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    public MessageCollectionClient(
+        ClientPipeline pipeline,
+        Uri endpoint, 
+        string threadId, int? limit, string order, string after, string before,
+        RequestOptions options)
     {
+        _pipeline = pipeline;
+        _endpoint = endpoint;
+
         _threadId = threadId;
         _limit = limit;
         _order = order;
         _after = after;
         _before = before;
         _options = options;
-
-        _messageSubClient = subclient;
     }
 
     // TODO: do we need these in so many places?
@@ -80,13 +89,6 @@ internal class MessageCollectionClient : PageResultEnumerator
         return hasMore;
     }
 
-    // Note: these are the protocol methods - they are generated here
-    internal virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-    => await _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
-
-    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
-
     // Note: this is the static page deserialization method
     public static PageResult<ThreadMessage> GetPageFromResult(
         MessageCollectionClient resultEnumerator,
@@ -106,4 +108,58 @@ internal class MessageCollectionClient : PageResultEnumerator
 
         return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
     }
+
+    // Note: these are the protocol methods - they are generated here
+    public virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    }
+
+    public virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
+
+    internal PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        var message = _pipeline.CreateMessage();
+        message.ResponseClassifier = PipelineMessageClassifier200;
+        var request = message.Request;
+        request.Method = "GET";
+        var uri = new ClientUriBuilder();
+        uri.Reset(_endpoint);
+        uri.AppendPath("/threads/", false);
+        uri.AppendPath(threadId, true);
+        uri.AppendPath("/messages", false);
+        if (limit != null)
+        {
+            uri.AppendQuery("limit", limit.Value, true);
+        }
+        if (order != null)
+        {
+            uri.AppendQuery("order", order, true);
+        }
+        if (after != null)
+        {
+            uri.AppendQuery("after", after, true);
+        }
+        if (before != null)
+        {
+            uri.AppendQuery("before", before, true);
+        }
+        request.Uri = uri.ToUri();
+        request.Headers.Set("Accept", "application/json");
+        message.Apply(options);
+        return message;
+    }
+
+    private static PipelineMessageClassifier? _pipelineMessageClassifier200;
+    private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+
 }

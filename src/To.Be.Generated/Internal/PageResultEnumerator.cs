@@ -8,16 +8,32 @@ using System.Threading.Tasks;
 namespace OpenAI;
 
 // Note: implements both sync and async enumerator interfaces.
-internal abstract class PageResultEnumerator : IEnumerator<ClientResult>, 
-    IAsyncEnumerator<ClientResult>
+internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, IEnumerator<ClientResult>
 {
     private ClientResult? _current;
 
+    protected PageResultEnumerator() { }
+
     public ClientResult Current => _current!;
 
-    object IEnumerator.Current => Current;
+    // Idea is that this is generated on the client
+    public abstract Task<ClientResult> GetFirstAsync();
 
-    #region IEnumerable implementation
+    // Idea is that this is generated on the client
+    public abstract Task<ClientResult> GetNextAsync(ClientResult result);
+
+    // Idea is that this is generated on the client
+    public abstract ClientResult GetFirst();
+
+    // Idea is that this is generated on the client
+    public abstract ClientResult GetNext(ClientResult result);
+
+    // Idea is that this is generated on the client
+    public abstract bool HasNext(ClientResult result);
+
+    #region IEnumerator<ClientResult> implementation
+
+    object IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
@@ -35,19 +51,11 @@ internal abstract class PageResultEnumerator : IEnumerator<ClientResult>,
 
     public void Reset() => _current = null;
 
-    // Idea is that this is generated on the client
-    public abstract ClientResult GetFirst();
-
-    // Idea is that this is generated on the client
-    public abstract ClientResult GetNext(ClientResult result);
-
-    // Idea is that this is generated on the client
-    public abstract bool HasNext(ClientResult result);
-
     public virtual void Dispose() { }
+
     #endregion
 
-    #region IAsyncEnumerable implementation
+    #region IAsyncEnumerator<ClientResult> implementation
 
     public async ValueTask<bool> MoveNextAsync()
     {
@@ -63,12 +71,7 @@ internal abstract class PageResultEnumerator : IEnumerator<ClientResult>,
         return HasNext(_current);
     }
 
-    // Idea is that this is generated on the client
-    public abstract Task<ClientResult> GetFirstAsync();
-
-    // Idea is that this is generated on the client
-    public abstract Task<ClientResult> GetNextAsync(ClientResult result);
-
     public virtual ValueTask DisposeAsync() => new();
+
     #endregion
 }
