@@ -73,7 +73,7 @@ public partial class VectorStoreTests
         Assert.That(deleted, Is.True);
         _vectorStoresToDelete.RemoveAt(_vectorStoresToDelete.Count - 1);
 
-        vectorStore = client.CreateVectorStore(new VectorStoreCreationOptions ()
+        vectorStore = client.CreateVectorStore(new VectorStoreCreationOptions()
         {
             FileIds = testFiles.Select(file => file.Id).ToList()
         });
@@ -102,7 +102,7 @@ public partial class VectorStoreTests
         int lastIdSeen = int.MaxValue;
         int count = 0;
 
-        foreach (VectorStore vectorStore in client.GetVectorStores(ListOrder.NewestFirst).GetAllValues())
+        foreach (VectorStore vectorStore in client.GetVectorStores(new VectorStoreCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues())
         {
             Assert.That(vectorStore.Id, Is.Not.Null);
             if (vectorStore.Name?.StartsWith("Test Vector Store ") == true)
@@ -139,7 +139,7 @@ public partial class VectorStoreTests
         int lastIdSeen = int.MaxValue;
         int count = 0;
 
-        await foreach (VectorStore vectorStore in client.GetVectorStoresAsync(ListOrder.NewestFirst).GetAllValuesAsync())
+        await foreach (VectorStore vectorStore in client.GetVectorStoresAsync(new VectorStoreCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValuesAsync())
         {
             Assert.That(vectorStore.Id, Is.Not.Null);
             if (vectorStore.Name?.StartsWith("Test Vector Store ") == true)

@@ -36,10 +36,13 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageResultEnumerat
 
         _vectorStoreId = vectorStoreId;
         _batchId = batchId;
+
         _limit = limit;
         _order = order;
         _after = after;
         _before = before;
+        _filter = filter;
+
         _options = options;
     }
 
