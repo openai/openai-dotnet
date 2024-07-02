@@ -2,6 +2,9 @@
 
 internal class Constants
 {
+    // follows OpenTelemetry GenAI semantic conventions:
+    // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/gen-ai
+
     public const string ErrorTypeKey = "error.type";
     public const string ServerAddressKey = "server.address";
     public const string ServerPortKey = "server.port";
@@ -23,7 +26,7 @@ internal class Constants
     public const string GenAiSystemKey = "gen_ai.system";
     public const string GenAiSystemValue = "openai";
 
-    public const string GenAiTokenTypeKey = "gen_ai.token_type";
+    public const string GenAiTokenTypeKey = "gen_ai.token.type";
 
     public const string GenAiUsageInputTokensKey = "gen_ai.usage.input_tokens";
     public const string GenAiUsageOutputTokensKey = "gen_ai.usage.output_tokens";
