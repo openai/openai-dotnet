@@ -67,9 +67,15 @@ internal class MessageCollectionPageToken : ContinuationToken
     }
     
     public MessageCollectionPageToken? GetNextPageToken(bool hasMore, string? lastId)
-         => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
+    {
+        if (!hasMore || lastId is null)
+        {
+            return null;
+        }
 
-    // Convenience - continuation page request
+        return new(ThreadId, Limit, Order, lastId, Before);
+    }
+
     public static MessageCollectionPageToken FromToken(ContinuationToken pageToken)
     {
         if (pageToken is MessageCollectionPageToken token)
@@ -81,7 +87,7 @@ internal class MessageCollectionPageToken : ContinuationToken
 
         if (data.ToMemory().Length == 0)
         {
-            return new(string.Empty, default, default, default, default);
+            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
         }
 
         Utf8JsonReader reader = new(data);
@@ -93,6 +99,7 @@ internal class MessageCollectionPageToken : ContinuationToken
         string? before = null;
 
         reader.Read();
+
         Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
 
         while (reader.Read())
@@ -103,6 +110,7 @@ internal class MessageCollectionPageToken : ContinuationToken
             }
 
             Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+
             string propertyName = reader.GetString()!;
 
             switch (propertyName)
@@ -145,17 +153,6 @@ internal class MessageCollectionPageToken : ContinuationToken
         return new(threadId, limit, order, after, before);
     }
 
-    // Protocol - called from subclient
     public static MessageCollectionPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
-        => new MessageCollectionPageToken(threadId, limit, order, after, before);
-
-    private static MessageCollectionPageToken? GetNextPageToken(string threadId, int? limit, string? order, string? after, string? before, bool hasMore)
-    {
-        if (!hasMore || after is null)
-        {
-            return null;
-        }
-
-        return new MessageCollectionPageToken(threadId, limit, order, after, before);
-    }
+        => new(threadId, limit, order, after, before);
 }
