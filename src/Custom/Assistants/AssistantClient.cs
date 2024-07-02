@@ -390,7 +390,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionClient enumerator = new(_messageSubClient,
+        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
             threadId,
             options?.PageSize,
             options?.Order?.ToString(),
@@ -398,8 +398,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator,
-            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
@@ -408,7 +407,7 @@ public partial class AssistantClient
     {
         MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
 
-        MessageCollectionClient enumerator = new(_messageSubClient,
+        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
             pageToken.Order,
@@ -416,8 +415,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator,
-            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -442,8 +440,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, 
-            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
@@ -462,8 +459,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator,
-            result => MessageCollectionClient.GetPageFromResult(enumerator, result));
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>

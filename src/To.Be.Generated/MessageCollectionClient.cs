@@ -1,9 +1,7 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -12,7 +10,7 @@ namespace OpenAI.Assistants;
 
 internal class MessageCollectionClient : PageResultEnumerator
 {
-    private readonly ClientPipeline _pipeline; 
+    private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
     private readonly string _threadId;
@@ -27,7 +25,7 @@ internal class MessageCollectionClient : PageResultEnumerator
 
     public MessageCollectionClient(
         ClientPipeline pipeline,
-        Uri endpoint, 
+        Uri endpoint,
         string threadId, int? limit, string order, string after, string before,
         RequestOptions options)
     {
@@ -41,17 +39,6 @@ internal class MessageCollectionClient : PageResultEnumerator
         _before = before;
         _options = options;
     }
-
-    // TODO: do we need these in so many places?
-    public string ThreadId => _threadId;
-
-    public int? Limit => _limit;
-
-    public string? Order => _order;
-
-    public string? After => _after;
-
-    public string? Before => _before;
 
     public override async Task<ClientResult> GetFirstAsync()
         => await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
@@ -89,21 +76,14 @@ internal class MessageCollectionClient : PageResultEnumerator
         return hasMore;
     }
 
-    // Note: this is the static page deserialization method
-    public static PageResult<ThreadMessage> GetPageFromResult(
-        MessageCollectionClient resultEnumerator,
-        ClientResult result)
+    // Note: this is the deserialization method that converts protocol to convenience
+    public PageResult<ThreadMessage> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
+
         InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
 
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(
-            resultEnumerator.ThreadId,
-            resultEnumerator.Limit,
-            resultEnumerator.Order,
-            resultEnumerator.After,
-            resultEnumerator.Before);
-
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(_threadId, _limit, _order, _after, _before);
         MessageCollectionPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
 
         return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
@@ -126,7 +106,7 @@ internal class MessageCollectionClient : PageResultEnumerator
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    internal PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    private PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
@@ -161,5 +141,4 @@ internal class MessageCollectionClient : PageResultEnumerator
 
     private static PipelineMessageClassifier? _pipelineMessageClassifier200;
     private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
-
 }
