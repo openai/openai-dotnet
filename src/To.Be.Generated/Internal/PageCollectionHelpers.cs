@@ -21,17 +21,27 @@ internal class PageCollectionHelpers
 
     public static IEnumerable<ClientResult> Create(IEnumerator<ClientResult> enumerator)
     {
-        while (enumerator.MoveNext())
+        if (enumerator.Current is not null)
         {
             yield return enumerator.Current;
+        }
+
+        while (enumerator.MoveNext())
+        {
+            yield return enumerator.Current!;
         }
     }
 
     public static async IAsyncEnumerable<ClientResult> CreateAsync(IAsyncEnumerator<ClientResult> enumerator)
     {
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        if (enumerator.Current is not null)
         {
             yield return enumerator.Current;
+        }
+
+        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        {
+            yield return enumerator.Current!;
         }
     }
 
@@ -50,9 +60,14 @@ internal class PageCollectionHelpers
 
         protected override async IAsyncEnumerator<PageResult<T>> GetAsyncEnumeratorCore(CancellationToken cancellationToken = default)
         {
-            while (await _enumerator.MoveNextAsync().ConfigureAwait(false))
+            if (_enumerator.Current is not null)
             {
                 yield return _getPageFromResult(_enumerator.Current);
+            }
+
+            while (await _enumerator.MoveNextAsync().ConfigureAwait(false))
+            {
+                yield return _getPageFromResult(_enumerator.Current!);
             }
         }
     }
@@ -72,9 +87,14 @@ internal class PageCollectionHelpers
 
         protected override IEnumerator<PageResult<T>> GetEnumeratorCore()
         {
-            while (_enumerator.MoveNext())
+            if (_enumerator.Current is not null)
             {
                 yield return _getPageFromResult(_enumerator.Current);
+            }
+
+            while (_enumerator.MoveNext())
+            {
+                yield return _getPageFromResult(_enumerator.Current!);
             }
         }
     }
