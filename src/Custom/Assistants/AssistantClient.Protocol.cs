@@ -217,12 +217,16 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
         IAsyncEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
         IEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
@@ -267,12 +271,16 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
         IAsyncEnumerator<ClientResult> enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
         IEnumerator<ClientResult> enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
@@ -311,12 +319,18 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
         IAsyncEnumerator<ClientResult> enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
         IEnumerator<ClientResult> enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }

@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OpenAI.Assistants;
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
@@ -49,10 +52,10 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IAsyncEnumerable<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetVectorStoresRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        IAsyncEnumerator<ClientResult> enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -80,10 +83,10 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IEnumerable<ClientResult> GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetVectorStoresRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        IEnumerator<ClientResult> enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -256,12 +259,12 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+    public virtual IAsyncEnumerable<ClientResult> GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        using PipelineMessage message = CreateGetVectorStoreFilesRequest(vectorStoreId, limit, order, after, before, filter, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        IAsyncEnumerator<ClientResult> enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -293,12 +296,12 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+    public virtual IEnumerable<ClientResult> GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        using PipelineMessage message = CreateGetVectorStoreFilesRequest(vectorStoreId, limit, order, after, before, filter, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        IEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -571,13 +574,13 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+    public virtual IAsyncEnumerable<ClientResult> GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        using PipelineMessage message = CreateGetFilesInVectorStoreBatchesRequest(vectorStoreId, batchId, limit, order, after, before, filter, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        IAsyncEnumerator<ClientResult> enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -610,12 +613,12 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+    public virtual IEnumerable<ClientResult> GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        using PipelineMessage message = CreateGetFilesInVectorStoreBatchesRequest(vectorStoreId, batchId, limit, order, after, before, filter, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        IEnumerator<ClientResult> enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 }
