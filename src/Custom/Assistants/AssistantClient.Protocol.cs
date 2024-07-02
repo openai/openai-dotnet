@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -63,7 +64,19 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    {
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, AssistantCollectionPageToken.FromToken, options);
+    }
+
+    internal virtual async Task<ClientResult> GetAssistantsPageAsync(ContinuationToken pageToken, RequestOptions options)
+    {
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        return await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+    }
+
+    internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
@@ -93,7 +106,19 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+    {
+        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, AssistantCollectionPageToken.FromToken, options);
+    }
+
+    internal virtual ClientResult GetAssistantsPage(ContinuationToken pageToken, RequestOptions options)
+    {
+        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        return GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, options);
+    }
+
+    internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
@@ -213,13 +238,17 @@ public partial class AssistantClient
     public virtual ClientResult CreateMessage(string threadId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.CreateMessage(threadId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessagesAsync"/>
-    public virtual Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options);
+    public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        IAsyncEnumerator<ClientResult> enumerator = new MessageCollectionClient(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateProtocolAsync(enumerator);
+    }
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    public virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+    public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        IEnumerator<ClientResult> enumerator = new MessageCollectionClient(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateProtocol(enumerator);
+    }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)
@@ -259,12 +288,36 @@ public partial class AssistantClient
     public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRun(threadId, content, options);
 
+    public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        RunCollectionPageToken firstPageToken = RunCollectionPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunsPageAsync, RunCollectionPageToken.FromToken, options);
+    }
+
+    internal async virtual Task<ClientResult> GetRunsPageAsync(ContinuationToken pageToken, RequestOptions options)
+    {
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        return await GetRunsPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+    }
+
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>
-    public virtual Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options);
+    internal async virtual Task<ClientResult> GetRunsPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        => await _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
+
+    public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        RunCollectionPageToken firstPageToken = RunCollectionPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunsPage, RunCollectionPageToken.FromToken, options);
+    }
+
+    internal virtual ClientResult GetRunsPage(ContinuationToken pageToken, RequestOptions options)
+    {
+        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        return GetRunsPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options);
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRuns"/>
-    public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetRunsPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
@@ -299,12 +352,36 @@ public partial class AssistantClient
     public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
 
+    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunStepsPageAsync, RunStepCollectionPageToken.FromToken, options);
+    }
+
+    internal virtual async Task<ClientResult> GetRunStepsPageAsync(ContinuationToken pageToken, RequestOptions options)
+    {
+        RunStepCollectionPageToken token = RunStepCollectionPageToken.FromToken(pageToken);
+        return await GetRunStepsPageAsync(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
+    }
+
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepsAsync"/>
-    public virtual Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, options);
+    internal virtual async Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+        => await _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, options).ConfigureAwait(false);
+
+    public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunStepsPage, RunStepCollectionPageToken.FromToken, options);
+    }
+
+    internal virtual ClientResult GetRunStepsPage(ContinuationToken pageToken, RequestOptions options)
+    {
+        RunStepCollectionPageToken token = RunStepCollectionPageToken.FromToken(pageToken);
+        return GetRunStepsPage(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options);
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunSteps"/>
-    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
         => _runSubClient.GetRunSteps(threadId, runId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepAsync"/>
