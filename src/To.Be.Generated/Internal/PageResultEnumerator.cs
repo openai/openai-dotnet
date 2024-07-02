@@ -11,8 +11,12 @@ namespace OpenAI;
 internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, IEnumerator<ClientResult>
 {
     private ClientResult? _current;
+    private bool _hasNext;
 
-    protected PageResultEnumerator() { }
+    protected PageResultEnumerator()
+    {
+        _hasNext = true;
+    }
 
     public ClientResult Current => _current!;
 
@@ -36,6 +40,11 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     public bool MoveNext()
     {
+        if (!_hasNext)
+        {
+            return false;
+        }
+
         if (_current == null)
         {
             _current = GetFirst();
@@ -45,7 +54,8 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
             _current = GetNext(_current);
         }
 
-        return HasNext(_current);
+        _hasNext = HasNext(_current);
+        return true;
     }
 
     public void Reset() => _current = null;
@@ -58,6 +68,11 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     public async ValueTask<bool> MoveNextAsync()
     {
+        if (!_hasNext)
+        {
+            return false;
+        }
+
         if (_current == null)
         {
             _current = await GetFirstAsync().ConfigureAwait(false);
@@ -67,7 +82,8 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
             _current = await GetNextAsync(_current).ConfigureAwait(false);
         }
 
-        return HasNext(_current);
+        _hasNext = HasNext(_current);
+        return true;
     }
 
     public virtual ValueTask DisposeAsync() => new();
