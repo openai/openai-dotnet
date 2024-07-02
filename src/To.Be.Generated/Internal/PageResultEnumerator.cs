@@ -82,7 +82,7 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
         return true;
     }
 
-    ValueTask IAsyncDisposable.DisposeAsync() => new();
+    ValueTask IAsyncDisposable.DisposeAsync() => default;
 
     #endregion
 }
