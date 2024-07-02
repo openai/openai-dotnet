@@ -11,9 +11,29 @@ internal abstract class PageEnumerator<T> : PageResultEnumerator,
 {
     public abstract PageResult<T> GetPageFromResult(ClientResult result);
 
-    PageResult<T> IEnumerator<PageResult<T>>.Current 
-        => GetPageFromResult(Current);
+    PageResult<T> IEnumerator<PageResult<T>>.Current
+    {
+        get
+        {
+            if (Current is null)
+            {
+                return default!;
+            }
+
+            return GetPageFromResult(Current);
+        }
+    }
 
     PageResult<T> IAsyncEnumerator<PageResult<T>>.Current
-        => GetPageFromResult(Current);
+    {
+        get
+        {
+            if (Current is null)
+            {
+                return default!;
+            }
+
+            return GetPageFromResult(Current);
+        }
+    }
 }
