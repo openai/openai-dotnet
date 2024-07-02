@@ -16,20 +16,19 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     public ClientResult Current => _current!;
 
-    // Idea is that this is generated on the client
+    #region Service-specific methods that need to be generated on the subclient
+
     public abstract Task<ClientResult> GetFirstAsync();
 
-    // Idea is that this is generated on the client
-    public abstract Task<ClientResult> GetNextAsync(ClientResult result);
-
-    // Idea is that this is generated on the client
     public abstract ClientResult GetFirst();
 
-    // Idea is that this is generated on the client
+    public abstract Task<ClientResult> GetNextAsync(ClientResult result);
+
     public abstract ClientResult GetNext(ClientResult result);
 
-    // Idea is that this is generated on the client
     public abstract bool HasNext(ClientResult result);
+
+    #endregion
 
     #region IEnumerator<ClientResult> implementation
 
