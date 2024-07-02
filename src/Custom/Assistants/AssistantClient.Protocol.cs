@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -66,20 +67,8 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, AssistantsPageToken.FromToken, options);
-    }
-
-    internal virtual async Task<ClientResult> GetAssistantsPageAsync(ContinuationToken pageToken, RequestOptions options)
-    {
-        AssistantsPageToken token = AssistantsPageToken.FromToken(pageToken);
-        return await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
-    }
-
-    internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        IAsyncEnumerator<ClientResult> enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -108,20 +97,8 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, AssistantsPageToken.FromToken, options);
-    }
-
-    internal virtual ClientResult GetAssistantsPage(ContinuationToken pageToken, RequestOptions options)
-    {
-        AssistantsPageToken token = AssistantsPageToken.FromToken(pageToken);
-        return GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, options);
-    }
-
-    internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        IEnumerator<ClientResult> enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -290,35 +267,15 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunsPageAsync, RunsPageToken.FromToken, options);
+        IAsyncEnumerator<ClientResult> enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
-
-    internal async virtual Task<ClientResult> GetRunsPageAsync(ContinuationToken pageToken, RequestOptions options)
-    {
-        RunsPageToken token = RunsPageToken.FromToken(pageToken);
-        return await GetRunsPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
-    }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>
-    internal async virtual Task<ClientResult> GetRunsPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => await _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options).ConfigureAwait(false);
 
     public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunsPage, RunsPageToken.FromToken, options);
+        IEnumerator<ClientResult> enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
-
-    internal virtual ClientResult GetRunsPage(ContinuationToken pageToken, RequestOptions options)
-    {
-        RunsPageToken token = RunsPageToken.FromToken(pageToken);
-        return GetRunsPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options);
-    }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRuns"/>
-    internal virtual ClientResult GetRunsPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
     public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
@@ -354,35 +311,15 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunStepsPageAsync, RunStepsPageToken.FromToken, options);
+        IAsyncEnumerator<ClientResult> enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
-
-    internal virtual async Task<ClientResult> GetRunStepsPageAsync(ContinuationToken pageToken, RequestOptions options)
-    {
-        RunStepsPageToken token = RunStepsPageToken.FromToken(pageToken);
-        return await GetRunStepsPageAsync(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
-    }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepsAsync"/>
-    internal virtual async Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => await _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, options).ConfigureAwait(false);
 
     public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunStepsPage, RunStepsPageToken.FromToken, options);
+        IEnumerator<ClientResult> enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
-
-    internal virtual ClientResult GetRunStepsPage(ContinuationToken pageToken, RequestOptions options)
-    {
-        RunStepsPageToken token = RunStepsPageToken.FromToken(pageToken);
-        return GetRunStepsPage(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options);
-    }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunSteps"/>
-    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunSteps(threadId, runId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepAsync"/>
     public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options)

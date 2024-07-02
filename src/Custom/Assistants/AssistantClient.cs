@@ -111,12 +111,14 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(options);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPageAsync,
-            AssistantsPageToken.FromToken,
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -129,12 +131,17 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
         AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPageAsync,
-            AssistantsPageToken.FromToken,
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -147,12 +154,14 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(options);
-        return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-            firstPageToken,
-            GetAssistantsPage,
-            AssistantsPageToken.FromToken,
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -165,12 +174,17 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
         AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
-            pageToken,
-            GetAssistantsPage,
-            AssistantsPageToken.FromToken,
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -405,8 +419,9 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
+        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
         MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
@@ -450,7 +465,6 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
-
         MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
@@ -768,24 +782,33 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, options);
-        return OpenAIPageCollectionHelpers.CreateAsync<ThreadRun, InternalListRunsResponse>(
-            firstPageToken,
-            GetRunsPageAsync,
-            RunsPageToken.FromToken,
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            threadId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
         RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.CreateAsync<ThreadRun, InternalListRunsResponse>(
-            firstPageToken,
-            GetRunsPageAsync,
-            RunsPageToken.FromToken,
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -802,21 +825,33 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        throw new NotImplementedException();
-        //return CreatePageable<ThreadRun, InternalListRunsResponse>((continuationToken, pageSize)
-        //    => GetRuns(threadId, pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            threadId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     public virtual PageCollection<ThreadRun> GetRuns(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
         RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        return OpenAIPageCollectionHelpers.Create<ThreadRun, InternalListRunsResponse>(
-            firstPageToken,
-            GetRunsPage,
-            RunsPageToken.FromToken,
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -1003,12 +1038,35 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, options);
-        return OpenAIPageCollectionHelpers.CreateAsync<RunStep, InternalListRunStepsResponse>(
-            firstPageToken,
-            GetRunStepsPageAsync,
-            RunStepsPageToken.FromToken,
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            threadId,
+            runId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+    }
+
+    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.RunId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
     }
 
     /// <summary>
@@ -1028,13 +1086,37 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, options);
-        return OpenAIPageCollectionHelpers.Create<RunStep, InternalListRunStepsResponse>(
-            firstPageToken,
-            GetRunStepsPage,
-            RunStepsPageToken.FromToken,
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            threadId,
+            runId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
             cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
     }
+
+    public virtual PageCollection<RunStep> GetRunSteps(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.RunId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+    }
+
 
     /// <summary>
     /// Gets a single run step from a run.

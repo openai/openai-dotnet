@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class MessagesPageEnumerator : PageResultEnumerator
+internal partial class RunStepsPageEnumerator : PageResultEnumerator
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
     private readonly string _threadId;
+    private readonly string _runId;
+
     private readonly int? _limit;
     private readonly string _order;
 
@@ -23,16 +25,19 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
     private readonly string _before;
     private readonly RequestOptions _options;
 
-    public MessagesPageEnumerator(
+    public RunStepsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
-        string threadId, int? limit, string order, string after, string before,
+        string threadId, string runId,
+        int? limit, string order, string after, string before,
         RequestOptions options)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
 
         _threadId = threadId;
+        _runId = runId;
+
         _limit = limit;
         _order = order;
         _after = after;
@@ -41,10 +46,10 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetRunStepsPageAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+        => GetRunStepsPage(_threadId, _runId, _limit, _order, _after, _before, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -53,7 +58,7 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetRunStepsPageAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -63,7 +68,7 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+        return GetRunStepsPage(_threadId, _runId, _limit, _order, _after, _before, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -77,23 +82,25 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
     }
 
     // Note: these are the protocol methods - they are generated here
-    internal virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal async virtual Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    private PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    private PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
@@ -103,7 +110,9 @@ internal partial class MessagesPageEnumerator : PageResultEnumerator
         uri.Reset(_endpoint);
         uri.AppendPath("/threads/", false);
         uri.AppendPath(threadId, true);
-        uri.AppendPath("/messages", false);
+        uri.AppendPath("/runs/", false);
+        uri.AppendPath(runId, true);
+        uri.AppendPath("/steps", false);
         if (limit != null)
         {
             uri.AppendQuery("limit", limit.Value, true);
