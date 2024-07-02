@@ -111,11 +111,11 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(options);
+        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(options);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPageAsync,
-            AssistantCollectionPageToken.FromToken,
+            AssistantsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -129,11 +129,11 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
+        AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.CreateAsync<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPageAsync,
-            AssistantCollectionPageToken.FromToken,
+            AssistantsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -147,11 +147,11 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(options);
+        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(options);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
             firstPageToken,
             GetAssistantsPage,
-            AssistantCollectionPageToken.FromToken,
+            AssistantsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -165,11 +165,11 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
+        AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<Assistant, InternalListAssistantsResponse>(
             pageToken,
             GetAssistantsPage,
-            AssistantCollectionPageToken.FromToken,
+            AssistantsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -768,11 +768,11 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunCollectionPageToken firstPageToken = RunCollectionPageToken.FromOptions(threadId, options);
+        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, options);
         return OpenAIPageCollectionHelpers.CreateAsync<ThreadRun, InternalListRunsResponse>(
             firstPageToken,
             GetRunsPageAsync,
-            RunCollectionPageToken.FromToken,
+            RunsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -780,11 +780,11 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        RunCollectionPageToken pageToken = RunCollectionPageToken.FromToken(firstPageToken);
+        RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.CreateAsync<ThreadRun, InternalListRunsResponse>(
             firstPageToken,
             GetRunsPageAsync,
-            RunCollectionPageToken.FromToken,
+            RunsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -811,11 +811,11 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        RunCollectionPageToken pageToken = RunCollectionPageToken.FromToken(firstPageToken);
+        RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
         return OpenAIPageCollectionHelpers.Create<ThreadRun, InternalListRunsResponse>(
             firstPageToken,
             GetRunsPage,
-            RunCollectionPageToken.FromToken,
+            RunsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -1003,11 +1003,11 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, options);
+        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, options);
         return OpenAIPageCollectionHelpers.CreateAsync<RunStep, InternalListRunStepsResponse>(
             firstPageToken,
             GetRunStepsPageAsync,
-            RunStepCollectionPageToken.FromToken,
+            RunStepsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 
@@ -1028,11 +1028,11 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, options);
+        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, options);
         return OpenAIPageCollectionHelpers.Create<RunStep, InternalListRunStepsResponse>(
             firstPageToken,
             GetRunStepsPage,
-            RunStepCollectionPageToken.FromToken,
+            RunStepsPageToken.FromToken,
             cancellationToken.ToRequestOptions());
     }
 

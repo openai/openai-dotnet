@@ -8,17 +8,29 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class RunStepCollectionPageToken : OpenAIPageToken
+internal class RunStepsPageToken : ContinuationToken
 {
-    public RunStepCollectionPageToken(string threadId, string runId, int? limit, string? order, string? after, string? before)
-        : base(limit, order, after, before)
+    public RunStepsPageToken(string threadId, string runId, int? limit, string? order, string? after, string? before)
     {
         ThreadId = threadId;
         RunId = runId;
+
+        Limit = limit;
+        Order = order;
+        After = after;
+        Before = before;
     }
 
     public string ThreadId { get; }
     public string RunId { get; }
+
+    public int? Limit { get; }
+
+    public string? Order { get; }
+
+    public string? After { get; }
+
+    public string? Before { get; }
 
     public override BinaryData ToBytes()
     {
@@ -57,17 +69,19 @@ internal class RunStepCollectionPageToken : OpenAIPageToken
         return BinaryData.FromStream(stream);
     }
     
-    public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
-         => GetNextPageToken(ThreadId, RunId, Limit, Order, lastId, Before, hasMore);
-
-    // Convenience - first page request
-    public static RunStepCollectionPageToken FromOptions(string threadId, string runId,RunStepCollectionOptions options)
-        => new(threadId, runId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
-
-    // Convenience - continuation page request
-    public static RunStepCollectionPageToken FromToken(ContinuationToken pageToken)
+    public RunStepsPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
-        if (pageToken is RunStepCollectionPageToken token)
+        if (!hasMore || lastId is null)
+        {
+            return null;
+        }
+
+        return new RunStepsPageToken(ThreadId, RunId, Limit, Order, After, Before);
+    }
+
+    public static RunStepsPageToken FromToken(ContinuationToken pageToken)
+    {
+        if (pageToken is RunStepsPageToken token)
         {
             return token;
         }
@@ -76,7 +90,7 @@ internal class RunStepCollectionPageToken : OpenAIPageToken
 
         if (data.ToMemory().Length == 0)
         {
-            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+            throw new ArgumentException("Failed to create RunStepsPageToken from provided pageToken.", nameof(pageToken));
         }
 
         Utf8JsonReader reader = new(data);
@@ -89,6 +103,7 @@ internal class RunStepCollectionPageToken : OpenAIPageToken
         string? before = null;
 
         reader.Read();
+
         Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
 
         while (reader.Read())
@@ -99,6 +114,7 @@ internal class RunStepCollectionPageToken : OpenAIPageToken
             }
 
             Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+
             string propertyName = reader.GetString()!;
 
             switch (propertyName)
@@ -140,23 +156,12 @@ internal class RunStepCollectionPageToken : OpenAIPageToken
 
         if (threadId is null || runId is null)
         {
-            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+            throw new ArgumentException("Failed to create RunStepsPageToken from provided pageToken.", nameof(pageToken));
         }
 
         return new(threadId, runId, limit, order, after, before);
     }
 
-    // Protocol
-    public static RunStepCollectionPageToken FromOptions(string threadId, string runId, int? limit, string? order, string? after, string? before)
-        => new RunStepCollectionPageToken(threadId, runId, limit, order, after, before);
-
-    private static RunStepCollectionPageToken? GetNextPageToken(string threadId, string runId, int? limit, string? order, string? after, string? before, bool hasMore)
-    {
-        if (!hasMore || after is null)
-        {
-            return null;
-        }
-
-        return new RunStepCollectionPageToken(threadId, runId, limit, order, after, before);
-    }
+    public static RunStepsPageToken FromOptions(string threadId, string runId, int? limit, string? order, string? after, string? before)
+        => new RunStepsPageToken(threadId, runId, limit, order, after, before);
 }

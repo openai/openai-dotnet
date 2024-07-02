@@ -8,15 +8,27 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class RunCollectionPageToken : OpenAIPageToken
+internal class RunsPageToken : ContinuationToken
 {
-    public RunCollectionPageToken(string threadId, int? limit, string? order, string? after, string? before)
-        : base(limit, order, after, before)
+    public RunsPageToken(string threadId, int? limit, string? order, string? after, string? before)
     {
         ThreadId = threadId;
+
+        Limit = limit;
+        Order = order;
+        After = after;
+        Before = before;
     }
 
     public string ThreadId { get; }
+
+    public int? Limit { get; }
+
+    public string? Order { get; }
+
+    public string? After { get; }
+
+    public string? Before { get; }
 
     public override BinaryData ToBytes()
     {
@@ -54,17 +66,19 @@ internal class RunCollectionPageToken : OpenAIPageToken
         return BinaryData.FromStream(stream);
     }
     
-    public override OpenAIPageToken? GetNextPageToken(bool hasMore, string? lastId)
-         => GetNextPageToken(ThreadId, Limit, Order, lastId, Before, hasMore);
-
-    // Convenience - first page request
-    public static RunCollectionPageToken FromOptions(string threadId, RunCollectionOptions options)
-        => new(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId);
-
-    // Convenience - continuation page request
-    public static RunCollectionPageToken FromToken(ContinuationToken pageToken)
+    public RunsPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
-        if (pageToken is RunCollectionPageToken token)
+        if (!hasMore || lastId is null)
+        {
+            return null;
+        }
+
+        return new RunsPageToken(ThreadId, Limit, Order, After, Before);
+    }
+
+    public static RunsPageToken FromToken(ContinuationToken pageToken)
+    {
+        if (pageToken is RunsPageToken token)
         {
             return token;
         }
@@ -73,7 +87,7 @@ internal class RunCollectionPageToken : OpenAIPageToken
 
         if (data.ToMemory().Length == 0)
         {
-            return new(string.Empty, default, default, default, default);
+            throw new ArgumentException("Failed to create RunsPageToken from provided pageToken.", nameof(pageToken));
         }
 
         Utf8JsonReader reader = new(data);
@@ -85,6 +99,7 @@ internal class RunCollectionPageToken : OpenAIPageToken
         string? before = null;
 
         reader.Read();
+
         Debug.Assert(reader.TokenType == JsonTokenType.StartObject);
 
         while (reader.Read())
@@ -95,6 +110,7 @@ internal class RunCollectionPageToken : OpenAIPageToken
             }
 
             Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+
             string propertyName = reader.GetString()!;
 
             switch (propertyName)
@@ -131,23 +147,12 @@ internal class RunCollectionPageToken : OpenAIPageToken
 
         if (threadId is null)
         {
-            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+            throw new ArgumentException("Failed to create RunsPageToken from provided pageToken.", nameof(pageToken));
         }
 
         return new(threadId, limit, order, after, before);
     }
 
-    // Protocol
-    public static RunCollectionPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
-        => new RunCollectionPageToken(threadId, limit, order, after, before);
-
-    private static RunCollectionPageToken? GetNextPageToken(string threadId, int? limit, string? order, string? after, string? before, bool hasMore)
-    {
-        if (!hasMore || after is null)
-        {
-            return null;
-        }
-
-        return new RunCollectionPageToken(threadId, limit, order, after, before);
-    }
+    public static RunsPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
+        => new RunsPageToken(threadId, limit, order, after, before);
 }

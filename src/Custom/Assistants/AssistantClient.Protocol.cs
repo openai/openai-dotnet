@@ -66,13 +66,13 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, AssistantCollectionPageToken.FromToken, options);
+        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetAssistantsPageAsync, AssistantsPageToken.FromToken, options);
     }
 
     internal virtual async Task<ClientResult> GetAssistantsPageAsync(ContinuationToken pageToken, RequestOptions options)
     {
-        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        AssistantsPageToken token = AssistantsPageToken.FromToken(pageToken);
         return await GetAssistantsPageAsync(token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
     }
 
@@ -108,13 +108,13 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantCollectionPageToken firstPageToken = AssistantCollectionPageToken.FromOptions(limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, AssistantCollectionPageToken.FromToken, options);
+        AssistantsPageToken firstPageToken = AssistantsPageToken.FromOptions(limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetAssistantsPage, AssistantsPageToken.FromToken, options);
     }
 
     internal virtual ClientResult GetAssistantsPage(ContinuationToken pageToken, RequestOptions options)
     {
-        AssistantCollectionPageToken token = AssistantCollectionPageToken.FromToken(pageToken);
+        AssistantsPageToken token = AssistantsPageToken.FromToken(pageToken);
         return GetAssistantsPage(token.Limit, token.Order, token.After, token.Before, options);
     }
 
@@ -290,13 +290,13 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunCollectionPageToken firstPageToken = RunCollectionPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunsPageAsync, RunCollectionPageToken.FromToken, options);
+        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunsPageAsync, RunsPageToken.FromToken, options);
     }
 
     internal async virtual Task<ClientResult> GetRunsPageAsync(ContinuationToken pageToken, RequestOptions options)
     {
-        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        RunsPageToken token = RunsPageToken.FromToken(pageToken);
         return await GetRunsPageAsync(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
     }
 
@@ -306,13 +306,13 @@ public partial class AssistantClient
 
     public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunCollectionPageToken firstPageToken = RunCollectionPageToken.FromOptions(threadId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunsPage, RunCollectionPageToken.FromToken, options);
+        RunsPageToken firstPageToken = RunsPageToken.FromOptions(threadId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunsPage, RunsPageToken.FromToken, options);
     }
 
     internal virtual ClientResult GetRunsPage(ContinuationToken pageToken, RequestOptions options)
     {
-        RunCollectionPageToken token = RunCollectionPageToken.FromToken(pageToken);
+        RunsPageToken token = RunsPageToken.FromToken(pageToken);
         return GetRunsPage(token.ThreadId, token.Limit, token.Order, token.After, token.Before, options);
     }
 
@@ -354,13 +354,13 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunStepsPageAsync, RunStepCollectionPageToken.FromToken, options);
+        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocolAsync(firstPageToken, GetRunStepsPageAsync, RunStepsPageToken.FromToken, options);
     }
 
     internal virtual async Task<ClientResult> GetRunStepsPageAsync(ContinuationToken pageToken, RequestOptions options)
     {
-        RunStepCollectionPageToken token = RunStepCollectionPageToken.FromToken(pageToken);
+        RunStepsPageToken token = RunStepsPageToken.FromToken(pageToken);
         return await GetRunStepsPageAsync(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options).ConfigureAwait(false);
     }
 
@@ -370,13 +370,13 @@ public partial class AssistantClient
 
     public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        RunStepCollectionPageToken firstPageToken = RunStepCollectionPageToken.FromOptions(threadId, runId, limit, order, after, before);
-        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunStepsPage, RunStepCollectionPageToken.FromToken, options);
+        RunStepsPageToken firstPageToken = RunStepsPageToken.FromOptions(threadId, runId, limit, order, after, before);
+        return OpenAIPageCollectionHelpers.CreateProtocol(firstPageToken, GetRunStepsPage, RunStepsPageToken.FromToken, options);
     }
 
     internal virtual ClientResult GetRunStepsPage(ContinuationToken pageToken, RequestOptions options)
     {
-        RunStepCollectionPageToken token = RunStepCollectionPageToken.FromToken(pageToken);
+        RunStepsPageToken token = RunStepsPageToken.FromToken(pageToken);
         return GetRunStepsPage(token.ThreadId, token.RunId, token.Limit, token.Order, token.After, token.Before, options);
     }
 

@@ -87,7 +87,7 @@ internal class MessagesPageToken : ContinuationToken
 
         if (data.ToMemory().Length == 0)
         {
-            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+            throw new ArgumentException("Failed to create MessagesPageToken from provided pageToken.", nameof(pageToken));
         }
 
         Utf8JsonReader reader = new(data);
@@ -147,7 +147,7 @@ internal class MessagesPageToken : ContinuationToken
 
         if (threadId is null)
         {
-            throw new ArgumentException("Failed to create MessageCollectionPageToken from provided pageToken.", nameof(pageToken));
+            throw new ArgumentException("Failed to create MessagesPageToken from provided pageToken.", nameof(pageToken));
         }
 
         return new(threadId, limit, order, after, before);
