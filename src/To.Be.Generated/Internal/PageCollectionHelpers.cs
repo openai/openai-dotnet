@@ -19,7 +19,7 @@ internal class PageCollectionHelpers
         Func<ClientResult, PageResult<T>> getPageFromResult)
         => new FuncPageCollection<T>(enumerator, getPageFromResult);
 
-    public static IEnumerable<ClientResult> CreateProtocol(IEnumerator<ClientResult> enumerator)
+    public static IEnumerable<ClientResult> Create(IEnumerator<ClientResult> enumerator)
     {
         while (enumerator.MoveNext())
         {
@@ -27,7 +27,7 @@ internal class PageCollectionHelpers
         }
     }
 
-    public static async IAsyncEnumerable<ClientResult> CreateProtocolAsync(IAsyncEnumerator<ClientResult> enumerator)
+    public static async IAsyncEnumerable<ClientResult> CreateAsync(IAsyncEnumerator<ClientResult> enumerator)
     {
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {

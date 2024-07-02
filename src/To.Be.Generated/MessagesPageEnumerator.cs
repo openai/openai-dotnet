@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal class MessageCollectionClient : PageResultEnumerator
+internal partial class MessagesPageEnumerator : PageResultEnumerator
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -23,7 +23,7 @@ internal class MessageCollectionClient : PageResultEnumerator
     private readonly string _before;
     private readonly RequestOptions _options;
 
-    public MessageCollectionClient(
+    public MessagesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId, int? limit, string order, string after, string before,
@@ -74,19 +74,6 @@ internal class MessageCollectionClient : PageResultEnumerator
         bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
 
         return hasMore;
-    }
-
-    // Note: this is the deserialization method that converts protocol to convenience
-    public PageResult<ThreadMessage> GetPageFromResult(ClientResult result)
-    {
-        PipelineResponse response = result.GetRawResponse();
-
-        InternalListMessagesResponse list = ModelReaderWriter.Read<InternalListMessagesResponse>(response.Content)!;
-
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromOptions(_threadId, _limit, _order, _after, _before);
-        MessageCollectionPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
-
-        return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
     // Note: these are the protocol methods - they are generated here

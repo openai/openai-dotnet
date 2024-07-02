@@ -390,7 +390,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             threadId,
             options?.PageSize,
             options?.Order?.ToString(),
@@ -405,9 +405,9 @@ public partial class AssistantClient
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
+        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
 
-        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
             pageToken.Order,
@@ -432,7 +432,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             threadId,
             options?.PageSize,
             options?.Order?.ToString(),
@@ -449,9 +449,9 @@ public partial class AssistantClient
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
+        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
 
-        MessageCollectionClient enumerator = new(_pipeline, _endpoint,
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.Limit,
             pageToken.Order,

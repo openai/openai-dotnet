@@ -240,14 +240,14 @@ public partial class AssistantClient
 
     public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        IAsyncEnumerator<ClientResult> enumerator = new MessageCollectionClient(_pipeline, _endpoint, threadId, limit, order, after, before, options);
-        return PageCollectionHelpers.CreateProtocolAsync(enumerator);
+        IAsyncEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
-        IEnumerator<ClientResult> enumerator = new MessageCollectionClient(_pipeline, _endpoint, threadId, limit, order, after, before, options);
-        return PageCollectionHelpers.CreateProtocol(enumerator);
+        IEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>

@@ -8,9 +8,9 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class MessageCollectionPageToken : ContinuationToken
+internal class MessagesPageToken : ContinuationToken
 {
-    public MessageCollectionPageToken(string threadId, int? limit, string? order, string? after, string? before)
+    public MessagesPageToken(string threadId, int? limit, string? order, string? after, string? before)
     {
         ThreadId = threadId;
 
@@ -66,7 +66,7 @@ internal class MessageCollectionPageToken : ContinuationToken
         return BinaryData.FromStream(stream);
     }
     
-    public MessageCollectionPageToken? GetNextPageToken(bool hasMore, string? lastId)
+    public MessagesPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)
         {
@@ -76,9 +76,9 @@ internal class MessageCollectionPageToken : ContinuationToken
         return new(ThreadId, Limit, Order, lastId, Before);
     }
 
-    public static MessageCollectionPageToken FromToken(ContinuationToken pageToken)
+    public static MessagesPageToken FromToken(ContinuationToken pageToken)
     {
-        if (pageToken is MessageCollectionPageToken token)
+        if (pageToken is MessagesPageToken token)
         {
             return token;
         }
@@ -153,6 +153,6 @@ internal class MessageCollectionPageToken : ContinuationToken
         return new(threadId, limit, order, after, before);
     }
 
-    public static MessageCollectionPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
+    public static MessagesPageToken FromOptions(string threadId, int? limit, string? order, string? after, string? before)
         => new(threadId, limit, order, after, before);
 }
