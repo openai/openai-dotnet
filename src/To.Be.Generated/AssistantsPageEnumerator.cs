@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class AssistantsPageEnumerator : PageResultEnumerator
+internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -73,6 +73,19 @@ internal partial class AssistantsPageEnumerator : PageResultEnumerator
 
         return hasMore;
     }
+
+    public override PageResult<Assistant> GetPageFromResult(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+
+        InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
+
+        AssistantsPageToken pageToken = AssistantsPageToken.FromOptions(_limit, _order, _after, _before);
+        AssistantsPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
+
+        return PageResult<Assistant>.Create(list.Data, pageToken, nextPageToken, response);
+    }
+
 
     // Note: these are the protocol methods - they are generated here
     internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)

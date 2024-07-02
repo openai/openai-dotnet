@@ -153,7 +153,7 @@ public partial class VectorStoreClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(
@@ -170,7 +170,7 @@ public partial class VectorStoreClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public partial class VectorStoreClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<VectorStore> GetVectorStores(
@@ -209,7 +209,7 @@ public partial class VectorStoreClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ public partial class VectorStoreClient
             options?.Filter?.ToString(),
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
@@ -296,7 +296,7 @@ public partial class VectorStoreClient
             pageToken.Filter,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -328,7 +328,7 @@ public partial class VectorStoreClient
             options?.Filter?.ToString(),
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
@@ -347,7 +347,7 @@ public partial class VectorStoreClient
             pageToken.Filter,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -585,7 +585,7 @@ public partial class VectorStoreClient
             options?.Filter?.ToString(),
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
@@ -622,7 +622,7 @@ public partial class VectorStoreClient
             pageToken.Filter,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -660,7 +660,7 @@ public partial class VectorStoreClient
             options?.Filter?.ToString(),
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
@@ -697,6 +697,6 @@ public partial class VectorStoreClient
             pageToken.Filter,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 }

@@ -34,7 +34,7 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     object IEnumerator.Current => ((IEnumerator<ClientResult>)this).Current;
 
-    bool IEnumerator.MoveNext()
+    public bool MoveNext()
     {
         if (!_hasNext)
         {

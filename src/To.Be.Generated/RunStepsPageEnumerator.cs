@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class RunStepsPageEnumerator : PageResultEnumerator
+internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -79,6 +79,19 @@ internal partial class RunStepsPageEnumerator : PageResultEnumerator
         bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
 
         return hasMore;
+    }
+
+    // Note: this is the deserialization method that converts protocol to convenience
+    public override PageResult<RunStep> GetPageFromResult(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+
+        InternalListRunStepsResponse list = ModelReaderWriter.Read<InternalListRunStepsResponse>(response.Content)!;
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromOptions(_threadId, _runId, _limit, _order, _after, _before);
+        RunStepsPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
+
+        return PageResult<RunStep>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
     // Note: these are the protocol methods - they are generated here

@@ -54,7 +54,7 @@ public partial class VectorStoreClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        IAsyncEnumerator<ClientResult> enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        PageResultEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -85,7 +85,7 @@ public partial class VectorStoreClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
     {
-        IEnumerator<ClientResult> enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        PageResultEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -263,7 +263,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        IAsyncEnumerator<ClientResult> enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
+        PageResultEnumerator enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -300,7 +300,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        IEnumerator<ClientResult> enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, options);
+        PageResultEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -579,7 +579,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        IAsyncEnumerator<ClientResult> enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        PageResultEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -618,7 +618,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        IEnumerator<ClientResult> enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        PageResultEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 }

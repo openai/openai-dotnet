@@ -118,7 +118,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -455,7 +455,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<ThreadMessage> GetMessages(
@@ -473,7 +473,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -790,7 +790,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
@@ -808,7 +808,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -833,7 +833,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<ThreadRun> GetRuns(
@@ -851,7 +851,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -1047,7 +1047,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
@@ -1066,7 +1066,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -1095,7 +1095,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     public virtual PageCollection<RunStep> GetRunSteps(
@@ -1114,7 +1114,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.Create(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
 

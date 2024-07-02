@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
-internal partial class VectorStoreFileBatchesPageEnumerator : PageResultEnumerator
+internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<VectorStoreFileAssociation>
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -80,6 +80,19 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageResultEnumerat
         bool hasMore = doc.RootElement.GetProperty("has_more"u8).GetBoolean();
 
         return hasMore;
+    }
+
+    // Note: this is the deserialization method that converts protocol to convenience
+    public override PageResult<VectorStoreFileAssociation> GetPageFromResult(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+
+        InternalListVectorStoreFilesResponse list = ModelReaderWriter.Read<InternalListVectorStoreFilesResponse>(response.Content)!;
+
+        VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromOptions(_vectorStoreId, _limit, _order, _after, _before, _filter);
+        VectorStoreFilesPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
+
+        return PageResult<VectorStoreFileAssociation>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
     // Note: these are the protocol methods - they are generated here
