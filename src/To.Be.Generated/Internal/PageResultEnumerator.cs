@@ -1,4 +1,5 @@
-﻿using System.ClientModel;
+﻿using System;
+using System.ClientModel;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,12 +12,7 @@ namespace OpenAI;
 internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, IEnumerator<ClientResult>
 {
     private ClientResult? _current;
-    private bool _hasNext;
-
-    protected PageResultEnumerator()
-    {
-        _hasNext = true;
-    }
+    private bool _hasNext = true;
 
     public ClientResult Current => _current!;
 
@@ -36,9 +32,9 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     #region IEnumerator<ClientResult> implementation
 
-    object IEnumerator.Current => Current;
+    object IEnumerator.Current => ((IEnumerator<ClientResult>)this).Current;
 
-    public bool MoveNext()
+    bool IEnumerator.MoveNext()
     {
         if (!_hasNext)
         {
@@ -58,9 +54,9 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
         return true;
     }
 
-    public void Reset() => _current = null;
+    void IEnumerator.Reset() => _current = null;
 
-    public virtual void Dispose() { }
+    void IDisposable.Dispose() { }
 
     #endregion
 
@@ -86,7 +82,7 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
         return true;
     }
 
-    public virtual ValueTask DisposeAsync() => new();
+    ValueTask IAsyncDisposable.DisposeAsync() => new();
 
     #endregion
 }

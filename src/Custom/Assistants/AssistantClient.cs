@@ -412,7 +412,7 @@ public partial class AssistantClient
             options?.BeforeId,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
@@ -430,7 +430,7 @@ public partial class AssistantClient
             pageToken.Before,
             cancellationToken.ToRequestOptions());
 
-        return PageCollectionHelpers.CreateAsync(enumerator, enumerator.GetPageFromResult);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
