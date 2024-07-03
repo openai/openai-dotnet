@@ -10,7 +10,7 @@ namespace OpenAI.VectorStores;
 
 internal class VectorStoreFilesPageToken : ContinuationToken
 {
-    public VectorStoreFilesPageToken(string vectorStoreId, int? limit, string? order, string? after, string? before, string? filter)
+    protected VectorStoreFilesPageToken(string vectorStoreId, int? limit, string? order, string? after, string? before, string? filter)
     {
         VectorStoreId = vectorStoreId;
 

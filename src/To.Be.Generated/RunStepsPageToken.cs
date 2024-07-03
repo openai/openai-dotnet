@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 
 internal class RunStepsPageToken : ContinuationToken
 {
-    public RunStepsPageToken(string threadId, string runId, int? limit, string? order, string? after, string? before)
+    protected RunStepsPageToken(string threadId, string runId, int? limit, string? order, string? after, string? before)
     {
         ThreadId = threadId;
         RunId = runId;

@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 
 internal class AssistantsPageToken : ContinuationToken
 {
-    public AssistantsPageToken(int? limit, string? order, string? after, string? before)
+    protected AssistantsPageToken(int? limit, string? order, string? after, string? before)
     {
         Limit = limit;
         Order = order;

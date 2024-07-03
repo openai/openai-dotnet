@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 
 internal class MessagesPageToken : ContinuationToken
 {
-    public MessagesPageToken(string threadId, int? limit, string? order, string? after, string? before)
+    protected MessagesPageToken(string threadId, int? limit, string? order, string? after, string? before)
     {
         ThreadId = threadId;
 

@@ -2,6 +2,7 @@
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 #nullable enable
 
@@ -13,7 +14,23 @@ internal class PageCollectionHelpers
         => new EnumeratorPageCollection<T>(enumerator);
 
     public static AsyncPageCollection<T> CreateAsync<T>(PageEnumerator<T> enumerator)
-        => new EnumeratorAsyncPageCollection<T>(enumerator);
+        => new AsyncEnumeratorPageCollection<T>(enumerator);
+
+    public static IEnumerable<ClientResult> Create(PageResultEnumerator enumerator)
+    {
+        while (enumerator.MoveNext())
+        {
+            yield return enumerator.Current;
+        }
+    }
+
+    public static async IAsyncEnumerable<ClientResult> CreateAsync(PageResultEnumerator enumerator)
+    {
+        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        {
+            yield return enumerator.Current;
+        }
+    }
 
     private class EnumeratorPageCollection<T> : PageCollection<T>
     {
@@ -24,44 +41,26 @@ internal class PageCollectionHelpers
             _enumerator = enumerator;
         }
 
+        protected override PageResult<T> GetCurrentPageCore()
+            => _enumerator.GetCurrentPage();
+
         protected override IEnumerator<PageResult<T>> GetEnumeratorCore()
             => _enumerator;
     }
 
-    private class EnumeratorAsyncPageCollection<T> : AsyncPageCollection<T>
+    private class AsyncEnumeratorPageCollection<T> : AsyncPageCollection<T>
     {
         private readonly PageEnumerator<T> _enumerator;
 
-        public EnumeratorAsyncPageCollection(PageEnumerator<T> enumerator)
+        public AsyncEnumeratorPageCollection(PageEnumerator<T> enumerator)
         {
             _enumerator = enumerator;
         }
 
+        protected override async Task<PageResult<T>> GetCurrentPageAsyncCore()
+            => await _enumerator.GetCurrentPageAsync().ConfigureAwait(false);
+
         protected override IAsyncEnumerator<PageResult<T>> GetAsyncEnumeratorCore(CancellationToken cancellationToken = default)
             => _enumerator;
-    }
-
-    public static IEnumerable<ClientResult> Create(PageResultEnumerator enumerator)
-    {
-        do
-        {
-            if (enumerator.Current is not null)
-            {
-                yield return enumerator.Current;
-            }
-        }
-        while (enumerator.MoveNext());
-    }
-
-    public static async IAsyncEnumerable<ClientResult> CreateAsync(PageResultEnumerator enumerator)
-    {
-        do
-        {
-            if (enumerator.Current is not null)
-            {
-                yield return enumerator.Current;
-            }
-        }
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false));
     }
 }

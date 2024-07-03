@@ -10,7 +10,7 @@ namespace OpenAI.VectorStores;
 
 internal class VectorStoresPageToken : ContinuationToken
 {
-    public VectorStoresPageToken(int? limit, string? order, string? after, string? before)
+    protected VectorStoresPageToken(int? limit, string? order, string? after, string? before)
     {
         Limit = limit;
         Order = order;
