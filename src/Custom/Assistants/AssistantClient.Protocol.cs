@@ -253,7 +253,30 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
+    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+        ReturnWhen returnWhen,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
+
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId,
+            result.GetRawResponse(),
+            poller);
+    }
+
     public virtual ThreadRunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         BinaryContent content,

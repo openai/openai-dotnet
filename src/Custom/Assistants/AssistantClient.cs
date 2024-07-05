@@ -665,6 +665,27 @@ public partial class AssistantClient
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
+    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+        ReturnWhen returnWhen,
+        string assistantId,
+        ThreadCreationOptions threadOptions = null,
+        RunCreationOptions runOptions = null,
+        CancellationToken cancellationToken = default)
+    {
+        runOptions ??= new();
+        runOptions.Stream = null;
+        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
+        return await CreateThreadAndRunAsync(returnWhen, protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
+    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A new <see cref="ThreadRun"/>. </returns>
     public virtual ThreadRunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         string assistantId,
@@ -805,102 +826,6 @@ public partial class AssistantClient
         RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
         RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
             pageToken.ThreadId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
-    }
-
-    /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns></returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
-        string threadId,
-        string runId,
-        RunStepCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
-    }
-
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
-    }
-
-    /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns></returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
-        string threadId,
-        string runId,
-        RunStepCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
-    }
-
-    public virtual PageCollection<RunStep> GetRunSteps(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
             pageToken.Limit,
             pageToken.Order,
             pageToken.After,

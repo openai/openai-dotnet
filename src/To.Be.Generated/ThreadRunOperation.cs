@@ -211,6 +211,88 @@ public partial class ThreadRunOperation : OperationResult
         return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 
+    /// <summary>
+    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns></returns>
+    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+        RunStepCollectionOptions? options = default,
+        CancellationToken cancellationToken = default)
+    {
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            _threadId,
+            _runId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.RunId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns></returns>
+    public virtual PageCollection<RunStep> GetRunSteps(
+        RunStepCollectionOptions? options = default,
+        CancellationToken cancellationToken = default)
+    {
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            _threadId,
+            _runId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+    public virtual PageCollection<RunStep> GetRunSteps(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.RunId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ClientResult<T> CreateResultFromProtocol<T>(
         ClientResult protocolResult,

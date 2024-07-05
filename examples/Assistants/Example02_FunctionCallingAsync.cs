@@ -85,22 +85,21 @@ public partial class AssistantExamples
             InitialMessages = { "What's the weather like today?" }
         };
 
-        ThreadRun run = await client.CreateThreadAndRunAsync(assistant.Id, threadOptions);
+        ThreadRunOperation runOperation = await client.CreateThreadAndRunAsync(ReturnWhen.Started, assistant.Id, threadOptions);
         #endregion
 
         #region
         // Poll the run until it is no longer queued or in progress.
-        while (!run.Status.IsTerminal)
+        while (!runOperation.HasCompleted)
         {
             await Task.Delay(TimeSpan.FromSeconds(1));
-            run = await client.GetRunAsync(run.ThreadId, run.Id);
-
+            
             // If the run requires action, resolve them.
-            if (run.Status == RunStatus.RequiresAction)
+            if (runOperation.Status == RunStatus.RequiresAction)
             {
                 List<ToolOutput> toolOutputs = [];
 
-                foreach (RequiredAction action in run.RequiredActions)
+                foreach (RequiredAction action in runOperation.Value.RequiredActions)
                 {
                     switch (action.FunctionName)
                     {
@@ -142,17 +141,17 @@ public partial class AssistantExamples
                 }
 
                 // Submit the tool outputs to the assistant, which returns the run to the queued state.
-                run = await client.SubmitToolOutputsToRunAsync(run.ThreadId, run.Id, toolOutputs);
+                await runOperation.SubmitToolOutputsToRunAsync(toolOutputs);
             }
         }
         #endregion
 
         #region
         // With the run complete, list the messages and display their content
-        if (run.Status == RunStatus.Completed)
+        if (runOperation.Status == RunStatus.Completed)
         {
             AsyncPageCollection<ThreadMessage> messagePages
-                = client.GetMessagesAsync(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+                = client.GetMessagesAsync(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
             IAsyncEnumerable<ThreadMessage> messages = messagePages.GetAllValuesAsync();
 
             await foreach (ThreadMessage message in messages)
@@ -186,7 +185,7 @@ public partial class AssistantExamples
         }
         else
         {
-            throw new NotImplementedException(run.Status.ToString());
+            throw new NotImplementedException(runOperation.Status.ToString());
         }
         #endregion
     }

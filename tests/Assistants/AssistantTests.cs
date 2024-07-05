@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -255,18 +254,13 @@ public partial class AssistantTests
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
-        Validate(run);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
+        Validate(runOperation);
 
-        while (!run.Status.IsTerminal)
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(runOperation.Value.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        PageCollection<RunStep> pages = runOperation.GetRunSteps();
         PageResult<RunStep> firstPage = pages.GetCurrentPage();
 
         IEnumerable<RunStep> runSteps = pages.GetAllValues();
@@ -275,7 +269,7 @@ public partial class AssistantTests
         {
             Assert.That(runSteps.First().AssistantId, Is.EqualTo(assistant.Id));
             Assert.That(runSteps.First().ThreadId, Is.EqualTo(thread.Id));
-            Assert.That(runSteps.First().RunId, Is.EqualTo(run.Id));
+            Assert.That(runSteps.First().RunId, Is.EqualTo(runOperation.RunId));
             Assert.That(runSteps.First().CreatedAt, Is.GreaterThan(s_2024));
             Assert.That(runSteps.First().CompletedAt, Is.GreaterThan(s_2024));
         });
@@ -314,12 +308,12 @@ public partial class AssistantTests
         Validate(thread);
         ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
         Validate(message);
-        ThreadRun run = client.CreateRun(thread, assistant, new()
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant, new()
         {
             ResponseFormat = AssistantResponseFormat.JsonObject,
         });
-        Validate(run);
-        Assert.That(run.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+        Validate(runOperation);
+        Assert.That(runOperation.Value.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
     }
 
     [Test]
@@ -356,7 +350,8 @@ public partial class AssistantTests
         Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
         Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
 
-        ThreadRun run = client.CreateThreadAndRun(
+        ThreadRunOperation runOperation = client.CreateThreadAndRun(
+            ReturnWhen.Completed,
             assistant,
             new ThreadCreationOptions()
             {
@@ -366,30 +361,22 @@ public partial class AssistantTests
             {
                 AdditionalInstructions = "Call provided tools when appropriate.",
             });
-        Validate(run);
+        Validate(runOperation);
 
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
-        Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
-        Assert.That(run.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-        Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-        Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
+        Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
+        Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
-        run = client.SubmitToolOutputsToRun(run, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
-        Assert.That(run.Status.IsTerminal, Is.False);
+        // TODO: Make this sample nice per APIs.
+        runOperation.SubmitToolOutputsToRun([new(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")]);
+        Assert.That(runOperation.Status.IsTerminal, Is.False);
 
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        runOperation.WaitForCompletion();
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
+        IEnumerable<ThreadMessage> messages = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);
@@ -589,14 +576,8 @@ public partial class AssistantTests
         Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
-        ThreadRun run = client.CreateRun(thread, assistant);
-        Validate(run);
-        do
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run);
-        } while (run?.Status.IsTerminal == false);
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
         IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
         foreach (ThreadMessage message in messages)

@@ -85,22 +85,23 @@ public partial class AssistantExamples
             InitialMessages = { "What's the weather like today?" }
         };
 
-        ThreadRun run = client.CreateThreadAndRun(assistant.Id, threadOptions);
+        ThreadRunOperation runOperation = client.CreateThreadAndRun(ReturnWhen.Started, assistant.Id, threadOptions);
         #endregion
 
         #region
         // Poll the run until it is no longer queued or in progress.
-        while (!run.Status.IsTerminal)
+        while (!runOperation.HasCompleted)
         {
             Thread.Sleep(TimeSpan.FromSeconds(1));
-            run = client.GetRun(run.ThreadId, run.Id);
 
             // If the run requires action, resolve them.
-            if (run.Status == RunStatus.RequiresAction)
+            if (runOperation.Status == RunStatus.RequiresAction)
             {
                 List<ToolOutput> toolOutputs = [];
 
-                foreach (RequiredAction action in run.RequiredActions)
+                // TODO: Maybe improve API around this?
+
+                foreach (RequiredAction action in runOperation.Value.RequiredActions)
                 {
                     switch (action.FunctionName)
                     {
@@ -142,17 +143,17 @@ public partial class AssistantExamples
                 }
 
                 // Submit the tool outputs to the assistant, which returns the run to the queued state.
-                run = client.SubmitToolOutputsToRun(run.ThreadId, run.Id, toolOutputs);
+                runOperation.SubmitToolOutputsToRun(toolOutputs);
             }
         }
         #endregion
 
         #region
         // With the run complete, list the messages and display their content
-        if (run.Status == RunStatus.Completed)
+        if (runOperation.Status == RunStatus.Completed)
         {
             PageCollection<ThreadMessage> messagePages
-                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+                = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
             IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
             foreach (ThreadMessage message in messages)
@@ -186,7 +187,7 @@ public partial class AssistantExamples
         }
         else
         {
-            throw new NotImplementedException(run.Status.ToString());
+            throw new NotImplementedException(runOperation.Status.ToString());
         }
         #endregion
     }

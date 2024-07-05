@@ -89,11 +89,12 @@ public partial class AssistantExamples
         };
 
         // Passing ReturnWhen.Completed means CreateThreadAndRun will return control after the run is complete.
-        ThreadRunOperation threadRun = assistantClient.CreateThreadAndRun(ReturnWhen.Completed, assistant.Id, threadOptions);
+        ThreadRunOperation runOperation = assistantClient.CreateThreadAndRun(ReturnWhen.Completed, assistant.Id, threadOptions);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
-        PageableCollection<ThreadMessage> messages
-            = assistantClient.GetMessages(threadRun.ThreadId, ListOrder.OldestFirst);
+        PageCollection<ThreadMessage> messagePages
+            = assistantClient.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+        IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
         foreach (ThreadMessage message in messages)
         {
@@ -136,7 +137,7 @@ public partial class AssistantExamples
         }
 
         // Optionally, delete any persistent resources you no longer need.
-        _ = assistantClient.DeleteThread(threadRun.ThreadId);
+        _ = assistantClient.DeleteThread(runOperation.ThreadId);
         _ = assistantClient.DeleteAssistant(assistant);
         _ = fileClient.DeleteFile(salesFile);
     }

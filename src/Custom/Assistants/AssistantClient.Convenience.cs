@@ -213,8 +213,10 @@ public partial class AssistantClient
     /// <param name="options"> Additional options for the run. </param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
     public virtual ThreadRunOperation CreateRun(
-        System.ClientModel.ReturnWhen returnWhen,
-        AssistantThread thread, Assistant assistant, RunCreationOptions options = null)
+        ReturnWhen returnWhen,
+        AssistantThread thread, 
+        Assistant assistant, 
+        RunCreationOptions options = null)
         => CreateRun(returnWhen, thread?.Id, assistant?.Id, options);
 
     ///// <summary>
@@ -243,19 +245,33 @@ public partial class AssistantClient
     //    RunCreationOptions options = null)
     //        => CreateRunStreaming(thread?.Id, assistant?.Id, options);
 
-    ///// <summary>
-    ///// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
-    ///// </summary>
-    ///// <param name="assistant"> The assistant that the new run should use. </param>
-    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    ///// <returns> A new <see cref="ThreadRun"/>. </returns>
-    //public virtual ThreadRunOperation CreateThreadAndRun(
-    //    Assistant assistant,
-    //    ReturnWhen returnWhen,
-    //    ThreadCreationOptions threadOptions = null,
-    //    RunCreationOptions runOptions = null)
-    //        => CreateThreadAndRun(returnWhen, assistant?.Id, threadOptions, runOptions);
+    /// <summary>
+    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="assistant"> The assistant that the new run should use. </param>
+    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <returns> A new <see cref="ThreadRun"/>. </returns>
+    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+        ReturnWhen returnWhen,
+        Assistant assistant,
+        ThreadCreationOptions threadOptions = null,
+        RunCreationOptions runOptions = null)
+            => await CreateThreadAndRunAsync(returnWhen, assistant?.Id, threadOptions, runOptions).ConfigureAwait(false);
+
+    /// <summary>
+    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="assistant"> The assistant that the new run should use. </param>
+    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    /// <returns> A new <see cref="ThreadRun"/>. </returns>
+    public virtual ThreadRunOperation CreateThreadAndRun(
+        ReturnWhen returnWhen,
+        Assistant assistant,
+        ThreadCreationOptions threadOptions = null,
+        RunCreationOptions runOptions = null)
+            => CreateThreadAndRun(returnWhen, assistant?.Id, threadOptions, runOptions);
 
     ///// <summary>
     ///// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
