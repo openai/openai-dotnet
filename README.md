@@ -749,3 +749,44 @@ By default, the client classes will automatically retry the following errors up 
 - 502 Bad Gateway
 - 503 Service Unavailable
 - 504 Gateway Timeout
+
+## Observability with OpenTelemetry
+
+> Note:
+> OpenAI .NET SDK instrumentation is in development and is not complete. See [Available sources and meters](#available-sources-and-meters) section for the list of covered operations.
+
+OpenAI .NET library is instrumented with distributed tracing and metrics using .NET [tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing) 
+and [metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation) API and supports [OpenTelemetry](https://learn.microsoft.com/dotnet/core/diagnostics/observability-with-otel).
+
+OpenAI .NET library follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
+
+You can enable the instrumentation by configuring OpenTelemetry to record telemetry from OpenAI sources and meters:
+
+```csharp
+builder.Services.AddOpenTelemetry()
+    .WithTracing(b =>
+    {
+        b.AddSource("OpenAI.*")
+          ...
+         .AddOtlpExporter();
+    })
+    .WithMetrics(b =>
+    {
+        b.AddMeter("OpenAI.*")
+         ...
+         .AddOtlpExporter();
+    });
+```
+
+Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
+
+Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client  
+calls made by your application including those done by the OpenAI SDK.
+
+
+
+### Available sources and meters
+
+The following sources and meters are available:
+
+- `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
