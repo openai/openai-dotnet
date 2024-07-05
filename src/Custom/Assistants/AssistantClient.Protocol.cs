@@ -282,7 +282,9 @@ public partial class AssistantClient
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
     public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
-        string threadId, BinaryContent content, RequestOptions options = null) 
+        string threadId, 
+        BinaryContent content, 
+        RequestOptions options = null) 
     {
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);

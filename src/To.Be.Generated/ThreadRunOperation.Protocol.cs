@@ -13,10 +13,11 @@ public partial class ThreadRunOperation : OperationResult
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
-    internal ThreadRunOperation(string threadId,
-        string runId,
+    internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
+        string threadId,
+        string runId,
         PipelineResponse response)
         : base(ThreadRunOperationToken.FromOptions(threadId, runId), response)
     {
