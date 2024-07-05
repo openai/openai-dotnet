@@ -63,10 +63,10 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        PageResultEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
@@ -93,10 +93,10 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+    public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        PageResultEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -213,13 +213,21 @@ public partial class AssistantClient
     public virtual ClientResult CreateMessage(string threadId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.CreateMessage(threadId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessagesAsync"/>
-    public virtual Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options);
+    public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    public virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+        PageResultEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        PageResultEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
+    }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)
@@ -253,6 +261,23 @@ public partial class AssistantClient
         return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
     }
 
+    public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        PageResultEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        PageResultEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
     public virtual AssistantRunOperation CreateRun(
         ReturnWhen returnWhen,
@@ -261,6 +286,25 @@ public partial class AssistantClient
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
         return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+    }
+	
+	
+    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>

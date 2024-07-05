@@ -39,7 +39,7 @@ public partial class ChatExamples
             Dictionary<int, string> indexToFunctionName = [];
             Dictionary<int, StringBuilder> indexToFunctionArguments = [];
             StringBuilder contentBuilder = new();
-            AsyncResultCollection<StreamingChatCompletionUpdate> chatUpdates
+            AsyncCollectionResult<StreamingChatCompletionUpdate> chatUpdates
                 = client.CompleteChatStreamingAsync(messages, options);
 
             await foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
