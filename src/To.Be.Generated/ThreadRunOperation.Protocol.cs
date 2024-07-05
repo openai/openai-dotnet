@@ -13,8 +13,7 @@ public partial class ThreadRunOperation : OperationResult
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
-    // protocol poller
-    private readonly OperationResultPoller _resultPoller;
+    private readonly ThreadRunPoller _poller;
 
     internal ThreadRunOperation(
         ClientPipeline pipeline,
@@ -22,7 +21,7 @@ public partial class ThreadRunOperation : OperationResult
         string threadId,
         string runId,
         PipelineResponse response,
-        OperationResultPoller poller)
+        ThreadRunPoller poller)
         : base(ThreadRunOperationToken.FromOptions(threadId, runId), response)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -34,7 +33,7 @@ public partial class ThreadRunOperation : OperationResult
         _pipeline = pipeline;
         _endpoint = endpoint;
 
-        _resultPoller = poller;
+        _poller = poller;
     }
 
     // TODO: add "wait for status change" overloads if needed.
@@ -42,14 +41,14 @@ public partial class ThreadRunOperation : OperationResult
     // TODO: take parameters?
     public async Task<ClientResult> WaitForCompletionResultAsync()
     {
-        await _resultPoller.WaitForCompletionAsync().ConfigureAwait(false);
-        return _resultPoller.Current;
+        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+        return _poller.Current;
     }
 
     public ClientResult WaitForCompletionResult()
     {
-        _resultPoller.WaitForCompletion();
-        return _resultPoller.Current;
+        _poller.WaitForCompletion();
+        return _poller.Current;
     }
 
     /// <summary>

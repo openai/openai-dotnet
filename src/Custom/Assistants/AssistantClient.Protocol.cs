@@ -267,14 +267,21 @@ public partial class AssistantClient
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
         // Create the poller
-        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
         // Create the operation subclient
-        return new ThreadRunOperation(
+        ThreadRunOperation operation = new ThreadRunOperation(
             _pipeline, _endpoint,
-            threadId, runId,
-            result.GetRawResponse(),
+            threadId, runId, result.GetRawResponse(),
             poller);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletionResult();
+        return operation;
     }
 
     public virtual ThreadRunOperation CreateThreadAndRun(
@@ -291,14 +298,21 @@ public partial class AssistantClient
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
         // Create the poller
-        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
         // Create the operation subclient
-        return new ThreadRunOperation(
+        ThreadRunOperation operation = new ThreadRunOperation(
             _pipeline, _endpoint,
-            threadId, runId,
-            result.GetRawResponse(),
+            threadId, runId, result.GetRawResponse(),
             poller);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletionResult();
+        return operation;
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
@@ -317,7 +331,38 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    public virtual async Task<ThreadRunOperation> CreateRunAsync(
+        ReturnWhen returnWhen,
+        string threadId,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
+
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        // Create the poller
+        ThreadRunPoller poller = new ThreadRunPoller(
+            _pipeline, _endpoint, result, threadId, runId, options);
+
+        // Create the operation subclient
+        ThreadRunOperation operation = new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId, result.GetRawResponse(),
+            poller);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletionResult();
+        return operation;
+    }
+
     public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId,
@@ -331,16 +376,25 @@ public partial class AssistantClient
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-        // Create the poller
-        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
-
         // TODO: clean up poller and operation subclients per redundancy
 
+        // Create the poller
+        ThreadRunPoller poller = new ThreadRunPoller(
+            _pipeline, _endpoint, result, threadId, runId, options);
+
         // Create the operation subclient
-        return new ThreadRunOperation(
+        ThreadRunOperation operation = new ThreadRunOperation(
             _pipeline, _endpoint,
             threadId, runId, result.GetRawResponse(),
             poller);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletionResult();
+        return operation;
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)

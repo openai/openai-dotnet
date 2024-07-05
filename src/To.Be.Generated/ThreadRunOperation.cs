@@ -17,21 +17,6 @@ public partial class ThreadRunOperation : OperationResult
     private readonly string _threadId;
     private readonly string _runId;
 
-    // TODO: dedupe protocol and convenience
-    private readonly ThreadRunPoller? _poller;
-
-    internal ThreadRunOperation(
-    ClientPipeline pipeline,
-    Uri endpoint,
-    string threadId,
-    string runId,
-    PipelineResponse response,
-    ThreadRunPoller poller) : 
-        this(pipeline, endpoint, threadId, runId, response, (OperationResultPoller)poller)
-    {
-        _poller = poller;
-    }
-
     // TODO: Do the IDs need to be public?
     public string ThreadId => _threadId;
 

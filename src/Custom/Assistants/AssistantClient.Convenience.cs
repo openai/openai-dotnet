@@ -212,6 +212,21 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
+    public virtual async Task<ThreadRunOperation> CreateRunAsync(
+        ReturnWhen returnWhen,
+        AssistantThread thread,
+        Assistant assistant,
+        RunCreationOptions options = null)
+        => await CreateRunAsync(returnWhen, thread?.Id, assistant?.Id, options).ConfigureAwait(false);
+
+    /// <summary>
+    /// Begins a new <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    /// <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="thread"> The thread that the run should evaluate. </param>
+    /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
+    /// <param name="options"> Additional options for the run. </param>
+    /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
     public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
         AssistantThread thread, 
