@@ -212,7 +212,7 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual AssistantRunOperation CreateRun(
+    public virtual ThreadRunOperation CreateRun(
         System.ClientModel.ReturnWhen returnWhen,
         AssistantThread thread, Assistant assistant, RunCreationOptions options = null)
         => CreateRun(returnWhen, thread?.Id, assistant?.Id, options);
@@ -250,7 +250,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual AssistantRunOperation CreateThreadAndRun(
+    public virtual ThreadRunOperation CreateThreadAndRun(
         Assistant assistant,
         ReturnWhen returnWhen,
         ThreadCreationOptions threadOptions = null,

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-public partial class AssistantRunOperation // TODO: inherit from SCM ResultValueOperation type
+public partial class ThreadRunOperation : OperationResult
 {
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
     public virtual Task<ClientResult> GetRunAsync(RequestOptions options)

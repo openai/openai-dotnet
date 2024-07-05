@@ -89,7 +89,7 @@ public partial class AssistantExamples
         };
 
         // Passing ReturnWhen.Completed means CreateThreadAndRun will return control after the run is complete.
-        AssistantRunOperation threadRun = assistantClient.CreateThreadAndRun(ReturnWhen.Completed, assistant.Id, threadOptions);
+        ThreadRunOperation threadRun = assistantClient.CreateThreadAndRun(ReturnWhen.Completed, assistant.Id, threadOptions);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         PageableCollection<ThreadMessage> messages

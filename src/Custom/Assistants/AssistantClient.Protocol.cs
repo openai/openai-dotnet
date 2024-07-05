@@ -252,13 +252,13 @@ public partial class AssistantClient
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
-    public virtual AssistantRunOperation CreateThreadAndRun(
+    public virtual ThreadRunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         BinaryContent content, RequestOptions options = null)
     {
         ClientResult result =  _runSubClient.CreateThreadAndRun(content, options = null);
         ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
-        return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+        return new ThreadRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
@@ -279,13 +279,13 @@ public partial class AssistantClient
 
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
-    public virtual AssistantRunOperation CreateRun(
+    public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId, BinaryContent content, RequestOptions options = null) 
     {
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
-        return new AssistantRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+        return new ThreadRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
     }
 	
 	

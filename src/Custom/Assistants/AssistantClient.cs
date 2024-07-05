@@ -588,7 +588,7 @@ public partial class AssistantClient
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual AssistantRunOperation CreateRun(
+    public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
     {
@@ -663,7 +663,7 @@ public partial class AssistantClient
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual AssistantRunOperation CreateThreadAndRun(
+    public virtual ThreadRunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         string assistantId,
         ThreadCreationOptions threadOptions = null,
