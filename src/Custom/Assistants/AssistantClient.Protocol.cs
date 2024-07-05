@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -288,7 +289,6 @@ public partial class AssistantClient
         return new ThreadRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
     }
 	
-	
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -306,14 +306,6 @@ public partial class AssistantClient
         PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>
-    public virtual Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRuns"/>
-    public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)

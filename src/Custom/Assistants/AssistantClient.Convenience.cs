@@ -217,86 +217,83 @@ public partial class AssistantClient
         AssistantThread thread, Assistant assistant, RunCreationOptions options = null)
         => CreateRun(returnWhen, thread?.Id, assistant?.Id, options);
 
-    /// <summary>
-    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="thread"> The thread that the run should evaluate. </param>
-    /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
-        AssistantThread thread,
-        Assistant assistant,
-        RunCreationOptions options = null)
-            => CreateRunStreamingAsync(thread?.Id, assistant?.Id, options);
+    ///// <summary>
+    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    ///// <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="thread"> The thread that the run should evaluate. </param>
+    ///// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
+    ///// <param name="options"> Additional options for the run. </param>
+    //public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
+    //    AssistantThread thread,
+    //    Assistant assistant,
+    //    RunCreationOptions options = null)
+    //        => CreateRunStreamingAsync(thread?.Id, assistant?.Id, options);
 
-    /// <summary>
-    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="thread"> The thread that the run should evaluate. </param>
-    /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
-    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
-        AssistantThread thread,
-        Assistant assistant,
-        RunCreationOptions options = null)
-            => CreateRunStreaming(thread?.Id, assistant?.Id, options);
+    ///// <summary>
+    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    ///// <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="thread"> The thread that the run should evaluate. </param>
+    ///// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
+    ///// <param name="options"> Additional options for the run. </param>
+    //public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
+    //    AssistantThread thread,
+    //    Assistant assistant,
+    //    RunCreationOptions options = null)
+    //        => CreateRunStreaming(thread?.Id, assistant?.Id, options);
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistant"> The assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual ThreadRunOperation CreateThreadAndRun(
-        Assistant assistant,
-        ReturnWhen returnWhen,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
-            => CreateThreadAndRun(returnWhen, assistant?.Id, threadOptions, runOptions);
+    ///// <summary>
+    ///// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="assistant"> The assistant that the new run should use. </param>
+    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    ///// <returns> A new <see cref="ThreadRun"/>. </returns>
+    //public virtual ThreadRunOperation CreateThreadAndRun(
+    //    Assistant assistant,
+    //    ReturnWhen returnWhen,
+    //    ThreadCreationOptions threadOptions = null,
+    //    RunCreationOptions runOptions = null)
+    //        => CreateThreadAndRun(returnWhen, assistant?.Id, threadOptions, runOptions);
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistant"> The assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
-        Assistant assistant,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
-            => CreateThreadAndRunStreamingAsync(assistant?.Id, threadOptions, runOptions);
+    ///// <summary>
+    ///// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="assistant"> The assistant that the new run should use. </param>
+    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    //public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    //    Assistant assistant,
+    //    ThreadCreationOptions threadOptions = null,
+    //    RunCreationOptions runOptions = null)
+    //        => CreateThreadAndRunStreamingAsync(assistant?.Id, threadOptions, runOptions);
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistant"> The assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
-        Assistant assistant,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null)
-            => CreateThreadAndRunStreaming(assistant?.Id, threadOptions, runOptions);
+    ///// <summary>
+    ///// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="assistant"> The assistant that the new run should use. </param>
+    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    //public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
+    //    Assistant assistant,
+    //    ThreadCreationOptions threadOptions = null,
+    //    RunCreationOptions runOptions = null)
+    //        => CreateThreadAndRunStreaming(assistant?.Id, threadOptions, runOptions);
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadRun> GetRunsAsync(
+    /// <param name="options">Options describing the collection to return.</param>
+    /// <returns></returns>
+    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRunsAsync(thread.Id, resultOrder);
+        return GetRunsAsync(thread.Id, options);
     }
 
     /// <summary>
