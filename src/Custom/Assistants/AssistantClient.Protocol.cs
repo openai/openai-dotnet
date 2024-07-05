@@ -2,7 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -253,21 +253,53 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRunAsync"/>
-    public virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateThreadAndRunAsync(content, options);
+    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+        ReturnWhen returnWhen,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
-    public virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateThreadAndRun(content, options = null);
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
-    public virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateRunAsync(threadId, content, options);
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
-    public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateRun(threadId, content, options);
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId,
+            result.GetRawResponse(),
+            poller);
+    }
+
+    public virtual ThreadRunOperation CreateThreadAndRun(
+        ReturnWhen returnWhen,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
+
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId,
+            result.GetRawResponse(),
+            poller);
+    }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -285,37 +317,31 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
-    public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
-        => _runSubClient.GetRunAsync(threadId, runId, options);
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    public virtual ThreadRunOperation CreateRun(
+        ReturnWhen returnWhen,
+        string threadId,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        ClientResult result = _runSubClient.CreateRun(threadId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRun"/>
-    public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
-        => _runSubClient.GetRun(threadId, runId, options);
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-    /// <inheritdoc cref="InternalAssistantRunClient.ModifyRunAsync"/>
-    public virtual Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.ModifyRunAsync(threadId, runId, content, options);
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.ModifyRun"/>
-    public virtual ClientResult ModifyRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.ModifyRun(threadId, runId, content, options);
+        // TODO: clean up poller and operation subclients per redundancy
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CancelRunAsync"/>
-    public virtual Task<ClientResult> CancelRunAsync(string threadId, string runId, RequestOptions options)
-        => _runSubClient.CancelRunAsync(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.CancelRun"/>
-    public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options)
-        => _runSubClient.CancelRun(threadId, runId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.SubmitToolOutputsToRunAsync"/>
-    public virtual Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.SubmitToolOutputsToRunAsync(threadId, runId, content, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.SubmitToolOutputsToRun"/>
-    public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
-        => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId, result.GetRawResponse(),
+            poller);
+    }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -334,14 +360,6 @@ public partial class AssistantClient
         PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepAsync"/>
-    public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options)
-        => _runSubClient.GetRunStepAsync(threadId, runId, stepId, options);
-
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStep"/>
-    public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions options)
-        => _runSubClient.GetRunStep(threadId, runId, stepId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)

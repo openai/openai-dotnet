@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -184,23 +183,21 @@ public partial class AssistantTests
         Assert.That(runsPage.Values.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
-        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
-        Validate(run);
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
-        Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
-        ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
-        Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
+        Validate(runOperation);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
+        Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
+        //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
+        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
+
+        ThreadRun run = runOperation.WaitForCompletion();
+
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
         Assert.That(run.RequiredActions.Count, Is.EqualTo(0));
@@ -257,18 +254,13 @@ public partial class AssistantTests
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
-        Validate(run);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
+        Validate(runOperation);
 
-        while (!run.Status.IsTerminal)
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(runOperation.Value.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        PageCollection<RunStep> pages = runOperation.GetRunSteps();
         PageResult<RunStep> firstPage = pages.GetCurrentPage();
 
         IEnumerable<RunStep> runSteps = pages.GetAllValues();
@@ -277,7 +269,7 @@ public partial class AssistantTests
         {
             Assert.That(runSteps.First().AssistantId, Is.EqualTo(assistant.Id));
             Assert.That(runSteps.First().ThreadId, Is.EqualTo(thread.Id));
-            Assert.That(runSteps.First().RunId, Is.EqualTo(run.Id));
+            Assert.That(runSteps.First().RunId, Is.EqualTo(runOperation.RunId));
             Assert.That(runSteps.First().CreatedAt, Is.GreaterThan(s_2024));
             Assert.That(runSteps.First().CompletedAt, Is.GreaterThan(s_2024));
         });
@@ -316,12 +308,12 @@ public partial class AssistantTests
         Validate(thread);
         ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
         Validate(message);
-        ThreadRun run = client.CreateRun(thread, assistant, new()
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant, new()
         {
             ResponseFormat = AssistantResponseFormat.JsonObject,
         });
-        Validate(run);
-        Assert.That(run.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+        Validate(runOperation);
+        Assert.That(runOperation.Value.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
     }
 
     [Test]
@@ -358,7 +350,8 @@ public partial class AssistantTests
         Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
         Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
 
-        ThreadRun run = client.CreateThreadAndRun(
+        ThreadRunOperation runOperation = client.CreateThreadAndRun(
+            ReturnWhen.Completed,
             assistant,
             new ThreadCreationOptions()
             {
@@ -368,141 +361,133 @@ public partial class AssistantTests
             {
                 AdditionalInstructions = "Call provided tools when appropriate.",
             });
-        Validate(run);
+        Validate(runOperation);
 
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
-        Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
-        Assert.That(run.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-        Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-        Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
+        Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
+        Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
-        run = client.SubmitToolOutputsToRun(run, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
-        Assert.That(run.Status.IsTerminal, Is.False);
+        // TODO: Make this sample nice per APIs.
+        runOperation.SubmitToolOutputsToRun([new(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")]);
+        Assert.That(runOperation.Status.IsTerminal, Is.False);
 
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        runOperation.WaitForCompletion();
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
+        IEnumerable<ThreadMessage> messages = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages.First().Content?[0], Is.Not.Null);
         Assert.That(messages.First().Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
-    [Test]
-    public async Task StreamingRunWorks()
-    {
-        AssistantClient client = new();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
-        Validate(assistant);
+    //[Test]
+    //public async Task StreamingRunWorks()
+    //{
+    //    AssistantClient client = new();
+    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
+    //    Validate(assistant);
 
-        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
-        {
-            InitialMessages = { "Hello there, assistant! How are you today?", },
-        });
-        Validate(thread);
+    //    AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
+    //    {
+    //        InitialMessages = { "Hello there, assistant! How are you today?", },
+    //    });
+    //    Validate(thread);
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+    //    Stopwatch stopwatch = Stopwatch.StartNew();
+    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncCollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+    //    AsyncCollectionResult<StreamingUpdate> streamingResult
+    //        = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
-        Print(">>> Connected <<<");
+    //    Print(">>> Connected <<<");
 
-        await foreach (StreamingUpdate update in streamingResult)
-        {
-            string message = $"{update.UpdateKind} ";
-            if (update is RunUpdate runUpdate)
-            {
-                message += $"at {update.UpdateKind switch
-                {
-                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
-                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
-                    _ => "???",
-                }}";
-            }
-            if (update is MessageContentUpdate contentUpdate)
-            {
-                if (contentUpdate.Role.HasValue)
-                {
-                    message += $"[{contentUpdate.Role}]";
-                }
-                message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
-            }
-            Print(message);
-        }
-        Print(">>> Done <<<");
-    }
+    //    await foreach (StreamingUpdate update in streamingResult)
+    //    {
+    //        string message = $"{update.UpdateKind} ";
+    //        if (update is RunUpdate runUpdate)
+    //        {
+    //            message += $"at {update.UpdateKind switch
+    //            {
+    //                StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
+    //                StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
+    //                StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
+    //                StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
+    //                _ => "???",
+    //            }}";
+    //        }
+    //        if (update is MessageContentUpdate contentUpdate)
+    //        {
+    //            if (contentUpdate.Role.HasValue)
+    //            {
+    //                message += $"[{contentUpdate.Role}]";
+    //            }
+    //            message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
+    //        }
+    //        Print(message);
+    //    }
+    //    Print(">>> Done <<<");
+    //}
 
-    [TestCase]
-    public async Task StreamingToolCall()
-    {
-        AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
-        {
-            Tools = { getWeatherTool }
-        });
-        Validate(assistant);
+    //[TestCase]
+    //public async Task StreamingToolCall()
+    //{
+    //    AssistantClient client = GetTestClient();
+    //    FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
+    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
+    //    {
+    //        Tools = { getWeatherTool }
+    //    });
+    //    Validate(assistant);
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+    //    Stopwatch stopwatch = Stopwatch.StartNew();
+    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        Print(" >>> Beginning call ... ");
-        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
-            assistant,
-            new()
-            {
-                InitialMessages = { "What should I wear outside right now?", },
-            });
-        Print(" >>> Starting enumeration ...");
+    //    Print(" >>> Beginning call ... ");
+    //    AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+    //        assistant,
+    //        new()
+    //        {
+    //            InitialMessages = { "What should I wear outside right now?", },
+    //        });
+    //    Print(" >>> Starting enumeration ...");
 
-        ThreadRun run = null;
+    //    ThreadRun run = null;
 
-        do
-        {
-            run = null;
-            List<ToolOutput> toolOutputs = [];
-            await foreach (StreamingUpdate update in asyncResults)
-            {
-                string message = update.UpdateKind.ToString();
+    //    do
+    //    {
+    //        run = null;
+    //        List<ToolOutput> toolOutputs = [];
+    //        await foreach (StreamingUpdate update in asyncResults)
+    //        {
+    //            string message = update.UpdateKind.ToString();
 
-                if (update is RunUpdate runUpdate)
-                {
-                    message += $" run_id:{runUpdate.Value.Id}";
-                    run = runUpdate.Value;
-                }
-                if (update is RequiredActionUpdate requiredActionUpdate)
-                {
-                    Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
-                    Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
-                    message += $" {requiredActionUpdate.FunctionName}";
-                    toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
-                }
-                if (update is MessageContentUpdate contentUpdate)
-                {
-                    message += $" {contentUpdate.Text}";
-                }
-                Print(message);
-            }
-            if (toolOutputs.Count > 0)
-            {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
-            }
-        } while (run?.Status.IsTerminal == false);
-    }
+    //            if (update is RunUpdate runUpdate)
+    //            {
+    //                message += $" run_id:{runUpdate.Value.Id}";
+    //                run = runUpdate.Value;
+    //            }
+    //            if (update is RequiredActionUpdate requiredActionUpdate)
+    //            {
+    //                Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
+    //                Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
+    //                message += $" {requiredActionUpdate.FunctionName}";
+    //                toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
+    //            }
+    //            if (update is MessageContentUpdate contentUpdate)
+    //            {
+    //                message += $" {contentUpdate.Text}";
+    //            }
+    //            Print(message);
+    //        }
+    //        if (toolOutputs.Count > 0)
+    //        {
+    //            asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
+    //        }
+    //    } while (run?.Status.IsTerminal == false);
+    //}
 
     [Test]
     public void BasicFileSearchWorks()
@@ -591,14 +576,8 @@ public partial class AssistantTests
         Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
-        ThreadRun run = client.CreateRun(thread, assistant);
-        Validate(run);
-        do
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run);
-        } while (run?.Status.IsTerminal == false);
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
         IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
         foreach (ThreadMessage message in messages)

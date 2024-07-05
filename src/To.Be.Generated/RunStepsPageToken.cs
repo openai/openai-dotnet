@@ -22,6 +22,7 @@ internal class RunStepsPageToken : ContinuationToken
     }
 
     public string ThreadId { get; }
+
     public string RunId { get; }
 
     public int? Limit { get; }

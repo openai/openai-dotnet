@@ -88,18 +88,12 @@ public partial class AssistantExamples
             InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
         };
 
-        ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOptions);
-
-        // Check back to see when the run is done
-        do
-        {
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-            threadRun = assistantClient.GetRun(threadRun.ThreadId, threadRun.Id);
-        } while (!threadRun.Status.IsTerminal);
+        // Passing ReturnWhen.Completed means CreateThreadAndRun will return control after the run is complete.
+        ThreadRunOperation runOperation = assistantClient.CreateThreadAndRun(ReturnWhen.Completed, assistant.Id, threadOptions);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         PageCollection<ThreadMessage> messagePages
-            = assistantClient.GetMessages(threadRun.ThreadId,  new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+            = assistantClient.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
         IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
         foreach (ThreadMessage message in messages)
@@ -143,7 +137,7 @@ public partial class AssistantExamples
         }
 
         // Optionally, delete any persistent resources you no longer need.
-        _ = assistantClient.DeleteThread(threadRun.ThreadId);
+        _ = assistantClient.DeleteThread(runOperation.ThreadId);
         _ = assistantClient.DeleteAssistant(assistant);
         _ = fileClient.DeleteFile(salesFile);
     }

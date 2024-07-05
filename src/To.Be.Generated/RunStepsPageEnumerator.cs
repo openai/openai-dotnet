@@ -17,19 +17,19 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
     private readonly string _runId;
 
     private readonly int? _limit;
-    private readonly string _order;
+    private readonly string? _order;
 
     // Note: this one is special
-    private string _after;
+    private string? _after;
 
-    private readonly string _before;
+    private readonly string? _before;
     private readonly RequestOptions _options;
 
     public RunStepsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId, string runId,
-        int? limit, string order, string after, string before,
+        int? limit, string? order, string? after, string? before,
         RequestOptions options)
     {
         _pipeline = pipeline;
@@ -95,7 +95,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
     }
 
     // Note: these are the protocol methods - they are generated here
-    internal async virtual Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    internal async virtual Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -104,7 +104,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -113,7 +113,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    private PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    private PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;

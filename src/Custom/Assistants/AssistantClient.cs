@@ -3,7 +3,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -588,7 +587,12 @@ public partial class AssistantClient
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> CreateRunAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual ThreadRunOperation CreateRun(
+        ReturnWhen returnWhen,
+        string threadId, 
+        string assistantId, 
+        RunCreationOptions options = null, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -596,84 +600,82 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = null;
 
-        ClientResult protocolResult = await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions())
-            .ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        return CreateRun(returnWhen, threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
     }
 
-    /// <summary>
-    /// Begins a new <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
-    /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> CreateRun(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = null;
+    ///// <summary>
+    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    ///// <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
+    ///// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
+    ///// <param name="options"> Additional options for the run. </param>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    //public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
+    //    string threadId,
+    //    string assistantId,
+    //    RunCreationOptions options = null,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+    //    Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
-        ClientResult protocolResult = CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
+    //    options ??= new();
+    //    options.AssistantId = assistantId;
+    //    options.Stream = true;
+
+    //    async Task<ClientResult> getResultAsync() =>
+    //        await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true))
+    //        .ConfigureAwait(false);
+
+    //    return new AsyncStreamingUpdateCollection(getResultAsync);
+    //}
+
+    ///// <summary>
+    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    ///// <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
+    ///// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
+    ///// <param name="options"> Additional options for the run. </param>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    //public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
+    //    string threadId,
+    //    string assistantId,
+    //    RunCreationOptions options = null,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+    //    Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+    //    options ??= new();
+    //    options.AssistantId = assistantId;
+    //    options.Stream = true;
+
+    //    ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
+
+    //    return new StreamingUpdateCollection(getResult);
+    //}
 
     /// <summary>
-    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
+    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
     /// </summary>
-    /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
-    /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
+    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
+    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
-        string threadId,
+    /// <returns> A new <see cref="ThreadRun"/>. </returns>
+    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+        ReturnWhen returnWhen,
         string assistantId,
-        RunCreationOptions options = null,
+        ThreadCreationOptions threadOptions = null,
+        RunCreationOptions runOptions = null,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = true;
-
-        async Task<ClientResult> getResultAsync() =>
-            await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(getResultAsync);
-    }
-
-    /// <summary>
-    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    /// <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread that the run should evaluate. </param>
-    /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
-    /// <param name="options"> Additional options for the run. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
-        string threadId,
-        string assistantId,
-        RunCreationOptions options = null,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = true;
-
-        ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
+        runOptions ??= new();
+        runOptions.Stream = null;
+        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
+        return await CreateThreadAndRunAsync(returnWhen, protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -684,7 +686,8 @@ public partial class AssistantClient
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> CreateThreadAndRunAsync(
+    public virtual ThreadRunOperation CreateThreadAndRun(
+        ReturnWhen returnWhen,
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -693,80 +696,58 @@ public partial class AssistantClient
         runOptions ??= new();
         runOptions.Stream = null;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        ClientResult protocolResult = await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        return CreateThreadAndRun(returnWhen, protocolContent, cancellationToken.ToRequestOptions());
     }
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual ClientResult<ThreadRun> CreateThreadAndRun(
-        string assistantId,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null,
-        CancellationToken cancellationToken = default)
-    {
-        runOptions ??= new();
-        runOptions.Stream = null;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        ClientResult protocolResult = CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
+    ///// <summary>
+    ///// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
+    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    //public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    //    string assistantId,
+    //    ThreadCreationOptions threadOptions = null,
+    //    RunCreationOptions runOptions = null,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
-        string assistantId,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+    //    runOptions ??= new();
+    //    runOptions.Stream = true;
+    //    BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        runOptions ??= new();
-        runOptions.Stream = true;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
+    //    async Task<ClientResult> getResultAsync() =>
+    //        await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
+    //        .ConfigureAwait(false);
 
-        async Task<ClientResult> getResultAsync() =>
-            await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
+    //    return new AsyncStreamingUpdateCollection(getResultAsync);
+    //}
 
-        return new AsyncStreamingUpdateCollection(getResultAsync);
-    }
+    ///// <summary>
+    ///// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
+    ///// </summary>
+    ///// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
+    ///// <param name="threadOptions"> Options for the new thread that will be created. </param>
+    ///// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    //public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
+    //    string assistantId,
+    //    ThreadCreationOptions threadOptions = null,
+    //    RunCreationOptions runOptions = null,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
-    /// <summary>
-    /// Creates a new thread and immediately begins a streaming run against it using the specified <see cref="Assistant"/>.
-    /// </summary>
-    /// <param name="assistantId"> The ID of the assistant that the new run should use. </param>
-    /// <param name="threadOptions"> Options for the new thread that will be created. </param>
-    /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
-        string assistantId,
-        ThreadCreationOptions threadOptions = null,
-        RunCreationOptions runOptions = null,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+    //    runOptions ??= new();
+    //    runOptions.Stream = true;
+    //    BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        runOptions ??= new();
-        runOptions.Stream = true;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
+    //    ClientResult getResult() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
 
-        ClientResult getResult() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
-    }
+    //    return new StreamingUpdateCollection(getResult);
+    //}
 
     /// <summary>
     /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
@@ -852,298 +833,6 @@ public partial class AssistantClient
             cancellationToken.ToRequestOptions());
 
         return PageCollectionHelpers.Create(enumerator);
-    }
-
-    /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
-    /// <param name="runId"> The ID of the run to retrieve. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
-    /// <param name="runId"> The ID of the run to retrieve. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run.
-    /// </summary>
-    /// <param name="threadId"> The thread ID of the thread being run. </param>
-    /// <param name="runId"> The ID of the run that reached a <c>requires_action</c> status. </param>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> SubmitToolOutputsToRunAsync(
-        string threadId,
-        string runId,
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions())
-            .ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run.
-    /// </summary>
-    /// <param name="threadId"> The thread ID of the thread being run. </param>
-    /// <param name="runId"> The ID of the run that reached a <c>requires_action</c> status. </param>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
-    public virtual ClientResult<ThreadRun> SubmitToolOutputsToRun(
-        string threadId,
-        string runId,
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
-    /// </summary>
-    /// <param name="threadId"> The thread ID of the thread being run. </param>
-    /// <param name="runId"> The ID of the run that reached a <c>requires_action</c> status. </param>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
-        string threadId,
-        string runId,
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
-            .ToBinaryContent();
-
-        async Task<ClientResult> getResultAsync() =>
-            await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(getResultAsync);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
-    /// </summary>
-    /// <param name="threadId"> The thread ID of the thread being run. </param>
-    /// <param name="runId"> The ID of the run that reached a <c>requires_action</c> status. </param>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
-        string threadId,
-        string runId,
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
-            .ToBinaryContent();
-
-        ClientResult getResult() => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
-    }
-
-    /// <summary>
-    /// Cancels an in-progress <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to cancel. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> CancelRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = await CancelRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Cancels an in-progress <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to cancel. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
-    public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = CancelRun(threadId, runId, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns></returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
-        string threadId,
-        string runId,
-        RunStepCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
-    }
-
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
-    }
-
-    /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run to list run steps from. </param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns></returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
-        string threadId,
-        string runId,
-        RunStepCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
-    }
-
-    public virtual PageCollection<RunStep> GetRunSteps(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
-    }
-
-
-    /// <summary>
-    /// Gets a single run step from a run.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run. </param>
-    /// <param name="stepId"> The ID of the run step. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
-    public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
-    {
-        ClientResult protocolResult = await GetRunStepAsync(threadId, runId, stepId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
-    }
-
-    /// <summary>
-    /// Gets a single run step from a run.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread associated with the run. </param>
-    /// <param name="runId"> The ID of the run. </param>
-    /// <param name="stepId"> The ID of the run step. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
-    public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
-    {
-        ClientResult protocolResult = GetRunStep(threadId, runId, stepId, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 
     private static BinaryContent CreateThreadAndRunProtocolContent(
