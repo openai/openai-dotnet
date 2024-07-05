@@ -498,8 +498,10 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
     }
 
     [Test]
+    [NonParallelizable]
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 
