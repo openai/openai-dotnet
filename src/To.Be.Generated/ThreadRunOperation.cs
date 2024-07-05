@@ -16,32 +16,47 @@ public partial class ThreadRunOperation : OperationResult
 {
     private readonly string _threadId;
     private readonly string _runId;
-    
-    private ThreadRun? _threadRun;
+
+    // TODO: dedupe protocol and convenience
+    private readonly ThreadRunPoller? _poller;
 
     internal ThreadRunOperation(
-        ClientPipeline pipeline,
-        Uri endpoint,
-        string threadId,
-        ThreadRun threadRun,
-        PipelineResponse response)
-        : this(pipeline, endpoint, threadId, threadRun.Id,  response)
+    ClientPipeline pipeline,
+    Uri endpoint,
+    string threadId,
+    string runId,
+    PipelineResponse response,
+    ThreadRunPoller poller) : 
+        this(pipeline, endpoint, threadId, runId, response, (OperationResultPoller)poller)
     {
-        Argument.AssertNotNull(threadRun, nameof(threadRun));
-
-        _threadRun = threadRun;
+        _poller = poller;
     }
 
+    // TODO: Do the IDs need to be public?
     public string ThreadId => _threadId;
 
     public string RunId => _runId;
 
-    // TODO: validate?
-    public ThreadRun ThreadRun => _threadRun!;
+    // TODO: validate poller is non-null
+    public ThreadRun Value => _poller!.Value;
+
+    public RunStatus Status => _poller!.Value.Value.Status;
+
+    public async Task<ClientResult<ThreadRun>> WaitForCompletionAsync()
+    {
+        await _poller!.WaitForCompletionAsync().ConfigureAwait(false);
+        return _poller.Value;
+    }
+
+    public ClientResult<ThreadRun> WaitForCompletion()
+    {
+        _poller!.WaitForCompletion();
+        return _poller.Value;
+    }
 
     // TODO: implement polling and status checking progress
     // TODO: from this, set HasCompleted at appropriate time
-    
+
     // Question: what value is being computed here?
     // Hypothesis: it's just the thread run value itself - which is progressively updated
     // over the course of the thread run.
@@ -198,7 +213,7 @@ public partial class ThreadRunOperation : OperationResult
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ClientResult<T> CreateResultFromProtocol<T>(
-        ClientResult protocolResult, 
+        ClientResult protocolResult,
         Func<PipelineResponse, T> responseDeserializer)
     {
         PipelineResponse pipelineResponse = protocolResult.GetRawResponse();

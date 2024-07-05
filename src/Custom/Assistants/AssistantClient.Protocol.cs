@@ -3,7 +3,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -268,11 +267,15 @@ public partial class AssistantClient
         string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+
         // Create the operation subclient
         return new ThreadRunOperation(
             _pipeline, _endpoint,
             threadId, runId,
-            result.GetRawResponse());
+            result.GetRawResponse(),
+            poller);
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
@@ -305,11 +308,16 @@ public partial class AssistantClient
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
+        // Create the poller
+        ThreadRunResultPoller poller = new ThreadRunResultPoller(_pipeline, _endpoint, result, threadId, runId, options);
+
+        // TODO: clean up poller and operation subclients per redundancy
+
         // Create the operation subclient
         return new ThreadRunOperation(
             _pipeline, _endpoint,
-            threadId, runId,
-            result.GetRawResponse());
+            threadId, runId, result.GetRawResponse(),
+            poller);
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)

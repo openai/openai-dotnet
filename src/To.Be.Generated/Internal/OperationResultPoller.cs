@@ -30,7 +30,7 @@ internal abstract class OperationResultPoller
     public abstract bool HasStopped(ClientResult result);
 
     // TODO: how does RequestOptions/CancellationToken work?
-    public async Task PollAsync()
+    public async Task WaitForCompletionAsync()
     {
         bool hasStopped = HasStopped(Current);
 
@@ -44,7 +44,7 @@ internal abstract class OperationResultPoller
         }
     }
 
-    public void Poll()
+    public void WaitForCompletion()
     {
         bool hasStopped = HasStopped(Current);
 

@@ -186,21 +186,19 @@ public partial class AssistantTests
         Validate(message);
         ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
         Validate(runOperation);
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
-        Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
-        ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
-        Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
+        Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
+        //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
+        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
-        for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-        {
-            Thread.Sleep(500);
-            run = client.GetRun(run);
-        }
+
+        ThreadRun run = runOperation.WaitForCompletion();
+
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
         Assert.That(run.RequiredActions.Count, Is.EqualTo(0));

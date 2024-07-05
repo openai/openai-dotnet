@@ -1,5 +1,4 @@
 ﻿using System.ClientModel;
-using System.Threading.Tasks;
 
 #nullable enable
 
@@ -14,5 +13,7 @@ internal abstract class OperationPoller<T> : OperationResultPoller
     {
     }
 
-    public abstract T GetValueFromResult(ClientResult result);
+    public ClientResult<T> Value => GetValueFromResult(Current);
+
+    public abstract ClientResult<T> GetValueFromResult(ClientResult result);
 }

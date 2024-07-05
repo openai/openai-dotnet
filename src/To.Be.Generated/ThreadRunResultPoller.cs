@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-internal class ThreadRunOperationPoller : OperationResultPoller
+internal class ThreadRunResultPoller : OperationResultPoller
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -18,7 +18,7 @@ internal class ThreadRunOperationPoller : OperationResultPoller
 
     private readonly RequestOptions _options;
 
-    internal ThreadRunOperationPoller(
+    internal ThreadRunResultPoller(
         ClientPipeline pipeline,
         Uri endpoint,
         ClientResult result,
