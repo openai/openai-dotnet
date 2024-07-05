@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.Instrumentation.TestMeterListener;
 using static OpenAI.Tests.Instrumentation.TestActivityListener;
+using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Instrumentation;
 
@@ -31,8 +32,6 @@ public class ChatInstrumentationTests
     private const int PromptTokens = 2;
     private const int CompletionTokens = 42;
 
-    private readonly InstrumentationFactory _instrumentationFactory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
-
     [Test]
     public void AllTelemetryOff()
     {
@@ -42,12 +41,26 @@ public class ChatInstrumentationTests
     }
 
     [Test]
+    public void SwitchOffAllTelemetryOn()
+    {
+        using var activityListener = new TestActivityListener("OpenAI.ChatClient");
+        using var meterListener = new TestMeterListener("OpenAI.ChatClient");
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
+        Assert.IsNull(factory.StartChatScope(new ChatCompletionOptions()));
+        Assert.IsNull(Activity.Current);
+    }
+
+    [Test]
     public void MetricsOnTracingOff()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
+
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
 
         var elapsedMax = Stopwatch.StartNew();
-        using var scope = _instrumentationFactory.StartChatScope(new ChatCompletionOptions());
+        using var scope = factory.StartChatScope(new ChatCompletionOptions());
         var elapsedMin = Stopwatch.StartNew();
         
         Assert.Null(Activity.Current);
@@ -69,9 +82,12 @@ public class ChatInstrumentationTests
     [Test]
     public void MetricsOnTracingOffException()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
 
-        using (var scope = _instrumentationFactory.StartChatScope(new ChatCompletionOptions()))
+        using (var scope = factory.StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordException(new TaskCanceledException());
         }
@@ -83,12 +99,15 @@ public class ChatInstrumentationTests
     [Test]
     public void TracingOnMetricsOff()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
         var chatCompletion = CreateChatCompletion();
 
         Activity activity = null;
-        using (var scope = _instrumentationFactory.StartChatScope(new ChatCompletionOptions()))
+        using (var scope = factory.StartChatScope(new ChatCompletionOptions()))
         {
             activity = Activity.Current;
             Assert.IsNull(activity.GetTagItem("gen_ai.request.temperature"));
@@ -109,6 +128,8 @@ public class ChatInstrumentationTests
     [Test]
     public void ChatTracingAllAttributes()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
         var options = new ChatCompletionOptions()
         {
@@ -120,7 +141,6 @@ public class ChatInstrumentationTests
 
         var chatCompletion = CreateChatCompletion();
 
-        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
         using (var scope = factory.StartChatScope(options))
         {
             Assert.AreEqual(options.Temperature.Value, (float)Activity.Current.GetTagItem("gen_ai.request.temperature"), 0.01);
@@ -136,10 +156,13 @@ public class ChatInstrumentationTests
     [Test]
     public void ChatTracingException()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+
+        var instrumentationFactory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
         var error = new SocketException(42, "test error");
-        using (var scope = _instrumentationFactory.StartChatScope(new ChatCompletionOptions()))
+        using (var scope = instrumentationFactory.StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordException(error);
         }
@@ -152,11 +175,13 @@ public class ChatInstrumentationTests
     [Test]
     public async Task ChatTracingAndMetricsMultiple()
     {
+        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+        var factory = new InstrumentationFactory(RequestModel, new Uri(Endpoint));
+
         using var activityListener = new TestActivityListener("OpenAI.ChatClient");
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
 
         var options = new ChatCompletionOptions();
-        SetMessages(options, new UserChatMessage("hello"));
 
         var tasks = new Task[5];
         int numberOfSuccessfulResponses = 3;
@@ -167,7 +192,7 @@ public class ChatInstrumentationTests
             // don't let Activity.Current escape the scope
             tasks[i] = Task.Run(async () =>
             {
-                using var scope = _instrumentationFactory.StartChatScope(options);
+                using var scope = factory.StartChatScope(options);
                 await Task.Delay(10);
                 if (t < numberOfSuccessfulResponses)
                 {
@@ -287,5 +312,4 @@ public class ChatInstrumentationTests
 
         return ModelReaderWriter.Read<ChatCompletion>(completion);
     }
-
 }

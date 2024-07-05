@@ -760,30 +760,44 @@ and [metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instru
 
 OpenAI .NET library follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
 
-You can enable the instrumentation by configuring OpenTelemetry to record telemetry from OpenAI sources and meters:
+### How to enable
 
-```csharp
-builder.Services.AddOpenTelemetry()
-    .WithTracing(b =>
-    {
-        b.AddSource("OpenAI.*")
-          ...
-         .AddOtlpExporter();
-    })
-    .WithMetrics(b =>
-    {
-        b.AddMeter("OpenAI.*")
-         ...
-         .AddOtlpExporter();
-    });
-```
+The instrumentation is **experimental** - names of activity sources and meters, volume and semantics of the telemetry items may change.
+
+To enable the instrumentation:
+
+1. Set instrumentation feature-flag using one of the following options:
+
+   - set the `AZURE_EXPERIMENTAL_ENABLE_ACTIVITY_SOURCE` environment variable to `"true"`
+   - set the `Azure.Experimental.EnableActivitySource` context switch to true in your application code when application
+     is starting and before initializing any OpenAI clients. For example:
+
+     ```csharp
+     AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
+     ```
+   
+2. Configuring OpenTelemetry to record telemetry from OpenAI sources and meters:
+
+   ```csharp
+   builder.Services.AddOpenTelemetry()
+       .WithTracing(b =>
+       {
+           b.AddSource("OpenAI.*")
+             ...
+            .AddOtlpExporter();
+       })
+       .WithMetrics(b =>
+       {
+           b.AddMeter("OpenAI.*")
+            ...
+            .AddOtlpExporter();
+       });
+   ```
 
 Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
 
 Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client  
 calls made by your application including those done by the OpenAI SDK.
-
-
 
 ### Available sources and meters
 
