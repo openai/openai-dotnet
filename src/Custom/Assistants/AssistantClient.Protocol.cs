@@ -2,6 +2,8 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -255,11 +257,22 @@ public partial class AssistantClient
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
     public virtual ThreadRunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
-        BinaryContent content, RequestOptions options = null)
+        BinaryContent content,
+        RequestOptions options = null)
     {
-        ClientResult result =  _runSubClient.CreateThreadAndRun(content, options = null);
-        ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
-        return new ThreadRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+        ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
+
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId,
+            result.GetRawResponse());
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
@@ -278,19 +291,27 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
     public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
-        string threadId, 
-        BinaryContent content, 
-        RequestOptions options = null) 
+        string threadId,
+        BinaryContent content,
+        RequestOptions options = null)
     {
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
-        ThreadRun threadRun = CreateResultFromProtocol(result, ThreadRun.FromResponse);
-        return new ThreadRunOperation(threadRun.ThreadId, threadRun.Id, _runSubClient, result.GetRawResponse());
+
+        // Protocol level: get values needed to create subclient from response
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        // Create the operation subclient
+        return new ThreadRunOperation(
+            _pipeline, _endpoint,
+            threadId, runId,
+            result.GetRawResponse());
     }
-	
+
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));

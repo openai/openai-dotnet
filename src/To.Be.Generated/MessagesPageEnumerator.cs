@@ -38,6 +38,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         _order = order;
         _after = after;
         _before = before;
+
         _options = options;
     }
 

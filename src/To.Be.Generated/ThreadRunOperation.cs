@@ -19,12 +19,13 @@ public partial class ThreadRunOperation : OperationResult
     
     private ThreadRun? _threadRun;
 
-    internal ThreadRunOperation(string threadId,
-        ThreadRun threadRun,
+    internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
+        string threadId,
+        ThreadRun threadRun,
         PipelineResponse response)
-        : this(threadId, threadRun.Id, pipeline, endpoint, response)
+        : this(pipeline, endpoint, threadId, threadRun.Id,  response)
     {
         Argument.AssertNotNull(threadRun, nameof(threadRun));
 
@@ -51,27 +52,28 @@ public partial class ThreadRunOperation : OperationResult
     // Note that since ThreadRun is a convenience model, we may need to illustrate
     // protocol and convenience versions of this, and show that evolution.
 
-    /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
-    {
-        ClientResult protocolResult = await GetRunAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
+    // TODO: Move these to convenience poller-subclient
+    ///// <summary>
+    ///// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
+    ///// </summary>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    ///// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
+    //public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
+    //{
+    //    ClientResult protocolResult = await GetRunAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+    //    return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+    //}
 
-    /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
-    {
-        ClientResult protocolResult = GetRun(cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
+    ///// <summary>
+    ///// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
+    ///// </summary>
+    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    ///// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
+    //public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
+    //{
+    //    ClientResult protocolResult = GetRun(cancellationToken.ToRequestOptions());
+    //    return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+    //}
 
     /// <summary>
     /// Cancels an in-progress <see cref="ThreadRun"/>.
@@ -195,9 +197,11 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ClientResult<T> CreateResultFromProtocol<T>(ClientResult protocolResult, Func<PipelineResponse, T> responseDeserializer)
+    private static ClientResult<T> CreateResultFromProtocol<T>(
+        ClientResult protocolResult, 
+        Func<PipelineResponse, T> responseDeserializer)
     {
-        PipelineResponse pipelineResponse = protocolResult?.GetRawResponse();
+        PipelineResponse pipelineResponse = protocolResult.GetRawResponse();
         T deserializedResultValue = responseDeserializer.Invoke(pipelineResponse);
         return ClientResult.FromValue(deserializedResultValue, pipelineResponse);
     }

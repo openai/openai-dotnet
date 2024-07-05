@@ -31,31 +31,6 @@ public partial class ThreadRunOperation : OperationResult
         _endpoint = endpoint;
     }
 
-
-    /// <summary>
-    /// [Protocol Method] Retrieves a run.
-    /// </summary>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunAsync(RequestOptions? options)
-    {
-        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-    }
-
-    /// <summary>
-    /// [Protocol Method] Retrieves a run.
-    /// </summary>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetRun(RequestOptions? options)
-    {
-        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    }
-
     /// <summary>
     /// [Protocol Method] Modifies a run.
     /// </summary>
@@ -254,24 +229,6 @@ public partial class ThreadRunOperation : OperationResult
 
         using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    }
-
-    internal PipelineMessage CreateGetRunRequest(string threadId, string runId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/threads/", false);
-        uri.AppendPath(threadId, true);
-        uri.AppendPath("/runs/", false);
-        uri.AppendPath(runId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
     }
 
     internal PipelineMessage CreateModifyRunRequest(string threadId, string runId, BinaryContent content, RequestOptions? options)
