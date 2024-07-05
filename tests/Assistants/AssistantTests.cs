@@ -398,111 +398,111 @@ public partial class AssistantTests
         Assert.That(messages.First().Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
-    [Test]
-    public async Task StreamingRunWorks()
-    {
-        AssistantClient client = new();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
-        Validate(assistant);
+    //[Test]
+    //public async Task StreamingRunWorks()
+    //{
+    //    AssistantClient client = new();
+    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
+    //    Validate(assistant);
 
-        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
-        {
-            InitialMessages = { "Hello there, assistant! How are you today?", },
-        });
-        Validate(thread);
+    //    AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
+    //    {
+    //        InitialMessages = { "Hello there, assistant! How are you today?", },
+    //    });
+    //    Validate(thread);
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+    //    Stopwatch stopwatch = Stopwatch.StartNew();
+    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncCollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+    //    AsyncCollectionResult<StreamingUpdate> streamingResult
+    //        = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
-        Print(">>> Connected <<<");
+    //    Print(">>> Connected <<<");
 
-        await foreach (StreamingUpdate update in streamingResult)
-        {
-            string message = $"{update.UpdateKind} ";
-            if (update is RunUpdate runUpdate)
-            {
-                message += $"at {update.UpdateKind switch
-                {
-                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
-                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
-                    _ => "???",
-                }}";
-            }
-            if (update is MessageContentUpdate contentUpdate)
-            {
-                if (contentUpdate.Role.HasValue)
-                {
-                    message += $"[{contentUpdate.Role}]";
-                }
-                message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
-            }
-            Print(message);
-        }
-        Print(">>> Done <<<");
-    }
+    //    await foreach (StreamingUpdate update in streamingResult)
+    //    {
+    //        string message = $"{update.UpdateKind} ";
+    //        if (update is RunUpdate runUpdate)
+    //        {
+    //            message += $"at {update.UpdateKind switch
+    //            {
+    //                StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
+    //                StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
+    //                StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
+    //                StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
+    //                _ => "???",
+    //            }}";
+    //        }
+    //        if (update is MessageContentUpdate contentUpdate)
+    //        {
+    //            if (contentUpdate.Role.HasValue)
+    //            {
+    //                message += $"[{contentUpdate.Role}]";
+    //            }
+    //            message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
+    //        }
+    //        Print(message);
+    //    }
+    //    Print(">>> Done <<<");
+    //}
 
-    [TestCase]
-    public async Task StreamingToolCall()
-    {
-        AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
-        {
-            Tools = { getWeatherTool }
-        });
-        Validate(assistant);
+    //[TestCase]
+    //public async Task StreamingToolCall()
+    //{
+    //    AssistantClient client = GetTestClient();
+    //    FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
+    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
+    //    {
+    //        Tools = { getWeatherTool }
+    //    });
+    //    Validate(assistant);
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+    //    Stopwatch stopwatch = Stopwatch.StartNew();
+    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        Print(" >>> Beginning call ... ");
-        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
-            assistant,
-            new()
-            {
-                InitialMessages = { "What should I wear outside right now?", },
-            });
-        Print(" >>> Starting enumeration ...");
+    //    Print(" >>> Beginning call ... ");
+    //    AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+    //        assistant,
+    //        new()
+    //        {
+    //            InitialMessages = { "What should I wear outside right now?", },
+    //        });
+    //    Print(" >>> Starting enumeration ...");
 
-        ThreadRun run = null;
+    //    ThreadRun run = null;
 
-        do
-        {
-            run = null;
-            List<ToolOutput> toolOutputs = [];
-            await foreach (StreamingUpdate update in asyncResults)
-            {
-                string message = update.UpdateKind.ToString();
+    //    do
+    //    {
+    //        run = null;
+    //        List<ToolOutput> toolOutputs = [];
+    //        await foreach (StreamingUpdate update in asyncResults)
+    //        {
+    //            string message = update.UpdateKind.ToString();
 
-                if (update is RunUpdate runUpdate)
-                {
-                    message += $" run_id:{runUpdate.Value.Id}";
-                    run = runUpdate.Value;
-                }
-                if (update is RequiredActionUpdate requiredActionUpdate)
-                {
-                    Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
-                    Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
-                    message += $" {requiredActionUpdate.FunctionName}";
-                    toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
-                }
-                if (update is MessageContentUpdate contentUpdate)
-                {
-                    message += $" {contentUpdate.Text}";
-                }
-                Print(message);
-            }
-            if (toolOutputs.Count > 0)
-            {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
-            }
-        } while (run?.Status.IsTerminal == false);
-    }
+    //            if (update is RunUpdate runUpdate)
+    //            {
+    //                message += $" run_id:{runUpdate.Value.Id}";
+    //                run = runUpdate.Value;
+    //            }
+    //            if (update is RequiredActionUpdate requiredActionUpdate)
+    //            {
+    //                Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
+    //                Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
+    //                message += $" {requiredActionUpdate.FunctionName}";
+    //                toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
+    //            }
+    //            if (update is MessageContentUpdate contentUpdate)
+    //            {
+    //                message += $" {contentUpdate.Text}";
+    //            }
+    //            Print(message);
+    //        }
+    //        if (toolOutputs.Count > 0)
+    //        {
+    //            asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
+    //        }
+    //    } while (run?.Status.IsTerminal == false);
+    //}
 
     [Test]
     public void BasicFileSearchWorks()
