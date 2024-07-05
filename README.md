@@ -2,12 +2,13 @@
 
 [![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
 
-The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. 
+The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications.
 
 It is generated from our [OpenAPI specification](https://github.com/openai/openai-openapi) in collaboration with Microsoft.
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Install the NuGet package](#install-the-nuget-package)
@@ -26,6 +27,9 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
   - [Automatically retrying errors](#automatically-retrying-errors)
+- [Observability with OpenTelemetry](#observability-with-opentelemetry)
+  - [How to enable](#how-to-enable)
+  - [Available sources and meters](#available-sources-and-meters)
 
 ## Getting started
 
@@ -714,7 +718,7 @@ For example, to use the protocol method variant of the `ChatClient`'s `CompleteC
 ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 BinaryData input = BinaryData.FromBytes("""
-{  
+{
     "model": "gpt-4o",
     "messages": [
        {
@@ -755,7 +759,7 @@ By default, the client classes will automatically retry the following errors up 
 > Note:
 > OpenAI .NET SDK instrumentation is in development and is not complete. See [Available sources and meters](#available-sources-and-meters) section for the list of covered operations.
 
-OpenAI .NET library is instrumented with distributed tracing and metrics using .NET [tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing) 
+OpenAI .NET library is instrumented with distributed tracing and metrics using .NET [tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing)
 and [metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation) API and supports [OpenTelemetry](https://learn.microsoft.com/dotnet/core/diagnostics/observability-with-otel).
 
 OpenAI .NET library follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
@@ -775,7 +779,7 @@ To enable the instrumentation:
      ```csharp
      AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
      ```
-   
+
 2. Configuring OpenTelemetry to record telemetry from OpenAI sources and meters:
 
    ```csharp
@@ -794,10 +798,9 @@ To enable the instrumentation:
        });
    ```
 
-Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
-
-Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client  
+Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client
 calls made by your application including those done by the OpenAI SDK.
+Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
 
 ### Available sources and meters
 
