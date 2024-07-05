@@ -7,29 +7,49 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
+
 namespace OpenAI.Assistants;
 
+// Convenience version
 public partial class ThreadRunOperation : OperationResult
 {
     private readonly string _threadId;
     private readonly string _runId;
-    private readonly InternalAssistantRunClient _runSubClient;
+    
+    private ThreadRun? _threadRun;
 
-    internal ThreadRunOperation(string threadId, string runId,
-        InternalAssistantRunClient runSubClient,
+    internal ThreadRunOperation(string threadId,
+        ThreadRun threadRun,
+        ClientPipeline pipeline,
+        Uri endpoint,
         PipelineResponse response)
-        : base(ThreadRunOperationToken.FromOptions(threadId, runId), response)
+        : this(threadId, threadRun.Id, pipeline, endpoint, response)
     {
-        _threadId = threadId;
-        _runId = runId;
-        _runSubClient = runSubClient;
+        Argument.AssertNotNull(threadRun, nameof(threadRun));
+
+        _threadRun = threadRun;
     }
 
     public string ThreadId => _threadId;
+
     public string RunId => _runId;
+
+    // TODO: validate?
+    public ThreadRun ThreadRun => _threadRun!;
 
     // TODO: implement polling and status checking progress
     // TODO: from this, set HasCompleted at appropriate time
+    
+    // Question: what value is being computed here?
+    // Hypothesis: it's just the thread run value itself - which is progressively updated
+    // over the course of the thread run.
+    // Question: is this true for streaming too?  What's the usage pattern here?
+    // For now, let's put a ThreadRun object on this that we'll update while polling, 
+    // and loop back to see if that abstraction works.
+
+    // Note that since ThreadRun is a convenience model, we may need to illustrate
+    // protocol and convenience versions of this, and show that evolution.
 
     /// <summary>
     /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.

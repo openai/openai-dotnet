@@ -590,7 +590,10 @@ public partial class AssistantClient
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
     public virtual ThreadRunOperation CreateRun(
         ReturnWhen returnWhen,
-        string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
+        string threadId, 
+        string assistantId, 
+        RunCreationOptions options = null, 
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));

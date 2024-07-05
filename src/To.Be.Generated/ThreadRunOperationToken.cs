@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
+#nullable enable
+
 namespace OpenAI.Assistants;
 
 internal class ThreadRunOperationToken : ContinuationToken

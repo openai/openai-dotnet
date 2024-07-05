@@ -184,8 +184,8 @@ public partial class AssistantTests
         Assert.That(runsPage.Values.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
-        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
-        Validate(run);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
+        Validate(runOperation);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
