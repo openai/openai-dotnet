@@ -37,19 +37,43 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     // TODO: add "wait for status change" overloads if needed.
+    // TODO: how does RequestOptions/CancellationToken work?
 
     // TODO: take parameters?
     public async Task<ClientResult> WaitForCompletionResultAsync()
     {
-        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+        PipelineResponse response = GetRawResponse();
+        bool hasStopped = _poller.HasStopped(response);
+
+        while (!hasStopped)
+        {
+            // TODO: implement an interesting wait routine
+            await Task.Delay(OperationResultPoller.DefaultWaitMilliseconds);
+
+            ClientResult result = await _poller.UpdateStatusAsync().ConfigureAwait(false);
+            response = result.GetRawResponse();
+            SetRawResponse(response);
+
+            hasStopped = _poller.HasStopped(response);
+        }
+
         HasCompleted = true;
-        return _poller.Current;
+
+        return this;
     }
 
     public ClientResult WaitForCompletionResult()
     {
+        // TODO: You are here
+
         _poller.WaitForCompletion();
+
+        // TODO: These still need to update the response whenever a new response
+        // is received -- but they have to inherit ClientResult to do that.
+        // Maybe we don't factor out the poller after all?
+
         HasCompleted = true;
+
         return _poller.Current;
     }
 

@@ -22,7 +22,6 @@ public partial class ThreadRunOperation : OperationResult
 
     public string RunId => _runId;
 
-    // TODO: validate poller is non-null
     public ThreadRun Value => _poller.Value;
 
     public RunStatus Status => _poller.Value.Status;
@@ -30,7 +29,9 @@ public partial class ThreadRunOperation : OperationResult
     public async Task<ThreadRun> WaitForCompletionAsync()
     {
         await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+
         HasCompleted = true;
+
         return _poller.Value;
     }
 
@@ -41,18 +42,18 @@ public partial class ThreadRunOperation : OperationResult
         return _poller.Value;
     }
 
-    // TODO: implement polling and status checking progress
-    // TODO: from this, set HasCompleted at appropriate time
-
     // Question: what value is being computed here?
     // Hypothesis: it's just the thread run value itself - which is progressively updated
     // over the course of the thread run.
     // Question: is this true for streaming too?  What's the usage pattern here?
     // For now, let's put a ThreadRun object on this that we'll update while polling, 
-    // and loop back to see if that abstraction works.
+    // and loop back to see if that abstraction works across both polling and streaming
+    // LROs.
 
     // Note that since ThreadRun is a convenience model, we may need to illustrate
     // protocol and convenience versions of this, and show that evolution.
+
+    // TODO: Add state-machine specific WaitForStatusChange overloads.
 
     /// <summary>
     /// Cancels an in-progress <see cref="ThreadRun"/>.

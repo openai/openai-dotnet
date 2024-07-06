@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
+// This gets generated client-specific
+// There is an evolution story around this from protocol to convenience
+// When protocol-only, this inherits from OperationResultPoller
+// When conveniences are added, this inherits from OperationPoller<ThreadRun>.
 internal class ThreadRunPoller : OperationPoller<ThreadRun>
 {
     private readonly ClientPipeline _pipeline;
