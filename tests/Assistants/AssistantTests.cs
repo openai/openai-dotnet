@@ -1029,6 +1029,11 @@ public partial class AssistantTests
         {
             Assert.That(run?.Id, Is.Not.Null);
         }
+        else if (target is ThreadRunOperation runOperation)
+        {
+            Assert.That(runOperation?.ThreadId, Is.Not.Null);
+            Assert.That(runOperation?.RunId, Is.Not.Null);
+        }
         else if (target is OpenAIFileInfo file)
         {
             Assert.That(file?.Id, Is.Not.Null);

@@ -23,19 +23,21 @@ public partial class ThreadRunOperation : OperationResult
     public string RunId => _runId;
 
     // TODO: validate poller is non-null
-    public ThreadRun Value => _poller!.Value;
+    public ThreadRun Value => _poller.Value;
 
-    public RunStatus Status => _poller!.Value.Value.Status;
+    public RunStatus Status => _poller.Value.Status;
 
-    public async Task<ClientResult<ThreadRun>> WaitForCompletionAsync()
+    public async Task<ThreadRun> WaitForCompletionAsync()
     {
-        await _poller!.WaitForCompletionAsync().ConfigureAwait(false);
+        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+        HasCompleted = true;
         return _poller.Value;
     }
 
-    public ClientResult<ThreadRun> WaitForCompletion()
+    public ThreadRun WaitForCompletion()
     {
-        _poller!.WaitForCompletion();
+        _poller.WaitForCompletion();
+        HasCompleted = true;
         return _poller.Value;
     }
 
@@ -51,29 +53,6 @@ public partial class ThreadRunOperation : OperationResult
 
     // Note that since ThreadRun is a convenience model, we may need to illustrate
     // protocol and convenience versions of this, and show that evolution.
-
-    // TODO: Move these to convenience poller-subclient
-    ///// <summary>
-    ///// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    ///// </summary>
-    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    ///// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    //public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
-    //{
-    //    ClientResult protocolResult = await GetRunAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-    //    return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    //}
-
-    ///// <summary>
-    ///// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    ///// </summary>
-    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    ///// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    //public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
-    //{
-    //    ClientResult protocolResult = GetRun(cancellationToken.ToRequestOptions());
-    //    return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    //}
 
     /// <summary>
     /// Cancels an in-progress <see cref="ThreadRun"/>.

@@ -67,7 +67,7 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        PageResultEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -97,7 +97,7 @@ public partial class AssistantClient
     /// <returns> The response returned from the service. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        PageResultEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 

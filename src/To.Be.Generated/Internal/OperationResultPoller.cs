@@ -40,6 +40,8 @@ internal abstract class OperationResultPoller
             await Task.Delay(DefaultWaitMilliseconds);
 
             Current = await UpdateStatusAsync().ConfigureAwait(false);
+            Update();
+
             hasStopped = HasStopped(Current);
         }
     }
@@ -54,7 +56,11 @@ internal abstract class OperationResultPoller
             Thread.Sleep(DefaultWaitMilliseconds);
 
             Current = UpdateStatus();
+            Update();
+
             hasStopped = HasStopped(Current);
         }
     }
+
+    protected virtual void Update() { }
 }

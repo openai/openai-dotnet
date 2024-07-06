@@ -36,14 +36,13 @@ internal class ThreadRunPoller : OperationPoller<ThreadRun>
         _options = options;
     }
 
-    public override ClientResult<ThreadRun> GetValueFromResult(ClientResult result)
+    public override ThreadRun GetValueFromResult(ClientResult result)
     {
-        // TODO: Note this would be generated instead, I think?
         PipelineResponse response = result.GetRawResponse();
-        return ClientResult.FromValue(ThreadRun.FromResponse(response), response);
+        return ThreadRun.FromResponse(response);
     }
 
-    // Poller subclient methods
+    // Poller subclient method implementations
     public override async Task<ClientResult> UpdateStatusAsync()
         => await GetRunAsync(_options).ConfigureAwait(false);
 

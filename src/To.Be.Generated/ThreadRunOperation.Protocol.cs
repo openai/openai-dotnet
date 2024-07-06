@@ -42,12 +42,14 @@ public partial class ThreadRunOperation : OperationResult
     public async Task<ClientResult> WaitForCompletionResultAsync()
     {
         await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+        HasCompleted = true;
         return _poller.Current;
     }
 
     public ClientResult WaitForCompletionResult()
     {
         _poller.WaitForCompletion();
+        HasCompleted = true;
         return _poller.Current;
     }
 

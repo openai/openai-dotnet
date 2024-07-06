@@ -9,11 +9,15 @@ namespace OpenAI;
 // Do we need more than that?
 internal abstract class OperationPoller<T> : OperationResultPoller
 {
+    private T? _value;
+
     protected OperationPoller(ClientResult current) : base(current)
     {
     }
 
-    public ClientResult<T> Value => GetValueFromResult(Current);
+    public T Value => _value ??= GetValueFromResult(Current);
 
-    public abstract ClientResult<T> GetValueFromResult(ClientResult result);
+    public abstract T GetValueFromResult(ClientResult result);
+
+    protected override void Update() => _value = GetValueFromResult(Current);
 }
