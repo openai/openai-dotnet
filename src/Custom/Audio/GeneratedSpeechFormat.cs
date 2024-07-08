@@ -3,7 +3,7 @@ namespace OpenAI.Audio;
 /// <summary>
 /// Represents an audio data format available as either input or output into an audio operation.
 /// </summary>
-[CodeGenModel("SpeechGenerationOptionsResponseFormat")]
+[CodeGenModel("CreateSpeechRequestResponseFormat")]
 public enum GeneratedSpeechFormat
 {
     /// <summary> MP3. /// </summary>

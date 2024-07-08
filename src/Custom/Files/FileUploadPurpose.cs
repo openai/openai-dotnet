@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Files;
 
-[CodeGenModel("InternalFileUploadOptionsPurpose")]
+[CodeGenModel("CreateFileRequestPurpose")]
 public readonly partial struct FileUploadPurpose
 {
 }

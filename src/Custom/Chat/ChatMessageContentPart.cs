@@ -23,6 +23,12 @@ public partial class ChatMessageContentPart
         _kind = ChatMessageContentPartKind.Text;
     }
 
+    // CUSTOM: Made internal.
+    internal ChatMessageContentPart()
+    {
+    }
+
+
     internal ChatMessageContentPart(Uri imageUri, ImageChatMessageContentPartDetail? imageDetail = null)
     {
         Argument.AssertNotNull(imageUri, nameof(imageUri));

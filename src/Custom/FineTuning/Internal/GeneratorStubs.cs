@@ -20,6 +20,15 @@ internal partial class InternalCreateFineTuningJobRequestIntegrationWandb { }
 [CodeGenModel("CreateFineTuningJobRequestModel")]
 internal readonly partial struct InternalCreateFineTuningJobRequestModel { }
 
+[CodeGenModel("FineTuneChatCompletionRequestAssistantMessage")]
+internal partial class InternalFineTuneChatCompletionRequestAssistantMessage { }
+
+[CodeGenModel("FinetuneChatRequestInput")]
+internal partial class InternalFinetuneChatRequestInput { }
+
+[CodeGenModel("FinetuneCompletionRequestInput")]
+internal partial class InternalFinetuneCompletionRequestInput { }
+
 [CodeGenModel("FineTuningIntegration")]
 internal partial class InternalFineTuningIntegration { }
 
@@ -47,7 +56,7 @@ internal partial class InternalFineTuningJobError { }
 [CodeGenModel("FineTuningJobEvent")]
 internal partial class InternalFineTuningJobEvent { }
 
-[CodeGenModel("InternalFineTuningJobEventLevel")]
+[CodeGenModel("FineTuningJobEventLevel")]
 internal readonly partial struct InternalFineTuningJobEventLevel { }
 
 [CodeGenModel("FineTuningJobEventObject")]
@@ -59,7 +68,7 @@ internal partial class InternalFineTuningJobHyperparameters { }
 [CodeGenModel("FineTuningJobObject")]
 internal readonly partial struct InternalFineTuningJobObject { }
 
-[CodeGenModel("InternalFineTuningJobStatus")]
+[CodeGenModel("FineTuningJobStatus")]
 internal readonly partial struct InternalFineTuningJobStatus { }
 
 [CodeGenModel("ListFineTuningJobCheckpointsResponse")]
@@ -79,12 +88,3 @@ internal partial class InternalListPaginatedFineTuningJobsResponse { }
 
 [CodeGenModel("ListPaginatedFineTuningJobsResponseObject")]
 internal readonly partial struct InternalListPaginatedFineTuningJobsResponseObject { }
-
-[CodeGenModel("FinetuneCompletionRequestInput")]
-internal partial class InternalFinetuneCompletionRequestInput { }
-
-[CodeGenModel("FinetuneChatRequestInput")]
-internal partial class InternalFinetuneChatRequestInput { }
-
-[CodeGenModel("FineTuneChatCompletionRequestAssistantMessage")]
-internal partial class InternalFineTuneChatCompletionRequestAssistantMessage { }

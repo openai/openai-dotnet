@@ -1,3 +1,4 @@
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
@@ -22,8 +23,8 @@ public partial class MessageCreationAttachment
     [CodeGenMember("Tools")]
     public IReadOnlyList<ToolDefinition> Tools { get; } = new ChangeTrackingList<ToolDefinition>();
 
-    private void SerializeTools(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(Tools);
+    private void SerializeTools(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(Tools, options);
 
     private static void DeserializeTools(JsonProperty property, ref IReadOnlyList<ToolDefinition> tools)
     {

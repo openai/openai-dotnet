@@ -11,7 +11,7 @@ namespace OpenAI.Chat
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
-        internal ChatResponseFormat(InternalChatResponseFormatType? type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatResponseFormat(InternalCreateChatCompletionRequestResponseFormatType? type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Type = type;
             _serializedAdditionalRawData = serializedAdditionalRawData;

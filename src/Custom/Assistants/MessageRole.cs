@@ -1,6 +1,6 @@
 namespace OpenAI.Assistants;
 
-[CodeGenModel("MessageCreationOptionsRole")]
+[CodeGenModel("CreateMessageRequestRole")]
 public enum MessageRole
 {
     /// <summary>

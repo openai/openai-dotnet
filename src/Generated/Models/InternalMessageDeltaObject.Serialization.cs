@@ -24,7 +24,7 @@ namespace OpenAI.Assistants
             writer.WritePropertyName("id"u8);
             writer.WriteStringValue(Id);
             writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
+            writer.WriteStringValue(Object.ToString());
             writer.WritePropertyName("delta"u8);
             writer.WriteObjectValue(Delta, options);
             if (true && _serializedAdditionalRawData != null)
@@ -66,7 +66,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
-            string @object = default;
+            InternalMessageDeltaObjectObject @object = default;
             MessageDeltaObjectDelta delta = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -79,7 +79,7 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("object"u8))
                 {
-                    @object = property.Value.GetString();
+                    @object = new InternalMessageDeltaObjectObject(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("delta"u8))

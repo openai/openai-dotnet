@@ -24,7 +24,7 @@ namespace OpenAI.Assistants
             writer.WritePropertyName("file_id"u8);
             writer.WriteStringValue(FileId);
             writer.WritePropertyName("tools"u8);
-            SerializeTools(writer);
+            SerializeTools(writer, options);
             if (true && _serializedAdditionalRawData != null)
             {
                 foreach (var item in _serializedAdditionalRawData)

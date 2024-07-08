@@ -34,7 +34,7 @@ namespace OpenAI.Assistants
             if (true && Optional.IsCollectionDefined(NewVectorStores))
             {
                 writer.WritePropertyName("vector_stores"u8);
-                SerializeNewVectorStores(writer);
+                SerializeNewVectorStores(writer, options);
             }
             if (true && _serializedAdditionalRawData != null)
             {

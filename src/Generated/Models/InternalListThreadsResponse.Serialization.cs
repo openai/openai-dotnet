@@ -22,7 +22,7 @@ namespace OpenAI.Assistants
 
             writer.WriteStartObject();
             writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
+            writer.WriteStringValue(Object.ToString());
             writer.WritePropertyName("data"u8);
             writer.WriteStartArray();
             foreach (var item in Data)
@@ -74,7 +74,7 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @object = default;
+            InternalListThreadsResponseObject @object = default;
             IReadOnlyList<AssistantThread> data = default;
             string firstId = default;
             string lastId = default;
@@ -85,7 +85,7 @@ namespace OpenAI.Assistants
             {
                 if (property.NameEquals("object"u8))
                 {
-                    @object = property.Value.GetString();
+                    @object = new InternalListThreadsResponseObject(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("data"u8))
