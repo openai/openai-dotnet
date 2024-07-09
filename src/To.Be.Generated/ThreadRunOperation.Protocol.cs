@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -37,43 +38,19 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     // TODO: add "wait for status change" overloads if needed.
-    // TODO: how does RequestOptions/CancellationToken work?
 
     // TODO: take parameters?
     public async Task<ClientResult> WaitForCompletionResultAsync()
     {
-        PipelineResponse response = GetRawResponse();
-        bool hasStopped = _poller.HasStopped(response);
-
-        while (!hasStopped)
-        {
-            // TODO: implement an interesting wait routine
-            await Task.Delay(OperationResultPoller.DefaultWaitMilliseconds);
-
-            ClientResult result = await _poller.UpdateStatusAsync().ConfigureAwait(false);
-            response = result.GetRawResponse();
-            SetRawResponse(response);
-
-            hasStopped = _poller.HasStopped(response);
-        }
-
+        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
         HasCompleted = true;
-
-        return this;
+        return _poller.Current;
     }
 
     public ClientResult WaitForCompletionResult()
     {
-        // TODO: You are here
-
         _poller.WaitForCompletion();
-
-        // TODO: These still need to update the response whenever a new response
-        // is received -- but they have to inherit ClientResult to do that.
-        // Maybe we don't factor out the poller after all?
-
         HasCompleted = true;
-
         return _poller.Current;
     }
 
@@ -187,79 +164,16 @@ public partial class ThreadRunOperation : OperationResult
         }
     }
 
-    /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunStepsAsync(int? limit, string order, string after, string before, RequestOptions? options)
+    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetRunStepsRequest(_threadId, _runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, _threadId, _runId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
-    /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetRunSteps(int? limit, string order, string after, string before, RequestOptions? options)
+    public virtual IEnumerable<ClientResult> GetRunSteps(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetRunStepsRequest(_threadId, _runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    }
-
-    /// <summary>
-    /// [Protocol Method] Retrieves a run step.
-    /// </summary>
-    /// <param name="stepId"> The ID of the run step to retrieve. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunStepAsync(string stepId, RequestOptions? options)
-    {
-        Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
-
-        using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, _threadId, _runId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>

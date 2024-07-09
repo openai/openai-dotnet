@@ -397,24 +397,6 @@ public partial class AssistantClient
         return operation;
     }
 
-    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
-        return PageCollectionHelpers.CreateAsync(enumerator);
-    }
-
-    public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
-        return PageCollectionHelpers.Create(enumerator);
-    }
-
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)
         => _threadSubClient.CreateThreadAsync(content, options);

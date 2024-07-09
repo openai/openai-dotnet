@@ -1,5 +1,4 @@
 ﻿using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,37 +12,54 @@ namespace OpenAI;
 // outer public type.
 internal abstract class OperationResultPoller
 {
-    public const int DefaultWaitMilliseconds = 1000;
+    private const int DefaultWaitMilliseconds = 1000;
 
-    protected OperationResultPoller(/*ClientResult current*/)
+    protected OperationResultPoller(ClientResult current)
     {
-        //Current = current;
+        Current = current;
     }
 
-    //// TODO: Thread-safe assignment?
-    //public ClientResult Current { get; protected set; }
+    // TODO: Thread-safe assignment?
+    public ClientResult Current { get; protected set; }
 
     // Service-specific methods to be generated on the subclient
     public abstract Task<ClientResult> UpdateStatusAsync();
 
     public abstract ClientResult UpdateStatus();
 
-    public abstract bool HasStopped(PipelineResponse response);
+    public abstract bool HasStopped(ClientResult result);
+
+    // TODO: how does RequestOptions/CancellationToken work?
+    public async Task WaitForCompletionAsync()
+    {
+        bool hasStopped = HasStopped(Current);
+
+        while (!hasStopped)
+        {
+            // TODO: implement an interesting wait routine
+            await Task.Delay(DefaultWaitMilliseconds);
+
+            Current = await UpdateStatusAsync().ConfigureAwait(false);
+            Update();
+
+            hasStopped = HasStopped(Current);
+        }
+    }
 
     public void WaitForCompletion()
     {
-        //bool hasStopped = HasStopped(Current);
+        bool hasStopped = HasStopped(Current);
 
-        //while (!hasStopped)
-        //{
-        //    // TODO: implement an interesting wait routine
-        //    Thread.Sleep(DefaultWaitMilliseconds);
+        while (!hasStopped)
+        {
+            // TODO: implement an interesting wait routine
+            Thread.Sleep(DefaultWaitMilliseconds);
 
-        //    Current = UpdateStatus();
-        //    Update();
+            Current = UpdateStatus();
+            Update();
 
-        //    hasStopped = HasStopped(Current);
-        //}
+            hasStopped = HasStopped(Current);
+        }
     }
 
     protected virtual void Update() { }
