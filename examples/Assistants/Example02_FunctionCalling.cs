@@ -13,7 +13,7 @@ public partial class AssistantExamples
     [Test]
     public void Example02_FunctionCalling()
     {
-        #region
+        #region Define Functions
         string GetCurrentLocation()
         {
             // Call a location API here.
@@ -64,7 +64,7 @@ public partial class AssistantExamples
 #pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        #region
+        #region Create Assistant
         // Create an assistant that can call the function tools.
         AssistantCreationOptions assistantOptions = new()
         {
@@ -78,7 +78,7 @@ public partial class AssistantExamples
         Assistant assistant = client.CreateAssistant("gpt-4-turbo", assistantOptions);
         #endregion
 
-        #region
+        #region Create Thread and Run
         // Create a thread with an initial user message and run it.
         ThreadCreationOptions threadOptions = new()
         {
@@ -88,11 +88,12 @@ public partial class AssistantExamples
         ThreadRunOperation runOperation = client.CreateThreadAndRun(ReturnWhen.Started, assistant.Id, threadOptions);
         #endregion
 
-        #region
-        // Poll the run until it is no longer queued or in progress.
-        while (!runOperation.HasCompleted)
+        #region Submit tool outputs to run
+
+        // Wait for status changes in order to detect if operation requires input.
+        do
         {
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            runOperation.WaitForStatusChange();
 
             // If the run requires action, resolve them.
             if (runOperation.Status == RunStatus.RequiresAction)
@@ -145,11 +146,14 @@ public partial class AssistantExamples
                 // Submit the tool outputs to the assistant, which returns the run to the queued state.
                 runOperation.SubmitToolOutputsToRun(toolOutputs);
             }
-        }
+        } 
+        while (!runOperation.HasCompleted);
+
         #endregion
 
-        #region
-        // With the run complete, list the messages and display their content
+        #region Get and display messages
+
+        // If the run completed successfully, list the messages and display their content
         if (runOperation.Status == RunStatus.Completed)
         {
             PageCollection<ThreadMessage> messagePages

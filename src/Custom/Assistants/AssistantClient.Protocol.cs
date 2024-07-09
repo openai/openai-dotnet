@@ -331,12 +331,13 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-    public virtual async Task<ThreadRunOperation> CreateRunAsync(
-        ReturnWhen returnWhen,
+    public virtual async Task<OperationResult> CreateRunAsync(
         string threadId,
         BinaryContent content,
         RequestOptions options = null)
     {
+        // Determine if streaming or not.
+
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
 
         // Protocol level: get values needed to create subclient from response
@@ -363,8 +364,7 @@ public partial class AssistantClient
         return operation;
     }
 
-    public virtual ThreadRunOperation CreateRun(
-        ReturnWhen returnWhen,
+    public virtual OperationResult CreateRun(
         string threadId,
         BinaryContent content,
         RequestOptions options = null)

@@ -9,21 +9,19 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Protocol version
-public partial class ThreadRunOperation : OperationResult
+public partial class StreamingThreadRunOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
-    private readonly ThreadRunPoller _poller;
+    private readonly string _threadId;
+    private readonly string _runId;
 
-    internal ThreadRunOperation(
+    internal StreamingThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId,
-        string runId,
-        PipelineResponse response,
-        ThreadRunPoller poller)
-        : base(ThreadRunOperationToken.FromOptions(threadId, runId), response)
+        string runId) : base()
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -33,62 +31,24 @@ public partial class ThreadRunOperation : OperationResult
 
         _pipeline = pipeline;
         _endpoint = endpoint;
-
-        _poller = poller;
     }
 
+    // TODO: add "wait for status change" overloads if needed.
 
-    // Factory method
-    public static ThreadRunOperation FromResult(OperationResult result)
+    // TODO: take parameters?
+    public async Task<ClientResult> WaitForCompletionResultAsync()
     {
-        if (result is ThreadRunOperation runOperation)
-        {
-            return runOperation;
-        }
-
-        throw new InvalidOperationException("Cannot create 'ThreadRunOperation' from protocol 'OperationResult' when streaming response was specified in request.");
+        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
+        HasCompleted = true;
+        return _poller.Current;
     }
 
-    //// TODO: add "wait for status change" overloads if needed.
-
-        //// TODO: take parameters?
-        //public async Task<ClientResult> WaitForCompletionResultAsync()
-        //{
-        //    await _poller.WaitForCompletionAsync().ConfigureAwait(false);
-        //    HasCompleted = true;
-        //    return _poller.Current;
-        //}
-
-        //public ClientResult WaitForCompletionResult()
-        //{
-        //    _poller.WaitForCompletion();
-        //    HasCompleted = true;
-        //    return _poller.Current;
-        //}
-
-        // Note: these have to work for protocol-only.
-    public override Task WaitForCompletionAsync()
+    public ClientResult WaitForCompletionResult()
     {
-        throw new NotImplementedException();
+        _poller.WaitForCompletion();
+        HasCompleted = true;
+        return _poller.Current;
     }
-
-    public override void WaitForCompletion()
-    {
-        throw new NotImplementedException();
-    }
-
-    // Note: these have to work for protocol-only, so can't return the status.
-    public Task WaitForStatusChangeAsync(/* TODO: Take polling interval param. */)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public void WaitForStatusChange(/* TODO: Take polling interval param. */)
-    {
-        throw new NotImplementedException();
-    }
-
 
     /// <summary>
     /// [Protocol Method] Modifies a run.

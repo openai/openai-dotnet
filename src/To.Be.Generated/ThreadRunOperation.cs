@@ -26,21 +26,24 @@ public partial class ThreadRunOperation : OperationResult
 
     public RunStatus Status => _poller.Value.Status;
 
-    public async Task<ThreadRun> WaitForCompletionAsync()
-    {
-        await _poller.WaitForCompletionAsync().ConfigureAwait(false);
 
-        HasCompleted = true;
 
-        return _poller.Value;
-    }
+    //public async Task<ThreadRun> WaitForCompletionAsync( /* TODO: Take polling interval param. */)
+    //{
+    //    await _poller.WaitForCompletionAsync().ConfigureAwait(false);
 
-    public ThreadRun WaitForCompletion()
-    {
-        _poller.WaitForCompletion();
-        HasCompleted = true;
-        return _poller.Value;
-    }
+    //    HasCompleted = true;
+
+    //    return _poller.Value;
+    //}
+
+    //public ThreadRun WaitForCompletion(/* TODO: Take polling interval param. */)
+    //{
+    //    _poller.WaitForCompletion();
+    //    HasCompleted = true;
+    //    return _poller.Value;
+    //}
+
 
     // Question: what value is being computed here?
     // Hypothesis: it's just the thread run value itself - which is progressively updated
@@ -110,46 +113,6 @@ public partial class ThreadRunOperation : OperationResult
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
         ClientResult protocolResult = SubmitToolOutputsToRun(content, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
-    /// </summary>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
-            .ToBinaryContent();
-
-        async Task<ClientResult> getResultAsync() =>
-            await SubmitToolOutputsToRunAsync(content, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(getResultAsync);
-    }
-
-    /// <summary>
-    /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
-    /// </summary>
-    /// <param name="toolOutputs">
-    /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
-    /// </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
-        IEnumerable<ToolOutput> toolOutputs,
-        CancellationToken cancellationToken = default)
-    {
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
-            .ToBinaryContent();
-
-        ClientResult getResult() => SubmitToolOutputsToRun(content, cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
     }
 
     /// <summary>
