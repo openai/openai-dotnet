@@ -4,6 +4,8 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -91,42 +93,46 @@ public partial class AssistantExamples
         #endregion
 
         #region Step 3 - Initiate a streaming run
-        AsyncCollectionResult<StreamingUpdate> asyncUpdates
+        StreamingThreadRunOperation runOperation
             = client.CreateRunStreamingAsync(thread, assistant);
 
-        ThreadRun currentRun = null;
+        string status = null;
         do
         {
-            currentRun = null;
-            List<ToolOutput> outputsToSubmit = [];
-            await foreach (StreamingUpdate update in asyncUpdates)
+            // TODO: Move to convenience - add test for protocol
+            status = await runOperation.WaitForStatusChangeAsync(options: default);
+            if (status == "requires_action")
             {
-                if (update is RunUpdate runUpdate)
+                ClientResult result = await runOperation.GetRunAsync(options: default);
+
+                using JsonDocument doc = JsonDocument.Parse(result.GetRawResponse().Content);
+                IEnumerable<JsonElement> toolCallJsonElements = doc.RootElement
+                    .GetProperty("required_action")
+                    .GetProperty("submit_tool_outputs")
+                    .GetProperty("tool_calls").EnumerateArray();
+
+                List<ToolOutput> outputsToSubmit = [];
+
+                foreach (JsonElement toolCallJsonElement in toolCallJsonElements)
                 {
-                    currentRun = runUpdate;
-                }
-                else if (update is RequiredActionUpdate requiredActionUpdate)
-                {
-                    if (requiredActionUpdate.FunctionName == getTemperatureTool.FunctionName)
+                    string functionName = toolCallJsonElement.GetProperty("function").GetProperty("name").GetString();
+                    string toolCallId = toolCallJsonElement.GetProperty("id").GetString();
+
+                    if (functionName == getTemperatureTool.FunctionName)
                     {
-                        outputsToSubmit.Add(new ToolOutput(requiredActionUpdate.ToolCallId, "57"));
+                        outputsToSubmit.Add(new ToolOutput(toolCallId, "57"));
                     }
-                    else if (requiredActionUpdate.FunctionName == getRainProbabilityTool.FunctionName)
+                    else if (functionName == getRainProbabilityTool.FunctionName)
                     {
-                        outputsToSubmit.Add(new ToolOutput(requiredActionUpdate.ToolCallId, "25%"));
+                        outputsToSubmit.Add(new ToolOutput(toolCallId, "25%"));
                     }
-                }
-                else if (update is MessageContentUpdate contentUpdate)
-                {
-                    Console.Write(contentUpdate.Text);
                 }
             }
-            if (outputsToSubmit.Count > 0)
-            {
-                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun, outputsToSubmit);
-            }
-        }
-        while (currentRun?.Status.IsTerminal == false);
+        } while (status == "created" ||
+                status == "queued" ||
+                status == "requires_action" ||
+                status == "in_progress" ||
+                status == "cancelling");
 
         #endregion
 

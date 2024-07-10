@@ -122,7 +122,7 @@ public partial class ThreadRunOperation : OperationResult
         return doc.RootElement.GetProperty("status"u8).GetString()!;
     }
 
-    private bool GetHasCompleted(string status)
+    private static bool GetHasCompleted(string status)
     {
         bool hasCompleted =
             status == "expired" ||

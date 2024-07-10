@@ -4,7 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.ServerSentEvents;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -15,18 +15,16 @@ namespace OpenAI.Assistants;
 public partial class StreamingThreadRunOperation : OperationResult
 {
     private readonly Uri _endpoint;
-    private readonly RequestOptions? _requestOptions;
-
+    
     private readonly string _threadId;
     private readonly string _runId;
 
-    private readonly Func<Task<ClientResult>> _getResultAsync;
-    private readonly Func<ClientResult> _getResult;
+    // TODO: allocate differently based on delayed request or not per IDisposable
+    private IAsyncEnumerable<SseItem<byte[]>>? _asyncEventStream;
+    private IEnumerable<SseItem<byte[]>>? _eventStream;
 
     // Note: what does it mean to have a protocol type for status?
     private string? _status;
-
-    //private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
     //   internal StreamingThreadRunOperation(
     //       ClientPipeline pipeline,
@@ -61,11 +59,6 @@ public partial class StreamingThreadRunOperation : OperationResult
         _runId = runId;
 
         _endpoint = endpoint;
-        _requestOptions = requestOptions;
-
-        // TODO: remove allocation?
-        _getResultAsync = () => new(() => ClientResult.FromResponse(response));
-        _getResult = () => ClientResult.FromResponse(response);
     }
 
     // Factory method - supports returning different OperationResult subtypes
@@ -84,14 +77,12 @@ public partial class StreamingThreadRunOperation : OperationResult
     {
         PipelineResponse response = GetRawResponse();
 
-        // TODO: switch based on whether response has been received yet or not!
+        // TODO: switch based on whether response has been received yet or not
         Debug.Assert(response.ContentStream is not null);
 
-        IAsyncEnumerable<SseItem<byte[]>> events =
-            SseParser.Create(
+        IAsyncEnumerable<SseItem<byte[]>> events = SseParser.Create(
                 response.ContentStream!,
-                (_, bytes) => bytes.ToArray()
-            ).EnumerateAsync();
+                (_, bytes) => bytes.ToArray()).EnumerateAsync();
 
         // TODO: plumb through cancellation token
         await foreach (SseItem<byte[]> item in events)
@@ -110,19 +101,48 @@ public partial class StreamingThreadRunOperation : OperationResult
         }
     }
 
-
     public override void WaitForCompletion()
     {
         throw new NotImplementedException();
     }
 
     // Note: these have to work for protocol-only, so can't return the status.
-    public Task WaitForStatusChangeAsync(/* TODO: Take polling interval param. */)
+    public async Task<string> WaitForStatusChangeAsync(RequestOptions? options)
     {
-        throw new NotImplementedException();
+        if (_eventStream is not null)
+        {
+            throw new InvalidOperationException("Cannot stream events asynchronously after synchronous streaming has begun.");
+        }
+
+        if (_asyncEventStream is null)
+        {
+            // TODO: request SSE stream if haven't yet
+
+            _asyncEventStream = SseParser.Create(
+                GetRawResponse().ContentStream!,
+                (_, bytes) => bytes.ToArray()).EnumerateAsync();
+        }
+
+        CancellationToken cancellationToken = options?.CancellationToken ?? default;
+        await foreach (SseItem<byte[]> item in _asyncEventStream.WithCancellation(cancellationToken))
+        {
+            if (IsUpdateEvent(item))
+            {
+                string? priorStatus = _status;
+                ApplyUpdate(item);
+                if (priorStatus != _status)
+                {
+                    return _status!;
+                }
+            }
+        }
+
+        return _status!;
     }
 
-    public void WaitForStatusChange(/* TODO: Take polling interval param. */)
+    // Returns state differently based on protocol vs convenience -- options vs.
+    // cancellation token used to differentiate as in other clients.
+    public string WaitForStatusChange(RequestOptions? options)
     {
         throw new NotImplementedException();
     }
@@ -148,9 +168,8 @@ public partial class StreamingThreadRunOperation : OperationResult
 
     private void ApplyUpdate(SseItem<byte[]> update)
     {
-        string status = GetStatus(update);
-
-        HasCompleted = GetHasCompleted(status);
+        _status = GetStatus(update);
+        HasCompleted = GetHasCompleted(_status);
     }
 
     private static string GetStatus(SseItem<byte[]> update)
@@ -160,7 +179,7 @@ public partial class StreamingThreadRunOperation : OperationResult
         return update.EventType.AsSpan().Slice("thread.run.".Length).ToString();
     }
 
-    private bool GetHasCompleted(string status)
+    private static bool GetHasCompleted(string status)
     {
         bool hasCompleted =
             status == "expired" ||
