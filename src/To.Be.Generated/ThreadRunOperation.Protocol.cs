@@ -16,6 +16,10 @@ public partial class ThreadRunOperation : OperationResult
     private readonly Uri _endpoint;
 
     private readonly RequestOptions? _requestOptions;
+    private readonly PollingInterval _pollingInterval;
+
+    private string _status;
+    private bool _statusChangedFromLastUpdate;
 
     internal ThreadRunOperation(
         ClientPipeline pipeline,
@@ -29,13 +33,16 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-
         _threadId = threadId;
         _runId = runId;
 
         _pipeline = pipeline;
         _endpoint = endpoint;
         _requestOptions = requestOptions;
+
+        _status = GetStatus(response);
+
+        _pollingInterval = new();
     }
 
     // Factory method - supports returning different OperationResult subtypes
@@ -60,9 +67,12 @@ public partial class ThreadRunOperation : OperationResult
     {
         do
         {
+            _pollingInterval.Wait();
+
             ClientResult result = GetRun(_requestOptions);
-            SetRawResponse(result.GetRawResponse());
-            HasCompleted = GetHasStopped();
+            PipelineResponse response = result.GetRawResponse();
+
+            ApplyUpdate(response);
         }
         while (!HasCompleted);
     }
@@ -75,22 +85,44 @@ public partial class ThreadRunOperation : OperationResult
 
     public void WaitForStatusChange(/* TODO: Take polling interval param. */)
     {
-        throw new NotImplementedException();
+        do
+        {
+            _pollingInterval.Wait();
+
+            ClientResult result = GetRun(_requestOptions);
+            PipelineResponse response = result.GetRawResponse();
+
+            ApplyUpdate(response);
+        }
+        while (!_statusChangedFromLastUpdate);
     }
 
-    private bool GetHasStopped()
+    private static string GetStatus(PipelineResponse response)
     {
-        using JsonDocument doc = JsonDocument.Parse(GetRawResponse().Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        return doc.RootElement.GetProperty("status"u8).GetString()!;
+    }
 
-        bool hasStopped =
+    private bool GetHasCompleted(string status)
+    {
+        bool hasCompleted =
             status == "expired" ||
             status == "completed" ||
             status == "failed" ||
             status == "incomplete" ||
             status == "cancelled";
 
-        return hasStopped;
+        return hasCompleted;
+    }
+
+    private void ApplyUpdate(PipelineResponse response)
+    {
+        string status = GetStatus(response);
+
+        HasCompleted = GetHasCompleted(status);
+        _statusChangedFromLastUpdate = _status != status;
+        _status = status;
+        SetRawResponse(response);
     }
 
     /// <summary>
@@ -237,6 +269,21 @@ public partial class ThreadRunOperation : OperationResult
     {
         PageResultEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, _threadId, _runId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
+    }
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run step.
+    /// </summary>
+    /// <param name="stepId"> The ID of the run step to retrieve. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual async Task<ClientResult> GetRunStepAsync( string stepId, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
+
+        using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>

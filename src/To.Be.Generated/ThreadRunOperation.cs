@@ -22,29 +22,6 @@ public partial class ThreadRunOperation : OperationResult
 
     public string RunId => _runId;
 
-    public ThreadRun Value => _poller.Value;
-
-    public RunStatus Status => _poller.Value.Status;
-
-
-
-    //public async Task<ThreadRun> WaitForCompletionAsync( /* TODO: Take polling interval param. */)
-    //{
-    //    await _poller.WaitForCompletionAsync().ConfigureAwait(false);
-
-    //    HasCompleted = true;
-
-    //    return _poller.Value;
-    //}
-
-    //public ThreadRun WaitForCompletion(/* TODO: Take polling interval param. */)
-    //{
-    //    _poller.WaitForCompletion();
-    //    HasCompleted = true;
-    //    return _poller.Value;
-    //}
-
-
     // Question: what value is being computed here?
     // Hypothesis: it's just the thread run value itself - which is progressively updated
     // over the course of the thread run.
