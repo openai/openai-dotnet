@@ -26,7 +26,7 @@ namespace OpenAI.Audio
             writer.WritePropertyName("language"u8);
             writer.WriteStringValue(Language);
             writer.WritePropertyName("duration"u8);
-            writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.fff")));
+            writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
             writer.WritePropertyName("text"u8);
             writer.WriteStringValue(Text);
             if (Optional.IsCollectionDefined(Words))

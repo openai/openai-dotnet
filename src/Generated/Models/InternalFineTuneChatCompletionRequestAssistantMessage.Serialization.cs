@@ -54,7 +54,7 @@ namespace OpenAI.FineTuning
             if (Optional.IsCollectionDefined(Content))
             {
                 writer.WritePropertyName("content"u8);
-                SerializeContentValue(writer);
+                SerializeContentValue(writer, options);
             }
             if (true && _serializedAdditionalRawData != null)
             {

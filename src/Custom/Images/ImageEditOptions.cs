@@ -1,7 +1,4 @@
-﻿using OpenAI.Embeddings;
-using OpenAI.Internal;
-using System;
-using System.ClientModel.Primitives;
+﻿using System;
 using System.IO;
 
 namespace OpenAI.Images;

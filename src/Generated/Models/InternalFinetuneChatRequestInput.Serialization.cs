@@ -107,10 +107,10 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IReadOnlyList<BinaryData> messages = default;
-            IReadOnlyList<ChatTool> tools = default;
+            IList<BinaryData> messages = default;
+            IList<ChatTool> tools = default;
             bool? parallelToolCalls = default;
-            IReadOnlyList<ChatFunction> functions = default;
+            IList<ChatFunction> functions = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())

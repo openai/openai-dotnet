@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Files;
 
-[CodeGenModel("OpenAIFileInfoStatus")]
+[CodeGenModel("OpenAIFileStatus")]
 public readonly partial struct OpenAIFileStatus
 {
 }

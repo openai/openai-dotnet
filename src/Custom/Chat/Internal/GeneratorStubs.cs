@@ -42,14 +42,8 @@ internal readonly partial struct InternalChatCompletionResponseMessageRole { }
 [CodeGenModel("ChatCompletionStreamOptions")]
 internal partial class InternalChatCompletionStreamOptions { }
 
-[CodeGenModel("InternalChatCompletionStreamResponseDeltaFunctionCall")]
-internal partial class ChatCompletionStreamResponseDeltaFunctionCall { }
-
-[CodeGenModel("InternalChatCompletionStreamResponseDeltaRole")]
+[CodeGenModel("ChatCompletionStreamResponseDeltaRole")]
 internal readonly partial struct InternalChatCompletionStreamResponseDeltaRole { }
-
-[CodeGenModel("ChatResponseFormatType")]
-internal readonly partial struct InternalChatResponseFormatType { }
 
 [CodeGenModel("CreateChatCompletionFunctionResponse")]
 internal partial class InternalCreateChatCompletionFunctionResponse { }
@@ -57,7 +51,7 @@ internal partial class InternalCreateChatCompletionFunctionResponse { }
 [CodeGenModel("CreateChatCompletionFunctionResponseChoice")]
 internal partial class InternalCreateChatCompletionFunctionResponseChoice { }
 
-[CodeGenModel("InternalCreateChatCompletionFunctionResponseChoiceFinishReason")]
+[CodeGenModel("CreateChatCompletionFunctionResponseChoiceFinishReason")]
 internal readonly partial struct InternalCreateChatCompletionFunctionResponseChoiceFinishReason { }
 
 [CodeGenModel("CreateChatCompletionFunctionResponseObject")]
@@ -65,6 +59,12 @@ internal readonly partial struct InternalCreateChatCompletionFunctionResponseObj
 
 [CodeGenModel("CreateChatCompletionRequestModel")]
 internal readonly partial struct InternalCreateChatCompletionRequestModel { }
+
+[CodeGenModel("CreateChatCompletionRequestResponseFormatType")]
+internal readonly partial struct InternalCreateChatCompletionRequestResponseFormatType { }
+
+[CodeGenModel("CreateChatCompletionRequestToolChoice")]
+internal readonly partial struct InternalCreateChatCompletionRequestToolChoice { }
 
 [CodeGenModel("CreateChatCompletionResponseChoice")]
 internal partial class InternalCreateChatCompletionResponseChoice { }
@@ -78,7 +78,7 @@ internal readonly partial struct InternalCreateChatCompletionResponseObject { }
 [CodeGenModel("CreateChatCompletionStreamResponseChoice")]
 internal partial class InternalCreateChatCompletionStreamResponseChoice { }
 
-[CodeGenModel("InternalCreateChatCompletionStreamResponseChoiceFinishReason")]
+[CodeGenModel("CreateChatCompletionStreamResponseChoiceFinishReason")]
 internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason { }
 
 [CodeGenModel("CreateChatCompletionStreamResponseChoiceLogprobs")]

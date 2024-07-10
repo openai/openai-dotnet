@@ -22,7 +22,7 @@ namespace OpenAI.Chat
 
             writer.WriteStartObject();
             writer.WritePropertyName("finish_reason"u8);
-            writer.WriteStringValue(FinishReason);
+            writer.WriteStringValue(FinishReason.ToString());
             writer.WritePropertyName("index"u8);
             writer.WriteNumberValue(Index);
             writer.WritePropertyName("message"u8);
@@ -65,7 +65,7 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string finishReason = default;
+            InternalCreateChatCompletionFunctionResponseChoiceFinishReason finishReason = default;
             int index = default;
             InternalChatCompletionResponseMessage message = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -74,7 +74,7 @@ namespace OpenAI.Chat
             {
                 if (property.NameEquals("finish_reason"u8))
                 {
-                    finishReason = property.Value.GetString();
+                    finishReason = new InternalCreateChatCompletionFunctionResponseChoiceFinishReason(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("index"u8))

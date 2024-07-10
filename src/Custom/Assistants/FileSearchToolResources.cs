@@ -30,7 +30,7 @@ public partial class FileSearchToolResources
     public FileSearchToolResources()
     { }
 
-    private void SerializeNewVectorStores(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(NewVectorStores, new ModelReaderWriterOptions("J"));
+    private void SerializeNewVectorStores(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(NewVectorStores, options);
 }
 

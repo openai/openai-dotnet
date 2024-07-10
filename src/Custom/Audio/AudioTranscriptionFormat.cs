@@ -5,7 +5,7 @@ namespace OpenAI.Audio;
 /// <summary>
 /// Specifies the format of the audio transcription.
 /// </summary>
-[CodeGenModel("AudioTranscriptionOptionsResponseFormat")]
+[CodeGenModel("CreateTranscriptionRequestResponseFormat")]
 public enum AudioTranscriptionFormat
 {
     /// <summary> Text. </summary>

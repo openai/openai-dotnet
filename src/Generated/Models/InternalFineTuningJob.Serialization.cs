@@ -46,7 +46,7 @@ namespace OpenAI.FineTuning
             if (FinishedAt != null)
             {
                 writer.WritePropertyName("finished_at"u8);
-                writer.WriteStringValue(FinishedAt.Value, "O");
+                writer.WriteNumberValue(FinishedAt.Value, "U");
             }
             else
             {
@@ -113,7 +113,7 @@ namespace OpenAI.FineTuning
                 if (EstimatedFinish != null)
                 {
                     writer.WritePropertyName("estimated_finish"u8);
-                    writer.WriteStringValue(EstimatedFinish.Value, "O");
+                    writer.WriteNumberValue(EstimatedFinish.Value, "U");
                 }
                 else
                 {
@@ -216,7 +216,7 @@ namespace OpenAI.FineTuning
                         finishedAt = null;
                         continue;
                     }
-                    finishedAt = property.Value.GetDateTimeOffset("O");
+                    finishedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
                 if (property.NameEquals("hyperparameters"u8))
@@ -305,7 +305,7 @@ namespace OpenAI.FineTuning
                         estimatedFinish = null;
                         continue;
                     }
-                    estimatedFinish = property.Value.GetDateTimeOffset("O");
+                    estimatedFinish = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
                 if (true)

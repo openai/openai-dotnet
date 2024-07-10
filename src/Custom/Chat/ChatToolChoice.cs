@@ -20,6 +20,11 @@ public partial class ChatToolChoice
     private const string NoneValue = "none";
     private const string RequiredValue = "required";
 
+    // CUSTOM: Made internal.
+    internal ChatToolChoice()
+    {
+    }
+
     // CUSTOM: Added custom internal constructor to handle the plain string representation (e.g. "auto", "none", etc.).
     internal ChatToolChoice(string predefinedToolChoice)
     {

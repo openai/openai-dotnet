@@ -73,7 +73,7 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            InternalRunTruncationStrategyType type = default;
+            InternalTruncationObjectType type = default;
             int? lastMessages = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -81,7 +81,7 @@ namespace OpenAI.Assistants
             {
                 if (property.NameEquals("type"u8))
                 {
-                    type = new InternalRunTruncationStrategyType(property.Value.GetString());
+                    type = new InternalTruncationObjectType(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("last_messages"u8))
