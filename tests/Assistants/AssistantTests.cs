@@ -817,6 +817,12 @@ public partial class AssistantTests
     [OneTimeTearDown]
     protected void Cleanup()
     {
+        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
+        {
+            return;
+        }
+
         AssistantClient client = new();
         FileClient fileClient = new();
         VectorStoreClient vectorStoreClient = new();
