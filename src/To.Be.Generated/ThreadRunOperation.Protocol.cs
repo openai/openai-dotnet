@@ -2,6 +2,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -14,31 +15,31 @@ public partial class ThreadRunOperation : OperationResult
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
-    private readonly ThreadRunPoller _poller;
+    private readonly RequestOptions? _requestOptions;
 
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
+        RequestOptions? requestOptions,
         string threadId,
         string runId,
-        PipelineResponse response,
-        ThreadRunPoller poller)
-        : base(ThreadRunOperationToken.FromOptions(threadId, runId), response)
+        PipelineResponse response)
+        : base(response)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
 
         _threadId = threadId;
         _runId = runId;
 
         _pipeline = pipeline;
         _endpoint = endpoint;
-
-        _poller = poller;
+        _requestOptions = requestOptions;
     }
 
-
-    // Factory method
+    // Factory method - supports returning different OperationResult subtypes
+    // from protocol method.
     public static ThreadRunOperation FromResult(OperationResult result)
     {
         if (result is ThreadRunOperation runOperation)
@@ -49,24 +50,7 @@ public partial class ThreadRunOperation : OperationResult
         throw new InvalidOperationException("Cannot create 'ThreadRunOperation' from protocol 'OperationResult' when streaming response was specified in request.");
     }
 
-    //// TODO: add "wait for status change" overloads if needed.
-
-        //// TODO: take parameters?
-        //public async Task<ClientResult> WaitForCompletionResultAsync()
-        //{
-        //    await _poller.WaitForCompletionAsync().ConfigureAwait(false);
-        //    HasCompleted = true;
-        //    return _poller.Current;
-        //}
-
-        //public ClientResult WaitForCompletionResult()
-        //{
-        //    _poller.WaitForCompletion();
-        //    HasCompleted = true;
-        //    return _poller.Current;
-        //}
-
-        // Note: these have to work for protocol-only.
+    // Note: these have to work for protocol-only.
     public override Task WaitForCompletionAsync()
     {
         throw new NotImplementedException();
@@ -74,7 +58,13 @@ public partial class ThreadRunOperation : OperationResult
 
     public override void WaitForCompletion()
     {
-        throw new NotImplementedException();
+        do
+        {
+            ClientResult result = GetRun(_requestOptions);
+            SetRawResponse(result.GetRawResponse());
+            HasCompleted = GetHasStopped();
+        }
+        while (!HasCompleted);
     }
 
     // Note: these have to work for protocol-only, so can't return the status.
@@ -83,12 +73,49 @@ public partial class ThreadRunOperation : OperationResult
         throw new NotImplementedException();
     }
 
-
     public void WaitForStatusChange(/* TODO: Take polling interval param. */)
     {
         throw new NotImplementedException();
     }
 
+    private bool GetHasStopped()
+    {
+        using JsonDocument doc = JsonDocument.Parse(GetRawResponse().Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        bool hasStopped =
+            status == "expired" ||
+            status == "completed" ||
+            status == "failed" ||
+            status == "incomplete" ||
+            status == "cancelled";
+
+        return hasStopped;
+    }
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run.
+    /// </summary>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual async Task<ClientResult> GetRunAsync(RequestOptions? options)
+    {
+        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    }
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run.
+    /// </summary>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual ClientResult GetRun(RequestOptions? options)
+    {
+        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
 
     /// <summary>
     /// [Protocol Method] Modifies a run.
@@ -225,6 +252,24 @@ public partial class ThreadRunOperation : OperationResult
 
         using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
+
+    internal PipelineMessage CreateGetRunRequest(string threadId, string runId, RequestOptions? options)
+    {
+        var message = _pipeline.CreateMessage();
+        message.ResponseClassifier = PipelineMessageClassifier200;
+        var request = message.Request;
+        request.Method = "GET";
+        var uri = new ClientUriBuilder();
+        uri.Reset(_endpoint);
+        uri.AppendPath("/threads/", false);
+        uri.AppendPath(threadId, true);
+        uri.AppendPath("/runs/", false);
+        uri.AppendPath(runId, true);
+        request.Uri = uri.ToUri();
+        request.Headers.Set("Accept", "application/json");
+        message.Apply(options);
+        return message;
     }
 
     internal PipelineMessage CreateModifyRunRequest(string threadId, string runId, BinaryContent content, RequestOptions? options)

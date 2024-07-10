@@ -376,25 +376,39 @@ public partial class AssistantClient
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-        // TODO: clean up poller and operation subclients per redundancy
-
-        // Create the poller
-        ThreadRunPoller poller = new ThreadRunPoller(
-            _pipeline, _endpoint, result, threadId, runId, options);
-
-        // Create the operation subclient
-        ThreadRunOperation operation = new ThreadRunOperation(
-            _pipeline, _endpoint,
-            threadId, runId, result.GetRawResponse(),
-            poller);
-
-        if (returnWhen == ReturnWhen.Started)
+        // Is it polling or streaming?
+        if (!response.Headers.TryGetValue("Content-Type", out string contentType))
         {
-            return operation;
+            throw new ClientResultException("Response did not contain 'Content-Type' header.");
         }
 
-        operation.WaitForCompletionResult();
-        return operation;
+        return contentType switch
+        {
+            "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, runId, response),
+            "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(),
+            _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
+        };
+
+
+        //// TODO: clean up poller and operation subclients per redundancy
+
+        //// Create the poller
+        //ThreadRunPoller poller = new ThreadRunPoller(
+        //    _pipeline, _endpoint, result, threadId, runId, options);
+
+        //// Create the operation subclient
+        //ThreadRunOperation operation = new ThreadRunOperation(
+        //    _pipeline, _endpoint,
+        //    threadId, runId, result.GetRawResponse(),
+        //    poller);
+
+        //if (returnWhen == ReturnWhen.Started)
+        //{
+        //    return operation;
+        //}
+
+        //operation.WaitForCompletionResult();
+        //return operation;
     }
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
