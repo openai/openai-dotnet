@@ -11,9 +11,6 @@ namespace OpenAI.Assistants;
 
 public partial class StreamingThreadRunOperation : OperationResult
 {
-
-
-
     /// <summary>
     /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.
     /// </summary>
