@@ -93,8 +93,16 @@ public partial class AssistantExamples
         #endregion
 
         #region Step 3 - Initiate a streaming run
-        StreamingThreadRunOperation runOperation
-            = client.CreateRunStreamingAsync(thread, assistant);
+
+        // Protocol implementation
+
+        string json = $"{{\"assistant_id\":\"{assistant.Id}\",\"stream\":true}}";
+
+        BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
+        RequestOptions options = new() { BufferResponse = false };
+
+        OperationResult result = await client.CreateRunAsync(thread.Id, content);
+        StreamingThreadRunOperation runOperation = StreamingThreadRunOperation.FromResult(result);
 
         string status = null;
         do
@@ -103,9 +111,9 @@ public partial class AssistantExamples
             status = await runOperation.WaitForStatusChangeAsync(options: default);
             if (status == "requires_action")
             {
-                ClientResult result = await runOperation.GetRunAsync(options: default);
+                ClientResult runResult = await runOperation.GetRunAsync(options: default);
 
-                using JsonDocument doc = JsonDocument.Parse(result.GetRawResponse().Content);
+                using JsonDocument doc = JsonDocument.Parse(runResult.GetRawResponse().Content);
                 IEnumerable<JsonElement> toolCallJsonElements = doc.RootElement
                     .GetProperty("required_action")
                     .GetProperty("submit_tool_outputs")

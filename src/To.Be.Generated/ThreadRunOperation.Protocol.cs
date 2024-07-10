@@ -31,15 +31,16 @@ public partial class ThreadRunOperation : OperationResult
         Uri endpoint,
         RequestOptions? requestOptions,
         string threadId,
-        string runId,
         PipelineResponse response)
         : base(pipeline, response)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
+        
         _threadId = threadId;
-        _runId = runId;
+
+        // Protocol level: get values needed to create subclient from response
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        _runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
         _endpoint = endpoint;
         _requestOptions = requestOptions;

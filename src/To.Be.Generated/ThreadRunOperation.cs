@@ -122,7 +122,7 @@ public partial class ThreadRunOperation : OperationResult
         RunStepCollectionOptions? options = default,
         CancellationToken cancellationToken = default)
     {
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+        RunStepsPageEnumerator enumerator = new(Pipeline, _endpoint,
             _threadId,
             _runId,
             options?.PageSize,
@@ -141,7 +141,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+        RunStepsPageEnumerator enumerator = new(Pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.RunId,
             pageToken.Limit,
@@ -163,7 +163,7 @@ public partial class ThreadRunOperation : OperationResult
         RunStepCollectionOptions? options = default,
         CancellationToken cancellationToken = default)
     {
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+        RunStepsPageEnumerator enumerator = new(Pipeline, _endpoint,
             _threadId,
             _runId,
             options?.PageSize,
@@ -182,7 +182,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+        RunStepsPageEnumerator enumerator = new(Pipeline, _endpoint,
             pageToken.ThreadId,
             pageToken.RunId,
             pageToken.Limit,

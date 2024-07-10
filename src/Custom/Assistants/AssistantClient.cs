@@ -587,20 +587,22 @@ public partial class AssistantClient
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ThreadRunOperation> CreateRunAsync(
+    public virtual /*async*/ Task<ThreadRunOperation> CreateRunAsync(
         ReturnWhen returnWhen,
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = null;
+        throw new NotImplementedException();
 
-        return await CreateRunAsync(returnWhen, threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        //Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        //Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        //options ??= new();
+        //options.AssistantId = assistantId;
+        //options.Stream = null;
+
+        //return await CreateRunAsync(returnWhen, threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -619,13 +621,15 @@ public partial class AssistantClient
         RunCreationOptions options = null, 
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-        options ??= new();
-        options.AssistantId = assistantId;
-        options.Stream = null;
+        throw new NotImplementedException();
 
-        return CreateRun(returnWhen, threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        //Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        //Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        //options ??= new();
+        //options.AssistantId = assistantId;
+        //options.Stream = null;
+
+        //return CreateRun(returnWhen, threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
     }
 
     /// <summary>

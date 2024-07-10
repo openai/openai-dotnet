@@ -17,11 +17,13 @@ public partial class StreamingThreadRunOperation : OperationResult
     private readonly Uri _endpoint;
     
     private readonly string _threadId;
-    private readonly string _runId;
+
+    // TODO: We have to set this from an event!
+    private string _runId;
 
     // TODO: allocate differently based on delayed request or not per IDisposable
     private IAsyncEnumerable<SseItem<byte[]>>? _asyncEventStream;
-    private IEnumerable<SseItem<byte[]>>? _eventStream;
+    //private IEnumerable<SseItem<byte[]>>? _eventStream;
 
     // Note: what does it mean to have a protocol type for status?
     private string? _status;
@@ -49,14 +51,15 @@ public partial class StreamingThreadRunOperation : OperationResult
         Uri endpoint,
         RequestOptions? requestOptions,
         string threadId,
-        string runId,
         PipelineResponse response) : base(pipeline, response)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+        //Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         _threadId = threadId;
-        _runId = runId;
+
+        // TODO: How to validate usage of this?
+        _runId = default!;
 
         _endpoint = endpoint;
     }
@@ -109,10 +112,10 @@ public partial class StreamingThreadRunOperation : OperationResult
     // Note: these have to work for protocol-only, so can't return the status.
     public async Task<string> WaitForStatusChangeAsync(RequestOptions? options)
     {
-        if (_eventStream is not null)
-        {
-            throw new InvalidOperationException("Cannot stream events asynchronously after synchronous streaming has begun.");
-        }
+        //if (_eventStream is not null)
+        //{
+        //    throw new InvalidOperationException("Cannot stream events asynchronously after synchronous streaming has begun.");
+        //}
 
         if (_asyncEventStream is null)
         {

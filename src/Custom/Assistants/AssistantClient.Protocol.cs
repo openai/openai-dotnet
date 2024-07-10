@@ -253,35 +253,36 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+    public virtual /*async*/ Task<ThreadRunOperation> CreateThreadAndRunAsync(
         ReturnWhen returnWhen,
         BinaryContent content,
         RequestOptions options = null)
     {
-        ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
+        throw new NotImplementedException();
+        //ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
 
-        // Protocol level: get values needed to create subclient from response
-        PipelineResponse response = result.GetRawResponse();
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
-        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+        //// Protocol level: get values needed to create subclient from response
+        //PipelineResponse response = result.GetRawResponse();
+        //using JsonDocument doc = JsonDocument.Parse(response.Content);
+        //string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-        // Create the poller
-        ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        //// Create the poller
+        //ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
-        // Create the operation subclient
-        ThreadRunOperation operation = new ThreadRunOperation(
-            _pipeline, _endpoint,
-            threadId, runId, result.GetRawResponse(),
-            poller);
+        //// Create the operation subclient
+        //ThreadRunOperation operation = new ThreadRunOperation(
+        //    _pipeline, _endpoint,
+        //    threadId, runId, result.GetRawResponse(),
+        //    poller);
 
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
+        //if (returnWhen == ReturnWhen.Started)
+        //{
+        //    return operation;
+        //}
 
-        operation.WaitForCompletionResult();
-        return operation;
+        //operation.WaitForCompletionResult();
+        //return operation;
     }
 
     public virtual ThreadRunOperation CreateThreadAndRun(
@@ -289,30 +290,31 @@ public partial class AssistantClient
         BinaryContent content,
         RequestOptions options = null)
     {
-        ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
+        throw new NotImplementedException();
+        //ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
 
-        // Protocol level: get values needed to create subclient from response
-        PipelineResponse response = result.GetRawResponse();
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
-        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+        //// Protocol level: get values needed to create subclient from response
+        //PipelineResponse response = result.GetRawResponse();
+        //using JsonDocument doc = JsonDocument.Parse(response.Content);
+        //string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
+        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
-        // Create the poller
-        ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        //// Create the poller
+        //ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
 
-        // Create the operation subclient
-        ThreadRunOperation operation = new ThreadRunOperation(
-            _pipeline, _endpoint,
-            threadId, runId, result.GetRawResponse(),
-            poller);
+        //// Create the operation subclient
+        //ThreadRunOperation operation = new ThreadRunOperation(
+        //    _pipeline, _endpoint,
+        //    threadId, runId, result.GetRawResponse(),
+        //    poller);
 
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
+        //if (returnWhen == ReturnWhen.Started)
+        //{
+        //    return operation;
+        //}
 
-        operation.WaitForCompletionResult();
-        return operation;
+        //operation.WaitForCompletionResult();
+        //return operation;
     }
 
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
@@ -336,45 +338,8 @@ public partial class AssistantClient
         BinaryContent content,
         RequestOptions options = null)
     {
-        // Determine if streaming or not.
-
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
-
-        // Protocol level: get values needed to create subclient from response
         PipelineResponse response = result.GetRawResponse();
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
-
-        // Create the poller
-        ThreadRunPoller poller = new ThreadRunPoller(
-            _pipeline, _endpoint, result, threadId, runId, options);
-
-        // Create the operation subclient
-        ThreadRunOperation operation = new ThreadRunOperation(
-            _pipeline, _endpoint,
-            threadId, runId, result.GetRawResponse(),
-            poller);
-
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
-
-        operation.WaitForCompletionResult();
-        return operation;
-    }
-
-    public virtual OperationResult CreateRun(
-        string threadId,
-        BinaryContent content,
-        RequestOptions options = null)
-    {
-        ClientResult result = _runSubClient.CreateRun(threadId, content, options);
-
-        // Protocol level: get values needed to create subclient from response
-        PipelineResponse response = result.GetRawResponse();
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
         // Is it polling or streaming?
         if (!response.Headers.TryGetValue("Content-Type", out string contentType))
@@ -384,10 +349,38 @@ public partial class AssistantClient
 
         return contentType switch
         {
-            "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, runId, response),
-            "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(),
+            "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
+            "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
             _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
         };
+    }
+
+    public virtual OperationResult CreateRun(
+        string threadId,
+        BinaryContent content,
+        RequestOptions options = null)
+    {
+        throw new NotImplementedException();
+
+        //ClientResult result = _runSubClient.CreateRun(threadId, content, options);
+
+        //// Protocol level: get values needed to create subclient from response
+        //PipelineResponse response = result.GetRawResponse();
+        //using JsonDocument doc = JsonDocument.Parse(response.Content);
+        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+        //// Is it polling or streaming?
+        //if (!response.Headers.TryGetValue("Content-Type", out string contentType))
+        //{
+        //    throw new ClientResultException("Response did not contain 'Content-Type' header.");
+        //}
+
+        //return contentType switch
+        //{
+        //    "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, runId, response),
+        //    "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(),
+        //    _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
+        //};
 
 
         //// TODO: clean up poller and operation subclients per redundancy
