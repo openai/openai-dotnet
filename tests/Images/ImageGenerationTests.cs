@@ -13,6 +13,7 @@ namespace OpenAI.Tests.Images;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ImageGenerationTests : SyncAsyncTestBase
 {
     public ImageGenerationTests(bool isAsync)

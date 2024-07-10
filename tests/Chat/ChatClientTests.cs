@@ -18,6 +18,7 @@ namespace OpenAI.Tests.Chat;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ChatClientTests : SyncAsyncTestBase
 {
     public ChatClientTests(bool isAsync)
@@ -239,6 +240,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("smoke")]
     public void AuthFailureStreaming()
     {
         string fakeApiKey = "not-a-real-key-but-should-be-sanitized";
@@ -374,6 +376,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatToolChoiceAsString(bool fromRawJson)
     {
         ChatToolChoice choice;
@@ -401,6 +404,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatToolChoiceAsObject(bool fromRawJson)
     {
         const string functionName = "my_function_name";
@@ -458,6 +462,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatFunctionChoiceAsString(bool fromRawJson)
     {
         ChatFunctionChoice choice;
@@ -485,6 +490,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatFunctionChoiceAsObject(bool fromRawJson)
     {
         const string functionName = "my_function_name";
@@ -532,6 +538,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatMessageContentPartAsText(bool fromRawJson)
     {
         const string text = "Hello, world!";
@@ -583,6 +590,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatMessageContentPartAsImageUri(bool fromRawJson)
     {
         const string uri = "https://avatars.githubusercontent.com/u/14957082";
@@ -646,6 +654,7 @@ public partial class ChatClientTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    [Category("smoke")]
     public void SerializeChatMessageContentPartAsImageBytes(bool fromRawJson)
     {
         string imageMediaType = "image/png";
@@ -739,5 +748,85 @@ public partial class ChatClientTests : SyncAsyncTestBase
         Assert.That(redProperty.GetString().ToLowerInvariant(), Contains.Substring("ff0000"));
         Assert.That(greenProperty.GetString().ToLowerInvariant(), Contains.Substring("00ff00"));
         Assert.That(blueProperty.GetString().ToLowerInvariant(), Contains.Substring("0000ff"));
+    }
+
+    [Test]
+    [Category("smoke")]
+    public void CanCreateClients()
+    {
+        Uri fakeUri = new("https://127.0.0.1");
+        ApiKeyCredential fakeCredential = new("sk-not-a-real-credential");
+
+        {
+            OpenAIClient topLevelClient = new(fakeCredential);
+            Assert.That(topLevelClient, Is.Not.Null);
+            ChatClient chatClient = topLevelClient.GetChatClient("model");
+            Assert.That(chatClient, Is.Not.Null);
+        }
+        {
+            OpenAIClient topLevelClient = new(fakeCredential, new OpenAIClientOptions()
+            {
+                Endpoint = fakeUri
+            });
+            Assert.That(topLevelClient, Is.Not.Null);
+            ChatClient chatClient = topLevelClient.GetChatClient("model");
+            Assert.That(chatClient, Is.Not.Null);
+        }
+        {
+            ChatClient chatClient = new("model", fakeCredential);
+            Assert.That(chatClient, Is.Not.Null);
+        }
+        {
+            ChatClient chatClient = new("model", fakeCredential, new OpenAIClientOptions()
+            {
+                Endpoint = fakeUri
+            });
+            Assert.That(chatClient, Is.Not.Null);
+        }
+    }
+
+    [Test]
+    [Category("smoke")]
+    public async Task SmokeTest()
+    {
+        string mockResponseId = Guid.NewGuid().ToString();
+        long mockCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        BinaryData mockRequest = BinaryData.FromString($$"""
+            {
+              "model": "gpt-4o",
+              "messages": [
+                { "role": "user", "content": "Hello, assistant!" }
+              ]
+            }
+            """);
+        BinaryData mockResponse = BinaryData.FromString($$"""
+            {
+                "id": "{{mockResponseId}}",
+                "created": {{mockCreated}},
+                "choices": [
+                  {
+                    "finish_reason": "stop",
+                    "message": { "role": "assistant", "content": "Hi there, user!" }
+                  }
+                ]
+            }
+            """);
+        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+
+        OpenAIClientOptions options = new()
+        {
+            Transport = mockTransport
+        };
+        ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
+
+        ChatCompletion completion = IsAsync
+            ? await client.CompleteChatAsync(["Mock me!"])
+            : client.CompleteChat(["Mock me!"]);
+
+        Assert.That(completion.Id, Is.EqualTo(mockResponseId));
+        Assert.That(completion.CreatedAt.ToUnixTimeSeconds, Is.EqualTo(mockCreated));
+        Assert.That(completion.Role, Is.EqualTo(ChatMessageRole.Assistant));
+        Assert.That(completion.Content[0].Text, Is.EqualTo("Hi there, user!"));
     }
 }

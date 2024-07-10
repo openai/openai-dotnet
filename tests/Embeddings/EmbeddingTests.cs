@@ -11,6 +11,7 @@ namespace OpenAI.Tests.Embeddings;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class EmbeddingTests : SyncAsyncTestBase
 {
     public EmbeddingTests(bool isAsync)

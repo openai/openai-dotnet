@@ -15,6 +15,8 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.Assistants;
 
 #pragma warning disable OPENAI001
+
+[Parallelizable(ParallelScope.Fixtures)]
 public partial class AssistantTests
 {
     [Test]
@@ -759,6 +761,7 @@ public partial class AssistantTests
     }
 
     [Test]
+    [Category("smoke")]
     public void RunStepDeserialization()
     {
         BinaryData runStepData = BinaryData.FromString(
@@ -811,7 +814,7 @@ public partial class AssistantTests
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs[0].Logs, Is.Not.Null.And.Not.Empty);
     }
 
-    [TearDown]
+    [OneTimeTearDown]
     protected void Cleanup()
     {
         AssistantClient client = new();

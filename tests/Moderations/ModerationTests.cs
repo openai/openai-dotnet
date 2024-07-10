@@ -8,6 +8,7 @@ namespace OpenAI.Tests.Moderations;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ModerationTests : SyncAsyncTestBase
 {
     public ModerationTests(bool isAsync)

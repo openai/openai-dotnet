@@ -10,6 +10,7 @@ namespace OpenAI.Tests.Files;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.Fixtures)]
 public partial class FileTests : SyncAsyncTestBase
 {
     public FileTests(bool isAsync) 
