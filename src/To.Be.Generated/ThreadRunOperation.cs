@@ -14,9 +14,6 @@ namespace OpenAI.Assistants;
 // Convenience version
 public partial class ThreadRunOperation : OperationResult
 {
-    private readonly string _threadId;
-    private readonly string _runId;
-
     // TODO: Do the IDs need to be public?
     public string ThreadId => _threadId;
 

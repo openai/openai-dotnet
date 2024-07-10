@@ -13,6 +13,7 @@ public partial class StreamingThreadRunOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
+    private readonly RequestOptions? _requestOptions;
 
     private readonly string _threadId;
     private readonly string _runId;

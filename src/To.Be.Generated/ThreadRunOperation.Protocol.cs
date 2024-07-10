@@ -14,11 +14,15 @@ public partial class ThreadRunOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-
     private readonly RequestOptions? _requestOptions;
-    private readonly PollingInterval _pollingInterval;
+
+
+    private readonly string _threadId;
+    private readonly string _runId;
 
     private string _status;
+
+    private readonly PollingInterval _pollingInterval;
     private bool _statusChangedFromLastUpdate;
 
     internal ThreadRunOperation(
