@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-public partial class StreamingThreadRunOperation : OperationResult
+public partial class StreamingThreadRunOperation : ThreadRunOperation
 {
     /// <summary>
     /// Submits a collection of required tool call outputs to a run and resumes the run with streaming enabled.

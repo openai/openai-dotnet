@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -13,11 +14,7 @@ namespace OpenAI.Assistants;
 public partial class ThreadRunOperation : OperationResult
 {
     private readonly Uri _endpoint;
-    private readonly RequestOptions? _requestOptions;
-
-    private readonly string _threadId;
-    private readonly string _runId;
-
+    
     private string _status;
 
     private readonly PollingInterval _pollingInterval;
@@ -29,52 +26,50 @@ public partial class ThreadRunOperation : OperationResult
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        RequestOptions? requestOptions,
-        string threadId,
         PipelineResponse response)
         : base(pipeline, response)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        //Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         
-        _threadId = threadId;
+        //_threadId = threadId;
 
-        // Protocol level: get values needed to create subclient from response
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        _runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+        //// Protocol level: get values needed to create subclient from response
+        //using JsonDocument doc = JsonDocument.Parse(response.Content);
+        //_runId = doc.RootElement.GetProperty("id"u8).GetString()!;
 
         _endpoint = endpoint;
-        _requestOptions = requestOptions;
-
+        
         _status = GetStatus(response);
 
         _pollingInterval = new();
     }
 
-    // Factory method - supports returning different OperationResult subtypes
-    // from protocol method.
-    public static ThreadRunOperation FromResult(OperationResult result)
-    {
-        if (result is ThreadRunOperation runOperation)
-        {
-            return runOperation;
-        }
-
-        throw new InvalidOperationException("Cannot create 'ThreadRunOperation' from protocol 'OperationResult' when streaming response was specified in request.");
-    }
-
-    // Note: these have to work for protocol-only.
-    public override Task WaitForCompletionAsync()
+    public override Task StartAsync()
     {
         throw new NotImplementedException();
     }
 
-    public override void WaitForCompletion()
+    public override void Start()
+    {
+        throw new NotImplementedException();
+    }
+
+    // Note: these have to work for protocol-only.
+    public override Task WaitAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Wait(CancellationToken cancellationToken = default)
     {
         do
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             _pollingInterval.Wait();
 
-            ClientResult result = GetRun(_requestOptions);
+            // TODO: RequestOptions/CancellationToken logic around this ... ?
+            ClientResult result = GetRun(cancellationToken.ToRequestOptions());
             PipelineResponse response = result.GetRawResponse();
 
             ApplyUpdate(response);
@@ -84,34 +79,14 @@ public partial class ThreadRunOperation : OperationResult
                 throw new InvalidOperationException("Reached a suspended state where operation cannot be completed.  Consider calling WaitForStatusChange method instead.");
             }
         }
-        while (!HasCompleted);
-    }
-
-    // Note: these have to work for protocol-only, so can't return the status.
-    public Task WaitForStatusChangeAsync(/* TODO: Take polling interval param. */)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void WaitForStatusChange(/* TODO: Take polling interval param. */)
-    {
-        do
-        {
-            _pollingInterval.Wait();
-
-            ClientResult result = GetRun(_requestOptions);
-            PipelineResponse response = result.GetRawResponse();
-
-            ApplyUpdate(response);
-        }
-        while (!_statusChangedFromLastUpdate);
+        while (!IsCompleted);
     }
 
     private void ApplyUpdate(PipelineResponse response)
     {
         string status = GetStatus(response);
 
-        HasCompleted = GetHasCompleted(status);
+        IsCompleted = GetIsCompleted(status);
         _statusChangedFromLastUpdate = _status != status;
         _status = status;
         SetRawResponse(response);
@@ -123,7 +98,7 @@ public partial class ThreadRunOperation : OperationResult
         return doc.RootElement.GetProperty("status"u8).GetString()!;
     }
 
-    private static bool GetHasCompleted(string status)
+    private static bool GetIsCompleted(string status)
     {
         bool hasCompleted =
             status == "expired" ||
@@ -135,6 +110,7 @@ public partial class ThreadRunOperation : OperationResult
         return hasCompleted;
     }
 
+    #region protocol methods
     /// <summary>
     /// [Protocol Method] Retrieves a run.
     /// </summary>
@@ -446,4 +422,5 @@ public partial class ThreadRunOperation : OperationResult
 
     private static PipelineMessageClassifier? _pipelineMessageClassifier200;
     private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+    #endregion
 }
