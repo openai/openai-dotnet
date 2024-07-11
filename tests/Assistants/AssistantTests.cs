@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net.ServerSentEvents;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;
@@ -983,13 +984,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
 
         ThreadRunOperation runOperation = client.CreateRun(thread.Id, content);
-        //Validate(runOperation);
-
-        //Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
-        //Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
-        //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
-        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-
+        
         PipelineResponse response = runOperation.GetRawResponse();
         using JsonDocument createdJsonDoc = JsonDocument.Parse(response.Content);
         string runId = createdJsonDoc.RootElement.GetProperty("id"u8).GetString()!;
@@ -1008,6 +1003,91 @@ public partial class AssistantTests
         string status = completedJsonDoc.RootElement.GetProperty("status"u8).GetString()!;
 
         Assert.That(status, Is.EqualTo(RunStatus.Completed.ToString()));
+        Assert.That(runOperation.IsCompleted, Is.True);
+
+        messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
+    }
+
+    [Test]
+    public async Task CanWaitForThreadRunToComplete_ProtocolOnly_Streaming()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        // Create streaming
+        string json = $"{{\"assistant_id\":\"{assistant.Id}\", \"stream\":true}}";
+        BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
+        RequestOptions options = new() { BufferResponse = false };
+
+        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content, options);
+
+        // For streaming on protocol, if you call Wait, it will throw.
+        Assert.Throws<NotSupportedException>(() => runOperation.Wait());
+
+        // Instead, callers must get the response stream and parse it.
+        PipelineResponse response = runOperation.GetRawResponse();
+        IAsyncEnumerable<SseItem<byte[]>> events = SseParser.Create(
+                response.ContentStream,
+                (_, bytes) => bytes.ToArray()).EnumerateAsync();
+
+        bool first = true;
+        string runId = default;
+        string status = default;
+
+        PageResult<ThreadMessage> messagesPage = default;
+
+        await foreach (var sseItem in events)
+        {
+            if (BinaryData.FromBytes(sseItem.Data).ToString() == "[DONE]")
+            {
+                continue;
+            }
+
+            using JsonDocument doc = JsonDocument.Parse(sseItem.Data);
+
+            if (first)
+            {
+                Assert.That(sseItem.EventType, Is.EqualTo("thread.run.created"));
+
+                runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+                runsPage = client.GetRuns(thread).GetCurrentPage();
+                Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+                Assert.That(runsPage.Values[0].Id, Is.EqualTo(runId));
+
+                messagesPage = client.GetMessages(thread).GetCurrentPage();
+                Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
+
+                first = false;
+            }
+
+            string prefix = sseItem.EventType.AsSpan().Slice(0, 11).ToString();
+            string suffix = sseItem.EventType.AsSpan().Slice(11).ToString();
+            if (prefix == "thread.run." && !suffix.Contains("step."))
+            {
+                status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+                // Note: the below doesn't work because 'created' isn't a valid status.
+                //Assert.That(suffix, Is.EqualTo(status));
+            }
+        }
+
+        Assert.That(status, Is.EqualTo(RunStatus.Completed.ToString()));
+
+        // TODO: How to update IsCompleted if the end-user parses the stream?
+        //Assert.That(runOperation.IsCompleted, Is.True);
 
         messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.EqualTo(2));

@@ -20,6 +20,8 @@ public partial class ThreadRunOperation : OperationResult
 
     private readonly PollingInterval _pollingInterval;
 
+    private bool _isStreaming;
+
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -28,7 +30,23 @@ public partial class ThreadRunOperation : OperationResult
     {
         _endpoint = endpoint;   
         _pollingInterval = new();
+
+        if (response.Headers.TryGetValue("Content-Type", out string? contentType))
+        {
+            _isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
     }
+
+    //public override bool IsCompleted {
+    //    get
+    //    { 
+    //        if (!_isStreaming)
+    //        {
+    //            return base.IsCompleted;
+    //        }
+    //    }
+    //    protected set => base.IsCompleted = value; 
+    //}
 
     // Note: these have to work for protocol-only.
     public override Task WaitAsync(CancellationToken cancellationToken = default)
@@ -39,10 +57,20 @@ public partial class ThreadRunOperation : OperationResult
     public override void Wait(CancellationToken cancellationToken = default)
     {
         // TODO: if don't have a response yet, get that first and ApplyUpdate.
+        PipelineResponse response = GetRawResponse();
+
+        // Or, if the response we have is a streaming response, throw
+        // NotSupportedException since we would have to read from the string
+        // to get the run ID to poll for.
+
+        if (_isStreaming)
+        {
+            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        }
 
         if (_threadId == null || _runId == null)
         {
-            ApplyUpdate(GetRawResponse());
+            ApplyUpdate(response);
         }
 
         if (_threadId == null || _runId == null)
@@ -58,7 +86,7 @@ public partial class ThreadRunOperation : OperationResult
 
             // TODO: RequestOptions/CancellationToken logic around this ... ?
             ClientResult result = GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
-            PipelineResponse response = result.GetRawResponse();
+            response = result.GetRawResponse();
 
             ApplyUpdate(response);
 
