@@ -12,8 +12,11 @@ namespace OpenAI.Assistants;
 // Protocol version
 public partial class ThreadRunOperation : OperationResult
 {
-    private readonly Uri _endpoint;
+    // TODO: fix this
+    protected readonly Uri _endpoint;
 
+    // TODO: Note, convenience type will make these public.  Right now we have 
+    // them in two places.
     private string? _threadId;
     private string? _runId;
     private string? _status;
@@ -24,6 +27,18 @@ public partial class ThreadRunOperation : OperationResult
 
     private readonly bool _isStreaming;
 
+    // For use with convenience methods
+    internal ThreadRunOperation(ClientPipeline pipeline, Uri endpoint)
+        : base(pipeline)
+    {
+        _endpoint = endpoint;
+        _pollingInterval = new();
+
+        // We'd only do this if we were in a streaming convenience subtype.
+        _isStreaming = true;
+    }
+
+    // For use with protocol methods where the response has been obtained
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,

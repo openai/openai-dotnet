@@ -234,6 +234,7 @@ public partial class AssistantClient
         RunCreationOptions options = null)
         => CreateRun(returnWhen, thread?.Id, assistant?.Id, options);
 
+    // TODO: is async variant needed if OperationResult has sync and async methods?
     ///// <summary>
     ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
     ///// <see cref="Assistant"/>.
@@ -247,18 +248,18 @@ public partial class AssistantClient
     //    RunCreationOptions options = null)
     //        => CreateRunStreamingAsync(thread?.Id, assistant?.Id, options);
 
-    ///// <summary>
-    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    ///// <see cref="Assistant"/>.
-    ///// </summary>
-    ///// <param name="thread"> The thread that the run should evaluate. </param>
-    ///// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
-    ///// <param name="options"> Additional options for the run. </param>
-    //public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
-    //    AssistantThread thread,
-    //    Assistant assistant,
-    //    RunCreationOptions options = null)
-    //        => CreateRunStreaming(thread?.Id, assistant?.Id, options);
+    /// <summary>
+    /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
+    /// <see cref="Assistant"/>.
+    /// </summary>
+    /// <param name="thread"> The thread that the run should evaluate. </param>
+    /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
+    /// <param name="options"> Additional options for the run. </param>
+    public virtual StreamingThreadRunOperation CreateRunStreaming(
+        AssistantThread thread,
+        Assistant assistant,
+        RunCreationOptions options = null)
+            => CreateRunStreaming(thread?.Id, assistant?.Id, options);
 
     /// <summary>
     /// Creates a new thread and immediately begins a run against it using the specified <see cref="Assistant"/>.

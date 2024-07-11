@@ -670,7 +670,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
+    public virtual StreamingThreadRunOperation CreateRunStreaming(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -683,9 +683,16 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
+        BinaryContent content = options.ToBinaryContent();
 
-        return new StreamingUpdateCollection(getResult);
+        async Task<ClientResult> getResultAsync() =>
+            await _runSubClient.CreateRunAsync(threadId, content, cancellationToken.ToRequestOptions())
+            .ConfigureAwait(false);
+
+        ClientResult getResult() =>
+            _runSubClient.CreateRun(threadId, content, cancellationToken.ToRequestOptions());
+
+        return new StreamingThreadRunOperation(_pipeline, _endpoint, getResultAsync, getResult);
     }
 
     /// <summary>
