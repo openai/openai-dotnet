@@ -2,6 +2,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -123,6 +124,49 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         foreach (StreamingUpdate update in updates)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (update is RunUpdate runUpdate)
+            {
+                ApplyUpdate(runUpdate);
+            }
+
+            yield return update;
+        }
+    }
+
+    // TODO: the below is the equivalent of "GetUpdatesStreaming"; what is the 
+    // equivalent of Wait?
+
+    public virtual async IAsyncEnumerable<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+        IEnumerable<ToolOutput> toolOutputs,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (ThreadId is null || RunId is null)
+        {
+            throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
+        }
+
+        BinaryContent content = new InternalSubmitToolOutputsRunRequest(
+            toolOutputs.ToList(), stream: true, null).ToBinaryContent();
+
+        // TODO: can we do this the same way as this in the other method instead
+        // of having to take all those funcs?
+        async Task<ClientResult> getResultAsync() =>
+            await SubmitToolOutputsToRunAsync(ThreadId, RunId, content, cancellationToken.ToRequestOptions(streaming: true))
+            .ConfigureAwait(false);
+
+        // TODO: Ensure we call SetRawResponse for the current operation.
+        // Note: we'll want to do this for the protocol implementation of this method
+        // as well.
+
+        // Return the updates as a stream but also update the state as each is returned.
+
+        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
+
+        await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
+        {
+            // TODO: we should only need to set this once, can optimize.s
+            SetRawResponse(updates.GetRawResponse());
 
             if (update is RunUpdate runUpdate)
             {
