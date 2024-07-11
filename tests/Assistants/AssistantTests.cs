@@ -984,7 +984,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
 
         ThreadRunOperation runOperation = client.CreateRun(thread.Id, content);
-        
+
         PipelineResponse response = runOperation.GetRawResponse();
         using JsonDocument createdJsonDoc = JsonDocument.Parse(response.Content);
         string runId = createdJsonDoc.RootElement.GetProperty("id"u8).GetString()!;
@@ -1086,8 +1086,8 @@ public partial class AssistantTests
 
         Assert.That(status, Is.EqualTo(RunStatus.Completed.ToString()));
 
-        // TODO: How to update IsCompleted if the end-user parses the stream?
-        //Assert.That(runOperation.IsCompleted, Is.True);
+        // For streaming on protocol, if you read IsCompleted, it will throw.
+        Assert.Throws<NotSupportedException>(() => { bool b = runOperation.IsCompleted; });
 
         messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.EqualTo(2));

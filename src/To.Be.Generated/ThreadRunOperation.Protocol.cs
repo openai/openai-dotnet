@@ -18,9 +18,11 @@ public partial class ThreadRunOperation : OperationResult
     private string? _runId;
     private string? _status;
 
+    private bool _isCompleted;
+
     private readonly PollingInterval _pollingInterval;
 
-    private bool _isStreaming;
+    private readonly bool _isStreaming;
 
     internal ThreadRunOperation(
         ClientPipeline pipeline,
@@ -28,7 +30,7 @@ public partial class ThreadRunOperation : OperationResult
         PipelineResponse response)
         : base(pipeline, response)
     {
-        _endpoint = endpoint;   
+        _endpoint = endpoint;
         _pollingInterval = new();
 
         if (response.Headers.TryGetValue("Content-Type", out string? contentType))
@@ -37,16 +39,20 @@ public partial class ThreadRunOperation : OperationResult
         }
     }
 
-    //public override bool IsCompleted {
-    //    get
-    //    { 
-    //        if (!_isStreaming)
-    //        {
-    //            return base.IsCompleted;
-    //        }
-    //    }
-    //    protected set => base.IsCompleted = value; 
-    //}
+    public override bool IsCompleted
+    {
+        get
+        {
+            if (_isStreaming)
+            {
+                throw new NotSupportedException("Cannot obtain operation status from streaming operation.");
+            }
+
+            return _isCompleted;
+        }
+
+        protected set => _isCompleted = value;
+    }
 
     // Note: these have to work for protocol-only.
     public override Task WaitAsync(CancellationToken cancellationToken = default)
