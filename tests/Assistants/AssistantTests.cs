@@ -1220,6 +1220,63 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
+
+    [Test]
+    public async Task CanGetStreamingUpdates_Convenience_Streaming()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        // Create streaming
+        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
+
+        // Before the response stream has been enumerated, all the public properties
+        // should still be null.
+        Assert.That(runOperation.IsCompleted, Is.False);
+        Assert.That(runOperation.ThreadId, Is.Null);
+        Assert.That(runOperation.RunId, Is.Null);
+        Assert.That(runOperation.Status, Is.Null);
+        Assert.That(runOperation.Value, Is.Null);
+
+        // Instead of calling Wait for the operation to complete, manually 
+        // enumerate the updates from the update stream.
+        IAsyncEnumerable<StreamingUpdate> updates = runOperation.GetUpdatesStreamingAsync();
+        await foreach (StreamingUpdate update in updates)
+        {
+            // TODO: we could print messages here, but not critical ATM.
+        }
+
+        // TODO: add this back once conveniences are available
+        //ThreadRun retrievedRun = runOperation.GetRun(thread.Id, runOperation.RunId, options: default);
+        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
+
+        runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
+
+        Assert.That(runOperation.IsCompleted, Is.True);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(runOperation.Value.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
+
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+        messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
+    }
+
+
     #endregion
 
     [TearDown]

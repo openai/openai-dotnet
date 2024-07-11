@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +22,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     private readonly Func<Task<ClientResult>> _getResultAsync;
     private readonly Func<ClientResult> _getResult;
 
-    // TODO: don't have this in two places.
+    // TODO: don't have this field in two places.
     private bool _isCompleted;
 
     internal StreamingThreadRunOperation(
@@ -44,6 +46,8 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     public override async Task WaitAsync(CancellationToken cancellationToken = default)
     {
+        // TODO: add validation that stream is only requested and enumerated once!
+
         // Create an instance of an IAsyncEnumerable<StreamingUpdate>
         AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_getResultAsync);
 
@@ -59,7 +63,19 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        // Create an instance of an IAsyncEnumerable<StreamingUpdate>
+        StreamingUpdateCollection updates = new StreamingUpdateCollection(_getResult);
+
+        // Enumerate those updates and update the state for each one
+        foreach (StreamingUpdate update in updates)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (update is RunUpdate runUpdate)
+            {
+                ApplyUpdate(runUpdate);
+            }
+        }
     }
 
     private void ApplyUpdate(RunUpdate update)
@@ -81,6 +97,43 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         // Set IsCompleted
         IsCompleted = update.Value.Status == RunStatus.Completed;
     }
+
+    // Public APIs specific to streaming LRO
+    public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_getResultAsync);
+
+        // Enumerate those updates and update the state for each one
+        await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
+        {
+            if (update is RunUpdate runUpdate)
+            {
+                ApplyUpdate(runUpdate);
+            }
+
+            yield return update;
+        }
+    }
+
+    public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
+    {
+        StreamingUpdateCollection updates = new StreamingUpdateCollection(_getResult);
+
+        // Enumerate those updates and update the state for each one
+        foreach (StreamingUpdate update in updates)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (update is RunUpdate runUpdate)
+            {
+                ApplyUpdate(runUpdate);
+            }
+
+            yield return update;
+        }
+    }
+
+    #region hide
 
     //// used to defer first request.
     //internal virtual async Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions? options = null)
@@ -124,4 +177,5 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     //private static PipelineMessageClassifier? _pipelineMessageClassifier200;
     //private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+    #endregion
 }
