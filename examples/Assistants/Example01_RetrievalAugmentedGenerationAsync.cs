@@ -1,144 +1,144 @@
-﻿using NUnit.Framework;
-using OpenAI.Assistants;
-using OpenAI.Files;
-using System;
-using System.ClientModel;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+﻿//using NUnit.Framework;
+//using OpenAI.Assistants;
+//using OpenAI.Files;
+//using System;
+//using System.ClientModel;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Threading;
+//using System.Threading.Tasks;
 
-namespace OpenAI.Examples;
+//namespace OpenAI.Examples;
 
-public partial class AssistantExamples
-{
-    [Test]
-    public async Task Example01_RetrievalAugmentedGenerationAsync()
-    {
-        // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
-        OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        FileClient fileClient = openAIClient.GetFileClient();
-        AssistantClient assistantClient = openAIClient.GetAssistantClient();
+//public partial class AssistantExamples
+//{
+//    [Test]
+//    public async Task Example01_RetrievalAugmentedGenerationAsync()
+//    {
+//        // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
+//#pragma warning disable OPENAI001
+//        OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+//        FileClient fileClient = openAIClient.GetFileClient();
+//        AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
-        // First, let's contrive a document we'll use retrieval with and upload it.
-        using Stream document = BinaryData.FromString("""
-            {
-                "description": "This document contains the sale history data for Contoso products.",
-                "sales": [
-                    {
-                        "month": "January",
-                        "by_product": {
-                            "113043": 15,
-                            "113045": 12,
-                            "113049": 2
-                        }
-                    },
-                    {
-                        "month": "February",
-                        "by_product": {
-                            "113045": 22
-                        }
-                    },
-                    {
-                        "month": "March",
-                        "by_product": {
-                            "113045": 16,
-                            "113055": 5
-                        }
-                    }
-                ]
-            }
-            """).ToStream();
+//        // First, let's contrive a document we'll use retrieval with and upload it.
+//        using Stream document = BinaryData.FromString("""
+//            {
+//                "description": "This document contains the sale history data for Contoso products.",
+//                "sales": [
+//                    {
+//                        "month": "January",
+//                        "by_product": {
+//                            "113043": 15,
+//                            "113045": 12,
+//                            "113049": 2
+//                        }
+//                    },
+//                    {
+//                        "month": "February",
+//                        "by_product": {
+//                            "113045": 22
+//                        }
+//                    },
+//                    {
+//                        "month": "March",
+//                        "by_product": {
+//                            "113045": 16,
+//                            "113055": 5
+//                        }
+//                    }
+//                ]
+//            }
+//            """).ToStream();
 
-        OpenAIFileInfo salesFile = await fileClient.UploadFileAsync(
-            document,
-            "monthly_sales.json",
-            FileUploadPurpose.Assistants);
+//        OpenAIFileInfo salesFile = await fileClient.UploadFileAsync(
+//            document,
+//            "monthly_sales.json",
+//            FileUploadPurpose.Assistants);
 
-        // Now, we'll create a client intended to help with that data
-        AssistantCreationOptions assistantOptions = new()
-        {
-            Name = "Example: Contoso sales RAG",
-            Instructions =
-                "You are an assistant that looks up sales data and helps visualize the information based"
-                + " on user queries. When asked to generate a graph, chart, or other visualization, use"
-                + " the code interpreter tool to do so.",
-            Tools =
-            {
-                new FileSearchToolDefinition(),
-                new CodeInterpreterToolDefinition(),
-            },
-            ToolResources = new()
-            {
-                FileSearch = new()
-                {
-                    NewVectorStores =
-                    {
-                        new VectorStoreCreationHelper([salesFile.Id]),
-                    }
-                }
-            },
-        };
+//        // Now, we'll create a client intended to help with that data
+//        AssistantCreationOptions assistantOptions = new()
+//        {
+//            Name = "Example: Contoso sales RAG",
+//            Instructions =
+//                "You are an assistant that looks up sales data and helps visualize the information based"
+//                + " on user queries. When asked to generate a graph, chart, or other visualization, use"
+//                + " the code interpreter tool to do so.",
+//            Tools =
+//            {
+//                new FileSearchToolDefinition(),
+//                new CodeInterpreterToolDefinition(),
+//            },
+//            ToolResources = new()
+//            {
+//                FileSearch = new()
+//                {
+//                    NewVectorStores =
+//                    {
+//                        new VectorStoreCreationHelper([salesFile.Id]),
+//                    }
+//                }
+//            },
+//        };
 
-        Assistant assistant = await assistantClient.CreateAssistantAsync("gpt-4o", assistantOptions);
+//        Assistant assistant = await assistantClient.CreateAssistantAsync("gpt-4o", assistantOptions);
 
-        // Now we'll create a thread with a user query about the data already associated with the assistant, then run it
-        ThreadCreationOptions threadOptions = new()
-        {
-            InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
-        };
+//        // Now we'll create a thread with a user query about the data already associated with the assistant, then run it
+//        ThreadCreationOptions threadOptions = new()
+//        {
+//            InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
+//        };
 
-        ThreadRunOperation runOperation = await assistantClient.CreateThreadAndRunAsync(ReturnWhen.Completed, assistant.Id, threadOptions);
+//        ThreadRunOperation runOperation = await assistantClient.CreateThreadAndRunAsync(ReturnWhen.Completed, assistant.Id, threadOptions);
 
-        // Finally, we'll print out the full history for the thread that includes the augmented generation
-        AsyncPageCollection<ThreadMessage> messagePages
-            = assistantClient.GetMessagesAsync(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
-        IAsyncEnumerable<ThreadMessage> messages = messagePages.GetAllValuesAsync();
+//        // Finally, we'll print out the full history for the thread that includes the augmented generation
+//        AsyncPageCollection<ThreadMessage> messagePages
+//            = assistantClient.GetMessagesAsync(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+//        IAsyncEnumerable<ThreadMessage> messages = messagePages.GetAllValuesAsync();
 
-        await foreach (ThreadMessage message in messages)
-        {
-            Console.Write($"[{message.Role.ToString().ToUpper()}]: ");
-            foreach (MessageContent contentItem in message.Content)
-            {
-                if (!string.IsNullOrEmpty(contentItem.Text))
-                {
-                    Console.WriteLine($"{contentItem.Text}");
+//        await foreach (ThreadMessage message in messages)
+//        {
+//            Console.Write($"[{message.Role.ToString().ToUpper()}]: ");
+//            foreach (MessageContent contentItem in message.Content)
+//            {
+//                if (!string.IsNullOrEmpty(contentItem.Text))
+//                {
+//                    Console.WriteLine($"{contentItem.Text}");
 
-                    if (contentItem.TextAnnotations.Count > 0)
-                    {
-                        Console.WriteLine();
-                    }
+//                    if (contentItem.TextAnnotations.Count > 0)
+//                    {
+//                        Console.WriteLine();
+//                    }
 
-                    // Include annotations, if any.
-                    foreach (TextAnnotation annotation in contentItem.TextAnnotations)
-                    {
-                        if (!string.IsNullOrEmpty(annotation.InputFileId))
-                        {
-                            Console.WriteLine($"* File citation, file ID: {annotation.InputFileId}");
-                        }
-                        if (!string.IsNullOrEmpty(annotation.OutputFileId))
-                        {
-                            Console.WriteLine($"* File output, new file ID: {annotation.OutputFileId}");
-                        }
-                    }
-                }
-                if (!string.IsNullOrEmpty(contentItem.ImageFileId))
-                {
-                    OpenAIFileInfo imageInfo = await fileClient.GetFileAsync(contentItem.ImageFileId);
-                    BinaryData imageBytes = await fileClient.DownloadFileAsync(contentItem.ImageFileId);
-                    using FileStream stream = File.OpenWrite($"{imageInfo.Filename}.png");
-                    imageBytes.ToStream().CopyTo(stream);
+//                    // Include annotations, if any.
+//                    foreach (TextAnnotation annotation in contentItem.TextAnnotations)
+//                    {
+//                        if (!string.IsNullOrEmpty(annotation.InputFileId))
+//                        {
+//                            Console.WriteLine($"* File citation, file ID: {annotation.InputFileId}");
+//                        }
+//                        if (!string.IsNullOrEmpty(annotation.OutputFileId))
+//                        {
+//                            Console.WriteLine($"* File output, new file ID: {annotation.OutputFileId}");
+//                        }
+//                    }
+//                }
+//                if (!string.IsNullOrEmpty(contentItem.ImageFileId))
+//                {
+//                    OpenAIFileInfo imageInfo = await fileClient.GetFileAsync(contentItem.ImageFileId);
+//                    BinaryData imageBytes = await fileClient.DownloadFileAsync(contentItem.ImageFileId);
+//                    using FileStream stream = File.OpenWrite($"{imageInfo.Filename}.png");
+//                    imageBytes.ToStream().CopyTo(stream);
 
-                    Console.WriteLine($"<image: {imageInfo.Filename}.png>");
-                }
-            }
-            Console.WriteLine();
-        }
+//                    Console.WriteLine($"<image: {imageInfo.Filename}.png>");
+//                }
+//            }
+//            Console.WriteLine();
+//        }
 
-        // Optionally, delete any persistent resources you no longer need.
-        _ = await assistantClient.DeleteThreadAsync(runOperation.ThreadId);
-        _ = await assistantClient.DeleteAssistantAsync(assistant);
-        _ = await fileClient.DeleteFileAsync(salesFile);
-    }
-}
+//        // Optionally, delete any persistent resources you no longer need.
+//        _ = await assistantClient.DeleteThreadAsync(runOperation.ThreadId);
+//        _ = await assistantClient.DeleteAssistantAsync(assistant);
+//        _ = await fileClient.DeleteFileAsync(salesFile);
+//    }
+//}

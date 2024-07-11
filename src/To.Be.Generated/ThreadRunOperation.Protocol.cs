@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +13,12 @@ namespace OpenAI.Assistants;
 public partial class ThreadRunOperation : OperationResult
 {
     private readonly Uri _endpoint;
-    
-    private string _status;
+
+    private string? _threadId;
+    private string? _runId;
+    private string? _status;
 
     private readonly PollingInterval _pollingInterval;
-    private bool _statusChangedFromLastUpdate;
-
-    // TODO: Add RehydrationToken to this.
-    // It doesn't have a streaming equivalent.
 
     internal ThreadRunOperation(
         ClientPipeline pipeline,
@@ -29,29 +26,8 @@ public partial class ThreadRunOperation : OperationResult
         PipelineResponse response)
         : base(pipeline, response)
     {
-        //Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        
-        //_threadId = threadId;
-
-        //// Protocol level: get values needed to create subclient from response
-        //using JsonDocument doc = JsonDocument.Parse(response.Content);
-        //_runId = doc.RootElement.GetProperty("id"u8).GetString()!;
-
-        _endpoint = endpoint;
-        
-        _status = GetStatus(response);
-
+        _endpoint = endpoint;   
         _pollingInterval = new();
-    }
-
-    public override Task StartAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Start()
-    {
-        throw new NotImplementedException();
     }
 
     // Note: these have to work for protocol-only.
@@ -62,6 +38,18 @@ public partial class ThreadRunOperation : OperationResult
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
+        // TODO: if don't have a response yet, get that first and ApplyUpdate.
+
+        if (_threadId == null || _runId == null)
+        {
+            ApplyUpdate(GetRawResponse());
+        }
+
+        if (_threadId == null || _runId == null)
+        {
+            throw new InvalidOperationException("ThreadId or RunId is not set.");
+        }
+
         do
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -69,7 +57,7 @@ public partial class ThreadRunOperation : OperationResult
             _pollingInterval.Wait();
 
             // TODO: RequestOptions/CancellationToken logic around this ... ?
-            ClientResult result = GetRun(cancellationToken.ToRequestOptions());
+            ClientResult result = GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
             PipelineResponse response = result.GetRawResponse();
 
             ApplyUpdate(response);
@@ -84,18 +72,15 @@ public partial class ThreadRunOperation : OperationResult
 
     private void ApplyUpdate(PipelineResponse response)
     {
-        string status = GetStatus(response);
-
-        IsCompleted = GetIsCompleted(status);
-        _statusChangedFromLastUpdate = _status != status;
-        _status = status;
-        SetRawResponse(response);
-    }
-
-    private static string GetStatus(PipelineResponse response)
-    {
         using JsonDocument doc = JsonDocument.Parse(response.Content);
-        return doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        _status = doc.RootElement.GetProperty("status"u8).GetString();
+        _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
+        _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
+
+        IsCompleted = GetIsCompleted(_status!);
+
+        SetRawResponse(response);
     }
 
     private static bool GetIsCompleted(string status)
@@ -111,81 +96,122 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     #region protocol methods
+
     /// <summary>
     /// [Protocol Method] Retrieves a run.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunAsync(RequestOptions? options)
+    public virtual async Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
     /// [Protocol Method] Retrieves a run.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetRun(RequestOptions? options)
+    public virtual ClientResult GetRun(string threadId, string runId, RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetRunRequest(_threadId, _runId, options);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
     /// [Protocol Method] Modifies a run.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to modify. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> ModifyRunAsync(BinaryContent content, RequestOptions? options = null)
+    public virtual async Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNull(content, nameof(content));
 
-        using PipelineMessage message = CreateModifyRunRequest(_threadId, _runId, content, options);
+        using PipelineMessage message = CreateModifyRunRequest(threadId, runId, content, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
     /// [Protocol Method] Modifies a run.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to modify. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult ModifyRun(BinaryContent content, RequestOptions? options = null)
+    public virtual ClientResult ModifyRun(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNull(content, nameof(content));
 
-        using PipelineMessage message = CreateModifyRunRequest(_threadId, _runId, content, options);
+        using PipelineMessage message = CreateModifyRunRequest(threadId, runId, content, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
     /// [Protocol Method] Cancels a run that is `in_progress`.
     /// </summary>
+    /// <param name="threadId"> The ID of the thread to which this run belongs. </param>
+    /// <param name="runId"> The ID of the run to cancel. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> CancelRunAsync(RequestOptions? options)
+    public virtual async Task<ClientResult> CancelRunAsync(string threadId, string runId, RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelRunRequest(_threadId, _runId, options);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateCancelRunRequest(threadId, runId, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
     /// [Protocol Method] Cancels a run that is `in_progress`.
     /// </summary>
+    /// <param name="threadId"> The ID of the thread to which this run belongs. </param>
+    /// <param name="runId"> The ID of the run to cancel. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult CancelRun(RequestOptions? options)
+    public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelRunRequest(_threadId, _runId, options);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateCancelRunRequest(threadId, runId, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
@@ -194,18 +220,24 @@ public partial class ThreadRunOperation : OperationResult
     /// `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once
     /// they're all completed. All outputs must be submitted in a single request.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) to which this run belongs. </param>
+    /// <param name="runId"> The ID of the run that requires the tool output submission. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> SubmitToolOutputsToRunAsync(BinaryContent content, RequestOptions? options = null)
+    public virtual async Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNull(content, nameof(content));
 
         PipelineMessage? message = null;
         try
         {
-            message = CreateSubmitToolOutputsToRunRequest(_threadId, _runId, content, options);
+            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
@@ -222,18 +254,24 @@ public partial class ThreadRunOperation : OperationResult
     /// `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once
     /// they're all completed. All outputs must be submitted in a single request.
     /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) to which this run belongs. </param>
+    /// <param name="runId"> The ID of the run that requires the tool output submission. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult SubmitToolOutputsToRun(BinaryContent content, RequestOptions? options = null)
+    public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNull(content, nameof(content));
 
         PipelineMessage? message = null;
         try
         {
-            message = CreateSubmitToolOutputsToRunRequest(_threadId, _runId, content, options);
+            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
         finally
@@ -245,45 +283,119 @@ public partial class ThreadRunOperation : OperationResult
         }
     }
 
-    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    /// <summary>
+    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual async Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions? options)
     {
-        PageResultEnumerator enumerator = new RunStepsPageEnumerator(Pipeline, _endpoint, _threadId, _runId, limit, order, after, before, options);
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    public virtual IEnumerable<ClientResult> GetRunSteps(int? limit, string order, string after, string before, RequestOptions options)
+    /// <summary>
+    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions? options)
     {
-        PageResultEnumerator enumerator = new RunStepsPageEnumerator(Pipeline, _endpoint, _threadId, _runId, limit, order, after, before, options);
-        return PageCollectionHelpers.Create(enumerator);
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
     /// [Protocol Method] Retrieves a run step.
     /// </summary>
+    /// <param name="threadId"> The ID of the thread to which the run and run step belongs. </param>
+    /// <param name="runId"> The ID of the run to which the run step belongs. </param>
     /// <param name="stepId"> The ID of the run step to retrieve. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunStepAsync( string stepId, RequestOptions options)
+    public virtual async Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions? options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-        using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
+        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
     /// [Protocol Method] Retrieves a run step.
     /// </summary>
+    /// <param name="threadId"> The ID of the thread to which the run and run step belongs. </param>
+    /// <param name="runId"> The ID of the run to which the run step belongs. </param>
     /// <param name="stepId"> The ID of the run step to retrieve. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetRunStep(string stepId, RequestOptions? options)
+    public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions? options)
     {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-        using PipelineMessage message = CreateGetRunStepRequest(_threadId, _runId, stepId, options);
+        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 

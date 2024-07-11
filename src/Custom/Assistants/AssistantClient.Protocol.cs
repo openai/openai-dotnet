@@ -333,34 +333,37 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-    public virtual async Task<OperationResult> CreateRunAsync(
+    public virtual async Task<ThreadRunOperation> CreateRunAsync(
         string threadId,
         BinaryContent content,
         RequestOptions options = null)
     {
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
+        return new ThreadRunOperation(_pipeline, _endpoint, response);
 
-        // Is it polling or streaming?
-        if (!response.Headers.TryGetValue("Content-Type", out string contentType))
-        {
-            throw new ClientResultException("Response did not contain 'Content-Type' header.");
-        }
+        //// Is it polling or streaming?
+        //if (!response.Headers.TryGetValue("Content-Type", out string contentType))
+        //{
+        //    throw new ClientResultException("Response did not contain 'Content-Type' header.");
+        //}
 
-        return contentType switch
-        {
-            "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
-            "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
-            _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
-        };
+        //return contentType switch
+        //{
+        //    "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
+        //    "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
+        //    _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
+        //};
     }
 
-    public virtual OperationResult CreateRun(
+    public virtual ThreadRunOperation CreateRun(
         string threadId,
         BinaryContent content,
         RequestOptions options = null)
     {
-        throw new NotImplementedException();
+        ClientResult result = _runSubClient.CreateRun(threadId, content, options);
+        PipelineResponse response = result.GetRawResponse();
+        return new ThreadRunOperation(_pipeline, _endpoint, response);
 
         //ClientResult result = _runSubClient.CreateRun(threadId, content, options);
 

@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -964,6 +965,59 @@ public partial class AssistantTests
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs[0].Logs, Is.Not.Null.And.Not.Empty);
     }
 
+    #region LRO Tests
+    [Test]
+    public void CanWaitForThreadRunToComplete_ProtocolOnly()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        string json = $"{{\"assistant_id\":\"{assistant.Id}\"}}";
+        BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
+
+        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content);
+        //Validate(runOperation);
+
+        //Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
+        //Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
+        //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
+        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
+
+        PipelineResponse response = runOperation.GetRawResponse();
+        using JsonDocument createdJsonDoc = JsonDocument.Parse(response.Content);
+        string runId = createdJsonDoc.RootElement.GetProperty("id"u8).GetString()!;
+
+        runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runId));
+
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
+
+        runOperation.Wait();
+
+        response = runOperation.GetRawResponse();
+        using JsonDocument completedJsonDoc = JsonDocument.Parse(response.Content);
+        string status = completedJsonDoc.RootElement.GetProperty("status"u8).GetString()!;
+
+        Assert.That(status, Is.EqualTo(RunStatus.Completed.ToString()));
+
+        messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
+    }
+    #endregion
+
     [TearDown]
     protected void Cleanup()
     {
@@ -1029,11 +1083,11 @@ public partial class AssistantTests
         {
             Assert.That(run?.Id, Is.Not.Null);
         }
-        else if (target is ThreadRunOperation runOperation)
-        {
-            Assert.That(runOperation?.ThreadId, Is.Not.Null);
-            Assert.That(runOperation?.RunId, Is.Not.Null);
-        }
+        //else if (target is ThreadRunOperation runOperation)
+        //{
+        //    Assert.That(runOperation?.ThreadId, Is.Not.Null);
+        //    Assert.That(runOperation?.RunId, Is.Not.Null);
+        //}
         else if (target is OpenAIFileInfo file)
         {
             Assert.That(file?.Id, Is.Not.Null);
