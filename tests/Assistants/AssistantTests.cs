@@ -1096,6 +1096,80 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
+
+    [Test]
+    public async Task CanCancelThreadRun_ProtocolOnly_Streaming()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        string threadId = thread.Id;
+        string runId = default;
+
+        // Create streaming
+        string json = $"{{\"assistant_id\":\"{assistant.Id}\", \"stream\":true}}";
+        BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
+        RequestOptions options = new() { BufferResponse = false };
+
+        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content, options);
+
+        // Instead, callers must get the response stream and parse it.
+        PipelineResponse response = runOperation.GetRawResponse();
+        IAsyncEnumerable<SseItem<byte[]>> events = SseParser.Create(
+                response.ContentStream,
+                (_, bytes) => bytes.ToArray()).EnumerateAsync();
+
+        bool first = true;
+        string status = default;
+
+        PageResult<ThreadMessage> messagesPage = default;
+
+        await foreach (var sseItem in events)
+        {
+            if (BinaryData.FromBytes(sseItem.Data).ToString() == "[DONE]")
+            {
+                continue;
+            }
+
+            using JsonDocument doc = JsonDocument.Parse(sseItem.Data);
+
+            if (first)
+            {
+                Assert.That(sseItem.EventType, Is.EqualTo("thread.run.created"));
+
+                runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+
+                runsPage = client.GetRuns(thread).GetCurrentPage();
+                Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+                Assert.That(runsPage.Values[0].Id, Is.EqualTo(runId));
+
+                messagesPage = client.GetMessages(thread).GetCurrentPage();
+                Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
+
+                first = false;
+
+                // Cancel the run while reading the event stream
+                runOperation.CancelRun(threadId, runId, options: default);
+            }
+
+            string prefix = sseItem.EventType.AsSpan().Slice(0, 11).ToString();
+            string suffix = sseItem.EventType.AsSpan().Slice(11).ToString();
+            if (prefix == "thread.run." && !suffix.Contains("step."))
+            {
+                status = doc.RootElement.GetProperty("status"u8).GetString()!;
+            }
+        }
+
+        Assert.That(status, Is.EqualTo(RunStatus.Cancelled.ToString()));
+    }
+
     #endregion
 
     [TearDown]
