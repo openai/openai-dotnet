@@ -9,6 +9,7 @@ namespace OpenAI.Tests.Models;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ModelTests : SyncAsyncTestBase
 {
     public ModelTests(bool isAsync)

@@ -13,6 +13,7 @@ namespace OpenAI.Tests.Batch;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class BatchTests : SyncAsyncTestBase
 {
     public BatchTests(bool isAsync)

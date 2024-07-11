@@ -10,6 +10,7 @@ namespace OpenAI.Tests.Files;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.Fixtures)]
 public partial class FileTests : SyncAsyncTestBase
 {
     public FileTests(bool isAsync) 
@@ -36,45 +37,72 @@ public partial class FileTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task UploadAndDelete()
+    public async Task UploadAndRetrieve()
     {
         FileClient client = GetTestClient();
-        using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
+        string fileContent = "Hello! This is a test text file. Please delete me.";
+        using Stream file = BinaryData.FromString(fileContent).ToStream();
         string filename = "test-file-delete-me.txt";
 
+        // Upload file.
         OpenAIFileInfo uploadedFile = IsAsync
             ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants)
             : client.UploadFile(file, filename, FileUploadPurpose.Assistants);
         Assert.That(uploadedFile, Is.Not.Null);
-        Assert.That(uploadedFile.Filename, Is.EqualTo(filename));
-        Assert.That(uploadedFile.Purpose, Is.EqualTo(OpenAIFilePurpose.Assistants));
 
-        OpenAIFileInfo fileInfo = IsAsync
-            ? await client.GetFileAsync(uploadedFile.Id)
-            : client.GetFile(uploadedFile.Id);
-        Assert.That(fileInfo.Id, Is.EqualTo(uploadedFile.Id));
-        Assert.That(fileInfo.Filename, Is.EqualTo(uploadedFile.Filename));
+        try
+        {
+            Assert.That(uploadedFile.Filename, Is.EqualTo(filename));
+            Assert.That(uploadedFile.Purpose, Is.EqualTo(OpenAIFilePurpose.Assistants));
 
-        bool deleted = IsAsync
-            ? await client.DeleteFileAsync(uploadedFile.Id)
-            : client.DeleteFile(uploadedFile.Id);
-        Assert.That(deleted, Is.True);
+            // Retrieve file.
+            OpenAIFileInfo retrievedFile = IsAsync
+                ? await client.GetFileAsync(uploadedFile.Id)
+                : client.GetFile(uploadedFile.Id);
+            Assert.That(retrievedFile.Id, Is.EqualTo(uploadedFile.Id));
+            Assert.That(retrievedFile.Filename, Is.EqualTo(uploadedFile.Filename));
+        }
+        finally
+        {
+            // Delete file.
+            bool deleted = IsAsync
+                ? await client.DeleteFileAsync(uploadedFile.Id)
+                : client.DeleteFile(uploadedFile.Id);
+            Assert.That(deleted, Is.True);
+        }
     }
 
     [Test]
-    public async Task DownloadContent()
+    public async Task UploadAndDownloadContent()
     {
         FileClient client = GetTestClient();
+        string imagePath = Path.Combine("Assets", "images_dog_and_cat.png");
 
-        OpenAIFileInfo fileInfo = IsAsync
-            ? await client.GetFileAsync("file-S7roYWamZqfMK9D979HU4q6m")
-            : client.GetFile("file-S7roYWamZqfMK9D979HU4q6m");
-        Assert.That(fileInfo, Is.Not.Null);
+        // Upload file.
+        OpenAIFileInfo uploadedFile = IsAsync
+            ? await client.UploadFileAsync(imagePath, FileUploadPurpose.Vision)
+            : client.UploadFile(imagePath, FileUploadPurpose.Vision);
+        Assert.That(uploadedFile, Is.Not.Null);
 
-        BinaryData downloadedContent = IsAsync
-            ? await client.DownloadFileAsync("file-S7roYWamZqfMK9D979HU4q6m")
-            : client.DownloadFile("file-S7roYWamZqfMK9D979HU4q6m");
-        Assert.That(downloadedContent, Is.Not.Null);
+        try
+        {
+            Assert.That(uploadedFile.Filename, Is.EqualTo(imagePath));
+            Assert.That(uploadedFile.Purpose, Is.EqualTo(OpenAIFilePurpose.Vision));
+
+            // Download file content.
+            BinaryData downloadedContent = IsAsync
+                ? await client.DownloadFileAsync(uploadedFile.Id)
+                : client.DownloadFile(uploadedFile.Id);
+            Assert.That(downloadedContent, Is.Not.Null);
+        }
+        finally
+        {
+            // Delete file.
+            bool deleted = IsAsync
+                ? await client.DeleteFileAsync(uploadedFile.Id)
+                : client.DeleteFile(uploadedFile.Id);
+            Assert.That(deleted, Is.True);
+        }
     }
 
     [Test]

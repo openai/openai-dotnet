@@ -1,4 +1,5 @@
-﻿using OpenAI.Assistants;
+﻿using NUnit.Framework;
+using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
@@ -11,6 +12,8 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+[assembly: LevelOfParallelism(8)]
 
 namespace OpenAI.Tests;
 
