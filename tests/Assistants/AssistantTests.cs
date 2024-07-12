@@ -969,7 +969,7 @@ public partial class AssistantTests
 
     #region LRO Tests
     [Test]
-    public void CanWaitForThreadRunToComplete_ProtocolOnly()
+    public void LRO_CanWaitForThreadRunToComplete_ProtocolOnly()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1015,7 +1015,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanWaitForThreadRunToComplete_ProtocolOnly_Streaming()
+    public async Task LRO_CanWaitForThreadRunToComplete_ProtocolOnly_Streaming()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1099,7 +1099,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanCancelThreadRun_ProtocolOnly_Streaming()
+    public async Task LRO_CanCancelThreadRun_ProtocolOnly_Streaming()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1172,7 +1172,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanWaitForThreadRunToComplete_Convenience_Streaming()
+    public async Task LRO_CanWaitForThreadRunToComplete_Convenience_Streaming()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1220,9 +1220,8 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
-
     [Test]
-    public async Task CanGetStreamingUpdates_Convenience_Streaming()
+    public async Task LRO_CanGetStreamingUpdates_Convenience_Streaming()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1276,6 +1275,97 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
+    [Test]
+    public async Task LRO_CanSubmitToolUpdates_Convenience_Streaming()
+    {
+        AssistantClient client = GetTestClient();
+
+        #region Create Assistant with Tools
+
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+        {
+            Tools =
+                {
+                    new FunctionToolDefinition()
+                    {
+                        FunctionName = "get_favorite_food_for_day_of_week",
+                        Description = "gets the user's favorite food for a given day of the week, like Tuesday",
+                        Parameters = BinaryData.FromObjectAsJson(new
+                        {
+                            type = "object",
+                            properties = new
+                            {
+                                day_of_week = new
+                                {
+                                    type = "string",
+                                    description = "a day of the week, like Tuesday or Saturday",
+                                }
+                            }
+                        }),
+                    },
+                },
+        });
+        Validate(assistant);
+        Assert.That(assistant.Tools?.Count, Is.EqualTo(1));
+
+        FunctionToolDefinition responseToolDefinition = assistant.Tools[0] as FunctionToolDefinition;
+        Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
+
+        #endregion
+
+        #region Create Thread
+
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["What should I eat on Thursday?"]);
+        Validate(message);
+
+        #endregion
+
+        // Create run streaming
+        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant,
+            new RunCreationOptions()
+            {
+                AdditionalInstructions = "Call provided tools when appropriate.",
+            });
+
+
+        IAsyncEnumerable<StreamingUpdate> updates = runOperation.GetUpdatesStreamingAsync();
+
+        await foreach (StreamingUpdate update in updates)
+        {
+            // TODO: Find a way to call SubmitToolOutputs here!
+        }
+
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
+        Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
+        Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+        Assert.That(runOperation.Status?.IsTerminal, Is.False);
+
+        IEnumerable<ToolOutput> outputs = new List<ToolOutput> {
+            new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos") };
+
+        updates = runOperation.SubmitToolOutputsToRunStreamingAsync(outputs);
+
+        await foreach (StreamingUpdate update in updates)
+        {
+            // This should run to completion
+        }
+
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+
+        PageCollection<ThreadMessage> messagePages = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
+        PageResult<ThreadMessage> page = messagePages.GetCurrentPage();
+        Assert.That(page.Values.Count, Is.GreaterThan(1));
+        Assert.That(page.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(page.Values[0].Content?[0], Is.Not.Null);
+        Assert.That(page.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
+    }
 
     #endregion
 
