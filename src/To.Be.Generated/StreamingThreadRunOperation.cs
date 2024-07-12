@@ -20,8 +20,8 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     public ThreadRun? Value { get; private set; }
     public RunStatus? Status { get; private set; }
 
-    private readonly Func<Task<ClientResult>> _getResultAsync;
-    private readonly Func<ClientResult> _getResult;
+    private readonly Func<Task<ClientResult>> _createRunAsync;
+    private readonly Func<ClientResult> _createRun;
 
     // TODO: don't have this field in two places.
     private bool _isCompleted;
@@ -31,12 +31,12 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         Uri endpoint,
 
         // Note if we pass funcs we don't need to pass in the pipeline.
-        Func<Task<ClientResult>> getResultAsync,
-        Func<ClientResult> getResult)
+        Func<Task<ClientResult>> createRunAsync,
+        Func<ClientResult> createRun)
         : base(pipeline, endpoint)
     {
-        _getResultAsync = getResultAsync;
-        _getResult = getResult;
+        _createRunAsync = createRunAsync;
+        _createRun = createRun;
     }
 
     public override bool IsCompleted
@@ -50,7 +50,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         // TODO: add validation that stream is only requested and enumerated once!
 
         // Create an instance of an IAsyncEnumerable<StreamingUpdate>
-        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_getResultAsync);
+        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
 
         // Enumerate those updates and update the state for each one
         await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
@@ -65,7 +65,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     public override void Wait(CancellationToken cancellationToken = default)
     {
         // Create an instance of an IAsyncEnumerable<StreamingUpdate>
-        StreamingUpdateCollection updates = new StreamingUpdateCollection(_getResult);
+        StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
 
         // Enumerate those updates and update the state for each one
         foreach (StreamingUpdate update in updates)
@@ -102,7 +102,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     // Public APIs specific to streaming LRO
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_getResultAsync);
+        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
 
         // Enumerate those updates and update the state for each one
         await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
@@ -118,7 +118,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
-        StreamingUpdateCollection updates = new StreamingUpdateCollection(_getResult);
+        StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
 
         // Enumerate those updates and update the state for each one
         foreach (StreamingUpdate update in updates)

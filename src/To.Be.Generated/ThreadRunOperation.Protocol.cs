@@ -77,46 +77,73 @@ public partial class ThreadRunOperation : OperationResult
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
-        // TODO: if don't have a response yet, get that first and ApplyUpdate.
-        PipelineResponse response = GetRawResponse();
-
-        // Or, if the response we have is a streaming response, throw
-        // NotSupportedException since we would have to read from the string
-        // to get the run ID to poll for.
-
         if (_isStreaming)
         {
+            // we would have to read from the string to get the run ID to poll for.
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        if (_threadId == null || _runId == null)
-        {
-            ApplyUpdate(response);
-        }
+        // TODO: if don't have a response yet, get that first and ApplyUpdate.
+        // Consolidate this code to simplify initialization -- we don't want to
+        // wait for the polling interval if we don't have a first response yet.
 
         if (_threadId == null || _runId == null)
         {
-            throw new InvalidOperationException("ThreadId or RunId is not set.");
+            ApplyUpdate(GetRawResponse());
         }
 
+        bool hasNextUpdate;
         do
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
 
-            // TODO: RequestOptions/CancellationToken logic around this ... ?
-            ClientResult result = GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
-            response = result.GetRawResponse();
-
-            ApplyUpdate(response);
-
-            if (_status == "requires_action")
-            {
-                throw new InvalidOperationException("Reached a suspended state where operation cannot be completed.  Consider calling WaitForStatusChange method instead.");
-            }
+            hasNextUpdate = UpdateStatus(cancellationToken);
         }
-        while (!IsCompleted);
+        while (hasNextUpdate);
+
+        if (_status == "requires_action")
+        {
+            throw new InvalidOperationException("Reached a suspended state where operation cannot be completed.  Consider calling WaitForStatusChange method instead.");
+        }
+    }
+
+    public override Task<bool> UpdateStatusAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override bool UpdateStatus(CancellationToken cancellationToken = default)
+    {
+        // This does:
+        //   1. Get update
+        //   2. Apply update
+        //   3. Returns whether to continue polling/has more updates
+
+        ClientResult update = GetUpdate(cancellationToken);
+
+        ApplyUpdate(update.GetRawResponse());
+
+        // Do not continue polling from Wait method if operation is complete,
+        // or input is required, since we would poll forever in either state!
+        return !IsCompleted || _status == "requires_action";
+    }
+
+    private ClientResult GetUpdate(CancellationToken cancellationToken)
+    {
+        if (_threadId == null || _runId == null)
+        {
+            throw new InvalidOperationException("ThreadId or RunId is not set.");
+        }
+
+        // TODO: RequestOptions/CancellationToken logic around this ... ?
+        return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
+    }
+
+    private Task<ClientResult> GetUpdateAsync()
+    {
+        throw new NotImplementedException();
     }
 
     private void ApplyUpdate(PipelineResponse response)
@@ -145,6 +172,70 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     #region protocol methods
+
+    // TODO: Decide whether we want these
+    //// TODO: Note that the CreateRun protocol methods are made internal, i.e. not 
+    //// exposed as part of public API.
+
+    ///// <summary>
+    ///// [Protocol Method] Create a run.
+    ///// </summary>
+    ///// <param name="threadId"> The ID of the thread to run. </param>
+    ///// <param name="content"> The content to send as the body of the request. </param>
+    ///// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    ///// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="content"/> is null. </exception>
+    ///// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    ///// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    ///// <returns> The response returned from the service. </returns>
+    //internal virtual async Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions? options = null)
+    //{
+    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+    //    Argument.AssertNotNull(content, nameof(content));
+
+    //    PipelineMessage? message = null;
+    //    try
+    //    {
+    //        message = CreateCreateRunRequest(threadId, content, options);
+    //        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    //    }
+    //    finally
+    //    {
+    //        if (options?.BufferResponse != false)
+    //        {
+    //            message?.Dispose();
+    //        }
+    //    }
+    //}
+
+    ///// <summary>
+    ///// [Protocol Method] Create a run.
+    ///// </summary>
+    ///// <param name="threadId"> The ID of the thread to run. </param>
+    ///// <param name="content"> The content to send as the body of the request. </param>
+    ///// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    ///// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="content"/> is null. </exception>
+    ///// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    ///// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    ///// <returns> The response returned from the service. </returns>
+    //internal virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions? options = null)
+    //{
+    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+    //    Argument.AssertNotNull(content, nameof(content));
+
+    //    PipelineMessage? message = null;
+    //    try
+    //    {
+    //        message = CreateCreateRunRequest(threadId, content, options);
+    //        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    //    }
+    //    finally
+    //    {
+    //        if (options?.BufferResponse != false)
+    //        {
+    //            message?.Dispose();
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// [Protocol Method] Retrieves a run.
@@ -446,6 +537,25 @@ public partial class ThreadRunOperation : OperationResult
 
         using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    }
+
+    internal PipelineMessage CreateCreateRunRequest(string threadId, BinaryContent content, RequestOptions? options)
+    {
+        var message = Pipeline.CreateMessage();
+        message.ResponseClassifier = PipelineMessageClassifier200;
+        var request = message.Request;
+        request.Method = "POST";
+        var uri = new ClientUriBuilder();
+        uri.Reset(_endpoint);
+        uri.AppendPath("/threads/", false);
+        uri.AppendPath(threadId, true);
+        uri.AppendPath("/runs", false);
+        request.Uri = uri.ToUri();
+        request.Headers.Set("Accept", "application/json");
+        request.Headers.Set("Content-Type", "application/json");
+        request.Content = content;
+        message.Apply(options);
+        return message;
     }
 
     internal PipelineMessage CreateGetRunRequest(string threadId, string runId, RequestOptions? options)
