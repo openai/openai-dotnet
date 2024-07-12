@@ -60,18 +60,24 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
         _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
 
-        while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+        while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
         {
+            // TODO: only have this in one place.
             cancellationToken.ThrowIfCancellationRequested();
-
-            StreamingUpdate update = _updateEnumeratorAsync.Current;
-
-            if (update is RunUpdate runUpdate)
-            {
-                ApplyUpdate(runUpdate);
-            }
         }
-        // TODO: Dispose enumerator
+
+        //while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
+
+        //    StreamingUpdate update = _updateEnumeratorAsync.Current;
+
+        //    if (update is RunUpdate runUpdate)
+        //    {
+        //        ApplyUpdate(runUpdate);
+        //    }
+        //}
+        //// TODO: Dispose enumerator
     }
 
     public override void Wait(CancellationToken cancellationToken = default)
@@ -96,19 +102,30 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     {
         _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
 
-        while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+        while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
         {
+            // TODO: only have this in one place.
             cancellationToken.ThrowIfCancellationRequested();
 
-            StreamingUpdate update = _updateEnumeratorAsync.Current;
-
-            if (update is RunUpdate runUpdate)
-            {
-                ApplyUpdate(runUpdate);
-            }
-
-            yield return update;
+            // Hm ... ?
+            // Note, this could add StreamingUpdate as a public property??
+            // If it's an enumerator, do end-users ever care about what's in Current?
+            yield return _updateEnumeratorAsync.Current;
         }
+
+        //while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
+
+        //    StreamingUpdate update = _updateEnumeratorAsync.Current;
+
+        //    if (update is RunUpdate runUpdate)
+        //    {
+        //        ApplyUpdate(runUpdate);
+        //    }
+
+        //    yield return update;
+        //}
         // TODO: Dispose enumerator
     }
 
@@ -137,8 +154,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         //   2. Apply update
         //   3. Returns whether to continue polling/has more updates
 
-        // TODO: only have this in one place.
-        cancellationToken.ThrowIfCancellationRequested();
+        // TODO: use cancellationToken?  How is it plumbed into MoveNext?
 
         if (!await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
         {
