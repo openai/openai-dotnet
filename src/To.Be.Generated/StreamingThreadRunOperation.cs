@@ -26,6 +26,10 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     // TODO: don't have this field in two places.
     private bool _isCompleted;
 
+    private AsyncStreamingUpdateCollection? _currUpdateCollectionAsync;
+
+    private ContinuableAsyncEnumerator<StreamingUpdate> _updateEnumeratorAsync;
+
     internal StreamingThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -37,6 +41,8 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     {
         _createRunAsync = createRunAsync;
         _createRun = createRun;
+
+        _updateEnumeratorAsync = new(GetAsyncUpdateEnumerator);
     }
 
     public override bool IsCompleted
@@ -79,34 +85,15 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         }
     }
 
-    private void ApplyUpdate(RunUpdate update)
-    {
-        // Set ThreadId
-        ThreadId ??= update.Value.ThreadId;
-
-        // Set RunId
-        RunId ??= update.Value.Id;
-
-        // Set Status
-        Status = update.Value.Status;
-
-        // Set Value
-        Value = update.Value;
-
-        // DON'T SetRawResponse
-
-        // Set IsCompleted
-        IsCompleted = update.Value.Status == RunStatus.Completed;
-    }
-
     // Public APIs specific to streaming LRO
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
+        _currUpdateCollectionAsync = new AsyncStreamingUpdateCollection(_createRunAsync);
 
-        // Enumerate those updates and update the state for each one
-        await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
+        while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
         {
+            StreamingUpdate update = _updateEnumeratorAsync.Current;
+
             if (update is RunUpdate runUpdate)
             {
                 ApplyUpdate(runUpdate);
@@ -114,6 +101,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
             yield return update;
         }
+        // TODO: Dispose enumerator
     }
 
     public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
@@ -134,12 +122,69 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         }
     }
 
+    public override async Task<bool> UpdateStatusAsync(CancellationToken cancellationToken = default)
+    {
+        // This does:
+        //   1. Get update
+        //   2. Apply update
+        //   3. Returns whether to continue polling/has more updates
+
+        if (!await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+        {
+            return false;
+        }
+
+        StreamingUpdate update = _updateEnumeratorAsync.Current;
+        if (update is RunUpdate runUpdate)
+        {
+            ApplyUpdate(runUpdate);
+        }
+
+        // TODO: condition here may not be correct.
+        return !IsCompleted || Status == RunStatus.RequiresAction;
+    }
+
+    public override bool UpdateStatus(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ApplyUpdate(RunUpdate update)
+    {
+        // Set ThreadId
+        ThreadId ??= update.Value.ThreadId;
+
+        // Set RunId
+        RunId ??= update.Value.Id;
+
+        // Set Status
+        Status = update.Value.Status;
+
+        // Set Value
+        Value = update.Value;
+
+        // SetRawResponse
+        if (_currUpdateCollectionAsync is not null)
+        {
+            SetRawResponse(_currUpdateCollectionAsync.GetRawResponse());
+        }
+
+        // Set IsCompleted
+        IsCompleted = update.Value.Status.IsTerminal;
+    }
+
     // TODO: the below is the equivalent of "GetUpdatesStreaming"; what is the 
     // equivalent of Wait?
 
-    public virtual async IAsyncEnumerable<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    private IAsyncEnumerator<StreamingUpdate>? GetAsyncUpdateEnumerator()
+    {
+        return IsCompleted ? null : 
+            _currUpdateCollectionAsync?.GetAsyncEnumerator();
+    }
+
+    public virtual void SubmitToolOutputsToRunStreaming(
         IEnumerable<ToolOutput> toolOutputs,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)
     {
         if (ThreadId is null || RunId is null)
         {
@@ -161,20 +206,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
         // Return the updates as a stream but also update the state as each is returned.
 
-        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
-
-        await foreach (StreamingUpdate update in updates.WithCancellation(cancellationToken))
-        {
-            // TODO: we should only need to set this once, can optimize.s
-            SetRawResponse(updates.GetRawResponse());
-
-            if (update is RunUpdate runUpdate)
-            {
-                ApplyUpdate(runUpdate);
-            }
-
-            yield return update;
-        }
+        _currUpdateCollectionAsync = new AsyncStreamingUpdateCollection(getResultAsync);
     }
 
     #region hide

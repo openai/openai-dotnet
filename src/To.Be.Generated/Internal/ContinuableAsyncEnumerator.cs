@@ -8,12 +8,12 @@ namespace OpenAI;
 
 internal class ContinuableAsyncEnumerator<T> : IAsyncEnumerator<T>
 {
-    private readonly Func<Task<IAsyncEnumerator<T>?>> _getNextEnumeratorAsync;
+    private readonly Func<IAsyncEnumerator<T>?> _getNextEnumeratorAsync;
 
     private IAsyncEnumerator<T>? _enumerator;
     private T? _current;
-    
-    public ContinuableAsyncEnumerator(Func<Task<IAsyncEnumerator<T>?>> getNextEnumeratorAsync)
+
+    public ContinuableAsyncEnumerator(Func<IAsyncEnumerator<T>?> getNextEnumeratorAsync)
     {
         _getNextEnumeratorAsync = getNextEnumeratorAsync;
     }
@@ -24,7 +24,7 @@ internal class ContinuableAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         if (_enumerator == null)
         {
-            _enumerator = await _getNextEnumeratorAsync().ConfigureAwait(false);
+            _enumerator = _getNextEnumeratorAsync();
 
             if (_enumerator == null)
             {
@@ -34,9 +34,9 @@ internal class ContinuableAsyncEnumerator<T> : IAsyncEnumerator<T>
 
         if (!await _enumerator.MoveNextAsync().ConfigureAwait(false))
         {
-            _enumerator = await _getNextEnumeratorAsync().ConfigureAwait(false);
+            _enumerator = _getNextEnumeratorAsync();
 
-            if (_enumerator == null || 
+            if (_enumerator == null ||
                 !await _enumerator.MoveNextAsync().ConfigureAwait(false))
             {
                 return false;
@@ -62,4 +62,59 @@ internal class ContinuableAsyncEnumerator<T> : IAsyncEnumerator<T>
             _enumerator = null;
         }
     }
+
+    //private readonly Func<Task<IAsyncEnumerator<T>?>> _getNextEnumeratorAsync;
+
+    //private IAsyncEnumerator<T>? _enumerator;
+    //private T? _current;
+
+    //public ContinuableAsyncEnumerator(Func<Task<IAsyncEnumerator<T>?>> getNextEnumeratorAsync)
+    //{
+    //    _getNextEnumeratorAsync = getNextEnumeratorAsync;
+    //}
+
+    //public T Current => _current!;
+
+    //public async ValueTask<bool> MoveNextAsync()
+    //{
+    //    if (_enumerator == null)
+    //    {
+    //        _enumerator = await _getNextEnumeratorAsync().ConfigureAwait(false);
+
+    //        if (_enumerator == null)
+    //        {
+    //            return false;
+    //        }
+    //    }
+
+    //    if (!await _enumerator.MoveNextAsync().ConfigureAwait(false))
+    //    {
+    //        _enumerator = await _getNextEnumeratorAsync().ConfigureAwait(false);
+
+    //        if (_enumerator == null || 
+    //            !await _enumerator.MoveNextAsync().ConfigureAwait(false))
+    //        {
+    //            return false;
+    //        }
+    //    }
+
+    //    _current = _enumerator.Current;
+    //    return true;
+    //}
+
+    //public async ValueTask DisposeAsync()
+    //{
+    //    await DisposeAsyncCore().ConfigureAwait(false);
+
+    //    GC.SuppressFinalize(this);
+    //}
+
+    //private async ValueTask DisposeAsyncCore()
+    //{
+    //    if (_enumerator is not null)
+    //    {
+    //        await _enumerator.DisposeAsync().ConfigureAwait(false);
+    //        _enumerator = null;
+    //    }
+    //}
 }

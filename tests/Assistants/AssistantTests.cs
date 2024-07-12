@@ -1337,25 +1337,24 @@ public partial class AssistantTests
 
         await foreach (StreamingUpdate update in updates)
         {
-            // TODO: Find a way to call SubmitToolOutputs here!
+            if (update is RunUpdate &&
+                runOperation.Status == RunStatus.RequiresAction)
+            {
+                Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
+                Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+                Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+                Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+                Assert.That(runOperation.Status?.IsTerminal, Is.False);
+
+                IEnumerable<ToolOutput> outputs = new List<ToolOutput> {
+                    new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")
+                };
+
+                runOperation.SubmitToolOutputsToRunStreaming(outputs);
+            }
         }
 
-        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
-        Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
-        Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-        Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-        Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
-        Assert.That(runOperation.Status?.IsTerminal, Is.False);
-
-        IEnumerable<ToolOutput> outputs = new List<ToolOutput> {
-            new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos") };
-
-        updates = runOperation.SubmitToolOutputsToRunStreamingAsync(outputs);
-
-        await foreach (StreamingUpdate update in updates)
-        {
-            // This should run to completion
-        }
+        //Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
 
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 

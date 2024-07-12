@@ -13,8 +13,8 @@ namespace OpenAI.Assistants;
 
 public partial class StreamingThreadRunOperation : ThreadRunOperation
 {
-    internal class AsyncUpdateEnumerator : ContinuableAsyncEnumerator<StreamingUpdate>
-    {
+    //internal class AsyncUpdateEnumerator : ContinuableAsyncEnumerator<StreamingUpdate>
+    //{
 
-    }
+    //}
 }
