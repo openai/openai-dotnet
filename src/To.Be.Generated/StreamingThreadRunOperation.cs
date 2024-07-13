@@ -20,6 +20,9 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     public ThreadRun? Value { get; private set; }
     public RunStatus? Status { get; private set; }
 
+    // TODO: do we want this?  It has a lot of redundancy ...
+    public RunUpdate? CurrentUpdate { get; private set; }
+
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
 
@@ -58,7 +61,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
+        while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
         {
             // TODO: only have this in one place.  Here or UpdateStatus?
             cancellationToken.ThrowIfCancellationRequested();
@@ -86,7 +89,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     // Public APIs specific to streaming LRO
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
+        while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
         {
             // TODO: only have this in one place.  Here or UpdateStatus?
             cancellationToken.ThrowIfCancellationRequested();
@@ -94,7 +97,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
             // Hm ... ?
             // Note, this could add StreamingUpdate as a public property??
             // If it's an enumerator, do end-users ever care about what's in Current?
-            yield return _updateEnumeratorAsync.Current;
+            yield return CurrentUpdate!;
         }
 
         // TODO: Dispose enumerator
@@ -118,7 +121,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         }
     }
 
-    public override async Task<bool> UpdateStatusAsync(CancellationToken cancellationToken = default)
+    public override async Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
     {
         // This does:
         //   1. Get update
@@ -141,7 +144,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         return !IsCompleted;
     }
 
-    public override bool UpdateStatus(CancellationToken cancellationToken = default)
+    public override bool Update(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
@@ -168,6 +171,8 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
         // Set IsCompleted
         IsCompleted = update.Value.Status.IsTerminal;
+
+        CurrentUpdate = update;
     }
 
     private IAsyncEnumerator<StreamingUpdate>? GetAsyncUpdateEnumerator()

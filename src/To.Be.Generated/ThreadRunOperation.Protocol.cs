@@ -99,7 +99,7 @@ public partial class ThreadRunOperation : OperationResult
 
             _pollingInterval.Wait();
 
-            hasNextUpdate = UpdateStatus(cancellationToken);
+            hasNextUpdate = Update(cancellationToken);
         }
         while (hasNextUpdate);
 
@@ -109,12 +109,12 @@ public partial class ThreadRunOperation : OperationResult
         }
     }
 
-    public override Task<bool> UpdateStatusAsync(CancellationToken cancellationToken = default)
+    public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public override bool UpdateStatus(CancellationToken cancellationToken = default)
+    public override bool Update(CancellationToken cancellationToken = default)
     {
         // This does:
         //   1. Get update
