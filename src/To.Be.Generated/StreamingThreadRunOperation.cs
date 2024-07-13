@@ -43,6 +43,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         _createRun = createRun;
 
         _updateEnumeratorAsync = new(GetAsyncUpdateEnumerator);
+        _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
     }
 
     public override bool IsCompleted
@@ -53,31 +54,16 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     public override async Task WaitAsync(CancellationToken cancellationToken = default)
     {
-        // TODO: add validation that stream is only requested and enumerated once!
-
+        // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
-
         while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
         {
-            // TODO: only have this in one place.
+            // TODO: only have this in one place.  Here or UpdateStatus?
             cancellationToken.ThrowIfCancellationRequested();
         }
-
-        //while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
-
-        //    StreamingUpdate update = _updateEnumeratorAsync.Current;
-
-        //    if (update is RunUpdate runUpdate)
-        //    {
-        //        ApplyUpdate(runUpdate);
-        //    }
-        //}
-        //// TODO: Dispose enumerator
+        // TODO: Dispose enumerator
     }
 
     public override void Wait(CancellationToken cancellationToken = default)
@@ -100,11 +86,9 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     // Public APIs specific to streaming LRO
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
-
         while (await UpdateStatusAsync(cancellationToken).ConfigureAwait(false))
         {
-            // TODO: only have this in one place.
+            // TODO: only have this in one place.  Here or UpdateStatus?
             cancellationToken.ThrowIfCancellationRequested();
 
             // Hm ... ?
@@ -113,19 +97,6 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
             yield return _updateEnumeratorAsync.Current;
         }
 
-        //while (await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
-
-        //    StreamingUpdate update = _updateEnumeratorAsync.Current;
-
-        //    if (update is RunUpdate runUpdate)
-        //    {
-        //        ApplyUpdate(runUpdate);
-        //    }
-
-        //    yield return update;
-        //}
         // TODO: Dispose enumerator
     }
 
@@ -167,10 +138,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
             ApplyUpdate(runUpdate);
         }
 
-        // I think the RequiresAction case is handled by Wait implicitly?
-        // ... e.g. when we return false above.  That would be v. cool.
-
-        return !IsCompleted; /* && Status != RunStatus.RequiresAction; */
+        return !IsCompleted;
     }
 
     public override bool UpdateStatus(CancellationToken cancellationToken = default)
@@ -207,7 +175,11 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         IAsyncEnumerator<StreamingUpdate>? enumerator = _currUpdateCollectionAsync?.GetAsyncEnumerator();
 
         // Only get it once until we reset it.
+
+        // TODO: Make sure this doesn't leak a reference to a network stream
+        // that then can't be disposed.
         _currUpdateCollectionAsync = null;
+
         return enumerator;
     }
 
