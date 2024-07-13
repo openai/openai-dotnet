@@ -9,7 +9,7 @@ namespace OpenAI.Examples;
 public partial class ChatExamples
 {
     [Test]
-    public void Example06_SimpleChatProtocol()
+    public void Example07_SimpleChatProtocol()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

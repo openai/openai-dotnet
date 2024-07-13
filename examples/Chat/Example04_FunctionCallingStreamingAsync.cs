@@ -173,9 +173,9 @@ public partial class ChatExamples
         #endregion
 
         #region
-        foreach (ChatMessage requestMessage in messages)
+        foreach (ChatMessage message in messages)
         {
-            switch (requestMessage)
+            switch (message)
             {
                 case SystemChatMessage systemMessage:
                     Console.WriteLine($"[SYSTEM]:");
