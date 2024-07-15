@@ -4,7 +4,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
@@ -54,7 +53,7 @@ public partial class VectorStoreClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        PageResultEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        VectorStoresPageEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -85,7 +84,7 @@ public partial class VectorStoreClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
     {
-        PageResultEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        VectorStoresPageEnumerator enumerator = new VectorStoresPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -263,7 +262,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        PageResultEnumerator enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
+        VectorStoreFilesPageEnumerator enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -300,7 +299,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        PageResultEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, options);
+        VectorStoreFilesPageEnumerator enumerator = new VectorStoreFilesPageEnumerator(_pipeline, _endpoint, vectorStoreId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -579,7 +578,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        PageResultEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        VectorStoreFileBatchesPageEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -618,7 +617,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        PageResultEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
+        VectorStoreFileBatchesPageEnumerator enumerator = new VectorStoreFileBatchesPageEnumerator(_pipeline, _endpoint, vectorStoreId, batchId, limit, order, after, before, filter, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 }
