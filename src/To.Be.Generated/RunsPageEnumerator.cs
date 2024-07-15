@@ -17,7 +17,6 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
     private readonly int? _limit;
     private readonly string _order;
 
-    // Note: this one is special
     private string _after;
 
     private readonly string _before;
@@ -41,10 +40,10 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetRunsPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetRunsAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetRunsPage(_threadId, _limit, _order, _after, _before, _options);
+        => GetRuns(_threadId, _limit, _order, _after, _before, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -53,7 +52,7 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetRunsPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetRunsAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -63,7 +62,7 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetRunsPage(_threadId, _limit, _order, _after, _before, _options);
+        return GetRuns(_threadId, _limit, _order, _after, _before, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -76,7 +75,6 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         return hasMore;
     }
 
-    // Note: this is the deserialization method that converts protocol to convenience
     public override PageResult<ThreadRun> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
@@ -89,8 +87,7 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         return PageResult<ThreadRun>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    // Note: these are the protocol methods - they are generated here
-    internal async virtual Task<ClientResult> GetRunsPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal async virtual Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -98,7 +95,7 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetRunsPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 

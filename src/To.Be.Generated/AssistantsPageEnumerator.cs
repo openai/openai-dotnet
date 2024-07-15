@@ -16,7 +16,6 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
     private readonly int? _limit;
     private readonly string _order;
 
-    // Note: this one is special
     private string _after;
 
     private readonly string _before;
@@ -39,10 +38,10 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetAssistantsPageAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetAssistantsAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetAssistantsPage(_limit, _order, _after, _before, _options);
+        => GetAssistants(_limit, _order, _after, _before, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -51,7 +50,7 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetAssistantsPageAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetAssistantsAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -61,7 +60,7 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetAssistantsPage(_limit, _order, _after, _before, _options);
+        return GetAssistants(_limit, _order, _after, _before, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -88,13 +87,13 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
 
 
     // Note: these are the protocol methods - they are generated here
-    internal virtual async Task<ClientResult> GetAssistantsPageAsync(int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetAssistantsPage(int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));

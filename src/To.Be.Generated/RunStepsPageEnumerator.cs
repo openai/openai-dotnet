@@ -19,7 +19,6 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
     private readonly int? _limit;
     private readonly string? _order;
 
-    // Note: this one is special
     private string? _after;
 
     private readonly string? _before;
@@ -46,10 +45,10 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetRunStepsPageAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetRunStepsAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetRunStepsPage(_threadId, _runId, _limit, _order, _after, _before, _options);
+        => GetRunSteps(_threadId, _runId, _limit, _order, _after, _before, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -58,7 +57,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetRunStepsPageAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetRunStepsAsync(_threadId, _runId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -68,7 +67,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetRunStepsPage(_threadId, _runId, _limit, _order, _after, _before, _options);
+        return GetRunSteps(_threadId, _runId, _limit, _order, _after, _before, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -81,7 +80,6 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         return hasMore;
     }
 
-    // Note: this is the deserialization method that converts protocol to convenience
     public override PageResult<RunStep> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
@@ -94,8 +92,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         return PageResult<RunStep>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    // Note: these are the protocol methods - they are generated here
-    internal async virtual Task<ClientResult> GetRunStepsPageAsync(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
+    internal async virtual Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
@@ -104,7 +101,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetRunStepsPage(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
+    internal virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
