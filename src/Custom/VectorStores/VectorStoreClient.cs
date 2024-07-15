@@ -134,14 +134,14 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStore"/> instances for the configured organization.
+    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
     /// </summary>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStore"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
     public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
@@ -174,13 +174,14 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStore"/> instances for the configured organization.
+    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
     /// </summary>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStore"/> instances that can be synchronously enumerated via <c>foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
     public virtual PageCollection<VectorStore> GetVectorStores(
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
@@ -249,18 +250,18 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStoreId">
     /// The ID of the vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         VectorStoreFileAssociationCollectionOptions options = default,
@@ -300,18 +301,18 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStoreId">
     /// The ID of the vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         string vectorStoreId,
         VectorStoreFileAssociationCollectionOptions options = default,
@@ -551,7 +552,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
+    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
     /// <param name="vectorStoreId">
@@ -560,12 +561,12 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the batch file job that was previously scheduled.
     /// </param>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         string batchJobId,
@@ -626,7 +627,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
+    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
     /// <param name="vectorStoreId">
@@ -635,12 +636,12 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the batch file job that was previously scheduled.
     /// </param>
-    /// <param name="options">Options describing the collection to return.</param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         string vectorStoreId,
         string batchJobId,

@@ -41,7 +41,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of assistants.
+    /// [Protocol Method] Returns a paginated collection of assistants.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -63,7 +63,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
@@ -71,7 +71,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of assistants.
+    /// [Protocol Method] Returns a paginated collection of assistants.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -93,7 +93,7 @@ public partial class AssistantClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
         AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
@@ -215,7 +215,7 @@ public partial class AssistantClient
         => _messageSubClient.CreateMessage(threadId, content, options);
 
     /// <summary>
-    /// [Protocol Method] Returns a list of messages for a given thread.
+    /// [Protocol Method] Returns a paginated collection of messages for a given thread.
     /// </summary>
     /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) the messages belong to. </param>
     /// <param name="limit">
@@ -240,7 +240,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -250,7 +250,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of messages for a given thread.
+    /// [Protocol Method] Returns a paginated collection of messages for a given thread.
     /// </summary>
     /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) the messages belong to. </param>
     /// <param name="limit">
@@ -275,7 +275,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -323,7 +323,7 @@ public partial class AssistantClient
         => _runSubClient.CreateRun(threadId, content, options);
 
     /// <summary>
-    /// [Protocol Method] Returns a list of runs belonging to a thread.
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run belongs to. </param>
     /// <param name="limit">
@@ -348,7 +348,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -358,7 +358,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of runs belonging to a thread.
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run belongs to. </param>
     /// <param name="limit">
@@ -383,7 +383,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -425,7 +425,7 @@ public partial class AssistantClient
         => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
 
     /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
     /// <param name="runId"> The ID of the run the run steps belong to. </param>
@@ -451,7 +451,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -462,7 +462,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
     /// <param name="runId"> The ID of the run the run steps belong to. </param>
@@ -488,7 +488,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> TODO </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));

@@ -26,7 +26,7 @@ namespace OpenAI.VectorStores;
 public partial class VectorStoreClient
 {
     /// <summary>
-    /// [Protocol Method] Returns a list of vector-stores.
+    /// [Protocol Method] Returns a paginated collection of vector-stores.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -48,7 +48,7 @@ public partial class VectorStoreClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -57,7 +57,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of vector-stores.
+    /// [Protocol Method] Returns a paginated collection of vector-stores.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -79,7 +79,7 @@ public partial class VectorStoreClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
     {
@@ -229,7 +229,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of vector store files.
+    /// [Protocol Method] Returns a paginated collection of vector store files.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store that the files belong to. </param>
     /// <param name="limit">
@@ -255,7 +255,7 @@ public partial class VectorStoreClient
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
@@ -266,7 +266,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of vector store files.
+    /// [Protocol Method] Returns a paginated collection of vector store files.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store that the files belong to. </param>
     /// <param name="limit">
@@ -292,7 +292,7 @@ public partial class VectorStoreClient
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
@@ -543,7 +543,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of vector store files in a batch.
+    /// [Protocol Method] Returns a paginated collection of vector store files in a batch.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store that the file batch belongs to. </param>
     /// <param name="batchId"> The ID of the file batch that the files belong to. </param>
@@ -570,7 +570,7 @@ public partial class VectorStoreClient
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
@@ -582,7 +582,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of vector store files in a batch.
+    /// [Protocol Method] Returns a paginated collection of vector store files in a batch.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store that the file batch belongs to. </param>
     /// <param name="batchId"> The ID of the file batch that the files belong to. </param>
@@ -609,7 +609,7 @@ public partial class VectorStoreClient
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
     {
