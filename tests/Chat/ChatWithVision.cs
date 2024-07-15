@@ -12,6 +12,7 @@ namespace OpenAI.Tests.Chat;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ChatWithVision : SyncAsyncTestBase
 {
     public ChatWithVision(bool isAsync)

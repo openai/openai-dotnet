@@ -17,6 +17,11 @@ public partial class ChatFunctionChoice
     private const string AutoValue = "auto";
     private const string NoneValue = "none";
 
+    // CUSTOM: Made internal.
+    internal ChatFunctionChoice()
+    {
+    }
+
     // CUSTOM: Added custom internal constructor to handle the plain string representation (e.g. "auto", "none", etc.).
     internal ChatFunctionChoice(string predefinedFunctionChoice)
     {

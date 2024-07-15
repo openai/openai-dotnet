@@ -8,6 +8,9 @@ internal readonly partial struct InternalCreateSpeechRequestModel { }
 [CodeGenModel("CreateTranscriptionRequestModel")]
 internal readonly partial struct InternalCreateTranscriptionRequestModel { }
 
+[CodeGenModel("CreateTranscriptionRequestTimestampGranularity")]
+internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularity { }
+
 [CodeGenModel("CreateTranscriptionResponseJson")]
 internal partial class InternalCreateTranscriptionResponseJson { }
 

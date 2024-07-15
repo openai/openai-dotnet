@@ -5,7 +5,7 @@ namespace OpenAI.Audio;
 /// <summary>
 /// Represents the available text-to-speech voices.
 /// </summary>
-[CodeGenModel("SpeechGenerationOptionsVoice")]
+[CodeGenModel("CreateSpeechRequestVoice")]
 public enum GeneratedSpeechVoice
 {
     /// <summary> Alloy. </summary>

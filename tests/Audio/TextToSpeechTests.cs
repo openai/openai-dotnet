@@ -11,6 +11,7 @@ namespace OpenAI.Tests.Audio;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class TextToSpeechTests : SyncAsyncTestBase
 {
     public TextToSpeechTests(bool isAsync)

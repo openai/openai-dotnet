@@ -9,7 +9,7 @@ namespace OpenAI.Images;
 /// generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real
 /// looking images. This param is only supported for <c>dall-e-3</c>.
 /// </summary>
-[CodeGenModel("ImageGenerationOptionsStyle")]
+[CodeGenModel("CreateImageRequestStyle")]
 public enum GeneratedImageStyle
 {
     /// <summary>

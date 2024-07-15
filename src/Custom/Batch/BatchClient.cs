@@ -8,8 +8,8 @@ namespace OpenAI.Batch;
 
 [CodeGenClient("Batches")]
 [CodeGenSuppress("BatchClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
-[CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalBatchOperationEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
-[CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalBatchOperationEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
+[CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
+[CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
 [CodeGenSuppress("RetrieveBatch", typeof(string))]
 [CodeGenSuppress("RetrieveBatchAsync", typeof(string))]
 [CodeGenSuppress("RetrieveBatch", typeof(string), typeof(RequestOptions))]

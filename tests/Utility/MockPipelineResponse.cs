@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
+﻿using System;
 using System.ClientModel.Primitives;
 using System.IO;
 using System.Text;
@@ -35,9 +32,13 @@ public class MockPipelineResponse : PipelineResponse
 
     public void SetReasonPhrase(string value) => _reasonPhrase = value;
 
-    public void SetContent(byte[] content)
+    public void SetContent(byte[] content, bool bufferImmediately = false)
     {
         ContentStream = new MemoryStream(content, 0, content.Length, false, true);
+        if (bufferImmediately)
+        {
+            _ = BufferContent();
+        }
     }
 
     public MockPipelineResponse SetContent(string content)
@@ -56,6 +57,11 @@ public class MockPipelineResponse : PipelineResponse
     {
         get
         {
+            if (_bufferedContent is not null)
+            {
+                return _bufferedContent;
+            }
+
             if (_contentStream is null)
             {
                 return new BinaryData(Array.Empty<byte>());
@@ -122,6 +128,7 @@ public class MockPipelineResponse : PipelineResponse
 
         // Less efficient FromStream method called here because it is a mock.
         // For intended production implementation, see HttpClientTransportResponse.
+        _contentStream.Position = 0;
         _bufferedContent = BinaryData.FromStream(bufferStream);
         return _bufferedContent;
     }

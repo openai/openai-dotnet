@@ -16,6 +16,8 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.VectorStores;
 
 #pragma warning disable OPENAI001
+
+[Parallelizable(ParallelScope.Fixtures)]
 public partial class VectorStoreTests
 {
     [Test]

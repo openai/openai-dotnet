@@ -11,7 +11,7 @@ namespace OpenAI.Assistants
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
-        internal InternalCreateThreadRequestToolResourcesFileSearchBase()
+        public InternalCreateThreadRequestToolResourcesFileSearchBase()
         {
         }
 

@@ -11,7 +11,7 @@ namespace OpenAI.Batch
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
-        public InternalCreateBatchRequest(string inputFileId, InternalBatchOperationEndpoint endpoint)
+        public InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint)
         {
             Argument.AssertNotNull(inputFileId, nameof(inputFileId));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Batch
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateBatchRequest(string inputFileId, InternalBatchOperationEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             InputFileId = inputFileId;
             Endpoint = endpoint;
@@ -34,7 +34,7 @@ namespace OpenAI.Batch
         }
 
         public string InputFileId { get; }
-        public InternalBatchOperationEndpoint Endpoint { get; }
+        public InternalCreateBatchRequestEndpoint Endpoint { get; }
         public InternalBatchCompletionTimeframe CompletionWindow { get; } = InternalBatchCompletionTimeframe._24h;
 
         public IDictionary<string, string> Metadata { get; set; }

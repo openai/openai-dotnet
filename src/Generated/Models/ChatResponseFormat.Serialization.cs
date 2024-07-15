@@ -64,7 +64,7 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalChatResponseFormatType? type = default;
+            InternalCreateChatCompletionRequestResponseFormatType? type = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -75,7 +75,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    type = new InternalChatResponseFormatType(property.Value.GetString());
+                    type = new InternalCreateChatCompletionRequestResponseFormatType(property.Value.GetString());
                     continue;
                 }
                 if (true)

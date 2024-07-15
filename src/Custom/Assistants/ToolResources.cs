@@ -15,6 +15,6 @@ public partial class ToolResources
     public ToolResources()
     {}
 
-    private void SerializeFileSearch(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(FileSearch, new ModelReaderWriterOptions("J"));
+    private void SerializeFileSearch(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(FileSearch, options);
 }

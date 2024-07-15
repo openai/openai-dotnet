@@ -16,6 +16,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI;
 
+// CUSTOM:
+// - Suppressed cached clients. Clients are not singletons, and users can create multiple clients of the same type
+//   if needed (e.g., to target different OpenAI models). The Get*Client methods return new client instances.
 /// <summary>
 /// A top-level client factory that enables convenient creation of scenario-specific sub-clients while reusing shared
 /// configuration details like endpoint, authentication, and pipeline customization.
@@ -23,6 +26,21 @@ namespace OpenAI;
 [CodeGenModel("OpenAIClient")]
 [CodeGenSuppress("OpenAIClient", typeof(ApiKeyCredential))]
 [CodeGenSuppress("OpenAIClient", typeof(Uri), typeof(ApiKeyCredential), typeof(OpenAIClientOptions))]
+[CodeGenSuppress("_cachedAssistantClient")]
+[CodeGenSuppress("_cachedAudioClient")]
+[CodeGenSuppress("_cachedBatchClient")]
+[CodeGenSuppress("_cachedChatClient")]
+[CodeGenSuppress("_cachedEmbeddingClient")]
+[CodeGenSuppress("_cachedFileClient")]
+[CodeGenSuppress("_cachedFineTuningClient")]
+[CodeGenSuppress("_cachedImageClient")]
+[CodeGenSuppress("_cachedInternalAssistantMessageClient")]
+[CodeGenSuppress("_cachedInternalAssistantRunClient")]
+[CodeGenSuppress("_cachedInternalAssistantThreadClient")]
+[CodeGenSuppress("_cachedLegacyCompletionClient")]
+[CodeGenSuppress("_cachedModelClient")]
+[CodeGenSuppress("_cachedModerationClient")]
+[CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("GetAssistantClientClient")]
 [CodeGenSuppress("GetAudioClientClient")]
 [CodeGenSuppress("GetBatchClientClient")]

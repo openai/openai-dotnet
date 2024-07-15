@@ -5,20 +5,20 @@
 [CodeGenModel("CreateImageEditRequestModel")]
 internal readonly partial struct InternalCreateImageEditRequestModel { }
 
+[CodeGenModel("CreateImageEditRequestResponseFormat")]
+internal readonly partial struct InternalCreateImageEditRequestResponseFormat { }
+
+[CodeGenModel("CreateImageEditRequestSize")]
+internal readonly partial struct InternalCreateImageEditRequestSize { }
+
 [CodeGenModel("CreateImageRequestModel")]
 internal readonly partial struct InternalCreateImageRequestModel { }
 
 [CodeGenModel("CreateImageVariationRequestModel")]
 internal readonly partial struct InternalCreateImageVariationRequestModel { }
 
-[CodeGenModel("ImageEditOptionsResponseFormat")]
-internal readonly partial struct InternalImageEditOptionsResponseFormat { }
+[CodeGenModel("CreateImageVariationRequestResponseFormat")]
+internal readonly partial struct InternalCreateImageVariationRequestResponseFormat { }
 
-[CodeGenModel("ImageEditOptionsSize")]
-internal readonly partial struct InternalImageEditOptionsSize { }
-
-[CodeGenModel("ImageVariationOptionsResponseFormat")]
-internal readonly partial struct InternalImageVariationOptionsResponseFormat { }
-
-[CodeGenModel("ImageVariationOptionsSize")]
-internal readonly partial struct InternalImageVariationOptionsSize { }
+[CodeGenModel("CreateImageVariationRequestSize")]
+internal readonly partial struct InternalCreateImageVariationRequestSize { }

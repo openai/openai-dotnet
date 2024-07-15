@@ -1,6 +1,6 @@
 namespace OpenAI.Assistants;
 
-[CodeGenModel("ThreadRunStatus")]
+[CodeGenModel("RunObjectStatus")]
 public readonly partial struct RunStatus
 {
     /// <summary>

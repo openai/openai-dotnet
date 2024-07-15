@@ -190,6 +190,6 @@ public partial class EmbeddingClient
     {
         options.Input = input;
         options.Model = _model;
-        options.EncodingFormat = InternalEmbeddingGenerationOptionsEncodingFormat.Base64;
+        options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
 }
