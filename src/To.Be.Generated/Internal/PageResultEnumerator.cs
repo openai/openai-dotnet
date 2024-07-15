@@ -8,15 +8,12 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-// Note: implements both sync and async enumerator interfaces.
 internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, IEnumerator<ClientResult>
 {
     private ClientResult? _current;
     private bool _hasNext = true;
 
     public ClientResult Current => _current!;
-
-    #region Service-specific methods that need to be generated on the subclient
 
     public abstract Task<ClientResult> GetFirstAsync();
 
@@ -27,10 +24,6 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
     public abstract ClientResult GetNext(ClientResult result);
 
     public abstract bool HasNext(ClientResult result);
-
-    #endregion
-
-    #region IEnumerator<ClientResult> implementation
 
     object IEnumerator.Current => ((IEnumerator<ClientResult>)this).Current;
 
@@ -58,10 +51,6 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
 
     void IDisposable.Dispose() { }
 
-    #endregion
-
-    #region IAsyncEnumerator<ClientResult> implementation
-
     public async ValueTask<bool> MoveNextAsync()
     {
         if (!_hasNext)
@@ -83,6 +72,4 @@ internal abstract class PageResultEnumerator : IAsyncEnumerator<ClientResult>, I
     }
 
     ValueTask IAsyncDisposable.DisposeAsync() => default;
-
-    #endregion
 }
