@@ -18,11 +18,10 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
 
     private readonly int? _limit;
     private readonly string? _order;
-
-    private string? _after;
-
     private readonly string? _before;
     private readonly RequestOptions _options;
+
+    private string? _after;
 
     public RunStepsPageEnumerator(
         ClientPipeline pipeline,

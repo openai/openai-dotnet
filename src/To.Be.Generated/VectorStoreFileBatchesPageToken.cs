@@ -137,7 +137,7 @@ internal class VectorStoreFileBatchesPageToken : ContinuationToken
                 case "batchId":
                     reader.Read();
                     Debug.Assert(reader.TokenType == JsonTokenType.String);
-                    vectorStoreId = reader.GetString()!;
+                    batchId = reader.GetString()!;
                     break;
                 case "limit":
                     reader.Read();

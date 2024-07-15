@@ -40,7 +40,7 @@ internal class RunStepsPageToken : ContinuationToken
 
         writer.WriteStartObject();
         writer.WriteString("threadId", ThreadId);
-        writer.WriteString("runId", ThreadId);
+        writer.WriteString("runId", RunId);
 
         if (Limit.HasValue)
         {
@@ -128,7 +128,7 @@ internal class RunStepsPageToken : ContinuationToken
                 case "runId":
                     reader.Read();
                     Debug.Assert(reader.TokenType == JsonTokenType.String);
-                    threadId = reader.GetString()!;
+                    runId = reader.GetString()!;
                     break;
                 case "limit":
                     reader.Read();

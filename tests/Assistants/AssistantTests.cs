@@ -631,7 +631,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanEnumerateAssistants()
+    public async Task Pagination_CanEnumerateAssistants()
     {
         AssistantClient client = GetTestClient();
 
@@ -672,7 +672,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanPageThroughAssistantCollection()
+    public async Task Pagination_CanPageThroughAssistantCollection()
     {
         AssistantClient client = GetTestClient();
 
@@ -725,7 +725,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanRehydratePageCollectionFromBytes()
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
         AssistantClient client = GetTestClient();
 
@@ -748,7 +748,6 @@ public partial class AssistantTests
             });
 
         // Simulate rehydration of the collection
-        // TODO: too complicated?
         BinaryData rehydrationBytes = (await pages.GetCurrentPageAsync().ConfigureAwait(false)).PageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
@@ -784,7 +783,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanRehydratePageCollectionFromPageToken()
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
     {
         AssistantClient client = GetTestClient();
 
@@ -840,7 +839,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanCastPageCollectionToConvenienceFromProtocol()
+    public async Task Pagination_CanCastAssistantPageCollectionToConvenienceFromProtocol()
     {
         AssistantClient client = GetTestClient();
 
@@ -888,6 +887,88 @@ public partial class AssistantTests
 
         Assert.That(count, Is.GreaterThanOrEqualTo(10));
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
+    }
+
+    [Test]
+    public void Pagination_CanRehydrateRunStepPageCollectionFromBytes()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+        {
+            Tools = { new CodeInterpreterToolDefinition() },
+            Instructions = "You help the user with mathematical descriptions and visualizations.",
+        });
+        Validate(assistant);
+
+        FileClient fileClient = new();
+        OpenAIFileInfo equationFile = fileClient.UploadFile(
+            BinaryData.FromString("""
+            x,y
+            2,5
+            7,14,
+            8,22
+            """).ToStream(),
+            "text/csv",
+            FileUploadPurpose.Assistants);
+        Validate(equationFile);
+
+        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        {
+            InitialMessages =
+            {
+                "Describe the contents of any available tool resource file."
+                + " Graph a linear regression and provide the coefficient of correlation."
+                + " Explain any code executed to evaluate.",
+            },
+            ToolResources = new()
+            {
+                CodeInterpreter = new()
+                {
+                    FileIds = { equationFile.Id },
+                }
+            }
+        });
+        Validate(thread);
+
+        ThreadRun run = client.CreateRun(thread, assistant);
+        Validate(run);
+
+        while (!run.Status.IsTerminal)
+        {
+            Thread.Sleep(1000);
+            run = client.GetRun(run);
+        }
+        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+
+        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        IEnumerator<PageResult<RunStep>> pageEnumerator = ((IEnumerable<PageResult<RunStep>>)pages).GetEnumerator();
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = pages.GetCurrentPage().PageToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        PageCollection<RunStep> rehydratedPages = client.GetRunSteps(rehydrationToken);
+        IEnumerator<PageResult<RunStep>> rehydratedPageEnumerator = ((IEnumerable<PageResult<RunStep>>)rehydratedPages).GetEnumerator();
+
+        int pageCount = 0;
+
+        while (pageEnumerator.MoveNext() && rehydratedPageEnumerator.MoveNext())
+        {
+            PageResult<RunStep> page = pageEnumerator.Current;
+            PageResult<RunStep> rehydratedPage = rehydratedPageEnumerator.Current;
+
+            Assert.AreEqual(page.Values.Count, rehydratedPage.Values.Count);
+
+            for (int i = 0; i < page.Values.Count; i++)
+            {
+                Assert.AreEqual(page.Values[0].Id, rehydratedPage.Values[0].Id);
+            }
+
+            pageCount++;
+        }
+
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
     [Test]
