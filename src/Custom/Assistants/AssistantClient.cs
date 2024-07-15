@@ -1117,7 +1117,6 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-
     /// <summary>
     /// Gets a single run step from a run.
     /// </summary>

@@ -15,12 +15,10 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
 
     private readonly int? _limit;
     private readonly string _order;
-
-    // Note: this one is special
-    private string _after;
-
     private readonly string _before;
     private readonly RequestOptions _options;
+
+    private string _after;
 
     public VectorStoresPageEnumerator(
         ClientPipeline pipeline,
@@ -74,7 +72,6 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
         return hasMore;
     }
 
-    // Note: this is the deserialization method that converts protocol to convenience
     public override PageResult<VectorStore> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
@@ -87,7 +84,6 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
         return PageResult<VectorStore>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    // Note: these are the protocol methods - they are generated here
     internal virtual async Task<ClientResult> GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetVectorStoresRequest(limit, order, after, before, options);

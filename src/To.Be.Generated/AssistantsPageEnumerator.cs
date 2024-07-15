@@ -85,8 +85,6 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         return PageResult<Assistant>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-
-    // Note: these are the protocol methods - they are generated here
     internal virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
