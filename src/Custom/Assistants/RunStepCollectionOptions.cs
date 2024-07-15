@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.Assistants;
 
-namespace OpenAI.Assistants;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="RunStep"/> instances.
+/// </summary>
 public class RunStepCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="RunStepCollectionOptions"/>.
+    /// </summary>
     public RunStepCollectionOptions() { }
 
     /// <summary>

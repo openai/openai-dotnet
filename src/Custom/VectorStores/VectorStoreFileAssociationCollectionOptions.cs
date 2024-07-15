@@ -1,12 +1,13 @@
-﻿using OpenAI.Files;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.VectorStores;
 
-namespace OpenAI.VectorStores;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="VectorStoreFileAssociation"/> instances.
+/// </summary>
 public class VectorStoreFileAssociationCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="VectorStoreFileAssociationCollectionOptions"/>.
+    /// </summary>
     public VectorStoreFileAssociationCollectionOptions() { }
 
     /// <summary>

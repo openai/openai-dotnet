@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.Assistants;
 
-namespace OpenAI.Assistants;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="Assistant"/> instances.
+/// </summary>
 public class AssistantCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="AssistantCollectionOptions"/>.
+    /// </summary>
     public AssistantCollectionOptions() { }
 
     /// <summary>

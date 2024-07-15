@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.Assistants;
 
-namespace OpenAI.Assistants;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="ThreadRun"/> instances.
+/// </summary>
 public class RunCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="RunCollectionOptions"/>.
+    /// </summary>
     public RunCollectionOptions() { }
 
     /// <summary>

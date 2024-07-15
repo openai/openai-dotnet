@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.VectorStores;
 
-namespace OpenAI.VectorStores;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="VectorStore"/> instances.
+/// </summary>
 public class VectorStoreCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="VectorStoreCollectionOptions"/>.
+    /// </summary>
     public VectorStoreCollectionOptions() { }
 
     /// <summary>
