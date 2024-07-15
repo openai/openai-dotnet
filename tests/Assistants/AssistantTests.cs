@@ -272,22 +272,24 @@ public partial class AssistantTests
 
         PageCollection<RunStep> pages = client.GetRunSteps(run);
         PageResult<RunStep> firstPage = pages.GetCurrentPage();
+        RunStep firstStep = firstPage.Values[0];
+        RunStep secondStep = firstPage.Values[1];
 
-        IEnumerable<RunStep> runSteps = pages.GetAllValues();
-        Assert.That(runSteps.Count, Is.GreaterThan(1));
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
         Assert.Multiple(() =>
         {
-            Assert.That(runSteps.First().AssistantId, Is.EqualTo(assistant.Id));
-            Assert.That(runSteps.First().ThreadId, Is.EqualTo(thread.Id));
-            Assert.That(runSteps.First().RunId, Is.EqualTo(run.Id));
-            Assert.That(runSteps.First().CreatedAt, Is.GreaterThan(s_2024));
-            Assert.That(runSteps.First().CompletedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
+            Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
+            Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
+            Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
         });
-        RunStepDetails details = runSteps.First().Details;
+        RunStepDetails details = firstStep.Details;
         Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
         string rawContent = firstPage.GetRawResponse().Content.ToString();
-        details = runSteps.ElementAt(1).Details;
+
+        details = secondStep.Details;
         Assert.Multiple(() =>
         {
             Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
@@ -393,11 +395,12 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
-        Assert.That(messages.Count, Is.GreaterThan(1));
-        Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(messages.First().Content?[0], Is.Not.Null);
-        Assert.That(messages.First().Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
+        PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
+        PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
+        Assert.That(firstPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(firstPage.Values[0].Content?[0], Is.Not.Null);
+        Assert.That(firstPage.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
     [Test]
@@ -603,8 +606,12 @@ public partial class AssistantTests
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
         IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
+        int messageCount = 0;
+        bool hasCake = false;
         foreach (ThreadMessage message in messages)
         {
+            messageCount++;
+
             foreach (MessageContent content in message.Content)
             {
                 Console.WriteLine(content.Text);
@@ -612,10 +619,15 @@ public partial class AssistantTests
                 {
                     Console.WriteLine($"  --> From file: {annotation.InputFileId}, replacement: {annotation.TextToReplace}");
                 }
+
+                if (!hasCake)
+                {
+                    hasCake = content.Text.ToLower().Contains("cake");
+                }
             }
         }
-        Assert.That(messages.Count() > 1);
-        Assert.That(messages.Any(message => message.Content.Any(content => content.Text.ToLower().Contains("cake"))));
+        Assert.That(messageCount > 1);
+        Assert.That(hasCake, Is.True);
     }
 
     [Test]
