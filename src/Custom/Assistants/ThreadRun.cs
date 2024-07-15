@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenAI.Assistants;
 
@@ -17,6 +19,43 @@ public partial class ThreadRun
 
     [CodeGenMember("RequiredAction")]
     internal readonly InternalRunRequiredAction _internalRequiredAction;
+
+    // CUSTOM: Removed null check for `toolConstraint` and `responseFormat`.
+    internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? parallelToolCallsEnabled, AssistantResponseFormat responseFormat)
+    {
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(threadId, nameof(threadId));
+        Argument.AssertNotNull(assistantId, nameof(assistantId));
+        Argument.AssertNotNull(model, nameof(model));
+        Argument.AssertNotNull(instructions, nameof(instructions));
+        Argument.AssertNotNull(tools, nameof(tools));
+
+        Id = id;
+        CreatedAt = createdAt;
+        ThreadId = threadId;
+        AssistantId = assistantId;
+        Status = status;
+        _internalRequiredAction = internalRequiredAction;
+        LastError = lastError;
+        ExpiresAt = expiresAt;
+        StartedAt = startedAt;
+        CancelledAt = cancelledAt;
+        FailedAt = failedAt;
+        CompletedAt = completedAt;
+        IncompleteDetails = incompleteDetails;
+        Model = model;
+        Instructions = instructions;
+        Tools = tools.ToList();
+        Metadata = metadata;
+        Usage = usage;
+        MaxPromptTokens = maxPromptTokens;
+        MaxCompletionTokens = maxCompletionTokens;
+        TruncationStrategy = truncationStrategy;
+        ToolConstraint = toolConstraint;
+        ParallelToolCallsEnabled = parallelToolCallsEnabled;
+        ResponseFormat = responseFormat;
+    }
+
 
     /// <summary>
     /// The list of required actions that must have their results submitted for the run to continue.

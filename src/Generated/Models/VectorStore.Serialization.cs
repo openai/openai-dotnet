@@ -52,7 +52,7 @@ namespace OpenAI.VectorStores
                 if (ExpiresAt != null)
                 {
                     writer.WritePropertyName("expires_at"u8);
-                    writer.WriteStringValue(ExpiresAt.Value, "O");
+                    writer.WriteNumberValue(ExpiresAt.Value, "U");
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace OpenAI.VectorStores
             if (LastActiveAt != null)
             {
                 writer.WritePropertyName("last_active_at"u8);
-                writer.WriteStringValue(LastActiveAt.Value, "O");
+                writer.WriteNumberValue(LastActiveAt.Value, "U");
             }
             else
             {
@@ -188,8 +188,6 @@ namespace OpenAI.VectorStores
                         expiresAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // expiresAt = property.Value.GetDateTimeOffset("O");
                     expiresAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -200,8 +198,6 @@ namespace OpenAI.VectorStores
                         lastActiveAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // lastActiveAt = property.Value.GetDateTimeOffset("O");
                     lastActiveAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }

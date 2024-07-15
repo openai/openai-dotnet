@@ -20,7 +20,7 @@ namespace OpenAI.Assistants
             Delta = delta;
         }
 
-        internal InternalMessageDeltaObject(string id, string @object, MessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, MessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Object = @object;
@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
         }
 
         public string Id { get; }
-        public string Object { get; } = "thread.message.delta";
+        public InternalMessageDeltaObjectObject Object { get; } = InternalMessageDeltaObjectObject.ThreadMessageDelta;
 
         public MessageDeltaObjectDelta Delta { get; }
     }

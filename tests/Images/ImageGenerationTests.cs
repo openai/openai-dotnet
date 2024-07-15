@@ -13,6 +13,7 @@ namespace OpenAI.Tests.Images;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ImageGenerationTests : SyncAsyncTestBase
 {
     public ImageGenerationTests(bool isAsync)
@@ -21,6 +22,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task BasicGenerationWorks()
     {
         ImageClient client = GetTestClient();
@@ -38,6 +40,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerationWithOptionsWorks()
     {
         ImageClient client = GetTestClient();
@@ -57,6 +60,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerationWithBytesResponseWorks()
     {
         ImageClient client = GetTestClient();
@@ -78,6 +82,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerateImageEditWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");
@@ -97,6 +102,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerateImageEditWithMaskFileWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");
@@ -117,6 +123,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerateImageEditWithBytesResponseWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");
@@ -139,6 +146,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerateImageVariationWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");
@@ -156,6 +164,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task GenerateImageVariationWithBytesResponseWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");

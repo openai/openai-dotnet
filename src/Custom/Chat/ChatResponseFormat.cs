@@ -25,7 +25,7 @@ public partial class ChatResponseFormat
 
     /// <summary> Must be one of `text` or `json_object`. </summary>
     [CodeGenMember("Type")]
-    internal InternalChatResponseFormatType? Type { get; set; }
+    internal InternalCreateChatCompletionRequestResponseFormatType? Type { get; set; }
 
     // CUSTOM: Made internal.
     /// <summary> Initializes a new instance of <see cref="ChatResponseFormat"/>. </summary>
@@ -33,13 +33,13 @@ public partial class ChatResponseFormat
     {
     }
 
-    internal ChatResponseFormat(InternalChatResponseFormatType? type)
+    internal ChatResponseFormat(InternalCreateChatCompletionRequestResponseFormatType? type)
     {
         Type = type;
     }
 
     /// <summary> text. </summary>
-    public static ChatResponseFormat Text { get; } = new ChatResponseFormat(InternalChatResponseFormatType.Text);
+    public static ChatResponseFormat Text { get; } = new ChatResponseFormat(InternalCreateChatCompletionRequestResponseFormatType.Text);
     /// <summary> json_object. </summary>
-    public static ChatResponseFormat JsonObject { get; } = new ChatResponseFormat(InternalChatResponseFormatType.JsonObject);
+    public static ChatResponseFormat JsonObject { get; } = new ChatResponseFormat(InternalCreateChatCompletionRequestResponseFormatType.JsonObject);
 }

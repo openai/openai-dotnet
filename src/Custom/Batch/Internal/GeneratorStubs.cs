@@ -17,14 +17,8 @@ internal readonly partial struct InternalBatchErrorsObject { }
 [CodeGenModel("Batch")]
 internal partial class InternalBatchJob { }
 
-[CodeGenModel("InternalBatchJobStatus")]
-internal readonly partial struct InternalBatchJobStatus {}
-
 [CodeGenModel("BatchObject")]
 internal readonly partial struct InternalBatchObject { }
-
-[CodeGenModel("InternalCreateBatchRequestEndpoint")]
-internal readonly partial struct InternalBatchOperationEndpoint { }
 
 [CodeGenModel("BatchRequestCounts")]
 internal partial class InternalBatchRequestCounts { }
@@ -44,8 +38,14 @@ internal partial class InternalBatchRequestOutputError { }
 [CodeGenModel("BatchRequestOutputResponse")]
 internal partial class InternalBatchRequestOutputResponse { }
 
+[CodeGenModel("BatchStatus")]
+internal readonly partial struct InternalBatchStatus { }
+
 [CodeGenModel("CreateBatchRequest")]
 internal partial class InternalCreateBatchRequest { }
+
+[CodeGenModel("CreateBatchRequestEndpoint")]
+internal readonly partial struct InternalCreateBatchRequestEndpoint { }
 
 [CodeGenModel("ListBatchesResponse")]
 internal partial class InternalListBatchesResponse { }

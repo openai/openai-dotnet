@@ -133,6 +133,6 @@ public partial class RunCreationOptions
     public RunCreationOptions()
     { }
 
-    private void SerializeToolConstraint(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(ToolConstraint, new ModelReaderWriterOptions("J"));
+    private void SerializeToolConstraint(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(ToolConstraint, options);
 }

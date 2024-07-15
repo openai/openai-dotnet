@@ -6,7 +6,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents the available output dimensions for generated images.
 /// </summary>
-[CodeGenModel("ImageGenerationOptionsSize")]
+[CodeGenModel("CreateImageRequestSize")]
 [CodeGenSuppress("GeneratedImageSize", typeof(string))]
 [CodeGenSuppress("op_Implicit", typeof(string))]
 public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSize>

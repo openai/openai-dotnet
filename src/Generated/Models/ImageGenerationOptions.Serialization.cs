@@ -54,18 +54,39 @@ namespace OpenAI.Images
             }
             if (Optional.IsDefined(ResponseFormat))
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                }
+                else
+                {
+                    writer.WriteNull("response_format");
+                }
             }
             if (Optional.IsDefined(Size))
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size");
+                }
             }
             if (Optional.IsDefined(Style))
             {
-                writer.WritePropertyName("style"u8);
-                writer.WriteStringValue(Style.Value.ToSerialString());
+                if (Style != null)
+                {
+                    writer.WritePropertyName("style"u8);
+                    writer.WriteStringValue(Style.Value.ToSerialString());
+                }
+                else
+                {
+                    writer.WriteNull("style");
+                }
             }
             if (Optional.IsDefined(User))
             {
@@ -160,6 +181,7 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        responseFormat = null;
                         continue;
                     }
                     responseFormat = property.Value.GetString().ToGeneratedImageFormat();
@@ -169,6 +191,7 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        size = null;
                         continue;
                     }
                     size = new GeneratedImageSize(property.Value.GetString());
@@ -178,6 +201,7 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        style = null;
                         continue;
                     }
                     style = property.Value.GetString().ToGeneratedImageStyle();

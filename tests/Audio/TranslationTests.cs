@@ -9,6 +9,7 @@ namespace OpenAI.Tests.Audio;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class TranslationTests : SyncAsyncTestBase
 {
     public TranslationTests(bool isAsync)

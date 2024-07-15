@@ -57,13 +57,27 @@ namespace OpenAI.Images
             }
             if (Optional.IsDefined(ResponseFormat))
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                }
+                else
+                {
+                    writer.WriteNull("response_format");
+                }
             }
             if (Optional.IsDefined(Size))
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size");
+                }
             }
             if (Optional.IsDefined(User))
             {
@@ -147,6 +161,7 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        responseFormat = null;
                         continue;
                     }
                     responseFormat = property.Value.GetString().ToGeneratedImageFormat();
@@ -156,6 +171,7 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        size = null;
                         continue;
                     }
                     size = new GeneratedImageSize(property.Value.GetString());
@@ -217,11 +233,17 @@ namespace OpenAI.Images
             }
             if (Optional.IsDefined(ResponseFormat))
             {
-                content.Add(ResponseFormat.Value.ToSerialString(), "response_format");
+                if (ResponseFormat != null)
+                {
+                    content.Add(ResponseFormat.Value.ToSerialString(), "response_format");
+                }
             }
             if (Optional.IsDefined(Size))
             {
-                content.Add(Size.Value.ToString(), "size");
+                if (Size != null)
+                {
+                    content.Add(Size.Value.ToString(), "size");
+                }
             }
             if (Optional.IsDefined(User))
             {

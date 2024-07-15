@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Chat;
 
-[CodeGenModel("InternalChatCompletionRequestMessageContentPartImageImageUrlDetail")]
+[CodeGenModel("ChatCompletionRequestMessageContentPartImageImageUrlDetail")]
 public readonly partial struct ImageChatMessageContentPartDetail
 {
 }

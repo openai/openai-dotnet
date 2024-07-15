@@ -29,7 +29,7 @@ namespace OpenAI.Batch
             if (Optional.IsDefined(Method))
             {
                 writer.WritePropertyName("method"u8);
-                writer.WriteStringValue(Method);
+                writer.WriteStringValue(Method.Value.ToString());
             }
             if (Optional.IsDefined(Url))
             {
@@ -75,7 +75,7 @@ namespace OpenAI.Batch
                 return null;
             }
             string customId = default;
-            string method = default;
+            InternalBatchRequestInputMethod? method = default;
             Uri url = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -88,7 +88,11 @@ namespace OpenAI.Batch
                 }
                 if (property.NameEquals("method"u8))
                 {
-                    method = property.Value.GetString();
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    method = new InternalBatchRequestInputMethod(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("url"u8))

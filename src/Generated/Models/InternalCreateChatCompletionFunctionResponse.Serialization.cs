@@ -40,7 +40,7 @@ namespace OpenAI.Chat
                 writer.WriteStringValue(SystemFingerprint);
             }
             writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object);
+            writer.WriteStringValue(Object.ToString());
             if (Optional.IsDefined(Usage))
             {
                 writer.WritePropertyName("usage"u8);
@@ -89,7 +89,7 @@ namespace OpenAI.Chat
             DateTimeOffset created = default;
             string model = default;
             string systemFingerprint = default;
-            string @object = default;
+            InternalCreateChatCompletionFunctionResponseObject @object = default;
             ChatTokenUsage usage = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -127,7 +127,7 @@ namespace OpenAI.Chat
                 }
                 if (property.NameEquals("object"u8))
                 {
-                    @object = property.Value.GetString();
+                    @object = new InternalCreateChatCompletionFunctionResponseObject(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("usage"u8))

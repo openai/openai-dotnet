@@ -84,7 +84,7 @@ namespace OpenAI.Batch
                 return null;
             }
             string inputFileId = default;
-            InternalBatchOperationEndpoint endpoint = default;
+            InternalCreateBatchRequestEndpoint endpoint = default;
             InternalBatchCompletionTimeframe completionWindow = default;
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -98,7 +98,7 @@ namespace OpenAI.Batch
                 }
                 if (property.NameEquals("endpoint"u8))
                 {
-                    endpoint = new InternalBatchOperationEndpoint(property.Value.GetString());
+                    endpoint = new InternalCreateBatchRequestEndpoint(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("completion_window"u8))

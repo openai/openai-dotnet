@@ -26,9 +26,9 @@ namespace OpenAI.Audio
             writer.WritePropertyName("seek"u8);
             writer.WriteNumberValue(SeekOffset);
             writer.WritePropertyName("start"u8);
-            writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.fff")));
+            writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.FFF")));
             writer.WritePropertyName("end"u8);
-            writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.fff")));
+            writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.FFF")));
             writer.WritePropertyName("text"u8);
             writer.WriteStringValue(Text);
             writer.WritePropertyName("tokens"u8);

@@ -43,7 +43,7 @@ namespace OpenAI.Assistants
             if (CompletedAt != null)
             {
                 writer.WritePropertyName("completed_at"u8);
-                writer.WriteStringValue(CompletedAt.Value, "O");
+                writer.WriteNumberValue(CompletedAt.Value, "U");
             }
             else
             {
@@ -52,7 +52,7 @@ namespace OpenAI.Assistants
             if (IncompleteAt != null)
             {
                 writer.WritePropertyName("incomplete_at"u8);
-                writer.WriteStringValue(IncompleteAt.Value, "O");
+                writer.WriteNumberValue(IncompleteAt.Value, "U");
             }
             else
             {
@@ -212,8 +212,6 @@ namespace OpenAI.Assistants
                         completedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // completedAt = property.Value.GetDateTimeOffset("O");
                     completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -224,7 +222,7 @@ namespace OpenAI.Assistants
                         incompleteAt = null;
                         continue;
                     }
-                    incompleteAt = property.Value.GetDateTimeOffset("O");
+                    incompleteAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
                 if (property.NameEquals("role"u8))
