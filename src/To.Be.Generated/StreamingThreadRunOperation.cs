@@ -34,6 +34,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     private ContinuableAsyncEnumerator<StreamingUpdate> _updateEnumeratorAsync;
 
     internal StreamingThreadRunOperation(
+        //ThreadRunOperationToken token,
         ClientPipeline pipeline,
         Uri endpoint,
 

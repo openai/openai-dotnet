@@ -12,7 +12,8 @@ namespace OpenAI.Assistants;
 // Protocol version
 public partial class ThreadRunOperation : OperationResult
 {
-    // TODO: fix this
+    // TODO: fix this - remove protected fields
+    protected readonly ClientPipeline _pipeline;
     protected readonly Uri _endpoint;
 
     // TODO: Note, convenience type will make these public.  Right now we have 
@@ -28,9 +29,13 @@ public partial class ThreadRunOperation : OperationResult
     private readonly bool _isStreaming;
 
     // For use with convenience methods
-    internal ThreadRunOperation(ClientPipeline pipeline, Uri endpoint)
-        : base(pipeline)
+    internal ThreadRunOperation(
+        //ThreadRunOperationToken token,
+        ClientPipeline pipeline,
+        Uri endpoint)
+        : base()
     {
+        _pipeline = pipeline;
         _endpoint = endpoint;
         _pollingInterval = new();
 
@@ -40,11 +45,13 @@ public partial class ThreadRunOperation : OperationResult
 
     // For use with protocol methods where the response has been obtained
     internal ThreadRunOperation(
+        //ThreadRunOperationToken token,
         ClientPipeline pipeline,
         Uri endpoint,
         PipelineResponse response)
-        : base(pipeline, response)
+        : base(response)
     {
+        _pipeline = pipeline;
         _endpoint = endpoint;
         _pollingInterval = new();
 
@@ -196,7 +203,7 @@ public partial class ThreadRunOperation : OperationResult
     //    try
     //    {
     //        message = CreateCreateRunRequest(threadId, content, options);
-    //        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    //        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     //    }
     //    finally
     //    {
@@ -226,7 +233,7 @@ public partial class ThreadRunOperation : OperationResult
     //    try
     //    {
     //        message = CreateCreateRunRequest(threadId, content, options);
-    //        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    //        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     //    }
     //    finally
     //    {
@@ -253,7 +260,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -272,7 +279,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -293,7 +300,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyRunRequest(threadId, runId, content, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -314,7 +321,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyRunRequest(threadId, runId, content, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -333,7 +340,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateCancelRunRequest(threadId, runId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -352,7 +359,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateCancelRunRequest(threadId, runId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -378,7 +385,7 @@ public partial class ThreadRunOperation : OperationResult
         try
         {
             message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
         {
@@ -412,7 +419,7 @@ public partial class ThreadRunOperation : OperationResult
         try
         {
             message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
         }
         finally
         {
@@ -457,7 +464,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -494,7 +501,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -515,7 +522,7 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
         using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -536,12 +543,12 @@ public partial class ThreadRunOperation : OperationResult
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
         using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     internal PipelineMessage CreateCreateRunRequest(string threadId, BinaryContent content, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "POST";
@@ -560,7 +567,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateGetRunRequest(string threadId, string runId, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";
@@ -578,7 +585,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateModifyRunRequest(string threadId, string runId, BinaryContent content, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "POST";
@@ -598,7 +605,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateCancelRunRequest(string threadId, string runId, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "POST";
@@ -617,7 +624,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateSubmitToolOutputsToRunRequest(string threadId, string runId, BinaryContent content, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "POST";
@@ -638,7 +645,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";
@@ -673,7 +680,7 @@ public partial class ThreadRunOperation : OperationResult
 
     internal PipelineMessage CreateGetRunStepRequest(string threadId, string runId, string stepId, RequestOptions? options)
     {
-        var message = Pipeline.CreateMessage();
+        var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";
