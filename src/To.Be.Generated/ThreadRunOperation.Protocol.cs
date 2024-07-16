@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,11 +29,9 @@ public partial class ThreadRunOperation : OperationResult
 
     private readonly bool _isStreaming;
 
-    // For use with convenience methods
-    internal ThreadRunOperation(
-        //ThreadRunOperationToken token,
-        ClientPipeline pipeline,
-        Uri endpoint)
+    // For use with convenience methods - response hasn't been provided yet.
+    // TODO: do we need this always?  Or only for streaming?
+    internal ThreadRunOperation(ClientPipeline pipeline, Uri endpoint)
         : base()
     {
         _pipeline = pipeline;
@@ -45,7 +44,6 @@ public partial class ThreadRunOperation : OperationResult
 
     // For use with protocol methods where the response has been obtained
     internal ThreadRunOperation(
-        //ThreadRunOperationToken token,
         ClientPipeline pipeline,
         Uri endpoint,
         PipelineResponse response)
@@ -60,6 +58,8 @@ public partial class ThreadRunOperation : OperationResult
             _isStreaming = contentType == "text/event-stream; charset=utf-8";
         }
     }
+
+    #region OperationResult methods
 
     public override bool IsCompleted
     {
@@ -137,6 +137,11 @@ public partial class ThreadRunOperation : OperationResult
         return !IsCompleted || _status == "requires_action";
     }
 
+    private Task<ClientResult> GetUpdateAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     private ClientResult GetUpdate(CancellationToken cancellationToken)
     {
         if (_threadId == null || _runId == null)
@@ -146,11 +151,6 @@ public partial class ThreadRunOperation : OperationResult
 
         // TODO: RequestOptions/CancellationToken logic around this ... ?
         return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
-    }
-
-    private Task<ClientResult> GetUpdateAsync()
-    {
-        throw new NotImplementedException();
     }
 
     private void ApplyUpdate(PipelineResponse response)
@@ -178,7 +178,9 @@ public partial class ThreadRunOperation : OperationResult
         return hasCompleted;
     }
 
-    #region protocol methods
+    #endregion
+
+    #region Generated protocol methods - i.e. TypeSpec "linked operations"
 
     // TODO: Decide whether we want these
     //// TODO: Note that the CreateRun protocol methods are made internal, i.e. not 
@@ -431,7 +433,7 @@ public partial class ThreadRunOperation : OperationResult
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
     /// <param name="runId"> The ID of the run the run steps belong to. </param>
@@ -457,18 +459,18 @@ public partial class ThreadRunOperation : OperationResult
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions? options)
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of run steps belonging to a run.
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
     /// </summary>
     /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
     /// <param name="runId"> The ID of the run the run steps belong to. </param>
@@ -494,14 +496,14 @@ public partial class ThreadRunOperation : OperationResult
     /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions? options)
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>

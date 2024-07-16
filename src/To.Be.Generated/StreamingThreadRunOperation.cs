@@ -11,12 +11,9 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
+// Streaming version
 public partial class StreamingThreadRunOperation : ThreadRunOperation
 {
-    // TODO: These will move to convenience base type.
-    public string? ThreadId { get; private set; }
-    public string? RunId { get; private set; }
-
     public ThreadRun? Value { get; private set; }
     public RunStatus? Status { get; private set; }
 
