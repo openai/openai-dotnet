@@ -17,7 +17,6 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
     private readonly int? _limit;
     private readonly string _order;
 
-    // Note: this one is special
     private string _after;
 
     private readonly string _before;
@@ -43,10 +42,10 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetMessagesAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+        => GetMessages(_threadId, _limit, _order, _after, _before, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -55,7 +54,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetMessagesPageAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetMessagesAsync(_threadId, _limit, _order, _after, _before, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -65,7 +64,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetMessagesPage(_threadId, _limit, _order, _after, _before, _options);
+        return GetMessages(_threadId, _limit, _order, _after, _before, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -78,7 +77,6 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         return hasMore;
     }
 
-    // Note: this is the deserialization method that converts protocol to convenience
     public override PageResult<ThreadMessage> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
@@ -91,8 +89,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         return PageResult<ThreadMessage>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    // Note: these are the protocol methods - they are generated here
-    internal virtual async Task<ClientResult> GetMessagesPageAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual async Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
@@ -100,7 +97,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetMessagesPage(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 

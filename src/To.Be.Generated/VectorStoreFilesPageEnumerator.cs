@@ -17,12 +17,11 @@ internal partial class VectorStoreFilesPageEnumerator : PageEnumerator<VectorSto
     private readonly int? _limit;
     private readonly string? _order;
 
-    // Note: this one is special
-    private string? _after;
-
     private readonly string? _before;
     private readonly string? _filter;
     private readonly RequestOptions _options;
+
+    private string? _after;
 
     public VectorStoreFilesPageEnumerator(
         ClientPipeline pipeline,
@@ -79,7 +78,6 @@ internal partial class VectorStoreFilesPageEnumerator : PageEnumerator<VectorSto
         return hasMore;
     }
 
-    // Note: this is the deserialization method that converts protocol to convenience
     public override PageResult<VectorStoreFileAssociation> GetPageFromResult(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
@@ -92,7 +90,6 @@ internal partial class VectorStoreFilesPageEnumerator : PageEnumerator<VectorSto
         return PageResult<VectorStoreFileAssociation>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    // Note: these are the protocol methods - they are generated here
     internal virtual async Task<ClientResult> GetFileAssociationsAsync(string vectorStoreId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));

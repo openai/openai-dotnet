@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace OpenAI.Assistants;
 
-namespace OpenAI.Assistants;
-
+/// <summary>
+/// Represents addition options available when requesting a collection of <see cref="ThreadMessage"/> instances.
+/// </summary>
 public class MessageCollectionOptions
 {
+    /// <summary>
+    /// Creates a new instance of <see cref="MessageCollectionOptions"/>.
+    /// </summary>
     public MessageCollectionOptions() { }
 
     /// <summary>
