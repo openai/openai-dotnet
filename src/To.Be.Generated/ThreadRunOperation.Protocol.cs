@@ -2,6 +2,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,12 +26,11 @@ public partial class ThreadRunOperation : OperationResult
 
     private bool _isCompleted;
 
-    private readonly PollingInterval _pollingInterval;
+    private PollingInterval _pollingInterval;
 
     private readonly bool _isStreaming;
 
-    // For use with convenience methods - response hasn't been provided yet.
-    // TODO: do we need this always?  Or only for streaming?
+    // For use with streaming convenience methods - response hasn't been provided yet.
     internal ThreadRunOperation(ClientPipeline pipeline, Uri endpoint)
         : base()
     {
@@ -42,7 +42,8 @@ public partial class ThreadRunOperation : OperationResult
         _isStreaming = true;
     }
 
-    // For use with protocol methods where the response has been obtained
+    // For use with protocol methods where the response has been obtained prior
+    // to creation of the LRO instance.
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -56,6 +57,22 @@ public partial class ThreadRunOperation : OperationResult
         if (response.Headers.TryGetValue("Content-Type", out string? contentType))
         {
             _isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
+
+        if (!_isStreaming)
+        {
+            using JsonDocument doc = JsonDocument.Parse(response.Content);
+
+            _status = doc.RootElement.GetProperty("status"u8).GetString();
+            _threadId = doc.RootElement.GetProperty("thread_id"u8).GetString();
+            _runId = doc.RootElement.GetProperty("id"u8).GetString();
+
+            if (_status is null || _threadId is null || _runId is null)
+            {
+                throw new ArgumentException("Invalid 'response' body.", nameof(response));
+            }
+
+            IsCompleted = GetIsCompleted(_status!);
         }
     }
 
@@ -90,15 +107,11 @@ public partial class ThreadRunOperation : OperationResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        // TODO: if don't have a response yet, get that first and ApplyUpdate.
-        // Consolidate this code to simplify initialization -- we don't want to
-        // wait for the polling interval if we don't have a first response yet.
+        // These should always be set in the constructor.
+        Debug.Assert(_threadId is not null);
+        Debug.Assert(_runId is not null);
 
-        if (_threadId == null || _runId == null)
-        {
-            ApplyUpdate(GetRawResponse());
-        }
-
+        // TODO: reimplement around the update enumerator concept.
         bool hasNextUpdate;
         do
         {
@@ -109,62 +122,59 @@ public partial class ThreadRunOperation : OperationResult
             hasNextUpdate = Update(cancellationToken);
         }
         while (hasNextUpdate);
-
-        if (_status == "requires_action")
-        {
-            throw new InvalidOperationException("Reached a suspended state where operation cannot be completed.  Consider calling WaitForStatusChange method instead.");
-        }
     }
 
-    public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    // Note: The methods below are removed/rewritten when convenience-layer is added.
 
-    public override bool Update(CancellationToken cancellationToken = default)
-    {
-        // This does:
-        //   1. Get update
-        //   2. Apply update
-        //   3. Returns whether to continue polling/has more updates
+    //public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-        ClientResult update = GetUpdate(cancellationToken);
+    //public override bool Update(CancellationToken cancellationToken = default)
+    //{
+    //    // This does:
+    //    //   1. Get update
+    //    //   2. Apply update
+    //    //   3. Returns whether to continue polling/has more updates
 
-        ApplyUpdate(update.GetRawResponse());
+    //    ClientResult update = GetUpdate(cancellationToken);
 
-        // Do not continue polling from Wait method if operation is complete,
-        // or input is required, since we would poll forever in either state!
-        return !IsCompleted || _status == "requires_action";
-    }
+    //    ApplyUpdate(update.GetRawResponse());
 
-    private Task<ClientResult> GetUpdateAsync()
-    {
-        throw new NotImplementedException();
-    }
+    //    // Do not continue polling from Wait method if operation is complete,
+    //    // or input is required, since we would poll forever in either state!
+    //    return !IsCompleted || _status == "requires_action";
+    //}
 
-    private ClientResult GetUpdate(CancellationToken cancellationToken)
-    {
-        if (_threadId == null || _runId == null)
-        {
-            throw new InvalidOperationException("ThreadId or RunId is not set.");
-        }
+    //private Task<ClientResult> GetUpdateAsync()
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-        // TODO: RequestOptions/CancellationToken logic around this ... ?
-        return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
-    }
+    //private ClientResult GetUpdate(CancellationToken cancellationToken)
+    //{
+    //    if (_threadId == null || _runId == null)
+    //    {
+    //        throw new InvalidOperationException("ThreadId or RunId is not set.");
+    //    }
 
-    private void ApplyUpdate(PipelineResponse response)
-    {
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
+    //    // TODO: RequestOptions/CancellationToken logic around this ... ?
+    //    return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
+    //}
 
-        _status = doc.RootElement.GetProperty("status"u8).GetString();
-        _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
-        _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
+    //private void ApplyUpdate(PipelineResponse response)
+    //{
+    //    using JsonDocument doc = JsonDocument.Parse(response.Content);
 
-        IsCompleted = GetIsCompleted(_status!);
+    //    _status = doc.RootElement.GetProperty("status"u8).GetString();
+    //    _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
+    //    _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
 
-        SetRawResponse(response);
-    }
+    //    IsCompleted = GetIsCompleted(_status!);
+
+    //    SetRawResponse(response);
+    //}
 
     private static bool GetIsCompleted(string status)
     {

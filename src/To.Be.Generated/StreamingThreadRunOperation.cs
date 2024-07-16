@@ -14,12 +14,6 @@ namespace OpenAI.Assistants;
 // Streaming version
 public partial class StreamingThreadRunOperation : ThreadRunOperation
 {
-    public ThreadRun? Value { get; private set; }
-    public RunStatus? Status { get; private set; }
-
-    // TODO: do we want this?  It has a lot of redundancy ...
-    public RunUpdate? CurrentUpdate { get; private set; }
-
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
 
@@ -31,7 +25,6 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     private ContinuableAsyncEnumerator<StreamingUpdate> _updateEnumeratorAsync;
 
     internal StreamingThreadRunOperation(
-        //ThreadRunOperationToken token,
         ClientPipeline pipeline,
         Uri endpoint,
 
@@ -172,8 +165,6 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
         // Set IsCompleted
         IsCompleted = update.Value.Status.IsTerminal;
-
-        CurrentUpdate = update;
     }
 
     private IAsyncEnumerator<StreamingUpdate>? GetAsyncUpdateEnumerator()

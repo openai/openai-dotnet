@@ -2,7 +2,9 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,8 +15,146 @@ namespace OpenAI.Assistants;
 // Convenience version
 public partial class ThreadRunOperation : OperationResult
 {
+    // Note: these all have to be nullable because the derived streaming type
+    // cannot set them until it reads the first event from the SSE stream.
     public string? ThreadId { get; protected set; }
     public string? RunId { get; protected set; }
+
+    public ThreadRun? Value { get; protected set; }
+    public RunStatus? Status { get; protected set; }
+    public ContinuationToken? RehydrationToken { get; protected set; }
+
+    // For use with protocol methods and polling convenience methods where the
+    // response has been obtained prior to creation of the LRO type.
+    internal ThreadRunOperation(
+        ClientPipeline pipeline,
+        Uri endpoint,
+        ThreadRun value,
+        RunStatus status,
+        PipelineResponse response)
+        : base(response)
+    {
+        _pipeline = pipeline;
+        _endpoint = endpoint;
+        _pollingInterval = new();
+
+        if (response.Headers.TryGetValue("Content-Type", out string? contentType) &&
+            contentType == "text/event-stream; charset=utf-8")
+        {
+            throw new ArgumentException("Cannot create polling operation from streaming response.", nameof(response));
+        }
+
+        Value = value;
+        Status = status;
+        RehydrationToken = new ThreadRunOperationToken(value.ThreadId, value.Id);
+    }
+
+    #region OperationResult methods
+
+    public Task WaitAsync(ReturnWhen returnWhen, TimeSpan? pollingInterval = default, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Wait(ReturnWhen returnWhen, 
+        TimeSpan? pollingInterval = default, 
+        CancellationToken cancellationToken = default)
+    {
+        if (_isStreaming)
+        {
+            // we would have to read from the string to get the run ID to poll for.
+            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        }
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return;
+        }
+
+        if (pollingInterval is not null)
+        {
+            // TODO: don't reallocate
+            _pollingInterval = new PollingInterval(pollingInterval);
+        }
+
+        // These should always be set in the constructor.
+        Debug.Assert(_threadId is not null);
+        Debug.Assert(_runId is not null);
+
+        RunStatus status = Status!.Value;
+
+        // TODO: reimplement around the update enumerator concept.
+        bool hasNextUpdate;
+        do
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            _pollingInterval.Wait();
+
+            hasNextUpdate = Update(cancellationToken);
+
+            if (returnWhen == ReturnWhen.StateChanged &&
+                status != Status!.Value)
+            {
+                return;
+            }
+
+            if (returnWhen == ReturnWhen.Completed &&
+                status == RunStatus.RequiresAction)
+            {
+                throw new InvalidOperationException("Cannot wait to complete operation that has reached 'requires_action' state.");
+            }
+        }
+        while (hasNextUpdate);
+    }
+
+    public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override bool Update(CancellationToken cancellationToken = default)
+    {
+        // This does:
+        //   1. Get update
+        //   2. Apply update
+        //   3. Returns whether to continue polling/has more updates
+
+        ClientResult<ThreadRun> runUpdate = GetUpdate(cancellationToken);
+
+        ApplyUpdate(runUpdate);
+
+        // Do not continue polling from Wait method if operation is complete,
+        // or input is required, since we would poll forever in either state!
+        return !IsCompleted || Status == RunStatus.RequiresAction;
+    }
+
+    private Task<ClientResult<ThreadRun>> GetUpdateAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    private ClientResult<ThreadRun> GetUpdate(CancellationToken cancellationToken)
+    {
+        if (_threadId == null || _runId == null)
+        {
+            throw new InvalidOperationException("ThreadId or RunId is not set.");
+        }
+
+        // TODO: RequestOptions/CancellationToken logic around this ... ?
+        return GetRun(cancellationToken);
+    }
+
+    private void ApplyUpdate(ClientResult<ThreadRun> update)
+    {
+        Value = update;
+        Status = update.Value.Status;
+        IsCompleted = Status.Value.IsTerminal;
+
+        SetRawResponse(update.GetRawResponse());
+    }
+
+    #endregion
 
     #region Convenience overloads of generated protocol methods
 
@@ -25,10 +165,7 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
     public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetRunAsync(_threadId!, _runId!, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -39,10 +176,7 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
     public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetRun(_threadId!, _runId!, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -53,10 +187,7 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
     public virtual async Task<ClientResult<ThreadRun>> CancelRunAsync(CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = await CancelRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await CancelRunAsync(_threadId!, _runId!, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -67,13 +198,9 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> An updated <see cref="ThreadRun"/> instance, reflecting the new status of the run. </returns>
     public virtual ClientResult<ThreadRun> CancelRun(CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        ClientResult protocolResult = CancelRun(threadId, runId, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = CancelRun(_threadId!, _runId!, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
-
 
     /// <summary>
     /// Submits a collection of required tool call outputs to a run and resumes the run.
@@ -87,11 +214,8 @@ public partial class ThreadRunOperation : OperationResult
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions())
+        ClientResult protocolResult = await SubmitToolOutputsToRunAsync(_threadId!, _runId!, content, cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
@@ -108,11 +232,8 @@ public partial class ThreadRunOperation : OperationResult
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
-        ClientResult protocolResult = SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = SubmitToolOutputsToRun(_threadId!, _runId!, content, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
@@ -129,12 +250,9 @@ public partial class ThreadRunOperation : OperationResult
         RunStepCollectionOptions? options = default,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
         RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
+            _threadId!,
+            _runId!,
             options?.PageSize,
             options?.Order?.ToString(),
             options?.AfterId,
@@ -180,7 +298,7 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
     public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string stepId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await GetRunStepAsync(threadId, runId, stepId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetRunStepAsync(_threadId!, _runId!, stepId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 
@@ -192,7 +310,7 @@ public partial class ThreadRunOperation : OperationResult
     /// <returns> A <see cref="RunStep"/> instance corresponding to the specified step. </returns>
     public virtual ClientResult<RunStep> GetRunStep(string stepId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = GetRunStep(threadId, runId, stepId, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetRunStep(_threadId!, _runId!, stepId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, RunStep.FromResponse);
     }
 

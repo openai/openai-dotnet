@@ -12,13 +12,20 @@ internal class PollingInterval
 {
     private const int DefaultWaitMilliseconds = 1000;
 
-    public void Wait()
+    private readonly TimeSpan _interval;
+
+    public PollingInterval(TimeSpan? interval = default)
     {
-        Thread.Sleep(DefaultWaitMilliseconds);
+        _interval = interval ?? new TimeSpan(DefaultWaitMilliseconds);
     }
 
     public async Task WaitAsync()
     {
-        await Task.Delay(DefaultWaitMilliseconds);
+        await Task.Delay(_interval);
+    }
+
+    public void Wait()
+    {
+        Thread.Sleep(_interval);
     }
 }

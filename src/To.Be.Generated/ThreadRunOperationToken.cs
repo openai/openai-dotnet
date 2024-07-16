@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 
 internal class ThreadRunOperationToken : ContinuationToken
 {
-    private ThreadRunOperationToken(string threadId, string runId)
+    public ThreadRunOperationToken(string threadId, string runId)
     {
         ThreadId = threadId;
         RunId = runId;
@@ -98,8 +98,5 @@ internal class ThreadRunOperationToken : ContinuationToken
 
         return new(threadId, runId);
     }
-
-    public static ThreadRunOperationToken FromOptions(string threadId, string runId)
-        => new ThreadRunOperationToken(threadId, runId);
 }
 
