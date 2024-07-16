@@ -133,8 +133,15 @@ namespace OpenAI.Chat
             }
             if (Optional.IsCollectionDefined(StopSequences))
             {
-                writer.WritePropertyName("stop"u8);
-                SerializeStopSequencesValue(writer, options);
+                if (StopSequences != null)
+                {
+                    writer.WritePropertyName("stop"u8);
+                    SerializeStopSequencesValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("stop");
+                }
             }
             if (Optional.IsDefined(Stream))
             {
