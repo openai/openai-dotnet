@@ -93,6 +93,62 @@ public partial class ThreadRunOperation : OperationResult
         Wait(cancellationToken);
     }
 
+    // TODO: evaluate this experiment
+    // Expose enumerable APIs similar to the streaming ones.
+    public virtual IAsyncEnumerable<ThreadRun> GetUpdatesAsync(
+        TimeSpan? pollingInterval = default, 
+        /*[EnumeratorCancellation]*/ CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+
+        //while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
+
+        //    // Hm ... ?
+        //    // Note, this could add StreamingUpdate as a public property??
+        //    // If it's an enumerator, do end-users ever care about what's in Current?
+        //    yield return _updateEnumeratorAsync.Current;
+        //}
+
+        //// TODO: Dispose enumerator
+    }
+
+    public virtual IEnumerable<ThreadRun> GetUpdates(
+        TimeSpan? pollingInterval = default,
+        CancellationToken cancellationToken = default)
+    {
+        if (pollingInterval is not null)
+        {
+            // TODO: don't reallocate
+            _pollingInterval = new PollingInterval(pollingInterval);
+        }
+
+        RunStatus status = Status!.Value;
+
+        do 
+        {
+            Update(cancellationToken);
+
+            // TODO: only have this in one place.  Here or UpdateStatus?
+            cancellationToken.ThrowIfCancellationRequested();
+
+            _pollingInterval.Wait();
+
+            if (status != Status!.Value)
+            {
+                // State changed.  Return the update.
+                status = Status!.Value;
+
+                yield return Value!;
+            }
+        } 
+        // TODO: technically if we wanted to do it this way, we should yield the
+        // status change update saying the operation is complete, but this isn't
+        // happening currently.  Figure this out.
+        while (Update(cancellationToken));
+    }
+
     public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
@@ -195,14 +251,15 @@ public partial class ThreadRunOperation : OperationResult
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> SubmitToolOutputsToRunAsync(
+    public virtual async Task SubmitToolOutputsToRunAsync(
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
         ClientResult protocolResult = await SubmitToolOutputsToRunAsync(_threadId!, _runId!, content, cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        ClientResult<ThreadRun> update = CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        ApplyUpdate(update);
     }
 
     /// <summary>
@@ -213,13 +270,14 @@ public partial class ThreadRunOperation : OperationResult
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The <see cref="ThreadRun"/>, updated after the submission was processed. </returns>
-    public virtual ClientResult<ThreadRun> SubmitToolOutputsToRun(
+    public virtual void SubmitToolOutputsToRun(
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs).ToBinaryContent();
         ClientResult protocolResult = SubmitToolOutputsToRun(_threadId!, _runId!, content, cancellationToken.ToRequestOptions());
-        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        ClientResult<ThreadRun> update = CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+        ApplyUpdate(update);
     }
 
     /// <summary>

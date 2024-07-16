@@ -114,16 +114,12 @@ public partial class ThreadRunOperation : OperationResult
         Debug.Assert(_runId is not null);
 
         // TODO: reimplement around the update enumerator concept.
-        bool hasNextUpdate;
-        do
+        while (Update(cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
-
-            hasNextUpdate = Update(cancellationToken);
         }
-        while (hasNextUpdate);
     }
 
     // Note: The methods below are removed/rewritten when convenience-layer is added.

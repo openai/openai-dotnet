@@ -80,6 +80,8 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     // Public APIs specific to streaming LRO
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        // I think this relies on the fact that there are updates that aren't
+        // RunUpdates, so we yield a value .. ?
         while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
         {
             // TODO: only have this in one place.  Here or UpdateStatus?
