@@ -125,11 +125,14 @@ public partial class AssistantClient
             => CreateMessage(thread?.Id, role, content, options);
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="options">Options describing the collection to return.</param>
-    /// <returns></returns>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
     public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
         MessageCollectionOptions options = default)
@@ -140,11 +143,14 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="options">Options describing the collection to return.</param>
-    /// <returns></returns>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
         AssistantThread thread, 
         MessageCollectionOptions options = default)
@@ -314,11 +320,14 @@ public partial class AssistantClient
     //        => CreateThreadAndRunStreaming(assistant?.Id, threadOptions, runOptions);
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="options">Options describing the collection to return.</param>
-    /// <returns></returns>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
     public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         AssistantThread thread,
         RunCollectionOptions options = default)
@@ -329,11 +338,14 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="options">Options describing the collection to return.</param>
-    /// <returns></returns>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
     public virtual PageCollection<ThreadRun> GetRuns(
         AssistantThread thread,
         RunCollectionOptions options = default)

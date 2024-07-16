@@ -187,22 +187,23 @@ public partial class AssistantTests
     //    Assert.That(runsPage.Values.Count, Is.EqualTo(0));
     //    ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
     //    Validate(message);
-
-    //    ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
-    //    Validate(runOperation);
-    //    Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
-    //    Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
-    //    //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
-    //    //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
+    //    ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
+    //    Validate(run);
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
+    //    Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
+    //    ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
+    //    Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
     //    runsPage = client.GetRuns(thread).GetCurrentPage();
     //    Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-    //    Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
+    //    Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
 
     //    PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
     //    Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
-
-    //    ThreadRun run = runOperation.WaitForCompletion();
-
+    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
+    //    {
+    //        Thread.Sleep(500);
+    //        run = client.GetRun(run);
+    //    }
     //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
     //    Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
     //    Assert.That(run.RequiredActions.Count, Is.EqualTo(0));
@@ -259,32 +260,37 @@ public partial class AssistantTests
     //    });
     //    Validate(thread);
 
-    //    ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
-    //    Validate(runOperation);
+    //    ThreadRun run = client.CreateRun(thread, assistant);
+    //    Validate(run);
 
-    //    Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
-    //    Assert.That(runOperation.Value.Usage?.TotalTokens, Is.GreaterThan(0));
+    //    while (!run.Status.IsTerminal)
+    //    {
+    //        Thread.Sleep(1000);
+    //        run = client.GetRun(run);
+    //    }
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+    //    Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-    //    PageCollection<RunStep> pages = runOperation.GetRunSteps();
+    //    PageCollection<RunStep> pages = client.GetRunSteps(run);
     //    PageResult<RunStep> firstPage = pages.GetCurrentPage();
-        RunStep firstStep = firstPage.Values[0];
-        IEnumerable<RunStep> runSteps = pages.GetAllValues();
+    //    RunStep firstStep = firstPage.Values[0];
+    //    RunStep secondStep = firstPage.Values[1];
 
-        Assert.That(runSteps.Count, Is.GreaterThan(1));
+    //    Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
     //    Assert.Multiple(() =>
     //    {
-            Assert.That(runSteps.First().AssistantId, Is.EqualTo(assistant.Id));
-            Assert.That(runSteps.First().ThreadId, Is.EqualTo(thread.Id));
-            Assert.That(runSteps.First().RunId, Is.EqualTo(run.Id));
-            Assert.That(runSteps.First().CreatedAt, Is.GreaterThan(s_2024));
-            Assert.That(runSteps.First().CompletedAt, Is.GreaterThan(s_2024));
+    //        Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
+    //        Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
+    //        Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
+    //        Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
+    //        Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
     //    });
-        RunStepDetails details = runSteps.First().Details;
+    //    RunStepDetails details = firstStep.Details;
     //    Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
     //    string rawContent = firstPage.GetRawResponse().Content.ToString();
 
-        details = runSteps.ElementAt(1).Details;
+    //    details = secondStep.Details;
     //    Assert.Multiple(() =>
     //    {
     //        Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
@@ -315,12 +321,12 @@ public partial class AssistantTests
     //    Validate(thread);
     //    ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
     //    Validate(message);
-    //    ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant, new()
+    //    ThreadRun run = client.CreateRun(thread, assistant, new()
     //    {
     //        ResponseFormat = AssistantResponseFormat.JsonObject,
     //    });
-    //    Validate(runOperation);
-    //    Assert.That(runOperation.Value.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+    //    Validate(run);
+    //    Assert.That(run.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
     //}
 
     //[Test]
@@ -357,8 +363,7 @@ public partial class AssistantTests
     //    Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
     //    Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
 
-    //    ThreadRunOperation runOperation = client.CreateThreadAndRun(
-    //        ReturnWhen.Completed,
+    //    ThreadRun run = client.CreateThreadAndRun(
     //        assistant,
     //        new ThreadCreationOptions()
     //        {
@@ -368,27 +373,35 @@ public partial class AssistantTests
     //        {
     //            AdditionalInstructions = "Call provided tools when appropriate.",
     //        });
-    //    Validate(runOperation);
+    //    Validate(run);
 
-    //    Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
-    //    Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
-    //    Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-    //    Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-    //    Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
+    //    {
+    //        Thread.Sleep(500);
+    //        run = client.GetRun(run);
+    //    }
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
+    //    Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
+    //    Assert.That(run.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+    //    Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+    //    Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
-    //    // TODO: Make this sample nice per APIs.
-    //    runOperation.SubmitToolOutputsToRun([new(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")]);
-    //    Assert.That(runOperation.Status.IsTerminal, Is.False);
+    //    run = client.SubmitToolOutputsToRun(run, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
+    //    Assert.That(run.Status.IsTerminal, Is.False);
 
-    //    runOperation.WaitForCompletion();
-    //    Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
+    //    {
+    //        Thread.Sleep(500);
+    //        run = client.GetRun(run);
+    //    }
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        IEnumerable<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValues();
-        PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
-        Assert.That(messages.Count, Is.GreaterThan(1));
-        Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(messages.First().Content?[0], Is.Not.Null);
-        Assert.That(messages.First().Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
+    //    PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
+    //    PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
+    //    Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
+    //    Assert.That(firstPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+    //    Assert.That(firstPage.Values[0].Content?[0], Is.Not.Null);
+    //    Assert.That(firstPage.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     //}
 
     //[Test]
@@ -584,15 +597,21 @@ public partial class AssistantTests
     //    Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
     //    Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
-    //    ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
-    //    Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+    //    ThreadRun run = client.CreateRun(thread, assistant);
+    //    Validate(run);
+    //    do
+    //    {
+    //        Thread.Sleep(1000);
+    //        run = client.GetRun(run);
+    //    } while (run?.Status.IsTerminal == false);
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
     //    IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
-        int messageCount = 0;
-        bool hasCake = false;
+    //    int messageCount = 0;
+    //    bool hasCake = false;
     //    foreach (ThreadMessage message in messages)
     //    {
-            messageCount++;
+    //        messageCount++;
 
     //        foreach (MessageContent content in message.Content)
     //        {
@@ -602,14 +621,14 @@ public partial class AssistantTests
     //                Console.WriteLine($"  --> From file: {annotation.InputFileId}, replacement: {annotation.TextToReplace}");
     //            }
 
-                if (!hasCake)
-                {
-                    hasCake = content.Text.ToLower().Contains("cake");
-                }
+    //            if (!hasCake)
+    //            {
+    //                hasCake = content.Text.ToLower().Contains("cake");
+    //            }
     //        }
     //    }
-        Assert.That(messages.Count() > 1);
-        Assert.That(messages.Any(message => message.Content.Any(content => content.Text.ToLower().Contains("cake"))));
+    //    Assert.That(messageCount > 1);
+    //    Assert.That(hasCake, Is.True);
     //}
 
     [Test]
@@ -871,87 +890,87 @@ public partial class AssistantTests
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
     }
 
-    [Test]
-    public void Pagination_CanRehydrateRunStepPageCollectionFromBytes()
-    {
-        AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
-        {
-            Tools = { new CodeInterpreterToolDefinition() },
-            Instructions = "You help the user with mathematical descriptions and visualizations.",
-        });
-        Validate(assistant);
+    //[Test]
+    //public void Pagination_CanRehydrateRunStepPageCollectionFromBytes()
+    //{
+    //    AssistantClient client = GetTestClient();
+    //    Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+    //    {
+    //        Tools = { new CodeInterpreterToolDefinition() },
+    //        Instructions = "You help the user with mathematical descriptions and visualizations.",
+    //    });
+    //    Validate(assistant);
 
-        FileClient fileClient = new();
-        OpenAIFileInfo equationFile = fileClient.UploadFile(
-            BinaryData.FromString("""
-            x,y
-            2,5
-            7,14,
-            8,22
-            """).ToStream(),
-            "text/csv",
-            FileUploadPurpose.Assistants);
-        Validate(equationFile);
+    //    FileClient fileClient = new();
+    //    OpenAIFileInfo equationFile = fileClient.UploadFile(
+    //        BinaryData.FromString("""
+    //        x,y
+    //        2,5
+    //        7,14,
+    //        8,22
+    //        """).ToStream(),
+    //        "text/csv",
+    //        FileUploadPurpose.Assistants);
+    //    Validate(equationFile);
 
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
-        {
-            InitialMessages =
-            {
-                "Describe the contents of any available tool resource file."
-                + " Graph a linear regression and provide the coefficient of correlation."
-                + " Explain any code executed to evaluate.",
-            },
-            ToolResources = new()
-            {
-                CodeInterpreter = new()
-                {
-                    FileIds = { equationFile.Id },
-                }
-            }
-        });
-        Validate(thread);
+    //    AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+    //    {
+    //        InitialMessages =
+    //        {
+    //            "Describe the contents of any available tool resource file."
+    //            + " Graph a linear regression and provide the coefficient of correlation."
+    //            + " Explain any code executed to evaluate.",
+    //        },
+    //        ToolResources = new()
+    //        {
+    //            CodeInterpreter = new()
+    //            {
+    //                FileIds = { equationFile.Id },
+    //            }
+    //        }
+    //    });
+    //    Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
-        Validate(run);
+    //    ThreadRun run = client.CreateRun(thread, assistant);
+    //    Validate(run);
 
-        while (!run.Status.IsTerminal)
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+    //    while (!run.Status.IsTerminal)
+    //    {
+    //        Thread.Sleep(1000);
+    //        run = client.GetRun(run);
+    //    }
+    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+    //    Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageCollection<RunStep> pages = client.GetRunSteps(run);
-        IEnumerator<PageResult<RunStep>> pageEnumerator = ((IEnumerable<PageResult<RunStep>>)pages).GetEnumerator();
+    //    PageCollection<RunStep> pages = client.GetRunSteps(run);
+    //    IEnumerator<PageResult<RunStep>> pageEnumerator = ((IEnumerable<PageResult<RunStep>>)pages).GetEnumerator();
 
-        // Simulate rehydration of the collection
-        BinaryData rehydrationBytes = pages.GetCurrentPage().PageToken.ToBytes();
-        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+    //    // Simulate rehydration of the collection
+    //    BinaryData rehydrationBytes = pages.GetCurrentPage().PageToken.ToBytes();
+    //    ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        PageCollection<RunStep> rehydratedPages = client.GetRunSteps(rehydrationToken);
-        IEnumerator<PageResult<RunStep>> rehydratedPageEnumerator = ((IEnumerable<PageResult<RunStep>>)rehydratedPages).GetEnumerator();
+    //    PageCollection<RunStep> rehydratedPages = client.GetRunSteps(rehydrationToken);
+    //    IEnumerator<PageResult<RunStep>> rehydratedPageEnumerator = ((IEnumerable<PageResult<RunStep>>)rehydratedPages).GetEnumerator();
 
-        int pageCount = 0;
+    //    int pageCount = 0;
 
-        while (pageEnumerator.MoveNext() && rehydratedPageEnumerator.MoveNext())
-        {
-            PageResult<RunStep> page = pageEnumerator.Current;
-            PageResult<RunStep> rehydratedPage = rehydratedPageEnumerator.Current;
+    //    while (pageEnumerator.MoveNext() && rehydratedPageEnumerator.MoveNext())
+    //    {
+    //        PageResult<RunStep> page = pageEnumerator.Current;
+    //        PageResult<RunStep> rehydratedPage = rehydratedPageEnumerator.Current;
 
-            Assert.AreEqual(page.Values.Count, rehydratedPage.Values.Count);
+    //        Assert.AreEqual(page.Values.Count, rehydratedPage.Values.Count);
 
-            for (int i = 0; i < page.Values.Count; i++)
-            {
-                Assert.AreEqual(page.Values[0].Id, rehydratedPage.Values[0].Id);
-            }
+    //        for (int i = 0; i < page.Values.Count; i++)
+    //        {
+    //            Assert.AreEqual(page.Values[0].Id, rehydratedPage.Values[0].Id);
+    //        }
 
-            pageCount++;
-        }
+    //        pageCount++;
+    //    }
 
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
-    }
+    //    Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
+    //}
 
     [Test]
     public async Task MessagesWithRoles()

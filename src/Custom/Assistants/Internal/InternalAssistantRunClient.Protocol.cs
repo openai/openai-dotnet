@@ -120,6 +120,4 @@ internal partial class InternalAssistantRunClient
             }
         }
     }
-
-    /// <summary>
 }
