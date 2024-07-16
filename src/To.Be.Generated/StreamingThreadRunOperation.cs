@@ -98,7 +98,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
             // Hm ... ?
             // Note, this could add StreamingUpdate as a public property??
             // If it's an enumerator, do end-users ever care about what's in Current?
-            yield return CurrentUpdate!;
+            yield return _updateEnumeratorAsync.Current;
         }
 
         // TODO: Dispose enumerator
@@ -165,6 +165,9 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         Value = update.Value;
 
         // SetRawResponse
+        // TODO: This currently won't work as intended because we are setting 
+        // _currUpdateCollectionAsync to assist the ContinuableAsyncEnumerator.
+        // Revisit this when we close on how enumerator should be exposed.
         if (_currUpdateCollectionAsync is not null)
         {
             SetRawResponse(_currUpdateCollectionAsync.GetRawResponse());
