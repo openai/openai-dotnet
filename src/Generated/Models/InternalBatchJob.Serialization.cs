@@ -157,7 +157,7 @@ namespace OpenAI.Batch
             InternalBatchErrors errors = default;
             string inputFileId = default;
             string completionWindow = default;
-            InternalBatchJobStatus status = default;
+            InternalBatchStatus status = default;
             string outputFileId = default;
             string errorFileId = default;
             DateTimeOffset createdAt = default;
@@ -211,7 +211,7 @@ namespace OpenAI.Batch
                 }
                 if (property.NameEquals("status"u8))
                 {
-                    status = new InternalBatchJobStatus(property.Value.GetString());
+                    status = new InternalBatchStatus(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("output_file_id"u8))

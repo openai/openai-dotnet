@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -9,7 +10,7 @@ public partial class ChatCompletionOptions
 {
     // CUSTOM: Added custom serialization to treat a single string as a collection of strings with one item.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void SerializeStopSequencesValue(Utf8JsonWriter writer)
+    private void SerializeStopSequencesValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartArray();
         foreach (var item in StopSequences)
@@ -45,7 +46,7 @@ public partial class ChatCompletionOptions
 
     // CUSTOM: Added custom serialization to represent tokens as integers instead of strings.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void SerializeLogitBiasesValue(Utf8JsonWriter writer)
+    private void SerializeLogitBiasesValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         foreach (var item in LogitBiases)

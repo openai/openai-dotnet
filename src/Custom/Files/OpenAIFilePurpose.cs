@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Files;
 
-[CodeGenModel("OpenAIFileInfoPurpose")]
+[CodeGenModel("OpenAIFilePurpose")]
 public readonly partial struct OpenAIFilePurpose
 {
 }

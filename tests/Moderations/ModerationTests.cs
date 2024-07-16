@@ -8,6 +8,7 @@ namespace OpenAI.Tests.Moderations;
 
 [TestFixture(true)]
 [TestFixture(false)]
+[Parallelizable(ParallelScope.All)]
 public partial class ModerationTests : SyncAsyncTestBase
 {
     public ModerationTests(bool isAsync)
@@ -16,6 +17,7 @@ public partial class ModerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task ClassifySingleInput()
     {
         ModerationClient client = new("text-moderation-stable");
@@ -32,6 +34,7 @@ public partial class ModerationTests : SyncAsyncTestBase
     }
 
     [Test]
+    [Category("skipInCI")]
     public async Task ClassifyMultipleInputs()
     {
         ModerationClient client = new("text-moderation-stable");

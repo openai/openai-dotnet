@@ -16,6 +16,8 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.Assistants;
 
 #pragma warning disable OPENAI001
+
+[Parallelizable(ParallelScope.Fixtures)]
 public partial class AssistantTests
 {
     [Test]
@@ -915,6 +917,7 @@ public partial class AssistantTests
     }
 
     [Test]
+    [Category("smoke")]
     public void RunStepDeserialization()
     {
         BinaryData runStepData = BinaryData.FromString(
@@ -1453,9 +1456,15 @@ public partial class AssistantTests
 
     #endregion
 
-    [TearDown]
+    [OneTimeTearDown]
     protected void Cleanup()
     {
+        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
+        {
+            return;
+        }
+
         AssistantClient client = new();
         FileClient fileClient = new();
         VectorStoreClient vectorStoreClient = new();

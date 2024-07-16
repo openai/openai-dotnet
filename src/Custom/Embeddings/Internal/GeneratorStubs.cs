@@ -2,6 +2,9 @@
 
 // CUSTOM: Made internal.
 
+[CodeGenModel("CreateEmbeddingRequestEncodingFormat")]
+internal readonly partial struct InternalCreateEmbeddingRequestEncodingFormat { }
+
 [CodeGenModel("CreateEmbeddingRequestModel")]
 internal readonly partial struct InternalCreateEmbeddingRequestModel { }
 
@@ -10,6 +13,3 @@ internal readonly partial struct InternalCreateEmbeddingResponseObject { }
 
 [CodeGenModel("EmbeddingObject")]
 internal readonly partial struct InternalEmbeddingObject { }
-
-[CodeGenModel("EmbeddingGenerationOptionsEncodingFormat")]
-internal readonly partial struct InternalEmbeddingGenerationOptionsEncodingFormat { }

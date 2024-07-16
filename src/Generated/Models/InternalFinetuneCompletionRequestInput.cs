@@ -11,7 +11,7 @@ namespace OpenAI.FineTuning
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
-        internal InternalFinetuneCompletionRequestInput()
+        public InternalFinetuneCompletionRequestInput()
         {
         }
 
@@ -22,7 +22,7 @@ namespace OpenAI.FineTuning
             _serializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        public string Prompt { get; }
-        public string Completion { get; }
+        public string Prompt { get; set; }
+        public string Completion { get; set; }
     }
 }

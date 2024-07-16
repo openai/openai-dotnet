@@ -8,13 +8,13 @@
 [CodeGenModel("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition : ToolDefinition { }
 
-[CodeGenModel("ThreadMessageStatus")]
+[CodeGenModel("MessageObjectStatus")]
 public readonly partial struct MessageStatus { }
 
 [CodeGenModel("MessageObjectIncompleteDetails")]
 public partial class MessageFailureDetails { }
 
-[CodeGenModel("MessageFailureDetailsReason")]
+[CodeGenModel("MessageObjectIncompleteDetailsReason")]
 public readonly partial struct MessageFailureReason { }
 
 [CodeGenModel("RunCompletionUsage")]
@@ -23,25 +23,25 @@ public partial class RunTokenUsage { }
 [CodeGenModel("RunObjectLastError")]
 public partial class RunError { }
 
-[CodeGenModel("RunErrorCode")]
+[CodeGenModel("RunObjectLastErrorCode")]
 public readonly partial struct RunErrorCode { }
 
 [CodeGenModel("RunObjectIncompleteDetails")]
 public partial class RunIncompleteDetails { }
 
-[CodeGenModel("RunIncompleteDetailsReason")]
+[CodeGenModel("RunObjectIncompleteDetailsReason")]
 public readonly partial struct RunIncompleteReason { }
 
-[CodeGenModel("RunStepType")]
+[CodeGenModel("RunStepObjectType")]
 public readonly partial struct RunStepType { }
 
-[CodeGenModel("RunStepStatus")]
+[CodeGenModel("RunStepObjectStatus")]
 public readonly partial struct RunStepStatus { }
 
 [CodeGenModel("RunStepObjectLastError")]
 public partial class RunStepError { }
 
-[CodeGenModel("RunStepErrorCode")]
+[CodeGenModel("RunStepObjectLastErrorCode")]
 public readonly partial struct RunStepErrorCode { }
 
 [CodeGenModel("RunStepCompletionUsage")]

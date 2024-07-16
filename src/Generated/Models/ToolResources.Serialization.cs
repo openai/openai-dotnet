@@ -29,7 +29,7 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(FileSearch))
             {
                 writer.WritePropertyName("file_search"u8);
-                SerializeFileSearch(writer);
+                SerializeFileSearch(writer, options);
             }
             if (true && _serializedAdditionalRawData != null)
             {

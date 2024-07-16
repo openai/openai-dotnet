@@ -4,29 +4,23 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI.Internal.Models;
 
-namespace OpenAI.Internal.Assistants
+namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalAssistantToolsFileSearchTypeOnly
+    internal partial class InternalAssistantToolsFileSearchTypeOnly
     {
-        private readonly IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        public InternalAssistantToolsFileSearchTypeOnly(AssistantToolsFileSearchTypeOnlyType type)
-        {
-            Type = type;
-        }
-
-        internal InternalAssistantToolsFileSearchTypeOnly(AssistantToolsFileSearchTypeOnlyType type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
-        }
+        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
 
         public InternalAssistantToolsFileSearchTypeOnly()
         {
         }
 
-        public AssistantToolsFileSearchTypeOnlyType Type { get; } = AssistantToolsFileSearchTypeOnlyType.FileSearch;
+        internal InternalAssistantToolsFileSearchTypeOnly(InternalAssistantToolsFileSearchTypeOnlyType type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        {
+            Type = type;
+            _serializedAdditionalRawData = serializedAdditionalRawData;
+        }
+
+        public InternalAssistantToolsFileSearchTypeOnlyType Type { get; } = InternalAssistantToolsFileSearchTypeOnlyType.FileSearch;
     }
 }

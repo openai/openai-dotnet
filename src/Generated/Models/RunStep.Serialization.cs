@@ -51,7 +51,7 @@ namespace OpenAI.Assistants
             if (ExpiredAt != null)
             {
                 writer.WritePropertyName("expired_at"u8);
-                writer.WriteStringValue(ExpiredAt.Value, "O");
+                writer.WriteNumberValue(ExpiredAt.Value, "U");
             }
             else
             {
@@ -60,7 +60,7 @@ namespace OpenAI.Assistants
             if (CancelledAt != null)
             {
                 writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteStringValue(CancelledAt.Value, "O");
+                writer.WriteNumberValue(CancelledAt.Value, "U");
             }
             else
             {
@@ -69,7 +69,7 @@ namespace OpenAI.Assistants
             if (FailedAt != null)
             {
                 writer.WritePropertyName("failed_at"u8);
-                writer.WriteStringValue(FailedAt.Value, "O");
+                writer.WriteNumberValue(FailedAt.Value, "U");
             }
             else
             {
@@ -78,7 +78,7 @@ namespace OpenAI.Assistants
             if (CompletedAt != null)
             {
                 writer.WritePropertyName("completed_at"u8);
-                writer.WriteStringValue(CompletedAt.Value, "O");
+                writer.WriteNumberValue(CompletedAt.Value, "U");
             }
             else
             {
@@ -228,7 +228,7 @@ namespace OpenAI.Assistants
                         expiredAt = null;
                         continue;
                     }
-                    expiredAt = property.Value.GetDateTimeOffset("O");
+                    expiredAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
                 if (property.NameEquals("cancelled_at"u8))
@@ -238,8 +238,6 @@ namespace OpenAI.Assistants
                         cancelledAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // cancelledAt = property.Value.GetDateTimeOffset("O");
                     cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -250,8 +248,6 @@ namespace OpenAI.Assistants
                         failedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // failedAt = property.Value.GetDateTimeOffset("O");
                     failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -262,8 +258,6 @@ namespace OpenAI.Assistants
                         completedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // completedAt = property.Value.GetDateTimeOffset("O");
                     completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }

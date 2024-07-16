@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.VectorStores;
 
-[CodeGenModel("VectorStoreBatchFileJobStatus")]
+[CodeGenModel("VectorStoreFileBatchObjectStatus")]
 public readonly partial struct VectorStoreBatchFileJobStatus
 {
 }

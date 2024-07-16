@@ -24,9 +24,9 @@ namespace OpenAI.Audio
             writer.WritePropertyName("word"u8);
             writer.WriteStringValue(Word);
             writer.WritePropertyName("start"u8);
-            writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.fff")));
+            writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.FFF")));
             writer.WritePropertyName("end"u8);
-            writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.fff")));
+            writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.FFF")));
             if (true && _serializedAdditionalRawData != null)
             {
                 foreach (var item in _serializedAdditionalRawData)

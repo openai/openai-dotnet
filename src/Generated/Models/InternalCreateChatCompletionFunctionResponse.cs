@@ -24,7 +24,7 @@ namespace OpenAI.Chat
             Model = model;
         }
 
-        internal InternalCreateChatCompletionFunctionResponse(string id, IReadOnlyList<InternalCreateChatCompletionFunctionResponseChoice> choices, DateTimeOffset created, string model, string systemFingerprint, string @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateChatCompletionFunctionResponse(string id, IReadOnlyList<InternalCreateChatCompletionFunctionResponseChoice> choices, DateTimeOffset created, string model, string systemFingerprint, InternalCreateChatCompletionFunctionResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Choices = choices;
@@ -45,7 +45,7 @@ namespace OpenAI.Chat
         public DateTimeOffset Created { get; }
         public string Model { get; }
         public string SystemFingerprint { get; }
-        public string Object { get; } = "chat.completion";
+        public InternalCreateChatCompletionFunctionResponseObject Object { get; } = InternalCreateChatCompletionFunctionResponseObject.ChatCompletion;
 
         public ChatTokenUsage Usage { get; }
     }

@@ -10,9 +10,5 @@ namespace OpenAI.Chat
     public partial class ChatToolChoice
     {
         internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal ChatToolChoice()
-        {
-        }
     }
 }

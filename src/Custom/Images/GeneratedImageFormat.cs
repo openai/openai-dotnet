@@ -18,7 +18,7 @@ namespace OpenAI.Images;
 /// </item>
 /// </list>
 /// </summary>
-[CodeGenModel("ImageGenerationOptionsResponseFormat")]
+[CodeGenModel("CreateImageRequestResponseFormat")]
 public enum GeneratedImageFormat
 {
     /// <summary>

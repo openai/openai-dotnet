@@ -24,7 +24,7 @@ namespace OpenAI.Assistants
             writer.WritePropertyName("role"u8);
             writer.WriteStringValue(Role.ToSerialString());
             writer.WritePropertyName("content"u8);
-            SerializeContent(writer);
+            SerializeContent(writer, options);
             if (Optional.IsCollectionDefined(Attachments))
             {
                 if (Attachments != null)
