@@ -9,7 +9,7 @@
 ### Bugs Fixed
 
 - ([#49](https://github.com/openai/openai-dotnet/issues/49)) Fixed a bug with extensible enums implementing case-insensitive equality but case-sensitive hash codes. (commit_hash)
-- ([#57](https://github.com/openai/openai-dotnet/issues/57)) Fixed a bug with requests URIs with query string parameter potentially containing a malformed double question mark (`??`) on .NET Framework (net481).
+- ([#57](https://github.com/openai/openai-dotnet/issues/57)) Fixed a bug with requests URIs with query string parameter potentially containing a malformed double question mark (`??`) on .NET Framework (net481). (commit_hash)
 
 ### Other Changes
 
