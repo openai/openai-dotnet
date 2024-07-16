@@ -183,7 +183,6 @@ namespace OpenAI.Assistants
                     writer.WriteNull("truncation_strategy");
                 }
             }
-            // CUSTOM: Made nullable.
             if (Optional.IsDefined(ToolConstraint))
             {
                 if (ToolConstraint != null)
@@ -201,7 +200,6 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCallsEnabled.Value);
             }
-            // CUSTOM: Made nullable.
             if (Optional.IsDefined(ResponseFormat))
             {
                 if (ResponseFormat != null)
@@ -409,7 +407,6 @@ namespace OpenAI.Assistants
                     truncationStrategy = RunTruncationStrategy.DeserializeRunTruncationStrategy(property.Value, options);
                     continue;
                 }
-                // CUSTOM: Made nullable.
                 if (property.NameEquals("tool_choice"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
@@ -429,7 +426,6 @@ namespace OpenAI.Assistants
                     parallelToolCalls = property.Value.GetBoolean();
                     continue;
                 }
-                // CUSTOM: Made nullable.
                 if (property.NameEquals("response_format"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)

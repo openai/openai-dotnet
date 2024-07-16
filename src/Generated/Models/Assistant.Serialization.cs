@@ -114,7 +114,6 @@ namespace OpenAI.Assistants
                     writer.WriteNull("top_p");
                 }
             }
-            // CUSTOM: Made nullable.
             if (Optional.IsDefined(ResponseFormat))
             {
                 if (ResponseFormat != null)
@@ -287,7 +286,6 @@ namespace OpenAI.Assistants
                     topP = property.Value.GetSingle();
                     continue;
                 }
-                // CUSTOM: Made nullable.
                 if (property.NameEquals("response_format"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)

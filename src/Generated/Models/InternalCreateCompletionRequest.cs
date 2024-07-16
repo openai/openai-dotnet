@@ -14,8 +14,6 @@ namespace OpenAI.LegacyCompletions
 
         public InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt)
         {
-            Argument.AssertNotNull(prompt, nameof(prompt));
-
             Model = model;
             Prompt = prompt;
             LogitBias = new ChangeTrackingDictionary<string, int>();

@@ -340,10 +340,13 @@ internal readonly partial struct InternalMessageObjectRole { }
 [CodeGenModel("CreateRunRequestModel")]
 internal readonly partial struct InternalCreateRunRequestModel { }
 
+[CodeGenModel("CreateRunRequestToolChoice")]
+internal readonly partial struct InternalCreateRunRequestToolChoice { }
+
 [CodeGenModel("CreateThreadAndRunRequestModel")]
 internal readonly partial struct InternalCreateThreadAndRunRequestModel { }
 
-[CodeGenModel("CreateAssistantRequestResponseFormat")]
+[CodeGenModel("CreateAssistantRequestResponseFormat1")]
 internal readonly partial struct InternalCreateAssistantRequestResponseFormat { }
 
 [CodeGenModel("CreateAssistantRequestToolResources")]
@@ -360,9 +363,6 @@ internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVect
 
 [CodeGenModel("CreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences")]
 internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences { }
-
-[CodeGenModel("CreateThreadAndRunRequestToolChoice")]
-internal readonly partial struct InternalCreateThreadAndRunRequestToolChoice { }
 
 [CodeGenModel("CreateThreadAndRunRequestToolResources")]
 internal partial class InternalCreateThreadAndRunRequestToolResources { }

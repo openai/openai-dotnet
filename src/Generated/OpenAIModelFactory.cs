@@ -40,6 +40,20 @@ namespace OpenAI
                 serializedAdditionalRawData: null);
         }
 
+        public static ToolChatMessage ToolChatMessage(IEnumerable<ChatMessageContentPart> content = null, string toolCallId = null)
+        {
+            content ??= new List<ChatMessageContentPart>();
+
+            return new ToolChatMessage("tool", content?.ToList(), serializedAdditionalRawData: null, toolCallId);
+        }
+
+        public static FunctionChatMessage FunctionChatMessage(IEnumerable<ChatMessageContentPart> content = null, string functionName = null)
+        {
+            content ??= new List<ChatMessageContentPart>();
+
+            return new FunctionChatMessage("function", content?.ToList(), serializedAdditionalRawData: null, functionName);
+        }
+
         public static ChatFunction ChatFunction(string functionDescription = null, string functionName = null, BinaryData functionParameters = null)
         {
             return new ChatFunction(functionDescription, functionName, functionParameters, serializedAdditionalRawData: null);
@@ -172,20 +186,6 @@ namespace OpenAI
         public static VectorStoreFileAssociationError VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code = default, string message = null)
         {
             return new VectorStoreFileAssociationError(code, message, serializedAdditionalRawData: null);
-        }
-
-        public static ToolChatMessage ToolChatMessage(IEnumerable<ChatMessageContentPart> content = null, string toolCallId = null)
-        {
-            content ??= new List<ChatMessageContentPart>();
-
-            return new ToolChatMessage("tool", content?.ToList(), serializedAdditionalRawData: null, toolCallId);
-        }
-
-        public static FunctionChatMessage FunctionChatMessage(IEnumerable<ChatMessageContentPart> content = null, string functionName = null)
-        {
-            content ??= new List<ChatMessageContentPart>();
-
-            return new FunctionChatMessage("function", content?.ToList(), serializedAdditionalRawData: null, functionName);
         }
 
         public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionArgumentsUpdate = null, string functionName = null)

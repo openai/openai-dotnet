@@ -24,15 +24,22 @@ namespace OpenAI.LegacyCompletions
             writer.WriteStartObject();
             writer.WritePropertyName("model"u8);
             writer.WriteStringValue(Model.ToString());
-            writer.WritePropertyName("prompt"u8);
+            if (Prompt != null)
+            {
+                writer.WritePropertyName("prompt"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Prompt);
 #else
-            using (JsonDocument document = JsonDocument.Parse(Prompt))
-            {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                using (JsonDocument document = JsonDocument.Parse(Prompt))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
+            }
+            else
+            {
+                writer.WriteNull("prompt");
+            }
             if (Optional.IsDefined(BestOf))
             {
                 if (BestOf != null)
@@ -149,15 +156,22 @@ namespace OpenAI.LegacyCompletions
             }
             if (Optional.IsDefined(Stop))
             {
-                writer.WritePropertyName("stop"u8);
+                if (Stop != null)
+                {
+                    writer.WritePropertyName("stop"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Stop);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Stop))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+                    using (JsonDocument document = JsonDocument.Parse(Stop))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
 #endif
+                }
+                else
+                {
+                    writer.WriteNull("stop");
+                }
             }
             if (Optional.IsDefined(Stream))
             {
@@ -291,6 +305,11 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (property.NameEquals("prompt"u8))
                 {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        prompt = null;
+                        continue;
+                    }
                     prompt = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
@@ -392,6 +411,7 @@ namespace OpenAI.LegacyCompletions
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        stop = null;
                         continue;
                     }
                     stop = BinaryData.FromString(property.Value.GetRawText());
