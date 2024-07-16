@@ -101,6 +101,8 @@ public partial class ThreadRunOperation : OperationResult
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
+        // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
+
         if (_isStreaming)
         {
             // we would have to read from the string to get the run ID to poll for.

@@ -1454,6 +1454,8 @@ public partial class AssistantTests
             Task.Run(() => runOperation.Wait()),
             Task.Run(() => rehydratedRunOperation.Wait()));
 
+        Assert.That(runOperation.Status, Is.EqualTo(rehydratedRunOperation.Status));
+
         // Validate that values from both are equivalent
         PageCollection<RunStep> runStepPages = runOperation.GetRunSteps();
         PageCollection<RunStep> rehydratedRunStepPages = rehydratedRunOperation.GetRunSteps();
