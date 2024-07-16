@@ -2,9 +2,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,8 +22,8 @@ public partial class ThreadRunOperation : OperationResult
     public RunStatus? Status { get; protected set; }
     public ContinuationToken? RehydrationToken { get; protected set; }
 
-    // For use with protocol methods and polling convenience methods where the
-    // response has been obtained prior to creation of the LRO type.
+    // For use with polling convenience methods where the response has been
+    // obtained prior to creation of the LRO type.
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -51,6 +49,24 @@ public partial class ThreadRunOperation : OperationResult
         RunId = value.Id;
 
         RehydrationToken = new ThreadRunOperationToken(value.ThreadId, value.Id);
+    }
+
+    // For use with rehydration client methods where the response has not been
+    // obtained yet, but will once the client method makes a call to Update.
+    internal ThreadRunOperation(
+        ClientPipeline pipeline,
+        Uri endpoint,
+        ThreadRunOperationToken token)
+        : base()
+    {
+        _pipeline = pipeline;
+        _endpoint = endpoint;
+        _pollingInterval = new();
+
+        ThreadId = token.ThreadId;
+        RunId = token.RunId;
+
+        RehydrationToken = token;
     }
 
     #region OperationResult methods
@@ -257,6 +273,59 @@ public partial class ThreadRunOperation : OperationResult
             cancellationToken.ToRequestOptions());
 
         return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// Gets a page collection holding <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
+    public virtual PageCollection<RunStep> GetRunSteps(
+        RunStepCollectionOptions? options = default,
+        CancellationToken cancellationToken = default)
+    {
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            ThreadId!,
+            RunId!,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+    /// <summary>
+    /// Rehydrates a page collection holding <see cref="RunStep"/> instances from a page token.
+    /// </summary>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
+    public virtual PageCollection<RunStep> GetRunSteps(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.ThreadId,
+            pageToken.RunId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
