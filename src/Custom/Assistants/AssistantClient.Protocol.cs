@@ -2,7 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -334,78 +334,52 @@ public partial class AssistantClient
     }
 
     public virtual async Task<ThreadRunOperation> CreateRunAsync(
+        ReturnWhen returnWhen,
         string threadId,
         BinaryContent content,
         RequestOptions options = null)
     {
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        return new ThreadRunOperation(_pipeline, _endpoint, response);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, response);
 
-        //// Is it polling or streaming?
-        //if (!response.Headers.TryGetValue("Content-Type", out string contentType))
-        //{
-        //    throw new ClientResultException("Response did not contain 'Content-Type' header.");
-        //}
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
 
-        //return contentType switch
-        //{
-        //    "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
-        //    "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(_pipeline, _endpoint, options, threadId, response),
-        //    _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
-        //};
+        await operation.WaitAsync(options.CancellationToken).ConfigureAwait(false);
+        return operation;
     }
 
     public virtual ThreadRunOperation CreateRun(
+        ReturnWhen returnWhen,
         string threadId,
         BinaryContent content,
         RequestOptions options = null)
     {
+        options ??= new();
+
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
-        return new ThreadRunOperation(_pipeline, _endpoint, response);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, response);
 
-        //ClientResult result = _runSubClient.CreateRun(threadId, content, options);
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
 
-        //// Protocol level: get values needed to create subclient from response
-        //PipelineResponse response = result.GetRawResponse();
-        //using JsonDocument doc = JsonDocument.Parse(response.Content);
-        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
-
-        //// Is it polling or streaming?
-        //if (!response.Headers.TryGetValue("Content-Type", out string contentType))
-        //{
-        //    throw new ClientResultException("Response did not contain 'Content-Type' header.");
-        //}
-
-        //return contentType switch
-        //{
-        //    "application/json" => new ThreadRunOperation(_pipeline, _endpoint, options, threadId, runId, response),
-        //    "text/event-stream; charset=utf-8" => new StreamingThreadRunOperation(),
-        //    _ => throw new ClientResultException($"Unexpected 'Content-Type' header value: '{contentType}'.")
-        //};
-
-
-        //// TODO: clean up poller and operation subclients per redundancy
-
-        //// Create the poller
-        //ThreadRunPoller poller = new ThreadRunPoller(
-        //    _pipeline, _endpoint, result, threadId, runId, options);
-
-        //// Create the operation subclient
-        //ThreadRunOperation operation = new ThreadRunOperation(
-        //    _pipeline, _endpoint,
-        //    threadId, runId, result.GetRawResponse(),
-        //    poller);
-
-        //if (returnWhen == ReturnWhen.Started)
-        //{
-        //    return operation;
-        //}
-
-        //operation.WaitForCompletionResult();
-        //return operation;
+        operation.Wait(options.CancellationToken);
+        return operation;
     }
+
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
+    internal virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)
+        => _runSubClient.CreateRunAsync(threadId, content, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    internal virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
+        => _runSubClient.CreateRun(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)

@@ -988,7 +988,7 @@ public partial class AssistantTests
         string json = $"{{\"assistant_id\":\"{assistant.Id}\"}}";
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
 
-        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content);
 
         PipelineResponse response = runOperation.GetRawResponse();
         using JsonDocument createdJsonDoc = JsonDocument.Parse(response.Content);
@@ -1036,7 +1036,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
         RequestOptions options = new() { BufferResponse = false };
 
-        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content, options);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
 
         // For streaming on protocol, if you call Wait, it will throw.
         Assert.Throws<NotSupportedException>(() => runOperation.Wait());
@@ -1123,7 +1123,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
         RequestOptions options = new() { BufferResponse = false };
 
-        ThreadRunOperation runOperation = client.CreateRun(thread.Id, content, options);
+        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
 
         // Instead, callers must get the response stream and parse it.
         PipelineResponse response = runOperation.GetRawResponse();
@@ -1556,7 +1556,7 @@ public partial class AssistantTests
 
         // Create run polling
         ThreadRunOperation runOperation = client.CreateRun(
-            ReturnWhen.StateChanged,
+            ReturnWhen.Started,
             thread, assistant,
             new RunCreationOptions()
             {
@@ -1565,7 +1565,7 @@ public partial class AssistantTests
 
         while (!runOperation.IsCompleted)
         {
-            runOperation.Wait(ReturnWhen.StateChanged);
+            runOperation.Wait();
 
             if (runOperation.Status == RunStatus.RequiresAction)
             {

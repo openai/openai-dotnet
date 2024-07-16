@@ -639,7 +639,7 @@ public partial class AssistantClient
             return operation;
         }
 
-        operation.Wait(returnWhen, cancellationToken: cancellationToken);
+        operation.Wait(cancellationToken);
         return operation;
     }
 

@@ -51,24 +51,17 @@ public partial class ThreadRunOperation : OperationResult
 
     #region OperationResult methods
 
-    public Task WaitAsync(ReturnWhen returnWhen, TimeSpan? pollingInterval = default, CancellationToken cancellationToken = default)
+    public Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public void Wait(ReturnWhen returnWhen, 
-        TimeSpan? pollingInterval = default, 
-        CancellationToken cancellationToken = default)
+    public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (_isStreaming)
         {
             // we would have to read from the string to get the run ID to poll for.
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
-        }
-
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return;
         }
 
         if (pollingInterval is not null)
@@ -77,35 +70,7 @@ public partial class ThreadRunOperation : OperationResult
             _pollingInterval = new PollingInterval(pollingInterval);
         }
 
-        // These should always be set in the constructor.
-        Debug.Assert(_threadId is not null);
-        Debug.Assert(_runId is not null);
-
-        RunStatus status = Status!.Value;
-
-        // TODO: reimplement around the update enumerator concept.
-        bool hasNextUpdate;
-        do
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            _pollingInterval.Wait();
-
-            hasNextUpdate = Update(cancellationToken);
-
-            if (returnWhen == ReturnWhen.StateChanged &&
-                status != Status!.Value)
-            {
-                return;
-            }
-
-            if (returnWhen == ReturnWhen.Completed &&
-                status == RunStatus.RequiresAction)
-            {
-                throw new InvalidOperationException("Cannot wait to complete operation that has reached 'requires_action' state.");
-            }
-        }
-        while (hasNextUpdate);
+        Wait(cancellationToken);
     }
 
     public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
