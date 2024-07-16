@@ -37,15 +37,8 @@ namespace OpenAI.VectorStores
             writer.WriteStringValue(Status.ToSerialString());
             if (Optional.IsDefined(ExpirationPolicy))
             {
-                if (ExpirationPolicy != null)
-                {
-                    writer.WritePropertyName("expires_after"u8);
-                    writer.WriteObjectValue<VectorStoreExpirationPolicy>(ExpirationPolicy, options);
-                }
-                else
-                {
-                    writer.WriteNull("expires_after");
-                }
+                writer.WritePropertyName("expires_after"u8);
+                writer.WriteObjectValue<VectorStoreExpirationPolicy>(ExpirationPolicy, options);
             }
             if (Optional.IsDefined(ExpiresAt))
             {
@@ -175,7 +168,6 @@ namespace OpenAI.VectorStores
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
-                        expiresAfter = null;
                         continue;
                     }
                     expiresAfter = VectorStoreExpirationPolicy.DeserializeVectorStoreExpirationPolicy(property.Value, options);

@@ -14,7 +14,7 @@ public partial class ChatExamples
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        BinaryData input = BinaryData.FromString("""
+        BinaryData input = BinaryData.FromBytes("""
             {
                "model": "gpt-4o",
                "messages": [
@@ -24,7 +24,7 @@ public partial class ChatExamples
                    }
                ]
             }
-            """);
+            """u8.ToArray());
 
         using BinaryContent content = BinaryContent.Create(input);
         ClientResult result = await client.CompleteChatAsync(content);
@@ -32,9 +32,9 @@ public partial class ChatExamples
 
         using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
         string message = outputAsJson.RootElement
-            .GetProperty("choices")[0]
-            .GetProperty("message")
-            .GetProperty("content")
+            .GetProperty("choices"u8)[0]
+            .GetProperty("message"u8)
+            .GetProperty("content"u8)
             .GetString();
 
         Console.WriteLine($"[ASSISTANT]:");
