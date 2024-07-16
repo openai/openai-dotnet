@@ -1471,8 +1471,6 @@ public partial class AssistantTests
         // Create polling
         ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
 
-        // Before the response stream has been enumerated, all the public properties
-        // should still be null.
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
         Assert.That(runOperation.RunId, Is.Not.Null);

@@ -17,8 +17,8 @@ public partial class ThreadRunOperation : OperationResult
 {
     // Note: these all have to be nullable because the derived streaming type
     // cannot set them until it reads the first event from the SSE stream.
-    public string? ThreadId { get; protected set; }
-    public string? RunId { get; protected set; }
+    public string? ThreadId { get => _threadId; protected set { _threadId = value; } }
+    public string? RunId { get => _runId; protected set { _runId = value; } }
 
     public ThreadRun? Value { get; protected set; }
     public RunStatus? Status { get; protected set; }
@@ -46,6 +46,10 @@ public partial class ThreadRunOperation : OperationResult
 
         Value = value;
         Status = status;
+
+        ThreadId = value.ThreadId;
+        RunId = value.Id;
+
         RehydrationToken = new ThreadRunOperationToken(value.ThreadId, value.Id);
     }
 
@@ -91,7 +95,7 @@ public partial class ThreadRunOperation : OperationResult
 
         // Do not continue polling from Wait method if operation is complete,
         // or input is required, since we would poll forever in either state!
-        return !IsCompleted || Status == RunStatus.RequiresAction;
+        return !IsCompleted && Status != RunStatus.RequiresAction;
     }
 
     private Task<ClientResult<ThreadRun>> GetUpdateAsync()

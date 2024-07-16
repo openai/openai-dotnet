@@ -369,6 +369,8 @@ public partial class AssistantClient
             return operation;
         }
 
+        // TODO:
+        // Note that this will poll over requested streaming, which is undesired...
         operation.Wait(options.CancellationToken);
         return operation;
     }

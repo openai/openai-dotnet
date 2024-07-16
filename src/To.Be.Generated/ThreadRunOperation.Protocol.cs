@@ -144,7 +144,7 @@ public partial class ThreadRunOperation : OperationResult
 
     //    // Do not continue polling from Wait method if operation is complete,
     //    // or input is required, since we would poll forever in either state!
-    //    return !IsCompleted || _status == "requires_action";
+    //    return !IsCompleted && _status != "requires_action";
     //}
 
     //private Task<ClientResult> GetUpdateAsync()
