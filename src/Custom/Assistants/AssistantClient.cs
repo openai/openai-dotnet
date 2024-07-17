@@ -679,43 +679,8 @@ public partial class AssistantClient
         return operation;
     }
 
-    /// <summary>
-    /// Rehydrates a <see cref="ThreadRunOperation"/> from a rehydration token.
-    /// </summary>
-    /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> TODO </returns>
-    public virtual async Task<ThreadRunOperation> GetRunAsync(
-        ContinuationToken rehydrationToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
-
-        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
-        return operation;
-    }
-
-    /// <summary>
-    /// Rehydrates a <see cref="ThreadRunOperation"/> from a rehydration token.
-    /// </summary>
-    /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> TODO </returns>
-    public virtual ThreadRunOperation GetRun(
-        ContinuationToken rehydrationToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
-
-        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        operation.Update(cancellationToken);
-        return operation;
-    }
-
     // Note: these become internal
+    // TODO: can we merge this with public ones?
 
     /// <summary>
     /// Begins a new <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
@@ -758,6 +723,77 @@ public partial class AssistantClient
 
         ClientResult protocolResult = CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+    }
+
+    /// <summary>
+    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> TODO </returns>
+    public virtual async Task<ThreadRunOperation> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, threadId, runId);
+        await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
+        return operation;
+    }
+
+    /// <summary>
+    /// Rehydrates a <see cref="ThreadRunOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> TODO </returns>
+    public virtual async Task<ThreadRunOperation> GetRunAsync(
+        ContinuationToken rehydrationToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
+        return operation;
+    }
+
+    /// <summary>
+    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> TODO </returns>
+    public virtual ThreadRunOperation GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        ThreadRunOperationToken token = new ThreadRunOperationToken(threadId, runId);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        operation.Update(cancellationToken);
+        return operation;
+    }
+
+    /// <summary>
+    /// Rehydrates a <see cref="ThreadRunOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> TODO </returns>
+    public virtual ThreadRunOperation GetRun(
+        ContinuationToken rehydrationToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        operation.Update(cancellationToken);
+        return operation;
     }
 
     /// <summary>

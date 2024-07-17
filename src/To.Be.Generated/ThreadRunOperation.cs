@@ -15,12 +15,12 @@ public partial class ThreadRunOperation : OperationResult
 {
     // Note: these all have to be nullable because the derived streaming type
     // cannot set them until it reads the first event from the SSE stream.
+
+    public string? Id { get => _runId; protected set { _runId = value; } }
     public string? ThreadId { get => _threadId; protected set { _threadId = value; } }
-    public string? RunId { get => _runId; protected set { _runId = value; } }
 
     public ThreadRun? Value { get; protected set; }
     public RunStatus? Status { get; protected set; }
-    public ContinuationToken? RehydrationToken { get; protected set; }
 
     // For use with polling convenience methods where the response has been
     // obtained prior to creation of the LRO type.
@@ -46,9 +46,18 @@ public partial class ThreadRunOperation : OperationResult
         Status = status;
 
         ThreadId = value.ThreadId;
-        RunId = value.Id;
+        Id = value.Id;
 
         RehydrationToken = new ThreadRunOperationToken(value.ThreadId, value.Id);
+    }
+
+    internal ThreadRunOperation(
+        ClientPipeline pipeline,
+        Uri endpoint,
+        string threadId,
+        string runId)
+        : this(pipeline, endpoint, new ThreadRunOperationToken(threadId, runId))
+    {
     }
 
     // For use with rehydration client methods where the response has not been
@@ -56,15 +65,14 @@ public partial class ThreadRunOperation : OperationResult
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        ThreadRunOperationToken token)
-        : base()
+        ThreadRunOperationToken token) : base()
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
         _pollingInterval = new();
 
         ThreadId = token.ThreadId;
-        RunId = token.RunId;
+        Id = token.RunId;
 
         RehydrationToken = token;
     }
@@ -96,7 +104,7 @@ public partial class ThreadRunOperation : OperationResult
     // TODO: evaluate this experiment
     // Expose enumerable APIs similar to the streaming ones.
     public virtual IAsyncEnumerable<ThreadRun> GetUpdatesAsync(
-        TimeSpan? pollingInterval = default, 
+        TimeSpan? pollingInterval = default,
         /*[EnumeratorCancellation]*/ CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
@@ -126,7 +134,7 @@ public partial class ThreadRunOperation : OperationResult
 
         RunStatus status = Status!.Value;
 
-        do 
+        do
         {
             Update(cancellationToken);
 
@@ -142,7 +150,7 @@ public partial class ThreadRunOperation : OperationResult
 
                 yield return Value!;
             }
-        } 
+        }
         // TODO: technically if we wanted to do it this way, we should yield the
         // status change update saying the operation is complete, but this isn't
         // happening currently.  Figure this out.
@@ -199,12 +207,15 @@ public partial class ThreadRunOperation : OperationResult
 
     #region Convenience overloads of generated protocol methods
 
+    // TODO: decide if we want to keep GetRun methods here - they could enable
+    // manual polling scenarios if we wanted to do it that way.
+
     /// <summary>
     /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
+    internal virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = await GetRunAsync(_threadId!, _runId!, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
@@ -215,7 +226,7 @@ public partial class ThreadRunOperation : OperationResult
     /// </summary>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
+    internal virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = GetRun(_threadId!, _runId!, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
@@ -348,7 +359,7 @@ public partial class ThreadRunOperation : OperationResult
     {
         RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
             ThreadId!,
-            RunId!,
+            Id!,
             options?.PageSize,
             options?.Order?.ToString(),
             options?.AfterId,

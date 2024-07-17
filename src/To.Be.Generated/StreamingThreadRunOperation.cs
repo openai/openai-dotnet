@@ -148,7 +148,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         ThreadId ??= update.Value.ThreadId;
 
         // Set RunId
-        RunId ??= update.Value.Id;
+        Id ??= update.Value.Id;
 
         // Set Status
         Status = update.Value.Status;
@@ -186,7 +186,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
-        if (ThreadId is null || RunId is null)
+        if (ThreadId is null || Id is null)
         {
             throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
         }
@@ -197,7 +197,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         // TODO: can we do this the same way as this in the other method instead
         // of having to take all those funcs?
         async Task<ClientResult> getResultAsync() =>
-            await SubmitToolOutputsToRunAsync(ThreadId, RunId, content, cancellationToken.ToRequestOptions(streaming: true))
+            await SubmitToolOutputsToRunAsync(ThreadId, Id, content, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
         // TODO: Ensure we call SetRawResponse for the current operation.
