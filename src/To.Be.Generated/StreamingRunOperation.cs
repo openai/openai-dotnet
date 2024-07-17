@@ -44,14 +44,8 @@ public partial class StreamingRunOperation : RunOperation
 
         await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
         {
-            // Should terminate naturally when get to "requires action"
-
-            //// Don't keep polling if would do so infinitely.
-            //if (update is RunUpdate runUpdate &&
-            //    runUpdate.Value.Status == RunStatus.RequiresAction)
-            //{
-            //    return;
-            //}
+            // Should terminate naturally when get to "requires action" because
+            // the SSE stream will end.
         }
     }
 
@@ -122,13 +116,6 @@ public partial class StreamingRunOperation : RunOperation
             throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
         }
 
-        if (_enumerator is null)
-        {
-            throw new InvalidOperationException(
-                "Cannot submit tools until first run update stream has been enumerated. " +
-                "Call 'Wait' or 'GetUpdatesStreaming' to read update stream.");
-        }
-
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(
             toolOutputs.ToList(), stream: true, null).ToBinaryContent();
 
@@ -139,7 +126,15 @@ public partial class StreamingRunOperation : RunOperation
             .ConfigureAwait(false);
 
         AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
-        await _enumerator.ReplaceUpdateCollectionAsync(updates).ConfigureAwait(false);
+
+        if (_enumerator is null)
+        {
+            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+        }
+        else
+        {
+            await _enumerator.ReplaceUpdateCollectionAsync(updates).ConfigureAwait(false);
+        }
     }
 
     public virtual void SubmitToolOutputsToRunStreaming(
