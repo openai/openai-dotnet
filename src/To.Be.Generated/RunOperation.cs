@@ -84,6 +84,29 @@ public partial class RunOperation : OperationResult
 
     #region OperationResult methods
 
+    public override Task WaitAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Wait(CancellationToken cancellationToken = default)
+    {
+        if (_isStreaming)
+        {
+            // We would have to read from the stream to get the run ID to poll for.
+            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        }
+
+        foreach (ThreadRun update in GetUpdates(cancellationToken: cancellationToken))
+        {
+            // Don't keep polling if would do so infinitely.
+            if (update.Status == RunStatus.RequiresAction)
+            {
+                return;
+            }
+        }
+    }
+
     public Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
@@ -91,16 +114,21 @@ public partial class RunOperation : OperationResult
 
     public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
-        if (_threadId is null || _runId is null)
-        {
-            // we would have to read from the string to get the run ID to poll for.
-            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
-        }
+        throw new NotImplementedException();
+        //if (_isStreaming)
+        //{
+        //    // We would have to read from the stream to get the run ID to poll for.
+        //    throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        //}
 
-        foreach (var _ in GetUpdates(pollingInterval, cancellationToken))
-        {
-            // Just wait.
-        }
+        //foreach (ThreadRun update in GetUpdates(pollingInterval, cancellationToken))
+        //{
+        //    // Don't keep polling if would do so infinitely.
+        //    if (update.Status == RunStatus.RequiresAction)
+        //    {
+        //        return;
+        //    }
+        //}
     }
 
     // TODO: evaluate this experiment
@@ -118,7 +146,7 @@ public partial class RunOperation : OperationResult
     {
         // TODO: incorporate polling interval parameter
 
-        IEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumerator(cancellationToken);
+        IEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumerator();
 
         while (enumerator.MoveNext())
         {
@@ -126,37 +154,21 @@ public partial class RunOperation : OperationResult
 
             yield return enumerator.Current;
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             _pollingInterval.Wait();
         }
     }
 
-    protected virtual IAsyncEnumerator<ClientResult<ThreadRun>> GetUpdateEnumeratorAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    private IAsyncEnumerator<ClientResult<ThreadRun>> GetUpdateEnumeratorAsync()
+        // TODO: null check thread and run id
+        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
     // TODO: Figure out visibility here -- protected makes sense but type is
     // internal only
-    protected virtual IEnumerator<ClientResult<ThreadRun>> GetUpdateEnumerator(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    private Task<ClientResult<ThreadRun>> GetUpdateAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    private ClientResult<ThreadRun> GetUpdate(CancellationToken cancellationToken)
-    {
-        if (_threadId == null || _runId == null)
-        {
-            throw new InvalidOperationException("ThreadId or RunId is not set.");
-        }
-
-        // TODO: RequestOptions/CancellationToken logic around this ... ?
-        return GetRun(cancellationToken);
-    }
+    private IEnumerator<ClientResult<ThreadRun>> GetUpdateEnumerator()
+        // TODO: null check thread and run id
+        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
     private void ApplyUpdate(ClientResult<ThreadRun> update)
     {

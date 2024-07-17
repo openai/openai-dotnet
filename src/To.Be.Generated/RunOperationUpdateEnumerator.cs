@@ -1,26 +1,54 @@
-﻿using System;
-using System.ClientModel;
+﻿using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 #nullable enable
 
 namespace OpenAI.Assistants;
 
-internal partial class RunOperationUpdateEnumerator
+internal partial class RunOperationUpdateEnumerator :
+    IAsyncEnumerator<ClientResult<ThreadRun>>,
+    IEnumerator<ClientResult<ThreadRun>>
 {
-    //private readonly ClientPipeline _pipeline;
-    //private readonly Uri _endpoint;
+    #region IEnumerator<ClientResult<ThreadRun>> methods
 
-    //public ThreadRunOperationUpdateEnumerator(
-    //    ClientPipeline pipeline,
-    //    Uri endpoint)
-    //{
-    //    _pipeline = pipeline;
-    //    _endpoint = endpoint;
-    //}
+    ClientResult<ThreadRun> IEnumerator<ClientResult<ThreadRun>>.Current
+    {
+        get
+        {
+            if (Current is null)
+            {
+                return default!;
+            }
+
+            return GetUpdateFromResult(Current);
+        }
+    }
+
+    #endregion
+
+    #region IAsyncEnumerator<ClientResult<ThreadRun>> methods
+
+    ClientResult<ThreadRun> IAsyncEnumerator<ClientResult<ThreadRun>>.Current
+    {
+        get
+        {
+            if (Current is null)
+            {
+                return default!;
+            }
+
+            return GetUpdateFromResult(Current);
+        }
+    }
+
+    #endregion
+
+    // Methods used by convenience implementation
+    private ClientResult<ThreadRun> GetUpdateFromResult(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+        ThreadRun run = ThreadRun.FromResponse(response);
+        return ClientResult.FromValue(run, response);
+    }
 }

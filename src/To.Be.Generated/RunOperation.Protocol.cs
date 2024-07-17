@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -100,41 +100,51 @@ public partial class RunOperation : OperationResult
         protected set => _isCompleted = value;
     }
 
-    // Note: these have to work for protocol-only.
-    public override Task WaitAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    // Note: these work for protocol-only.
+    // Once convenience overloads available, these get replaced by those implementations.
 
-    public override void Wait(CancellationToken cancellationToken = default)
-    {
-        // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
+    //public override Task WaitAsync(CancellationToken cancellationToken = default)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-        IEnumerator<ClientResult> enumerator = GetUpdateResultEnumerator();
+    //public override void Wait(CancellationToken cancellationToken = default)
+    //{
+    //    if (_isStreaming)
+    //    {
+    //        // We would have to read from the stream to get the run ID to poll for.
+    //        throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+    //    }
 
-        while (enumerator.MoveNext())
-        {
-            ApplyUpdate(enumerator.Current);
+    //    // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
 
-            cancellationToken.ThrowIfCancellationRequested();
+    //    IEnumerator<ClientResult> enumerator = GetUpdateResultEnumerator();
 
-            _pollingInterval.Wait();
-        }
-    }
+    //    while (enumerator.MoveNext())
+    //    {
+    //        ApplyUpdate(enumerator.Current);
 
-    protected IAsyncEnumerator<ClientResult> GetUpdateResultEnumeratorAsync()
-    {
-        throw new NotImplementedException();
-    }
+    //        // Don't keep polling if would do so infinitely.
+    //        if (_status == "requires_action")
+    //        {
+    //            return;
+    //        }
+
+    //        cancellationToken.ThrowIfCancellationRequested();
+
+    //        _pollingInterval.Wait();
+    //    }
+    //}
+
+    private IAsyncEnumerator<ClientResult> GetUpdateResultEnumeratorAsync()
+        // TODO: null check thread and run id
+        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
     // TODO: Figure out visibility here -- protected makes sense but type is
     // internal only
-    protected IEnumerator<ClientResult> GetUpdateResultEnumerator()
-    {
+    private IEnumerator<ClientResult> GetUpdateResultEnumerator()
         // TODO: null check thread and run id
-
-        return new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
-    }
+        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
     private void ApplyUpdate(ClientResult result)
     {
@@ -142,7 +152,7 @@ public partial class RunOperation : OperationResult
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _status = doc.RootElement.GetProperty("status"u8).GetString();
-        
+
         IsCompleted = GetIsCompleted(_status!);
         SetRawResponse(response);
     }

@@ -39,9 +39,9 @@ internal partial class RunOperationUpdateEnumerator :
         _options = options;
     }
 
-    #region IEnumerator<ClientResult> methods
+    public ClientResult Current => _current!;
 
-    ClientResult IEnumerator<ClientResult>.Current => _current!;
+    #region IEnumerator<ClientResult> methods
 
     object IEnumerator.Current => _current!;
 
@@ -71,7 +71,7 @@ internal partial class RunOperationUpdateEnumerator :
 
     ClientResult IAsyncEnumerator<ClientResult>.Current => _current!;
 
-    async ValueTask<bool> IAsyncEnumerator<ClientResult>.MoveNextAsync()
+    public async ValueTask<bool> MoveNextAsync()
     {
         if (!_hasNext)
         {
@@ -93,10 +93,12 @@ internal partial class RunOperationUpdateEnumerator :
     #endregion
 
     // Methods used by both implementations
+
     private bool HasNext(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
 
+        // TODO: don't parse JsonDocument twice if possible
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string? status = doc.RootElement.GetProperty("status"u8).GetString();
 
