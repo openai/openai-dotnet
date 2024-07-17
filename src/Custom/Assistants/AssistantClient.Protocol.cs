@@ -449,7 +449,7 @@ public partial class AssistantClient
     {
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, response);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, options, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -470,7 +470,7 @@ public partial class AssistantClient
 
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, response);
+        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, options,response);
 
         if (returnWhen == ReturnWhen.Started)
         {

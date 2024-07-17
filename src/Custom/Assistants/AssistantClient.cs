@@ -668,6 +668,7 @@ public partial class AssistantClient
         ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
+            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
 
         if (returnWhen == ReturnWhen.Started)
@@ -732,14 +733,16 @@ public partial class AssistantClient
     /// <param name="runId"> The ID of the run to retrieve. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> TODO </returns>
-    public virtual async Task<ThreadRunOperation> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
+    public virtual /*async*/ Task<ThreadRunOperation> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, threadId, runId);
-        await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
-        return operation;
+        throw new NotImplementedException();
+
+        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, threadId, runId);
+        //await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
+        //return operation;
     }
 
     /// <summary>
@@ -748,16 +751,18 @@ public partial class AssistantClient
     /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> TODO </returns>
-    public virtual async Task<ThreadRunOperation> GetRunAsync(
+    public virtual /*async*/ Task<ThreadRunOperation> GetRunAsync(
         ContinuationToken rehydrationToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
 
-        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
-        return operation;
+        throw new NotImplementedException();
+
+        //ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
+        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        //await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
+        //return operation;
     }
 
     /// <summary>
@@ -772,10 +777,12 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        ThreadRunOperationToken token = new ThreadRunOperationToken(threadId, runId);
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        operation.Update(cancellationToken);
-        return operation;
+        throw new NotImplementedException();
+
+        //ThreadRunOperationToken token = new ThreadRunOperationToken(threadId, runId);
+        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        //operation.Update(cancellationToken);
+        //return operation;
     }
 
     /// <summary>
@@ -790,10 +797,12 @@ public partial class AssistantClient
     {
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
 
-        ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        operation.Update(cancellationToken);
-        return operation;
+        throw new NotImplementedException();
+
+        //ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
+        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
+        //operation.Update(cancellationToken);
+        //return operation;
     }
 
     /// <summary>
@@ -818,15 +827,16 @@ public partial class AssistantClient
         options.Stream = true;
 
         BinaryContent content = options.ToBinaryContent();
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
 
         async Task<ClientResult> getResultAsync() =>
-            await _runSubClient.CreateRunAsync(threadId, content, cancellationToken.ToRequestOptions())
+            await _runSubClient.CreateRunAsync(threadId, content, requestOptions)
             .ConfigureAwait(false);
 
         ClientResult getResult() =>
-            _runSubClient.CreateRun(threadId, content, cancellationToken.ToRequestOptions());
+            _runSubClient.CreateRun(threadId, content, requestOptions);
 
-        return new StreamingThreadRunOperation(_pipeline, _endpoint, getResultAsync, getResult);
+        return new StreamingThreadRunOperation(_pipeline, _endpoint, requestOptions, getResultAsync, getResult);
     }
 
     /// <summary>

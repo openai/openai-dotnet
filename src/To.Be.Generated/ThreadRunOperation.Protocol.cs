@@ -17,6 +17,7 @@ public partial class ThreadRunOperation : OperationResult
     // TODO: fix this - remove protected fields
     protected readonly ClientPipeline _pipeline;
     protected readonly Uri _endpoint;
+    protected readonly RequestOptions _options;
 
     // TODO: Note, convenience type will make these public.  Right now we have 
     // them in two places.
@@ -31,11 +32,15 @@ public partial class ThreadRunOperation : OperationResult
     private readonly bool _isStreaming;
 
     // For use with streaming convenience methods - response hasn't been provided yet.
-    internal ThreadRunOperation(ClientPipeline pipeline, Uri endpoint)
+    internal ThreadRunOperation(
+        ClientPipeline pipeline,
+        Uri endpoint,
+        RequestOptions options)
         : base()
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
+        _options = options;
         _pollingInterval = new();
 
         // We'd only do this if we were in a streaming convenience subtype.
@@ -47,11 +52,13 @@ public partial class ThreadRunOperation : OperationResult
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
+        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
+        _options = options;
         _pollingInterval = new();
 
         if (response.Headers.TryGetValue("Content-Type", out string? contentType))
@@ -103,77 +110,40 @@ public partial class ThreadRunOperation : OperationResult
     {
         // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
 
-        // TODO: RequestOptions flow
-        IEnumerator<ClientResult> enumerator = GetUpdateEnumerator(cancellationToken.ToRequestOptions());
+        IEnumerator<ClientResult> enumerator = GetUpdateResultEnumerator();
+
         while (enumerator.MoveNext())
         {
             ApplyUpdate(enumerator.Current);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             _pollingInterval.Wait();
         }
     }
 
-    protected IAsyncEnumerator<ClientResult> GetUpdateEnumeratorAsync(RequestOptions options)
+    protected IAsyncEnumerator<ClientResult> GetUpdateResultEnumeratorAsync()
     {
         throw new NotImplementedException();
     }
 
     // TODO: Figure out visibility here -- protected makes sense but type is
     // internal only
-    protected IEnumerator<ClientResult> GetUpdateEnumerator(RequestOptions options)
+    protected IEnumerator<ClientResult> GetUpdateResultEnumerator()
     {
-        throw new NotImplementedException();
+        // TODO: null check thread and run id
+
+        return new ThreadRunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
     }
-
-    // Note: The methods below are removed/rewritten when convenience-layer is added.
-
-    //public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //public override bool Update(CancellationToken cancellationToken = default)
-    //{
-    //    // This does:
-    //    //   1. Get update
-    //    //   2. Apply update
-    //    //   3. Returns whether to continue polling/has more updates
-
-    //    ClientResult update = GetUpdate(cancellationToken);
-
-    //    ApplyUpdate(update.GetRawResponse());
-
-    //    // Do not continue polling from Wait method if operation is complete,
-    //    // or input is required, since we would poll forever in either state!
-    //    return !IsCompleted && _status != "requires_action";
-    //}
-
-    //private Task<ClientResult> GetUpdateAsync()
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //private ClientResult GetUpdate(CancellationToken cancellationToken)
-    //{
-    //    if (_threadId == null || _runId == null)
-    //    {
-    //        throw new InvalidOperationException("ThreadId or RunId is not set.");
-    //    }
-
-    //    // TODO: RequestOptions/CancellationToken logic around this ... ?
-    //    return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
-    //}
 
     private void ApplyUpdate(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
+
         using JsonDocument doc = JsonDocument.Parse(response.Content);
-
         _status = doc.RootElement.GetProperty("status"u8).GetString();
-        _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
-        _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
-
+        
         IsCompleted = GetIsCompleted(_status!);
-
         SetRawResponse(response);
     }
 

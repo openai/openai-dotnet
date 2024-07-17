@@ -29,11 +29,13 @@ public partial class ThreadRunOperation : OperationResult
         Uri endpoint,
         ThreadRun value,
         RunStatus status,
+        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
+        _options = options;
         _pollingInterval = new();
 
         if (response.Headers.TryGetValue("Content-Type", out string? contentType) &&
@@ -55,8 +57,9 @@ public partial class ThreadRunOperation : OperationResult
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId,
-        string runId)
-        : this(pipeline, endpoint, new ThreadRunOperationToken(threadId, runId))
+        string runId,
+        RequestOptions options)
+        : this(pipeline, endpoint, new ThreadRunOperationToken(threadId, runId), options)
     {
     }
 
@@ -65,10 +68,12 @@ public partial class ThreadRunOperation : OperationResult
     internal ThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        ThreadRunOperationToken token) : base()
+        ThreadRunOperationToken token,
+        RequestOptions options) : base()
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
+        _options = options;
         _pollingInterval = new();
 
         ThreadId = token.ThreadId;

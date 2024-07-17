@@ -27,11 +27,12 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     internal StreamingThreadRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
+        RequestOptions options,
 
         // Note if we pass funcs we don't need to pass in the pipeline.
         Func<Task<ClientResult>> createRunAsync,
         Func<ClientResult> createRun)
-        : base(pipeline, endpoint)
+        : base(pipeline, endpoint, options)
     {
         _createRunAsync = createRunAsync;
         _createRun = createRun;
@@ -46,13 +47,16 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         protected set => _isCompleted = value;
     }
 
-    public override /*async*/ Task WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task WaitAsync(CancellationToken cancellationToken = default)
     {
         // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        throw new NotImplementedException();
+        await foreach (var _ in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
+        {
+            // Wait.
+        }
     }
 
     public override void Wait(CancellationToken cancellationToken = default)
@@ -66,14 +70,21 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
     {
         IAsyncEnumerator<StreamingUpdate> enumerator = GetStreamingUpdateEnumeratorAsync(cancellationToken);
 
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        try
         {
-            if (enumerator.Current is RunUpdate update)
+            while (await enumerator.MoveNextAsync().ConfigureAwait(false))
             {
-                ApplyUpdate(update);
-            }
+                if (enumerator.Current is RunUpdate update)
+                {
+                    ApplyUpdate(update);
+                }
 
-            yield return enumerator.Current;
+                yield return enumerator.Current;
+            }
+        }
+        finally
+        {
+            if (enumerator != null) await enumerator.DisposeAsync();
         }
     }
 
