@@ -89,6 +89,7 @@ public partial class RunOperation : OperationResult
     {
         get
         {
+            // We need this check in the protocol/streaming case.
             if (_isStreaming)
             {
                 throw new NotSupportedException("Cannot obtain operation status from streaming operation.");

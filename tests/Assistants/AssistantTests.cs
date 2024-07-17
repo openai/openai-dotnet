@@ -1738,7 +1738,7 @@ public partial class AssistantTests
                     new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")
                 };
 
-                runOperation.SubmitToolOutputsToRunStreaming(outputs);
+                await runOperation.SubmitToolOutputsToRunStreamingAsync(outputs);
             }
         }
 
@@ -1812,6 +1812,7 @@ public partial class AssistantTests
         do
         {
             await runOperation.WaitAsync();
+
             if (runOperation.Status == RunStatus.RequiresAction)
             {
                 Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
@@ -1824,7 +1825,7 @@ public partial class AssistantTests
                     new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")
                 };
 
-                runOperation.SubmitToolOutputsToRunStreaming(outputs);
+                await runOperation.SubmitToolOutputsToRunStreamingAsync(outputs);
             }
         }
         while (!runOperation.IsCompleted);

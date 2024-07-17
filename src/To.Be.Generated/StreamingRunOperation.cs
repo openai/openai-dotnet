@@ -17,12 +17,7 @@ public partial class StreamingRunOperation : RunOperation
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
 
-    // TODO: don't have this field in two places.
-    private bool _isCompleted;
-
-    private AsyncStreamingUpdateCollection? _currUpdateCollectionAsync;
-
-    private ContinuableAsyncEnumerator<StreamingUpdate> _updateEnumeratorAsync;
+    private StreamingRunOperationUpdateEnumerator? _enumerator;
 
     internal StreamingRunOperation(
         ClientPipeline pipeline,
@@ -36,16 +31,10 @@ public partial class StreamingRunOperation : RunOperation
     {
         _createRunAsync = createRunAsync;
         _createRun = createRun;
-
-        _updateEnumeratorAsync = new(GetAsyncUpdateEnumerator);
-        _currUpdateCollectionAsync ??= new AsyncStreamingUpdateCollection(_createRunAsync);
     }
 
-    public override bool IsCompleted
-    {
-        get => _isCompleted;
-        protected set => _isCompleted = value;
-    }
+    // TODO: this duplicates a field on the base type.  Address?
+    public override bool IsCompleted { get; protected set; }
 
     public override async Task WaitAsync(CancellationToken cancellationToken = default)
     {
@@ -53,9 +42,16 @@ public partial class StreamingRunOperation : RunOperation
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        await foreach (var _ in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
+        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
         {
-            // Wait.
+            // Should terminate naturally when get to "requires action"
+
+            //// Don't keep polling if would do so infinitely.
+            //if (update is RunUpdate runUpdate &&
+            //    runUpdate.Value.Status == RunStatus.RequiresAction)
+            //{
+            //    return;
+            //}
         }
     }
 
@@ -68,23 +64,33 @@ public partial class StreamingRunOperation : RunOperation
     public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        IAsyncEnumerator<StreamingUpdate> enumerator = GetStreamingUpdateEnumeratorAsync(cancellationToken);
+        // TODO: validate this against case where user doesn't submit tools...
+
+        if (_enumerator is null)
+        {
+            AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
+            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+        }
 
         try
         {
-            while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+            while (await _enumerator.MoveNextAsync().ConfigureAwait(false))
             {
-                if (enumerator.Current is RunUpdate update)
+                if (_enumerator.Current is RunUpdate update)
                 {
                     ApplyUpdate(update);
                 }
 
-                yield return enumerator.Current;
+                yield return _enumerator.Current;
             }
         }
         finally
         {
-            if (enumerator != null) await enumerator.DisposeAsync();
+            if (_enumerator != null)
+            {
+                await _enumerator.DisposeAsync();
+                _enumerator = null;
+            }
         }
     }
 
@@ -93,93 +99,34 @@ public partial class StreamingRunOperation : RunOperation
         throw new NotImplementedException();
     }
 
-    private IAsyncEnumerator<StreamingUpdate> GetStreamingUpdateEnumeratorAsync(CancellationToken cancellationToken)
+    private void ApplyUpdate(ThreadRun update)
     {
-        throw new NotImplementedException();
+        Id ??= update.Id;
+        ThreadId ??= update.ThreadId;
+
+        Value = update;
+        Status = update.Status;
+        IsCompleted = update.Status.IsTerminal;
+
+        SetRawResponse(_enumerator!.GetRawResponse());
     }
 
-    // TODO: Figure out visibility here -- protected makes sense but type is
-    // internal only
-    protected IEnumerator<StreamingUpdate> GetStreamingUpdateEnumerator(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    // TODO: should we have an async version of this one?
 
-    //public override async Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
-    //{
-    //    // This does:
-    //    //   1. Get update
-    //    //   2. Apply update
-    //    //   3. Returns whether to continue polling/has more updates
-
-    //    // TODO: use cancellationToken?  How is it plumbed into MoveNext?
-
-    //    if (!await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
-    //    {
-    //        return false;
-    //    }
-
-    //    StreamingUpdate update = _updateEnumeratorAsync.Current;
-    //    if (update is RunUpdate runUpdate)
-    //    {
-    //        ApplyUpdate(runUpdate);
-    //    }
-
-    //    return !IsCompleted;
-    //}
-
-    //public override bool Update(CancellationToken cancellationToken = default)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    private void ApplyUpdate(RunUpdate update)
-    {
-        // Set ThreadId
-        ThreadId ??= update.Value.ThreadId;
-
-        // Set RunId
-        Id ??= update.Value.Id;
-
-        // Set Status
-        Status = update.Value.Status;
-
-        // Set Value
-        Value = update.Value;
-
-        // SetRawResponse
-        // TODO: This currently won't work as intended because we are setting 
-        // _currUpdateCollectionAsync to assist the ContinuableAsyncEnumerator.
-        // Revisit this when we close on how enumerator should be exposed.
-        if (_currUpdateCollectionAsync is not null)
-        {
-            SetRawResponse(_currUpdateCollectionAsync.GetRawResponse());
-        }
-
-        // Set IsCompleted
-        IsCompleted = update.Value.Status.IsTerminal;
-    }
-
-    private IAsyncEnumerator<StreamingUpdate>? GetAsyncUpdateEnumerator()
-    {
-        IAsyncEnumerator<StreamingUpdate>? enumerator = _currUpdateCollectionAsync?.GetAsyncEnumerator();
-
-        // Only get it once until we reset it.
-
-        // TODO: Make sure this doesn't leak a reference to a network stream
-        // that then can't be disposed.
-        _currUpdateCollectionAsync = null;
-
-        return enumerator;
-    }
-
-    public virtual void SubmitToolOutputsToRunStreaming(
+    public virtual async Task SubmitToolOutputsToRunStreamingAsync(
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
         if (ThreadId is null || Id is null)
         {
             throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
+        }
+
+        if (_enumerator is null)
+        {
+            throw new InvalidOperationException(
+                "Cannot submit tools until first run update stream has been enumerated. " +
+                "Call 'Wait' or 'GetUpdatesStreaming' to read update stream.");
         }
 
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(
@@ -191,13 +138,36 @@ public partial class StreamingRunOperation : RunOperation
             await SubmitToolOutputsToRunAsync(ThreadId, Id, content, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
-        // TODO: Ensure we call SetRawResponse for the current operation.
-        // Note: we'll want to do this for the protocol implementation of this method
-        // as well.
+        AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
+        await _enumerator.ReplaceUpdateCollectionAsync(updates).ConfigureAwait(false);
+    }
 
-        // Return the updates as a stream but also update the state as each is returned.
+    public virtual void SubmitToolOutputsToRunStreaming(
+        IEnumerable<ToolOutput> toolOutputs,
+        CancellationToken cancellationToken = default)
+    {
+        if (ThreadId is null || Id is null)
+        {
+            throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
+        }
 
-        _currUpdateCollectionAsync = new AsyncStreamingUpdateCollection(getResultAsync);
+        if (_enumerator is null)
+        {
+            throw new InvalidOperationException(
+                "Cannot submit tools until first run update stream has been enumerated. " +
+                "Call 'Wait' or 'GetUpdatesStreaming' to read update stream.");
+        }
+
+        BinaryContent content = new InternalSubmitToolOutputsRunRequest(
+            toolOutputs.ToList(), stream: true, null).ToBinaryContent();
+
+        // TODO: can we do this the same way as this in the other method instead
+        // of having to take all those funcs?
+        ClientResult getResult() =>
+            SubmitToolOutputsToRun(ThreadId, Id, content, cancellationToken.ToRequestOptions(streaming: true));
+
+        StreamingUpdateCollection updates = new StreamingUpdateCollection(getResult);
+        _enumerator.ReplaceUpdateCollection(updates);
     }
 
     #region hide
