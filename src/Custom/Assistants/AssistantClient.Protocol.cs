@@ -307,7 +307,7 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    public virtual /*async*/ Task<ThreadRunOperation> CreateThreadAndRunAsync(
+    public virtual /*async*/ Task<RunOperation> CreateThreadAndRunAsync(
         ReturnWhen returnWhen,
         BinaryContent content,
         RequestOptions options = null)
@@ -339,7 +339,7 @@ public partial class AssistantClient
         //return operation;
     }
 
-    public virtual ThreadRunOperation CreateThreadAndRun(
+    public virtual RunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         BinaryContent content,
         RequestOptions options = null)
@@ -441,7 +441,7 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
-    public virtual async Task<ThreadRunOperation> CreateRunAsync(
+    public virtual async Task<RunOperation> CreateRunAsync(
         ReturnWhen returnWhen,
         string threadId,
         BinaryContent content,
@@ -449,7 +449,7 @@ public partial class AssistantClient
     {
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, options, response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -460,7 +460,7 @@ public partial class AssistantClient
         return operation;
     }
 
-    public virtual ThreadRunOperation CreateRun(
+    public virtual RunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId,
         BinaryContent content,
@@ -470,7 +470,7 @@ public partial class AssistantClient
 
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
-        ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, options,response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, options,response);
 
         if (returnWhen == ReturnWhen.Started)
         {

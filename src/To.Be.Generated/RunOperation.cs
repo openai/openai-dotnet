@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Convenience version
-public partial class ThreadRunOperation : OperationResult
+public partial class RunOperation : OperationResult
 {
     // Note: these all have to be nullable because the derived streaming type
     // cannot set them until it reads the first event from the SSE stream.
@@ -24,7 +24,7 @@ public partial class ThreadRunOperation : OperationResult
 
     // For use with polling convenience methods where the response has been
     // obtained prior to creation of the LRO type.
-    internal ThreadRunOperation(
+    internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         ThreadRun value,
@@ -50,25 +50,25 @@ public partial class ThreadRunOperation : OperationResult
         ThreadId = value.ThreadId;
         Id = value.Id;
 
-        RehydrationToken = new ThreadRunOperationToken(value.ThreadId, value.Id);
+        RehydrationToken = new RunOperationToken(value.ThreadId, value.Id);
     }
 
-    internal ThreadRunOperation(
+    internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId,
         string runId,
         RequestOptions options)
-        : this(pipeline, endpoint, new ThreadRunOperationToken(threadId, runId), options)
+        : this(pipeline, endpoint, new RunOperationToken(threadId, runId), options)
     {
     }
 
     // For use with rehydration client methods where the response has not been
     // obtained yet, but will once the client method makes a call to Update.
-    internal ThreadRunOperation(
+    internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        ThreadRunOperationToken token,
+        RunOperationToken token,
         RequestOptions options) : base()
     {
         _pipeline = pipeline;

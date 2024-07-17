@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class ThreadRunOperationUpdateEnumerator
+internal partial class RunOperationUpdateEnumerator
 {
     //private readonly ClientPipeline _pipeline;
     //private readonly Uri _endpoint;

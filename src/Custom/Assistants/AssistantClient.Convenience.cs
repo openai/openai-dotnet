@@ -218,7 +218,7 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual async Task<ThreadRunOperation> CreateRunAsync(
+    public virtual async Task<RunOperation> CreateRunAsync(
         ReturnWhen returnWhen,
         AssistantThread thread,
         Assistant assistant,
@@ -233,7 +233,7 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <returns> A new <see cref="ThreadRun"/> instance. </returns>
-    public virtual ThreadRunOperation CreateRun(
+    public virtual RunOperation CreateRun(
         ReturnWhen returnWhen,
         AssistantThread thread, 
         Assistant assistant, 
@@ -261,7 +261,7 @@ public partial class AssistantClient
     /// <param name="thread"> The thread that the run should evaluate. </param>
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
-    public virtual StreamingThreadRunOperation CreateRunStreaming(
+    public virtual StreamingRunOperation CreateRunStreaming(
         AssistantThread thread,
         Assistant assistant,
         RunCreationOptions options = null)
@@ -274,7 +274,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual async Task<ThreadRunOperation> CreateThreadAndRunAsync(
+    public virtual async Task<RunOperation> CreateThreadAndRunAsync(
         ReturnWhen returnWhen,
         Assistant assistant,
         ThreadCreationOptions threadOptions = null,
@@ -288,7 +288,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <returns> A new <see cref="ThreadRun"/>. </returns>
-    public virtual ThreadRunOperation CreateThreadAndRun(
+    public virtual RunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         Assistant assistant,
         ThreadCreationOptions threadOptions = null,

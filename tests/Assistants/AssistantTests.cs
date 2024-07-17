@@ -1100,7 +1100,7 @@ public partial class AssistantTests
         string json = $"{{\"assistant_id\":\"{assistant.Id}\"}}";
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
 
-        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content);
 
         PipelineResponse response = runOperation.GetRawResponse();
         using JsonDocument createdJsonDoc = JsonDocument.Parse(response.Content);
@@ -1148,7 +1148,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
         RequestOptions options = new() { BufferResponse = false };
 
-        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
 
         // For streaming on protocol, if you call Wait, it will throw.
         Assert.Throws<NotSupportedException>(() => runOperation.Wait());
@@ -1235,7 +1235,7 @@ public partial class AssistantTests
         BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
         RequestOptions options = new() { BufferResponse = false };
 
-        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
 
         // Instead, callers must get the response stream and parse it.
         PipelineResponse response = runOperation.GetRawResponse();
@@ -1301,7 +1301,7 @@ public partial class AssistantTests
         Validate(message);
 
         // Create polling
-        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
 
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
@@ -1382,7 +1382,7 @@ public partial class AssistantTests
         #endregion
 
         // Create run polling
-        ThreadRunOperation runOperation = client.CreateRun(
+        RunOperation runOperation = client.CreateRun(
             ReturnWhen.Started,
             thread, assistant,
             new RunCreationOptions()
@@ -1471,7 +1471,7 @@ public partial class AssistantTests
         #endregion
 
         // Create run polling
-        ThreadRunOperation runOperation = client.CreateRun(
+        RunOperation runOperation = client.CreateRun(
             ReturnWhen.Started,
             thread, assistant,
             new RunCreationOptions()
@@ -1523,13 +1523,13 @@ public partial class AssistantTests
         Validate(message);
 
         // Create polling
-        ThreadRunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
 
         // Get the rehydration token
         ContinuationToken rehydrationToken = runOperation.RehydrationToken;
 
         // Call the rehydration method
-        ThreadRunOperation rehydratedRunOperation = client.GetRun(rehydrationToken);
+        RunOperation rehydratedRunOperation = client.GetRun(rehydrationToken);
 
         // Validate operations are equivalent
         Assert.That(runOperation.ThreadId, Is.EqualTo(rehydratedRunOperation.ThreadId));
@@ -1573,7 +1573,7 @@ public partial class AssistantTests
         Validate(message);
 
         // Create streaming
-        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
+        StreamingRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
 
         // Before the response stream has been enumerated, all the public properties
         // should still be null.
@@ -1622,7 +1622,7 @@ public partial class AssistantTests
         Validate(message);
 
         // Create streaming
-        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
+        StreamingRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
 
         // Before the response stream has been enumerated, all the public properties
         // should still be null.
@@ -1714,7 +1714,7 @@ public partial class AssistantTests
         #endregion
 
         // Create run streaming
-        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant,
+        StreamingRunOperation runOperation = client.CreateRunStreaming(thread, assistant,
             new RunCreationOptions()
             {
                 AdditionalInstructions = "Call provided tools when appropriate.",
@@ -1803,7 +1803,7 @@ public partial class AssistantTests
         #endregion
 
         // Create run streaming
-        StreamingThreadRunOperation runOperation = client.CreateRunStreaming(thread, assistant,
+        StreamingRunOperation runOperation = client.CreateRunStreaming(thread, assistant,
             new RunCreationOptions()
             {
                 AdditionalInstructions = "Call provided tools when appropriate.",

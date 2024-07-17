@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Streaming version
-public partial class StreamingThreadRunOperation : ThreadRunOperation
+public partial class StreamingRunOperation : RunOperation
 {
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
@@ -24,7 +24,7 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
 
     private ContinuableAsyncEnumerator<StreamingUpdate> _updateEnumeratorAsync;
 
-    internal StreamingThreadRunOperation(
+    internal StreamingRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         RequestOptions options,

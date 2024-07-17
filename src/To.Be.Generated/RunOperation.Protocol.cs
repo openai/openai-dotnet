@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Protocol version
-public partial class ThreadRunOperation : OperationResult
+public partial class RunOperation : OperationResult
 {
     // TODO: fix this - remove protected fields
     protected readonly ClientPipeline _pipeline;
@@ -32,7 +32,7 @@ public partial class ThreadRunOperation : OperationResult
     private readonly bool _isStreaming;
 
     // For use with streaming convenience methods - response hasn't been provided yet.
-    internal ThreadRunOperation(
+    internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         RequestOptions options)
@@ -49,7 +49,7 @@ public partial class ThreadRunOperation : OperationResult
 
     // For use with protocol methods where the response has been obtained prior
     // to creation of the LRO instance.
-    internal ThreadRunOperation(
+    internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
         RequestOptions options,
@@ -133,7 +133,7 @@ public partial class ThreadRunOperation : OperationResult
     {
         // TODO: null check thread and run id
 
-        return new ThreadRunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
+        return new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
     }
 
     private void ApplyUpdate(ClientResult result)

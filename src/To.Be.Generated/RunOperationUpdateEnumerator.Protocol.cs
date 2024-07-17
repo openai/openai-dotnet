@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class ThreadRunOperationUpdateEnumerator :
+internal partial class RunOperationUpdateEnumerator :
     IAsyncEnumerator<ClientResult>,
     IEnumerator<ClientResult>
 {
@@ -23,7 +23,7 @@ internal partial class ThreadRunOperationUpdateEnumerator :
     private ClientResult? _current;
     private bool _hasNext = true;
 
-    public ThreadRunOperationUpdateEnumerator(
+    public RunOperationUpdateEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
         string threadId,

@@ -8,9 +8,9 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal class ThreadRunOperationToken : ContinuationToken
+internal class RunOperationToken : ContinuationToken
 {
-    public ThreadRunOperationToken(string threadId, string runId)
+    public RunOperationToken(string threadId, string runId)
     {
         ThreadId = threadId;
         RunId = runId;
@@ -38,9 +38,9 @@ internal class ThreadRunOperationToken : ContinuationToken
         return BinaryData.FromStream(stream);
     }
 
-    public static ThreadRunOperationToken FromToken(ContinuationToken continuationToken)
+    public static RunOperationToken FromToken(ContinuationToken continuationToken)
     {
-        if (continuationToken is ThreadRunOperationToken token)
+        if (continuationToken is RunOperationToken token)
         {
             return token;
         }
