@@ -86,19 +86,16 @@ public partial class ThreadRunOperation : OperationResult
 
     public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
-        if (_isStreaming)
+        if (_threadId is null || _runId is null)
         {
             // we would have to read from the string to get the run ID to poll for.
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        if (pollingInterval is not null)
+        foreach (var _ in GetUpdates(pollingInterval, cancellationToken))
         {
-            // TODO: don't reallocate
-            _pollingInterval = new PollingInterval(pollingInterval);
+            // Just wait.
         }
-
-        Wait(cancellationToken);
     }
 
     // TODO: evaluate this experiment
@@ -108,74 +105,36 @@ public partial class ThreadRunOperation : OperationResult
         /*[EnumeratorCancellation]*/ CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
-
-        //while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
-
-        //    // Hm ... ?
-        //    // Note, this could add StreamingUpdate as a public property??
-        //    // If it's an enumerator, do end-users ever care about what's in Current?
-        //    yield return _updateEnumeratorAsync.Current;
-        //}
-
-        //// TODO: Dispose enumerator
     }
 
     public virtual IEnumerable<ThreadRun> GetUpdates(
         TimeSpan? pollingInterval = default,
         CancellationToken cancellationToken = default)
     {
-        if (pollingInterval is not null)
+        // TODO: incorporate polling interval parameter
+
+        IEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumerator(cancellationToken);
+
+        while (enumerator.MoveNext())
         {
-            // TODO: don't reallocate
-            _pollingInterval = new PollingInterval(pollingInterval);
-        }
+            ApplyUpdate(enumerator.Current);
 
-        RunStatus status = Status!.Value;
-
-        do
-        {
-            Update(cancellationToken);
-
-            // TODO: only have this in one place.  Here or UpdateStatus?
-            cancellationToken.ThrowIfCancellationRequested();
+            yield return enumerator.Current;
 
             _pollingInterval.Wait();
-
-            if (status != Status!.Value)
-            {
-                // State changed.  Return the update.
-                status = Status!.Value;
-
-                yield return Value!;
-            }
         }
-        // TODO: technically if we wanted to do it this way, we should yield the
-        // status change update saying the operation is complete, but this isn't
-        // happening currently.  Figure this out.
-        while (Update(cancellationToken));
     }
 
-    public override Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
+    protected virtual IAsyncEnumerator<ClientResult<ThreadRun>> GetUpdateEnumeratorAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public override bool Update(CancellationToken cancellationToken = default)
+    // TODO: Figure out visibility here -- protected makes sense but type is
+    // internal only
+    protected virtual IEnumerator<ClientResult<ThreadRun>> GetUpdateEnumerator(CancellationToken cancellationToken)
     {
-        // This does:
-        //   1. Get update
-        //   2. Apply update
-        //   3. Returns whether to continue polling/has more updates
-
-        ClientResult<ThreadRun> runUpdate = GetUpdate(cancellationToken);
-
-        ApplyUpdate(runUpdate);
-
-        // Do not continue polling from Wait method if operation is complete,
-        // or input is required, since we would poll forever in either state!
-        return !IsCompleted && Status != RunStatus.RequiresAction;
+        throw new NotImplementedException();
     }
 
     private Task<ClientResult<ThreadRun>> GetUpdateAsync()

@@ -46,101 +46,81 @@ public partial class StreamingThreadRunOperation : ThreadRunOperation
         protected set => _isCompleted = value;
     }
 
-    public override async Task WaitAsync(CancellationToken cancellationToken = default)
+    public override /*async*/ Task WaitAsync(CancellationToken cancellationToken = default)
     {
         // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
-        {
-            // TODO: only have this in one place.  Here or UpdateStatus?
-            cancellationToken.ThrowIfCancellationRequested();
-        }
-        // TODO: Dispose enumerator
+        throw new NotImplementedException();
     }
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
-        // Create an instance of an IAsyncEnumerable<StreamingUpdate>
-        StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
-
-        // Enumerate those updates and update the state for each one
-        foreach (StreamingUpdate update in updates)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (update is RunUpdate runUpdate)
-            {
-                ApplyUpdate(runUpdate);
-            }
-        }
+        throw new NotImplementedException();
     }
 
     // Public APIs specific to streaming LRO
-    public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync(
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        // I think this relies on the fact that there are updates that aren't
-        // RunUpdates, so we yield a value .. ?
-        while (await UpdateAsync(cancellationToken).ConfigureAwait(false))
+        IAsyncEnumerator<StreamingUpdate> enumerator = GetStreamingUpdateEnumeratorAsync(cancellationToken);
+
+        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
-            // TODO: only have this in one place.  Here or UpdateStatus?
-            cancellationToken.ThrowIfCancellationRequested();
+            if (enumerator.Current is RunUpdate update)
+            {
+                ApplyUpdate(update);
+            }
 
-            // Hm ... ?
-            // Note, this could add StreamingUpdate as a public property??
-            // If it's an enumerator, do end-users ever care about what's in Current?
-            yield return _updateEnumeratorAsync.Current;
+            yield return enumerator.Current;
         }
-
-        // TODO: Dispose enumerator
     }
 
     public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
-        StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
-
-        // Enumerate those updates and update the state for each one
-        foreach (StreamingUpdate update in updates)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (update is RunUpdate runUpdate)
-            {
-                ApplyUpdate(runUpdate);
-            }
-
-            yield return update;
-        }
+        throw new NotImplementedException();
     }
 
-    public override async Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
-    {
-        // This does:
-        //   1. Get update
-        //   2. Apply update
-        //   3. Returns whether to continue polling/has more updates
-
-        // TODO: use cancellationToken?  How is it plumbed into MoveNext?
-
-        if (!await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
-        {
-            return false;
-        }
-
-        StreamingUpdate update = _updateEnumeratorAsync.Current;
-        if (update is RunUpdate runUpdate)
-        {
-            ApplyUpdate(runUpdate);
-        }
-
-        return !IsCompleted;
-    }
-
-    public override bool Update(CancellationToken cancellationToken = default)
+    private IAsyncEnumerator<StreamingUpdate> GetStreamingUpdateEnumeratorAsync(CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
+
+    // TODO: Figure out visibility here -- protected makes sense but type is
+    // internal only
+    protected IEnumerator<StreamingUpdate> GetStreamingUpdateEnumerator(CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    //public override async Task<bool> UpdateAsync(CancellationToken cancellationToken = default)
+    //{
+    //    // This does:
+    //    //   1. Get update
+    //    //   2. Apply update
+    //    //   3. Returns whether to continue polling/has more updates
+
+    //    // TODO: use cancellationToken?  How is it plumbed into MoveNext?
+
+    //    if (!await _updateEnumeratorAsync.MoveNextAsync().ConfigureAwait(false))
+    //    {
+    //        return false;
+    //    }
+
+    //    StreamingUpdate update = _updateEnumeratorAsync.Current;
+    //    if (update is RunUpdate runUpdate)
+    //    {
+    //        ApplyUpdate(runUpdate);
+    //    }
+
+    //    return !IsCompleted;
+    //}
+
+    //public override bool Update(CancellationToken cancellationToken = default)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
     private void ApplyUpdate(RunUpdate update)
     {

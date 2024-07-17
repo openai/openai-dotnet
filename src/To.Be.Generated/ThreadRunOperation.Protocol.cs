@@ -103,23 +103,25 @@ public partial class ThreadRunOperation : OperationResult
     {
         // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
 
-        if (_isStreaming)
+        // TODO: RequestOptions flow
+        IEnumerator<ClientResult> enumerator = GetUpdateEnumerator(cancellationToken.ToRequestOptions());
+        while (enumerator.MoveNext())
         {
-            // we would have to read from the string to get the run ID to poll for.
-            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
-        }
-
-        // These should always be set in the constructor.
-        Debug.Assert(_threadId is not null);
-        Debug.Assert(_runId is not null);
-
-        // TODO: reimplement around the update enumerator concept.
-        while (Update(cancellationToken))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
+            ApplyUpdate(enumerator.Current);
             _pollingInterval.Wait();
         }
+    }
+
+    protected IAsyncEnumerator<ClientResult> GetUpdateEnumeratorAsync(RequestOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    // TODO: Figure out visibility here -- protected makes sense but type is
+    // internal only
+    protected IEnumerator<ClientResult> GetUpdateEnumerator(RequestOptions options)
+    {
+        throw new NotImplementedException();
     }
 
     // Note: The methods below are removed/rewritten when convenience-layer is added.
@@ -161,18 +163,19 @@ public partial class ThreadRunOperation : OperationResult
     //    return GetRun(_threadId, _runId, cancellationToken.ToRequestOptions());
     //}
 
-    //private void ApplyUpdate(PipelineResponse response)
-    //{
-    //    using JsonDocument doc = JsonDocument.Parse(response.Content);
+    private void ApplyUpdate(ClientResult result)
+    {
+        PipelineResponse response = result.GetRawResponse();
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
 
-    //    _status = doc.RootElement.GetProperty("status"u8).GetString();
-    //    _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
-    //    _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
+        _status = doc.RootElement.GetProperty("status"u8).GetString();
+        _threadId ??= doc.RootElement.GetProperty("thread_id"u8).GetString();
+        _runId ??= doc.RootElement.GetProperty("id"u8).GetString();
 
-    //    IsCompleted = GetIsCompleted(_status!);
+        IsCompleted = GetIsCompleted(_status!);
 
-    //    SetRawResponse(response);
-    //}
+        SetRawResponse(response);
+    }
 
     private static bool GetIsCompleted(string status)
     {
