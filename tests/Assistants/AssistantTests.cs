@@ -1331,6 +1331,46 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
+
+    [Test]
+    public async Task LRO_Convenience_Polling_CanPollWithCustomInterval()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        // Create polling
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
+
+        Assert.That(runOperation.IsCompleted, Is.False);
+        Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
+        Assert.That(runOperation.Id, Is.Not.Null);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
+        Assert.That(runOperation.Value, Is.Not.Null);
+        Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.Id));
+
+        // Poll manually to implement custom poll interval
+        IEnumerable<ThreadRun> updates = runOperation.GetUpdates(TimeSpan.Zero);
+
+        int i = 0;
+        foreach (ThreadRun update in updates)
+        {
+            // Change polling interval for each update
+            await Task.Delay(i++ * 100);
+        }
+
+        Assert.That(runOperation.IsCompleted, Is.True);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(runOperation.Value.Status, Is.EqualTo(RunStatus.Completed));
+    }
+
+
     [Test]
     public void LRO_Convenience_Polling_CanSubmitToolUpdates_Wait()
     {

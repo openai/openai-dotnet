@@ -144,7 +144,11 @@ public partial class RunOperation : OperationResult
         TimeSpan? pollingInterval = default,
         CancellationToken cancellationToken = default)
     {
-        // TODO: incorporate polling interval parameter
+        if (pollingInterval is not null)
+        {
+            // TODO: don't allocate
+            _pollingInterval = new PollingInterval(pollingInterval);
+        }
 
         IEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumerator();
 

@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -100,6 +98,8 @@ public partial class RunOperation : OperationResult
 
         protected set => _isCompleted = value;
     }
+
+    public override ContinuationToken? RehydrationToken { get; protected set; }
 
     // Note: these work for protocol-only.
     // Once convenience overloads available, these get replaced by those implementations.
