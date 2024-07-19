@@ -13,15 +13,6 @@ namespace OpenAI.Assistants;
 // Convenience version
 public partial class RunOperation : OperationResult
 {
-    // Note: these all have to be nullable because the derived streaming type
-    // cannot set them until it reads the first event from the SSE stream.
-
-    public string? Id { get => _runId; protected set { _runId = value; } }
-    public string? ThreadId { get => _threadId; protected set { _threadId = value; } }
-
-    public ThreadRun? Value { get; protected set; }
-    public RunStatus? Status { get; protected set; }
-
     // For use with polling convenience methods where the response has been
     // obtained prior to creation of the LRO type.
     internal RunOperation(
@@ -81,6 +72,16 @@ public partial class RunOperation : OperationResult
 
         RehydrationToken = token;
     }
+
+    // Note: these all have to be nullable because the derived streaming type
+    // cannot set them until it reads the first event from the SSE stream.
+
+    public string? Id { get => _runId; protected set { _runId = value; } }
+    public string? ThreadId { get => _threadId; protected set { _threadId = value; } }
+
+    public ThreadRun? Value { get; protected set; }
+    public RunStatus? Status { get; protected set; }
+
 
     #region OperationResult methods
 

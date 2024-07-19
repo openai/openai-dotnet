@@ -55,38 +55,39 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task WaitAsync(CancellationToken cancellationToken = default)
-    {
-        IAsyncEnumerator<ClientResult> enumerator =
-            new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
+    // These are replaced when LRO is evolved to have conveniences
+    //public override async Task WaitAsync(CancellationToken cancellationToken = default)
+    //{
+    //    IAsyncEnumerator<ClientResult> enumerator =
+    //        new VectorStoreFileBatchOperationUpdateEnumerator(
+    //            _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
 
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
-        {
-            ApplyUpdate(enumerator.Current);
+    //    while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+    //    {
+    //        ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
+    //        cancellationToken.ThrowIfCancellationRequested();
 
-            // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync();
-        }
-    }
+    //        // TODO: Plumb through cancellation token
+    //        await _pollingInterval.WaitAsync();
+    //    }
+    //}
 
-    public override void Wait(CancellationToken cancellationToken = default)
-    {
-        IEnumerator<ClientResult> enumerator = 
-            new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
+    //public override void Wait(CancellationToken cancellationToken = default)
+    //{
+    //    IEnumerator<ClientResult> enumerator = 
+    //        new VectorStoreFileBatchOperationUpdateEnumerator(
+    //            _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
 
-        while (enumerator.MoveNext())
-        {
-            ApplyUpdate(enumerator.Current);
+    //    while (enumerator.MoveNext())
+    //    {
+    //        ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
+    //        cancellationToken.ThrowIfCancellationRequested();
 
-            _pollingInterval.Wait();
-        }
-    }
+    //        _pollingInterval.Wait();
+    //    }
+    //}
 
     private void ApplyUpdate(ClientResult result)
     {
