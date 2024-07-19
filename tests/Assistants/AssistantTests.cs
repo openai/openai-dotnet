@@ -1333,7 +1333,7 @@ public partial class AssistantTests
 
 
     [Test]
-    public async Task LRO_Convenience_Polling_CanPollWithCustomInterval()
+    public async Task LRO_Convenience_Polling_CanPollWithCustomPollingInterval()
     {
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1369,7 +1369,6 @@ public partial class AssistantTests
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(runOperation.Value.Status, Is.EqualTo(RunStatus.Completed));
     }
-
 
     [Test]
     public void LRO_Convenience_Polling_CanSubmitToolUpdates_Wait()

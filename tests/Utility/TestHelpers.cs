@@ -5,6 +5,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.Files;
+using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.VectorStores;
 using System;
@@ -54,6 +55,7 @@ internal static class TestHelpers
             TestScenario.Batch => new BatchClient(options),
             TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-3.5-turbo", options),
             TestScenario.Files => new FileClient(options),
+            TestScenario.FineTuning => new FineTuningClient(options),
             TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", options),
             TestScenario.Transcription => new AudioClient(overrideModel ?? "whisper-1", options),
             TestScenario.VisionChat => new ChatClient(overrideModel ?? "gpt-4o", options),
