@@ -17,8 +17,7 @@ public partial class FineTuningOperation : OperationResult
     private readonly RequestOptions _options;
 
     private readonly string _jobId;
-    private string _status;
-
+    
     private PollingInterval _pollingInterval;
 
     internal FineTuningOperation(
@@ -34,7 +33,7 @@ public partial class FineTuningOperation : OperationResult
         _options = options;
 
         _jobId = jobId;
-        _status = status;
+        IsCompleted = GetIsCompleted(status);
 
         _pollingInterval = new();
 
@@ -81,13 +80,13 @@ public partial class FineTuningOperation : OperationResult
         PipelineResponse response = result.GetRawResponse();
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
-        _status = doc.RootElement.GetProperty("status"u8).GetString()!;
+        string? status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        IsCompleted = GetIsCompleted(_status);
+        IsCompleted = GetIsCompleted(status);
         SetRawResponse(response);
     }
 
-    private static bool GetIsCompleted(string status)
+    private static bool GetIsCompleted(string? status)
     {
         return status == "succeeded" ||
             status == "failed" ||
