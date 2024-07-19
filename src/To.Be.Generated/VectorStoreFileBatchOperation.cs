@@ -157,12 +157,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
@@ -170,17 +164,12 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
     /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        string batchJobId,
         VectorStoreFileAssociationCollectionOptions? options = default,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
         VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            batchJobId,
+            _vectorStoreId,
+            _batchId,
             options?.PageSize,
             options?.Order?.ToString(),
             options?.AfterId,
@@ -194,12 +183,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// <summary>
     /// Rehydrates a page collection of file associations from a page token.
     /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
@@ -207,8 +190,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
     /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        string batchJobId,
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
@@ -216,18 +197,18 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
         VectorStoreFileBatchesPageToken pageToken = VectorStoreFileBatchesPageToken.FromToken(firstPageToken);
 
-        if (vectorStoreId != pageToken.VectorStoreId)
+        if (_vectorStoreId != pageToken.VectorStoreId)
         {
             throw new ArgumentException(
-                "Invalid page token. 'vectorStoreId' value does not match page token value.",
-                nameof(vectorStoreId));
+                "Invalid page token. 'VectorStoreId' value does not match page token value.",
+                nameof(firstPageToken));
         }
 
-        if (batchJobId != pageToken.BatchId)
+        if (_batchId != pageToken.BatchId)
         {
             throw new ArgumentException(
-                "Invalid page token. 'batchJobId' value does not match page token value.",
-                nameof(vectorStoreId));
+                "Invalid page token. 'BatchId' value does not match page token value.",
+                nameof(firstPageToken));
         }
 
         VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
@@ -247,12 +228,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
@@ -260,17 +235,12 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
     /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        string batchJobId,
         VectorStoreFileAssociationCollectionOptions? options = default,
         CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
         VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            batchJobId,
+            _vectorStoreId,
+            _batchId,
             options?.PageSize,
             options?.Order?.ToString(),
             options?.AfterId,
@@ -285,12 +255,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// Rehydrates a page collection of file associations from a page token.
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
@@ -298,8 +262,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
     /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
     public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        string batchJobId,
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
@@ -307,18 +269,18 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
         VectorStoreFileBatchesPageToken pageToken = VectorStoreFileBatchesPageToken.FromToken(firstPageToken);
 
-        if (vectorStoreId != pageToken.VectorStoreId)
+        if (_vectorStoreId != pageToken.VectorStoreId)
         {
             throw new ArgumentException(
-                "Invalid page token. 'vectorStoreId' value does not match page token value.",
-                nameof(vectorStoreId));
+                "Invalid page token. 'VectorStoreId' value does not match page token value.",
+                nameof(firstPageToken));
         }
 
-        if (batchJobId != pageToken.BatchId)
+        if (_batchId != pageToken.BatchId)
         {
             throw new ArgumentException(
-                "Invalid page token. 'batchJobId' value does not match page token value.",
-                nameof(vectorStoreId));
+                "Invalid page token. 'BatchId' value does not match page token value.",
+                nameof(firstPageToken));
         }
 
         VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,

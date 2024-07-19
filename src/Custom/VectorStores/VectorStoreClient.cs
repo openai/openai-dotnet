@@ -574,40 +574,5 @@ public partial class VectorStoreClient
         return ClientResult.FromValue(value, response);
     }
 
-    ///// <summary>
-    ///// Gets an existing vector store batch file ingestion job from a known vector store ID and job ID.
-    ///// </summary>
-    ///// <param name="vectorStoreId"> The ID of the vector store into which the batch of files was started. </param>
-    ///// <param name="batchJobId"> The ID of the batch operation adding files to the vector store. </param>
-    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    ///// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the ingestion operation. </returns>
-    //internal virtual async Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
-    //{
-    //    Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-    //    Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
-    //    ClientResult result = await GetBatchFileJobAsync(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-    //    PipelineResponse response = result?.GetRawResponse();
-    //    VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-    //    return ClientResult.FromValue(value, response);
-    //}
-
-    ///// <summary>
-    ///// Gets an existing vector store batch file ingestion job from a known vector store ID and job ID.
-    ///// </summary>
-    ///// <param name="vectorStoreId"> The ID of the vector store into which the batch of files was started. </param>
-    ///// <param name="batchJobId"> The ID of the batch operation adding files to the vector store. </param>
-    ///// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    ///// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the ingestion operation. </returns>
-    //internal virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default)
-    //{
-    //    Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-    //    Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
-    //    ClientResult result = GetBatchFileJob(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions());
-    //    PipelineResponse response = result?.GetRawResponse();
-    //    VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-    //    return ClientResult.FromValue(value, response);
-    //}
 
 }

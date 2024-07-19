@@ -273,7 +273,7 @@ public partial class VectorStoreTests
 
         IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
 
-        VectorStoreBatchFileJob batchJob = client.CreateBatchFileJob(vectorStore, testFiles);
+        VectorStoreFileBatchOperation batchJob = client.CreateBatchFileJob(ReturnWhen.Started, vectorStore, testFiles);
         Validate(batchJob);
 
         Assert.Multiple(() =>
@@ -283,12 +283,9 @@ public partial class VectorStoreTests
             Assert.That(batchJob.Status, Is.EqualTo(VectorStoreBatchFileJobStatus.InProgress));
         });
 
-        for (int i = 0; i < 10 && client.GetBatchFileJob(batchJob).Value.Status != VectorStoreBatchFileJobStatus.Completed; i++)
-        {
-            Thread.Sleep(500);
-        }
+        batchJob.Wait();
 
-        foreach (VectorStoreFileAssociation association in client.GetFileAssociations(batchJob).GetAllValues())
+        foreach (VectorStoreFileAssociation association in batchJob.GetFileAssociations().GetAllValues())
         {
             Assert.Multiple(() =>
             {
@@ -384,10 +381,10 @@ public partial class VectorStoreTests
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,
         };
-        foreach (VectorStoreBatchFileJob job in _jobsToCancel)
+        foreach (VectorStoreFileBatchOperation operation in _operationsToCancel)
         {
-            ClientResult protocolResult = vectorStoreClient.CancelBatchFileJob(job.VectorStoreId, job.BatchId, requestOptions);
-            Console.WriteLine($"Cleanup: {job.BatchId} => {protocolResult?.GetRawResponse()?.Status}");
+            ClientResult protocolResult = operation.CancelBatchFileJob(operation.VectorStoreId, operation.BatchId, requestOptions);
+            Console.WriteLine($"Cleanup: {operation.BatchId} => {protocolResult?.GetRawResponse()?.Status}");
         }
         foreach (VectorStoreFileAssociation association in _associationsToRemove)
         {
@@ -415,10 +412,15 @@ public partial class VectorStoreTests
     /// <exception cref="NotImplementedException"> The provided instance type isn't supported. </exception>
     private void Validate<T>(T target)
     {
-        if (target is VectorStoreBatchFileJob job)
+        if (target is VectorStoreFileBatchOperation operation)
         {
-            Assert.That(job.BatchId, Is.Not.Null);
-            _jobsToCancel.Add(job);
+            Assert.That(operation.VectorStoreId, Is.Not.Null);
+            Assert.That(operation.BatchId, Is.Not.Null);
+
+            Assert.That(operation.Value, Is.Not.Null);
+            Assert.That(operation.Status, Is.Not.Null);
+
+            _operationsToCancel.Add(operation);
         }
         else if (target is VectorStoreFileAssociation association)
         {
@@ -442,7 +444,7 @@ public partial class VectorStoreTests
         }
     }
 
-    private readonly List<VectorStoreBatchFileJob> _jobsToCancel = [];
+    private readonly List<VectorStoreFileBatchOperation> _operationsToCancel = [];
     private readonly List<VectorStoreFileAssociation> _associationsToRemove = [];
     private readonly List<OpenAIFileInfo> _filesToDelete = [];
     private readonly List<VectorStore> _vectorStoresToDelete = [];
