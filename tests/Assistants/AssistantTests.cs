@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.ServerSentEvents;
 using static OpenAI.Tests.TestHelpers;
+using System.Diagnostics;
 
 namespace OpenAI.Tests.Assistants;
 
@@ -175,461 +176,451 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
-    //[Test]
-    //public void BasicRunOperationsWork()
-    //{
-    //    AssistantClient client = GetTestClient();
-    //    Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
-    //    Validate(assistant);
-    //    AssistantThread thread = client.CreateThread();
-    //    Validate(thread);
-    //    PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
-    //    Assert.That(runsPage.Values.Count, Is.EqualTo(0));
-    //    ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
-    //    Validate(message);
-    //    ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
-    //    Validate(run);
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
-    //    Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
-    //    ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
-    //    Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-    //    runsPage = client.GetRuns(thread).GetCurrentPage();
-    //    Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-    //    Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
+    [Test]
+    public void BasicRunOperationsWork()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
 
-    //    PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
-    //    Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
-    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-    //    {
-    //        Thread.Sleep(500);
-    //        run = client.GetRun(run);
-    //    }
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-    //    Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
-    //    Assert.That(run.RequiredActions.Count, Is.EqualTo(0));
-    //    Assert.That(run.AssistantId, Is.EqualTo(assistant.Id));
-    //    Assert.That(run.FailedAt, Is.Null);
-    //    Assert.That(run.IncompleteDetails, Is.Null);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
 
-    //    messagesPage = client.GetMessages(thread).GetCurrentPage();
-    //    Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
 
-    //    Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
-    //    Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
-    //    Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
-    //}
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
 
-    //[Test]
-    //public void BasicRunStepFunctionalityWorks()
-    //{
-    //    AssistantClient client = GetTestClient();
-    //    Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
-    //    {
-    //        Tools = { new CodeInterpreterToolDefinition() },
-    //        Instructions = "You help the user with mathematical descriptions and visualizations.",
-    //    });
-    //    Validate(assistant);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
+        Validate(runOperation);
 
-    //    FileClient fileClient = new();
-    //    OpenAIFileInfo equationFile = fileClient.UploadFile(
-    //        BinaryData.FromString("""
-    //        x,y
-    //        2,5
-    //        7,14,
-    //        8,22
-    //        """).ToStream(),
-    //        "text/csv",
-    //        FileUploadPurpose.Assistants);
-    //    Validate(equationFile);
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
+        Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(runOperation.IsCompleted, Is.False);
 
-    //    AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
-    //    {
-    //        InitialMessages =
-    //        {
-    //            "Describe the contents of any available tool resource file."
-    //            + " Graph a linear regression and provide the coefficient of correlation."
-    //            + " Explain any code executed to evaluate.",
-    //        },
-    //        ToolResources = new()
-    //        {
-    //            CodeInterpreter = new()
-    //            {
-    //                FileIds = { equationFile.Id },
-    //            }
-    //        }
-    //    });
-    //    Validate(thread);
+        //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
+        //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
 
-    //    ThreadRun run = client.CreateRun(thread, assistant);
-    //    Validate(run);
+        runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
 
-    //    while (!run.Status.IsTerminal)
-    //    {
-    //        Thread.Sleep(1000);
-    //        run = client.GetRun(run);
-    //    }
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-    //    Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
 
-    //    PageCollection<RunStep> pages = client.GetRunSteps(run);
-    //    PageResult<RunStep> firstPage = pages.GetCurrentPage();
-    //    RunStep firstStep = firstPage.Values[0];
-    //    RunStep secondStep = firstPage.Values[1];
+        runOperation.Wait();
+        Assert.That(runOperation.IsCompleted, Is.True);
 
-    //    Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
-    //    Assert.Multiple(() =>
-    //    {
-    //        Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
-    //        Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
-    //        Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
-    //        Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
-    //        Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
-    //    });
-    //    RunStepDetails details = firstStep.Details;
-    //    Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
+        ThreadRun run = runOperation.Value;
 
-    //    string rawContent = firstPage.GetRawResponse().Content.ToString();
+        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
+        Assert.That(run.RequiredActions.Count, Is.EqualTo(0));
+        Assert.That(run.AssistantId, Is.EqualTo(assistant.Id));
+        Assert.That(run.FailedAt, Is.Null);
+        Assert.That(run.IncompleteDetails, Is.Null);
 
-    //    details = secondStep.Details;
-    //    Assert.Multiple(() =>
-    //    {
-    //        Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
-    //        Assert.That(details.ToolCalls[0].ToolKind, Is.EqualTo(RunStepToolCallKind.CodeInterpreter));
-    //        Assert.That(details.ToolCalls[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-    //        Assert.That(details.ToolCalls[0].CodeInterpreterInput, Is.Not.Null.And.Not.Empty);
-    //        Assert.That(details.ToolCalls[0].CodeInterpreterOutputs?.Count, Is.GreaterThan(0));
-    //        Assert.That(details.ToolCalls[0].CodeInterpreterOutputs[0].ImageFileId, Is.Not.Null.And.Not.Empty);
-    //    });
-    //}
+        messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
 
-    //[Test]
-    //public void SettingResponseFormatWorks()
-    //{
-    //    AssistantClient client = GetTestClient();
-    //    Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
-    //    {
-    //        ResponseFormat = AssistantResponseFormat.JsonObject,
-    //    });
-    //    Validate(assistant);
-    //    Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
-    //    assistant = client.ModifyAssistant(assistant, new()
-    //    {
-    //        ResponseFormat = AssistantResponseFormat.Text,
-    //    });
-    //    Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.Text));
-    //    AssistantThread thread = client.CreateThread();
-    //    Validate(thread);
-    //    ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
-    //    Validate(message);
-    //    ThreadRun run = client.CreateRun(thread, assistant, new()
-    //    {
-    //        ResponseFormat = AssistantResponseFormat.JsonObject,
-    //    });
-    //    Validate(run);
-    //    Assert.That(run.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
-    //}
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
+    }
 
-    //[Test]
-    //public void FunctionToolsWork()
-    //{
-    //    AssistantClient client = GetTestClient();
-    //    Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
-    //    {
-    //        Tools =
-    //        {
-    //            new FunctionToolDefinition()
-    //            {
-    //                FunctionName = "get_favorite_food_for_day_of_week",
-    //                Description = "gets the user's favorite food for a given day of the week, like Tuesday",
-    //                Parameters = BinaryData.FromObjectAsJson(new
-    //                {
-    //                    type = "object",
-    //                    properties = new
-    //                    {
-    //                        day_of_week = new
-    //                        {
-    //                            type = "string",
-    //                            description = "a day of the week, like Tuesday or Saturday",
-    //                        }
-    //                    }
-    //                }),
-    //            },
-    //        },
-    //    });
-    //    Validate(assistant);
-    //    Assert.That(assistant.Tools?.Count, Is.EqualTo(1));
+    [Test]
+    public void BasicRunStepFunctionalityWorks()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+        {
+            Tools = { new CodeInterpreterToolDefinition() },
+            Instructions = "You help the user with mathematical descriptions and visualizations.",
+        });
+        Validate(assistant);
 
-    //    FunctionToolDefinition responseToolDefinition = assistant.Tools[0] as FunctionToolDefinition;
-    //    Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-    //    Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
+        FileClient fileClient = new();
+        OpenAIFileInfo equationFile = fileClient.UploadFile(
+            BinaryData.FromString("""
+            x,y
+            2,5
+            7,14,
+            8,22
+            """).ToStream(),
+            "text/csv",
+            FileUploadPurpose.Assistants);
+        Validate(equationFile);
 
-    //    ThreadRun run = client.CreateThreadAndRun(
-    //        assistant,
-    //        new ThreadCreationOptions()
-    //        {
-    //            InitialMessages = { "What should I eat on Thursday?" },
-    //        },
-    //        new RunCreationOptions()
-    //        {
-    //            AdditionalInstructions = "Call provided tools when appropriate.",
-    //        });
-    //    Validate(run);
+        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        {
+            InitialMessages =
+            {
+                "Describe the contents of any available tool resource file."
+                + " Graph a linear regression and provide the coefficient of correlation."
+                + " Explain any code executed to evaluate.",
+            },
+            ToolResources = new()
+            {
+                CodeInterpreter = new()
+                {
+                    FileIds = { equationFile.Id },
+                }
+            }
+        });
+        Validate(thread);
 
-    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-    //    {
-    //        Thread.Sleep(500);
-    //        run = client.GetRun(run);
-    //    }
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
-    //    Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
-    //    Assert.That(run.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-    //    Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-    //    Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
+        Validate(runOperation);
 
-    //    run = client.SubmitToolOutputsToRun(run, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
-    //    Assert.That(run.Status.IsTerminal, Is.False);
+        runOperation.Wait();
+        Assert.That(runOperation.IsCompleted, Is.True);
 
-    //    for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
-    //    {
-    //        Thread.Sleep(500);
-    //        run = client.GetRun(run);
-    //    }
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        ThreadRun run = runOperation.Value;
+        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-    //    PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
-    //    PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
-    //    Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
-    //    Assert.That(firstPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
-    //    Assert.That(firstPage.Values[0].Content?[0], Is.Not.Null);
-    //    Assert.That(firstPage.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
-    //}
+        PageCollection<RunStep> pages = runOperation.GetRunSteps();
+        PageResult<RunStep> firstPage = pages.GetCurrentPage();
+        RunStep firstStep = firstPage.Values[0];
+        RunStep secondStep = firstPage.Values[1];
 
-    //[Test]
-    //public async Task StreamingRunWorks()
-    //{
-    //    AssistantClient client = new();
-    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
-    //    Validate(assistant);
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
+            Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
+            Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
+            Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
+        });
+        RunStepDetails details = firstStep.Details;
+        Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
-    //    AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
-    //    {
-    //        InitialMessages = { "Hello there, assistant! How are you today?", },
-    //    });
-    //    Validate(thread);
+        string rawContent = firstPage.GetRawResponse().Content.ToString();
 
-    //    Stopwatch stopwatch = Stopwatch.StartNew();
-    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+        details = secondStep.Details;
+        Assert.Multiple(() =>
+        {
+            Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
+            Assert.That(details.ToolCalls[0].ToolKind, Is.EqualTo(RunStepToolCallKind.CodeInterpreter));
+            Assert.That(details.ToolCalls[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+            Assert.That(details.ToolCalls[0].CodeInterpreterInput, Is.Not.Null.And.Not.Empty);
+            Assert.That(details.ToolCalls[0].CodeInterpreterOutputs?.Count, Is.GreaterThan(0));
+            Assert.That(details.ToolCalls[0].CodeInterpreterOutputs[0].ImageFileId, Is.Not.Null.And.Not.Empty);
+        });
+    }
 
-    //    AsyncCollectionResult<StreamingUpdate> streamingResult
-    //        = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+    [Test]
+    public void SettingResponseFormatWorks()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
+        {
+            ResponseFormat = AssistantResponseFormat.JsonObject,
+        });
+        Validate(assistant);
+        Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+        assistant = client.ModifyAssistant(assistant, new()
+        {
+            ResponseFormat = AssistantResponseFormat.Text,
+        });
+        Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.Text));
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
+        Validate(message);
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant, new()
+        {
+            ResponseFormat = AssistantResponseFormat.JsonObject,
+        });
+        Validate(runOperation);
+        Assert.That(runOperation.Value.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+    }
 
-    //    Print(">>> Connected <<<");
+    [Test]
+    public void FunctionToolsWork()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+        {
+            Tools =
+            {
+                new FunctionToolDefinition()
+                {
+                    FunctionName = "get_favorite_food_for_day_of_week",
+                    Description = "gets the user's favorite food for a given day of the week, like Tuesday",
+                    Parameters = BinaryData.FromObjectAsJson(new
+                    {
+                        type = "object",
+                        properties = new
+                        {
+                            day_of_week = new
+                            {
+                                type = "string",
+                                description = "a day of the week, like Tuesday or Saturday",
+                            }
+                        }
+                    }),
+                },
+            },
+        });
+        Validate(assistant);
+        Assert.That(assistant.Tools?.Count, Is.EqualTo(1));
 
-    //    await foreach (StreamingUpdate update in streamingResult)
-    //    {
-    //        string message = $"{update.UpdateKind} ";
-    //        if (update is RunUpdate runUpdate)
-    //        {
-    //            message += $"at {update.UpdateKind switch
-    //            {
-    //                StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
-    //                StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
-    //                StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
-    //                StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
-    //                _ => "???",
-    //            }}";
-    //        }
-    //        if (update is MessageContentUpdate contentUpdate)
-    //        {
-    //            if (contentUpdate.Role.HasValue)
-    //            {
-    //                message += $"[{contentUpdate.Role}]";
-    //            }
-    //            message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
-    //        }
-    //        Print(message);
-    //    }
-    //    Print(">>> Done <<<");
-    //}
+        FunctionToolDefinition responseToolDefinition = assistant.Tools[0] as FunctionToolDefinition;
+        Assert.That(responseToolDefinition?.FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(responseToolDefinition?.Parameters, Is.Not.Null);
 
-    //[TestCase]
-    //public async Task StreamingToolCall()
-    //{
-    //    AssistantClient client = GetTestClient();
-    //    FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
-    //    Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
-    //    {
-    //        Tools = { getWeatherTool }
-    //    });
-    //    Validate(assistant);
+        RunOperation runOperation = client.CreateThreadAndRun(
+            ReturnWhen.Started,
+            assistant,
+            new ThreadCreationOptions()
+            {
+                InitialMessages = { "What should I eat on Thursday?" },
+            },
+            new RunCreationOptions()
+            {
+                AdditionalInstructions = "Call provided tools when appropriate.",
+            });
+        Validate(runOperation);
 
-    //    Stopwatch stopwatch = Stopwatch.StartNew();
-    //    void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
+        runOperation.Wait();
 
-    //    Print(" >>> Beginning call ... ");
-    //    AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
-    //        assistant,
-    //        new()
-    //        {
-    //            InitialMessages = { "What should I wear outside right now?", },
-    //        });
-    //    Print(" >>> Starting enumeration ...");
+        ThreadRun run = runOperation.Value;
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
+        Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
+        Assert.That(run.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
+        Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
-    //    ThreadRun run = null;
+        runOperation.SubmitToolOutputsToRun([new(run.RequiredActions[0].ToolCallId, "tacos")]);
+        Assert.That(runOperation.Status!.Value.IsTerminal, Is.False);
 
-    //    do
-    //    {
-    //        run = null;
-    //        List<ToolOutput> toolOutputs = [];
-    //        await foreach (StreamingUpdate update in asyncResults)
-    //        {
-    //            string message = update.UpdateKind.ToString();
+        runOperation.Wait();
+        Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
-    //            if (update is RunUpdate runUpdate)
-    //            {
-    //                message += $" run_id:{runUpdate.Value.Id}";
-    //                run = runUpdate.Value;
-    //            }
-    //            if (update is RequiredActionUpdate requiredActionUpdate)
-    //            {
-    //                Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
-    //                Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
-    //                message += $" {requiredActionUpdate.FunctionName}";
-    //                toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
-    //            }
-    //            if (update is MessageContentUpdate contentUpdate)
-    //            {
-    //                message += $" {contentUpdate.Text}";
-    //            }
-    //            Print(message);
-    //        }
-    //        if (toolOutputs.Count > 0)
-    //        {
-    //            asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
-    //        }
-    //    } while (run?.Status.IsTerminal == false);
-    //}
+        PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
+        PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
+        Assert.That(firstPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(firstPage.Values[0].Content?[0], Is.Not.Null);
+        Assert.That(firstPage.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
+    }
 
-    //[Test]
-    //public void BasicFileSearchWorks()
-    //{
-    //    // First, we need to upload a simple test file.
-    //    FileClient fileClient = new();
-    //    OpenAIFileInfo testFile = fileClient.UploadFile(
-    //        BinaryData.FromString("""
-    //        This file describes the favorite foods of several people.
+    [Test]
+    public async Task StreamingRunWorks()
+    {
+        AssistantClient client = new();
+        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
+        Validate(assistant);
 
-    //        Summanus Ferdinand: tacos
-    //        Tekakwitha Effie: pizza
-    //        Filip Carola: cake
-    //        """).ToStream(),
-    //        "favorite_foods.txt",
-    //        FileUploadPurpose.Assistants);
-    //    Validate(testFile);
+        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
+        {
+            InitialMessages = { "Hello there, assistant! How are you today?", },
+        });
+        Validate(thread);
 
-    //    AssistantClient client = GetTestClient();
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-    //    // Create an assistant, using the creation helper to make a new vector store
-    //    Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
-    //    {
-    //        Tools = { new FileSearchToolDefinition() },
-    //        ToolResources = new()
-    //        {
-    //            FileSearch = new()
-    //            {
-    //                NewVectorStores =
-    //                {
-    //                    new VectorStoreCreationHelper([testFile.Id]),
-    //                }
-    //            }
-    //        }
-    //    });
-    //    Validate(assistant);
-    //    Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
-    //    string createdVectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
-    //    _vectorStoreIdsToDelete.Add(createdVectorStoreId);
+        StreamingRunOperation streamingRunOperation = client.CreateRunStreaming(thread.Id, assistant.Id);
 
-    //    // Modify an assistant to use the existing vector store
-    //    assistant = client.ModifyAssistant(assistant, new AssistantModificationOptions()
-    //    {
-    //        ToolResources = new()
-    //        {
-    //            FileSearch = new()
-    //            {
-    //                VectorStoreIds = { assistant.ToolResources.FileSearch.VectorStoreIds[0] },
-    //            },
-    //        },
-    //    });
-    //    Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
-    //    Assert.That(assistant.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
+        Print(">>> Connected <<<");
 
-    //    // Create a thread with an override vector store
-    //    AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
-    //    {
-    //        InitialMessages = { "Using the files you have available, what's Filip's favorite food?" },
-    //        ToolResources = new()
-    //        {
-    //            FileSearch = new()
-    //            {
-    //                NewVectorStores =
-    //                {
-    //                    new VectorStoreCreationHelper([testFile.Id])
-    //                }
-    //            }
-    //        }
-    //    });
-    //    Validate(thread);
-    //    Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
-    //    createdVectorStoreId = thread.ToolResources.FileSearch.VectorStoreIds[0];
-    //    _vectorStoreIdsToDelete.Add(createdVectorStoreId);
+        await foreach (StreamingUpdate update in streamingRunOperation.GetUpdatesStreamingAsync())
+        {
+            string message = $"{update.UpdateKind} ";
+            if (update is RunUpdate runUpdate)
+            {
+                message += $"at {update.UpdateKind switch
+                {
+                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
+                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
+                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
+                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
+                    _ => "???",
+                }}";
+            }
+            if (update is MessageContentUpdate contentUpdate)
+            {
+                if (contentUpdate.Role.HasValue)
+                {
+                    message += $"[{contentUpdate.Role}]";
+                }
+                message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
+            }
+            Print(message);
+        }
+        Print(">>> Done <<<");
+    }
 
-    //    // Ensure that modifying the thread with an existing vector store works
-    //    thread = client.ModifyThread(thread, new ThreadModificationOptions()
-    //    {
-    //        ToolResources = new()
-    //        {
-    //            FileSearch = new()
-    //            {
-    //                VectorStoreIds = { createdVectorStoreId },
-    //            }
-    //        }
-    //    });
-    //    Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
-    //    Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
+    [TestCase]
+    public async Task StreamingToolCall()
+    {
+        AssistantClient client = GetTestClient();
+        FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
+        {
+            Tools = { getWeatherTool }
+        });
+        Validate(assistant);
 
-    //    ThreadRun run = client.CreateRun(thread, assistant);
-    //    Validate(run);
-    //    do
-    //    {
-    //        Thread.Sleep(1000);
-    //        run = client.GetRun(run);
-    //    } while (run?.Status.IsTerminal == false);
-    //    Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-    //    IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
-    //    int messageCount = 0;
-    //    bool hasCake = false;
-    //    foreach (ThreadMessage message in messages)
-    //    {
-    //        messageCount++;
+        Print(" >>> Beginning call ... ");
 
-    //        foreach (MessageContent content in message.Content)
-    //        {
-    //            Console.WriteLine(content.Text);
-    //            foreach (TextAnnotation annotation in content.TextAnnotations)
-    //            {
-    //                Console.WriteLine($"  --> From file: {annotation.InputFileId}, replacement: {annotation.TextToReplace}");
-    //            }
+        StreamingRunOperation streamingRunOperation = client.CreateThreadAndRunStreaming(
+            assistant,
+            new()
+            {
+                InitialMessages = { "What should I wear outside right now?", },
+            });
+        Print(" >>> Starting enumeration ...");
 
-    //            if (!hasCake)
-    //            {
-    //                hasCake = content.Text.ToLower().Contains("cake");
-    //            }
-    //        }
-    //    }
-    //    Assert.That(messageCount > 1);
-    //    Assert.That(hasCake, Is.True);
-    //}
+        await foreach (StreamingUpdate update in streamingRunOperation.GetUpdatesStreamingAsync())
+        {
+            string message = update.UpdateKind.ToString();
+
+            if (update is RunUpdate runUpdate)
+            {
+                message += $" run_id:{runUpdate.Value.Id}";
+            }
+            if (update is RequiredActionUpdate requiredActionUpdate)
+            {
+                Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
+                Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
+                message += $" {requiredActionUpdate.FunctionName}";
+
+                List<ToolOutput> toolOutputs = [];
+
+                toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
+
+                await streamingRunOperation.SubmitToolOutputsToRunStreamingAsync(toolOutputs);
+            }
+            if (update is MessageContentUpdate contentUpdate)
+            {
+                message += $" {contentUpdate.Text}";
+            }
+            Print(message);
+        }
+    }
+
+    [Test]
+    public void BasicFileSearchWorks()
+    {
+        // First, we need to upload a simple test file.
+        FileClient fileClient = new();
+        OpenAIFileInfo testFile = fileClient.UploadFile(
+            BinaryData.FromString("""
+            This file describes the favorite foods of several people.
+
+            Summanus Ferdinand: tacos
+            Tekakwitha Effie: pizza
+            Filip Carola: cake
+            """).ToStream(),
+            "favorite_foods.txt",
+            FileUploadPurpose.Assistants);
+        Validate(testFile);
+
+        AssistantClient client = GetTestClient();
+
+        // Create an assistant, using the creation helper to make a new vector store
+        Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
+        {
+            Tools = { new FileSearchToolDefinition() },
+            ToolResources = new()
+            {
+                FileSearch = new()
+                {
+                    NewVectorStores =
+                    {
+                        new VectorStoreCreationHelper([testFile.Id]),
+                    }
+                }
+            }
+        });
+        Validate(assistant);
+        Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
+        string createdVectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
+        _vectorStoreIdsToDelete.Add(createdVectorStoreId);
+
+        // Modify an assistant to use the existing vector store
+        assistant = client.ModifyAssistant(assistant, new AssistantModificationOptions()
+        {
+            ToolResources = new()
+            {
+                FileSearch = new()
+                {
+                    VectorStoreIds = { assistant.ToolResources.FileSearch.VectorStoreIds[0] },
+                },
+            },
+        });
+        Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
+        Assert.That(assistant.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
+
+        // Create a thread with an override vector store
+        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        {
+            InitialMessages = { "Using the files you have available, what's Filip's favorite food?" },
+            ToolResources = new()
+            {
+                FileSearch = new()
+                {
+                    NewVectorStores =
+                    {
+                        new VectorStoreCreationHelper([testFile.Id])
+                    }
+                }
+            }
+        });
+        Validate(thread);
+        Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
+        createdVectorStoreId = thread.ToolResources.FileSearch.VectorStoreIds[0];
+        _vectorStoreIdsToDelete.Add(createdVectorStoreId);
+
+        // Ensure that modifying the thread with an existing vector store works
+        thread = client.ModifyThread(thread, new ThreadModificationOptions()
+        {
+            ToolResources = new()
+            {
+                FileSearch = new()
+                {
+                    VectorStoreIds = { createdVectorStoreId },
+                }
+            }
+        });
+        Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
+        Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
+
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
+        Validate(runOperation);
+        
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
+        int messageCount = 0;
+        bool hasCake = false;
+        foreach (ThreadMessage message in messages)
+        {
+            messageCount++;
+
+            foreach (MessageContent content in message.Content)
+            {
+                Console.WriteLine(content.Text);
+                foreach (TextAnnotation annotation in content.TextAnnotations)
+                {
+                    Console.WriteLine($"  --> From file: {annotation.InputFileId}, replacement: {annotation.TextToReplace}");
+                }
+
+                if (!hasCake)
+                {
+                    hasCake = content.Text.ToLower().Contains("cake");
+                }
+            }
+        }
+        Assert.That(messageCount > 1);
+        Assert.That(hasCake, Is.True);
+    }
 
     [Test]
     public async Task Pagination_CanEnumerateAssistants()
@@ -1952,11 +1943,11 @@ public partial class AssistantTests
         {
             Assert.That(run?.Id, Is.Not.Null);
         }
-        //else if (target is ThreadRunOperation runOperation)
-        //{
-        //    Assert.That(runOperation?.ThreadId, Is.Not.Null);
-        //    Assert.That(runOperation?.RunId, Is.Not.Null);
-        //}
+        else if (target is RunOperation runOperation)
+        {
+            Assert.That(runOperation?.ThreadId, Is.Not.Null);
+            Assert.That(runOperation?.Id, Is.Not.Null);
+        }
         else if (target is OpenAIFileInfo file)
         {
             Assert.That(file?.Id, Is.Not.Null);

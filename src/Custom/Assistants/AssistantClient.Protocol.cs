@@ -307,36 +307,33 @@ public partial class AssistantClient
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
-    public virtual /*async*/ Task<RunOperation> CreateThreadAndRunAsync(
+    public virtual async Task<RunOperation> CreateThreadAndRunAsync(
         ReturnWhen returnWhen,
         BinaryContent content,
         RequestOptions options = null)
     {
-        throw new NotImplementedException();
-        //ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
+        ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
+        PipelineResponse response = result.GetRawResponse();
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
 
-        //// Protocol level: get values needed to create subclient from response
-        //PipelineResponse response = result.GetRawResponse();
-        //using JsonDocument doc = JsonDocument.Parse(response.Content);
-        //string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
-        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
 
-        //// Create the poller
-        //ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        bool isStreaming = false;
+        if (response.Headers.TryGetValue("Content-Type", out string contentType))
+        {
+            isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
 
-        //// Create the operation subclient
-        //ThreadRunOperation operation = new ThreadRunOperation(
-        //    _pipeline, _endpoint,
-        //    threadId, runId, result.GetRawResponse(),
-        //    poller);
+        if (isStreaming)
+        {
+            throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
+        }
 
-        //if (returnWhen == ReturnWhen.Started)
-        //{
-        //    return operation;
-        //}
-
-        //operation.WaitForCompletionResult();
-        //return operation;
+        await operation.WaitAsync(options.CancellationToken).ConfigureAwait(false);
+        return operation;
     }
 
     public virtual RunOperation CreateThreadAndRun(
@@ -344,31 +341,28 @@ public partial class AssistantClient
         BinaryContent content,
         RequestOptions options = null)
     {
-        throw new NotImplementedException();
-        //ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
+        ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
+        PipelineResponse response = result.GetRawResponse();
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
 
-        //// Protocol level: get values needed to create subclient from response
-        //PipelineResponse response = result.GetRawResponse();
-        //using JsonDocument doc = JsonDocument.Parse(response.Content);
-        //string threadId = doc.RootElement.GetProperty("thread_id"u8).GetString()!;
-        //string runId = doc.RootElement.GetProperty("id"u8).GetString()!;
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
 
-        //// Create the poller
-        //ThreadRunPoller poller = new ThreadRunPoller(_pipeline, _endpoint, result, threadId, runId, options);
+        bool isStreaming = false;
+        if (response.Headers.TryGetValue("Content-Type", out string contentType))
+        {
+            isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
 
-        //// Create the operation subclient
-        //ThreadRunOperation operation = new ThreadRunOperation(
-        //    _pipeline, _endpoint,
-        //    threadId, runId, result.GetRawResponse(),
-        //    poller);
+        if (isStreaming)
+        {
+            throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
+        }
 
-        //if (returnWhen == ReturnWhen.Started)
-        //{
-        //    return operation;
-        //}
-
-        //operation.WaitForCompletionResult();
-        //return operation;
+        operation.Wait(options.CancellationToken);
+        return operation;
     }
 
     /// <summary>
@@ -456,6 +450,17 @@ public partial class AssistantClient
             return operation;
         }
 
+        bool isStreaming = false;
+        if (response.Headers.TryGetValue("Content-Type", out string contentType))
+        {
+            isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
+
+        if (isStreaming)
+        {
+            throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
+        }
+
         await operation.WaitAsync(options.CancellationToken).ConfigureAwait(false);
         return operation;
     }
@@ -466,8 +471,6 @@ public partial class AssistantClient
         BinaryContent content,
         RequestOptions options = null)
     {
-        options ??= new();
-
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
         RunOperation operation = new RunOperation(_pipeline, _endpoint, options,response);
@@ -477,8 +480,17 @@ public partial class AssistantClient
             return operation;
         }
 
-        // TODO:
-        // Note that this will poll over requested streaming, which is undesired...
+        bool isStreaming = false;
+        if (response.Headers.TryGetValue("Content-Type", out string contentType))
+        {
+            isStreaming = contentType == "text/event-stream; charset=utf-8";
+        }
+
+        if (isStreaming)
+        {
+            throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
+        }
+
         operation.Wait(options.CancellationToken);
         return operation;
     }
