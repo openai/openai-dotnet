@@ -5,7 +5,6 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Text.Json;
-using System.Threading;
 
 namespace OpenAI.Examples;
 

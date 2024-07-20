@@ -480,13 +480,14 @@ public partial class AssistantTests
             }
             if (update is RequiredActionUpdate requiredActionUpdate)
             {
-                Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
+                RequiredAction action = requiredActionUpdate.RequiredActions.First();
+                Assert.That(action.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
                 Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
-                message += $" {requiredActionUpdate.FunctionName}";
+                message += $" {action.FunctionName}";
 
                 List<ToolOutput> toolOutputs = [];
 
-                toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
+                toolOutputs.Add(new(action.ToolCallId, "warm and sunny"));
 
                 await streamingRunOperation.SubmitToolOutputsToRunStreamingAsync(toolOutputs);
             }

@@ -664,9 +664,9 @@ public partial class AssistantClient
     /// <returns> TODO </returns>
     public virtual RunOperation CreateRun(
         ReturnWhen returnWhen,
-        string threadId, 
-        string assistantId, 
-        RunCreationOptions options = null, 
+        string threadId,
+        string assistantId,
+        RunCreationOptions options = null,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -866,10 +866,26 @@ public partial class AssistantClient
         RunCreationOptions runOptions = null,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
         runOptions ??= new();
+        runOptions.AssistantId = assistantId;
         runOptions.Stream = null;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        return await CreateThreadAndRunAsync(returnWhen, protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+
+        ClientResult<ThreadRun> result = await CreateThreadAndRunAsync(assistantId, runOptions, cancellationToken).ConfigureAwait(false);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint,
+            value: result,
+            status: result.Value.Status,
+            cancellationToken.ToRequestOptions(),
+            result.GetRawResponse());
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        await operation.WaitAsync(cancellationToken);
+        return operation;
     }
 
     /// <summary>
@@ -887,10 +903,49 @@ public partial class AssistantClient
         RunCreationOptions runOptions = null,
         CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
         runOptions ??= new();
+        runOptions.AssistantId = assistantId;
         runOptions.Stream = null;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-        return CreateThreadAndRun(returnWhen, protocolContent, cancellationToken.ToRequestOptions());
+
+        ClientResult<ThreadRun> result = CreateThreadAndRun(assistantId, runOptions, cancellationToken);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint,
+            value: result,
+            status: result.Value.Status,
+            cancellationToken.ToRequestOptions(),
+            result.GetRawResponse());
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.Wait(cancellationToken);
+        return operation;
+    }
+
+    internal virtual async Task<ClientResult<ThreadRun>> CreateThreadAndRunAsync(string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        options ??= new();
+        options.AssistantId = assistantId;
+        options.Stream = null;
+
+        ClientResult protocolResult = await CreateThreadAndRunAsync(options.ToBinaryContent(), cancellationToken.ToRequestOptions())
+            .ConfigureAwait(false);
+        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
+    }
+
+    internal virtual ClientResult<ThreadRun> CreateThreadAndRun(string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+        options ??= new();
+        options.AssistantId = assistantId;
+        options.Stream = null;
+
+        ClientResult protocolResult = CreateThreadAndRun(options.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
     /// <summary>

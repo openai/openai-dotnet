@@ -85,9 +85,22 @@ public partial class RunOperation : OperationResult
 
     #region OperationResult methods
 
-    public override Task WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task WaitAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (_isStreaming)
+        {
+            // We would have to read from the stream to get the run ID to poll for.
+            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        }
+
+        await foreach (ThreadRun update in GetUpdatesAsync(cancellationToken: cancellationToken))
+        {
+            // Don't keep polling if would do so infinitely.
+            if (update.Status == RunStatus.RequiresAction)
+            {
+                return;
+            }
+        }
     }
 
     public override void Wait(CancellationToken cancellationToken = default)
@@ -134,11 +147,28 @@ public partial class RunOperation : OperationResult
 
     // TODO: evaluate this experiment
     // Expose enumerable APIs similar to the streaming ones.
-    public virtual IAsyncEnumerable<ThreadRun> GetUpdatesAsync(
+    public virtual async IAsyncEnumerable<ThreadRun> GetUpdatesAsync(
         TimeSpan? pollingInterval = default,
-        /*[EnumeratorCancellation]*/ CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (pollingInterval is not null)
+        {
+            // TODO: don't allocate
+            _pollingInterval = new PollingInterval(pollingInterval);
+        }
+
+        IAsyncEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumeratorAsync();
+
+        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        {
+            ApplyUpdate(enumerator.Current);
+
+            yield return enumerator.Current;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _pollingInterval.WaitAsync().ConfigureAwait(false);
+        }
     }
 
     public virtual IEnumerable<ThreadRun> GetUpdates(

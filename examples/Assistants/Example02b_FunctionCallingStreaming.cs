@@ -15,7 +15,7 @@ public partial class AssistantExamples
         // This example parallels the content at the following location:
         // https://platform.openai.com/docs/assistants/tools/function-calling/function-calling-beta
         #region Step 1 - Define Functions
-
+        
         // First, define the functions that the assistant will use in its defined tools.
 
         FunctionToolDefinition getTemperatureTool = new()
@@ -90,27 +90,34 @@ public partial class AssistantExamples
         #endregion
 
         #region Step 3 - Initiate a streaming run
-
         StreamingRunOperation runOperation = client.CreateRunStreaming(thread, assistant);
-        await foreach (StreamingUpdate update in runOperation.GetUpdatesStreamingAsync())
+        IAsyncEnumerable<StreamingUpdate> updates = runOperation.GetUpdatesStreamingAsync();
+
+        await foreach (StreamingUpdate update in updates)
         {
-            if (update is RunUpdate &&
-                runOperation.Status == RunStatus.RequiresAction)
+            if (update is RequiredActionUpdate requiredActionUpdate)
             {
-                Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
-                Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
-                Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
-                Assert.That(runOperation.Value.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
-                Assert.That(runOperation.Status?.IsTerminal, Is.False);
+                List<ToolOutput> outputsToSubmit = [];
 
-                IEnumerable<ToolOutput> outputs = new List<ToolOutput> {
-                    new ToolOutput(runOperation.Value.RequiredActions[0].ToolCallId, "tacos")
-                };
+                foreach (RequiredAction action in requiredActionUpdate.RequiredActions)
+                {
+                    if (action.FunctionName == getTemperatureTool.FunctionName)
+                    {
+                        outputsToSubmit.Add(new ToolOutput(action.ToolCallId, "57"));
+                    }
+                    else if (action.FunctionName == getRainProbabilityTool.FunctionName)
+                    {
+                        outputsToSubmit.Add(new ToolOutput(action.ToolCallId, "25%"));
+                    }
+                }
 
-                await runOperation.SubmitToolOutputsToRunStreamingAsync(outputs);
+                await runOperation.SubmitToolOutputsToRunStreamingAsync(outputsToSubmit);
+            }
+            else if (update is MessageContentUpdate contentUpdate)
+            {
+                Console.Write(contentUpdate.Text);
             }
         }
-
         #endregion
 
         // Optionally, delete the resources for tidiness if no longer needed.

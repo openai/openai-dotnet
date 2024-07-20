@@ -2,7 +2,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -332,7 +331,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        await operation.WaitAsync(options.CancellationToken).ConfigureAwait(false);
+        await operation.WaitAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
         return operation;
     }
 
@@ -361,7 +360,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        operation.Wait(options.CancellationToken);
+        operation.Wait(options?.CancellationToken ?? default);
         return operation;
     }
 
@@ -461,7 +460,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        await operation.WaitAsync(options.CancellationToken).ConfigureAwait(false);
+        await operation.WaitAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
         return operation;
     }
 
@@ -473,7 +472,7 @@ public partial class AssistantClient
     {
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
-        RunOperation operation = new RunOperation(_pipeline, _endpoint, options,response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -491,9 +490,17 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        operation.Wait(options.CancellationToken);
+        operation.Wait(options?.CancellationToken ?? default);
         return operation;
     }
+
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
+    internal virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null)
+        => _runSubClient.CreateThreadAndRunAsync(content, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    internal virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
+        => _runSubClient.CreateThreadAndRun(content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
     internal virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)

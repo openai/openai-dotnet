@@ -13,23 +13,12 @@ namespace OpenAI.Assistants;
 /// </remarks>
 public class RequiredActionUpdate : RunUpdate
 {
-    /// <inheritdoc cref="InternalRequiredFunctionToolCall.InternalName"/>
-    public string FunctionName => AsFunctionCall?.FunctionName;
+    public IReadOnlyList<RequiredAction> RequiredActions { get; }
 
-    /// <inheritdoc cref="InternalRequiredFunctionToolCall.InternalArguments"/>
-    public string FunctionArguments => AsFunctionCall?.FunctionArguments;
-
-    /// <inheritdoc cref="InternalRequiredFunctionToolCall.Id"/>
-    public string ToolCallId => AsFunctionCall?.Id;
-
-    private InternalRequiredFunctionToolCall AsFunctionCall => _requiredAction as InternalRequiredFunctionToolCall;
-
-    private readonly RequiredAction _requiredAction;
-
-    internal RequiredActionUpdate(ThreadRun run, RequiredAction action)
+    internal RequiredActionUpdate(ThreadRun run, IReadOnlyList<RequiredAction> actions)
         : base(run, StreamingUpdateReason.RunRequiresAction)
     {
-        _requiredAction = action;
+        RequiredActions = actions;
     }
 
     /// <summary>
@@ -42,11 +31,6 @@ public class RequiredActionUpdate : RunUpdate
     internal static IEnumerable<RequiredActionUpdate> DeserializeRequiredActionUpdates(JsonElement element)
     {
         ThreadRun run = ThreadRun.DeserializeThreadRun(element);
-        List<RequiredActionUpdate> updates = [];
-        foreach (RequiredAction action in run.RequiredActions ?? [])
-        {
-            updates.Add(new(run, action));
-        }
-        return updates;
+        return [new(run, run.RequiredActions)];
     }
 }
