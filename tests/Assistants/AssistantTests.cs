@@ -6,13 +6,12 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Net.ServerSentEvents;
-using static OpenAI.Tests.TestHelpers;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.ServerSentEvents;
+using System.Text.Json;
+using System.Threading.Tasks;
+using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;
 
@@ -182,26 +181,19 @@ public partial class AssistantTests
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
         Validate(assistant);
-
         AssistantThread thread = client.CreateThread();
         Validate(thread);
-
         PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(0));
-
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
-
         RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, assistant.Id);
         Validate(runOperation);
-
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(runOperation.Value.CreatedAt, Is.GreaterThan(s_2024));
         Assert.That(runOperation.IsCompleted, Is.False);
-
         //ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
         //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
         Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
@@ -470,7 +462,6 @@ public partial class AssistantTests
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-
         StreamingRunOperation streamingRunOperation = client.CreateThreadAndRunStreaming(
             assistant,
             new()
@@ -1279,6 +1270,127 @@ public partial class AssistantTests
     }
 
     [Test]
+    public async Task LRO_ProtocolOnly_Streaming_CanSubmitToolOutpus()
+    {
+        FunctionToolDefinition getTemperatureTool = new()
+        {
+            FunctionName = "get_current_temperature",
+            Description = "Gets the current temperature at a specific location.",
+            Parameters = BinaryData.FromString("""
+            {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city and state, e.g., San Francisco, CA"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": ["Celsius", "Fahrenheit"],
+                  "description": "The temperature unit to use. Infer this from the user's location."
+                }
+              }
+            }
+            """),
+        };
+
+        FunctionToolDefinition getRainProbabilityTool = new()
+        {
+            FunctionName = "get_current_rain_probability",
+            Description = "Gets the current forecasted probability of rain at a specific location,"
+                + " represented as a percent chance in the range of 0 to 100.",
+            Parameters = BinaryData.FromString("""
+            {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "description": "The city and state, e.g., San Francisco, CA"
+                }
+              },
+              "required": ["location"]
+            }
+            """),
+        };
+
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Validate(assistant);
+        AssistantThread thread = client.CreateThread();
+        Validate(thread);
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        Validate(message);
+
+        string threadId = thread.Id;
+        string runId = default;
+
+        // Create streaming
+        string json = $"{{\"assistant_id\":\"{assistant.Id}\", \"stream\":true}}";
+        BinaryContent content = BinaryContent.Create(BinaryData.FromString(json));
+        RequestOptions options = new() { BufferResponse = false };
+
+        RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
+
+        // Instead, callers must get the response stream and parse it.
+        PipelineResponse response = runOperation.GetRawResponse();
+        IAsyncEnumerable<SseItem<byte[]>> events = SseParser.Create(
+                response.ContentStream,
+                (_, bytes) => bytes.ToArray()).EnumerateAsync();
+
+        string status = default;
+        byte[] data = default;
+
+        await foreach (var sseItem in events)
+        {
+            if (BinaryData.FromBytes(sseItem.Data).ToString() == "[DONE]")
+            {
+                continue;
+            }
+
+            using JsonDocument doc = JsonDocument.Parse(sseItem.Data);
+
+            string prefix = sseItem.EventType.AsSpan().Slice(0, 11).ToString();
+            string suffix = sseItem.EventType.AsSpan().Slice(11).ToString();
+            if (prefix == "thread.run." && !suffix.Contains("step."))
+            {
+                status = doc.RootElement.GetProperty("status"u8).GetString()!;
+                data = sseItem.Data;
+            }
+        }
+
+        if (status == "requires_action")
+        {
+            using JsonDocument doc = JsonDocument.Parse(data);
+            IEnumerable<JsonElement> toolCallJsonElements = doc.RootElement
+                .GetProperty("required_action")
+                .GetProperty("submit_tool_outputs")
+                .GetProperty("tool_calls").EnumerateArray();
+
+            List<ToolOutput> outputsToSubmit = [];
+
+            foreach (JsonElement toolCallJsonElement in toolCallJsonElements)
+            {
+                string functionName = toolCallJsonElement.GetProperty("function").GetProperty("name").GetString();
+                string toolCallId = toolCallJsonElement.GetProperty("id").GetString();
+
+                if (functionName == getTemperatureTool.FunctionName)
+                {
+                    outputsToSubmit.Add(new ToolOutput(toolCallId, "57"));
+                }
+                else if (functionName == getRainProbabilityTool.FunctionName)
+                {
+                    outputsToSubmit.Add(new ToolOutput(toolCallId, "25%"));
+                }
+            }
+        }
+
+        Assert.That(status, Is.EqualTo(RunStatus.Cancelled.ToString()));
+    }
+
+
+    [Test]
     public void LRO_Convenience_Polling_CanWaitForThreadRunToComplete()
     {
         AssistantClient client = GetTestClient();
@@ -1321,7 +1433,6 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
         Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
-
 
     [Test]
     public async Task LRO_Convenience_Polling_CanPollWithCustomPollingInterval()
