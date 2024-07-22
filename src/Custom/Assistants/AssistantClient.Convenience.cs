@@ -240,20 +240,6 @@ public partial class AssistantClient
         RunCreationOptions options = null)
         => CreateRun(returnWhen, thread?.Id, assistant?.Id, options);
 
-    // TODO: is async variant needed if OperationResult has sync and async methods?
-    ///// <summary>
-    ///// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
-    ///// <see cref="Assistant"/>.
-    ///// </summary>
-    ///// <param name="thread"> The thread that the run should evaluate. </param>
-    ///// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
-    ///// <param name="options"> Additional options for the run. </param>
-    //public virtual StreamingThreadRunOperation CreateRunStreamingAsync(
-    //    AssistantThread thread,
-    //    Assistant assistant,
-    //    RunCreationOptions options = null)
-    //        => CreateRunStreamingAsync(thread?.Id, assistant?.Id, options);
-
     /// <summary>
     /// Begins a new streaming <see cref="ThreadRun"/> that evaluates a <see cref="AssistantThread"/> using a specified
     /// <see cref="Assistant"/>.
