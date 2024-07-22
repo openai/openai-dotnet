@@ -172,7 +172,11 @@ public partial class AssistantExamples
             #endregion
 
             #region List run steps for details about tool calls
-            PageCollection<RunStep> runSteps = client.GetRunSteps(run, new() { Order = ListOrder.OldestFirst });
+            PageCollection<RunStep> runSteps = client.GetRunSteps(
+                run, new RunStepCollectionOptions()
+                {
+                    Order = ListOrder.OldestFirst
+                });
             foreach (RunStep step in runSteps.GetAllValues())
             {
                 Console.WriteLine($"Run step: {step.Status}");
