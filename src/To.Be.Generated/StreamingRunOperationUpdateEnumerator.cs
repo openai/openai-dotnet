@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +13,6 @@ internal partial class StreamingRunOperationUpdateEnumerator :
     IEnumerator<StreamingUpdate>
 {
     private StreamingUpdate? _current;
-    //private bool _hasNext = true;
 
     private AsyncStreamingUpdateCollection? _asyncUpdates;
     private IAsyncEnumerator<StreamingUpdate>? _asyncEnumerator;
@@ -65,7 +63,7 @@ internal partial class StreamingRunOperationUpdateEnumerator :
         throw new NotSupportedException("Cannot reset streaming enumerator.");
     }
 
-    void IDisposable.Dispose()
+    public void Dispose()
     {
         if (_enumerator != null)
         {
@@ -103,8 +101,6 @@ internal partial class StreamingRunOperationUpdateEnumerator :
     }
 
     #endregion
-
-    // Methods needed by LRO implementation
 
     public async Task ReplaceUpdateCollectionAsync(AsyncStreamingUpdateCollection updates)
     {

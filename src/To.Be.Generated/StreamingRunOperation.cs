@@ -122,6 +122,38 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
+    public override async IAsyncEnumerable<ThreadRun> GetUpdatesAsync(TimeSpan? pollingInterval = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (pollingInterval is not null)
+        {
+            throw new NotSupportedException("Cannot specify polling interval for streaming operation.");
+        }
+
+        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
+        {
+            if (update is RunUpdate runUpdate)
+            {
+                yield return runUpdate;
+            }
+        }
+    }
+
+    public override IEnumerable<ThreadRun> GetUpdates(TimeSpan? pollingInterval = null, CancellationToken cancellationToken = default)
+    {
+        if (pollingInterval is not null)
+        {
+            throw new NotSupportedException("Cannot specify polling interval for streaming operation.");
+        }
+
+        foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
+        {
+            if (update is RunUpdate runUpdate)
+            {
+                yield return runUpdate;
+            }
+        }
+    }
+
     private void ApplyUpdate(ThreadRun update)
     {
         Id ??= update.Id;
@@ -133,8 +165,6 @@ public partial class StreamingRunOperation : RunOperation
 
         SetRawResponse(_enumerator!.GetRawResponse());
     }
-
-    // TODO: should we have an async version of this one?
 
     public virtual async Task SubmitToolOutputsToRunStreamingAsync(
         IEnumerable<ToolOutput> toolOutputs,
