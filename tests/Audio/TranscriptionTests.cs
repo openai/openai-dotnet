@@ -14,10 +14,10 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 public partial class TranscriptionTests : SyncAsyncTestBase
 {
-    public TranscriptionTests(bool isAsync)
-        : base(isAsync)
+    public TranscriptionTests(bool isAsync) : base(isAsync)
     {
     }
 
@@ -32,7 +32,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
         AudioTranscription transcription = null;
@@ -63,7 +63,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
 
         using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
@@ -136,7 +136,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioTranscriptionFormat.Vtt)]
     public async Task TranscriptionFormatsWork(AudioTranscriptionFormat formatToTest)
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
@@ -155,7 +155,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [Test]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
 
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
@@ -180,6 +180,4 @@ public partial class TranscriptionTests : SyncAsyncTestBase
         Assert.That(caughtException, Is.InstanceOf<ClientResultException>());
         Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
     }
-
-    private static AudioClient GetTestClient() => GetTestClient<AudioClient>(TestScenario.Transcription);
 }
