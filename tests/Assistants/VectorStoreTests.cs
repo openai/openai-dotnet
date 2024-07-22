@@ -1,13 +1,10 @@
 ﻿using NUnit.Framework;
-using OpenAI.Assistants;
 using OpenAI.Files;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +15,7 @@ namespace OpenAI.Tests.VectorStores;
 #pragma warning disable OPENAI001
 
 [Parallelizable(ParallelScope.Fixtures)]
+[Category("Assistants")]
 public partial class VectorStoreTests
 {
     [Test]

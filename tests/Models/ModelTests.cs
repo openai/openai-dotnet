@@ -10,10 +10,10 @@ namespace OpenAI.Tests.Models;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Models")]
 public partial class ModelTests : SyncAsyncTestBase
 {
-    public ModelTests(bool isAsync)
-        : base(isAsync)
+    public ModelTests(bool isAsync) : base(isAsync)
     {
     }
 
@@ -35,11 +35,13 @@ public partial class ModelTests : SyncAsyncTestBase
     {
         ModelClient client = new();
 
+        string modelName = "gpt-4o-mini";
+
         OpenAIModelInfo model = IsAsync
-            ? await client.GetModelAsync("gpt-3.5-turbo")
-            : client.GetModel("gpt-3.5-turbo");
+            ? await client.GetModelAsync(modelName)
+            : client.GetModel(modelName);
         Assert.That(model, Is.Not.Null);
-        Assert.That(model.OwnedBy.ToLowerInvariant(), Contains.Substring("openai"));
+        Assert.That(model.OwnedBy.ToLowerInvariant(), Does.Contain("system"));
     }
 
     [Test]

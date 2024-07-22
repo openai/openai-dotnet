@@ -22,6 +22,8 @@ internal static class TestHelpers
     public enum TestScenario
     {
         Assistants,
+        Audio_TTS,
+        Audio_Whisper,
         Batch,
         Chat,
         Embeddings,
@@ -31,11 +33,8 @@ internal static class TestHelpers
         LegacyCompletions,
         Models,
         Moderations,
-        TextToSpeech,
-        TopLevel,
-        Transcription,
         VectorStores,
-        VisionChat,
+        TopLevel,
     }
 
     public static OpenAIClient GetTestTopLevelClient() => GetTestClient<OpenAIClient>(TestScenario.TopLevel);
@@ -48,15 +47,17 @@ internal static class TestHelpers
         {
 #pragma warning disable OPENAI001
             TestScenario.Assistants => new AssistantClient(options),
-            TestScenario.VectorStores => new VectorStoreClient(options),
 #pragma warning restore OPENAI001
-            TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", options),
+            TestScenario.Audio_TTS => new AudioClient(overrideModel ?? "tts-1", options),
+            TestScenario.Audio_Whisper => new AudioClient(overrideModel ?? "whisper-1", options),
             TestScenario.Batch => new BatchClient(options),
-            TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-3.5-turbo", options),
+            TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-4o-mini", options),
+            TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", options),
             TestScenario.Files => new FileClient(options),
             TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", options),
-            TestScenario.Transcription => new AudioClient(overrideModel ?? "whisper-1", options),
-            TestScenario.VisionChat => new ChatClient(overrideModel ?? "gpt-4o", options),
+#pragma warning disable OPENAI001
+            TestScenario.VectorStores => new VectorStoreClient(options),
+#pragma warning restore OPENAI001
             TestScenario.TopLevel => new OpenAIClient(options),
             _ => throw new NotImplementedException(),
         };
