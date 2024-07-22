@@ -44,44 +44,28 @@ public partial class RunOperation : OperationResult
         RehydrationToken = new RunOperationToken(value.ThreadId, value.Id);
     }
 
+    // For use with streaming convenience methods - response hasn't been provided yet.
     internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        string threadId,
-        string runId,
         RequestOptions options)
-        : this(pipeline, endpoint, new RunOperationToken(threadId, runId), options)
-    {
-    }
-
-    // For use with rehydration client methods where the response has not been
-    // obtained yet, but will once the client method makes a call to Update.
-    internal RunOperation(
-        ClientPipeline pipeline,
-        Uri endpoint,
-        RunOperationToken token,
-        RequestOptions options) : base()
+        : base()
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
         _options = options;
-        _pollingInterval = new();
 
-        ThreadId = token.ThreadId;
-        Id = token.RunId;
-
-        RehydrationToken = token;
+        // This constructor is provided for streaming convenience method only.
+        // Because of this, we don't set the polling interval type.
     }
 
     // Note: these all have to be nullable because the derived streaming type
     // cannot set them until it reads the first event from the SSE stream.
-
-    public string? Id { get => _runId; protected set { _runId = value; } }
-    public string? ThreadId { get => _threadId; protected set { _threadId = value; } }
+    public string? Id { get => _runId; protected set => _runId = value; }
+    public string? ThreadId { get => _threadId; protected set => _threadId = value; }
 
     public ThreadRun? Value { get; protected set; }
     public RunStatus? Status { get; protected set; }
-
 
     #region OperationResult methods
 
@@ -93,7 +77,7 @@ public partial class RunOperation : OperationResult
 
     public async Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
-        if (_isStreaming)
+        if (IsStreaming)
         {
             // We would have to read from the stream to get the run ID to poll for.
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
@@ -111,7 +95,7 @@ public partial class RunOperation : OperationResult
 
     public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
-        if (_isStreaming)
+        if (IsStreaming)
         {
             // We would have to read from the stream to get the run ID to poll for.
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
@@ -138,7 +122,8 @@ public partial class RunOperation : OperationResult
             _pollingInterval = new PollingInterval(pollingInterval);
         }
 
-        IAsyncEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumeratorAsync();
+        IAsyncEnumerator<ClientResult<ThreadRun>> enumerator =
+            new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
@@ -148,7 +133,8 @@ public partial class RunOperation : OperationResult
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _pollingInterval.WaitAsync().ConfigureAwait(false);
+            // TODO: do we need null check?
+            await _pollingInterval!.WaitAsync().ConfigureAwait(false);
         }
     }
 
@@ -162,7 +148,8 @@ public partial class RunOperation : OperationResult
             _pollingInterval = new PollingInterval(pollingInterval);
         }
 
-        IEnumerator<ClientResult<ThreadRun>> enumerator = GetUpdateEnumerator();
+        IEnumerator<ClientResult<ThreadRun>> enumerator = new RunOperationUpdateEnumerator(
+            _pipeline, _endpoint, _threadId!, _runId!, _options);
 
         while (enumerator.MoveNext())
         {
@@ -172,19 +159,10 @@ public partial class RunOperation : OperationResult
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            _pollingInterval.Wait();
+            // TODO: do we need null check?
+            _pollingInterval!.Wait();
         }
     }
-
-    private IAsyncEnumerator<ClientResult<ThreadRun>> GetUpdateEnumeratorAsync()
-        // TODO: null check thread and run id
-        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
-
-    // TODO: Figure out visibility here -- protected makes sense but type is
-    // internal only
-    private IEnumerator<ClientResult<ThreadRun>> GetUpdateEnumerator()
-        // TODO: null check thread and run id
-        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
 
     private void ApplyUpdate(ClientResult<ThreadRun> update)
     {

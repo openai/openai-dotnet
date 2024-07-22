@@ -12,38 +12,17 @@ namespace OpenAI.Assistants;
 // Protocol version
 public partial class RunOperation : OperationResult
 {
-    // TODO: fix this - remove protected fields
-    protected readonly ClientPipeline _pipeline;
-    protected readonly Uri _endpoint;
-    protected readonly RequestOptions _options;
+    private readonly ClientPipeline _pipeline;
+    private readonly Uri _endpoint;
+    private readonly RequestOptions _options;
 
-    // TODO: Note, convenience type will make these public.  Right now we have 
-    // them in two places.
     private string? _threadId;
     private string? _runId;
     private string? _status;
 
     private bool _isCompleted;
 
-    private PollingInterval _pollingInterval;
-
-    private readonly bool _isStreaming;
-
-    // For use with streaming convenience methods - response hasn't been provided yet.
-    internal RunOperation(
-        ClientPipeline pipeline,
-        Uri endpoint,
-        RequestOptions options)
-        : base()
-    {
-        _pipeline = pipeline;
-        _endpoint = endpoint;
-        _options = options;
-        _pollingInterval = new();
-
-        // We'd only do this if we were in a streaming convenience subtype.
-        _isStreaming = true;
-    }
+    private PollingInterval? _pollingInterval;
 
     // For use with protocol methods where the response has been obtained prior
     // to creation of the LRO instance.
@@ -57,15 +36,16 @@ public partial class RunOperation : OperationResult
         _pipeline = pipeline;
         _endpoint = endpoint;
         _options = options;
-        _pollingInterval = new();
-
-        if (response.Headers.TryGetValue("Content-Type", out string? contentType))
+        
+        // Protocol method was called with stream=true option.
+        bool isStreaming = 
+            response.Headers.TryGetValue("Content-Type", out string? contentType) &&
+            contentType == "text/event-stream; charset=utf-8";
+        
+        if (!isStreaming)
         {
-            _isStreaming = contentType == "text/event-stream; charset=utf-8";
-        }
+            _pollingInterval = new();
 
-        if (!_isStreaming)
-        {
             using JsonDocument doc = JsonDocument.Parse(response.Content);
 
             _status = doc.RootElement.GetProperty("status"u8).GetString();
@@ -88,7 +68,7 @@ public partial class RunOperation : OperationResult
         get
         {
             // We need this check in the protocol/streaming case.
-            if (_isStreaming)
+            if (IsStreaming)
             {
                 throw new NotSupportedException("Cannot obtain operation status from streaming operation.");
             }
@@ -100,6 +80,8 @@ public partial class RunOperation : OperationResult
     }
 
     public override ContinuationToken? RehydrationToken { get; protected set; }
+
+    internal bool IsStreaming => _pollingInterval != null;
 
     // Note: these work for protocol-only.
     // Once convenience overloads available, these get replaced by those implementations.
@@ -160,26 +142,16 @@ public partial class RunOperation : OperationResult
     //    }
     //}
 
-    private IAsyncEnumerator<ClientResult> GetUpdateResultEnumeratorAsync()
-        // TODO: null check thread and run id
-        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
+    //private void ApplyUpdate(ClientResult result)
+    //{
+    //    PipelineResponse response = result.GetRawResponse();
 
-    // TODO: Figure out visibility here -- protected makes sense but type is
-    // internal only
-    private IEnumerator<ClientResult> GetUpdateResultEnumerator()
-        // TODO: null check thread and run id
-        => new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
+    //    using JsonDocument doc = JsonDocument.Parse(response.Content);
+    //    _status = doc.RootElement.GetProperty("status"u8).GetString();
 
-    private void ApplyUpdate(ClientResult result)
-    {
-        PipelineResponse response = result.GetRawResponse();
-
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        _status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        IsCompleted = GetIsCompleted(_status!);
-        SetRawResponse(response);
-    }
+    //    IsCompleted = GetIsCompleted(_status!);
+    //    SetRawResponse(response);
+    //}
 
     private static bool GetIsCompleted(string status)
     {
@@ -196,70 +168,6 @@ public partial class RunOperation : OperationResult
     #endregion
 
     #region Generated protocol methods - i.e. TypeSpec "linked operations"
-
-    // TODO: Decide whether we want these
-    //// TODO: Note that the CreateRun protocol methods are made internal, i.e. not 
-    //// exposed as part of public API.
-
-    ///// <summary>
-    ///// [Protocol Method] Create a run.
-    ///// </summary>
-    ///// <param name="threadId"> The ID of the thread to run. </param>
-    ///// <param name="content"> The content to send as the body of the request. </param>
-    ///// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    ///// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="content"/> is null. </exception>
-    ///// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
-    ///// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    ///// <returns> The response returned from the service. </returns>
-    //internal virtual async Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions? options = null)
-    //{
-    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-    //    Argument.AssertNotNull(content, nameof(content));
-
-    //    PipelineMessage? message = null;
-    //    try
-    //    {
-    //        message = CreateCreateRunRequest(threadId, content, options);
-    //        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-    //    }
-    //    finally
-    //    {
-    //        if (options?.BufferResponse != false)
-    //        {
-    //            message?.Dispose();
-    //        }
-    //    }
-    //}
-
-    ///// <summary>
-    ///// [Protocol Method] Create a run.
-    ///// </summary>
-    ///// <param name="threadId"> The ID of the thread to run. </param>
-    ///// <param name="content"> The content to send as the body of the request. </param>
-    ///// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    ///// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="content"/> is null. </exception>
-    ///// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
-    ///// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    ///// <returns> The response returned from the service. </returns>
-    //internal virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions? options = null)
-    //{
-    //    Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-    //    Argument.AssertNotNull(content, nameof(content));
-
-    //    PipelineMessage? message = null;
-    //    try
-    //    {
-    //        message = CreateCreateRunRequest(threadId, content, options);
-    //        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    //    }
-    //    finally
-    //    {
-    //        if (options?.BufferResponse != false)
-    //        {
-    //            message?.Dispose();
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// [Protocol Method] Retrieves a run.
