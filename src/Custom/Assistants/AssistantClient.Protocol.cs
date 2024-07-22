@@ -494,11 +494,11 @@ public partial class AssistantClient
         return operation;
     }
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRunAsync"/>
     internal virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateThreadAndRunAsync(content, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
     internal virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateThreadAndRun(content, options);
 
@@ -509,6 +509,14 @@ public partial class AssistantClient
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
     internal virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRun(threadId, content, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
+    internal virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options = null)
+        => _runSubClient.GetRunAsync(threadId, runId, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.GetRun"/>
+    internal virtual ClientResult GetRun(string threadId, string runId, RequestOptions options = null)
+        => _runSubClient.GetRun(threadId, runId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)

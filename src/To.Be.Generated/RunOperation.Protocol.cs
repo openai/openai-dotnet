@@ -106,7 +106,30 @@ public partial class RunOperation : OperationResult
 
     //public override Task WaitAsync(CancellationToken cancellationToken = default)
     //{
-    //    throw new NotImplementedException();
+    //    if (_isStreaming)
+    //    {
+    //        // We would have to read from the stream to get the run ID to poll for.
+    //        throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+    //    }
+
+    //    // See: https://platform.openai.com/docs/assistants/how-it-works/polling-for-updates
+
+    //    IAsyncEnumerator<ClientResult> enumerator = GetUpdateResultEnumeratorAsync();
+
+    //    await while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+    //    {
+    //        ApplyUpdate(enumerator.Current);
+
+    //        // Don't keep polling if would do so infinitely.
+    //        if (_status == "requires_action")
+    //        {
+    //            return;
+    //        }
+
+    //        cancellationToken.ThrowIfCancellationRequested();
+
+    //        await _pollingInterval.WaitAsync().ConfigureAwait();
+    //    }
     //}
 
     //public override void Wait(CancellationToken cancellationToken = default)

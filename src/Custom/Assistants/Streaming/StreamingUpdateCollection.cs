@@ -62,7 +62,7 @@ internal class StreamingUpdateCollection : CollectionResult<StreamingUpdate>
         StreamingUpdate IEnumerator<StreamingUpdate>.Current
             => _current!;
 
-        object IEnumerator.Current => throw new NotImplementedException();
+        object IEnumerator.Current => _current!;
 
         public bool MoveNext()
         {

@@ -120,4 +120,42 @@ internal partial class InternalAssistantRunClient
             }
         }
     }
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual async Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    }
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) that was run. </param>
+    /// <param name="runId"> The ID of the run to retrieve. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
 }

@@ -51,7 +51,11 @@ public partial class StreamingRunOperation : RunOperation
 
     public override void Wait(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
+        {
+            // Should terminate naturally when get to "requires action" because
+            // the SSE stream will end.
+        }
     }
 
     // Public APIs specific to streaming LRO
@@ -90,7 +94,32 @@ public partial class StreamingRunOperation : RunOperation
 
     public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (_enumerator is null)
+        {
+            StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
+            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+        }
+
+        try
+        {
+            while (_enumerator.MoveNext())
+            {
+                if (_enumerator.Current is RunUpdate update)
+                {
+                    ApplyUpdate(update);
+                }
+
+                yield return _enumerator.Current;
+            }
+        }
+        finally
+        {
+            if (_enumerator != null)
+            {
+                _enumerator.Dispose();
+                _enumerator = null;
+            }
+        }
     }
 
     private void ApplyUpdate(ThreadRun update)

@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -739,62 +740,37 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
-    /// <param name="runId"> The ID of the run to retrieve. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> TODO </returns>
-    public virtual /*async*/ Task<RunOperation> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
-        throw new NotImplementedException();
-
-        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, threadId, runId);
-        //await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
-        //return operation;
-    }
-
-    /// <summary>
     /// Rehydrates a <see cref="RunOperation"/> from a rehydration token.
     /// </summary>
     /// <param name="rehydrationToken"> Rehydration token corresponding to the run operation to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> TODO </returns>
-    public virtual /*async*/ Task<RunOperation> GetRunAsync(
+    public virtual async Task<RunOperation> GetRunAsync(
         ContinuationToken rehydrationToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
 
-        throw new NotImplementedException();
+        RunOperationToken token = RunOperationToken.FromToken(rehydrationToken);
+        ClientResult<ThreadRun> result = await GetRunAsync(token.ThreadId, token.RunId, cancellationToken).ConfigureAwait(false);
 
-        //ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        //await operation.UpdateAsync(cancellationToken).ConfigureAwait(false);
-        //return operation;
+        return new RunOperation(_pipeline, _endpoint,
+            value: result,
+            status: result.Value.Status,
+            cancellationToken.ToRequestOptions(),
+            result.GetRawResponse());
     }
 
-    /// <summary>
-    /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
-    /// </summary>
-    /// <param name="threadId"> The ID of the thread to retrieve the run from. </param>
-    /// <param name="runId"> The ID of the run to retrieve. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> TODO </returns>
-    public virtual RunOperation GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
+    internal virtual async Task<ClientResult<ThreadRun>> GetRunAsync(
+        string threadId,
+        string runId,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        throw new NotImplementedException();
-
-        //ThreadRunOperationToken token = new ThreadRunOperationToken(threadId, runId);
-        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        //operation.Update(cancellationToken);
-        //return operation;
+        ClientResult protocolResult = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
     /// <summary>
@@ -809,12 +785,26 @@ public partial class AssistantClient
     {
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
 
-        throw new NotImplementedException();
+        RunOperationToken token = RunOperationToken.FromToken(rehydrationToken);
+        ClientResult<ThreadRun> result = GetRun(token.ThreadId, token.RunId, cancellationToken);
 
-        //ThreadRunOperationToken token = ThreadRunOperationToken.FromToken(rehydrationToken);
-        //ThreadRunOperation operation = new ThreadRunOperation(_pipeline, _endpoint, token);
-        //operation.Update(cancellationToken);
-        //return operation;
+        return new RunOperation(_pipeline, _endpoint,
+            value: result,
+            status: result.Value.Status,
+            cancellationToken.ToRequestOptions(),
+            result.GetRawResponse());
+    }
+
+    internal virtual ClientResult<ThreadRun> GetRun(
+        string threadId,
+        string runId,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        ClientResult protocolResult = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
+        return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
     }
 
     /// <summary>

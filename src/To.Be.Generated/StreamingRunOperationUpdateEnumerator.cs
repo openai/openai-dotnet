@@ -41,7 +41,7 @@ internal partial class StreamingRunOperationUpdateEnumerator :
         _asyncUpdates?.GetRawResponse() ??
         _updates?.GetRawResponse() ??
         throw new InvalidOperationException("No response available.");
-    
+
     public StreamingUpdate Current => _current!;
 
     #region IEnumerator<StreamingUpdate> methods
@@ -50,17 +50,28 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
     public bool MoveNext()
     {
-        throw new NotImplementedException();
+        if (_enumerator is null)
+        {
+            throw new InvalidOperationException("Cannot MoveNext after starting enumerator asynchronously.");
+        }
+
+        bool movedNext = _enumerator.MoveNext();
+        _current = _enumerator.Current;
+        return movedNext;
     }
 
     void IEnumerator.Reset()
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("Cannot reset streaming enumerator.");
     }
 
     void IDisposable.Dispose()
     {
-        throw new NotImplementedException();
+        if (_enumerator != null)
+        {
+            _enumerator.Dispose();
+            _enumerator = null;
+        }
     }
 
     #endregion
@@ -73,17 +84,6 @@ internal partial class StreamingRunOperationUpdateEnumerator :
         {
             throw new InvalidOperationException("Cannot MoveNextAsync after starting enumerator synchronously.");
         }
-
-        //if (!_hasNext)
-        //{
-        //    _current = null;
-        //    return false;
-        //}
-
-        //_hasNext = await _asyncEnumerator.MoveNextAsync().ConfigureAwait(false);
-        //_current = _asyncEnumerator.Current;
-
-        //return true;
 
         bool movedNext = await _asyncEnumerator.MoveNextAsync().ConfigureAwait(false);
         _current = _asyncEnumerator.Current;
@@ -122,9 +122,6 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
         _asyncUpdates = updates;
         _asyncEnumerator = updates.GetAsyncEnumerator();
-
-        //_hasNext = await _asyncEnumerator.MoveNextAsync().ConfigureAwait(false);
-        //_current = _asyncEnumerator.Current;
     }
 
     public void ReplaceUpdateCollection(StreamingUpdateCollection updates)
@@ -143,8 +140,5 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
         _updates = updates;
         _enumerator = _updates.GetEnumerator();
-
-        //_hasNext = _enumerator.MoveNext();
-        //_current = _enumerator.Current;
     }
 }

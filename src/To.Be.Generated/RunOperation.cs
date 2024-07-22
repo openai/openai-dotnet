@@ -86,24 +86,12 @@ public partial class RunOperation : OperationResult
     #region OperationResult methods
 
     public override async Task WaitAsync(CancellationToken cancellationToken = default)
-    {
-        if (_isStreaming)
-        {
-            // We would have to read from the stream to get the run ID to poll for.
-            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
-        }
-
-        await foreach (ThreadRun update in GetUpdatesAsync(cancellationToken: cancellationToken))
-        {
-            // Don't keep polling if would do so infinitely.
-            if (update.Status == RunStatus.RequiresAction)
-            {
-                return;
-            }
-        }
-    }
+        => await WaitAsync(default, cancellationToken).ConfigureAwait(false);
 
     public override void Wait(CancellationToken cancellationToken = default)
+        => Wait(default, cancellationToken);
+
+    public async Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (_isStreaming)
         {
@@ -111,7 +99,7 @@ public partial class RunOperation : OperationResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        foreach (ThreadRun update in GetUpdates(cancellationToken: cancellationToken))
+        await foreach (ThreadRun update in GetUpdatesAsync(pollingInterval, cancellationToken: cancellationToken))
         {
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
@@ -119,33 +107,26 @@ public partial class RunOperation : OperationResult
                 return;
             }
         }
-    }
-
-    public Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
     }
 
     public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-        //if (_isStreaming)
-        //{
-        //    // We would have to read from the stream to get the run ID to poll for.
-        //    throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
-        //}
+        if (_isStreaming)
+        {
+            // We would have to read from the stream to get the run ID to poll for.
+            throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
+        }
 
-        //foreach (ThreadRun update in GetUpdates(pollingInterval, cancellationToken))
-        //{
-        //    // Don't keep polling if would do so infinitely.
-        //    if (update.Status == RunStatus.RequiresAction)
-        //    {
-        //        return;
-        //    }
-        //}
+        foreach (ThreadRun update in GetUpdates(pollingInterval, cancellationToken: cancellationToken))
+        {
+            // Don't keep polling if would do so infinitely.
+            if (update.Status == RunStatus.RequiresAction)
+            {
+                return;
+            }
+        }
     }
 
-    // TODO: evaluate this experiment
     // Expose enumerable APIs similar to the streaming ones.
     public virtual async IAsyncEnumerable<ThreadRun> GetUpdatesAsync(
         TimeSpan? pollingInterval = default,
