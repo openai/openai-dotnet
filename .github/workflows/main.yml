@@ -33,10 +33,12 @@ jobs:
         run: dotnet test
           --configuration Release
           --filter="TestCategory=Smoke&TestCategory!=Manual"
-          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/smoke.trx"
+          --logger "trx;LogFilePrefix=smoke"
+          --results-directory ${{github.workspace}}/artifacts/test-results
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
+        if: ${{ !cancelled() }}
         with:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
@@ -59,7 +61,8 @@ jobs:
         run: dotnet test
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
-          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/live.trx"
+          --logger "trx;LogFilePrefix=live"
+          --results-directory ${{github.workspace}}/artifacts/test-results
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
