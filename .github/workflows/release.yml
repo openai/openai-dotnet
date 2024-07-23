@@ -6,7 +6,9 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+    environment: Live Testing
     permissions:
       packages: write
       contents: write
@@ -24,29 +26,16 @@ jobs:
           /p:PackageProjectUrl="${{ github.server_url }}/${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-artifacts
-          path: ${{github.workspace}}/artifacts
+      - name: Unit Test
+        run: dotnet test
+          --configuration Release
+          --filter="TestCategory=Smoke&TestCategory!=Manual"
+          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/smoke.trx"
 
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
-    environment: Live Testing
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.x' # SDK Version to use.
-
-      # Pack the client nuget package and include url back to the repository and release tag
       - name: Run Live Tests
         run: dotnet test
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Image&TestCategory!=Moderations&TestCategory!=Manual"
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/live.trx"
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -54,11 +43,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: test-artifacts
+          name: build-artifacts
           path: ${{github.workspace}}/artifacts
 
   deploy:
-    needs: test
+    name: Deploy
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -66,7 +56,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
 
-          # Append the nuget package to the github release that triggered this workflow
+      # Append the nuget package to the github release that triggered this workflow
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }}
           ${{github.workspace}}/build-artifacts/packages/*.*nupkg

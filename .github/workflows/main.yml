@@ -10,6 +10,7 @@ on:
 
 jobs:
   build: # Test, pack and publish the Open AI nuget package as a build artifact 
+    name: Build
     runs-on: ubuntu-latest
     env:
       version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
@@ -41,7 +42,7 @@ jobs:
           path: ${{github.workspace}}/artifacts
 
   test:
-    name: Live Tests
+    name: Live Test
     needs: build
     runs-on: ubuntu-latest
     environment: Live Testing
@@ -62,7 +63,14 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-artifacts
+          path: ${{github.workspace}}/artifacts
+
   deploy:
+    name: Publish Package
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
