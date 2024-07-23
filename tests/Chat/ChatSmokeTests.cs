@@ -55,8 +55,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         {
             Transport = mockTransport
         };
-        ResultCollection<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
-        Assert.That(streamingResult, Is.InstanceOf<ResultCollection<StreamingChatCompletionUpdate>>());
+        ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
 
         ChatCompletion completion = IsAsync
             ? await client.CompleteChatAsync(["Mock me!"])
@@ -74,8 +73,6 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         Uri fakeUri = new("https://127.0.0.1");
         ApiKeyCredential fakeCredential = new("sk-not-a-real-credential");
 
-        AsyncResultCollection<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
-        Assert.That(streamingResult, Is.InstanceOf<AsyncResultCollection<StreamingChatCompletionUpdate>>());
         {
             OpenAIClient topLevelClient = new(fakeCredential);
             Assert.That(topLevelClient, Is.Not.Null);
@@ -130,7 +127,6 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
     [Test]
     [TestCase(true)]
     [TestCase(false)]
-        AsyncResultCollection<StreamingChatCompletionUpdate> chatCompletionUpdates = client.CompleteChatStreamingAsync(messages, options);
     public void SerializeChatToolChoiceAsString(bool fromRawJson)
     {
         ChatToolChoice choice;
