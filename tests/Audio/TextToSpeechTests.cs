@@ -2,8 +2,6 @@
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
 using System;
-using System.ClientModel;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -12,17 +10,17 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 public partial class TextToSpeechTests : SyncAsyncTestBase
 {
-    public TextToSpeechTests(bool isAsync)
-        : base(isAsync)
+    public TextToSpeechTests(bool isAsync) : base(isAsync)
     {
     }
 
     [Test]
     public async Task BasicTextToSpeechWorks()
     {
-        AudioClient client = new("tts-1");
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_TTS);
 
         BinaryData audio = IsAsync
             ? await client.GenerateSpeechFromTextAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer)
@@ -42,7 +40,7 @@ public partial class TextToSpeechTests : SyncAsyncTestBase
     [TestCase(GeneratedSpeechFormat.Pcm)]
     public async Task OutputFormatWorks(GeneratedSpeechFormat? responseFormat)
     {
-        AudioClient client = new("tts-1");
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_TTS);
 
         SpeechGenerationOptions options = responseFormat == null
             ? new()
@@ -57,7 +55,7 @@ public partial class TextToSpeechTests : SyncAsyncTestBase
 
     private void ValidateGeneratedAudio(BinaryData audio, string expectedSubstring)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Transcription);
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         AudioTranscription transcription = client.TranscribeAudio(audio.ToStream(), "hello_world.wav");
 
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
