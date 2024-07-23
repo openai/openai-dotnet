@@ -2,6 +2,7 @@
 using OpenAI.Assistants;
 using System;
 using System.ClientModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -17,7 +18,8 @@ public partial class AssistantExamples
 
         int count = 0;
 
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync();
+        AsyncPageCollection<Assistant> assistantPages = client.GetAssistantsAsync();
+        IAsyncEnumerable<Assistant> assistants = assistantPages.GetAllValuesAsync();
         await foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

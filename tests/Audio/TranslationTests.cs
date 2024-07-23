@@ -10,10 +10,10 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 public partial class TranslationTests : SyncAsyncTestBase
 {
-    public TranslationTests(bool isAsync)
-        : base(isAsync)
+    public TranslationTests(bool isAsync) : base(isAsync)
     {
     }
 
@@ -28,7 +28,7 @@ public partial class TranslationTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
 
         string filename = "audio_french.wav";
         string path = Path.Combine("Assets", filename);
@@ -59,7 +59,7 @@ public partial class TranslationTests : SyncAsyncTestBase
     [TestCase(AudioTranslationFormat.Vtt)]
     public async Task TranslationFormatsWork(AudioTranslationFormat formatToTest)
     {
-        AudioClient client = GetTestClient();
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_french.wav");
 
         AudioTranslationOptions options = new()
@@ -73,6 +73,4 @@ public partial class TranslationTests : SyncAsyncTestBase
 
         Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
     }
-
-    private static AudioClient GetTestClient() => GetTestClient<AudioClient>(TestScenario.Transcription);
 }

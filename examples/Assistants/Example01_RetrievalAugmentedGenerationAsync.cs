@@ -99,8 +99,9 @@ public partial class AssistantExamples
         } while (!threadRun.Status.IsTerminal);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
-        AsyncPageableCollection<ThreadMessage> messages
-            = assistantClient.GetMessagesAsync(threadRun.ThreadId, ListOrder.OldestFirst);
+        AsyncPageCollection<ThreadMessage> messagePages
+            = assistantClient.GetMessagesAsync(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+        IAsyncEnumerable<ThreadMessage> messages = messagePages.GetAllValuesAsync();
 
         await foreach (ThreadMessage message in messages)
         {

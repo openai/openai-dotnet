@@ -17,13 +17,57 @@ namespace OpenAI.Tests.Assistants;
 #pragma warning disable OPENAI001
 
 [Parallelizable(ParallelScope.Fixtures)]
+[Category("Assistants")]
 public partial class AssistantTests
 {
+    [OneTimeTearDown]
+    protected void Cleanup()
+    {
+        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
+        {
+            return;
+        }
+
+        AssistantClient client = new();
+        FileClient fileClient = new();
+        VectorStoreClient vectorStoreClient = new();
+        RequestOptions requestOptions = new()
+        {
+            ErrorOptions = ClientErrorBehaviors.NoThrow,
+        };
+        foreach (ThreadMessage message in _messagesToDelete)
+        {
+            Console.WriteLine($"Cleanup: {message.Id} -> {client.DeleteMessage(message.ThreadId, message.Id, requestOptions)?.GetRawResponse().Status}");
+        }
+        foreach (Assistant assistant in _assistantsToDelete)
+        {
+            Console.WriteLine($"Cleanup: {assistant.Id} -> {client.DeleteAssistant(assistant.Id, requestOptions)?.GetRawResponse().Status}");
+        }
+        foreach (AssistantThread thread in _threadsToDelete)
+        {
+            Console.WriteLine($"Cleanup: {thread.Id} -> {client.DeleteThread(thread.Id, requestOptions)?.GetRawResponse().Status}");
+        }
+        foreach (OpenAIFileInfo file in _filesToDelete)
+        {
+            Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse().Status}");
+        }
+        foreach (string vectorStoreId in _vectorStoreIdsToDelete)
+        {
+            Console.WriteLine($"Cleanup: {vectorStoreId} => {vectorStoreClient.DeleteVectorStore(vectorStoreId, requestOptions)?.GetRawResponse().Status}");
+        }
+        _messagesToDelete.Clear();
+        _assistantsToDelete.Clear();
+        _threadsToDelete.Clear();
+        _filesToDelete.Clear();
+        _vectorStoreIdsToDelete.Clear();
+    }
+
     [Test]
     public void BasicAssistantOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini");
         Validate(assistant);
         Assert.That(assistant.Name, Is.Null.Or.Empty);
         assistant = client.ModifyAssistant(assistant.Id, new AssistantModificationOptions()
@@ -34,7 +78,7 @@ public partial class AssistantTests
         bool deleted = client.DeleteAssistant(assistant.Id);
         Assert.That(deleted, Is.True);
         _assistantsToDelete.Remove(assistant);
-        assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+        assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
         {
             Metadata =
             {
@@ -53,7 +97,8 @@ public partial class AssistantTests
             },
         });
         Assert.That(modifiedAssistant.Id, Is.EqualTo(assistant.Id));
-        PageableCollection<Assistant> recentAssistants = client.GetAssistants();
+        PageCollection<Assistant> pages = client.GetAssistants();
+        IEnumerable<Assistant> recentAssistants = pages.GetAllValues();
         Assistant listedAssistant = recentAssistants.FirstOrDefault(pageItem => pageItem.Id == assistant.Id);
         Assert.That(listedAssistant, Is.Not.Null);
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
@@ -130,10 +175,10 @@ public partial class AssistantTests
         });
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
-        PageableCollection<ThreadMessage> messagePage = client.GetMessages(thread);
-        Assert.That(messagePage.Count, Is.EqualTo(1));
-        Assert.That(messagePage.First().Id, Is.EqualTo(message.Id));
-        Assert.That(messagePage.First().Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
+        PageResult<ThreadMessage> messagePage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagePage.Values.Count, Is.EqualTo(1));
+        Assert.That(messagePage.Values[0].Id, Is.EqualTo(message.Id));
+        Assert.That(messagePage.Values[0].Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
     }
 
     [Test]
@@ -161,28 +206,28 @@ public partial class AssistantTests
         };
         AssistantThread thread = client.CreateThread(options);
         Validate(thread);
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.OldestFirst);
-        Assert.That(messages.Count, Is.EqualTo(2));
-        Assert.That(messages.First().Role, Is.EqualTo(MessageRole.User));
-        Assert.That(messages.First().Content?.Count, Is.EqualTo(1));
-        Assert.That(messages.First().Content[0].Text, Is.EqualTo("Hello, world!"));
-        Assert.That(messages.ElementAt(1).Content?.Count, Is.EqualTo(2));
-        Assert.That(messages.ElementAt(1).Content[0], Is.Not.Null);
-        Assert.That(messages.ElementAt(1).Content[0].Text, Is.EqualTo("Can you describe this image for me?"));
-        Assert.That(messages.ElementAt(1).Content[1], Is.Not.Null);
-        Assert.That(messages.ElementAt(1).Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread, new MessageCollectionOptions() { Order = ListOrder.OldestFirst }).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[0].Content?.Count, Is.EqualTo(1));
+        Assert.That(messagesPage.Values[0].Content[0].Text, Is.EqualTo("Hello, world!"));
+        Assert.That(messagesPage.Values[1].Content?.Count, Is.EqualTo(2));
+        Assert.That(messagesPage.Values[1].Content[0], Is.Not.Null);
+        Assert.That(messagesPage.Values[1].Content[0].Text, Is.EqualTo("Can you describe this image for me?"));
+        Assert.That(messagesPage.Values[1].Content[1], Is.Not.Null);
+        Assert.That(messagesPage.Values[1].Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
     [Test]
     public void BasicRunOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini");
         Validate(assistant);
         AssistantThread thread = client.CreateThread();
         Validate(thread);
-        PageableCollection<ThreadRun> runs = client.GetRuns(thread);
-        Assert.That(runs.Count, Is.EqualTo(0));
+        PageResult<ThreadRun> runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
         ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
@@ -191,12 +236,12 @@ public partial class AssistantTests
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = client.GetRun(thread.Id, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-        runs = client.GetRuns(thread);
-        Assert.That(runs.Count, Is.EqualTo(1));
-        Assert.That(runs.First().Id, Is.EqualTo(run.Id));
+        runsPage = client.GetRuns(thread).GetCurrentPage();
+        Assert.That(runsPage.Values.Count, Is.EqualTo(1));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(run.Id));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread);
-        Assert.That(messages.Count, Is.GreaterThanOrEqualTo(1));
+        PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
             Thread.Sleep(500);
@@ -209,19 +254,19 @@ public partial class AssistantTests
         Assert.That(run.FailedAt, Is.Null);
         Assert.That(run.IncompleteDetails, Is.Null);
 
-        messages = client.GetMessages(thread);
-        Assert.That(messages.Count, Is.EqualTo(2));
+        messagesPage = client.GetMessages(thread).GetCurrentPage();
+        Assert.That(messagesPage.Values.Count, Is.EqualTo(2));
 
-        Assert.That(messages.ElementAt(0).Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(messages.ElementAt(1).Role, Is.EqualTo(MessageRole.User));
-        Assert.That(messages.ElementAt(1).Id, Is.EqualTo(message.Id));
+        Assert.That(messagesPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(messagesPage.Values[1].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messagesPage.Values[1].Id, Is.EqualTo(message.Id));
     }
 
     [Test]
     public void BasicRunStepFunctionalityWorks()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
             Instructions = "You help the user with mathematical descriptions and visualizations.",
@@ -269,21 +314,26 @@ public partial class AssistantTests
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
 
-        PageableCollection<RunStep> runSteps = client.GetRunSteps(run);
-        Assert.That(runSteps.Count, Is.GreaterThan(1));
+        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        PageResult<RunStep> firstPage = pages.GetCurrentPage();
+        RunStep firstStep = firstPage.Values[0];
+        RunStep secondStep = firstPage.Values[1];
+
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
         Assert.Multiple(() =>
         {
-            Assert.That(runSteps.First().AssistantId, Is.EqualTo(assistant.Id));
-            Assert.That(runSteps.First().ThreadId, Is.EqualTo(thread.Id));
-            Assert.That(runSteps.First().RunId, Is.EqualTo(run.Id));
-            Assert.That(runSteps.First().CreatedAt, Is.GreaterThan(s_2024));
-            Assert.That(runSteps.First().CompletedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.AssistantId, Is.EqualTo(assistant.Id));
+            Assert.That(firstStep.ThreadId, Is.EqualTo(thread.Id));
+            Assert.That(firstStep.RunId, Is.EqualTo(run.Id));
+            Assert.That(firstStep.CreatedAt, Is.GreaterThan(s_2024));
+            Assert.That(firstStep.CompletedAt, Is.GreaterThan(s_2024));
         });
-        RunStepDetails details = runSteps.First().Details;
+        RunStepDetails details = firstStep.Details;
         Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
-        string rawContent = runSteps.GetRawResponse().Content.ToString();
-        details = runSteps.ElementAt(1).Details;
+        string rawContent = firstPage.GetRawResponse().Content.ToString();
+
+        details = secondStep.Details;
         Assert.Multiple(() =>
         {
             Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
@@ -299,7 +349,7 @@ public partial class AssistantTests
     public void SettingResponseFormatWorks()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new()
         {
             ResponseFormat = AssistantResponseFormat.JsonObject,
         });
@@ -326,7 +376,7 @@ public partial class AssistantTests
     public void FunctionToolsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
         {
             Tools =
             {
@@ -389,18 +439,19 @@ public partial class AssistantTests
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(run.ThreadId, resultOrder: ListOrder.NewestFirst);
-        Assert.That(messages.Count, Is.GreaterThan(1));
-        Assert.That(messages.First().Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(messages.First().Content?[0], Is.Not.Null);
-        Assert.That(messages.First().Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
+        PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
+        PageResult<ThreadMessage> firstPage = messagePages.GetCurrentPage();
+        Assert.That(firstPage.Values.Count, Is.GreaterThan(1));
+        Assert.That(firstPage.Values[0].Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(firstPage.Values[0].Content?[0], Is.Not.Null);
+        Assert.That(firstPage.Values[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
     [Test]
     public async Task StreamingRunWorks()
     {
         AssistantClient client = new();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
 
         AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
@@ -412,7 +463,7 @@ public partial class AssistantTests
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncResultCollection<StreamingUpdate> streamingResult
+        AsyncCollectionResult<StreamingUpdate> streamingResult
             = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
@@ -449,7 +500,7 @@ public partial class AssistantTests
     {
         AssistantClient client = GetTestClient();
         FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
-        Assistant assistant = await client.CreateAssistantAsync("gpt-3.5-turbo", new()
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new()
         {
             Tools = { getWeatherTool }
         });
@@ -459,7 +510,7 @@ public partial class AssistantTests
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncResultCollection<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
             assistant,
             new()
             {
@@ -522,7 +573,7 @@ public partial class AssistantTests
         AssistantClient client = GetTestClient();
 
         // Create an assistant, using the creation helper to make a new vector store
-        Assistant assistant = client.CreateAssistant("gpt-4-turbo", new()
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new()
         {
             Tools = { new FileSearchToolDefinition() },
             ToolResources = new()
@@ -598,9 +649,13 @@ public partial class AssistantTests
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        PageableCollection<ThreadMessage> messages = client.GetMessages(thread, resultOrder: ListOrder.NewestFirst);
+        IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
+        int messageCount = 0;
+        bool hasCake = false;
         foreach (ThreadMessage message in messages)
         {
+            messageCount++;
+
             foreach (MessageContent content in message.Content)
             {
                 Console.WriteLine(content.Text);
@@ -608,21 +663,26 @@ public partial class AssistantTests
                 {
                     Console.WriteLine($"  --> From file: {annotation.InputFileId}, replacement: {annotation.TextToReplace}");
                 }
+
+                if (!hasCake)
+                {
+                    hasCake = content.Text.ToLower().Contains("cake");
+                }
             }
         }
-        Assert.That(messages.Count() > 1);
-        Assert.That(messages.Any(message => message.Content.Any(content => content.Text.ToLower().Contains("cake"))));
+        Assert.That(messageCount > 1);
+        Assert.That(hasCake, Is.True);
     }
 
     [Test]
-    public async Task CanEnumerateAssistants()
+    public async Task Pagination_CanEnumerateAssistants()
     {
         AssistantClient client = GetTestClient();
 
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}",
             });
@@ -632,7 +692,7 @@ public partial class AssistantTests
 
         // Page through collection
         int count = 0;
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst);
+        IAsyncEnumerable<Assistant> assistants = client.GetAssistantsAsync(new AssistantCollectionOptions() { Order = ListOrder.NewestFirst }).GetAllValuesAsync();
 
         int lastIdSeen = int.MaxValue;
 
@@ -656,14 +716,14 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task CanPageThroughAssistantCollection()
+    public async Task Pagination_CanPageThroughAssistantCollection()
     {
         AssistantClient client = GetTestClient();
 
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -674,14 +734,18 @@ public partial class AssistantTests
         // Page through collection
         int count = 0;
         int pageCount = 0;
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync(ListOrder.NewestFirst);
-        IAsyncEnumerable<ResultPage<Assistant>> pages = assistants.AsPages(pageSizeHint: 2);
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
 
         int lastIdSeen = int.MaxValue;
 
-        await foreach (ResultPage<Assistant> page in pages)
+        await foreach (PageResult<Assistant> page in pages)
         {
-            foreach (Assistant assistant in page)
+            foreach (Assistant assistant in page.Values)
             {
                 Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
                 if (assistant.Name?.StartsWith("Test Assistant ") == true)
@@ -705,6 +769,253 @@ public partial class AssistantTests
     }
 
     [Test]
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
+    {
+        AssistantClient client = GetTestClient();
+
+        // Create assistant collection
+        for (int i = 0; i < 10; i++)
+        {
+            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            {
+                Name = $"Test Assistant {i}"
+            });
+            Validate(assistant);
+            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = (await pages.GetCurrentPageAsync().ConfigureAwait(false)).PageToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(rehydrationToken);
+
+        int count = 0;
+        int pageCount = 0;
+        int lastIdSeen = int.MaxValue;
+
+        await foreach (PageResult<Assistant> page in rehydratedPages)
+        {
+            foreach (Assistant assistant in page.Values)
+            {
+                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+                if (assistant.Name?.StartsWith("Test Assistant ") == true)
+                {
+                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
+                    Assert.That(seenId, Is.LessThan(lastIdSeen));
+                    lastIdSeen = seenId;
+                }
+                count++;
+            }
+
+            pageCount++;
+            if (lastIdSeen == 0 || count > 100)
+            {
+                break;
+            }
+        }
+
+        Assert.That(count, Is.GreaterThanOrEqualTo(10));
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
+    }
+
+    [Test]
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
+    {
+        AssistantClient client = GetTestClient();
+
+        // Create assistant collection
+        for (int i = 0; i < 10; i++)
+        {
+            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            {
+                Name = $"Test Assistant {i}"
+            });
+            Validate(assistant);
+            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+
+        AsyncPageCollection<Assistant> pages = client.GetAssistantsAsync(
+            new AssistantCollectionOptions()
+            {
+                Order = ListOrder.NewestFirst,
+                PageSize = 2
+            });
+
+        // Call the rehydration method, passing a typed OpenAIPageToken
+        PageResult<Assistant> firstPage = await pages.GetCurrentPageAsync().ConfigureAwait(false);
+        AsyncPageCollection<Assistant> rehydratedPages = client.GetAssistantsAsync(firstPage.PageToken);
+
+        int count = 0;
+        int pageCount = 0;
+        int lastIdSeen = int.MaxValue;
+
+        await foreach (PageResult<Assistant> page in rehydratedPages)
+        {
+            foreach (Assistant assistant in page.Values)
+            {
+                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+                if (assistant.Name?.StartsWith("Test Assistant ") == true)
+                {
+                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
+                    Assert.That(seenId, Is.LessThan(lastIdSeen));
+                    lastIdSeen = seenId;
+                }
+                count++;
+            }
+
+            pageCount++;
+            if (lastIdSeen == 0 || count > 100)
+            {
+                break;
+            }
+        }
+
+        Assert.That(count, Is.GreaterThanOrEqualTo(10));
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
+    }
+
+    [Test]
+    public async Task Pagination_CanCastAssistantPageCollectionToConvenienceFromProtocol()
+    {
+        AssistantClient client = GetTestClient();
+
+        // Create assistant collection
+        for (int i = 0; i < 10; i++)
+        {
+            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            {
+                Name = $"Test Assistant {i}"
+            });
+            Validate(assistant);
+            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+
+        // Call the protocol method
+        IAsyncEnumerable<ClientResult> pages = client.GetAssistantsAsync(limit: 2, order: "desc", after: null, before: null, options: default);
+
+        // Cast to the convenience type
+        AsyncPageCollection<Assistant> assistantPages = (AsyncPageCollection<Assistant>)pages;
+
+        int count = 0;
+        int pageCount = 0;
+        int lastIdSeen = int.MaxValue;
+
+        await foreach (PageResult<Assistant> page in assistantPages)
+        {
+            foreach (Assistant assistant in page.Values)
+            {
+                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
+                if (assistant.Name?.StartsWith("Test Assistant ") == true)
+                {
+                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
+                    Assert.That(seenId, Is.LessThan(lastIdSeen));
+                    lastIdSeen = seenId;
+                }
+                count++;
+            }
+
+            pageCount++;
+            if (lastIdSeen == 0 || count > 100)
+            {
+                break;
+            }
+        }
+
+        Assert.That(count, Is.GreaterThanOrEqualTo(10));
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(5));
+    }
+
+    [Test]
+    public void Pagination_CanRehydrateRunStepPageCollectionFromBytes()
+    {
+        AssistantClient client = GetTestClient();
+        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+        {
+            Tools = { new CodeInterpreterToolDefinition() },
+            Instructions = "You help the user with mathematical descriptions and visualizations.",
+        });
+        Validate(assistant);
+
+        FileClient fileClient = new();
+        OpenAIFileInfo equationFile = fileClient.UploadFile(
+            BinaryData.FromString("""
+            x,y
+            2,5
+            7,14,
+            8,22
+            """).ToStream(),
+            "text/csv",
+            FileUploadPurpose.Assistants);
+        Validate(equationFile);
+
+        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        {
+            InitialMessages =
+            {
+                "Describe the contents of any available tool resource file."
+                + " Graph a linear regression and provide the coefficient of correlation."
+                + " Explain any code executed to evaluate.",
+            },
+            ToolResources = new()
+            {
+                CodeInterpreter = new()
+                {
+                    FileIds = { equationFile.Id },
+                }
+            }
+        });
+        Validate(thread);
+
+        ThreadRun run = client.CreateRun(thread, assistant);
+        Validate(run);
+
+        while (!run.Status.IsTerminal)
+        {
+            Thread.Sleep(1000);
+            run = client.GetRun(run);
+        }
+        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
+        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+
+        PageCollection<RunStep> pages = client.GetRunSteps(run);
+        IEnumerator<PageResult<RunStep>> pageEnumerator = ((IEnumerable<PageResult<RunStep>>)pages).GetEnumerator();
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = pages.GetCurrentPage().PageToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        PageCollection<RunStep> rehydratedPages = client.GetRunSteps(rehydrationToken);
+        IEnumerator<PageResult<RunStep>> rehydratedPageEnumerator = ((IEnumerable<PageResult<RunStep>>)rehydratedPages).GetEnumerator();
+
+        int pageCount = 0;
+
+        while (pageEnumerator.MoveNext() && rehydratedPageEnumerator.MoveNext())
+        {
+            PageResult<RunStep> page = pageEnumerator.Current;
+            PageResult<RunStep> rehydratedPage = rehydratedPageEnumerator.Current;
+
+            Assert.AreEqual(page.Values.Count, rehydratedPage.Values.Count);
+
+            for (int i = 0; i < page.Values.Count; i++)
+            {
+                Assert.AreEqual(page.Values[0].Id, rehydratedPage.Values[0].Id);
+            }
+
+            pageCount++;
+        }
+
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
+    }
+
+    [Test]
     public async Task MessagesWithRoles()
     {
         AssistantClient client = GetTestClient();
@@ -723,7 +1034,7 @@ public partial class AssistantTests
         async Task RefreshMessageListAsync()
         {
             messages.Clear();
-            await foreach (ThreadMessage message in client.GetMessagesAsync(thread))
+            await foreach (ThreadMessage message in client.GetMessagesAsync(thread).GetAllValuesAsync())
             {
                 messages.Add(message);
             }
@@ -758,103 +1069,6 @@ public partial class AssistantTests
         Assert.That(messages[2].Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages[2].Content[0].Text, Is.EqualTo(assistantMessageText));
         Assert.That(messages[2].Content[0].Text, Is.EqualTo(assistantMessageText));
-    }
-
-    [Test]
-    [Category("smoke")]
-    public void RunStepDeserialization()
-    {
-        BinaryData runStepData = BinaryData.FromString(
-            """
-            {
-              "id": "step_Ksdfr5ooy26sayKbIQu2d2Vb",
-              "object": "thread.run.step",
-              "created_at": 1718906747,
-              "run_id": "run_vvuLqtPTte9qCnRb7a5MQPgB",
-              "assistant_id": "asst_UyBYTjqlwhSOdHOEzwwGZM6d",
-              "thread_id": "thread_lIk2yQzSGHzXrzA4K6N8uPae",
-              "type": "tool_calls",
-              "status": "completed",
-              "cancelled_at": null,
-              "completed_at": 1718906749,
-              "expires_at": null,
-              "failed_at": null,
-              "last_error": null,
-              "step_details": {
-                "type": "tool_calls",
-                "tool_calls": [
-                  {
-                    "id": "call_DUP8WOybwaxKcMoxtr6cJDw1",
-                    "type": "code_interpreter",
-                    "code_interpreter": {
-                      "input": "# Let's read the content of the uploaded file to understand its content.\r\nfile_path = '/mnt/data/assistant-SvXXKd0VKpGbVq9rBDlvZTn0'\r\nwith open(file_path, 'r') as file:\r\n    content = file.read()\r\n\r\n# Output the first few lines of the file to understand its structure and content\r\ncontent[:2000]",
-                      "outputs": [
-                        {
-                          "type": "logs",
-                          "logs": "'Index,Value\\nIndex #1,1\\nIndex #2,4\\nIndex #3,9\\nIndex #4,16\\nIndex #5,25\\nIndex #6,36\\nIndex #7,49\\nIndex #8,64\\nIndex #9,81\\nIndex #10,100\\nIndex #11,121\\nIndex #12,144\\nIndex #13,169\\nIndex #14,196\\nIndex #15,225\\nIndex #16,256\\nIndex #17,289\\nIndex #18,324\\nIndex #19,361\\nIndex #20,400\\nIndex #21,441\\nIndex #22,484\\nIndex #23,529\\nIndex #24,576\\nIndex #25,625\\nIndex #26,676\\nIndex #27,729\\nIndex #28,784\\nIndex #29,841\\nIndex #30,900\\nIndex #31,961\\nIndex #32,1024\\nIndex #33,1089\\nIndex #34,1156\\nIndex #35,1225\\nIndex #36,1296\\nIndex #37,1369\\nIndex #38,1444\\nIndex #39,1521\\nIndex #40,1600\\nIndex #41,1681\\nIndex #42,1764\\nIndex #43,1849\\nIndex #44,1936\\nIndex #45,2025\\nIndex #46,2116\\nIndex #47,2209\\nIndex #48,2304\\nIndex #49,2401\\nIndex #50,2500\\nIndex #51,2601\\nIndex #52,2704\\nIndex #53,2809\\nIndex #54,2916\\nIndex #55,3025\\nIndex #56,3136\\nIndex #57,3249\\nIndex #58,3364\\nIndex #59,3481\\nIndex #60,3600\\nIndex #61,3721\\nIndex #62,3844\\nIndex #63,3969\\nIndex #64,4096\\nIndex #65,4225\\nIndex #66,4356\\nIndex #67,4489\\nIndex #68,4624\\nIndex #69,4761\\nIndex #70,4900\\nIndex #71,5041\\nIndex #72,5184\\nIndex #73,5329\\nIndex #74,5476\\nIndex #75,5625\\nIndex #76,5776\\nIndex #77,5929\\nIndex #78,6084\\nIndex #79,6241\\nIndex #80,6400\\nIndex #81,6561\\nIndex #82,6724\\nIndex #83,6889\\nIndex #84,7056\\nIndex #85,7225\\nIndex #86,7396\\nIndex #87,7569\\nIndex #88,7744\\nIndex #89,7921\\nIndex #90,8100\\nIndex #91,8281\\nIndex #92,8464\\nIndex #93,8649\\nIndex #94,8836\\nIndex #95,9025\\nIndex #96,9216\\nIndex #97,9409\\nIndex #98,9604\\nIndex #99,9801\\nIndex #100,10000\\nIndex #101,10201\\nIndex #102,10404\\nIndex #103,10609\\nIndex #104,10816\\nIndex #105,11025\\nIndex #106,11236\\nIndex #107,11449\\nIndex #108,11664\\nIndex #109,11881\\nIndex #110,12100\\nIndex #111,12321\\nIndex #112,12544\\nIndex #113,12769\\nIndex #114,12996\\nIndex #115,13225\\nIndex #116,13456\\nIndex #117,13689\\nIndex #118,13924\\nIndex #119,14161\\nIndex #120,14400\\nIndex #121,14641\\nIndex #122,14884\\nIndex #123,15129\\nIndex #124,15376\\nIndex #125,15625\\nIndex #126,15876\\nIndex #127,16129\\nIndex #128,16384\\nIndex #129,16641\\nIndex #130,16900\\nIndex #131,17161\\nIndex #132,'"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              "usage": {
-                "prompt_tokens": 201,
-                "completion_tokens": 84,
-                "total_tokens": 285
-              }
-            }
-            """);
-        RunStep deserializedRunStep = ModelReaderWriter.Read<RunStep>(runStepData);
-        Assert.That(deserializedRunStep.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(deserializedRunStep.AssistantId, Is.Not.Null.And.Not.Empty);
-        Assert.That(deserializedRunStep.Details, Is.Not.Null);
-        Assert.That(deserializedRunStep.Details.ToolCalls, Has.Count.EqualTo(1));
-        Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs, Has.Count.EqualTo(1));
-        Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs[0].Logs, Is.Not.Null.And.Not.Empty);
-    }
-
-    [OneTimeTearDown]
-    protected void Cleanup()
-    {
-        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
-        {
-            return;
-        }
-
-        AssistantClient client = new();
-        FileClient fileClient = new();
-        VectorStoreClient vectorStoreClient = new();
-        RequestOptions requestOptions = new()
-        {
-            ErrorOptions = ClientErrorBehaviors.NoThrow,
-        };
-        foreach (ThreadMessage message in _messagesToDelete)
-        {
-            Console.WriteLine($"Cleanup: {message.Id} -> {client.DeleteMessage(message.ThreadId, message.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (Assistant assistant in _assistantsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {assistant.Id} -> {client.DeleteAssistant(assistant.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (AssistantThread thread in _threadsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {thread.Id} -> {client.DeleteThread(thread.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (OpenAIFileInfo file in _filesToDelete)
-        {
-            Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (string vectorStoreId in _vectorStoreIdsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {vectorStoreId} => {vectorStoreClient.DeleteVectorStore(vectorStoreId, requestOptions)?.GetRawResponse().Status}");
-        }
-        _messagesToDelete.Clear();
-        _assistantsToDelete.Clear();
-        _threadsToDelete.Clear();
-        _filesToDelete.Clear();
-        _vectorStoreIdsToDelete.Clear();
     }
 
     /// <summary>

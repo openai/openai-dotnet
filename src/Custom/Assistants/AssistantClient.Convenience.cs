@@ -28,7 +28,6 @@ public partial class AssistantClient
     public virtual ClientResult<Assistant> ModifyAssistant(Assistant assistant, AssistantModificationOptions options)
         => ModifyAssistant(assistant?.Id, options);
 
-
     /// <summary>
     /// Deletes an existing <see cref="Assistant"/>.
     /// </summary>
@@ -126,39 +125,39 @@ public partial class AssistantClient
             => CreateMessage(thread?.Id, role, content, options);
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of messages that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadMessage> GetMessagesAsync(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
+    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessagesAsync(thread.Id, resultOrder);
+        return GetMessagesAsync(thread.Id, options);
     }
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of messages that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadMessage> GetMessages(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
+    public virtual PageCollection<ThreadMessage> GetMessages(
         AssistantThread thread, 
-        ListOrder? resultOrder = default)
+        MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetMessages(thread.Id, resultOrder);
+        return GetMessages(thread.Id, options);
     }
 
     /// <summary>
@@ -240,7 +239,7 @@ public partial class AssistantClient
     /// <param name="thread"> The thread that the run should evaluate. </param>
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
         AssistantThread thread,
         Assistant assistant,
         RunCreationOptions options = null)
@@ -253,7 +252,7 @@ public partial class AssistantClient
     /// <param name="thread"> The thread that the run should evaluate. </param>
     /// <param name="assistant"> The assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
-    public virtual ResultCollection<StreamingUpdate> CreateRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
         AssistantThread thread,
         Assistant assistant,
         RunCreationOptions options = null)
@@ -291,7 +290,7 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    public virtual AsyncResultCollection<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
         Assistant assistant,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null)
@@ -303,46 +302,46 @@ public partial class AssistantClient
     /// <param name="assistant"> The assistant that the new run should use. </param>
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
-    public virtual ResultCollection<StreamingUpdate> CreateThreadAndRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
         Assistant assistant,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null)
             => CreateThreadAndRunStreaming(assistant?.Id, threadOptions, runOptions);
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of runs that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual AsyncPageableCollection<ThreadRun> GetRunsAsync(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
+    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRunsAsync(thread.Id, resultOrder);
+        return GetRunsAsync(thread.Id, options);
     }
 
     /// <summary>
-    /// Returns a collection of <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
+    /// Gets a page collection holding <see cref="ThreadRun"/> instances associated with an existing <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of runs that can be enumerated using <c>foreach</c>. </returns>
-    public virtual PageableCollection<ThreadRun> GetRuns(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
+    public virtual PageCollection<ThreadRun> GetRuns(
         AssistantThread thread,
-        ListOrder? resultOrder = default)
+        RunCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));
 
-        return GetRuns(thread.Id, resultOrder);
+        return GetRuns(thread.Id, options);
     }
 
     /// <summary>
@@ -394,7 +393,7 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
-    public virtual AsyncResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
         ThreadRun run,
         IEnumerable<ToolOutput> toolOutputs)
             => SubmitToolOutputsToRunStreamingAsync(run?.ThreadId, run?.Id, toolOutputs);
@@ -406,7 +405,7 @@ public partial class AssistantClient
     /// <param name="toolOutputs">
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
-    public virtual ResultCollection<StreamingUpdate> SubmitToolOutputsToRunStreaming(
+    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
         ThreadRun run,
         IEnumerable<ToolOutput> toolOutputs)
             => SubmitToolOutputsToRunStreaming(run?.ThreadId, run?.Id, toolOutputs);
@@ -428,38 +427,38 @@ public partial class AssistantClient
         => CancelRun(run?.ThreadId, run?.Id);
 
     /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
+    /// Gets a page collection holding <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of run steps that can be enumerated using <c>await foreach</c>. </returns>
-    public virtual PageableCollection<RunStep> GetRunSteps(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
+    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
         ThreadRun run,
-        ListOrder? resultOrder = default)
+        RunStepCollectionOptions options = default)
     {
         Argument.AssertNotNull(run, nameof(run));
 
-        return GetRunSteps(run.ThreadId, run.Id, resultOrder);
+        return GetRunStepsAsync(run.ThreadId, run.Id, options);
     }
 
     /// <summary>
-    /// Gets a collection of <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
+    /// Gets a page collection holding <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <returns> A collection of run steps that can be enumerated using <c>foreach</c>. </returns>
-    public virtual AsyncPageableCollection<RunStep> GetRunStepsAsync(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
+    public virtual PageCollection<RunStep> GetRunSteps(
         ThreadRun run,
-        ListOrder? resultOrder = default)
+        RunStepCollectionOptions options = default)
     {
         Argument.AssertNotNull(run, nameof(run));
 
-        return GetRunStepsAsync(run.ThreadId, run.Id, resultOrder);
+        return GetRunSteps(run.ThreadId, run.Id, options);
     }
 }
