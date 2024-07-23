@@ -1,8 +1,8 @@
-﻿using System;
-using System.ClientModel;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Embeddings;
 using OpenAI.Tests.Utility;
+using System;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -12,10 +12,10 @@ namespace OpenAI.Tests.Embeddings;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Embeddings")]
 public partial class EmbeddingTests : SyncAsyncTestBase
 {
-    public EmbeddingTests(bool isAsync)
-        : base(isAsync)
+    public EmbeddingTests(bool isAsync) : base(isAsync)
     {
     }
 
