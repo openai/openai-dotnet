@@ -1661,7 +1661,7 @@ public partial class AssistantTests
         ContinuationToken rehydrationToken = runOperation.RehydrationToken;
 
         // Call the rehydration method
-        RunOperation rehydratedRunOperation = client.GetRun(rehydrationToken);
+        RunOperation rehydratedRunOperation = client.ContinueRun(rehydrationToken);
 
         // Validate operations are equivalent
         Assert.That(runOperation.ThreadId, Is.EqualTo(rehydratedRunOperation.ThreadId));
