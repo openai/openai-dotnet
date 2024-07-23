@@ -5,7 +5,6 @@ on:
     inputs:
       ref:
         description: 'Committish to checkout and test'
-        required: true
 
 jobs:
   test:
@@ -21,12 +20,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.ref }}
+          ref: ${{ github.event.inputs.ref || github.sha }}
 
       - name: Run Live Tests
-        uses: ./.github/actions/live-test
-        with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+        run: dotnet test
+          --configuration Release
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=live"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

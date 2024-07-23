@@ -2,9 +2,6 @@ name: Build and Test
 
 on:
   workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: 'Commit SHA to checkout and test'
   push:
     branches:
       - main
@@ -62,9 +59,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run Live Tests
-        uses: ./.github/actions/live-test
-        with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+        run: dotnet test
+          --configuration Release
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=live"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
