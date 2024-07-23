@@ -24,42 +24,6 @@ namespace OpenAI.Assistants
         {
         }
 
-        public virtual async Task<ClientResult<Assistant>> GetAssistantAsync(string assistantId)
-        {
-            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-            ClientResult result = await GetAssistantAsync(assistantId, null).ConfigureAwait(false);
-            return ClientResult.FromValue(Assistant.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual ClientResult<Assistant> GetAssistant(string assistantId)
-        {
-            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-
-            ClientResult result = GetAssistant(assistantId, null);
-            return ClientResult.FromValue(Assistant.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual async Task<ClientResult<Assistant>> ModifyAssistantAsync(string assistantId, AssistantModificationOptions assistant)
-        {
-            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-            Argument.AssertNotNull(assistant, nameof(assistant));
-
-            using BinaryContent content = assistant.ToBinaryContent();
-            ClientResult result = await ModifyAssistantAsync(assistantId, content, null).ConfigureAwait(false);
-            return ClientResult.FromValue(Assistant.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual ClientResult<Assistant> ModifyAssistant(string assistantId, AssistantModificationOptions assistant)
-        {
-            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
-            Argument.AssertNotNull(assistant, nameof(assistant));
-
-            using BinaryContent content = assistant.ToBinaryContent();
-            ClientResult result = ModifyAssistant(assistantId, content, null);
-            return ClientResult.FromValue(Assistant.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
         internal PipelineMessage CreateCreateAssistantRequest(BinaryContent content, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();
