@@ -177,15 +177,12 @@ public partial class RunOperation : OperationResult
 
     #region Convenience overloads of generated protocol methods
 
-    // TODO: decide if we want to keep GetRun methods here - they could enable
-    // manual polling scenarios if we wanted to do it that way.
-
     /// <summary>
     /// Gets an existing <see cref="ThreadRun"/> from a known <see cref="AssistantThread"/>.
     /// </summary>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    internal virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = await GetRunAsync(_threadId!, _runId!, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);
@@ -196,7 +193,7 @@ public partial class RunOperation : OperationResult
     /// </summary>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> The existing <see cref="ThreadRun"/> instance. </returns>
-    internal virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
+    public virtual ClientResult<ThreadRun> GetRun(CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = GetRun(_threadId!, _runId!, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, ThreadRun.FromResponse);

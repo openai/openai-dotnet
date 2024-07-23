@@ -657,9 +657,6 @@ public partial class AssistantClient
         return operation;
     }
 
-    // Note: these become internal
-    // TODO: can we merge this with public ones?
-
     public virtual RunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId,
@@ -693,7 +690,7 @@ public partial class AssistantClient
         return operation;
     }
 
-    public virtual async Task<RunOperation> GetRunAsync(
+    public virtual async Task<RunOperation> ContinueRunAsync(
         ContinuationToken rehydrationToken,
         CancellationToken cancellationToken = default)
     {
@@ -710,7 +707,7 @@ public partial class AssistantClient
             result.GetRawResponse());
     }
 
-    public virtual RunOperation GetRun(
+    public virtual RunOperation ContinueRun(
         ContinuationToken rehydrationToken,
         CancellationToken cancellationToken = default)
     {
