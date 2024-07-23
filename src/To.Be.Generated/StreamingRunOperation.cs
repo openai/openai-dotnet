@@ -59,7 +59,7 @@ public partial class StreamingRunOperation : RunOperation
     }
 
     // Public APIs specific to streaming LRO
-    public async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync(
+    public virtual async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // TODO: validate this against case where user doesn't submit tools...
@@ -92,7 +92,7 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
-    public IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
+    public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
         if (_enumerator is null)
         {
@@ -156,7 +156,7 @@ public partial class StreamingRunOperation : RunOperation
 
     private void ApplyUpdate(ThreadRun update)
     {
-        Id ??= update.Id;
+        RunId ??= update.Id;
         ThreadId ??= update.ThreadId;
 
         Value = update;
@@ -170,7 +170,7 @@ public partial class StreamingRunOperation : RunOperation
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
-        if (ThreadId is null || Id is null)
+        if (ThreadId is null || RunId is null)
         {
             throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
         }
@@ -181,7 +181,7 @@ public partial class StreamingRunOperation : RunOperation
         // TODO: can we do this the same way as this in the other method instead
         // of having to take all those funcs?
         async Task<ClientResult> getResultAsync() =>
-            await SubmitToolOutputsToRunAsync(ThreadId, Id, content, cancellationToken.ToRequestOptions(streaming: true))
+            await SubmitToolOutputsToRunAsync(ThreadId, RunId, content, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
         AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
@@ -200,7 +200,7 @@ public partial class StreamingRunOperation : RunOperation
         IEnumerable<ToolOutput> toolOutputs,
         CancellationToken cancellationToken = default)
     {
-        if (ThreadId is null || Id is null)
+        if (ThreadId is null || RunId is null)
         {
             throw new InvalidOperationException("Cannot submit tools until first update stream has been applied.");
         }
@@ -218,7 +218,7 @@ public partial class StreamingRunOperation : RunOperation
         // TODO: can we do this the same way as this in the other method instead
         // of having to take all those funcs?
         ClientResult getResult() =>
-            SubmitToolOutputsToRun(ThreadId, Id, content, cancellationToken.ToRequestOptions(streaming: true));
+            SubmitToolOutputsToRun(ThreadId, RunId, content, cancellationToken.ToRequestOptions(streaming: true));
 
         StreamingUpdateCollection updates = new StreamingUpdateCollection(getResult);
         _enumerator.ReplaceUpdateCollection(updates);

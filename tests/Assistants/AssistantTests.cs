@@ -240,7 +240,7 @@ public partial class AssistantTests
         //Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
@@ -1399,17 +1399,17 @@ public partial class AssistantTests
 
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
-        Assert.That(runOperation.Id, Is.Not.Null);
+        Assert.That(runOperation.RunId, Is.Not.Null);
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(runOperation.Value, Is.Not.Null);
-        Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.RunId));
 
         // Wait for operation to complete.
         runOperation.Wait();
 
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         Assert.That(runOperation.IsCompleted, Is.True);
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
@@ -1443,10 +1443,10 @@ public partial class AssistantTests
 
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.EqualTo(thread.Id));
-        Assert.That(runOperation.Id, Is.Not.Null);
+        Assert.That(runOperation.RunId, Is.Not.Null);
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(runOperation.Value, Is.Not.Null);
-        Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.RunId));
 
         // Poll manually to implement custom poll interval
         IEnumerable<ThreadRun> updates = runOperation.GetUpdates(TimeSpan.Zero);
@@ -1665,7 +1665,7 @@ public partial class AssistantTests
 
         // Validate operations are equivalent
         Assert.That(runOperation.ThreadId, Is.EqualTo(rehydratedRunOperation.ThreadId));
-        Assert.That(runOperation.Id, Is.EqualTo(rehydratedRunOperation.Id));
+        Assert.That(runOperation.RunId, Is.EqualTo(rehydratedRunOperation.RunId));
 
         // Wait for both to complete
         Task.WaitAll(
@@ -1711,7 +1711,7 @@ public partial class AssistantTests
         // should still be null.
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.Null);
-        Assert.That(runOperation.Id, Is.Null);
+        Assert.That(runOperation.RunId, Is.Null);
         Assert.That(runOperation.Status, Is.Null);
         Assert.That(runOperation.Value, Is.Null);
 
@@ -1724,7 +1724,7 @@ public partial class AssistantTests
 
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         Assert.That(runOperation.IsCompleted, Is.True);
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
@@ -1760,7 +1760,7 @@ public partial class AssistantTests
         // should still be null.
         Assert.That(runOperation.IsCompleted, Is.False);
         Assert.That(runOperation.ThreadId, Is.Null);
-        Assert.That(runOperation.Id, Is.Null);
+        Assert.That(runOperation.RunId, Is.Null);
         Assert.That(runOperation.Status, Is.Null);
         Assert.That(runOperation.Value, Is.Null);
 
@@ -1778,7 +1778,7 @@ public partial class AssistantTests
 
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
-        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.Id));
+        Assert.That(runsPage.Values[0].Id, Is.EqualTo(runOperation.RunId));
 
         Assert.That(runOperation.IsCompleted, Is.True);
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
@@ -2005,7 +2005,7 @@ public partial class AssistantTests
         else if (target is RunOperation runOperation)
         {
             Assert.That(runOperation?.ThreadId, Is.Not.Null);
-            Assert.That(runOperation?.Id, Is.Not.Null);
+            Assert.That(runOperation?.RunId, Is.Not.Null);
         }
         else if (target is OpenAIFileInfo file)
         {

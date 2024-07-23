@@ -39,7 +39,7 @@ public partial class RunOperation : OperationResult
         Status = status;
 
         ThreadId = value.ThreadId;
-        Id = value.Id;
+        RunId = value.Id;
 
         RehydrationToken = new RunOperationToken(value.ThreadId, value.Id);
     }
@@ -61,7 +61,7 @@ public partial class RunOperation : OperationResult
 
     // Note: these all have to be nullable because the derived streaming type
     // cannot set them until it reads the first event from the SSE stream.
-    public string? Id { get => _runId; protected set => _runId = value; }
+    public string? RunId { get => _runId; protected set => _runId = value; }
     public string? ThreadId { get => _threadId; protected set => _threadId = value; }
 
     public ThreadRun? Value { get; protected set; }
@@ -75,7 +75,7 @@ public partial class RunOperation : OperationResult
     public override void Wait(CancellationToken cancellationToken = default)
         => Wait(default, cancellationToken);
 
-    public async Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual async Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -93,7 +93,7 @@ public partial class RunOperation : OperationResult
         }
     }
 
-    public void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -326,7 +326,7 @@ public partial class RunOperation : OperationResult
     {
         RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
             ThreadId!,
-            Id!,
+            RunId!,
             options?.PageSize,
             options?.Order?.ToString(),
             options?.AfterId,
