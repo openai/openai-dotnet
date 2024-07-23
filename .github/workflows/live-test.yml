@@ -1,0 +1,36 @@
+name: Live Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Committish to checkout and test'
+        required: true
+
+jobs:
+  test:
+    name: Live Test
+    runs-on: ubuntu-latest
+    environment: Live Testing
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 8.x
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Run Live Tests
+        uses: ./.github/actions/live-test
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ !cancelled() }}
+        with:
+          name: test-artifacts
+          path: ${{github.workspace}}/artifacts

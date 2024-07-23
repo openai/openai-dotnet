@@ -33,12 +33,9 @@ jobs:
           --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/smoke.trx"
 
       - name: Run Live Tests
-        run: dotnet test
-          --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
-          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/live.trx"
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        uses: ./.github/actions/live-test
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
