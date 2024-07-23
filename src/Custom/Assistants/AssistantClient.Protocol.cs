@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -40,7 +41,7 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of assistants.
+    /// [Protocol Method] Returns a paginated collection of assistants.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -62,15 +63,15 @@ public partial class AssistantClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a list of assistants.
+    /// [Protocol Method] Returns a paginated collection of assistants.
     /// </summary>
     /// <param name="limit">
     /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
@@ -92,11 +93,11 @@ public partial class AssistantClient
     /// </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -213,13 +214,75 @@ public partial class AssistantClient
     public virtual ClientResult CreateMessage(string threadId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.CreateMessage(threadId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessagesAsync"/>
-    public virtual Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options);
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of messages for a given thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) the messages belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-    /// <inheritdoc cref="InternalAssistantMessageClient.GetMessages"/>
-    public virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
+        MessagesPageEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of messages for a given thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the [thread](/docs/api-reference/threads) the messages belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        MessagesPageEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
+    }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)
@@ -259,13 +322,75 @@ public partial class AssistantClient
     public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRun(threadId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunsAsync"/>
-    public virtual Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options);
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run belongs to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRuns"/>
-    public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
+        RunsPageEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run belongs to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+        RunsPageEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
     public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
@@ -299,13 +424,79 @@ public partial class AssistantClient
     public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepsAsync"/>
-    public virtual Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, options);
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-    /// <inheritdoc cref="InternalAssistantRunClient.GetRunSteps"/>
-    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
-        => _runSubClient.GetRunSteps(threadId, runId, limit, order, after, before, options);
+        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        return PageCollectionHelpers.Create(enumerator);
+    }
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunStepAsync"/>
     public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options)

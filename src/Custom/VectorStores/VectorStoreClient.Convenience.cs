@@ -81,52 +81,38 @@ public partial class VectorStoreClient
         => AddFileToVectorStore(vectorStore?.Id, file?.Id);
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStore">
     /// The vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         VectorStore vectorStore,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
-            => GetFileAssociationsAsync(vectorStore?.Id, resultOrder, filter);
+        VectorStoreFileAssociationCollectionOptions options = default)
+            => GetFileAssociationsAsync(vectorStore?.Id, options);
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStore">
     /// The ID vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         VectorStore vectorStore,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
-            => GetFileAssociations(vectorStore?.Id, resultOrder);
+        VectorStoreFileAssociationCollectionOptions options = default)
+            => GetFileAssociations(vectorStore?.Id, options);
 
     /// <summary>
     /// Gets a <see cref="VectorStoreFileAssociation"/> instance representing an existing association between a known
@@ -229,46 +215,33 @@ public partial class VectorStoreClient
         => CancelBatchFileJob(batchJob?.VectorStoreId, batchJob?.BatchId);
 
     /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        VectorStoreBatchFileJob batchJob,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
-            => GetFileAssociationsAsync(batchJob?.VectorStoreId, batchJob?.BatchId, resultOrder, filter);
-
-    /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
+    /// Gets a page collection holding file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
     /// <param name="batchJob"> The vector store batch file job to retrieve file associations from. </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         VectorStoreBatchFileJob batchJob,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null)
-            => GetFileAssociations(batchJob?.VectorStoreId, batchJob?.BatchId, resultOrder, filter);
+        VectorStoreFileAssociationCollectionOptions options = default)
+            => GetFileAssociationsAsync(batchJob?.VectorStoreId, batchJob?.BatchId, options);
+
+    /// <summary>
+    /// Gets a page collection holding file associations associated with a vector store batch file job, representing the files
+    /// that were scheduled for ingestion into the vector store.
+    /// </summary>
+    /// <param name="batchJob"> The vector store batch file job to retrieve file associations from. </param>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
+        VectorStoreBatchFileJob batchJob,
+        VectorStoreFileAssociationCollectionOptions options = default)
+            => GetFileAssociations(batchJob?.VectorStoreId, batchJob?.BatchId, options);
 
 }

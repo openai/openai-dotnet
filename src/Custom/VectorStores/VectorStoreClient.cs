@@ -1,14 +1,11 @@
-﻿using OpenAI.Assistants;
-using OpenAI.Files;
+﻿using OpenAI.Files;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.InternalListHelpers;
 
 namespace OpenAI.VectorStores;
 
@@ -52,7 +49,7 @@ public partial class VectorStoreClient
               OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(credential, requireExplicitCredential: true), options),
               OpenAIClient.GetEndpoint(options),
               options)
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of <see cref="VectorStoreClient"/> that will use an API key from the OPENAI_API_KEY
@@ -69,7 +66,7 @@ public partial class VectorStoreClient
               OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(), options),
               OpenAIClient.GetEndpoint(options),
               options)
-    {}
+    { }
 
     /// <summary> Initializes a new instance of VectorStoreClient. </summary>
     /// <param name="pipeline"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
@@ -137,38 +134,101 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStore"/> instances for the configured organization.
+    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
     /// </summary>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStore"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
-    public virtual AsyncPageableCollection<VectorStore> GetVectorStoresAsync(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
+    public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(
+        VectorStoreCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
-        return CreateAsyncPageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStoresAsync(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStore"/> instances for the configured organization.
+    /// Rehydrates a page collection holding <see cref="VectorStore"/> instances from a page token.
     /// </summary>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStore"/> instances that can be synchronously enumerated via <c>foreach</c>.
-    /// </returns>
-    public virtual PageableCollection<VectorStore> GetVectorStores(ListOrder? resultOrder = null, CancellationToken cancellationToken = default)
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
+    public virtual AsyncPageCollection<VectorStore> GetVectorStoresAsync(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
     {
-        return CreatePageable<VectorStore, InternalListVectorStoresResponse>((continuationToken, pageSize)
-            => GetVectorStores(pageSize, resultOrder?.ToString(), continuationToken, null, cancellationToken.ToRequestOptions()));
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
+        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
+    /// </summary>
+    /// <param name="options"> Options describing the collection to return. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
+    public virtual PageCollection<VectorStore> GetVectorStores(
+        VectorStoreCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
+    {
+        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+    /// <summary>
+    /// Rehydrates a page collection holding <see cref="VectorStore"/> instances from a page token.
+    /// </summary>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStore"/>. </returns>
+    public virtual PageCollection<VectorStore> GetVectorStores(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
+        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -208,61 +268,123 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStoreId">
     /// The ID of the vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null, 
+        VectorStoreFileAssociationCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociationsAsync(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+
+        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            vectorStoreId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            options?.Filter?.ToString(),
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
-    /// Gets the collection of <see cref="VectorStoreFileAssociation"/> instances representing file inclusions in the
+    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
+    /// </summary>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
+        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.VectorStoreId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            pageToken.Filter,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
     /// specified vector store.
     /// </summary>
     /// <param name="vectorStoreId">
     /// The ID of the vector store to enumerate the file associations of.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, ListOrder? resultOrder = null, VectorStoreFileStatusFilter? filter = null, CancellationToken cancellationToken = default)
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
+        string vectorStoreId,
+        VectorStoreFileAssociationCollectionOptions options = default,
+        CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociations(
-                vectorStoreId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+
+        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            vectorStoreId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            options?.Filter?.ToString(),
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+    /// <summary>
+    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
+    /// </summary>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
+        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.VectorStoreId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            pageToken.Filter,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -275,7 +397,7 @@ public partial class VectorStoreClient
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual async Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(
         string vectorStoreId,
-        string fileId, 
+        string fileId,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
@@ -297,7 +419,7 @@ public partial class VectorStoreClient
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(
         string vectorStoreId,
-        string fileId, 
+        string fileId,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
@@ -466,7 +588,7 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
+    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
     /// <param name="vectorStoreId">
@@ -475,35 +597,88 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the batch file job that was previously scheduled.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be asynchronously enumerated via
-    /// <c>await foreach</c>.
-    /// </returns>
-    public virtual AsyncPageableCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
         string vectorStoreId,
         string batchJobId,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null,
+        VectorStoreFileAssociationCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return CreateAsyncPageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociationsAsync
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            vectorStoreId,
+            batchJobId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            options?.Filter?.ToString(),
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
     /// <summary>
-    /// Gets the collection of file associations associated with a vector store batch file job, representing the files
+    /// Rehydrates a page collection of file associations from a page token.
+    /// </summary>
+    /// <param name="vectorStoreId">
+    /// The ID of the vector store into which the file batch was scheduled for ingestion.
+    /// </param>
+    /// <param name="batchJobId">
+    /// The ID of the batch file job that was previously scheduled.
+    /// </param>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
+        string vectorStoreId,
+        string batchJobId,
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoreFileBatchesPageToken pageToken = VectorStoreFileBatchesPageToken.FromToken(firstPageToken);
+
+        if (vectorStoreId != pageToken.VectorStoreId)
+        {
+            throw new ArgumentException(
+                "Invalid page token. 'vectorStoreId' value does not match page token value.",
+                nameof(vectorStoreId));
+        }
+
+        if (batchJobId != pageToken.BatchId)
+        {
+            throw new ArgumentException(
+                "Invalid page token. 'batchJobId' value does not match page token value.",
+                nameof(vectorStoreId));
+        }
+
+        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.VectorStoreId,
+            pageToken.BatchId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            pageToken.Filter,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.CreateAsync(enumerator);
+    }
+
+    /// <summary>
+    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
     /// that were scheduled for ingestion into the vector store.
     /// </summary>
     /// <param name="vectorStoreId">
@@ -512,30 +687,84 @@ public partial class VectorStoreClient
     /// <param name="batchJobId">
     /// The ID of the batch file job that was previously scheduled.
     /// </param>
-    /// <param name="resultOrder">
-    /// The <c>order</c> that results should appear in the list according to their <c>created_at</c>
-    /// timestamp.
-    /// </param>
-    /// <param name="filter">
-    /// A status filter that file associations must match to be included in the collection.
-    /// </param>
+    /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A collection of <see cref="VectorStoreFileAssociation"/> instances that can be synchronously enumerated via
-    /// <c>foreach</c>.
-    /// </returns>
-    public virtual PageableCollection<VectorStoreFileAssociation> GetFileAssociations(
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
         string vectorStoreId,
         string batchJobId,
-        ListOrder? resultOrder = null,
-        VectorStoreFileStatusFilter? filter = null,
+        VectorStoreFileAssociationCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return CreatePageable<VectorStoreFileAssociation, InternalListVectorStoreFilesResponse>(
-            (continuationToken, pageSize) => GetFileAssociations
-                (vectorStoreId, batchJobId, pageSize, resultOrder?.ToString(), continuationToken, null, filter?.ToString(), cancellationToken.ToRequestOptions()));
+        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            vectorStoreId,
+            batchJobId,
+            options?.PageSize,
+            options?.Order?.ToString(),
+            options?.AfterId,
+            options?.BeforeId,
+            options?.Filter?.ToString(),
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
+    }
+
+    /// <summary>
+    /// Rehydrates a page collection of file associations from a page token.
+    /// that were scheduled for ingestion into the vector store.
+    /// </summary>
+    /// <param name="vectorStoreId">
+    /// The ID of the vector store into which the file batch was scheduled for ingestion.
+    /// </param>
+    /// <param name="batchJobId">
+    /// The ID of the batch file job that was previously scheduled.
+    /// </param>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
+    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
+    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
+    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
+    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
+        string vectorStoreId,
+        string batchJobId,
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        VectorStoreFileBatchesPageToken pageToken = VectorStoreFileBatchesPageToken.FromToken(firstPageToken);
+
+        if (vectorStoreId != pageToken.VectorStoreId)
+        {
+            throw new ArgumentException(
+                "Invalid page token. 'vectorStoreId' value does not match page token value.",
+                nameof(vectorStoreId));
+        }
+
+        if (batchJobId != pageToken.BatchId)
+        {
+            throw new ArgumentException(
+                "Invalid page token. 'batchJobId' value does not match page token value.",
+                nameof(vectorStoreId));
+        }
+
+        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
+            pageToken.VectorStoreId,
+            pageToken.BatchId,
+            pageToken.Limit,
+            pageToken.Order,
+            pageToken.After,
+            pageToken.Before,
+            pageToken.Filter,
+            cancellationToken.ToRequestOptions());
+
+        return PageCollectionHelpers.Create(enumerator);
     }
 }
