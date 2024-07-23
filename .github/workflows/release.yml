@@ -42,6 +42,7 @@ jobs:
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
+        if: ${{ !cancelled() }}
         with:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
