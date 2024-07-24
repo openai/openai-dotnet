@@ -10,7 +10,7 @@ public partial class FileSearchToolDefinition : ToolDefinition
 {
     public int? MaxResults
     {
-        get => _fileSearch.InternalMaxNumResults;
+        get => _fileSearch?.InternalMaxNumResults;
         init => _fileSearch.InternalMaxNumResults = value;
     }
 

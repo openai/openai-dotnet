@@ -10,8 +10,9 @@
 
 - ([#49](https://github.com/openai/openai-dotnet/issues/49)) Fixed a bug with extensible enums implementing case-insensitive equality but case-sensitive hash codes. (commit_hash)
 - ([#57](https://github.com/openai/openai-dotnet/issues/57)) Fixed a bug with requests URIs with query string parameter potentially containing a malformed double question mark (`??`) on .NET Framework (net481). (commit_hash)
-
-### Other Changes
+- Added optional `CancellationToken` parameters to methods for `AssistantClient` and `VectorStore` client, consistent with past changes in [19a65a0](https://github.com/openai/openai-dotnet/commit/19a65a0a943fa3bef1ec8504708aaa526a1ee03a) (commit_link_)
+- Fixed Assistants `FileSearchToolDefinition`'s `MaxResults` parameter to appropriately serialize and deserialize the value (commit_link)
+- Added missing `[EditorBrowsable(EditorBrowsableState.Never)]` attributes to `AssistantClient` protocol methods, which should improve discoverability of the strongly typed methods (commit_link)
 
 ## 2.0.0-beta.7 (2024-06-24)
 
