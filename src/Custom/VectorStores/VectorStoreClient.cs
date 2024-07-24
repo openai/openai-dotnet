@@ -102,6 +102,70 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
+    /// Gets an instance representing an existing <see cref="VectorStore"/> based on its ID.
+    /// </summary>
+    /// <param name="vectorStoreId"> The ID of the vector store to retrieve. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> A representation of an existing <see cref="VectorStore"/>. </returns>
+    public virtual async Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+        ClientResult result
+            = await GetVectorStoreAsync(vectorStoreId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(
+            VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Gets an instance representing an existing <see cref="VectorStore"/> based on its ID.
+    /// </summary>
+    /// <param name="vectorStoreId"> The ID of the vector store to retrieve. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> A representation of an existing <see cref="VectorStore"/>. </returns>
+    public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+        ClientResult result = GetVectorStore(vectorStoreId, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Modifies an existing <see cref="VectorStore"/>.
+    /// </summary>
+    /// <param name="vectorStoreId"> The ID of the <see cref="VectorStore"/> to modify. </param>
+    /// <param name="vectorStore"> The new options to apply to the <see cref="VectorStore"/>. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> An updated representation of the modified <see cref="VectorStore"/>. </returns>
+    public virtual async Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions vectorStore, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNull(vectorStore, nameof(vectorStore));
+
+        using BinaryContent content = vectorStore.ToBinaryContent();
+        ClientResult result = await ModifyVectorStoreAsync(vectorStoreId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Modifies an existing <see cref="VectorStore"/>.
+    /// </summary>
+    /// <param name="vectorStoreId"> The ID of the <see cref="VectorStore"/> to modify. </param>
+    /// <param name="vectorStore"> The new options to apply to the <see cref="VectorStore"/>. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <returns> An updated representation of the modified <see cref="VectorStore"/>. </returns>
+    public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions vectorStore, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNull(vectorStore, nameof(vectorStore));
+
+        using BinaryContent content = vectorStore.ToBinaryContent();
+        ClientResult result = ModifyVectorStore(vectorStoreId, content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary>
     /// Deletes a vector store.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store to delete. </param>
