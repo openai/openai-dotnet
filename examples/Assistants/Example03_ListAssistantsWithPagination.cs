@@ -17,8 +17,8 @@ public partial class AssistantExamples
 
         int count = 0;
 
-        PageCollection<Assistant> assitantPages = client.GetAssistants();
-        IEnumerable<Assistant> assistants = assitantPages.GetAllValues();
+        PageCollection<Assistant> assistantPages = client.GetAssistants();
+        IEnumerable<Assistant> assistants = assistantPages.GetAllValues();
         foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

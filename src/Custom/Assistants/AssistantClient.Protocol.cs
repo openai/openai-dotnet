@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
@@ -16,6 +17,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> CreateAssistantAsync(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
@@ -32,6 +34,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult CreateAssistant(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
@@ -64,6 +67,7 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
         AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
@@ -94,6 +98,7 @@ public partial class AssistantClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
         AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
@@ -109,6 +114,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetAssistantAsync(string assistantId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -126,6 +132,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetAssistant(string assistantId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -144,6 +151,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> ModifyAssistantAsync(string assistantId, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -163,6 +171,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult ModifyAssistant(string assistantId, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -181,6 +190,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> DeleteAssistantAsync(string assistantId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -198,6 +208,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="assistantId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult DeleteAssistant(string assistantId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
@@ -207,10 +218,12 @@ public partial class AssistantClient
     }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.CreateMessageAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> CreateMessageAsync(string threadId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.CreateMessageAsync(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.CreateMessage"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult CreateMessage(string threadId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.CreateMessage(threadId, content, options);
 
@@ -241,6 +254,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -276,6 +290,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -285,27 +300,36 @@ public partial class AssistantClient
     }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.GetMessageAsync(threadId, messageId, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessage"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.GetMessage(threadId, messageId, options);
+
     /// <inheritdoc cref="InternalAssistantMessageClient.ModifyMessageAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> ModifyMessageAsync(string threadId, string messageId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.ModifyMessageAsync(threadId, messageId, content, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.ModifyMessage"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult ModifyMessage(string threadId, string messageId, BinaryContent content, RequestOptions options = null)
         => _messageSubClient.ModifyMessage(threadId, messageId, content, options);
+
     /// <inheritdoc cref="InternalAssistantMessageClient.DeleteMessageAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> DeleteMessageAsync(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessageAsync(threadId, messageId, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.DeleteMessage"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options)
         => _messageSubClient.DeleteMessage(threadId, messageId, options);
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<RunOperation> CreateThreadAndRunAsync(
         ReturnWhen returnWhen,
         BinaryContent content,
@@ -335,6 +359,7 @@ public partial class AssistantClient
         return operation;
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual RunOperation CreateThreadAndRun(
         ReturnWhen returnWhen,
         BinaryContent content,
@@ -391,6 +416,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -426,6 +452,7 @@ public partial class AssistantClient
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -434,6 +461,7 @@ public partial class AssistantClient
         return PageCollectionHelpers.Create(enumerator);
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<RunOperation> CreateRunAsync(
         ReturnWhen returnWhen,
         string threadId,
@@ -464,6 +492,7 @@ public partial class AssistantClient
         return operation;
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual RunOperation CreateRun(
         ReturnWhen returnWhen,
         string threadId,
@@ -495,58 +524,72 @@ public partial class AssistantClient
     }
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRunAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateThreadAndRunAsync(content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateThreadAndRun(content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRunAsync(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRun"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRun(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options = null)
         => _runSubClient.GetRunAsync(threadId, runId, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.GetRun"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     internal virtual ClientResult GetRun(string threadId, string runId, RequestOptions options = null)
         => _runSubClient.GetRun(threadId, runId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)
         => _threadSubClient.CreateThreadAsync(content, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThread"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult CreateThread(BinaryContent content, RequestOptions options = null)
         => _threadSubClient.CreateThread(content, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.GetThreadAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> GetThreadAsync(string threadId, RequestOptions options)
         => _threadSubClient.GetThreadAsync(threadId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.GetThread"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetThread(string threadId, RequestOptions options)
         => _threadSubClient.GetThread(threadId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.ModifyThreadAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> ModifyThreadAsync(string threadId, BinaryContent content, RequestOptions options = null)
         => _threadSubClient.ModifyThreadAsync(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.ModifyThread"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult ModifyThread(string threadId, BinaryContent content, RequestOptions options = null)
         => _threadSubClient.ModifyThread(threadId, content, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.DeleteThreadAsync"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<ClientResult> DeleteThreadAsync(string threadId, RequestOptions options)
         => _threadSubClient.DeleteThreadAsync(threadId, options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.DeleteThread"/>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult DeleteThread(string threadId, RequestOptions options)
         => _threadSubClient.DeleteThread(threadId, options);
 }
