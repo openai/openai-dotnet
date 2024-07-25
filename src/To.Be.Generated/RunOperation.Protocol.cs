@@ -82,7 +82,7 @@ public partial class RunOperation : OperationResult
 
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
-    internal bool IsStreaming => _pollingInterval != null;
+    internal bool IsStreaming => _pollingInterval == null;
 
     // Note: these work for protocol-only.
     // Once convenience overloads available, these get replaced by those implementations.

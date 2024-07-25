@@ -62,16 +62,14 @@ public partial class StreamingRunOperation : RunOperation
     public virtual async IAsyncEnumerable<StreamingUpdate> GetUpdatesStreamingAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        // TODO: validate this against case where user doesn't submit tools...
-
-        if (_enumerator is null)
-        {
-            AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
-            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
-        }
-
         try
         {
+            if (_enumerator is null)
+            {
+                AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(_createRunAsync);
+                _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+            }
+
             while (await _enumerator.MoveNextAsync().ConfigureAwait(false))
             {
                 if (_enumerator.Current is RunUpdate update)
@@ -94,14 +92,14 @@ public partial class StreamingRunOperation : RunOperation
 
     public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
-        if (_enumerator is null)
-        {
-            StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
-            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
-        }
-
         try
         {
+            if (_enumerator is null)
+            {
+                StreamingUpdateCollection updates = new StreamingUpdateCollection(_createRun);
+                _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+            }
+
             while (_enumerator.MoveNext())
             {
                 if (_enumerator.Current is RunUpdate update)
@@ -185,7 +183,6 @@ public partial class StreamingRunOperation : RunOperation
             .ConfigureAwait(false);
 
         AsyncStreamingUpdateCollection updates = new AsyncStreamingUpdateCollection(getResultAsync);
-
         if (_enumerator is null)
         {
             _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
@@ -221,7 +218,14 @@ public partial class StreamingRunOperation : RunOperation
             SubmitToolOutputsToRun(ThreadId, RunId, content, cancellationToken.ToRequestOptions(streaming: true));
 
         StreamingUpdateCollection updates = new StreamingUpdateCollection(getResult);
-        _enumerator.ReplaceUpdateCollection(updates);
+        if (_enumerator is null)
+        {
+            _enumerator = new StreamingRunOperationUpdateEnumerator(updates);
+        }
+        else
+        {
+            _enumerator.ReplaceUpdateCollection(updates);
+        }
     }
 
     #region hide

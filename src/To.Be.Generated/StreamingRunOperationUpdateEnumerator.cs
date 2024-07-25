@@ -24,14 +24,12 @@ internal partial class StreamingRunOperationUpdateEnumerator :
         AsyncStreamingUpdateCollection updates)
     {
         _asyncUpdates = updates;
-        _asyncEnumerator = updates.GetAsyncEnumerator();
     }
 
     public StreamingRunOperationUpdateEnumerator(
         StreamingUpdateCollection updates)
     {
         _updates = updates;
-        _enumerator = updates.GetEnumerator();
     }
 
     // Cache this here for now
@@ -48,10 +46,12 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
     public bool MoveNext()
     {
-        if (_enumerator is null)
+        if (_updates is null)
         {
             throw new InvalidOperationException("Cannot MoveNext after starting enumerator asynchronously.");
         }
+
+        _enumerator ??= _updates.GetEnumerator();
 
         bool movedNext = _enumerator.MoveNext();
         _current = _enumerator.Current;
@@ -78,10 +78,12 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
     public async ValueTask<bool> MoveNextAsync()
     {
-        if (_asyncEnumerator is null)
+        if (_asyncUpdates is null)
         {
             throw new InvalidOperationException("Cannot MoveNextAsync after starting enumerator synchronously.");
         }
+
+        _asyncEnumerator ??= _asyncUpdates.GetAsyncEnumerator();
 
         bool movedNext = await _asyncEnumerator.MoveNextAsync().ConfigureAwait(false);
         _current = _asyncEnumerator.Current;
@@ -104,7 +106,7 @@ internal partial class StreamingRunOperationUpdateEnumerator :
 
     public async Task ReplaceUpdateCollectionAsync(AsyncStreamingUpdateCollection updates)
     {
-        if (_asyncUpdates is null || _asyncEnumerator is null)
+        if (_asyncUpdates is null)
         {
             throw new InvalidOperationException("Cannot replace null update collection.");
         }
@@ -114,15 +116,18 @@ internal partial class StreamingRunOperationUpdateEnumerator :
             throw new InvalidOperationException("Cannot being enumerating asynchronously after enumerating synchronously.");
         }
 
-        await _asyncEnumerator.DisposeAsync().ConfigureAwait(false);
+        if (_asyncEnumerator is not null)
+        {
+            await _asyncEnumerator.DisposeAsync().ConfigureAwait(false);
+            _asyncEnumerator = null;
+        }
 
         _asyncUpdates = updates;
-        _asyncEnumerator = updates.GetAsyncEnumerator();
     }
 
     public void ReplaceUpdateCollection(StreamingUpdateCollection updates)
     {
-        if (_updates is null || _enumerator is null)
+        if (_updates is null)
         {
             throw new InvalidOperationException("Cannot replace null update collection.");
         }
@@ -132,9 +137,9 @@ internal partial class StreamingRunOperationUpdateEnumerator :
             throw new InvalidOperationException("Cannot being enumerating synchronously after enumerating asynchronously.");
         }
 
-        _enumerator.Dispose();
+        _enumerator?.Dispose();
+        _enumerator = null;
 
         _updates = updates;
-        _enumerator = _updates.GetEnumerator();
     }
 }

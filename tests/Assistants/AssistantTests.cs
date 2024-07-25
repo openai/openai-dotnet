@@ -1261,7 +1261,7 @@ public partial class AssistantTests
     }
 
     [Test]
-    public async Task LRO_ProtocolOnly_Streaming_CanSubmitToolOutpus()
+    public async Task LRO_ProtocolOnly_Streaming_CanSubmitToolOutputs()
     {
         FunctionToolDefinition getTemperatureTool = new()
         {
@@ -1303,6 +1303,9 @@ public partial class AssistantTests
             }
             """),
         };
+
+        // TODO: this test does not send a message that requires action -- update it
+        // to do that.
 
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-3.5-turbo");
@@ -1375,9 +1378,11 @@ public partial class AssistantTests
                     outputsToSubmit.Add(new ToolOutput(toolCallId, "25%"));
                 }
             }
+
+            await runOperation.SubmitToolOutputsToRunAsync(outputsToSubmit);
         }
 
-        Assert.That(status, Is.EqualTo(RunStatus.Cancelled.ToString()));
+        Assert.That(status, Is.EqualTo(RunStatus.Completed.ToString()));
     }
 
 
