@@ -2,6 +2,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -179,6 +180,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -198,6 +200,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetRun(string threadId, string runId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -218,6 +221,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -239,6 +243,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult ModifyRun(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -259,6 +264,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> CancelRunAsync(string threadId, string runId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -278,6 +284,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -300,6 +307,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -334,6 +342,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions? options = null)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -383,6 +392,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -420,6 +430,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -440,6 +451,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
@@ -461,6 +473,7 @@ public partial class RunOperation : OperationResult
     /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
