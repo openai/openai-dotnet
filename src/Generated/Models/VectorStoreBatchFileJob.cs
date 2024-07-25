@@ -9,8 +9,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreBatchFileJob
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal VectorStoreBatchFileJob(string batchId, DateTimeOffset createdAt, string vectorStoreId, VectorStoreBatchFileJobStatus status, VectorStoreFileCounts fileCounts)
         {
             Argument.AssertNotNull(batchId, nameof(batchId));
@@ -31,7 +30,7 @@ namespace OpenAI.VectorStores
             VectorStoreId = vectorStoreId;
             Status = status;
             FileCounts = fileCounts;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal VectorStoreBatchFileJob()

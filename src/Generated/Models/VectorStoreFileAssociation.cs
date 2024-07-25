@@ -9,8 +9,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociation
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal VectorStoreFileAssociation(string fileId, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError? lastError)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
@@ -34,7 +33,7 @@ namespace OpenAI.VectorStores
             Status = status;
             LastError = lastError;
             ChunkingStrategy = chunkingStrategy;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal VectorStoreFileAssociation()

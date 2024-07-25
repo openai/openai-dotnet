@@ -35,7 +35,7 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
                 writer.WriteNull("content");
             }
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

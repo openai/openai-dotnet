@@ -9,13 +9,13 @@ namespace OpenAI.Chat
 {
     public partial class ChatTool
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal ChatTool(ChatToolKind kind, InternalFunctionDefinition function, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Kind = kind;
             Function = function;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal ChatTool()

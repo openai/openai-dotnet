@@ -10,8 +10,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalListVectorStoreFilesResponse
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalListVectorStoreFilesResponse(IEnumerable<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore)
         {
             Argument.AssertNotNull(data, nameof(data));
@@ -31,7 +30,7 @@ namespace OpenAI.VectorStores
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalListVectorStoreFilesResponse()

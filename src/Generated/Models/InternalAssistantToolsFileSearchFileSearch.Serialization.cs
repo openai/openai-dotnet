@@ -21,15 +21,19 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(InternalMaxNumResults))
+            if (SerializedAdditionalRawData?.ContainsKey("max_num_results") != true && Optional.IsDefined(InternalMaxNumResults))
             {
                 writer.WritePropertyName("max_num_results"u8);
                 writer.WriteNumberValue(InternalMaxNumResults.Value);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -78,8 +82,9 @@ namespace OpenAI.Assistants
                     maxNumResults = property.Value.GetInt32();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

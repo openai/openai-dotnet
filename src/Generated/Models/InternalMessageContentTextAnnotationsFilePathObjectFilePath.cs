@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFilePathObjectFilePath
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalMessageContentTextAnnotationsFilePathObjectFilePath(string fileId)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
@@ -21,7 +20,7 @@ namespace OpenAI.Assistants
         internal InternalMessageContentTextAnnotationsFilePathObjectFilePath(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalMessageContentTextAnnotationsFilePathObjectFilePath()

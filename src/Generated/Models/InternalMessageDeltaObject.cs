@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaObject
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalMessageDeltaObject(string id, MessageDeltaObjectDelta delta)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -25,7 +24,7 @@ namespace OpenAI.Assistants
             Id = id;
             Object = @object;
             Delta = delta;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalMessageDeltaObject()

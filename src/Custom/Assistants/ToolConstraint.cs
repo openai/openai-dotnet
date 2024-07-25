@@ -10,7 +10,7 @@ public partial class ToolConstraint
     [CodeGenMember("Type")]
     private readonly string _objectType;
     private readonly string _objectFunctionName;
-    private readonly IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private readonly IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     // CUSTOM: Made internal.
     /// <summary> Gets or sets the function. </summary>
@@ -38,7 +38,7 @@ public partial class ToolConstraint
             default:
                 throw new ArgumentOutOfRangeException(nameof(toolDefinition));
         }
-        _serializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
     }
 
     internal ToolConstraint(string plainTextValue)
@@ -50,6 +50,6 @@ public partial class ToolConstraint
         _plainTextValue = plainTextValue;
         _objectType = objectType;
         _objectFunctionName = objectFunctionName;
-        _serializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 }

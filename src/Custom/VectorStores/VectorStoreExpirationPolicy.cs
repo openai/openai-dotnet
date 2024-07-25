@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(VectorStoreExpirationAnchor), typeof(int), typeof(IDictionary<string, BinaryData>))]
 public partial class VectorStoreExpirationPolicy
 {
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     [CodeGenMember("Anchor")]
     private VectorStoreExpirationAnchor _anchor;
@@ -46,7 +46,7 @@ public partial class VectorStoreExpirationPolicy
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
     public VectorStoreExpirationPolicy()
     {
-        _serializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
     }
 
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
@@ -58,6 +58,6 @@ public partial class VectorStoreExpirationPolicy
     {
         Anchor = anchor;
         Days = days;
-        _serializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 }

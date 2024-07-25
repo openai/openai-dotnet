@@ -21,45 +21,49 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(Step))
+            if (SerializedAdditionalRawData?.ContainsKey("step") != true && Optional.IsDefined(Step))
             {
                 writer.WritePropertyName("step"u8);
                 writer.WriteNumberValue(Step.Value);
             }
-            if (Optional.IsDefined(TrainLoss))
+            if (SerializedAdditionalRawData?.ContainsKey("train_loss") != true && Optional.IsDefined(TrainLoss))
             {
                 writer.WritePropertyName("train_loss"u8);
                 writer.WriteNumberValue(TrainLoss.Value);
             }
-            if (Optional.IsDefined(TrainMeanTokenAccuracy))
+            if (SerializedAdditionalRawData?.ContainsKey("train_mean_token_accuracy") != true && Optional.IsDefined(TrainMeanTokenAccuracy))
             {
                 writer.WritePropertyName("train_mean_token_accuracy"u8);
                 writer.WriteNumberValue(TrainMeanTokenAccuracy.Value);
             }
-            if (Optional.IsDefined(ValidLoss))
+            if (SerializedAdditionalRawData?.ContainsKey("valid_loss") != true && Optional.IsDefined(ValidLoss))
             {
                 writer.WritePropertyName("valid_loss"u8);
                 writer.WriteNumberValue(ValidLoss.Value);
             }
-            if (Optional.IsDefined(ValidMeanTokenAccuracy))
+            if (SerializedAdditionalRawData?.ContainsKey("valid_mean_token_accuracy") != true && Optional.IsDefined(ValidMeanTokenAccuracy))
             {
                 writer.WritePropertyName("valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(ValidMeanTokenAccuracy.Value);
             }
-            if (Optional.IsDefined(FullValidLoss))
+            if (SerializedAdditionalRawData?.ContainsKey("full_valid_loss") != true && Optional.IsDefined(FullValidLoss))
             {
                 writer.WritePropertyName("full_valid_loss"u8);
                 writer.WriteNumberValue(FullValidLoss.Value);
             }
-            if (Optional.IsDefined(FullValidMeanTokenAccuracy))
+            if (SerializedAdditionalRawData?.ContainsKey("full_valid_mean_token_accuracy") != true && Optional.IsDefined(FullValidMeanTokenAccuracy))
             {
                 writer.WritePropertyName("full_valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(FullValidMeanTokenAccuracy.Value);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -168,8 +172,9 @@ namespace OpenAI.FineTuning
                     fullValidMeanTokenAccuracy = property.Value.GetSingle();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

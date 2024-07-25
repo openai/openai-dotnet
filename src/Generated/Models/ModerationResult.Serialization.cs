@@ -21,16 +21,29 @@ namespace OpenAI.Moderations
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("flagged"u8);
-            writer.WriteBooleanValue(Flagged);
-            writer.WritePropertyName("categories"u8);
-            writer.WriteObjectValue(Categories, options);
-            writer.WritePropertyName("category_scores"u8);
-            writer.WriteObjectValue(CategoryScores, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("flagged") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("flagged"u8);
+                writer.WriteBooleanValue(Flagged);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("categories") != true)
+            {
+                writer.WritePropertyName("categories"u8);
+                writer.WriteObjectValue(Categories, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("category_scores") != true)
+            {
+                writer.WritePropertyName("category_scores"u8);
+                writer.WriteObjectValue(CategoryScores, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -87,8 +100,9 @@ namespace OpenAI.Moderations
                     categoryScores = ModerationCategoryScores.DeserializeModerationCategoryScores(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

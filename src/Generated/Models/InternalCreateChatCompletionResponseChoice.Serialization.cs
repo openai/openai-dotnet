@@ -21,25 +21,41 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("finish_reason"u8);
-            writer.WriteStringValue(FinishReason.ToSerialString());
-            writer.WritePropertyName("index"u8);
-            writer.WriteNumberValue(Index);
-            writer.WritePropertyName("message"u8);
-            writer.WriteObjectValue(Message, options);
-            if (Logprobs != null)
+            if (SerializedAdditionalRawData?.ContainsKey("finish_reason") != true)
             {
-                writer.WritePropertyName("logprobs"u8);
-                writer.WriteObjectValue(Logprobs, options);
+                writer.WritePropertyName("finish_reason"u8);
+                writer.WriteStringValue(FinishReason.ToSerialString());
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
             {
-                writer.WriteNull("logprobs");
+                writer.WritePropertyName("index"u8);
+                writer.WriteNumberValue(Index);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("message") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("message"u8);
+                writer.WriteObjectValue(Message, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true)
+            {
+                if (Logprobs != null)
                 {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteObjectValue(Logprobs, options);
+                }
+                else
+                {
+                    writer.WriteNull("logprobs");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -107,8 +123,9 @@ namespace OpenAI.Chat
                     logprobs = InternalCreateChatCompletionResponseChoiceLogprobs.DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

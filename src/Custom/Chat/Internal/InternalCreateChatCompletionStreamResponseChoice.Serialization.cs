@@ -44,7 +44,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         }
         writer.WritePropertyName("index"u8);
         writer.WriteNumberValue(instance.Index);
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

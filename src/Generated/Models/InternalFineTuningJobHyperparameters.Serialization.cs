@@ -21,19 +21,26 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("n_epochs"u8);
+            if (SerializedAdditionalRawData?.ContainsKey("n_epochs") != true)
+            {
+                writer.WritePropertyName("n_epochs"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(NEpochs);
 #else
-            using (JsonDocument document = JsonDocument.Parse(NEpochs))
-            {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
-#endif
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                using (JsonDocument document = JsonDocument.Parse(NEpochs))
                 {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -78,8 +85,9 @@ namespace OpenAI.FineTuning
                     nEpochs = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

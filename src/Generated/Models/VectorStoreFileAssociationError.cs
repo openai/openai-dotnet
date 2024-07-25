@@ -9,8 +9,7 @@ namespace OpenAI.VectorStores
 {
     public readonly partial struct VectorStoreFileAssociationError
     {
-        private readonly IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message)
         {
             Argument.AssertNotNull(message, nameof(message));
@@ -23,7 +22,7 @@ namespace OpenAI.VectorStores
         {
             Code = code;
             Message = message;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public VectorStoreFileAssociationError()

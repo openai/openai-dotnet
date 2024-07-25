@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter()
         {
             Outputs = new ChangeTrackingList<RunStepUpdateCodeInterpreterOutput>();
@@ -20,7 +19,7 @@ namespace OpenAI.Assistants
         {
             Input = input;
             Outputs = outputs;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public string Input { get; }

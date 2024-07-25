@@ -10,8 +10,7 @@ namespace OpenAI.Assistants
 {
     public partial class Assistant
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -43,7 +42,7 @@ namespace OpenAI.Assistants
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal Assistant()

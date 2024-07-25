@@ -10,7 +10,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal ChatCompletionOptions(IList<ChatMessage> messages, InternalCreateChatCompletionRequestModel model, float? frequencyPenalty, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? topLogProbabilityCount, int? maxTokens, int? n, float? presencePenalty, ChatResponseFormat responseFormat, long? seed, IList<string> stopSequences, bool? stream, InternalChatCompletionStreamOptions streamOptions, float? temperature, float? topP, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? parallelToolCallsEnabled, string user, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -36,7 +36,7 @@ namespace OpenAI.Chat
             User = user;
             FunctionChoice = functionChoice;
             Functions = functions;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public float? FrequencyPenalty { get; init; }
         public int? MaxTokens { get; init; }

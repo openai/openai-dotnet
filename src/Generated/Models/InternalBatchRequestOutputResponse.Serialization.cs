@@ -21,17 +21,17 @@ namespace OpenAI.Batch
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(StatusCode))
+            if (SerializedAdditionalRawData?.ContainsKey("status_code") != true && Optional.IsDefined(StatusCode))
             {
                 writer.WritePropertyName("status_code"u8);
                 writer.WriteNumberValue(StatusCode.Value);
             }
-            if (Optional.IsDefined(RequestId))
+            if (SerializedAdditionalRawData?.ContainsKey("request_id") != true && Optional.IsDefined(RequestId))
             {
                 writer.WritePropertyName("request_id"u8);
                 writer.WriteStringValue(RequestId);
             }
-            if (Optional.IsCollectionDefined(Body))
+            if (SerializedAdditionalRawData?.ContainsKey("body") != true && Optional.IsCollectionDefined(Body))
             {
                 writer.WritePropertyName("body"u8);
                 writer.WriteStartObject();
@@ -42,10 +42,14 @@ namespace OpenAI.Batch
                 }
                 writer.WriteEndObject();
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -115,8 +119,9 @@ namespace OpenAI.Batch
                     body = dictionary;
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

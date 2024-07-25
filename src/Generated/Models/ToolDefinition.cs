@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public abstract partial class ToolDefinition
     {
-        private protected IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         protected ToolDefinition()
         {
         }
@@ -18,7 +17,7 @@ namespace OpenAI.Assistants
         internal ToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Type = type;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal string Type { get; init; }

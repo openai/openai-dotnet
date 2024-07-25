@@ -21,32 +21,48 @@ namespace OpenAI.Internal
             }
 
             writer.WriteStartObject();
-            if (Code != null)
+            if (SerializedAdditionalRawData?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("code"u8);
-                writer.WriteStringValue(Code);
-            }
-            else
-            {
-                writer.WriteNull("code");
-            }
-            writer.WritePropertyName("message"u8);
-            writer.WriteStringValue(Message);
-            if (Param != null)
-            {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
-            }
-            else
-            {
-                writer.WriteNull("param");
-            }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Type);
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                if (Code != null)
                 {
+                    writer.WritePropertyName("code"u8);
+                    writer.WriteStringValue(Code);
+                }
+                else
+                {
+                    writer.WriteNull("code");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("message") != true)
+            {
+                writer.WritePropertyName("message"u8);
+                writer.WriteStringValue(Message);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("param") != true)
+            {
+                if (Param != null)
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -119,8 +135,9 @@ namespace OpenAI.Internal
                     type = property.Value.GetString();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

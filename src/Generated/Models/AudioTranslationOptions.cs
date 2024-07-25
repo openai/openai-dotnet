@@ -9,7 +9,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranslationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal AudioTranslationOptions(BinaryData file, InternalCreateTranslationRequestModel model, string prompt, AudioTranslationFormat? responseFormat, float? temperature, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -18,7 +18,7 @@ namespace OpenAI.Audio
             Prompt = prompt;
             ResponseFormat = responseFormat;
             Temperature = temperature;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public string Prompt { get; init; }
         public AudioTranslationFormat? ResponseFormat { get; init; }

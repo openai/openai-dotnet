@@ -10,8 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunObjectRequiredActionSubmitToolOutputs
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalRunObjectRequiredActionSubmitToolOutputs(IEnumerable<InternalRequiredFunctionToolCall> toolCalls)
         {
             Argument.AssertNotNull(toolCalls, nameof(toolCalls));
@@ -22,7 +21,7 @@ namespace OpenAI.Assistants
         internal InternalRunObjectRequiredActionSubmitToolOutputs(IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             ToolCalls = toolCalls;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalRunObjectRequiredActionSubmitToolOutputs()

@@ -11,8 +11,7 @@ namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionResponse
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalCreateCompletionResponse(string id, IEnumerable<InternalCreateCompletionResponseChoice> choices, DateTimeOffset created, string model)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -34,7 +33,7 @@ namespace OpenAI.LegacyCompletions
             SystemFingerprint = systemFingerprint;
             Object = @object;
             Usage = usage;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateCompletionResponse()

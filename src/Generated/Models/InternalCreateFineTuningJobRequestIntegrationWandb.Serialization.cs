@@ -21,9 +21,12 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("project"u8);
-            writer.WriteStringValue(Project);
-            if (Optional.IsDefined(Name))
+            if (SerializedAdditionalRawData?.ContainsKey("project") != true)
+            {
+                writer.WritePropertyName("project"u8);
+                writer.WriteStringValue(Project);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("name") != true && Optional.IsDefined(Name))
             {
                 if (Name != null)
                 {
@@ -35,7 +38,7 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("name");
                 }
             }
-            if (Optional.IsDefined(Entity))
+            if (SerializedAdditionalRawData?.ContainsKey("entity") != true && Optional.IsDefined(Entity))
             {
                 if (Entity != null)
                 {
@@ -47,7 +50,7 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("entity");
                 }
             }
-            if (Optional.IsCollectionDefined(Tags))
+            if (SerializedAdditionalRawData?.ContainsKey("tags") != true && Optional.IsCollectionDefined(Tags))
             {
                 writer.WritePropertyName("tags"u8);
                 writer.WriteStartArray();
@@ -57,10 +60,14 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -142,8 +149,9 @@ namespace OpenAI.FineTuning
                     tags = array;
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

@@ -41,7 +41,7 @@ public partial class ModerationCollection : ReadOnlyCollection<ModerationResult>
     /// </list>
     /// </para>
     /// </summary>
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     /// <summary> Initializes a new instance of <see cref="ModerationCollection"/>. </summary>
     /// <param name="id"> The unique identifier for the moderation request. </param>
@@ -69,7 +69,7 @@ public partial class ModerationCollection : ReadOnlyCollection<ModerationResult>
     {
         Id = id;
         Model = model;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary> Initializes a new instance of <see cref="ModerationCollection"/> for deserialization. </summary>

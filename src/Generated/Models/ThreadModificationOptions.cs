@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadModificationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         public ThreadModificationOptions()
         {
             Metadata = new ChangeTrackingDictionary<string, string>();
@@ -20,7 +19,7 @@ namespace OpenAI.Assistants
         {
             ToolResources = toolResources;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public IDictionary<string, string> Metadata { get; }
     }

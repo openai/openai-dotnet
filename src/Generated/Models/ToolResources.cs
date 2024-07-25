@@ -9,13 +9,13 @@ namespace OpenAI.Assistants
 {
     public partial class ToolResources
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal ToolResources(CodeInterpreterToolResources codeInterpreter, FileSearchToolResources fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
     }
 }

@@ -9,8 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionNamedToolChoice
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceFunction function)
         {
             Argument.AssertNotNull(function, nameof(function));
@@ -22,7 +21,7 @@ namespace OpenAI.Chat
         {
             Type = type;
             Function = function;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalChatCompletionNamedToolChoice()

@@ -31,7 +31,7 @@ internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
             }
             writer.WriteEndArray();
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

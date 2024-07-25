@@ -21,12 +21,19 @@ namespace OpenAI.Internal
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("error"u8);
-            writer.WriteObjectValue(Error, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("error") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue(Error, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -71,8 +78,9 @@ namespace OpenAI.Internal
                     error = OpenAIError.DeserializeOpenAIError(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

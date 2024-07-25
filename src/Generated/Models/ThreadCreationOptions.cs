@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadCreationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         public ThreadCreationOptions()
         {
             InternalMessages = new ChangeTrackingList<MessageCreationOptions>();
@@ -22,7 +21,7 @@ namespace OpenAI.Assistants
             InternalMessages = internalMessages;
             ToolResources = toolResources;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public IDictionary<string, string> Metadata { get; }
     }

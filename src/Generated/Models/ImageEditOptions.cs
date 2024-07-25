@@ -9,7 +9,7 @@ namespace OpenAI.Images
 {
     public partial class ImageEditOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string user, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -21,7 +21,7 @@ namespace OpenAI.Images
             Size = size;
             ResponseFormat = responseFormat;
             User = user;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public string User { get; init; }
     }
