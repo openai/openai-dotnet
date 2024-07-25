@@ -11,7 +11,7 @@ namespace OpenAI.Assistants
     {
         internal AssistantResponseFormat(IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
     }
 }

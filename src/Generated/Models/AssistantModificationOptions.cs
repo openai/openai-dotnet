@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantModificationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         public AssistantModificationOptions()
         {
             DefaultTools = new ChangeTrackingList<ToolDefinition>();
@@ -29,7 +28,7 @@ namespace OpenAI.Assistants
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public string Name { get; init; }
         public string Description { get; init; }

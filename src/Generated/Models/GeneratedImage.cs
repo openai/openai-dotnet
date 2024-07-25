@@ -9,8 +9,7 @@ namespace OpenAI.Images
 {
     public partial class GeneratedImage
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal GeneratedImage()
         {
         }
@@ -20,7 +19,7 @@ namespace OpenAI.Images
             ImageBytes = imageBytes;
             ImageUri = imageUri;
             RevisedPrompt = revisedPrompt;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public string RevisedPrompt { get; }
     }

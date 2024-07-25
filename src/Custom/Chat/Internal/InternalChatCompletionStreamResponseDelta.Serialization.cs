@@ -59,7 +59,7 @@ internal partial class InternalChatCompletionStreamResponseDelta : IJsonModel<In
             writer.WritePropertyName("role"u8);
             writer.WriteStringValue(instance.Role.Value.ToSerialString());
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

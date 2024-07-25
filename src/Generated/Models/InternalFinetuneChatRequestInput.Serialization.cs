@@ -22,7 +22,7 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            if (Optional.IsCollectionDefined(Messages))
+            if (SerializedAdditionalRawData?.ContainsKey("messages") != true && Optional.IsCollectionDefined(Messages))
             {
                 writer.WritePropertyName("messages"u8);
                 writer.WriteStartArray();
@@ -44,7 +44,7 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Tools))
+            if (SerializedAdditionalRawData?.ContainsKey("tools") != true && Optional.IsCollectionDefined(Tools))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -54,12 +54,12 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ParallelToolCalls))
+            if (SerializedAdditionalRawData?.ContainsKey("parallel_tool_calls") != true && Optional.IsDefined(ParallelToolCalls))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);
             }
-            if (Optional.IsCollectionDefined(Functions))
+            if (SerializedAdditionalRawData?.ContainsKey("functions") != true && Optional.IsCollectionDefined(Functions))
             {
                 writer.WritePropertyName("functions"u8);
                 writer.WriteStartArray();
@@ -69,10 +69,14 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -173,8 +177,9 @@ namespace OpenAI.FineTuning
                     functions = array;
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

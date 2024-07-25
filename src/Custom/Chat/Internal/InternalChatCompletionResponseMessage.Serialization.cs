@@ -56,7 +56,7 @@ internal partial class InternalChatCompletionResponseMessage : IJsonModel<Intern
             writer.WritePropertyName("function_call"u8);
             writer.WriteObjectValue<ChatFunctionCall>(instance.FunctionCall, options);
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

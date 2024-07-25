@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantThread
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal AssistantThread(string id, DateTimeOffset createdAt, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -28,7 +27,7 @@ namespace OpenAI.Assistants
             CreatedAt = createdAt;
             ToolResources = toolResources;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal AssistantThread()

@@ -1,11 +1,48 @@
-﻿namespace OpenAI.Assistants;
+﻿using System;
+
+namespace OpenAI.Assistants;
 
 public class TextAnnotationUpdate
 {
     /// <summary>
     /// The index of the content item that this annotation applies to.
     /// </summary>
-    public int ContentIndex => _fileSearchCitation?.Index ?? _codeCitation?.Index ?? -1;
+    public int ContentIndex
+        => _fileSearchCitation?.Index
+        ?? _codeCitation?.Index
+        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("index", out BinaryData indexData) == true
+            ? int.Parse(indexData.ToString())
+            : -1);
+
+    /// <summary>
+    /// The index in the message content at which the citation begins.
+    /// </summary>
+    public int? StartIndex
+        => _fileSearchCitation?.StartIndex
+        ?? _codeCitation?.StartIndex
+        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("start_index", out BinaryData indexData) == true
+            ? int.Parse(indexData.ToString())
+            : null);
+
+    /// <summary>
+    /// The index in the message content at which the citation ends.
+    /// </summary>
+    public int? EndIndex
+        => _fileSearchCitation?.EndIndex
+        ?? _codeCitation?.EndIndex
+        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("start_index", out BinaryData indexData) == true
+            ? int.Parse(indexData.ToString())
+            : null);
+
+    /// <summary>
+    /// The text in the message content that should be replaced.
+    /// </summary>
+    public string TextToReplace
+        => _fileSearchCitation?.Text
+        ?? _codeCitation?.Text
+        ?? (_internalAnnotation?.SerializedAdditionalRawData.TryGetValue("text", out BinaryData textData) == true
+            ? textData.ToString()
+            : null);
 
     /// <summary>
     /// The ID of the file cited by the <c>file_search</c> tool for this annotation.
@@ -17,26 +54,13 @@ public class TextAnnotationUpdate
     /// </summary>
     public string OutputFileId => _codeCitation?.FilePath?.FileId;
 
-    /// <summary>
-    /// The index in the message content at which the citation begins.
-    /// </summary>
-    public int? StartIndex => _fileSearchCitation?.StartIndex ?? _codeCitation?.StartIndex;
-
-    /// <summary>
-    /// The index in the message content at which the citation ends.
-    /// </summary>
-    public int? EndIndex => _fileSearchCitation?.EndIndex ?? _codeCitation?.EndIndex;
-
-    /// <summary>
-    /// The text in the message content that should be replaced.
-    /// </summary>
-    public string TextToReplace => _fileSearchCitation?.Text ?? _codeCitation?.Text;
-
+    internal readonly MessageDeltaTextContentAnnotation _internalAnnotation;
     private readonly MessageDeltaContentTextAnnotationsFileCitationObject _fileSearchCitation;
     private readonly MessageDeltaContentTextAnnotationsFilePathObject _codeCitation;
 
     internal TextAnnotationUpdate(MessageDeltaTextContentAnnotation internalAnnotation)
     {
+        _internalAnnotation = internalAnnotation;
         _fileSearchCitation = internalAnnotation as MessageDeltaContentTextAnnotationsFileCitationObject;
         _codeCitation = internalAnnotation as MessageDeltaContentTextAnnotationsFilePathObject;
     }

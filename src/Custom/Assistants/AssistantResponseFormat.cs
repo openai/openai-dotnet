@@ -20,7 +20,7 @@ public partial class AssistantResponseFormat
 {
     private readonly string _plainTextValue;
     private readonly string _objectType;
-    private readonly IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private readonly IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     private const string AutoValue = "auto";
     private const string TextValue = "text";
@@ -62,7 +62,7 @@ public partial class AssistantResponseFormat
     {
         _plainTextValue = plainTextValue;
         _objectType = objectType;
-        _serializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 
     /// <inheritdoc />

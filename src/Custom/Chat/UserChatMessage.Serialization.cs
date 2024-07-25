@@ -41,7 +41,7 @@ public partial class UserChatMessage : IJsonModel<UserChatMessage>
                 writer.WriteEndArray();
             }
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

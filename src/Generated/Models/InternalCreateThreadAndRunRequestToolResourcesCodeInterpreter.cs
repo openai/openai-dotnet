@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter()
         {
             FileIds = new ChangeTrackingList<string>();
@@ -19,7 +18,7 @@ namespace OpenAI.Assistants
         internal InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileIds = fileIds;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public IList<string> FileIds { get; }

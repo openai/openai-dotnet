@@ -10,7 +10,7 @@ public partial class OpenAIFileInfoCollection : IJsonModel<OpenAIFileInfoCollect
 {
     // CUSTOM:
     // - Serialized the Items property.
-    // - Recovered the serialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // - Recovered the serialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     void IJsonModel<OpenAIFileInfoCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance(this, SerializeOpenAIFileInfoCollection, writer, options);
 
@@ -26,11 +26,11 @@ public partial class OpenAIFileInfoCollection : IJsonModel<OpenAIFileInfoCollect
         writer.WriteEndArray();
         writer.WritePropertyName("object"u8);
         writer.WriteStringValue(instance.Object.ToString());
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 
-    // CUSTOM: Recovered the deserialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // CUSTOM: Recovered the deserialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     internal static OpenAIFileInfoCollection DeserializeOpenAIFileInfoCollection(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;

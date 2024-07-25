@@ -10,7 +10,7 @@ public partial class EmbeddingCollection : IJsonModel<EmbeddingCollection>
 {
     // CUSTOM:
     // - Serialized the Items property.
-    // - Recovered the deserialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // - Recovered the deserialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     void IJsonModel<EmbeddingCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance(this, SerializeEmbeddingCollection, writer, options);
 
@@ -30,11 +30,11 @@ public partial class EmbeddingCollection : IJsonModel<EmbeddingCollection>
         writer.WriteStringValue(instance.Object.ToString());
         writer.WritePropertyName("usage"u8);
         writer.WriteObjectValue<EmbeddingTokenUsage>(instance.Usage, options);
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 
-    // CUSTOM: Recovered the deserialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // CUSTOM: Recovered the deserialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     internal static EmbeddingCollection DeserializeEmbeddingCollection(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= new ModelReaderWriterOptions("W");

@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
         {
             _objectType = objectType;
             Function = function;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal ToolConstraint()

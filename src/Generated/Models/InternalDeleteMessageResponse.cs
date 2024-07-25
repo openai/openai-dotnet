@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalDeleteMessageResponse
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalDeleteMessageResponse(string id, bool deleted)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -24,7 +23,7 @@ namespace OpenAI.Assistants
             Id = id;
             Deleted = deleted;
             Object = @object;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalDeleteMessageResponse()

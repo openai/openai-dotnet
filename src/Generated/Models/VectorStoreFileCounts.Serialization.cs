@@ -21,20 +21,39 @@ namespace OpenAI.VectorStores
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("in_progress"u8);
-            writer.WriteNumberValue(InProgress);
-            writer.WritePropertyName("completed"u8);
-            writer.WriteNumberValue(Completed);
-            writer.WritePropertyName("failed"u8);
-            writer.WriteNumberValue(Failed);
-            writer.WritePropertyName("cancelled"u8);
-            writer.WriteNumberValue(Cancelled);
-            writer.WritePropertyName("total"u8);
-            writer.WriteNumberValue(Total);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("in_progress") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("in_progress"u8);
+                writer.WriteNumberValue(InProgress);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("completed") != true)
+            {
+                writer.WritePropertyName("completed"u8);
+                writer.WriteNumberValue(Completed);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("failed") != true)
+            {
+                writer.WritePropertyName("failed"u8);
+                writer.WriteNumberValue(Failed);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("cancelled") != true)
+            {
+                writer.WritePropertyName("cancelled"u8);
+                writer.WriteNumberValue(Cancelled);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("total") != true)
+            {
+                writer.WritePropertyName("total"u8);
+                writer.WriteNumberValue(Total);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -103,8 +122,9 @@ namespace OpenAI.VectorStores
                     total = property.Value.GetInt32();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

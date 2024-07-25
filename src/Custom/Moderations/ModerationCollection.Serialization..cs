@@ -14,7 +14,7 @@ public partial class ModerationCollection : IJsonModel<ModerationCollection>
 {
     // CUSTOM:
     // - Serialized the Items property.
-    // - Recovered the deserialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // - Recovered the deserialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     void IJsonModel<ModerationCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance(this, SerializeModerationCollection, writer, options);
 
@@ -32,11 +32,11 @@ public partial class ModerationCollection : IJsonModel<ModerationCollection>
             writer.WriteObjectValue<ModerationResult>(item, options);
         }
         writer.WriteEndArray();
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 
-    // CUSTOM: Recovered the deserialization of _serializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
+    // CUSTOM: Recovered the deserialization of SerializedAdditionalRawData. See https://github.com/Azure/autorest.csharp/issues/4636.
     internal static ModerationCollection DeserializeModerationCollection(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;

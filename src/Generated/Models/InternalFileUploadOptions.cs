@@ -10,13 +10,13 @@ namespace OpenAI.Files
 {
     internal partial class InternalFileUploadOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal InternalFileUploadOptions(Stream file, FileUploadPurpose purpose, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             File = file;
             Purpose = purpose;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
     }
 }

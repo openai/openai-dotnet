@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class MessageDeltaContentTextObjectText
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal MessageDeltaContentTextObjectText()
         {
             Annotations = new ChangeTrackingList<MessageDeltaTextContentAnnotation>();
@@ -20,7 +19,7 @@ namespace OpenAI.Assistants
         {
             Value = value;
             Annotations = annotations;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public string Value { get; }

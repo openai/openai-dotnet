@@ -21,14 +21,24 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Type.ToString());
-            writer.WritePropertyName("wandb"u8);
-            writer.WriteObjectValue(Wandb, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("wandb") != true)
+            {
+                writer.WritePropertyName("wandb"u8);
+                writer.WriteObjectValue(Wandb, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -79,8 +89,9 @@ namespace OpenAI.FineTuning
                     wandb = InternalFineTuningIntegrationWandb.DeserializeInternalFineTuningIntegrationWandb(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

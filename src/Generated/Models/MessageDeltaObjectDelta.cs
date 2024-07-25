@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class MessageDeltaObjectDelta
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal MessageDeltaObjectDelta()
         {
             Content = new ChangeTrackingList<MessageDeltaContent>();
@@ -20,7 +19,7 @@ namespace OpenAI.Assistants
         {
             Role = role;
             Content = content;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public IReadOnlyList<MessageDeltaContent> Content { get; }
     }

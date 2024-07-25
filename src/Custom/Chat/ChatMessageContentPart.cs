@@ -56,7 +56,7 @@ public partial class ChatMessageContentPart
         _kind = new ChatMessageContentPartKind(kind);
         _text = text;
         _imageUrl = imageUrl;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary>

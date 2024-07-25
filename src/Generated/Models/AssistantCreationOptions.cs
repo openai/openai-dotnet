@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantCreationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
 
         internal AssistantCreationOptions(string model, string name, string description, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -23,7 +23,7 @@ namespace OpenAI.Assistants
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public string Name { get; init; }
         public string Description { get; init; }

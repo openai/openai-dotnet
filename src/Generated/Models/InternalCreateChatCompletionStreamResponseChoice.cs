@@ -9,8 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionStreamResponseChoice
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, ChatFinishReason? finishReason, int index)
         {
             Argument.AssertNotNull(delta, nameof(delta));
@@ -26,7 +25,7 @@ namespace OpenAI.Chat
             Logprobs = logprobs;
             FinishReason = finishReason;
             Index = index;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateChatCompletionStreamResponseChoice()

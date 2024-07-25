@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class MessageDeltaContentTextAnnotationsFilePathObjectFilePath
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal MessageDeltaContentTextAnnotationsFilePathObjectFilePath()
         {
         }
@@ -18,7 +17,7 @@ namespace OpenAI.Assistants
         internal MessageDeltaContentTextAnnotationsFilePathObjectFilePath(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public string FileId { get; }

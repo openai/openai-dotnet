@@ -10,7 +10,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal InternalChatCompletionResponseMessage(IReadOnlyList<ChatMessageContentPart> content, IReadOnlyList<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -18,7 +18,7 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls;
             Role = role;
             FunctionCall = functionCall;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalChatCompletionResponseMessage()

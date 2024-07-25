@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateThreadAndRunRequest(string assistantId)
         {
             Argument.AssertNotNull(assistantId, nameof(assistantId));
@@ -38,7 +37,7 @@ namespace OpenAI.Assistants
             ToolChoice = toolChoice;
             ParallelToolCalls = parallelToolCalls;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateThreadAndRunRequest()

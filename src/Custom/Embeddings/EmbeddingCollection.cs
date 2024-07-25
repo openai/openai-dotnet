@@ -46,7 +46,7 @@ public partial class EmbeddingCollection : ReadOnlyCollection<Embedding>
     /// </list>
     /// </para>
     /// </summary>
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
     /// <summary> Initializes a new instance of <see cref="EmbeddingCollection"/>. </summary>
@@ -78,7 +78,7 @@ public partial class EmbeddingCollection : ReadOnlyCollection<Embedding>
         Model = model;
         Object = @object;
         Usage = usage;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.

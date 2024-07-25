@@ -22,7 +22,7 @@ internal partial class InternalResponseMessageTextContent : IJsonModel<InternalR
         writer.WriteStringValue(_type);
         writer.WritePropertyName("text"u8);
         writer.WriteObjectValue<MessageContentTextObjectText>(_text, options);
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

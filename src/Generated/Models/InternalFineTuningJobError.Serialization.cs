@@ -21,23 +21,36 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("code"u8);
-            writer.WriteStringValue(Code);
-            writer.WritePropertyName("message"u8);
-            writer.WriteStringValue(Message);
-            if (Param != null)
+            if (SerializedAdditionalRawData?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                writer.WritePropertyName("code"u8);
+                writer.WriteStringValue(Code);
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("message") != true)
             {
-                writer.WriteNull("param");
+                writer.WritePropertyName("message"u8);
+                writer.WriteStringValue(Message);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("param") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                if (Param != null)
                 {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -99,8 +112,9 @@ namespace OpenAI.FineTuning
                     param = property.Value.GetString();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

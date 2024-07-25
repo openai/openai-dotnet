@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunStep
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepType type, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage)
         {
             Argument.AssertNotNull(id, nameof(id));
@@ -54,7 +53,7 @@ namespace OpenAI.Assistants
             CompletedAt = completedAt;
             Metadata = metadata;
             Usage = usage;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal RunStep()
