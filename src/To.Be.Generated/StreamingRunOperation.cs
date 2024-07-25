@@ -36,7 +36,7 @@ public partial class StreamingRunOperation : RunOperation
     // TODO: this duplicates a field on the base type.  Address?
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
     {
         // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
@@ -47,15 +47,39 @@ public partial class StreamingRunOperation : RunOperation
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
         }
+
+        if (Status.HasValue && Status.Value.IsTerminal)
+        {
+            return WaitReturnReason.Completed;
+        }
+
+        if (Status.HasValue && Status.Value == RunStatus.RequiresAction)
+        {
+            return WaitReturnReason.Suspended;
+        }
+
+        throw new InvalidOperationException($"Invalid Wait completion status: '{Status}'");
     }
 
-    public override void Wait(CancellationToken cancellationToken = default)
+    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
     {
         foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
         {
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
         }
+
+        if (Status.HasValue && Status.Value.IsTerminal)
+        {
+            return WaitReturnReason.Completed;
+        }
+
+        if (Status.HasValue && Status.Value == RunStatus.RequiresAction)
+        {
+            return WaitReturnReason.Suspended;
+        }
+
+        throw new InvalidOperationException($"Invalid Wait completion status: '{Status}'");
     }
 
     // Public APIs specific to streaming LRO

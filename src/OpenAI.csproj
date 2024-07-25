@@ -72,6 +72,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.1.0-alpha.20240724.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\azure-sdk-for-net\sdk\core\System.ClientModel\src\System.ClientModel.csproj" />
   </ItemGroup>
 </Project>

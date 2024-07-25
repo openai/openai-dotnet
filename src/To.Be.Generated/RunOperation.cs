@@ -69,13 +69,13 @@ public partial class RunOperation : OperationResult
 
     #region OperationResult methods
 
-    public override async Task WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
         => await WaitAsync(default, cancellationToken).ConfigureAwait(false);
 
-    public override void Wait(CancellationToken cancellationToken = default)
+    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
         => Wait(default, cancellationToken);
 
-    public virtual async Task WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual async Task<WaitReturnReason> WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -88,12 +88,14 @@ public partial class RunOperation : OperationResult
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
             {
-                return;
+                return WaitReturnReason.Suspended;
             }
         }
+
+        return WaitReturnReason.Completed;
     }
 
-    public virtual void Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual WaitReturnReason Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -106,9 +108,11 @@ public partial class RunOperation : OperationResult
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
             {
-                return;
+                return WaitReturnReason.Suspended;
             }
         }
+
+        return WaitReturnReason.Completed;
     }
 
     // Expose enumerable APIs similar to the streaming ones.
