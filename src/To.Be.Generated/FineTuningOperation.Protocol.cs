@@ -14,8 +14,7 @@ public partial class FineTuningOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
-
+    
     private readonly string _jobId;
     
     private PollingInterval _pollingInterval;
@@ -23,14 +22,12 @@ public partial class FineTuningOperation : OperationResult
     internal FineTuningOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        RequestOptions options,
         string jobId,
         string status,
         PipelineResponse response) : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
 
         _jobId = jobId;
         IsCompleted = GetIsCompleted(status);
@@ -44,28 +41,29 @@ public partial class FineTuningOperation : OperationResult
 
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task WaitForCompletionAsync()
+    public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         IAsyncEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
-            _pipeline, _endpoint, _jobId, _options);
+            _pipeline, _endpoint, _jobId, cancellationToken);
 
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             ApplyUpdate(enumerator.Current);
-
-            // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync(_options.CancellationToken);
+			
+            await _pollingInterval.WaitAsync(cancellationToken);
         }
     }
 
-    public override void WaitForCompletion()
+    public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
         IEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
-            _pipeline, _endpoint, _jobId, _options);
+            _pipeline, _endpoint, _jobId, cancellationToken);
 
         while (enumerator.MoveNext())
         {
             ApplyUpdate(enumerator.Current);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
         }

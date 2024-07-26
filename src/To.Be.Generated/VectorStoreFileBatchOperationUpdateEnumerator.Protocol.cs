@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -17,23 +18,20 @@ internal partial class VectorStoreFileBatchOperationUpdateEnumerator :
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
+    private readonly CancellationToken _cancellationToken;
 
     private readonly string _vectorStoreId;
     private readonly string _batchId;
 
-    // TODO: does this one need to be nullable?
     private ClientResult? _current;
     private bool _hasNext = true;
 
     public VectorStoreFileBatchOperationUpdateEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
-
         string vectorStoreId,
         string batchId,
-
-        RequestOptions options)
+        CancellationToken cancellationToken)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
@@ -41,7 +39,7 @@ internal partial class VectorStoreFileBatchOperationUpdateEnumerator :
         _vectorStoreId = vectorStoreId;
         _batchId = batchId;
 
-        _options = options;
+        _cancellationToken = cancellationToken;
     }
 
     public ClientResult Current => _current!;
@@ -58,7 +56,7 @@ internal partial class VectorStoreFileBatchOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = GetBatchFileJob(_vectorStoreId, _batchId, _options);
+        ClientResult result = GetBatchFileJob(_vectorStoreId, _batchId, _cancellationToken.ToRequestOptions());
 
         _current = result;
         _hasNext = HasNext(result);
@@ -84,7 +82,7 @@ internal partial class VectorStoreFileBatchOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = await GetBatchFileJobAsync(_vectorStoreId, _batchId, _options).ConfigureAwait(false);
+        ClientResult result = await GetBatchFileJobAsync(_vectorStoreId, _batchId, _cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
         _current = result;
         _hasNext = HasNext(result);

@@ -16,8 +16,7 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
-
+    
     private readonly string _vectorStoreId;
     private readonly string _batchId;
     
@@ -28,19 +27,15 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     internal VectorStoreFileBatchOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-
         string vectorStoreId,
         string batchId,
         string status,
-
-        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
-
+        
         _vectorStoreId = vectorStoreId;
         _batchId = batchId;
 

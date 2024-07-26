@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -16,9 +17,10 @@ internal partial class FineTuningOperationUpdateEnumerator :
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly string _jobId;
-    private readonly RequestOptions _options;
+    private readonly CancellationToken _cancellationToken;
 
+    private readonly string _jobId;
+    
     private ClientResult? _current;
     private bool _hasNext = true;
 
@@ -26,14 +28,14 @@ internal partial class FineTuningOperationUpdateEnumerator :
         ClientPipeline pipeline,
         Uri endpoint,
         string jobId,
-        RequestOptions options)
+        CancellationToken cancellationToken)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
 
         _jobId = jobId;
 
-        _options = options;
+        _cancellationToken = cancellationToken;
     }
 
     public ClientResult Current => _current!;
@@ -50,7 +52,7 @@ internal partial class FineTuningOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = GetJob(_jobId, _options);
+        ClientResult result = GetJob(_jobId, _cancellationToken.ToRequestOptions());
 
         _current = result;
         _hasNext = HasNext(result);
@@ -76,7 +78,7 @@ internal partial class FineTuningOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = await GetJobAsync(_jobId, _options).ConfigureAwait(false);
+        ClientResult result = await GetJobAsync(_jobId, _cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
         _current = result;
         _hasNext = HasNext(result);

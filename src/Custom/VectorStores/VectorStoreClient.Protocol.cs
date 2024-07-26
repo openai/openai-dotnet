@@ -446,7 +446,7 @@ public partial class VectorStoreClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, options, response);
+        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
     }
 
     /// <summary>
@@ -472,6 +472,6 @@ public partial class VectorStoreClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, options, response);
+        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
     }
 }

@@ -20,7 +20,7 @@ public partial class BatchClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new BatchOperation(_pipeline, _endpoint, batchId, status, options, response);
+        return new BatchOperation(_pipeline, _endpoint, batchId, status, response);
     }
 
     public virtual BatchOperation CreateBatch(BinaryContent content, RequestOptions options = null)
@@ -34,7 +34,7 @@ public partial class BatchClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new BatchOperation(_pipeline, _endpoint, batchId, status, options, response);
+        return new BatchOperation(_pipeline, _endpoint, batchId, status, response);
     }
 
     /// <summary>

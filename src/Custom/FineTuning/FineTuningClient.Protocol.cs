@@ -46,7 +46,7 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new FineTuningOperation(_pipeline, _endpoint, options, jobId, status, response);
+        return new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
     }
 
     // CUSTOM:
@@ -75,7 +75,7 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new FineTuningOperation(_pipeline, _endpoint, options, jobId, status, response);
+        return new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
     }
 
     // CUSTOM:

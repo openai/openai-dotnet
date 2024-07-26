@@ -553,8 +553,7 @@ public partial class VectorStoreClient
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
             _pipeline,
             _endpoint,
-            result,
-            cancellationToken.ToRequestOptions());
+            result);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -585,8 +584,7 @@ public partial class VectorStoreClient
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
             _pipeline,
             _endpoint,
-            result,
-            cancellationToken.ToRequestOptions());
+            result);
 
         if (returnWhen == ReturnWhen.Started)
         {

@@ -2,8 +2,6 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,14 +16,12 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     internal VectorStoreFileBatchOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        ClientResult<VectorStoreBatchFileJob> result,
-        RequestOptions options)
+        ClientResult<VectorStoreBatchFileJob> result)
         : base(result.GetRawResponse())
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
-
+        
         Value = result;
         Status = Value.Status;
         IsCompleted = GetIsCompleted(Value.Status);
@@ -50,30 +46,31 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     public string VectorStoreId { get => _vectorStoreId; }
     public string BatchId { get => _batchId; }
 
-    public override async Task WaitForCompletionAsync()
+    public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         IAsyncEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator =
             new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
+                _pipeline, _endpoint, _vectorStoreId, _batchId, cancellationToken);
 
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             ApplyUpdate(enumerator.Current);
 
-            // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync(_options.CancellationToken);
+            await _pollingInterval.WaitAsync(cancellationToken);
         }
     }
 
-    public override void WaitForCompletion()
+    public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
         IEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator = 
             new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
+                _pipeline, _endpoint, _vectorStoreId, _batchId, cancellationToken);
 
         while (enumerator.MoveNext())
         {
             ApplyUpdate(enumerator.Current);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
         }

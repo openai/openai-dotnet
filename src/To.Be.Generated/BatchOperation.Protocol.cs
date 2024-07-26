@@ -3,6 +3,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -14,8 +15,7 @@ public partial class BatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
-
+    
     private readonly string _batchId;
 
     private PollingInterval _pollingInterval;
@@ -25,18 +25,14 @@ public partial class BatchOperation : OperationResult
     internal BatchOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-
         string batchId,
         string status,
-
-        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
-
+        
         _batchId = batchId;
 
         IsCompleted = GetIsCompleted(status);
@@ -51,30 +47,29 @@ public partial class BatchOperation : OperationResult
     public override bool IsCompleted { get; protected set; }
 
     // These are replaced when LRO is evolved to have conveniences
-    public override async Task WaitForCompletionAsync()
+    public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         IAsyncEnumerator<ClientResult> enumerator =
-            new BatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _batchId, _options);
+            new BatchOperationUpdateEnumerator(_pipeline, _endpoint, _batchId, cancellationToken);
 
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             ApplyUpdate(enumerator.Current);
 
-            // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync(_options.CancellationToken);
+            await _pollingInterval.WaitAsync(cancellationToken);
         }
     }
 
-    public override void WaitForCompletion()
+    public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
-        IEnumerator<ClientResult> enumerator =
-            new BatchOperationUpdateEnumerator(
-                _pipeline, _endpoint,  _batchId, _options);
+        IEnumerator<ClientResult> enumerator = new BatchOperationUpdateEnumerator(
+            _pipeline, _endpoint, _batchId, cancellationToken);
 
         while (enumerator.MoveNext())
         {
             ApplyUpdate(enumerator.Current);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
         }

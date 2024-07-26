@@ -3,8 +3,8 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -17,7 +17,7 @@ internal partial class BatchOperationUpdateEnumerator :
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
+    private readonly CancellationToken _cancellationToken;
 
     private readonly string _batchId;
 
@@ -28,17 +28,15 @@ internal partial class BatchOperationUpdateEnumerator :
     public BatchOperationUpdateEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
-
         string batchId,
-
-        RequestOptions options)
+        CancellationToken cancellationToken)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
 
         _batchId = batchId;
 
-        _options = options;
+        _cancellationToken = cancellationToken;
     }
 
     public ClientResult Current => _current!;
@@ -55,7 +53,7 @@ internal partial class BatchOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = GetBatch(_batchId, _options);
+        ClientResult result = GetBatch(_batchId, _cancellationToken.ToRequestOptions());
 
         _current = result;
         _hasNext = HasNext(result);
@@ -81,7 +79,7 @@ internal partial class BatchOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = await GetBatchAsync(_batchId, _options).ConfigureAwait(false);
+        ClientResult result = await GetBatchAsync(_batchId, _cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
         _current = result;
         _hasNext = HasNext(result);
