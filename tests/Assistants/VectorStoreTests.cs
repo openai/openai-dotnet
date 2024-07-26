@@ -281,7 +281,7 @@ public partial class VectorStoreTests
             Assert.That(batchJob.Status, Is.EqualTo(VectorStoreBatchFileJobStatus.InProgress));
         });
 
-        batchJob.Wait();
+        batchJob.WaitForCompletion();
 
         foreach (VectorStoreFileAssociation association in batchJob.GetFileAssociations().GetAllValues())
         {

@@ -44,7 +44,7 @@ public partial class FineTuningOperation : OperationResult
 
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task WaitForCompletionAsync()
     {
         IAsyncEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
             _pipeline, _endpoint, _jobId, _options);
@@ -53,16 +53,12 @@ public partial class FineTuningOperation : OperationResult
         {
             ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync();
+            await _pollingInterval.WaitAsync(_options.CancellationToken);
         }
-
-        return WaitReturnReason.Completed;
     }
 
-    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
+    public override void WaitForCompletion()
     {
         IEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
             _pipeline, _endpoint, _jobId, _options);
@@ -71,12 +67,8 @@ public partial class FineTuningOperation : OperationResult
         {
             ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             _pollingInterval.Wait();
         }
-
-        return WaitReturnReason.Completed;
     }
 
     private void ApplyUpdate(ClientResult result)

@@ -561,7 +561,7 @@ public partial class VectorStoreClient
             return operation;
         }
 
-        await operation.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await operation.WaitForCompletionAsync().ConfigureAwait(false);
         return operation;
     }
 
@@ -593,7 +593,7 @@ public partial class VectorStoreClient
             return operation;
         }
 
-        operation.Wait(cancellationToken);
+        operation.WaitForCompletion();
         return operation;
     }
 	

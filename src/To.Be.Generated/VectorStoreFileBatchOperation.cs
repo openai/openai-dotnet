@@ -50,7 +50,7 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     public string VectorStoreId { get => _vectorStoreId; }
     public string BatchId { get => _batchId; }
 
-    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task WaitForCompletionAsync()
     {
         IAsyncEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator =
             new VectorStoreFileBatchOperationUpdateEnumerator(
@@ -60,16 +60,12 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         {
             ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             // TODO: Plumb through cancellation token
-            await _pollingInterval.WaitAsync();
+            await _pollingInterval.WaitAsync(_options.CancellationToken);
         }
-
-        return WaitReturnReason.Completed;
     }
 
-    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
+    public override void WaitForCompletion()
     {
         IEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator = 
             new VectorStoreFileBatchOperationUpdateEnumerator(
@@ -79,12 +75,8 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         {
             ApplyUpdate(enumerator.Current);
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             _pollingInterval.Wait();
         }
-
-        return WaitReturnReason.Completed;
     }
 
     private void ApplyUpdate(ClientResult<VectorStoreBatchFileJob> update)

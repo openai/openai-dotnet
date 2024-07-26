@@ -716,7 +716,7 @@ public partial class AssistantClient
             return operation;
         }
 
-        await operation.WaitAsync(cancellationToken);
+        await operation.WaitUntilStoppedAsync().ConfigureAwait(false);
         return operation;
     }
 
@@ -749,7 +749,7 @@ public partial class AssistantClient
             return operation;
         }
 
-        operation.Wait(cancellationToken);
+        operation.WaitUntilStopped();
         return operation;
     }
 
@@ -840,7 +840,7 @@ public partial class AssistantClient
             return operation;
         }
 
-        await operation.WaitAsync(cancellationToken);
+        await operation.WaitUntilStoppedAsync().ConfigureAwait(false);
         return operation;
     }
 
@@ -871,7 +871,7 @@ public partial class AssistantClient
             return operation;
         }
 
-        operation.Wait(cancellationToken);
+        operation.WaitUntilStopped();
         return operation;
     }
 

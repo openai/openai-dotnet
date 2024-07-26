@@ -17,6 +17,8 @@ public partial class StreamingRunOperation : RunOperation
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
 
+    private readonly RequestOptions _options;
+
     private StreamingRunOperationUpdateEnumerator? _enumerator;
 
     internal StreamingRunOperation(
@@ -31,55 +33,33 @@ public partial class StreamingRunOperation : RunOperation
     {
         _createRunAsync = createRunAsync;
         _createRun = createRun;
+
+        _options = options;
     }
 
     // TODO: this duplicates a field on the base type.  Address?
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
+    public override async Task WaitUntilStoppedAsync()
     {
         // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
+        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(_options.CancellationToken).ConfigureAwait(false))
         {
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
         }
-
-        if (Status.HasValue && Status.Value.IsTerminal)
-        {
-            return WaitReturnReason.Completed;
-        }
-
-        if (Status.HasValue && Status.Value == RunStatus.RequiresAction)
-        {
-            return WaitReturnReason.Suspended;
-        }
-
-        throw new InvalidOperationException($"Invalid Wait completion status: '{Status}'");
     }
 
-    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
+    public override void WaitUntilStopped()
     {
-        foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
+        foreach (StreamingUpdate update in GetUpdatesStreaming())
         {
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
         }
-
-        if (Status.HasValue && Status.Value.IsTerminal)
-        {
-            return WaitReturnReason.Completed;
-        }
-
-        if (Status.HasValue && Status.Value == RunStatus.RequiresAction)
-        {
-            return WaitReturnReason.Suspended;
-        }
-
-        throw new InvalidOperationException($"Invalid Wait completion status: '{Status}'");
     }
 
     // Public APIs specific to streaming LRO
@@ -114,7 +94,7 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
-    public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
+    public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming()
     {
         try
         {
@@ -160,14 +140,14 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
-    public override IEnumerable<ThreadRun> GetUpdates(TimeSpan? pollingInterval = null, CancellationToken cancellationToken = default)
+    public override IEnumerable<ThreadRun> GetUpdates(TimeSpan? pollingInterval = null)
     {
         if (pollingInterval is not null)
         {
             throw new NotSupportedException("Cannot specify polling interval for streaming operation.");
         }
 
-        foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
+        foreach (StreamingUpdate update in GetUpdatesStreaming())
         {
             if (update is RunUpdate runUpdate)
             {

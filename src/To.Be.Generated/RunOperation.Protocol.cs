@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Protocol version
-public partial class RunOperation : OperationResult
+public partial class RunOperation : ClientResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
@@ -64,7 +64,7 @@ public partial class RunOperation : OperationResult
 
     #region OperationResult methods
 
-    public override bool IsCompleted
+    public virtual bool IsCompleted
     {
         get
         {
@@ -80,7 +80,7 @@ public partial class RunOperation : OperationResult
         protected set => _isCompleted = value;
     }
 
-    public override ContinuationToken? RehydrationToken { get; protected set; }
+    public virtual ContinuationToken? RehydrationToken { get; protected set; }
 
     internal bool IsStreaming => _pollingInterval == null;
 

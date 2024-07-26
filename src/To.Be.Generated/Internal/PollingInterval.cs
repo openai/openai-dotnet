@@ -17,9 +17,9 @@ internal class PollingInterval
         _interval = interval ?? new TimeSpan(DefaultWaitMilliseconds);
     }
 
-    public async Task WaitAsync()
+    public async Task WaitAsync(CancellationToken cancellationToken)
     {
-        await Task.Delay(_interval);
+        await Task.Delay(_interval, cancellationToken);
     }
 
     public void Wait()

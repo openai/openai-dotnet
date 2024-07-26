@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 // Convenience version
-public partial class RunOperation : OperationResult
+public partial class RunOperation : ClientResult
 {
     // For use with polling convenience methods where the response has been
     // obtained prior to creation of the LRO type.
@@ -69,13 +69,13 @@ public partial class RunOperation : OperationResult
 
     #region OperationResult methods
 
-    public override async Task<WaitReturnReason> WaitAsync(CancellationToken cancellationToken = default)
-        => await WaitAsync(default, cancellationToken).ConfigureAwait(false);
+    public virtual async Task WaitUntilStoppedAsync()
+        => await WaitUntilStoppedAsync(default).ConfigureAwait(false);
 
-    public override WaitReturnReason Wait(CancellationToken cancellationToken = default)
-        => Wait(default, cancellationToken);
+    public virtual void WaitUntilStopped()
+        => WaitUntilStopped(default);
 
-    public virtual async Task<WaitReturnReason> WaitAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual async Task WaitUntilStoppedAsync(TimeSpan? pollingInterval)
     {
         if (IsStreaming)
         {
@@ -83,19 +83,17 @@ public partial class RunOperation : OperationResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        await foreach (ThreadRun update in GetUpdatesAsync(pollingInterval, cancellationToken: cancellationToken))
+        await foreach (ThreadRun update in GetUpdatesAsync(pollingInterval))
         {
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
             {
-                return WaitReturnReason.Suspended;
+                return;
             }
         }
-
-        return WaitReturnReason.Completed;
     }
 
-    public virtual WaitReturnReason Wait(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
+    public virtual void WaitUntilStopped(TimeSpan? pollingInterval)
     {
         if (IsStreaming)
         {
@@ -103,16 +101,14 @@ public partial class RunOperation : OperationResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        foreach (ThreadRun update in GetUpdates(pollingInterval, cancellationToken: cancellationToken))
+        foreach (ThreadRun update in GetUpdates(pollingInterval))
         {
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
             {
-                return WaitReturnReason.Suspended;
+                return;
             }
         }
-
-        return WaitReturnReason.Completed;
     }
 
     // Expose enumerable APIs similar to the streaming ones.
@@ -135,16 +131,13 @@ public partial class RunOperation : OperationResult
 
             yield return enumerator.Current;
 
-            cancellationToken.ThrowIfCancellationRequested();
-
             // TODO: do we need null check?
-            await _pollingInterval!.WaitAsync().ConfigureAwait(false);
+            await _pollingInterval!.WaitAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 
     public virtual IEnumerable<ThreadRun> GetUpdates(
-        TimeSpan? pollingInterval = default,
-        CancellationToken cancellationToken = default)
+        TimeSpan? pollingInterval = default)
     {
         if (pollingInterval is not null)
         {
@@ -160,8 +153,6 @@ public partial class RunOperation : OperationResult
             ApplyUpdate(enumerator.Current);
 
             yield return enumerator.Current;
-
-            cancellationToken.ThrowIfCancellationRequested();
 
             // TODO: do we need null check?
             _pollingInterval!.Wait();

@@ -245,8 +245,7 @@ public partial class AssistantTests
         PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
 
-        WaitReturnReason reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        runOperation.WaitUntilStopped();
         Assert.That(runOperation.IsCompleted, Is.True);
 
         ThreadRun run = runOperation.Value;
@@ -310,8 +309,7 @@ public partial class AssistantTests
         RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread, assistant);
         Validate(runOperation);
 
-        WaitReturnReason reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        runOperation.WaitUntilStopped();
         Assert.That(runOperation.IsCompleted, Is.True);
 
         ThreadRun run = runOperation.Value;
@@ -423,8 +421,7 @@ public partial class AssistantTests
             });
         Validate(runOperation);
 
-        WaitReturnReason reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Suspended));
+        runOperation.WaitUntilStopped();
 
         ThreadRun run = runOperation.Value;
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.RequiresAction));
@@ -436,8 +433,7 @@ public partial class AssistantTests
         runOperation.SubmitToolOutputsToRun([new(run.RequiredActions[0].ToolCallId, "tacos")]);
         Assert.That(runOperation.Status!.Value.IsTerminal, Is.False);
 
-        reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        runOperation.WaitUntilStopped();
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
         PageCollection<ThreadMessage> messagePages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
@@ -636,7 +632,7 @@ public partial class AssistantTests
 
         RunOperation runOperation = client.CreateRun(ReturnWhen.Completed, thread, assistant);
         Validate(runOperation);
-
+        
         IEnumerable<ThreadMessage> messages = client.GetMessages(thread, new() { Order = ListOrder.NewestFirst }).GetAllValues();
         int messageCount = 0;
         bool hasCake = false;
@@ -1090,8 +1086,7 @@ public partial class AssistantTests
         PageResult<ThreadMessage> messagesPage = client.GetMessages(thread).GetCurrentPage();
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
 
-        WaitReturnReason reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        runOperation.WaitUntilStopped();
 
         response = runOperation.GetRawResponse();
         using JsonDocument completedJsonDoc = JsonDocument.Parse(response.Content);
@@ -1129,7 +1124,7 @@ public partial class AssistantTests
         RunOperation runOperation = client.CreateRun(ReturnWhen.Started, thread.Id, content, options);
 
         // For streaming on protocol, if you call Wait, it will throw.
-        Assert.Throws<NotSupportedException>(() => runOperation.Wait());
+        Assert.Throws<NotSupportedException>(() => runOperation.WaitUntilStopped());
 
         // Instead, callers must get the response stream and parse it.
         PipelineResponse response = runOperation.GetRawResponse();
@@ -1415,8 +1410,7 @@ public partial class AssistantTests
         Assert.That(runOperation.Value.Id, Is.EqualTo(runOperation.RunId));
 
         // Wait for operation to complete.
-        WaitReturnReason reason = runOperation.Wait();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        runOperation.WaitUntilStopped();
 
         runsPage = client.GetRuns(thread).GetCurrentPage();
         Assert.That(runsPage.Values.Count, Is.EqualTo(1));
@@ -1533,14 +1527,12 @@ public partial class AssistantTests
                 AdditionalInstructions = "Call provided tools when appropriate.",
             });
 
-        WaitReturnReason? reason = default;
         while (!runOperation.IsCompleted)
         {
-            reason = runOperation.Wait();
+            runOperation.WaitUntilStopped();
 
             if (runOperation.Status == RunStatus.RequiresAction)
             {
-                Assert.That(reason, Is.EqualTo(WaitReturnReason.Suspended));
                 Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
                 Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
                 Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
@@ -1555,7 +1547,6 @@ public partial class AssistantTests
             }
         }
 
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
         PageCollection<ThreadMessage> messagePages = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
@@ -1683,8 +1674,8 @@ public partial class AssistantTests
 
         // Wait for both to complete
         Task.WaitAll(
-            Task.Run(() => runOperation.Wait()),
-            Task.Run(() => rehydratedRunOperation.Wait()));
+            Task.Run(() => runOperation.WaitUntilStopped()),
+            Task.Run(() => rehydratedRunOperation.WaitUntilStopped()));
 
         Assert.That(runOperation.Status, Is.EqualTo(rehydratedRunOperation.Status));
 
@@ -1730,8 +1721,7 @@ public partial class AssistantTests
         Assert.That(runOperation.Value, Is.Null);
 
         // Wait for operation to complete, as implemented in streaming operation type.
-        WaitReturnReason reason = await runOperation.WaitAsync();
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
+        await runOperation.WaitUntilStoppedAsync();
 
         // Validate that req/response operation work with streaming 
         IAsyncEnumerable<RunStep> steps = runOperation.GetRunStepsAsync().GetAllValuesAsync();
@@ -1956,14 +1946,12 @@ public partial class AssistantTests
                 AdditionalInstructions = "Call provided tools when appropriate.",
             });
 
-        WaitReturnReason? reason = default;
         do
         {
-            reason = await runOperation.WaitAsync();
+            await runOperation.WaitUntilStoppedAsync();
 
             if (runOperation.Status == RunStatus.RequiresAction)
             {
-                Assert.That(reason, Is.EqualTo(WaitReturnReason.Suspended));
                 Assert.That(runOperation.Value.RequiredActions?.Count, Is.EqualTo(1));
                 Assert.That(runOperation.Value.RequiredActions[0].ToolCallId, Is.Not.Null.And.Not.Empty);
                 Assert.That(runOperation.Value.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
@@ -1979,7 +1967,6 @@ public partial class AssistantTests
         }
         while (!runOperation.IsCompleted);
 
-        Assert.That(reason, Is.EqualTo(WaitReturnReason.Completed));
         Assert.That(runOperation.Status, Is.EqualTo(RunStatus.Completed));
 
         PageCollection<ThreadMessage> messagePages = client.GetMessages(runOperation.ThreadId, new MessageCollectionOptions() { Order = ListOrder.NewestFirst });
