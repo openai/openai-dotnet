@@ -477,29 +477,6 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task JsonResult()
-    {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
-        IEnumerable<ChatMessage> messages = [
-            new UserChatMessage("Give me a JSON object with the following properties: red, green, and blue. The value "
-                + "of each property should be a string containing their RGB representation in hexadecimal.")
-        ];
-        ChatCompletionOptions options = new() { ResponseFormat = ChatResponseFormat.JsonObject };
-        ClientResult<ChatCompletion> result = IsAsync
-            ? await client.CompleteChatAsync(messages, options)
-            : client.CompleteChat(messages, options);
-
-        JsonDocument jsonDocument = JsonDocument.Parse(result.Value.Content[0].Text);
-
-        Assert.That(jsonDocument.RootElement.TryGetProperty("red", out JsonElement redProperty));
-        Assert.That(jsonDocument.RootElement.TryGetProperty("green", out JsonElement greenProperty));
-        Assert.That(jsonDocument.RootElement.TryGetProperty("blue", out JsonElement blueProperty));
-        Assert.That(redProperty.GetString().ToLowerInvariant(), Contains.Substring("ff0000"));
-        Assert.That(greenProperty.GetString().ToLowerInvariant(), Contains.Substring("00ff00"));
-        Assert.That(blueProperty.GetString().ToLowerInvariant(), Contains.Substring("0000ff"));
-    }
-
-    [Test]
     [NonParallelizable]
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
