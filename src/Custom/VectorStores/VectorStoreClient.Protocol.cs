@@ -447,7 +447,6 @@ public partial class VectorStoreClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
@@ -483,7 +482,6 @@ public partial class VectorStoreClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;

@@ -23,7 +23,6 @@ public partial class BatchClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         BatchOperation operation = new BatchOperation(_pipeline, _endpoint, batchId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
@@ -47,7 +46,6 @@ public partial class BatchClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         BatchOperation operation = new BatchOperation(_pipeline, _endpoint, batchId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;

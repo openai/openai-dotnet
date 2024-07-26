@@ -49,7 +49,6 @@ public partial class FineTuningClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
@@ -88,7 +87,6 @@ public partial class FineTuningClient
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
         FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
-
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
