@@ -17,6 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Custom\Common\Instrumentation\*.cs" LinkBase="Instrumentation\Shared" />
+    <Compile Include="..\src\Utility\Instrumentation\*.cs" LinkBase="Instrumentation\Shared" />
   </ItemGroup>
 </Project>

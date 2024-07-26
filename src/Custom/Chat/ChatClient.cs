@@ -1,4 +1,4 @@
-using OpenAI.Custom.Common.Instrumentation;
+using OpenAI.Instrumentation;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -225,7 +225,7 @@ public partial class ChatClient
     {
         options.Messages = messages.ToList();
         options.Model = _model;
-        options.Stream = stream 
+        options.Stream = stream
             ? true
             : null;
         options.StreamOptions = stream ? options.StreamOptions : null;

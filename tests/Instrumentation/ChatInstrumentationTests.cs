@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Custom.Common.Instrumentation;
+using OpenAI.Instrumentation;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -62,7 +62,7 @@ public class ChatInstrumentationTests
         var elapsedMax = Stopwatch.StartNew();
         using var scope = factory.StartChatScope(new ChatCompletionOptions());
         var elapsedMin = Stopwatch.StartNew();
-        
+
         Assert.Null(Activity.Current);
         Assert.NotNull(scope);
 
@@ -149,7 +149,7 @@ public class ChatInstrumentationTests
             scope.RecordChatCompletion(chatCompletion);
         }
         Assert.Null(Activity.Current);
-        
+
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
     }
 
@@ -214,7 +214,7 @@ public class ChatInstrumentationTests
         await Task.WhenAll(tasks);
 
         Assert.AreEqual(tasks.Length, activityListener.Activities.Count);
-        
+
         var durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.AreEqual(tasks.Length, durations.Count);
         Assert.AreEqual(numberOfSuccessfulResponses, durations.Count(d => !d.tags.ContainsKey("error.type")));
