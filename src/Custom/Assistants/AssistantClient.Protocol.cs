@@ -337,7 +337,7 @@ public partial class AssistantClient
     {
         ClientResult result = await _runSubClient.CreateThreadAndRunAsync(content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -367,7 +367,7 @@ public partial class AssistantClient
     {
         ClientResult result = _runSubClient.CreateThreadAndRun(content, options);
         PipelineResponse response = result.GetRawResponse();
-        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -470,7 +470,7 @@ public partial class AssistantClient
     {
         ClientResult result = await _runSubClient.CreateRunAsync(threadId, content, options).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, response);
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -501,7 +501,7 @@ public partial class AssistantClient
     {
         ClientResult result = _runSubClient.CreateRun(threadId, content, options);
         PipelineResponse response = result.GetRawResponse();
-        RunOperation operation = new RunOperation(_pipeline, _endpoint, options, response);
+        RunOperation operation = new RunOperation(_pipeline, _endpoint, response);
 
         if (returnWhen == ReturnWhen.Started)
         {

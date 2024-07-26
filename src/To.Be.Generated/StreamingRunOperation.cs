@@ -17,45 +17,41 @@ public partial class StreamingRunOperation : RunOperation
     private readonly Func<Task<ClientResult>> _createRunAsync;
     private readonly Func<ClientResult> _createRun;
 
-    private readonly RequestOptions _options;
 
     private StreamingRunOperationUpdateEnumerator? _enumerator;
 
     internal StreamingRunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        RequestOptions options,
 
         // Note if we pass funcs we don't need to pass in the pipeline.
         Func<Task<ClientResult>> createRunAsync,
         Func<ClientResult> createRun)
-        : base(pipeline, endpoint, options)
+        : base(pipeline, endpoint)
     {
         _createRunAsync = createRunAsync;
         _createRun = createRun;
-
-        _options = options;
     }
 
     // TODO: this duplicates a field on the base type.  Address?
     public override bool IsCompleted { get; protected set; }
 
-    public override async Task WaitUntilStoppedAsync()
+    public override async Task WaitUntilStoppedAsync(CancellationToken cancellationToken = default)
     {
         // TODO: add validation that stream is only requested and enumerated once.
         // TODO: Make sure you can't create the same run twice and/or submit tools twice
         // somehow, even accidentally.
 
-        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(_options.CancellationToken).ConfigureAwait(false))
+        await foreach (StreamingUpdate update in GetUpdatesStreamingAsync(cancellationToken).ConfigureAwait(false))
         {
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
         }
     }
 
-    public override void WaitUntilStopped()
+    public override void WaitUntilStopped(CancellationToken cancellationToken = default)
     {
-        foreach (StreamingUpdate update in GetUpdatesStreaming())
+        foreach (StreamingUpdate update in GetUpdatesStreaming(cancellationToken))
         {
             // Should terminate naturally when get to "requires action" because
             // the SSE stream will end.
@@ -81,6 +77,8 @@ public partial class StreamingRunOperation : RunOperation
                     ApplyUpdate(update);
                 }
 
+                cancellationToken.ThrowIfCancellationRequested();
+
                 yield return _enumerator.Current;
             }
         }
@@ -94,7 +92,7 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
-    public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming()
+    public virtual IEnumerable<StreamingUpdate> GetUpdatesStreaming(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -110,6 +108,8 @@ public partial class StreamingRunOperation : RunOperation
                 {
                     ApplyUpdate(update);
                 }
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 yield return _enumerator.Current;
             }
@@ -140,7 +140,7 @@ public partial class StreamingRunOperation : RunOperation
         }
     }
 
-    public override IEnumerable<ThreadRun> GetUpdates(TimeSpan? pollingInterval = null)
+    public override IEnumerable<ThreadRun> GetUpdates(TimeSpan? pollingInterval = null, CancellationToken cancellationToken = default)
     {
         if (pollingInterval is not null)
         {

@@ -708,7 +708,6 @@ public partial class AssistantClient
         RunOperation operation = new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
 
         if (returnWhen == ReturnWhen.Started)
@@ -741,7 +740,6 @@ public partial class AssistantClient
         RunOperation operation = new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
 
         if (returnWhen == ReturnWhen.Started)
@@ -766,7 +764,6 @@ public partial class AssistantClient
         return new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
     }
 
@@ -783,7 +780,6 @@ public partial class AssistantClient
         return new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
     }
 
@@ -810,7 +806,7 @@ public partial class AssistantClient
         ClientResult getResult() =>
             _runSubClient.CreateRun(threadId, content, requestOptions);
 
-        return new StreamingRunOperation(_pipeline, _endpoint, requestOptions, getResultAsync, getResult);
+        return new StreamingRunOperation(_pipeline, _endpoint, getResultAsync, getResult);
     }
 
     public virtual async Task<RunOperation> CreateThreadAndRunAsync(
@@ -832,7 +828,6 @@ public partial class AssistantClient
         RunOperation operation = new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
 
         if (returnWhen == ReturnWhen.Started)
@@ -863,7 +858,6 @@ public partial class AssistantClient
         RunOperation operation = new RunOperation(_pipeline, _endpoint,
             value: result,
             status: result.Value.Status,
-            cancellationToken.ToRequestOptions(),
             result.GetRawResponse());
 
         if (returnWhen == ReturnWhen.Started)
@@ -896,7 +890,7 @@ public partial class AssistantClient
         ClientResult getResult() =>
             _runSubClient.CreateThreadAndRun(protocolContent, requestOptions);
 
-        return new StreamingRunOperation(_pipeline, _endpoint, requestOptions, getResultAsync, getResult);
+        return new StreamingRunOperation(_pipeline, _endpoint, getResultAsync, getResult);
     }
 
     /// <summary>

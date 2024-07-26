@@ -20,13 +20,11 @@ public partial class RunOperation : ClientResult
         Uri endpoint,
         ThreadRun value,
         RunStatus status,
-        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
         _pollingInterval = new();
 
         if (response.Headers.TryGetValue("Content-Type", out string? contentType) &&
@@ -47,14 +45,12 @@ public partial class RunOperation : ClientResult
     // For use with streaming convenience methods - response hasn't been provided yet.
     internal RunOperation(
         ClientPipeline pipeline,
-        Uri endpoint,
-        RequestOptions options)
+        Uri endpoint)
         : base()
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
-
+        
         // This constructor is provided for streaming convenience method only.
         // Because of this, we don't set the polling interval type.
     }
@@ -69,13 +65,13 @@ public partial class RunOperation : ClientResult
 
     #region OperationResult methods
 
-    public virtual async Task WaitUntilStoppedAsync()
-        => await WaitUntilStoppedAsync(default).ConfigureAwait(false);
+    public virtual async Task WaitUntilStoppedAsync(CancellationToken cancellationToken = default)
+        => await WaitUntilStoppedAsync(default, cancellationToken).ConfigureAwait(false);
 
-    public virtual void WaitUntilStopped()
-        => WaitUntilStopped(default);
+    public virtual void WaitUntilStopped(CancellationToken cancellationToken = default)
+        => WaitUntilStopped(default, cancellationToken);
 
-    public virtual async Task WaitUntilStoppedAsync(TimeSpan? pollingInterval)
+    public virtual async Task WaitUntilStoppedAsync(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -83,7 +79,7 @@ public partial class RunOperation : ClientResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        await foreach (ThreadRun update in GetUpdatesAsync(pollingInterval))
+        await foreach (ThreadRun update in GetUpdatesAsync(pollingInterval, cancellationToken))
         {
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
@@ -93,7 +89,7 @@ public partial class RunOperation : ClientResult
         }
     }
 
-    public virtual void WaitUntilStopped(TimeSpan? pollingInterval)
+    public virtual void WaitUntilStopped(TimeSpan? pollingInterval, CancellationToken cancellationToken = default)
     {
         if (IsStreaming)
         {
@@ -101,7 +97,7 @@ public partial class RunOperation : ClientResult
             throw new NotSupportedException("Cannot poll for status updates from streaming operation.");
         }
 
-        foreach (ThreadRun update in GetUpdates(pollingInterval))
+        foreach (ThreadRun update in GetUpdates(pollingInterval, cancellationToken))
         {
             // Don't keep polling if would do so infinitely.
             if (update.Status == RunStatus.RequiresAction)
@@ -123,7 +119,7 @@ public partial class RunOperation : ClientResult
         }
 
         IAsyncEnumerator<ClientResult<ThreadRun>> enumerator =
-            new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, _options);
+            new RunOperationUpdateEnumerator(_pipeline, _endpoint, _threadId!, _runId!, cancellationToken);
 
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
@@ -137,7 +133,8 @@ public partial class RunOperation : ClientResult
     }
 
     public virtual IEnumerable<ThreadRun> GetUpdates(
-        TimeSpan? pollingInterval = default)
+        TimeSpan? pollingInterval = default,
+        CancellationToken cancellationToken = default)
     {
         if (pollingInterval is not null)
         {
@@ -146,7 +143,7 @@ public partial class RunOperation : ClientResult
         }
 
         IEnumerator<ClientResult<ThreadRun>> enumerator = new RunOperationUpdateEnumerator(
-            _pipeline, _endpoint, _threadId!, _runId!, _options);
+            _pipeline, _endpoint, _threadId!, _runId!, cancellationToken);
 
         while (enumerator.MoveNext())
         {

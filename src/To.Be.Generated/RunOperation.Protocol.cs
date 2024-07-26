@@ -15,8 +15,7 @@ public partial class RunOperation : ClientResult
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
-    private readonly RequestOptions _options;
-
+    
     private string? _threadId;
     private string? _runId;
     private string? _status;
@@ -30,13 +29,11 @@ public partial class RunOperation : ClientResult
     internal RunOperation(
         ClientPipeline pipeline,
         Uri endpoint,
-        RequestOptions options,
         PipelineResponse response)
         : base(response)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _options = options;
         
         // Protocol method was called with stream=true option.
         bool isStreaming = 

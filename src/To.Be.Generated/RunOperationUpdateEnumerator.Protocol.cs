@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 #nullable enable
@@ -18,7 +19,7 @@ internal partial class RunOperationUpdateEnumerator :
     private readonly Uri _endpoint;
     private readonly string _threadId;
     private readonly string _runId;
-    private readonly RequestOptions _options;
+    private readonly CancellationToken _cancellationToken;
 
     private ClientResult? _current;
     private bool _hasNext = true;
@@ -28,7 +29,7 @@ internal partial class RunOperationUpdateEnumerator :
         Uri endpoint,
         string threadId,
         string runId,
-        RequestOptions options)
+        CancellationToken cancellationToken)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
@@ -36,7 +37,7 @@ internal partial class RunOperationUpdateEnumerator :
         _threadId = threadId;
         _runId = runId;
 
-        _options = options;
+        _cancellationToken = cancellationToken;
     }
 
     public ClientResult Current => _current!;
@@ -53,7 +54,7 @@ internal partial class RunOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = GetRun(_threadId, _runId, _options);
+        ClientResult result = GetRun(_threadId, _runId, _cancellationToken.ToRequestOptions());
 
         _current = result;
         _hasNext = HasNext(result);
@@ -79,7 +80,7 @@ internal partial class RunOperationUpdateEnumerator :
             return false;
         }
 
-        ClientResult result = await GetRunAsync(_threadId, _runId, _options).ConfigureAwait(false);
+        ClientResult result = await GetRunAsync(_threadId, _runId, _cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
         _current = result;
         _hasNext = HasNext(result);
