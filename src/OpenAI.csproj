@@ -63,7 +63,6 @@
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
@@ -75,5 +74,4 @@
     <PackageReference Include="System.ClientModel" Version="1.1.0-beta.5" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
   </ItemGroup>
-
 </Project>

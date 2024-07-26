@@ -8,7 +8,6 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Install the NuGet package](#install-the-nuget-package)
