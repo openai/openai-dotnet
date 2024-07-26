@@ -440,7 +440,6 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
-
         PipelineResponse response = await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
@@ -467,7 +466,6 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
-
         PipelineResponse response = _pipeline.ProcessMessage(message, options);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);

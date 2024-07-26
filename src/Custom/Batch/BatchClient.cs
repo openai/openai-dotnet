@@ -2,7 +2,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
