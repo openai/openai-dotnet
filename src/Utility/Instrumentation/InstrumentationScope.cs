@@ -1,15 +1,18 @@
 ﻿using OpenAI.Chat;
 using System;
+using System.Buffers;
 using System.ClientModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace OpenAI.Custom.Common.Instrumentation;
+namespace OpenAI.Instrumentation;
 
 internal class InstrumentationScope : IDisposable
 {
     private static readonly ActivitySource s_chatSource = new ActivitySource("OpenAI.ChatClient");
     private static readonly Meter s_chatMeter = new Meter("OpenAI.ChatClient");
+
+    // TODO: add explicit histogram buckets once System.Diagnostics.DiagnosticSource 9.0 is used
     private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(Constants.GenAiClientOperationDurationMetricName, "s", "Measures GenAI operation duration.");
     private static readonly Histogram<long> s_tokens = s_chatMeter.CreateHistogram<long>(Constants.GenAiClientTokenUsageMetricName, "{token}", "Measures the number of input and output token used.");
 
@@ -83,7 +86,11 @@ internal class InstrumentationScope : IDisposable
     {
         var errorType = GetErrorType(ex);
         RecordMetrics(null, errorType, null, null);
-        SetActivityError(ex, errorType);
+        if (_activity?.IsAllDataRequested == true)
+        {
+            _activity?.SetTag(Constants.ErrorTypeKey, errorType);
+            _activity?.SetStatus(ActivityStatusCode.Error, ex?.Message ?? errorType);
+        }
     }
 
     public void Dispose()
@@ -102,29 +109,7 @@ internal class InstrumentationScope : IDisposable
 
     private void RecordMetrics(string responseModel, string errorType, int? inputTokensUsage, int? outputTokensUsage)
     {
-        TagList tags = ResponseTagsWithError(responseModel, errorType);
-        s_duration.Record(_duration.Elapsed.TotalSeconds, tags);
-
-        if (inputTokensUsage != null)
-        {
-            // tags is a struct, let's copy them
-            TagList inputUsageTags = tags;
-            inputUsageTags.Add(Constants.GenAiTokenTypeKey, "input");
-            s_tokens.Record(inputTokensUsage.Value, inputUsageTags);
-        }
-
-        if (outputTokensUsage != null)
-        { 
-            TagList outputUsageTags = tags;
-            outputUsageTags.Add(Constants.GenAiTokenTypeKey, "output");
-
-            s_tokens.Record(outputTokensUsage.Value, outputUsageTags);
-        }
-    }
-
-    private TagList ResponseTagsWithError(string responseModel, string errorType)
-    {
-        // tags is a struct, let's copy them
+        // tags is a struct, let's copy and modify them
         var tags = _commonTags;
 
         if (responseModel != null)
@@ -132,33 +117,58 @@ internal class InstrumentationScope : IDisposable
             tags.Add(Constants.GenAiResponseModelKey, responseModel);
         }
 
+        if (inputTokensUsage != null)
+        {
+            var inputUsageTags = tags;
+            inputUsageTags.Add(Constants.GenAiTokenTypeKey, "input");
+            s_tokens.Record(inputTokensUsage.Value, inputUsageTags);
+        }
+
+        if (outputTokensUsage != null)
+        {
+            var outputUsageTags = tags;
+            outputUsageTags.Add(Constants.GenAiTokenTypeKey, "output");
+            s_tokens.Record(outputTokensUsage.Value, outputUsageTags);
+        }
+
         if (errorType != null)
         {
             tags.Add(Constants.ErrorTypeKey, errorType);
         }
 
-        return tags;
+        s_duration.Record(_duration.Elapsed.TotalSeconds, tags);
     }
 
     private void RecordResponseAttributes(string responseId, string model, ChatFinishReason? finishReason, ChatTokenUsage usage)
     {
         SetActivityTagIfNotNull(Constants.GenAiResponseIdKey, responseId);
         SetActivityTagIfNotNull(Constants.GenAiResponseModelKey, model);
-        SetActivityTagIfNotNull(Constants.GenAiResponseFinishReasonKey, GetFinishReason(finishReason));
         SetActivityTagIfNotNull(Constants.GenAiUsageInputTokensKey, usage?.InputTokens);
         SetActivityTagIfNotNull(Constants.GenAiUsageOutputTokensKey, usage?.OutputTokens);
+        SetFinishReasonAttribute(finishReason);
     }
 
-    private string GetFinishReason(ChatFinishReason? reason) =>
-        reason switch
+    private void SetFinishReasonAttribute(ChatFinishReason? finishReason)
+    {
+        if (finishReason == null)
+        {
+            return;
+        }
+
+        var reasonStr = finishReason switch
         {
             ChatFinishReason.ContentFilter => "content_filter",
             ChatFinishReason.FunctionCall => "function_call",
             ChatFinishReason.Length => "length",
             ChatFinishReason.Stop => "stop",
             ChatFinishReason.ToolCalls => "tool_calls",
-            _ => reason?.ToString(),
+            _ => finishReason.ToString(),
         };
+
+        // There could be multiple finish reasons, so semantic conventions use array type for the corrresponding attribute.
+        // It's likely to change, but for now let's report it as array.
+        _activity.SetTag(Constants.GenAiResponseFinishReasonKey, new[] { reasonStr });
+    }
 
     private string GetChatMessageRole(ChatMessageRole? role) =>
         role switch
@@ -175,21 +185,12 @@ internal class InstrumentationScope : IDisposable
     {
         if (exception is ClientResultException requestFailedException)
         {
-            // TODO (limolkova) when we start targeting .NET 8 we should put
+            // TODO (lmolkova) when we start targeting .NET 8 we should put
             // requestFailedException.InnerException.HttpRequestError into error.type
             return requestFailedException.Status.ToString();
         }
 
         return exception?.GetType()?.FullName;
-    }
-
-    private void SetActivityError(Exception exception, string errorType)
-    {
-        if (exception != null || errorType != null)
-        {
-            _activity?.SetTag(Constants.ErrorTypeKey, errorType);
-            _activity?.SetStatus(ActivityStatusCode.Error, exception?.Message ?? errorType);
-        }
     }
 
     private void SetActivityTagIfNotNull(string name, object value)

@@ -1,7 +1,7 @@
 ﻿using OpenAI.Chat;
 using System;
 
-namespace OpenAI.Custom.Common.Instrumentation;
+namespace OpenAI.Instrumentation;
 
 internal class InstrumentationFactory
 {
@@ -22,7 +22,7 @@ internal class InstrumentationFactory
 
     public InstrumentationScope StartChatScope(ChatCompletionOptions completionsOptions)
     {
-        return IsInstrumentationEnabled 
+        return IsInstrumentationEnabled
             ? InstrumentationScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions)
             : null;
     }

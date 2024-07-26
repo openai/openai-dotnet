@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Custom.Common.Instrumentation;
+﻿namespace OpenAI.Instrumentation;
 
 internal class Constants
 {
@@ -20,7 +20,7 @@ internal class Constants
     public const string GenAiRequestTopPKey = "gen_ai.request.top_p";
 
     public const string GenAiResponseIdKey = "gen_ai.response.id";
-    public const string GenAiResponseFinishReasonKey = "gen_ai.response.finish_reason";
+    public const string GenAiResponseFinishReasonKey = "gen_ai.response.finish_reasons";
     public const string GenAiResponseModelKey = "gen_ai.response.model";
 
     public const string GenAiSystemKey = "gen_ai.system";

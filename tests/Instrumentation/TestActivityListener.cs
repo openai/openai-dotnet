@@ -50,7 +50,7 @@ internal class TestActivityListener : IDisposable
         {
             Assert.AreEqual(response.Model, activity.GetTagItem("gen_ai.response.model"));
             Assert.AreEqual(response.Id, activity.GetTagItem("gen_ai.response.id"));
-            Assert.AreEqual(response.FinishReason.ToString().ToLower(), activity.GetTagItem("gen_ai.response.finish_reason"));
+            Assert.AreEqual(new[] { response.FinishReason.ToString().ToLower() }, activity.GetTagItem("gen_ai.response.finish_reasons"));
             Assert.AreEqual(response.Usage.OutputTokens, activity.GetTagItem("gen_ai.usage.output_tokens"));
             Assert.AreEqual(response.Usage.InputTokens, activity.GetTagItem("gen_ai.usage.input_tokens"));
             Assert.AreEqual(ActivityStatusCode.Unset, activity.Status);

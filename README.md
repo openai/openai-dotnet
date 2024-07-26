@@ -27,9 +27,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
   - [Automatically retrying errors](#automatically-retrying-errors)
-- [Observability with OpenTelemetry](#observability-with-opentelemetry)
-  - [How to enable](#how-to-enable)
-  - [Available sources and meters](#available-sources-and-meters)
+- [Observability](#observability)
 
 ## Getting started
 
@@ -754,56 +752,6 @@ By default, the client classes will automatically retry the following errors up 
 - 503 Service Unavailable
 - 504 Gateway Timeout
 
-## Observability with OpenTelemetry
+## Observability
 
-> Note:
-> OpenAI .NET SDK instrumentation is in development and is not complete. See [Available sources and meters](#available-sources-and-meters) section for the list of covered operations.
-
-OpenAI .NET library is instrumented with distributed tracing and metrics using .NET [tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing)
-and [metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation) API and supports [OpenTelemetry](https://learn.microsoft.com/dotnet/core/diagnostics/observability-with-otel).
-
-OpenAI .NET library follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
-
-### How to enable
-
-The instrumentation is **experimental** - names of activity sources and meters, volume and semantics of the telemetry items may change.
-
-To enable the instrumentation:
-
-1. Set instrumentation feature-flag using one of the following options:
-
-   - set the `AZURE_EXPERIMENTAL_ENABLE_ACTIVITY_SOURCE` environment variable to `"true"`
-   - set the `Azure.Experimental.EnableActivitySource` context switch to true in your application code when application
-     is starting and before initializing any OpenAI clients. For example:
-
-     ```csharp
-     AppContext.SetSwitch("Azure.Experimental.EnableActivitySource", true);
-     ```
-
-2. Configuring OpenTelemetry to record telemetry from OpenAI sources and meters:
-
-   ```csharp
-   builder.Services.AddOpenTelemetry()
-       .WithTracing(b =>
-       {
-           b.AddSource("OpenAI.*")
-             ...
-            .AddOtlpExporter();
-       })
-       .WithMetrics(b =>
-       {
-           b.AddMeter("OpenAI.*")
-            ...
-            .AddOtlpExporter();
-       });
-   ```
-
-Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client
-calls made by your application including those done by the OpenAI SDK.
-Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
-
-### Available sources and meters
-
-The following sources and meters are available:
-
-- `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
+OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/observability.md) for more details.
