@@ -8,7 +8,9 @@ namespace OpenAI.Batch;
 
 public partial class BatchClient
 {
-    public virtual async Task<BatchOperation> CreateBatchAsync(BinaryContent content, RequestOptions options = null)
+    public virtual async Task<BatchOperation> CreateBatchAsync(
+        ReturnWhen returnWhen,
+        BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -20,10 +22,20 @@ public partial class BatchClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new BatchOperation(_pipeline, _endpoint, batchId, status, response);
+        BatchOperation operation = new BatchOperation(_pipeline, _endpoint, batchId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        await operation.WaitForCompletionAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
+        return operation;
     }
 
-    public virtual BatchOperation CreateBatch(BinaryContent content, RequestOptions options = null)
+    public virtual BatchOperation CreateBatch(
+        ReturnWhen returnWhen,
+        BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -34,7 +46,15 @@ public partial class BatchClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new BatchOperation(_pipeline, _endpoint, batchId, status, response);
+        BatchOperation operation = new BatchOperation(_pipeline, _endpoint, batchId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletion(options?.CancellationToken ?? default);
+        return operation;
     }
 
     /// <summary>

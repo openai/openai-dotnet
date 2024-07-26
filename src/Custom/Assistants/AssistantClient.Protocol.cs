@@ -355,7 +355,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        await operation.WaitUntilStoppedAsync().ConfigureAwait(false);
+        await operation.WaitUntilStoppedAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
         return operation;
     }
 
@@ -385,7 +385,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        operation.WaitUntilStopped();
+        operation.WaitUntilStopped(options?.CancellationToken ?? default);
         return operation;
     }
 
@@ -488,7 +488,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        await operation.WaitUntilStoppedAsync().ConfigureAwait(false);
+        await operation.WaitUntilStoppedAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
         return operation;
     }
 
@@ -519,7 +519,7 @@ public partial class AssistantClient
             throw new NotSupportedException("Streaming runs cannot use 'ReturnWhen.Completed'");
         }
 
-        operation.WaitUntilStopped();
+        operation.WaitUntilStopped(options?.CancellationToken ?? default);
         return operation;
     }
 

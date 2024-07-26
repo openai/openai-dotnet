@@ -76,8 +76,8 @@ public partial class BatchTests : SyncAsyncTestBase
             },
         }));
         BatchOperation batchOperation = IsAsync
-            ? await client.CreateBatchAsync(content)
-            : client.CreateBatch(content);
+            ? await client.CreateBatchAsync(ReturnWhen.Started, content)
+            : client.CreateBatch(ReturnWhen.Started, content);
 
         BinaryData response = batchOperation.GetRawResponse().Content;
         JsonDocument jsonDocument = JsonDocument.Parse(response);

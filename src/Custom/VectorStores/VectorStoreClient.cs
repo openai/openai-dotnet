@@ -549,11 +549,17 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
-        ClientResult<VectorStoreBatchFileJob> result = await CreateBatchFileJobAsync(vectorStoreId, fileIds, cancellationToken).ConfigureAwait(false);
+        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
+        RequestOptions options = cancellationToken.ToRequestOptions();
+
+        using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
+        PipelineResponse response = await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
+
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
             _pipeline,
             _endpoint,
-            result);
+            ClientResult.FromValue(value, response));
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -580,11 +586,17 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
-        ClientResult<VectorStoreBatchFileJob> result = CreateBatchFileJob(vectorStoreId, fileIds, cancellationToken);
+        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
+        RequestOptions options = cancellationToken.ToRequestOptions();
+
+        using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
+        PipelineResponse response = _pipeline.ProcessMessage(message, options);
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
+
         VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
             _pipeline,
             _endpoint,
-            result);
+            ClientResult.FromValue(value, response));
 
         if (returnWhen == ReturnWhen.Started)
         {
@@ -594,47 +606,4 @@ public partial class VectorStoreClient
         operation.WaitForCompletion();
         return operation;
     }
-	
-    /// <summary>
-    /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
-    /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    internal virtual async Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(
-        string vectorStoreId, 
-        IEnumerable<string> fileIds,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
-
-        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
-        ClientResult result = await CreateBatchFileJobAsync(vectorStoreId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-        return ClientResult.FromValue(value, response);
-    }
-
-    /// <summary>
-    /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
-    /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    internal virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
-
-        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
-        ClientResult result = CreateBatchFileJob(vectorStoreId, content, cancellationToken.ToRequestOptions());
-        PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-        return ClientResult.FromValue(value, response);
-    }
-
-
 }

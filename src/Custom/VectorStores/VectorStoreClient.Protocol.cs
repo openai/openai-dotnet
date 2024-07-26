@@ -434,7 +434,7 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+    public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(ReturnWhen returnWhen, string vectorStoreId, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNull(content, nameof(content));
@@ -446,7 +446,15 @@ public partial class VectorStoreClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        await operation.WaitForCompletionAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
+        return operation;
     }
 
     /// <summary>
@@ -460,7 +468,9 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual VectorStoreFileBatchOperation CreateBatchFileJob(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+    public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
+        ReturnWhen returnWhen,
+        string vectorStoreId, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNull(content, nameof(content));
@@ -472,6 +482,14 @@ public partial class VectorStoreClient
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletion(options?.CancellationToken ?? default);
+        return operation;
     }
 }

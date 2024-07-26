@@ -35,7 +35,9 @@ public partial class FineTuningClient
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<FineTuningOperation> CreateJobAsync(BinaryContent content, RequestOptions options = null)
+    public virtual async Task<FineTuningOperation> CreateJobAsync(
+        ReturnWhen returnWhen,
+        BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -46,7 +48,15 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
+        FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        await operation.WaitForCompletionAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
+        return operation;
     }
 
     // CUSTOM:
@@ -64,7 +74,9 @@ public partial class FineTuningClient
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual FineTuningOperation CreateJob(BinaryContent content, RequestOptions options = null)
+    public virtual FineTuningOperation CreateJob(
+        ReturnWhen returnWhen,
+        BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -75,7 +87,15 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        return new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
+        FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
+
+        if (returnWhen == ReturnWhen.Started)
+        {
+            return operation;
+        }
+
+        operation.WaitForCompletion(options?.CancellationToken ?? default);
+        return operation;
     }
 
     // CUSTOM:
