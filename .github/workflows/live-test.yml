@@ -1,9 +1,6 @@
 name: Live Test
 
 on:
-  push:
-    branches:
-      - users/pahallis/environment
   workflow_dispatch:
     inputs:
       ref:
