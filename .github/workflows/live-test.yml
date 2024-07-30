@@ -14,7 +14,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'live test')
     environment: Live Testing
     env:
-      version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
+      version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -30,7 +30,7 @@ jobs:
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{github.workspace}}/artifacts/test-results
-          ${{ env.version_suffix_args }}
+          ${{ env.version_suffix_args}}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
