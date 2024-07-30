@@ -1,4 +1,4 @@
-# This workflow is triggered by the user and runs the live tests on the codebase.
+# This workflow is triggered by the user and runs live tests on the codebase.
 name: Live Test
 
 on:
