@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel;
 using System.Diagnostics;
 using System.IO;

@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Chat;
+namespace OpenAI.Chat;
 
 [CodeGenModel("ChatCompletionStreamResponseDeltaFunctionCall")]
 public partial class StreamingChatFunctionCallUpdate

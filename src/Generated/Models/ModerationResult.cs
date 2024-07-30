@@ -9,7 +9,7 @@ namespace OpenAI.Moderations
 {
     public partial class ModerationResult
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal ModerationResult(bool flagged, ModerationCategories categories, ModerationCategoryScores categoryScores)
         {
             Argument.AssertNotNull(categories, nameof(categories));

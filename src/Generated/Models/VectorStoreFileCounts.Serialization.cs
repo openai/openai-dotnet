@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace OpenAI.VectorStores
 {
-    public partial struct VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>, IJsonModel<object>
+    public partial class VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>
     {
         void IJsonModel<VectorStoreFileCounts>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -80,14 +80,14 @@ namespace OpenAI.VectorStores
             return DeserializeVectorStoreFileCounts(document.RootElement, options);
         }
 
-        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<VectorStoreFileCounts>)this).Write(writer, options);
-
-        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<VectorStoreFileCounts>)this).Create(ref reader, options);
-
         internal static VectorStoreFileCounts DeserializeVectorStoreFileCounts(JsonElement element, ModelReaderWriterOptions options = null)
         {
             options ??= ModelSerializationExtensions.WireOptions;
 
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
             int inProgress = default;
             int completed = default;
             int failed = default;
@@ -169,19 +169,13 @@ namespace OpenAI.VectorStores
 
         string IPersistableModel<VectorStoreFileCounts>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileCounts>)this).Write(options);
-
-        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileCounts>)this).Create(data, options);
-
-        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options);
-
         internal static VectorStoreFileCounts FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
             return DeserializeVectorStoreFileCounts(document.RootElement);
         }
 
-        internal BinaryContent ToBinaryContent()
+        internal virtual BinaryContent ToBinaryContent()
         {
             return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
         }

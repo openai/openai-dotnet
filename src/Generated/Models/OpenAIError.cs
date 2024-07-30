@@ -9,7 +9,7 @@ namespace OpenAI.Internal
 {
     internal partial class OpenAIError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal OpenAIError(string code, string message, string param, string type)
         {
             Argument.AssertNotNull(message, nameof(message));

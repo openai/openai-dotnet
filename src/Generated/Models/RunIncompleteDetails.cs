@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunIncompleteDetails
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal RunIncompleteDetails()
         {
         }

@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Images;
+namespace OpenAI.Images;
 
 // CUSTOM: Made internal.
 

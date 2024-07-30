@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal RunError(RunErrorCode code, string message)
         {
             Argument.AssertNotNull(message, nameof(message));

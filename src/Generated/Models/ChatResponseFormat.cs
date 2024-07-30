@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatResponseFormat
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal ChatResponseFormat(InternalCreateChatCompletionRequestResponseFormatType? type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

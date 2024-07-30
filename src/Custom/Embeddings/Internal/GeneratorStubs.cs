@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Embeddings;
+namespace OpenAI.Embeddings;
 
 // CUSTOM: Made internal.
 

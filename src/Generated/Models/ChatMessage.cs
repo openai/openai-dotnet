@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     public abstract partial class ChatMessage
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected ChatMessage()
         {
             Content = new ChangeTrackingList<ChatMessageContentPart>();
@@ -22,6 +22,6 @@ namespace OpenAI.Chat
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal string Role { get; init; }
+        internal string Role { get; set; }
     }
 }

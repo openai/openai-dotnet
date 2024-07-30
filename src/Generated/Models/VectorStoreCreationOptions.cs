@@ -9,7 +9,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreCreationOptions
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public VectorStoreCreationOptions()
         {
             FileIds = new ChangeTrackingList<string>();
@@ -25,7 +25,7 @@ namespace OpenAI.VectorStores
             Metadata = metadata;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public string Name { get; init; }
-        public IDictionary<string, string> Metadata { get; }
+        public string Name { get; set; }
+        public IDictionary<string, string> Metadata { get; set; }
     }
 }

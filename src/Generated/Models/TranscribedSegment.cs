@@ -10,7 +10,6 @@ namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedSegment
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal TranscribedSegment(int id, long seekOffset, TimeSpan start, TimeSpan end, string text, IEnumerable<long> tokenIds, float temperature, double averageLogProbability, float compressionRatio, double noSpeechProbability)
         {
             Argument.AssertNotNull(text, nameof(text));

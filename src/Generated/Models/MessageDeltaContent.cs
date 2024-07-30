@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal abstract partial class MessageDeltaContent
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected MessageDeltaContent()
         {
         }
@@ -20,6 +20,6 @@ namespace OpenAI.Assistants
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal string Type { get; init; }
+        internal string Type { get; set; }
     }
 }

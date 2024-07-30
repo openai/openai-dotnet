@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 /// <summary>
 /// The available detail settings to use when processing an image.

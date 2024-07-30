@@ -9,11 +9,12 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStore
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata)
         {
             Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(fileCounts, nameof(fileCounts));
 
             Id = id;
             CreatedAt = createdAt;

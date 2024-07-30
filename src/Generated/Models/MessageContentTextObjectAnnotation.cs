@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal abstract partial class MessageContentTextObjectAnnotation
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected MessageContentTextObjectAnnotation()
         {
         }
@@ -20,6 +20,6 @@ namespace OpenAI.Assistants
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal string Type { get; init; }
+        internal string Type { get; set; }
     }
 }

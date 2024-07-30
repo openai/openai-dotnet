@@ -10,7 +10,7 @@ namespace OpenAI.Chat
     [Obsolete("This field is marked as deprecated.")]
     public partial class ChatFunction
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal ChatFunction(string functionDescription, string functionName, BinaryData functionParameters, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

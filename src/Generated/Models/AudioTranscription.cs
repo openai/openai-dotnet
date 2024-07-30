@@ -9,7 +9,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscription
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal AudioTranscription(string language, TimeSpan? duration, string text)
         {
             Argument.AssertNotNull(language, nameof(language));

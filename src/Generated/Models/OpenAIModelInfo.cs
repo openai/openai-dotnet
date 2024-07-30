@@ -9,7 +9,7 @@ namespace OpenAI.Models
 {
     public partial class OpenAIModelInfo
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal OpenAIModelInfo(string id, DateTimeOffset createdAt, string ownedBy)
         {
             Argument.AssertNotNull(id, nameof(id));

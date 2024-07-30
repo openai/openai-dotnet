@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace OpenAI.VectorStores;
 
@@ -7,5 +7,5 @@ public partial class VectorStoreModificationOptions
 {
     /// <summary> Gets or sets the policy that controls when the new vector store will be automatically deleted. </summary>
     [CodeGenMember("ExpiresAfter")]
-    public VectorStoreExpirationPolicy ExpirationPolicy { get; init; }
+    public VectorStoreExpirationPolicy ExpirationPolicy { get; set; }
 }

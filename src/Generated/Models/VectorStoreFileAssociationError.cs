@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    public readonly partial struct VectorStoreFileAssociationError
+    public partial class VectorStoreFileAssociationError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message)
         {
             Argument.AssertNotNull(message, nameof(message));
@@ -25,7 +25,7 @@ namespace OpenAI.VectorStores
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        public VectorStoreFileAssociationError()
+        internal VectorStoreFileAssociationError()
         {
         }
 

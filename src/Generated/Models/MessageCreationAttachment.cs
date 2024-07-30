@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
 {
     public partial class MessageCreationAttachment
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public MessageCreationAttachment(string fileId, IEnumerable<ToolDefinition> tools)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));

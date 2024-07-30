@@ -9,7 +9,7 @@ namespace OpenAI.Embeddings
 {
     public partial class Embedding
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal Embedding()
         {

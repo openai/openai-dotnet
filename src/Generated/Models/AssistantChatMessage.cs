@@ -16,6 +16,6 @@ namespace OpenAI.Chat
             FunctionCall = functionCall;
         }
         public IList<ChatToolCall> ToolCalls { get; }
-        public ChatFunctionCall FunctionCall { get; init; }
+        public ChatFunctionCall FunctionCall { get; set; }
     }
 }

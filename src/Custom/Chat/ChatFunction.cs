@@ -33,10 +33,10 @@ public partial class ChatFunction
     // CUSTOM: Renamed
     /// <summary> A description of what the function does, used by the model to choose when and how to call the function. </summary>
     [CodeGenMember("Description")]
-    public string FunctionDescription { get; init; }
+    public string FunctionDescription { get; set; }
 
     // CUSTOM: Changed type to BinarayData.
     /// <summary> Gets or sets the parameters. </summary>
     [CodeGenMember("Parameters")]
-    public BinaryData FunctionParameters { get; init; }
+    public BinaryData FunctionParameters { get; set; }
 }
