@@ -1,5 +1,7 @@
 # OpenAI .NET API library
 
+DO NOT MERGE
+
 [![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
 
 The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. 
@@ -8,24 +10,26 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 
 ## Table of Contents
 
-- [Getting started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Install the NuGet package](#install-the-nuget-package)
-- [Using the client library](#using-the-client-library)
-  - [Namespace organization](#namespace-organization)
-  - [Using the async API](#using-the-async-api)
-  - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
-- [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
-- [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
-- [How to generate text embeddings](#how-to-generate-text-embeddings)
-- [How to generate images](#how-to-generate-images)
-- [How to transcribe audio](#how-to-transcribe-audio)
-- [How to use assistants with retrieval augmented generation (RAG)](#how-to-use-assistants-with-retrieval-augmented-generation-rag)
-- [How to use streaming and GPT-4o vision with assistants](#how-to-use-streaming-and-gpt-4o-vision-with-assistants)
-- [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
-- [Advanced scenarios](#advanced-scenarios)
-  - [Using protocol methods](#using-protocol-methods)
-  - [Automatically retrying errors](#automatically-retrying-errors)
+- [OpenAI .NET API library](#openai-net-api-library)
+  - [Table of Contents](#table-of-contents)
+  - [Getting started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Install the NuGet package](#install-the-nuget-package)
+  - [Using the client library](#using-the-client-library)
+    - [Namespace organization](#namespace-organization)
+    - [Using the async API](#using-the-async-api)
+    - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
+  - [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
+  - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
+  - [How to generate text embeddings](#how-to-generate-text-embeddings)
+  - [How to generate images](#how-to-generate-images)
+  - [How to transcribe audio](#how-to-transcribe-audio)
+  - [How to use assistants with retrieval augmented generation (RAG)](#how-to-use-assistants-with-retrieval-augmented-generation-rag)
+  - [How to use streaming and GPT-4o vision with assistants](#how-to-use-streaming-and-gpt-4o-vision-with-assistants)
+  - [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
+  - [Advanced scenarios](#advanced-scenarios)
+    - [Using protocol methods](#using-protocol-methods)
+    - [Automatically retrying errors](#automatically-retrying-errors)
 
 ## Getting started
 
@@ -46,6 +50,7 @@ Note that the code examples included below were written using [.NET 8](https://d
 ## Using the client library
 
 The full API of this library can be found in the [api.md](https://github.com/openai/openai-dotnet/blob/main/api/api.md) file, and there are many [code examples](https://github.com/openai/openai-dotnet/tree/main/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
+
 
 ```csharp
 using OpenAI.Chat;
