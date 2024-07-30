@@ -3,16 +3,15 @@ name: Live Test
 
 on:
   workflow_dispatch:
-    inputs:
-      # The user can specify the committish to checkout and test using the ref input.
-      # This is required because github UI only allows queuing runs for a branch or tag, not a specific commit or PR ref. 
-      ref:
-        description: 'Committish to checkout and test'
+  pull_request:
+    types:
+      - labeled
 
 jobs:
   test:
     name: Live Test
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'Live Test')
     environment: Live Testing
     env:
       version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
@@ -24,8 +23,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.ref || github.sha }}
 
       - name: Run live tests
         run: dotnet test
