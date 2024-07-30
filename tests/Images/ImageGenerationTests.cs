@@ -153,7 +153,7 @@ public partial class ImageGenerationTests : SyncAsyncTestBase
 
         Console.WriteLine(image.ImageUri.AbsoluteUri);
 
-        ValidateGeneratedImage(image.ImageUri, "dog", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
