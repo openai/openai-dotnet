@@ -18,7 +18,7 @@ jobs:
       version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.x
 
