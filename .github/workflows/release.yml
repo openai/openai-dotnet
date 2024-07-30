@@ -96,6 +96,6 @@ jobs:
       - name: Publish NuGet package
         run: dotnet nuget push
             ${{github.workspace}}/build-artifacts/packages/*.nupkg
-            --source ${{ env.NUGET_API_KEY }}
+            --source ${{ env.PUBLISH_TARGET }}
             --api-key ${{ env.NUGET_API_KEY }}
             --skip-duplicate
