@@ -25,13 +25,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build and Pack
+      - name: Build and pack
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
           ${{ env.version_suffix_args }}
 
-      - name: Unit Test
+      - name: Run unit tests
         run: dotnet test
           --configuration Release
           --filter="TestCategory=Smoke&TestCategory!=Manual"

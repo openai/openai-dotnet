@@ -81,7 +81,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: NuGet Autenticate
+      - name: NuGet autenticate
         run: dotnet nuget add source
           "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
           --name "github"

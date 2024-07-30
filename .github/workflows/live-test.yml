@@ -27,7 +27,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref || github.sha }}
 
-      - name: Run Live Tests
+      - name: Run live tests
         run: dotnet test
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
