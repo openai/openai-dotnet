@@ -58,7 +58,7 @@ public abstract partial class ChatMessage
     /// <summary>
     /// The content associated with the message. The interpretation of this content will vary depending on the message type.
     /// </summary>
-    public IList<ChatMessageContentPart> Content { get; protected init; }
+    public IList<ChatMessageContentPart> Content { get; protected set; }
 
     /// <inheritdoc cref="SystemChatMessage(string)"/>
     public static SystemChatMessage CreateSystemMessage(string content) => new SystemChatMessage(content);

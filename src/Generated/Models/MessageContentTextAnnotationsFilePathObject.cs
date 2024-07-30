@@ -33,9 +33,9 @@ namespace OpenAI.Assistants
         {
         }
 
-        public string Text { get; init; }
-        public InternalMessageContentTextAnnotationsFilePathObjectFilePath FilePath { get; init; }
-        public int StartIndex { get; init; }
-        public int EndIndex { get; init; }
+        public string Text { get; set; }
+        public InternalMessageContentTextAnnotationsFilePathObjectFilePath FilePath { get; set; }
+        public int StartIndex { get; set; }
+        public int EndIndex { get; set; }
     }
 }

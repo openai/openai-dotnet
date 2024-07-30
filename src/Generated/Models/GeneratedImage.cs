@@ -9,7 +9,7 @@ namespace OpenAI.Images
 {
     public partial class GeneratedImage
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal GeneratedImage()
         {
         }

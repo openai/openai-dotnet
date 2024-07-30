@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantThread
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal AssistantThread(string id, DateTimeOffset createdAt, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata)
         {
             Argument.AssertNotNull(id, nameof(id));

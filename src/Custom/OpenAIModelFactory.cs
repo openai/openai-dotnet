@@ -1,4 +1,4 @@
-﻿using OpenAI.Embeddings;
+using OpenAI.Embeddings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -10,7 +10,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletion
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal ChatCompletion(string id, IEnumerable<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model)
         {
             Argument.AssertNotNull(id, nameof(id));

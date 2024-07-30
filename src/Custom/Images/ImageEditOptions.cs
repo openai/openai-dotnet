@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace OpenAI.Images;
@@ -75,11 +75,11 @@ public partial class ImageEditOptions
 
     // CUSTOM: Changed property type.
     /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>
-    public GeneratedImageSize? Size { get; init; }
+    public GeneratedImageSize? Size { get; set; }
 
     // CUSTOM: Changed property type.
     /// <summary> The format in which the generated images are returned. Must be one of `url` or `b64_json`. </summary>
-    public GeneratedImageFormat? ResponseFormat { get; init; }
+    public GeneratedImageFormat? ResponseFormat { get; set; }
 
     internal MultipartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
     {

@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 /// <summary>
 /// The collection of values associated with the event names of streaming update payloads. These correspond to the

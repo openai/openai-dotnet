@@ -9,7 +9,7 @@ namespace OpenAI.Moderations
 {
     internal partial class ModerationOptions
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal ModerationOptions(BinaryData input, InternalCreateModerationRequestModel? model, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

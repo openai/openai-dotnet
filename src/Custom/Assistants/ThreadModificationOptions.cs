@@ -11,5 +11,5 @@ public partial class ThreadModificationOptions
 
     /// <inheritdoc cref="ToolResources"/>
     [CodeGenMember("ToolResources")]
-    public ToolResources ToolResources { get; init; }
+    public ToolResources ToolResources { get; set; }
 }

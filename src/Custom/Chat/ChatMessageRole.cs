@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Chat;
+namespace OpenAI.Chat;
 
 /// <summary>
 /// Represents the <c>role</c> of a chat completion message.

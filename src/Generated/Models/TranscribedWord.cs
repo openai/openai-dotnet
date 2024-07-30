@@ -9,7 +9,6 @@ namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedWord
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
         internal TranscribedWord(string word, TimeSpan start, TimeSpan end)
         {
             Argument.AssertNotNull(word, nameof(word));

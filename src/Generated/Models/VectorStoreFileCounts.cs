@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    public readonly partial struct VectorStoreFileCounts
+    public partial class VectorStoreFileCounts
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal VectorStoreFileCounts(int inProgress, int completed, int failed, int cancelled, int total)
         {
             InProgress = inProgress;
@@ -29,7 +29,7 @@ namespace OpenAI.VectorStores
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        public VectorStoreFileCounts()
+        internal VectorStoreFileCounts()
         {
         }
 

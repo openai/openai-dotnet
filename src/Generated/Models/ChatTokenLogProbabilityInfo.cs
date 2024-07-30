@@ -10,7 +10,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatTokenLogProbabilityInfo
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal ChatTokenLogProbabilityInfo(string token, float logProbability, IEnumerable<int> utf8ByteValues, IEnumerable<ChatTokenTopLogProbabilityInfo> topLogProbabilities)
         {
             Argument.AssertNotNull(token, nameof(token));

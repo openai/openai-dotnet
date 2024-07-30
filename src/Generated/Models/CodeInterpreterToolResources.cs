@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class CodeInterpreterToolResources
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal CodeInterpreterToolResources(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

@@ -116,7 +116,7 @@ namespace OpenAI.VectorStores
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreFileAssociationStatus status = default;
-            VectorStoreFileAssociationError? lastError = default;
+            VectorStoreFileAssociationError lastError = default;
             FileChunkingStrategy chunkingStrategy = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();

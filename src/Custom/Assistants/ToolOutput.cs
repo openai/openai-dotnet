@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 [CodeGenModel("SubmitToolOutputsRunRequestToolOutput")]
 public partial class ToolOutput

@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Chat;
+namespace OpenAI.Chat;
 
 [CodeGenModel("ChatCompletionFunctionCallOption")]
 internal partial class InternalChatCompletionFunctionCallOption { }

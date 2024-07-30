@@ -9,6 +9,6 @@ namespace OpenAI.Chat
 {
     public partial class ChatMessageContentPart
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
     }
 }

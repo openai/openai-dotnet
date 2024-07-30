@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunStepError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal RunStepError(RunStepErrorCode code, string message)
         {
             Argument.AssertNotNull(message, nameof(message));

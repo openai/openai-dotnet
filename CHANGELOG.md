@@ -8,6 +8,11 @@
 
 - Changed name of return types from methods returning streaming collections from `ResultCollection` to `CollectionResult` [#105](https://github.com/openai/openai-dotnet/pull/105).
 - Changed return types from methods returning paginated collections from `PageableCollection` to `PageCollection` [#105](https://github.com/openai/openai-dotnet/pull/105).  Users must now call `GetAllValues` on the collection of pages to enumerate collection items directly.  Corresponding protocol methods return `IEnumerable<ClientResult>` where each collection item represents a single service response holding a page of values.
+- Updated `VectorStoreFileCounts` and `VectorStoreFileAssociationError` types from `readonly struct` to `class`. 
+
+### Other Changes
+
+- Removed the usage of `init` and updated properties to use `set`.
 
 ### Bugs Fixed
 

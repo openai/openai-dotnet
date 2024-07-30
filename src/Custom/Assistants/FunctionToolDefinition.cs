@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -17,21 +17,21 @@ public partial class FunctionToolDefinition : ToolDefinition
     public required string FunctionName
     {
         get => _internalFunction.Name;
-        init => _internalFunction.Name = value;
+        set => _internalFunction.Name = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Description"/>
     public string Description
     {
         get => _internalFunction.Description;
-        init => _internalFunction.Description = value;
+        set => _internalFunction.Description = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Parameters"/>
     public BinaryData Parameters
     {
         get => _internalFunction.Parameters;
-        init => _internalFunction.Parameters = value;
+        set => _internalFunction.Parameters = value;
     }
 
     /// <summary>

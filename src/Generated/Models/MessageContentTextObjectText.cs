@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class MessageContentTextObjectText
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public MessageContentTextObjectText(string value, IEnumerable<MessageContentTextObjectAnnotation> annotations)
         {
             Argument.AssertNotNull(value, nameof(value));
@@ -31,7 +31,7 @@ namespace OpenAI.Assistants
         {
         }
 
-        public string Value { get; init; }
+        public string Value { get; set; }
         public IList<MessageContentTextObjectAnnotation> Annotations { get; }
     }
 }

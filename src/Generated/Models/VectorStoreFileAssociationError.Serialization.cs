@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace OpenAI.VectorStores
 {
-    public partial struct VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IJsonModel<object>
+    public partial class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>
     {
         void IJsonModel<VectorStoreFileAssociationError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -65,14 +65,14 @@ namespace OpenAI.VectorStores
             return DeserializeVectorStoreFileAssociationError(document.RootElement, options);
         }
 
-        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<VectorStoreFileAssociationError>)this).Write(writer, options);
-
-        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<VectorStoreFileAssociationError>)this).Create(ref reader, options);
-
         internal static VectorStoreFileAssociationError DeserializeVectorStoreFileAssociationError(JsonElement element, ModelReaderWriterOptions options = null)
         {
             options ??= ModelSerializationExtensions.WireOptions;
 
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
             VectorStoreFileAssociationErrorCode code = default;
             string message = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -130,19 +130,13 @@ namespace OpenAI.VectorStores
 
         string IPersistableModel<VectorStoreFileAssociationError>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileAssociationError>)this).Write(options);
-
-        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileAssociationError>)this).Create(data, options);
-
-        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<VectorStoreFileAssociationError>)this).GetFormatFromOptions(options);
-
         internal static VectorStoreFileAssociationError FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
             return DeserializeVectorStoreFileAssociationError(document.RootElement);
         }
 
-        internal BinaryContent ToBinaryContent()
+        internal virtual BinaryContent ToBinaryContent()
         {
             return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
         }
