@@ -15,7 +15,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
+      version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -29,7 +29,7 @@ jobs:
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
-          ${{ env.version_suffix_args }}
+          ${{ env.version_suffix_args}}
 
       - name: Run unit tests
         run: dotnet test
@@ -37,6 +37,7 @@ jobs:
           --filter="TestCategory=Smoke&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=smoke"
           --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2

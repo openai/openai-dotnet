@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: Live Testing
     env:
-      version_suffix_args: ${{ github.event_name == 'schedule' && format('--version-suffix="alpha.{0}"', github.run_number) || '' }}
+      version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     permissions:
       packages: write
       contents: write
