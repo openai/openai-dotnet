@@ -70,9 +70,6 @@ jobs:
     permissions:
       packages: write
       contents: write
-    env:
-      NUGET_API_KEY: ${{ github.event_name == 'release' && secrets.NUGET_API_KEY || secrets.GITHUB_TOKEN }}
-      PUBLISH_TARGET: ${{ github.event_name == 'release' && 'https://api.nuget.org/v3/index.json' || 'github' }}
     steps:
       - uses: actions/download-artifact@v2
 
@@ -85,7 +82,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: NuGet Autenticate
-        if: github.event_name != 'release'
         run: dotnet nuget add source
           "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
           --name "github"
@@ -93,9 +89,16 @@ jobs:
           --password ${{ secrets.GITHUB_TOKEN }}
           --store-password-in-clear-text
 
-      - name: Publish NuGet package
+      - name: Publish package to local feed
         run: dotnet nuget push
             ${{github.workspace}}/build-artifacts/packages/*.nupkg
-            --source ${{ env.PUBLISH_TARGET }}
-            --api-key ${{ env.NUGET_API_KEY }}
+            --source github
+            --skip-duplicate
+
+      - name: Publish package to nuget.org
+        if: github.event_name == 'release'
+        run: dotnet nuget push
+            ${{github.workspace}}/build-artifacts/packages/*.nupkg
+            --source https://api.nuget.org/v3/index.json
+            --api-key ${{ secrets.NUGET_API_KEY }}
             --skip-duplicate
