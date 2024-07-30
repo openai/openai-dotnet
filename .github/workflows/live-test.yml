@@ -1,8 +1,11 @@
+# This workflow is triggered by the user and runs the live tests on the codebase.
 name: Live Test
 
 on:
   workflow_dispatch:
     inputs:
+      # The user can specify the committish to checkout and test using the ref input.
+      # This is required because github UI only allows queuing runs for a branch or tag, not a specific commit or PR ref. 
       ref:
         description: 'Committish to checkout and test'
 
@@ -11,6 +14,8 @@ jobs:
     name: Live Test
     runs-on: ubuntu-latest
     environment: Live Testing
+    env:
+      version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -28,6 +33,7 @@ jobs:
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
