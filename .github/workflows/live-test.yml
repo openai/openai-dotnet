@@ -11,7 +11,7 @@ jobs:
   test:
     name: Live Test
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'Live Test')
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'live test')
     environment: Live Testing
     env:
       version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
