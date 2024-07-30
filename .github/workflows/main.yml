@@ -4,11 +4,6 @@ name: Build and Unit Test
 
 on:
   workflow_dispatch:
-    inputs:
-      # The user can specify the committish to checkout and test using the ref input.
-      # This is required because github UI only allows queuing runs for a branch or tag, not a specific commit or PR ref. 
-      ref:
-        description: 'Committish to checkout and test'
   push:
     branches:
       - main
@@ -23,14 +18,12 @@ jobs:
       version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.x
+          dotnet-version: '8.x'
 
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.ref || github.sha }}
 
       - name: Build and Pack
         run: dotnet pack

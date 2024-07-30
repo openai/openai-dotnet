@@ -22,10 +22,13 @@ jobs:
       packages: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x' # SDK Version to use.
+          dotnet-version: '8.x'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       # Pack the client nuget package and include url back to the repository and release tag
       - name: Build and Pack
@@ -63,7 +66,6 @@ jobs:
   deploy:
     name: Publish Package
     needs: build
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       packages: write
