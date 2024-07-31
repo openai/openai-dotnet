@@ -5,9 +5,6 @@
 name: Release package
 
 on:
-  push:
-    branches:
-      - users/hallipr/release-test
   release:
     types: [published]
   schedule:
@@ -18,7 +15,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    environment: Live Testing
+    # environment: Live Testing
     env:
       version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     permissions:
@@ -99,10 +96,10 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }}
             --skip-duplicate
 
-      # - name: Publish package to nuget.org
-      #   if: github.event_name == 'release'
-      #   run: dotnet nuget push
-      #       ${{github.workspace}}/build-artifacts/packages/*.nupkg
-      #       --source https://api.nuget.org/v3/index.json
-      #       --api-key ${{ secrets.NUGET_API_KEY }}
-      #       --skip-duplicate
+      - name: Publish package to nuget.org
+        if: github.event_name == 'release'
+        run: dotnet nuget push
+            ${{github.workspace}}/build-artifacts/packages/*.nupkg
+            --source https://api.nuget.org/v3/index.json
+            --api-key ${{ secrets.NUGET_API_KEY }}
+            --skip-duplicate
