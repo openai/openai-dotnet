@@ -74,6 +74,9 @@ jobs:
       - uses: actions/download-artifact@v2
 
       # Append the nuget package to the github release that triggered this workflow
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Upload release asset
         if: github.event_name == 'release'
         run: gh release upload ${{ github.event.release.tag_name }}
