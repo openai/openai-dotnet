@@ -15,7 +15,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    # environment: Live Testing
+    environment: Live Testing
     env:
       version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     permissions:
@@ -46,15 +46,15 @@ jobs:
           --logger "trx;LogFileName=${{ github.workspace }}/artifacts/test-results/smoke.trx"
           ${{ env.version_suffix_args }}
           
-      # - name: Run Live Tests
-      #   run: dotnet test
-      #     --configuration Release
-      #     --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
-      #     --logger "trx;LogFilePrefix=live"
-      #     --results-directory ${{ github.workspace }}/artifacts/test-results
-      #     ${{ env.version_suffix_args }}
-      #   env:
-      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      - name: Run Live Tests
+        run: dotnet test
+          --configuration Release
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=live"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
