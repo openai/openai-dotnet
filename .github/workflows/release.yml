@@ -5,7 +5,9 @@
 name: Release package
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - users/hallipr/release-test
   release:
     types: [published]
   schedule:
