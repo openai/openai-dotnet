@@ -57,7 +57,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: build-artifacts
@@ -67,15 +67,12 @@ jobs:
     name: Publish Package
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: write
     steps:
-      - uses: actions/download-artifact@v2
-
-      # Append the nuget package to the github release that triggered this workflow
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
 
       - name: Upload release asset
         if: github.event_name == 'release'
@@ -95,7 +92,8 @@ jobs:
       - name: Publish package to local feed
         run: dotnet nuget push
             ${{github.workspace}}/build-artifacts/packages/*.nupkg
-            --source github
+            --source "github"
+            --api-key ${{ secrets.GITHUB_TOKEN }}
             --skip-duplicate
 
       - name: Publish package to nuget.org
