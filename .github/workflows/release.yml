@@ -47,7 +47,7 @@ jobs:
           ${{ env.version_suffix_args }}
           
       - name: Run Live Tests
-        run: dotnet test
+        run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"

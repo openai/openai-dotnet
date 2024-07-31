@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run live tests
-        run: dotnet test
+        run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Moderations&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
