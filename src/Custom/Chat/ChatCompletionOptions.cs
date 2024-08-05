@@ -100,8 +100,14 @@ public partial class ChatCompletionOptions
     /// Deprecated in favor of <see cref="ToolChoice"/>.
     /// </summary>
     [CodeGenMember("FunctionCall")]
-    public ChatFunctionChoice FunctionChoice { get; init; }
+    public ChatFunctionChoice FunctionChoice { get; set; }
 
-    [CodeGenMember("Tools")]
-    public IList<ChatTool> Tools { get; init; }
+    /// <summary>
+    /// Whether to enable parallel function calling during tool use. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? ParallelToolCallsEnabled { get; set; }
 }

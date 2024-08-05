@@ -37,11 +37,10 @@ public partial class ChatExamples
     {
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ChatCompletionOptions options = new()
-        {
+        ChatCompletionOptions options = new() {
             Tools = ChatTool.CreateFunctionTools(typeof(MyFunctions))
         };
-
+        
         #region
         bool requiresAction;
         List<ChatMessage> messages = ["What's the weather like today?"];
