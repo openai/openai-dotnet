@@ -38,15 +38,14 @@ namespace OpenAI.Chat
             Functions = functions;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public float? FrequencyPenalty { get; set; }
-        public int? MaxTokens { get; set; }
-        public float? PresencePenalty { get; set; }
-        public ChatResponseFormat ResponseFormat { get; set; }
-        public long? Seed { get; set; }
-        public float? Temperature { get; set; }
-        public float? TopP { get; set; }
-        public IList<ChatTool> Tools { get; }
-        public string User { get; set; }
+        public float? FrequencyPenalty { get; init; }
+        public int? MaxTokens { get; init; }
+        public float? PresencePenalty { get; init; }
+        public ChatResponseFormat ResponseFormat { get; init; }
+        public long? Seed { get; init; }
+        public float? Temperature { get; init; }
+        public float? TopP { get; init; }
+        public string User { get; init; }
         public IList<ChatFunction> Functions { get; }
     }
 }
