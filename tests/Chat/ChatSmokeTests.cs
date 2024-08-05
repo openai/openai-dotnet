@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Instrumentation;
+using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.Instrumentation.TestMeterListener;
+using static OpenAI.Tests.Telemetry.TestMeterListener;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
@@ -480,7 +480,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
     [NonParallelizable]
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
-        using var _ = InstrumentationAppContextHelper.EnableInstrumentation();
+        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 

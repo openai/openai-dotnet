@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Utility\Instrumentation\*.cs" LinkBase="Instrumentation\Shared" />
+    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
+	<Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 </Project>

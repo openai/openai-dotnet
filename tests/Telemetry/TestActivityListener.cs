@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace OpenAI.Tests.Instrumentation;
+namespace OpenAI.Tests.Telemetry;
 
 internal class TestActivityListener : IDisposable
 {
