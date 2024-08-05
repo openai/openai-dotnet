@@ -54,14 +54,14 @@ public class TextAnnotationUpdate
     /// </summary>
     public string OutputFileId => _codeCitation?.FilePath?.FileId;
 
-    internal readonly MessageDeltaTextContentAnnotation _internalAnnotation;
-    private readonly MessageDeltaContentTextAnnotationsFileCitationObject _fileSearchCitation;
-    private readonly MessageDeltaContentTextAnnotationsFilePathObject _codeCitation;
+    internal readonly InternalMessageDeltaTextContentAnnotation _internalAnnotation;
+    private readonly InternalMessageDeltaContentTextAnnotationsFileCitationObject _fileSearchCitation;
+    private readonly InternalMessageDeltaContentTextAnnotationsFilePathObject _codeCitation;
 
-    internal TextAnnotationUpdate(MessageDeltaTextContentAnnotation internalAnnotation)
+    internal TextAnnotationUpdate(InternalMessageDeltaTextContentAnnotation internalAnnotation)
     {
         _internalAnnotation = internalAnnotation;
-        _fileSearchCitation = internalAnnotation as MessageDeltaContentTextAnnotationsFileCitationObject;
-        _codeCitation = internalAnnotation as MessageDeltaContentTextAnnotationsFilePathObject;
+        _fileSearchCitation = internalAnnotation as InternalMessageDeltaContentTextAnnotationsFileCitationObject;
+        _codeCitation = internalAnnotation as InternalMessageDeltaContentTextAnnotationsFilePathObject;
     }
 }

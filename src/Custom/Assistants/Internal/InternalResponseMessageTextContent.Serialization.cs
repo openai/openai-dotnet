@@ -21,7 +21,7 @@ internal partial class InternalResponseMessageTextContent : IJsonModel<InternalR
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(_type);
         writer.WritePropertyName("text"u8);
-        writer.WriteObjectValue<MessageContentTextObjectText>(_text, options);
+        writer.WriteObjectValue<InternalMessageContentTextObjectText>(_text, options);
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
