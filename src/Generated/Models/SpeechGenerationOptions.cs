@@ -9,7 +9,7 @@ namespace OpenAI.Audio
 {
     public partial class SpeechGenerationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal SpeechGenerationOptions(InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, GeneratedSpeechFormat? responseFormat, float? speed, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -18,9 +18,9 @@ namespace OpenAI.Audio
             Voice = voice;
             ResponseFormat = responseFormat;
             Speed = speed;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public GeneratedSpeechFormat? ResponseFormat { get; init; }
-        public float? Speed { get; init; }
+        public GeneratedSpeechFormat? ResponseFormat { get; set; }
+        public float? Speed { get; set; }
     }
 }

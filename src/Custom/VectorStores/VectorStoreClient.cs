@@ -1,4 +1,4 @@
-﻿using OpenAI.Files;
+using OpenAI.Files;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;

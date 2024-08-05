@@ -34,7 +34,7 @@ public partial class AssistantResponseFormat : IJsonModel<AssistantResponseForma
             writer.WriteStartObject();
             writer.WritePropertyName("type"u8);
             writer.WriteStringValue(formatInstance._objectType);
-            writer.WriteSerializedAdditionalRawData(formatInstance._serializedAdditionalRawData, options);
+            writer.WriteSerializedAdditionalRawData(formatInstance.SerializedAdditionalRawData, options);
             writer.WriteEndObject();
         }
     }

@@ -1,6 +1,6 @@
-﻿namespace OpenAI.VectorStores;
+namespace OpenAI.VectorStores;
 
 [CodeGenModel("VectorStoreFileObjectLastError")]
-public partial struct VectorStoreFileAssociationError
+public partial class VectorStoreFileAssociationError
 {
 }

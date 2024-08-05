@@ -1,4 +1,4 @@
-﻿namespace OpenAI.VectorStores;
+namespace OpenAI.VectorStores;
 
 /// <summary>
 /// A representation of a file storage and indexing container used by the <c>file_search</c> tool for assistants.

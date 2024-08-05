@@ -106,5 +106,5 @@ public partial class AssistantChatMessage : ChatMessage
     /// message and is used to differentiate between multiple participants of the same role.
     /// </summary>
     [CodeGenMember("Name")]
-    public string ParticipantName { get; init; }
+    public string ParticipantName { get; set; }
 }

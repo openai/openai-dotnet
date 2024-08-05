@@ -9,8 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionFunctionResponseChoice
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalCreateChatCompletionFunctionResponseChoice(InternalCreateChatCompletionFunctionResponseChoiceFinishReason finishReason, int index, InternalChatCompletionResponseMessage message)
         {
             Argument.AssertNotNull(message, nameof(message));
@@ -25,7 +24,7 @@ namespace OpenAI.Chat
             FinishReason = finishReason;
             Index = index;
             Message = message;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateChatCompletionFunctionResponseChoice()

@@ -528,7 +528,8 @@ Finally, you can use the `AssistantClient`'s `GetMessages` method to retrieve th
 For illustrative purposes, you could print the messages to the console and also save any images produced by the assistant to local storage:
 
 ```csharp
-PageCollection<ThreadMessage> messages = assistantClient.GetMessages(threadRun.ThreadId, ListOrder.OldestFirst);
+PageCollection<ThreadMessage> messagePages = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
 foreach (ThreadMessage message in messages)
 {

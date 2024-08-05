@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 /*
  * This file stubs and performs minimal customization to generated public types for the OpenAI.Assistants namespace

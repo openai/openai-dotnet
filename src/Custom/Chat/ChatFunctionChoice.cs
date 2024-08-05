@@ -42,7 +42,7 @@ public partial class ChatFunctionChoice
         _function = new(functionName);
         _isPlainString = false;
 
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     // CUSTOM: Added custom public constructor to handle the object representation.

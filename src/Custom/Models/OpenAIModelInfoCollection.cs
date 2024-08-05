@@ -49,7 +49,7 @@ public partial class OpenAIModelInfoCollection : ReadOnlyCollection<OpenAIModelI
     /// </list>
     /// </para>
     /// </summary>
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     /// <summary> Initializes a new instance of <see cref="OpenAIModelInfoCollection"/>. </summary>
     /// <param name="data"></param>
@@ -68,7 +68,7 @@ public partial class OpenAIModelInfoCollection : ReadOnlyCollection<OpenAIModelI
         : base([.. data])
     {
         Object = @object;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAIModelInfoCollection"/> for deserialization. </summary>

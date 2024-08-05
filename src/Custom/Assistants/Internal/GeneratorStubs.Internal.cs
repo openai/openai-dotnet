@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 /*
  * This file stubs and performs minimal customization to generated internal types for the OpenAI.Assistants namespace.
@@ -343,9 +343,6 @@ internal readonly partial struct InternalCreateRunRequestModel { }
 [CodeGenModel("CreateRunRequestToolChoice")]
 internal readonly partial struct InternalCreateRunRequestToolChoice { }
 
-[CodeGenModel("CreateThreadAndRunRequestModel")]
-internal readonly partial struct InternalCreateThreadAndRunRequestModel { }
-
 [CodeGenModel("CreateAssistantRequestResponseFormat1")]
 internal readonly partial struct InternalCreateAssistantRequestResponseFormat { }
 
@@ -363,6 +360,15 @@ internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVect
 
 [CodeGenModel("CreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences")]
 internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences { }
+
+[CodeGenModel("CreateThreadAndRunRequestModel")]
+internal readonly partial struct InternalCreateThreadAndRunRequestModel { }
+
+[CodeGenModel("CreateThreadAndRunRequestResponseFormat")]
+internal readonly partial struct InternalCreateThreadAndRunRequestResponseFormat { }
+
+[CodeGenModel("CreateThreadAndRunRequestToolChoice")]
+internal readonly partial struct InternalCreateThreadAndRunRequestToolChoice { }
 
 [CodeGenModel("CreateThreadAndRunRequestToolResources")]
 internal partial class InternalCreateThreadAndRunRequestToolResources { }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -24,7 +24,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
             writer.WriteStringValue(instance._type.ToString());
             writer.WritePropertyName("function"u8);
             writer.WriteObjectValue(instance._function, options);
-            writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+            writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
             writer.WriteEndObject();
         }
     }

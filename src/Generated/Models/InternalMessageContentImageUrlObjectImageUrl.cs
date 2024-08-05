@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentImageUrlObjectImageUrl
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalMessageContentImageUrlObjectImageUrl(Uri url)
         {
             Argument.AssertNotNull(url, nameof(url));
@@ -22,7 +21,7 @@ namespace OpenAI.Assistants
         {
             Url = url;
             Detail = detail;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalMessageContentImageUrlObjectImageUrl()

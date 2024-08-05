@@ -9,8 +9,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalCreateFineTuningJobRequestIntegration
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateFineTuningJobRequestIntegration(InternalCreateFineTuningJobRequestIntegrationWandb wandb)
         {
             Argument.AssertNotNull(wandb, nameof(wandb));
@@ -22,7 +21,7 @@ namespace OpenAI.FineTuning
         {
             Type = type;
             Wandb = wandb;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateFineTuningJobRequestIntegration()

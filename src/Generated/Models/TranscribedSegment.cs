@@ -10,8 +10,6 @@ namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedSegment
     {
-        private readonly IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
         internal TranscribedSegment(int id, long seekOffset, TimeSpan start, TimeSpan end, string text, IEnumerable<long> tokenIds, float temperature, double averageLogProbability, float compressionRatio, double noSpeechProbability)
         {
             Argument.AssertNotNull(text, nameof(text));
@@ -41,7 +39,7 @@ namespace OpenAI.Audio
             AverageLogProbability = averageLogProbability;
             CompressionRatio = compressionRatio;
             NoSpeechProbability = noSpeechProbability;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public TranscribedSegment()

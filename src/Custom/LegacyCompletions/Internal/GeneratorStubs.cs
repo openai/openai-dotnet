@@ -1,4 +1,4 @@
-﻿namespace OpenAI.LegacyCompletions;
+namespace OpenAI.LegacyCompletions;
 
 // CUSTOM: Made internal.
 

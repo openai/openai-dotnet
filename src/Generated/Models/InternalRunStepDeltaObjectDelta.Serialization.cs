@@ -21,15 +21,19 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(StepDetails))
+            if (SerializedAdditionalRawData?.ContainsKey("step_details") != true && Optional.IsDefined(StepDetails))
             {
                 writer.WritePropertyName("step_details"u8);
                 writer.WriteObjectValue(StepDetails, options);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -78,8 +82,9 @@ namespace OpenAI.Assistants
                     stepDetails = InternalRunStepDeltaStepDetails.DeserializeInternalRunStepDeltaStepDetails(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

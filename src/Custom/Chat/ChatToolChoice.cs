@@ -61,7 +61,7 @@ public partial class ChatToolChoice
         _type = InternalChatCompletionNamedToolChoiceType.Function;
         _isPlainString = false;
 
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary>

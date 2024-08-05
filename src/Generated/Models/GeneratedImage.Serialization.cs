@@ -21,25 +21,29 @@ namespace OpenAI.Images
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(ImageBytes))
+            if (SerializedAdditionalRawData?.ContainsKey("b64_json") != true && Optional.IsDefined(ImageBytes))
             {
                 writer.WritePropertyName("b64_json"u8);
                 writer.WriteBase64StringValue(ImageBytes.ToArray(), "D");
             }
-            if (Optional.IsDefined(ImageUri))
+            if (SerializedAdditionalRawData?.ContainsKey("url") != true && Optional.IsDefined(ImageUri))
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(ImageUri.AbsoluteUri);
             }
-            if (Optional.IsDefined(RevisedPrompt))
+            if (SerializedAdditionalRawData?.ContainsKey("revised_prompt") != true && Optional.IsDefined(RevisedPrompt))
             {
                 writer.WritePropertyName("revised_prompt"u8);
                 writer.WriteStringValue(RevisedPrompt);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -104,8 +108,9 @@ namespace OpenAI.Images
                     revisedPrompt = property.Value.GetString();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

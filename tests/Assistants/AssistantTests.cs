@@ -760,7 +760,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -818,7 +818,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -874,7 +874,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });

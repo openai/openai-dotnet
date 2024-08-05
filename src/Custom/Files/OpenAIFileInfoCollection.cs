@@ -45,7 +45,7 @@ public partial class OpenAIFileInfoCollection : ReadOnlyCollection<OpenAIFileInf
     /// </list>
     /// </para>
     /// </summary>
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     /// <summary> Initializes a new instance of <see cref="OpenAIFileInfoCollection"/>. </summary>
     /// <param name="data"></param>
@@ -64,7 +64,7 @@ public partial class OpenAIFileInfoCollection : ReadOnlyCollection<OpenAIFileInf
         : base([.. data])
     {
         Object = @object;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAIFileInfoCollection"/> for deserialization. </summary>

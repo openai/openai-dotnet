@@ -22,21 +22,21 @@ public partial class RunCreationOptions
 
     /// <inheritdoc cref="AssistantResponseFormat"/>
     [CodeGenMember("ResponseFormat")]
-    public AssistantResponseFormat ResponseFormat { get; init; }
+    public AssistantResponseFormat ResponseFormat { get; set; }
 
     /// <summary>
     /// A run-specific model name that will override the assistant's defined model. If not provided, the assistant's
     /// selection will be used.
     /// </summary>
     [CodeGenMember("Model")]
-    public string ModelOverride { get; init; }
+    public string ModelOverride { get; set; }
 
     /// <summary>
     /// A run specific replacement for the assistant's default instructions that will override the assistant-level
     /// instructions. If not specified, the assistant's instructions will be used.
     /// </summary>
     [CodeGenMember("Instructions")]
-    public string InstructionsOverride { get; init; }
+    public string InstructionsOverride { get; set; }
 
     /// <summary>
     /// Run-specific additional instructions that will be appended to the assistant-level instructions solely for this
@@ -44,7 +44,7 @@ public partial class RunCreationOptions
     /// instructions are concatenated.
     /// </summary>
     [CodeGenMember("AdditionalInstructions")]
-    public string AdditionalInstructions { get; init; }
+    public string AdditionalInstructions { get; set; }
 
     /// <summary> Adds additional messages to the thread before creating the run. </summary>
     public IList<ThreadInitializationMessage> AdditionalMessages { get; } = new ChangeTrackingList<ThreadInitializationMessage>();
@@ -73,7 +73,7 @@ public partial class RunCreationOptions
     /// Assumed <c>true</c> if not otherwise specified.
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
-    public bool? ParallelToolCallsEnabled { get; init; }
+    public bool? ParallelToolCallsEnabled { get; set; }
 
     /// <summary>
     /// A run-specific collection of tool definitions that will override the assistant-level defaults. If not provided,
@@ -102,7 +102,7 @@ public partial class RunCreationOptions
     public IDictionary<string, string> Metadata { get; } = new ChangeTrackingDictionary<string, string>();
 
     /// <summary> What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. </summary>
-    public float? Temperature { get; init; }
+    public float? Temperature { get; set; }
 
     /// <summary>
     /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
@@ -110,22 +110,22 @@ public partial class RunCreationOptions
     /// We generally recommend altering this or temperature but not both.
     /// </summary>
     [CodeGenMember("TopP")]
-    public float? NucleusSamplingFactor { get; init; }
+    public float? NucleusSamplingFactor { get; set; }
 
     /// <summary> The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. </summary>
-    public int? MaxPromptTokens { get; init; }
+    public int? MaxPromptTokens { get; set; }
 
     /// <summary> The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. </summary>
-    public int? MaxCompletionTokens { get; init; }
+    public int? MaxCompletionTokens { get; set; }
 
     /// <summary> Gets or sets the truncation strategy. </summary>
-    public RunTruncationStrategy TruncationStrategy { get; init; }
+    public RunTruncationStrategy TruncationStrategy { get; set; }
 
     /// <summary>
     /// 
     /// </summary>
     [CodeGenMember("ToolChoice")]
-    public ToolConstraint ToolConstraint { get; init; }
+    public ToolConstraint ToolConstraint { get; set; }
 
     /// <summary>
     /// Creates a new instance of <see cref="RunCreationOptions"/>.

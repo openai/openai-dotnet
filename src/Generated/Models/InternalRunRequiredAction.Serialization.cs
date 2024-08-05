@@ -21,14 +21,24 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteObjectValue<object>(Type, options);
-            writer.WritePropertyName("submit_tool_outputs"u8);
-            writer.WriteObjectValue(SubmitToolOutputs, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("type"u8);
+                writer.WriteObjectValue<object>(Type, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("submit_tool_outputs") != true)
+            {
+                writer.WritePropertyName("submit_tool_outputs"u8);
+                writer.WriteObjectValue(SubmitToolOutputs, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -79,8 +89,9 @@ namespace OpenAI.Assistants
                     submitToolOutputs = InternalRunObjectRequiredActionSubmitToolOutputs.DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

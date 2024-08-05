@@ -125,7 +125,7 @@ public partial class ChatClient
     /// history.
     /// </summary>
     /// <remarks>
-    /// <see cref="AsyncResultCollection{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
+    /// <see cref="AsyncCollectionResult{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
     /// <see cref="IAsyncEnumerable{T}"/> interface.
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
@@ -151,7 +151,7 @@ public partial class ChatClient
     /// history.
     /// </summary>
     /// <remarks>
-    /// <see cref="AsyncResultCollection{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
+    /// <see cref="AsyncCollectionResult{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
     /// <see cref="IAsyncEnumerable{T}"/> interface.
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
@@ -164,7 +164,7 @@ public partial class ChatClient
     /// history.
     /// </summary>
     /// <remarks>
-    /// <see cref="ResultCollection{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
+    /// <see cref="CollectionResult{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
     /// <see cref="IEnumerable{T}"/> interface.
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>
@@ -188,7 +188,7 @@ public partial class ChatClient
     /// history.
     /// </summary>
     /// <remarks>
-    /// <see cref="ResultCollection{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
+    /// <see cref="CollectionResult{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
     /// <see cref="IEnumerable{T}"/> interface.
     /// </remarks>
     /// <param name="messages"> The messages to provide as input for chat completion. </param>

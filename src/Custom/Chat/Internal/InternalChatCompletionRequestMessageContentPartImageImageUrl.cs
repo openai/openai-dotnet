@@ -69,7 +69,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
 
         Url = url;
         Detail = detail;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     public Uri ImageUri => _imageUri;

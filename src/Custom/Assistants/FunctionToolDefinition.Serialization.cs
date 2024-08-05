@@ -22,7 +22,7 @@ public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
         writer.WriteObjectValue<InternalFunctionDefinition>(_internalFunction, options);
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(Type);
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

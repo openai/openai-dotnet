@@ -44,7 +44,7 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// </list>
     /// </para>
     /// </summary>
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
     /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/>. </summary>
@@ -68,7 +68,7 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
         : base([.. data])
     {
         CreatedAt = created;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.

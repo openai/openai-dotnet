@@ -1,4 +1,4 @@
-﻿using OpenAI.Files;
+using OpenAI.Files;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Linq;

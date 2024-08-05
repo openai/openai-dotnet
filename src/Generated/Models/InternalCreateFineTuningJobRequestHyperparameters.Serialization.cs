@@ -21,7 +21,7 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(BatchSize))
+            if (SerializedAdditionalRawData?.ContainsKey("batch_size") != true && Optional.IsDefined(BatchSize))
             {
                 writer.WritePropertyName("batch_size"u8);
 #if NET6_0_OR_GREATER
@@ -33,7 +33,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (Optional.IsDefined(LearningRateMultiplier))
+            if (SerializedAdditionalRawData?.ContainsKey("learning_rate_multiplier") != true && Optional.IsDefined(LearningRateMultiplier))
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
 #if NET6_0_OR_GREATER
@@ -45,7 +45,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (Optional.IsDefined(NEpochs))
+            if (SerializedAdditionalRawData?.ContainsKey("n_epochs") != true && Optional.IsDefined(NEpochs))
             {
                 writer.WritePropertyName("n_epochs"u8);
 #if NET6_0_OR_GREATER
@@ -57,10 +57,14 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -129,8 +133,9 @@ namespace OpenAI.FineTuning
                     nEpochs = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

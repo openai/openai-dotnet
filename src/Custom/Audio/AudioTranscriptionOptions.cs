@@ -83,7 +83,7 @@ public partial class AudioTranscriptionOptions
     /// <summary>
     /// The timestamp granularities to populate for this transcription.
     /// </summary>
-    public AudioTimestampGranularities Granularities { get; init; }
+    public AudioTimestampGranularities Granularities { get; set; }
 
     internal MultipartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
     {

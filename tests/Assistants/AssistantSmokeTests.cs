@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
 using OpenAI.VectorStores;
@@ -68,100 +68,6 @@ public partial class AssistantSmokeTests
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs, Has.Count.EqualTo(1));
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs[0].Logs, Is.Not.Null.And.Not.Empty);
     }
-
-    [OneTimeTearDown]
-    protected void Cleanup()
-    {
-        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
-        {
-            return;
-        }
-
-        AssistantClient client = new();
-        FileClient fileClient = new();
-        VectorStoreClient vectorStoreClient = new();
-        RequestOptions requestOptions = new()
-        {
-            ErrorOptions = ClientErrorBehaviors.NoThrow,
-        };
-        foreach (ThreadMessage message in _messagesToDelete)
-        {
-            Console.WriteLine($"Cleanup: {message.Id} -> {client.DeleteMessage(message.ThreadId, message.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (Assistant assistant in _assistantsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {assistant.Id} -> {client.DeleteAssistant(assistant.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (AssistantThread thread in _threadsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {thread.Id} -> {client.DeleteThread(thread.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (OpenAIFileInfo file in _filesToDelete)
-        {
-            Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse().Status}");
-        }
-        foreach (string vectorStoreId in _vectorStoreIdsToDelete)
-        {
-            Console.WriteLine($"Cleanup: {vectorStoreId} => {vectorStoreClient.DeleteVectorStore(vectorStoreId, requestOptions)?.GetRawResponse().Status}");
-        }
-        _messagesToDelete.Clear();
-        _assistantsToDelete.Clear();
-        _threadsToDelete.Clear();
-        _filesToDelete.Clear();
-        _vectorStoreIdsToDelete.Clear();
-    }
-
-    /// <summary>
-    /// Performs basic, invariant validation of a target that was just instantiated from its corresponding origination
-    /// mechanism. If applicable, the instance is recorded into the test run for cleanup of persistent resources.
-    /// </summary>
-    /// <typeparam name="T"> Instance type being validated. </typeparam>
-    /// <param name="target"> The instance to validate. </param>
-    /// <exception cref="NotImplementedException"> The provided instance type isn't supported. </exception>
-    private void Validate<T>(T target)
-    {
-        if (target is Assistant assistant)
-        {
-            Assert.That(assistant?.Id, Is.Not.Null);
-            _assistantsToDelete.Add(assistant);
-        }
-        else if (target is AssistantThread thread)
-        {
-            Assert.That(thread?.Id, Is.Not.Null);
-            _threadsToDelete.Add(thread);
-        }
-        else if (target is ThreadMessage message)
-        {
-            Assert.That(message?.Id, Is.Not.Null);
-            _messagesToDelete.Add(message);
-        }
-        else if (target is ThreadRun run)
-        {
-            Assert.That(run?.Id, Is.Not.Null);
-        }
-        else if (target is OpenAIFileInfo file)
-        {
-            Assert.That(file?.Id, Is.Not.Null);
-            _filesToDelete.Add(file);
-        }
-        else
-        {
-            throw new NotImplementedException($"{nameof(Validate)} helper not implemented for: {typeof(T)}");
-        }
-    }
-
-    private readonly List<Assistant> _assistantsToDelete = [];
-    private readonly List<AssistantThread> _threadsToDelete = [];
-    private readonly List<ThreadMessage> _messagesToDelete = [];
-    private readonly List<OpenAIFileInfo> _filesToDelete = [];
-    private readonly List<string> _vectorStoreIdsToDelete = [];
-
-    private static AssistantClient GetTestClient() => GetTestClient<AssistantClient>(TestScenario.Assistants);
-
-    private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
-    private static readonly string s_testAssistantName = $".NET SDK Test Assistant - Please Delete Me";
-    private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
 }
 
 #pragma warning restore OPENAI001

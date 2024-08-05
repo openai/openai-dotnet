@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionStreamResponseDelta
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal InternalChatCompletionStreamResponseDelta(IReadOnlyList<ChatMessageContentPart> content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
@@ -17,7 +17,7 @@ namespace OpenAI.Chat
             FunctionCall = functionCall;
             ToolCalls = toolCalls;
             Role = role;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public StreamingChatFunctionCallUpdate FunctionCall { get; }
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCalls { get; }

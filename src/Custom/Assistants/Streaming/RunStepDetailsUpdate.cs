@@ -1,3 +1,4 @@
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -9,7 +10,8 @@ namespace OpenAI.Assistants;
 /// </summary>
 public class RunStepDetailsUpdate : StreamingUpdate
 {
-    private readonly InternalRunStepDelta _delta;
+    internal readonly InternalRunStepDelta _delta;
+    internal readonly InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject _toolCall;
     private readonly InternalRunStepDeltaStepDetailsMessageCreationObject _asMessageCreation;
     private readonly InternalRunStepDeltaStepDetailsToolCallsCodeObject _asCodeCall;
     private readonly InternalRunStepDeltaStepDetailsToolCallsFileSearchObject _asFileSearchCall;
@@ -22,7 +24,13 @@ public class RunStepDetailsUpdate : StreamingUpdate
     public string CreatedMessageId => _asMessageCreation?.MessageCreation?.MessageId;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObject.Id"/>
-    public string ToolCallId => _asCodeCall?.Id ?? _asFileSearchCall?.Id ?? _asFunctionCall?.Id;
+    public string ToolCallId
+        => _asCodeCall?.Id
+        ?? _asFileSearchCall?.Id
+        ?? _asFunctionCall?.Id
+        ?? (_toolCall?.SerializedAdditionalRawData?.TryGetValue("id", out BinaryData idData) == true
+            ? idData.ToString()
+            : null);
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObject.Index"/>
     public int? ToolCallIndex => _asCodeCall?.Index ?? _asFileSearchCall?.Index ?? _asFunctionCall?.Index;
@@ -53,6 +61,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
         _asFileSearchCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFileSearchObject;
         _asFunctionCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFunctionObject;
         _delta = stepDelta;
+        _toolCall = toolCall;
     }
 
     internal static IEnumerable<RunStepDetailsUpdate> DeserializeRunStepDetailsUpdates(

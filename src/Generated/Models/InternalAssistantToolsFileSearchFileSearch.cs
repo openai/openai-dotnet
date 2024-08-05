@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantToolsFileSearchFileSearch
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalAssistantToolsFileSearchFileSearch()
         {
         }
@@ -18,7 +17,7 @@ namespace OpenAI.Assistants
         internal InternalAssistantToolsFileSearchFileSearch(int? internalMaxNumResults, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             InternalMaxNumResults = internalMaxNumResults;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
     }
 }

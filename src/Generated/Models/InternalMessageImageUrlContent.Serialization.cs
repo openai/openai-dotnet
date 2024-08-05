@@ -48,8 +48,9 @@ namespace OpenAI.Assistants
                     imageUrl = InternalMessageContentImageUrlObjectImageUrl.DeserializeInternalMessageContentImageUrlObjectImageUrl(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
