@@ -2,9 +2,35 @@
 using OpenAI.Chat;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
 namespace OpenAI.Examples;
+
+internal static class MyFunctions
+{
+
+    [Description("Get the user's current location")]
+    public static string GetCurrentLocation()
+    {
+        // Call the location API here.
+        return "San Francisco";
+    }
+
+    [Description("Get the current weather in a given location")]
+    public static string GetCurrentWeather(
+        [Description("The city and state, e.g. Boston, MA")] string location,
+        [Description("The temperature unit to use.Infer this from the specified location.")] TemperatureUnit unit = TemperatureUnit.Celsius)
+    {
+        // Call the weather API here.
+        return $"31 {unit}";
+    }
+
+    public enum TemperatureUnit
+    {
+        Fahrenheit,
+        Celsius
+    }
+}
 
 public partial class ChatExamples
 {
@@ -56,20 +82,13 @@ public partial class ChatExamples
     {
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        #region
-        List<ChatMessage> messages = [
-            new UserChatMessage("What's the weather like today?"),
-        ];
-
-        ChatCompletionOptions options = new()
-        {
-            Tools = { getCurrentLocationTool, getCurrentWeatherTool },
+        ChatCompletionOptions options = new() {
+            Tools = ChatTool.CreateFunctionTools(typeof(MyFunctions))
         };
-        #endregion
 
         #region
         bool requiresAction;
-
+        List<ChatMessage> messages = ["What's the weather like today?"];
         do
         {
             requiresAction = false;
@@ -92,43 +111,27 @@ public partial class ChatExamples
                         // Then, add a new tool message for each tool call that is resolved.
                         foreach (ChatToolCall toolCall in chatCompletion.ToolCalls)
                         {
-                            switch (toolCall.FunctionName)
-                            {
-                                case nameof(GetCurrentLocation):
-                                    {
-                                        string toolResult = GetCurrentLocation();
+                            switch (toolCall.FunctionName) {
+                                case nameof(MyFunctions.GetCurrentLocation): {
+                                        string toolResult = MyFunctions.GetCurrentLocation();
                                         messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
                                         break;
                                     }
 
-                                case nameof(GetCurrentWeather):
-                                    {
-                                        // The arguments that the model wants to use to call the function are specified as a
-                                        // stringified JSON object based on the schema defined in the tool definition. Note that
-                                        // the model may hallucinate arguments too. Consequently, it is important to do the
-                                        // appropriate parsing and validation before calling the function.
-                                        using JsonDocument argumentsJson = JsonDocument.Parse(toolCall.FunctionArguments);
-                                        bool hasLocation = argumentsJson.RootElement.TryGetProperty("location", out JsonElement location);
-                                        bool hasUnit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unit);
-
-                                        if (!hasLocation)
-                                        {
-                                            throw new ArgumentNullException(nameof(location), "The location argument is required.");
-                                        }
-
-                                        string toolResult = hasUnit
-                                            ? GetCurrentWeather(location.GetString(), unit.GetString())
-                                            : GetCurrentWeather(location.GetString());
+                                case nameof(MyFunctions.GetCurrentWeather): {
+                                        var location = toolCall.GetFunctionArgument<string>("location");
+                                        var unit = toolCall.GetFunctionArgument("unit", defaultValue: MyFunctions.TemperatureUnit.Celsius);
+                                        string toolResult = MyFunctions.GetCurrentWeather(location, unit);
                                         messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
                                         break;
                                     }
 
-                                default:
-                                    {
+                                default: {
                                         // Handle other unexpected calls.
                                         throw new NotImplementedException();
                                     }
                             }
+
                         }
 
                         requiresAction = true;
