@@ -10,7 +10,8 @@ public partial class BatchClient
 {
     public virtual async Task<BatchOperation> CreateBatchAsync(
         ReturnWhen returnWhen,
-        BinaryContent content, RequestOptions options = null)
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -34,7 +35,8 @@ public partial class BatchClient
 
     public virtual BatchOperation CreateBatch(
         ReturnWhen returnWhen,
-        BinaryContent content, RequestOptions options = null)
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 

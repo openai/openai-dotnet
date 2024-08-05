@@ -37,7 +37,8 @@ public partial class FineTuningClient
     /// <returns> The response returned from the service. </returns>
     public virtual async Task<FineTuningOperation> CreateJobAsync(
         ReturnWhen returnWhen,
-        BinaryContent content, RequestOptions options = null)
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -75,7 +76,8 @@ public partial class FineTuningClient
     /// <returns> The response returned from the service. </returns>
     public virtual FineTuningOperation CreateJob(
         ReturnWhen returnWhen,
-        BinaryContent content, RequestOptions options = null)
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 

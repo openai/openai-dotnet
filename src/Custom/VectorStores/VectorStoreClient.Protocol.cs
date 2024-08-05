@@ -434,7 +434,11 @@ public partial class VectorStoreClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(ReturnWhen returnWhen, string vectorStoreId, BinaryContent content, RequestOptions options = null)
+    public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(
+        ReturnWhen returnWhen,
+        string vectorStoreId,
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNull(content, nameof(content));
@@ -469,7 +473,9 @@ public partial class VectorStoreClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
         ReturnWhen returnWhen,
-        string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        string vectorStoreId,
+        BinaryContent content,
+        RequestOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNull(content, nameof(content));
