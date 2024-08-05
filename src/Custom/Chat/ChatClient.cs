@@ -1,4 +1,4 @@
-using OpenAI.Instrumentation;
+using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -15,7 +15,7 @@ namespace OpenAI.Chat;
 public partial class ChatClient
 {
     private readonly string _model;
-    private readonly InstrumentationFactory _instrumentation;
+    private readonly OpenTelemetrySource _telemetry;
 
     /// <summary>
     /// Initializes a new instance of <see cref="ChatClient"/> that will use an API key when authenticating.
@@ -64,7 +64,7 @@ public partial class ChatClient
         _model = model;
         _pipeline = pipeline;
         _endpoint = endpoint;
-        _instrumentation = new InstrumentationFactory(model, endpoint);
+        _telemetry = new OpenTelemetrySource(model, endpoint);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public partial class ChatClient
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options);
-        using InstrumentationScope scope = _instrumentation.StartChatScope(options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
 
         try
         {
@@ -119,7 +119,7 @@ public partial class ChatClient
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options);
-        using InstrumentationScope scope = _instrumentation.StartChatScope(options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
 
         try
         {

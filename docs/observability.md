@@ -16,12 +16,12 @@ To enable the instrumentation:
 
 1. Set instrumentation feature-flag using one of the following options:
 
-   - set the `OPENAI_EXPERIMENTAL_ENABLE_INSTRUMENTATION` environment variable to `"true"`
-   - set the `OpenAI.Experimental.EnableInstrumentation` context switch to true in your application code when application
+   - set the `OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY` environment variable to `"true"`
+   - set the `OpenAI.Experimental.EnableOpenTelemetry` context switch to true in your application code when application
      is starting and before initializing any OpenAI clients. For example:
 
      ```csharp
-     AppContext.SetSwitch("OpenAI.Experimental.EnableInstrumentation", true);
+     AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
      ```
 
 2. Enable OpenAI telemetry:

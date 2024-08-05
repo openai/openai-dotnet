@@ -3,10 +3,9 @@ using OpenAI.Chat;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace OpenAI.Tests.Instrumentation;
+namespace OpenAI.Tests.Telemetry;
 
 internal class TestMeterListener : IDisposable
 {

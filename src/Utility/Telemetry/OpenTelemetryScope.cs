@@ -1,20 +1,21 @@
 ﻿using OpenAI.Chat;
 using System;
-using System.Buffers;
 using System.ClientModel;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace OpenAI.Instrumentation;
+using static OpenAI.Telemetry.OpenTelemetryConstants;
 
-internal class InstrumentationScope : IDisposable
+namespace OpenAI.Telemetry;
+
+internal class OpenTelemetryScope : IDisposable
 {
     private static readonly ActivitySource s_chatSource = new ActivitySource("OpenAI.ChatClient");
     private static readonly Meter s_chatMeter = new Meter("OpenAI.ChatClient");
 
     // TODO: add explicit histogram buckets once System.Diagnostics.DiagnosticSource 9.0 is used
-    private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(Constants.GenAiClientOperationDurationMetricName, "s", "Measures GenAI operation duration.");
-    private static readonly Histogram<long> s_tokens = s_chatMeter.CreateHistogram<long>(Constants.GenAiClientTokenUsageMetricName, "{token}", "Measures the number of input and output token used.");
+    private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(GenAiClientOperationDurationMetricName, "s", "Measures GenAI operation duration.");
+    private static readonly Histogram<long> s_tokens = s_chatMeter.CreateHistogram<long>(GenAiClientTokenUsageMetricName, "{token}", "Measures the number of input and output token used.");
 
     private readonly string _operationName;
     private readonly string _serverAddress;
@@ -25,7 +26,7 @@ internal class InstrumentationScope : IDisposable
     private Activity _activity;
     private TagList _commonTags;
 
-    private InstrumentationScope(
+    private OpenTelemetryScope(
         string model, string operationName,
         string serverAddress, int serverPort)
     {
@@ -35,12 +36,14 @@ internal class InstrumentationScope : IDisposable
         _serverPort = serverPort;
     }
 
-    public static InstrumentationScope StartChat(string model, string operationName,
+    private static bool IsChatEnabled => s_chatSource.HasListeners() || s_tokens.Enabled || s_duration.Enabled;
+
+    public static OpenTelemetryScope StartChat(string model, string operationName,
         string serverAddress, int serverPort, ChatCompletionOptions options)
     {
-        if (s_chatSource.HasListeners() || s_tokens.Enabled || s_duration.Enabled)
+        if (IsChatEnabled)
         {
-            var scope = new InstrumentationScope(model, operationName, serverAddress, serverPort);
+            var scope = new OpenTelemetryScope(model, operationName, serverAddress, serverPort);
             scope.StartChat(options);
             return scope;
         }
@@ -53,20 +56,20 @@ internal class InstrumentationScope : IDisposable
         _duration = Stopwatch.StartNew();
         _commonTags = new TagList
         {
-            { Constants.GenAiSystemKey, Constants.GenAiSystemValue },
-            { Constants.GenAiRequestModelKey, _requestModel },
-            { Constants.ServerAddressKey, _serverAddress },
-            { Constants.ServerPortKey, _serverPort },
-            { Constants.GenAiOperationNameKey, _operationName },
+            { GenAiSystemKey, GenAiSystemValue },
+            { GenAiRequestModelKey, _requestModel },
+            { ServerAddressKey, _serverAddress },
+            { ServerPortKey, _serverPort },
+            { GenAiOperationNameKey, _operationName },
         };
 
         _activity = s_chatSource.StartActivity(string.Concat(_operationName, " ", _requestModel), ActivityKind.Client);
         if (_activity?.IsAllDataRequested == true)
         {
             RecordCommonAttributes();
-            SetActivityTagIfNotNull(Constants.GenAiRequestMaxTokensKey, options?.MaxTokens);
-            SetActivityTagIfNotNull(Constants.GenAiRequestTemperatureKey, options?.Temperature);
-            SetActivityTagIfNotNull(Constants.GenAiRequestTopPKey, options?.TopP);
+            SetActivityTagIfNotNull(GenAiRequestMaxTokensKey, options?.MaxTokens);
+            SetActivityTagIfNotNull(GenAiRequestTemperatureKey, options?.Temperature);
+            SetActivityTagIfNotNull(GenAiRequestTopPKey, options?.TopP);
         }
 
         return;
@@ -88,7 +91,7 @@ internal class InstrumentationScope : IDisposable
         RecordMetrics(null, errorType, null, null);
         if (_activity?.IsAllDataRequested == true)
         {
-            _activity?.SetTag(Constants.ErrorTypeKey, errorType);
+            _activity?.SetTag(OpenTelemetryConstants.ErrorTypeKey, errorType);
             _activity?.SetStatus(ActivityStatusCode.Error, ex?.Message ?? errorType);
         }
     }
@@ -100,11 +103,11 @@ internal class InstrumentationScope : IDisposable
 
     private void RecordCommonAttributes()
     {
-        _activity.SetTag(Constants.GenAiSystemKey, Constants.GenAiSystemValue);
-        _activity.SetTag(Constants.GenAiRequestModelKey, _requestModel);
-        _activity.SetTag(Constants.ServerAddressKey, _serverAddress);
-        _activity.SetTag(Constants.ServerPortKey, _serverPort);
-        _activity.SetTag(Constants.GenAiOperationNameKey, _operationName);
+        _activity.SetTag(GenAiSystemKey, GenAiSystemValue);
+        _activity.SetTag(GenAiRequestModelKey, _requestModel);
+        _activity.SetTag(ServerAddressKey, _serverAddress);
+        _activity.SetTag(ServerPortKey, _serverPort);
+        _activity.SetTag(GenAiOperationNameKey, _operationName);
     }
 
     private void RecordMetrics(string responseModel, string errorType, int? inputTokensUsage, int? outputTokensUsage)
@@ -114,26 +117,26 @@ internal class InstrumentationScope : IDisposable
 
         if (responseModel != null)
         {
-            tags.Add(Constants.GenAiResponseModelKey, responseModel);
+            tags.Add(GenAiResponseModelKey, responseModel);
         }
 
         if (inputTokensUsage != null)
         {
             var inputUsageTags = tags;
-            inputUsageTags.Add(Constants.GenAiTokenTypeKey, "input");
+            inputUsageTags.Add(GenAiTokenTypeKey, "input");
             s_tokens.Record(inputTokensUsage.Value, inputUsageTags);
         }
 
         if (outputTokensUsage != null)
         {
             var outputUsageTags = tags;
-            outputUsageTags.Add(Constants.GenAiTokenTypeKey, "output");
+            outputUsageTags.Add(GenAiTokenTypeKey, "output");
             s_tokens.Record(outputTokensUsage.Value, outputUsageTags);
         }
 
         if (errorType != null)
         {
-            tags.Add(Constants.ErrorTypeKey, errorType);
+            tags.Add(ErrorTypeKey, errorType);
         }
 
         s_duration.Record(_duration.Elapsed.TotalSeconds, tags);
@@ -141,10 +144,10 @@ internal class InstrumentationScope : IDisposable
 
     private void RecordResponseAttributes(string responseId, string model, ChatFinishReason? finishReason, ChatTokenUsage usage)
     {
-        SetActivityTagIfNotNull(Constants.GenAiResponseIdKey, responseId);
-        SetActivityTagIfNotNull(Constants.GenAiResponseModelKey, model);
-        SetActivityTagIfNotNull(Constants.GenAiUsageInputTokensKey, usage?.InputTokens);
-        SetActivityTagIfNotNull(Constants.GenAiUsageOutputTokensKey, usage?.OutputTokens);
+        SetActivityTagIfNotNull(GenAiResponseIdKey, responseId);
+        SetActivityTagIfNotNull(GenAiResponseModelKey, model);
+        SetActivityTagIfNotNull(GenAiUsageInputTokensKey, usage?.InputTokens);
+        SetActivityTagIfNotNull(GenAiUsageOutputTokensKey, usage?.OutputTokens);
         SetFinishReasonAttribute(finishReason);
     }
 
@@ -167,7 +170,7 @@ internal class InstrumentationScope : IDisposable
 
         // There could be multiple finish reasons, so semantic conventions use array type for the corrresponding attribute.
         // It's likely to change, but for now let's report it as array.
-        _activity.SetTag(Constants.GenAiResponseFinishReasonKey, new[] { reasonStr });
+        _activity.SetTag(GenAiResponseFinishReasonKey, new[] { reasonStr });
     }
 
     private string GetChatMessageRole(ChatMessageRole? role) =>

@@ -1,9 +1,9 @@
-﻿namespace OpenAI.Instrumentation;
+﻿namespace OpenAI.Telemetry;
 
-internal class Constants
+internal class OpenTelemetryConstants
 {
-    // follows OpenTelemetry GenAI semantic conventions:
-    // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/gen-ai
+    // follow OpenTelemetry GenAI semantic conventions:
+    // https://github.com/open-telemetry/semantic-conventions/tree/v1.27.0/docs/gen-ai
 
     public const string ErrorTypeKey = "error.type";
     public const string ServerAddressKey = "server.address";
