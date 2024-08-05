@@ -75,11 +75,11 @@ public partial class BatchTests : SyncAsyncTestBase
                 testMetadataKey = "test metadata value",
             },
         }));
-        ClientResult batchResult = IsAsync
-            ? await client.CreateBatchAsync(content)
-            : client.CreateBatch(content);
+        BatchOperation batchOperation = IsAsync
+            ? await client.CreateBatchAsync(ReturnWhen.Started, content)
+            : client.CreateBatch(ReturnWhen.Started, content);
 
-        BinaryData response = batchResult.GetRawResponse().Content;
+        BinaryData response = batchOperation.GetRawResponse().Content;
         JsonDocument jsonDocument = JsonDocument.Parse(response);
 
         JsonElement idElement = jsonDocument.RootElement.GetProperty("id");
@@ -100,18 +100,14 @@ public partial class BatchTests : SyncAsyncTestBase
         Assert.That(status, Is.EqualTo("validating"));
         Assert.That(testMetadataKey, Is.EqualTo("test metadata value"));
 
-        batchResult = IsAsync
-            ? await client.GetBatchAsync(id, options: null)
-            : client.GetBatch(id, options: null);
-
         JsonElement endpointElement = jsonDocument.RootElement.GetProperty("endpoint");
         string endpoint = endpointElement.GetString();
 
         Assert.That(endpoint, Is.EqualTo("/v1/chat/completions"));
 
-        batchResult = IsAsync
-            ? await client.CancelBatchAsync(id, options: null)
-            : client.CancelBatch(id, options: null);
+        ClientResult clientResult = IsAsync
+            ? await batchOperation.CancelBatchAsync(id, options: null)
+            : batchOperation.CancelBatch(id, options: null);
 
         statusElement = jsonDocument.RootElement.GetProperty("status");
         status = statusElement.GetString();

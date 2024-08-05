@@ -170,8 +170,11 @@ public partial class VectorStoreClient
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
-        => CreateBatchFileJobAsync(vectorStore?.Id, files?.Select(file => file.Id));
+    public virtual Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(
+        ReturnWhen returnWhen, 
+        VectorStore vectorStore, 
+        IEnumerable<OpenAIFileInfo> files)
+        => CreateBatchFileJobAsync(returnWhen, vectorStore?.Id, files?.Select(file => file.Id));
 
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
@@ -179,69 +182,9 @@ public partial class VectorStoreClient
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
-        => CreateBatchFileJob(vectorStore?.Id, files?.Select(file => file.Id));
-
-    /// <summary>
-    /// Gets an updated instance of an existing <see cref="VectorStoreBatchFileJob"/>, refreshing its status.
-    /// </summary>
-    /// <param name="batchJob"> The job to refresh. </param>
-    /// <returns> The refreshed instance of <see cref="VectorStoreBatchFileJob"/>. </returns>
-    public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(VectorStoreBatchFileJob batchJob)
-        => GetBatchFileJobAsync(batchJob?.VectorStoreId, batchJob?.BatchId);
-
-    /// <summary>
-    /// Gets an updated instance of an existing <see cref="VectorStoreBatchFileJob"/>, refreshing its status.
-    /// </summary>
-    /// <param name="batchJob"> The job to refresh. </param>
-    /// <returns> The refreshed instance of <see cref="VectorStoreBatchFileJob"/>. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(VectorStoreBatchFileJob batchJob)
-        => GetBatchFileJob(batchJob?.VectorStoreId, batchJob?.BatchId);
-
-    /// <summary>
-    /// Cancels an in-progress <see cref="VectorStoreBatchFileJob"/>.
-    /// </summary>
-    /// <param name="batchJob"> The <see cref="VectorStoreBatchFileJob"/> that should be canceled. </param>
-    /// <returns> An updated <see cref="VectorStoreBatchFileJob"/> instance. </returns>
-    public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(VectorStoreBatchFileJob batchJob)
-        => CancelBatchFileJobAsync(batchJob?.VectorStoreId, batchJob?.BatchId);
-
-    /// <summary>
-    /// Cancels an in-progress <see cref="VectorStoreBatchFileJob"/>.
-    /// </summary>
-    /// <param name="batchJob"> The <see cref="VectorStoreBatchFileJob"/> that should be canceled. </param>
-    /// <returns> An updated <see cref="VectorStoreBatchFileJob"/> instance. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(VectorStoreBatchFileJob batchJob)
-        => CancelBatchFileJob(batchJob?.VectorStoreId, batchJob?.BatchId);
-
-    /// <summary>
-    /// Gets a page collection holding file associations associated with a vector store batch file job, representing the files
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="batchJob"> The vector store batch file job to retrieve file associations from. </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncPageCollection<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        VectorStoreBatchFileJob batchJob,
-        VectorStoreFileAssociationCollectionOptions options = default)
-            => GetFileAssociationsAsync(batchJob?.VectorStoreId, batchJob?.BatchId, options);
-
-    /// <summary>
-    /// Gets a page collection holding file associations associated with a vector store batch file job, representing the files
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="batchJob"> The vector store batch file job to retrieve file associations from. </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual PageCollection<VectorStoreFileAssociation> GetFileAssociations(
-        VectorStoreBatchFileJob batchJob,
-        VectorStoreFileAssociationCollectionOptions options = default)
-            => GetFileAssociations(batchJob?.VectorStoreId, batchJob?.BatchId, options);
-
+    public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
+        ReturnWhen returnWhen,
+        VectorStore vectorStore,
+        IEnumerable<OpenAIFileInfo> files)
+        => CreateBatchFileJob(returnWhen, vectorStore?.Id, files?.Select(file => file.Id));
 }

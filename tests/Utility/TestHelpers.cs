@@ -5,6 +5,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.Files;
+using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.VectorStores;
 using System;
@@ -54,6 +55,7 @@ internal static class TestHelpers
             TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-4o-mini", options),
             TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", options),
             TestScenario.Files => new FileClient(options),
+            TestScenario.FineTuning => new FineTuningClient(options),
             TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", options),
 #pragma warning disable OPENAI001
             TestScenario.VectorStores => new VectorStoreClient(options),
