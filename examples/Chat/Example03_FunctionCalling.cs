@@ -34,49 +34,6 @@ internal static class MyFunctions
 
 public partial class ChatExamples
 {
-    #region
-    private static string GetCurrentLocation()
-    {
-        // Call the location API here.
-        return "San Francisco";
-    }
-
-    private static string GetCurrentWeather(string location, string unit = "celsius")
-    {
-        // Call the weather API here.
-        return $"31 {unit}";
-    }
-    #endregion
-
-    #region
-    private static readonly ChatTool getCurrentLocationTool = ChatTool.CreateFunctionTool(
-        functionName: nameof(GetCurrentLocation),
-        functionDescription: "Get the user's current location"
-    );
-
-    private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
-        functionName: nameof(GetCurrentWeather),
-        functionDescription: "Get the current weather in a given location",
-        functionParameters: BinaryData.FromString("""
-            {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. Boston, MA"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": [ "celsius", "fahrenheit" ],
-                        "description": "The temperature unit to use. Infer this from the specified location."
-                    }
-                },
-                "required": [ "location" ]
-            }
-            """)
-    );
-    #endregion
-
     [Test]
     public void Example03_FunctionCalling()
     {
