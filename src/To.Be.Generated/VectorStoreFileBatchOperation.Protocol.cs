@@ -50,40 +50,6 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
     public override bool IsCompleted { get; protected set; }
 
-    // These are replaced when LRO is evolved to have conveniences
-    //public override async Task WaitAsync(CancellationToken cancellationToken = default)
-    //{
-    //    IAsyncEnumerator<ClientResult> enumerator =
-    //        new VectorStoreFileBatchOperationUpdateEnumerator(
-    //            _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
-
-    //    while (await enumerator.MoveNextAsync().ConfigureAwait(false))
-    //    {
-    //        ApplyUpdate(enumerator.Current);
-
-    //        cancellationToken.ThrowIfCancellationRequested();
-
-    //        // TODO: Plumb through cancellation token
-    //        await _pollingInterval.WaitAsync();
-    //    }
-    //}
-
-    //public override void Wait(CancellationToken cancellationToken = default)
-    //{
-    //    IEnumerator<ClientResult> enumerator = 
-    //        new VectorStoreFileBatchOperationUpdateEnumerator(
-    //            _pipeline, _endpoint, _vectorStoreId, _batchId, _options);
-
-    //    while (enumerator.MoveNext())
-    //    {
-    //        ApplyUpdate(enumerator.Current);
-
-    //        cancellationToken.ThrowIfCancellationRequested();
-
-    //        _pollingInterval.Wait();
-    //    }
-    //}
-
     private void ApplyUpdate(ClientResult result)
     {
         PipelineResponse response = result.GetRawResponse();
