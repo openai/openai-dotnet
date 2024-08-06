@@ -19,6 +19,8 @@ namespace OpenAI.Batch;
 [CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?))]
 public partial class BatchClient
 {
+    internal Uri Endpoint => _endpoint;
+
     /// <summary>
     /// Initializes a new instance of <see cref="BatchClient"/> that will use an API key when authenticating.
     /// </summary>

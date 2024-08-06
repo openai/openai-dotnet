@@ -24,6 +24,8 @@ public partial class FineTuningClient
 {
     // Customization: documented constructors, apply protected visibility
 
+    internal Uri Endpoint => _endpoint;
+
     /// <summary>
     /// Initializes a new instance of <see cref="FineTuningClient"/> that will use an API key when authenticating.
     /// </summary>

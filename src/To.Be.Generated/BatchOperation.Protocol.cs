@@ -45,6 +45,38 @@ public partial class BatchOperation : OperationResult
 
     public override bool IsCompleted { get; protected set; }
 
+    public static async Task<BatchOperation> RehydrateAsync(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        BatchOperationToken token = BatchOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = await client.GetBatchAsync(token.BatchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new BatchOperation(client.Pipeline, client.Endpoint, token.BatchId, status, response);
+    }
+
+    public static BatchOperation Rehydrate(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        BatchOperationToken token = BatchOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = client.GetBatch(token.BatchId, cancellationToken.ToRequestOptions());
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new BatchOperation(client.Pipeline, client.Endpoint, token.BatchId, status, response);
+    }
+
     // These are replaced when LRO is evolved to have conveniences
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
@@ -160,6 +192,7 @@ public partial class BatchOperation : OperationResult
         using PipelineMessage message = CreateCancelBatchRequest(batchId, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
+
     internal PipelineMessage CreateRetrieveBatchRequest(string batchId, RequestOptions options)
     {
         var message = _pipeline.CreateMessage();

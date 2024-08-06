@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +39,38 @@ public partial class FineTuningOperation : OperationResult
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
     public override bool IsCompleted { get; protected set; }
+
+    public static async Task<FineTuningOperation> RehydrateAsync(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        FineTuningOperationToken token = FineTuningOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = await client.GetJobAsync(token.JobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new FineTuningOperation(client.Pipeline, client.Endpoint, token.JobId, status, response);
+    }
+
+    public static FineTuningOperation Rehydrate(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        FineTuningOperationToken token = FineTuningOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = client.GetJob(token.JobId, cancellationToken.ToRequestOptions());
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new FineTuningOperation(client.Pipeline, client.Endpoint, token.JobId, status, response);
+    }
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {

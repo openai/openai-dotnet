@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,6 +45,42 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
     public string VectorStoreId { get => _vectorStoreId; }
     public string BatchId { get => _batchId; }
+
+#pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+    public static async Task<VectorStoreFileBatchOperation> RehydrateAsync(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+#pragma warning restore OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        VectorStoreFileBatchOperationToken token = VectorStoreFileBatchOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = await client.GetBatchFileJobAsync(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, token.VectorStoreId, token.BatchId, status, response);
+    }
+
+#pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+    public static VectorStoreFileBatchOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+#pragma warning restore OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+    {
+        Argument.AssertNotNull(client, nameof(client));
+        Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
+
+        VectorStoreFileBatchOperationToken token = VectorStoreFileBatchOperationToken.FromToken(rehydrationToken);
+
+        ClientResult result = client.GetBatchFileJob(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions());
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, token.VectorStoreId, token.BatchId, status, response);
+    }
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {

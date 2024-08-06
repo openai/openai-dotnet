@@ -38,6 +38,8 @@ namespace OpenAI.VectorStores;
 [Experimental("OPENAI001")]
 public partial class VectorStoreClient
 {
+    internal Uri Endpoint => _endpoint;
+
     /// <summary>
     /// Initializes a new instance of <see cref="VectorStoreClient"/> that will use an API key when authenticating.
     /// </summary>
