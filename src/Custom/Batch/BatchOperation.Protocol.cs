@@ -54,7 +54,7 @@ public partial class BatchOperation : OperationResult
     /// <param name="cancellationToken"> A token that can be used to cancel the 
     /// request. </param>
     /// <returns> The rehydrated operation. </returns>
-    public static async Task<BatchOperation> RehydrateAsync(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    public static async Task<BatchOperation> RehydrateAsync(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(client, nameof(client));
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
@@ -80,7 +80,7 @@ public partial class BatchOperation : OperationResult
     /// <param name="cancellationToken"> A token that can be used to cancel the 
     /// request. </param>
     /// <returns> The rehydrated operation. </returns>
-    public static BatchOperation Rehydrate(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    public static BatchOperation Rehydrate(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(client, nameof(client));
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));

@@ -297,6 +297,45 @@ public partial class VectorStoreTests
         }
     }
 
+    [Test]
+    public void CanRehydrateBatchFileJob()
+    {
+        VectorStoreClient client = GetTestClient();
+        VectorStore vectorStore = client.CreateVectorStore();
+        Validate(vectorStore);
+
+        IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
+
+        VectorStoreFileBatchOperation batchOperation = client.CreateBatchFileJob(ReturnWhen.Started, vectorStore, testFiles);
+        Validate(batchOperation);
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = batchOperation.RehydrationToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        VectorStoreFileBatchOperation rehydratedOperation = VectorStoreFileBatchOperation.Rehydrate(client, rehydrationToken);
+        Validate(rehydratedOperation);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(batchOperation.BatchId, Is.Not.Null);
+            Assert.That(batchOperation.VectorStoreId, Is.EqualTo(vectorStore.Id));
+            Assert.That(batchOperation.Status, Is.EqualTo(VectorStoreBatchFileJobStatus.InProgress));
+
+            Assert.That(rehydratedOperation.BatchId, Is.EqualTo(batchOperation.BatchId));
+            Assert.That(rehydratedOperation.VectorStoreId, Is.EqualTo(vectorStore.Id));
+            Assert.That(rehydratedOperation.Status, Is.EqualTo(VectorStoreBatchFileJobStatus.InProgress));
+        });
+
+        Task.WaitAll(
+            Task.Run(() => batchOperation.WaitForCompletion()),
+            Task.Run(() => rehydratedOperation.WaitForCompletion()));
+
+        Assert.IsTrue(batchOperation.IsCompleted);
+        Assert.IsTrue(rehydratedOperation.IsCompleted);
+        Assert.AreEqual(batchOperation.Status, rehydratedOperation.Status);
+    }
+
     public enum ChunkingStrategyKind { Auto, Static }
 
     [Test]

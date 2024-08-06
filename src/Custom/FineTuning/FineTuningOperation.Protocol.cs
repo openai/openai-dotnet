@@ -52,7 +52,7 @@ public partial class FineTuningOperation : OperationResult
     /// <param name="cancellationToken"> A token that can be used to cancel the 
     /// request. </param>
     /// <returns> The rehydrated operation. </returns>
-    public static async Task<FineTuningOperation> RehydrateAsync(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    public static async Task<FineTuningOperation> RehydrateAsync(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(client, nameof(client));
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
@@ -78,7 +78,7 @@ public partial class FineTuningOperation : OperationResult
     /// <param name="cancellationToken"> A token that can be used to cancel the 
     /// request. </param>
     /// <returns> The rehydrated operation. </returns>
-    public static FineTuningOperation Rehydrate(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
+    public static FineTuningOperation Rehydrate(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(client, nameof(client));
         Argument.AssertNotNull(rehydrationToken, nameof(rehydrationToken));
