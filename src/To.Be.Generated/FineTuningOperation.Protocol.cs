@@ -118,7 +118,6 @@ public partial class FineTuningOperation : OperationResult
 
     // Generated protocol methods
 
-
     // CUSTOM:
     // - Renamed.
     // - Edited doc comment.

@@ -175,20 +175,4 @@ public partial class FineTuningClient
         using PipelineMessage message = CreateRetrieveFineTuningJobRequest(jobId, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
-
-    internal PipelineMessage CreateRetrieveFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/fine_tuning/jobs/", false);
-        uri.AppendPath(fineTuningJobId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
 }

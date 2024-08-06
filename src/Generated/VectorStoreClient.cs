@@ -240,6 +240,24 @@ namespace OpenAI.VectorStores
             return message;
         }
 
+        internal PipelineMessage CreateGetVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
+        {
+            var message = _pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            var request = message.Request;
+            request.Method = "GET";
+            var uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vector_stores/", false);
+            uri.AppendPath(vectorStoreId, true);
+            uri.AppendPath("/file_batches/", false);
+            uri.AppendPath(batchId, true);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
     }

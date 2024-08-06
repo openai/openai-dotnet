@@ -536,22 +536,4 @@ public partial class VectorStoreClient
         using PipelineMessage message = CreateGetVectorStoreFileBatchRequest(vectorStoreId, batchId, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
-
-    internal PipelineMessage CreateGetVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/vector_stores/", false);
-        uri.AppendPath(vectorStoreId, true);
-        uri.AppendPath("/file_batches/", false);
-        uri.AppendPath(batchId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
 }
