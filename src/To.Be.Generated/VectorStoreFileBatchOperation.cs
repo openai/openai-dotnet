@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
-// Convenience version
 public partial class VectorStoreFileBatchOperation : OperationResult
 {
-    // Convenience version
     internal VectorStoreFileBatchOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -21,25 +19,17 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-        
+
         Value = result;
         Status = Value.Status;
-        IsCompleted = GetIsCompleted(Value.Status);
 
         _vectorStoreId = Value.VectorStoreId;
         _batchId = Value.BatchId;
 
-        _pollingInterval = new();
-
+        IsCompleted = GetIsCompleted(Value.Status);
         RehydrationToken = new VectorStoreFileBatchOperationToken(VectorStoreId, BatchId);
     }
 
-    // TODO: interesting question regarding whether these properties should be
-    // nullable or not.  If someone has called the protocol method, do they want
-    // to pay the perf cost of deserialization?  This could capitalize on a 
-    // property on RequestOptions that allows the caller to opt-in to creation
-    // of convenience models.  For now, make them nullable so I don't have to 
-    // pass the model into the constructor from a protocol method.
     public VectorStoreBatchFileJob? Value { get; private set; }
     public VectorStoreBatchFileJobStatus? Status { get; private set; }
 
@@ -57,11 +47,9 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
         ClientResult result = await client.GetBatchFileJobAsync(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromResponse(response);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
-
-        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, token.VectorStoreId, token.BatchId, status, response);
+        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, FromValue(job, response));
     }
 
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -75,37 +63,54 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
         ClientResult result = client.GetBatchFileJob(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromResponse(response);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
-
-        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, token.VectorStoreId, token.BatchId, status, response);
+        return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, FromValue(job, response));
     }
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            await _pollingInterval.WaitAsync(cancellationToken);
+            PipelineResponse response = GetRawResponse();
+
+            await _pollingInterval.WaitAsync(response, cancellationToken);
 
             ClientResult<VectorStoreBatchFileJob> result = await GetBatchFileJobAsync(cancellationToken).ConfigureAwait(false);
 
             ApplyUpdate(result);
         }
     }
+    public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
+    }
 
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            PipelineResponse response = GetRawResponse();
 
-            _pollingInterval.Wait();
+            _pollingInterval.Wait(response, cancellationToken);
 
-            ClientResult result = GetBatchFileJob(cancellationToken);
+            ClientResult<VectorStoreBatchFileJob> result = GetBatchFileJob(cancellationToken);
 
             ApplyUpdate(result);
         }
+    }
+
+    public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        WaitForCompletion(cancellationToken);
     }
 
     private void ApplyUpdate(ClientResult<VectorStoreBatchFileJob> update)

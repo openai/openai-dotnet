@@ -3,14 +3,12 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 #nullable enable
 
 namespace OpenAI.VectorStores;
 
-// Protocol version
 public partial class VectorStoreFileBatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
@@ -19,53 +17,11 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     private readonly string _vectorStoreId;
     private readonly string _batchId;
     
-    private PollingInterval _pollingInterval;
-
-    // For use with protocol methods where the response has been obtained prior
-    // to creation of the LRO instance.
-    internal VectorStoreFileBatchOperation(
-        ClientPipeline pipeline,
-        Uri endpoint,
-        string vectorStoreId,
-        string batchId,
-        string status,
-        PipelineResponse response)
-        : base(response)
-    {
-        _pipeline = pipeline;
-        _endpoint = endpoint;
-        
-        _vectorStoreId = vectorStoreId;
-        _batchId = batchId;
-
-        IsCompleted = GetIsCompleted(status);
-
-        _pollingInterval = new();
-
-        RehydrationToken = new VectorStoreFileBatchOperationToken(vectorStoreId, batchId);
-    }
+    private PollingInterval? _pollingInterval;
 
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
     public override bool IsCompleted { get; protected set; }
-
-    private void ApplyUpdate(ClientResult result)
-    {
-        PipelineResponse response = result.GetRawResponse();
-
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string? status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        IsCompleted = GetIsCompleted(status);
-        SetRawResponse(response);
-    }
-
-    private static bool GetIsCompleted(string? status)
-    {
-        return status == "completed" ||
-            status == "cancelled" ||
-            status == "failed";
-    }
 
     // Generated protocol methods
 

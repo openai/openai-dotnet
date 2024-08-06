@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
-// Protocol version
 public partial class BatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
@@ -17,10 +16,8 @@ public partial class BatchOperation : OperationResult
 
     private readonly string _batchId;
 
-    private PollingInterval _pollingInterval;
+    private PollingInterval? _pollingInterval;
 
-    // For use with protocol methods where the response has been obtained prior
-    // to creation of the LRO instance.
     internal BatchOperation(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -31,13 +28,9 @@ public partial class BatchOperation : OperationResult
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-
         _batchId = batchId;
 
         IsCompleted = GetIsCompleted(status);
-
-        _pollingInterval = new();
-
         RehydrationToken = new BatchOperationToken(batchId);
     }
 
@@ -77,12 +70,15 @@ public partial class BatchOperation : OperationResult
         return new BatchOperation(client.Pipeline, client.Endpoint, token.BatchId, status, response);
     }
 
-    // These are replaced when LRO is evolved to have conveniences
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            await _pollingInterval.WaitAsync(cancellationToken);
+            PipelineResponse response = GetRawResponse();
+
+            await _pollingInterval.WaitAsync(response, cancellationToken);
 
             ClientResult result = await GetBatchAsync(_batchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
@@ -90,18 +86,34 @@ public partial class BatchOperation : OperationResult
         }
     }
 
+    public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
+    }
+
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            PipelineResponse response = GetRawResponse();
 
-            _pollingInterval.Wait();
+            _pollingInterval.Wait(response, cancellationToken);
 
             ClientResult result = GetBatch(_batchId, cancellationToken.ToRequestOptions());
 
             ApplyUpdate(result);
         }
+    }
+
+    public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        WaitForCompletion(cancellationToken);
     }
 
     private void ApplyUpdate(ClientResult result)

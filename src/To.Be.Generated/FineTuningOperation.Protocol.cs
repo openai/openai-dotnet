@@ -16,7 +16,7 @@ public partial class FineTuningOperation : OperationResult
     
     private readonly string _jobId;
     
-    private PollingInterval _pollingInterval;
+    private PollingInterval? _pollingInterval;
 
     internal FineTuningOperation(
         ClientPipeline pipeline,
@@ -27,12 +27,9 @@ public partial class FineTuningOperation : OperationResult
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
-
         _jobId = jobId;
+
         IsCompleted = GetIsCompleted(status);
-
-        _pollingInterval = new();
-
         RehydrationToken = new FineTuningOperationToken(jobId);
     }
 
@@ -74,9 +71,13 @@ public partial class FineTuningOperation : OperationResult
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            await _pollingInterval.WaitAsync(cancellationToken);
+            PipelineResponse response = GetRawResponse();
+
+            await _pollingInterval.WaitAsync(response, cancellationToken);
 
             ClientResult result = await GetJobAsync(_jobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
 
@@ -84,18 +85,34 @@ public partial class FineTuningOperation : OperationResult
         }
     }
 
+    public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
+    }
+
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
+        _pollingInterval ??= new();
+
         while (!IsCompleted)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            PipelineResponse response = GetRawResponse();
 
-            _pollingInterval.Wait();
+            _pollingInterval.Wait(response, cancellationToken);
 
             ClientResult result = GetJob(_jobId, cancellationToken.ToRequestOptions());
 
             ApplyUpdate(result);
         }
+    }
+
+    public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+    {
+        _pollingInterval = new(pollingInterval);
+
+        WaitForCompletion(cancellationToken);
     }
 
     private void ApplyUpdate(ClientResult result)

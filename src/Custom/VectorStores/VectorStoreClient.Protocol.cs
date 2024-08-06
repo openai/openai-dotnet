@@ -445,12 +445,9 @@ public partial class VectorStoreClient
 
         using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
         PipelineResponse response = await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromResponse(response);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string batchId = doc.RootElement.GetProperty("id"u8).GetString();
-        string status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+        VectorStoreFileBatchOperation operation = new(_pipeline, _endpoint, ClientResult.FromValue(job, response));
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
@@ -482,12 +479,9 @@ public partial class VectorStoreClient
 
         using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
         PipelineResponse response = _pipeline.ProcessMessage(message, options);
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromResponse(response);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string batchId = doc.RootElement.GetProperty("id"u8).GetString();
-        string status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(_pipeline, _endpoint, vectorStoreId, batchId, status, response);
+        VectorStoreFileBatchOperation operation = new(_pipeline, _endpoint, ClientResult.FromValue(job, response));
         if (returnWhen == ReturnWhen.Started)
         {
             return operation;
