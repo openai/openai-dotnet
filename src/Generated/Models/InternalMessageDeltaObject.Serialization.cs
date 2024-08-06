@@ -80,7 +80,7 @@ namespace OpenAI.Assistants
             }
             string id = default;
             InternalMessageDeltaObjectObject @object = default;
-            MessageDeltaObjectDelta delta = default;
+            InternalMessageDeltaObjectDelta delta = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -97,7 +97,7 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("delta"u8))
                 {
-                    delta = MessageDeltaObjectDelta.DeserializeMessageDeltaObjectDelta(property.Value, options);
+                    delta = InternalMessageDeltaObjectDelta.DeserializeInternalMessageDeltaObjectDelta(property.Value, options);
                     continue;
                 }
                 if (options.Format != "W")

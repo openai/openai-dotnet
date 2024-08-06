@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
     internal partial class InternalMessageDeltaObject
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaObject(string id, MessageDeltaObjectDelta delta)
+        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectDelta delta)
         {
             Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(delta, nameof(delta));
@@ -19,7 +19,7 @@ namespace OpenAI.Assistants
             Delta = delta;
         }
 
-        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, MessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, InternalMessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Object = @object;
@@ -34,6 +34,6 @@ namespace OpenAI.Assistants
         public string Id { get; }
         public InternalMessageDeltaObjectObject Object { get; } = InternalMessageDeltaObjectObject.ThreadMessageDelta;
 
-        public MessageDeltaObjectDelta Delta { get; }
+        public InternalMessageDeltaObjectDelta Delta { get; }
     }
 }

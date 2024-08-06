@@ -5,12 +5,12 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageDeltaTextContentAnnotation : IJsonModel<InternalMessageDeltaTextContentAnnotation>
+    [PersistableModelProxy(typeof(UnknownMessageDeltaTextContentAnnotation))]
+    internal partial class InternalMessageDeltaTextContentAnnotation : IJsonModel<InternalMessageDeltaTextContentAnnotation>
     {
         void IJsonModel<InternalMessageDeltaTextContentAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -60,7 +60,7 @@ namespace OpenAI.Assistants
             return DeserializeInternalMessageDeltaTextContentAnnotation(document.RootElement, options);
         }
 
-        internal static UnknownMessageDeltaTextContentAnnotation DeserializeUnknownMessageDeltaTextContentAnnotation(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageDeltaTextContentAnnotation DeserializeInternalMessageDeltaTextContentAnnotation(JsonElement element, ModelReaderWriterOptions options = null)
         {
             options ??= ModelSerializationExtensions.WireOptions;
 
@@ -68,24 +68,15 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string type = "Unknown";
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (element.TryGetProperty("type", out JsonElement discriminator))
             {
-                if (property.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    type = property.Value.GetString();
-                    continue;
-                }
-                if (options.Format != "W")
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    case "file_citation": return InternalMessageDeltaContentTextAnnotationsFileCitationObject.DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(element, options);
+                    case "file_path": return InternalMessageDeltaContentTextAnnotationsFilePathObject.DeserializeInternalMessageDeltaContentTextAnnotationsFilePathObject(element, options);
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new UnknownMessageDeltaTextContentAnnotation(type, serializedAdditionalRawData);
+            return UnknownMessageDeltaTextContentAnnotation.DeserializeUnknownMessageDeltaTextContentAnnotation(element, options);
         }
 
         BinaryData IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Write(ModelReaderWriterOptions options)
@@ -119,15 +110,15 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageDeltaTextContentAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new UnknownMessageDeltaTextContentAnnotation FromResponse(PipelineResponse response)
+        internal static InternalMessageDeltaTextContentAnnotation FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUnknownMessageDeltaTextContentAnnotation(document.RootElement);
+            return DeserializeInternalMessageDeltaTextContentAnnotation(document.RootElement);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        internal virtual BinaryContent ToBinaryContent()
         {
-            return BinaryContent.Create<InternalMessageDeltaTextContentAnnotation>(this, ModelSerializationExtensions.WireOptions);
+            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
         }
     }
 }

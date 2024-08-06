@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string type = default;
-            MessageContentTextObjectText text = default;
+            InternalMessageContentTextObjectText text = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -45,7 +45,7 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("text"u8))
                 {
-                    text = MessageContentTextObjectText.DeserializeMessageContentTextObjectText(property.Value, options);
+                    text = InternalMessageContentTextObjectText.DeserializeInternalMessageContentTextObjectText(property.Value, options);
                     continue;
                 }
                 if (options.Format != "W")

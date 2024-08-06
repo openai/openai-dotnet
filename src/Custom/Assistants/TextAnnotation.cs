@@ -4,9 +4,9 @@ namespace OpenAI.Assistants;
 
 public class TextAnnotation
 {
-    internal readonly MessageContentTextObjectAnnotation _internalAnnotation;
-    private readonly MessageContentTextAnnotationsFileCitationObject _fileSearchCitation;
-    private readonly MessageContentTextAnnotationsFilePathObject _codeCitation;
+    internal readonly InternalMessageContentTextObjectAnnotation _internalAnnotation;
+    private readonly InternalMessageContentTextAnnotationsFileCitationObject _fileSearchCitation;
+    private readonly InternalMessageContentTextAnnotationsFilePathObject _codeCitation;
 
     /// <summary>
     /// The index in the message content at which the citation begins.
@@ -48,10 +48,10 @@ public class TextAnnotation
     /// </summary>
     public string OutputFileId => _codeCitation?.FilePath?.FileId;
 
-    internal TextAnnotation(MessageContentTextObjectAnnotation internalAnnotation)
+    internal TextAnnotation(InternalMessageContentTextObjectAnnotation internalAnnotation)
     {
         _internalAnnotation = internalAnnotation;
-        _fileSearchCitation = internalAnnotation as MessageContentTextAnnotationsFileCitationObject;
-        _codeCitation = internalAnnotation as MessageContentTextAnnotationsFilePathObject; ;
+        _fileSearchCitation = internalAnnotation as InternalMessageContentTextAnnotationsFileCitationObject;
+        _codeCitation = internalAnnotation as InternalMessageContentTextAnnotationsFilePathObject; ;
     }
 }
