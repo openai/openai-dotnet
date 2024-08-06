@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageDeltaContent : MessageDeltaContent
+    internal partial class UnknownMessageDeltaContent : InternalMessageDeltaContent
     {
         internal UnknownMessageDeltaContent(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
         {

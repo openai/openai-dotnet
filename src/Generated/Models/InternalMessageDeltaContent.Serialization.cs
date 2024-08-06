@@ -5,12 +5,12 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageDeltaContent : IJsonModel<InternalMessageDeltaContent>
+    [PersistableModelProxy(typeof(UnknownMessageDeltaContent))]
+    internal partial class InternalMessageDeltaContent : IJsonModel<InternalMessageDeltaContent>
     {
         void IJsonModel<InternalMessageDeltaContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -60,7 +60,7 @@ namespace OpenAI.Assistants
             return DeserializeInternalMessageDeltaContent(document.RootElement, options);
         }
 
-        internal static UnknownMessageDeltaContent DeserializeUnknownMessageDeltaContent(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageDeltaContent DeserializeInternalMessageDeltaContent(JsonElement element, ModelReaderWriterOptions options = null)
         {
             options ??= ModelSerializationExtensions.WireOptions;
 
@@ -68,24 +68,16 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string type = "Unknown";
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (element.TryGetProperty("type", out JsonElement discriminator))
             {
-                if (property.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    type = property.Value.GetString();
-                    continue;
-                }
-                if (options.Format != "W")
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    case "image_file": return InternalMessageDeltaContentImageFileObject.DeserializeInternalMessageDeltaContentImageFileObject(element, options);
+                    case "image_url": return InternalMessageDeltaContentImageUrlObject.DeserializeInternalMessageDeltaContentImageUrlObject(element, options);
+                    case "text": return InternalMessageDeltaContentTextObject.DeserializeInternalMessageDeltaContentTextObject(element, options);
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new UnknownMessageDeltaContent(type, serializedAdditionalRawData);
+            return UnknownMessageDeltaContent.DeserializeUnknownMessageDeltaContent(element, options);
         }
 
         BinaryData IPersistableModel<InternalMessageDeltaContent>.Write(ModelReaderWriterOptions options)
@@ -119,15 +111,15 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageDeltaContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new UnknownMessageDeltaContent FromResponse(PipelineResponse response)
+        internal static InternalMessageDeltaContent FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUnknownMessageDeltaContent(document.RootElement);
+            return DeserializeInternalMessageDeltaContent(document.RootElement);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        internal virtual BinaryContent ToBinaryContent()
         {
-            return BinaryContent.Create<InternalMessageDeltaContent>(this, ModelSerializationExtensions.WireOptions);
+            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
         }
     }
 }
