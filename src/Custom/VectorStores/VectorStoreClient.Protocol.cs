@@ -426,13 +426,19 @@ public partial class VectorStoreClient
     /// <summary>
     /// [Protocol Method] Create a vector store file batch.
     /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStoreId"> The ID of the vector store for which to create a file batch. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(
         ReturnWhen returnWhen,
@@ -460,13 +466,19 @@ public partial class VectorStoreClient
     /// <summary>
     /// [Protocol Method] Create a vector store file batch.
     /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStoreId"> The ID of the vector store for which to create a file batch. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
         ReturnWhen returnWhen,

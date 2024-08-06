@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -83,6 +82,7 @@ public partial class VectorStoreFileBatchOperation : OperationResult
             ApplyUpdate(result);
         }
     }
+
     public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);

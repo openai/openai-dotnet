@@ -542,10 +542,16 @@ public partial class VectorStoreClient
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
     /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(
         ReturnWhen returnWhen,
         string vectorStoreId, 
@@ -579,10 +585,16 @@ public partial class VectorStoreClient
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
     /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
         ReturnWhen returnWhen,
         string vectorStoreId,

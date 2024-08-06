@@ -8,6 +8,20 @@ namespace OpenAI.Batch;
 
 public partial class BatchClient
 {
+    /// <summary>
+    /// [Protocol Method] Creates and executes a batch from an uploaded file of requests
+    /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
+    /// <param name="content"> The content to send as the body of the request. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A <see cref="BatchOperation"/> that can be used to wait for 
+    /// the operation to complete, or cancel the operation. </returns>
     public virtual async Task<BatchOperation> CreateBatchAsync(
         ReturnWhen returnWhen,
         BinaryContent content,
@@ -33,6 +47,20 @@ public partial class BatchClient
         return operation;
     }
 
+    /// <summary>
+    /// [Protocol Method] Creates and executes a batch from an uploaded file of requests
+    /// </summary>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
+    /// <param name="content"> The content to send as the body of the request. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A <see cref="BatchOperation"/> that can be used to wait for 
+    /// the operation to complete, or cancel the operation. </returns>
     public virtual BatchOperation CreateBatch(
         ReturnWhen returnWhen,
         BinaryContent content,
