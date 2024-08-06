@@ -43,29 +43,27 @@ public partial class FineTuningOperation : OperationResult
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
-        IAsyncEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
-            _pipeline, _endpoint, _jobId, cancellationToken);
-
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        while (!IsCompleted)
         {
-            ApplyUpdate(enumerator.Current);
-			
             await _pollingInterval.WaitAsync(cancellationToken);
+
+            ClientResult result = await GetJobAsync(_jobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+
+            ApplyUpdate(result);
         }
     }
 
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
-        IEnumerator<ClientResult> enumerator = new FineTuningOperationUpdateEnumerator(
-            _pipeline, _endpoint, _jobId, cancellationToken);
-
-        while (enumerator.MoveNext())
+        while (!IsCompleted)
         {
-            ApplyUpdate(enumerator.Current);
-
             cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
+
+            ClientResult result = GetJob(_jobId, cancellationToken.ToRequestOptions());
+
+            ApplyUpdate(result);
         }
     }
 

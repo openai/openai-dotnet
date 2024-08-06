@@ -62,6 +62,8 @@ public partial class BatchOperation : OperationResult
     {
         while (!IsCompleted)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             _pollingInterval.Wait();
 
             ClientResult result = GetBatch(_batchId, cancellationToken.ToRequestOptions());

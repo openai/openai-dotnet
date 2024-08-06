@@ -48,31 +48,27 @@ public partial class VectorStoreFileBatchOperation : OperationResult
 
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
-        IAsyncEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator =
-            new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, cancellationToken);
-
-        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        while (!IsCompleted)
         {
-            ApplyUpdate(enumerator.Current);
-
             await _pollingInterval.WaitAsync(cancellationToken);
+
+            ClientResult<VectorStoreBatchFileJob> result = await GetBatchFileJobAsync(cancellationToken).ConfigureAwait(false);
+
+            ApplyUpdate(result);
         }
     }
 
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
-        IEnumerator<ClientResult<VectorStoreBatchFileJob>> enumerator = 
-            new VectorStoreFileBatchOperationUpdateEnumerator(
-                _pipeline, _endpoint, _vectorStoreId, _batchId, cancellationToken);
-
-        while (enumerator.MoveNext())
+        while (!IsCompleted)
         {
-            ApplyUpdate(enumerator.Current);
-
             cancellationToken.ThrowIfCancellationRequested();
 
             _pollingInterval.Wait();
+
+            ClientResult result = GetBatchFileJob(cancellationToken);
+
+            ApplyUpdate(result);
         }
     }
 
