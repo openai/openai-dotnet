@@ -167,20 +167,30 @@ public partial class VectorStoreClient
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
     /// </summary>
-    /// <param name="returnWhen"> TODO </param>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     public virtual Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(ReturnWhen returnWhen, VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
         => CreateBatchFileJobAsync(returnWhen, vectorStore?.Id, files?.Select(file => file.Id));
 
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
     /// </summary>
-    /// <param name="returnWhen"> TODO </param>
+    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
+    /// method should return when the service has finished running the 
+    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
+    /// after the operation has been created but may not have completed 
+    /// processing. </param>
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
-    /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
+    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
     public virtual VectorStoreFileBatchOperation CreateBatchFileJob(ReturnWhen returnWhen, VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
         => CreateBatchFileJob(returnWhen, vectorStore?.Id, files?.Select(file => file.Id));
 }
