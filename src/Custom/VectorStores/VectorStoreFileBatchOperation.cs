@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
+/// <summary>
+/// Long-running operation for creating a vector store file batch.
+/// </summary>
 public partial class VectorStoreFileBatchOperation : OperationResult
 {
     internal VectorStoreFileBatchOperation(
@@ -29,12 +32,36 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         RehydrationToken = new VectorStoreFileBatchOperationToken(VectorStoreId, BatchId);
     }
 
+    /// <summary>
+    /// The current value of the <see cref="VectorStoreBatchFileJob"/> in progress.
+    /// </summary>
     public VectorStoreBatchFileJob? Value { get; private set; }
+
+    /// <summary>
+    /// The current status of the <see cref="VectorStoreBatchFileJob"/> in progress.
+    /// </summary>
     public VectorStoreBatchFileJobStatus? Status { get; private set; }
 
+    /// <summary>
+    /// The ID of the vector store corresponding to this batch file operation.
+    /// </summary>
     public string VectorStoreId { get => _vectorStoreId; }
+
+    /// <summary>
+    /// The ID of the batch file job represented by this operation.
+    /// </summary>
     public string BatchId { get => _batchId; }
 
+    /// <summary>
+    /// Recreates a <see cref="VectorStoreFileBatchOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="VectorStoreClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     public static async Task<VectorStoreFileBatchOperation> RehydrateAsync(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
 #pragma warning restore OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -51,6 +78,16 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, FromValue(job, response));
     }
 
+    /// <summary>
+    /// Recreates a <see cref="VectorStoreFileBatchOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="VectorStoreClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     public static VectorStoreFileBatchOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
 #pragma warning restore OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -67,6 +104,7 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         return new VectorStoreFileBatchOperation(client.Pipeline, client.Endpoint, FromValue(job, response));
     }
 
+    /// <inheritdoc/>
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -83,6 +121,13 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);
@@ -90,6 +135,7 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    /// <inheritdoc/>
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -106,6 +152,13 @@ public partial class VectorStoreFileBatchOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);

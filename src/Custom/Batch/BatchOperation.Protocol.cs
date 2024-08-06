@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
+/// <summary>
+/// A long-running operation for executing a batch from an uploaded file of 
+/// requests.
+/// </summary>
 public partial class BatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
@@ -34,10 +38,22 @@ public partial class BatchOperation : OperationResult
         RehydrationToken = new BatchOperationToken(batchId);
     }
 
+    /// <inheritdoc/>
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
+    /// <inheritdoc/>
     public override bool IsCompleted { get; protected set; }
 
+    /// <summary>
+    /// Recreates a <see cref="BatchOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="BatchClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
     public static async Task<BatchOperation> RehydrateAsync(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(client, nameof(client));
@@ -54,6 +70,16 @@ public partial class BatchOperation : OperationResult
         return new BatchOperation(client.Pipeline, client.Endpoint, token.BatchId, status, response);
     }
 
+    /// <summary>
+    /// Recreates a <see cref="BatchOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="BatchClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
     public static BatchOperation Rehydrate(BatchClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(client, nameof(client));
@@ -70,6 +96,7 @@ public partial class BatchOperation : OperationResult
         return new BatchOperation(client.Pipeline, client.Endpoint, token.BatchId, status, response);
     }
 
+    /// <inheritdoc/>
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -86,6 +113,13 @@ public partial class BatchOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);
@@ -93,6 +127,7 @@ public partial class BatchOperation : OperationResult
         await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    /// <inheritdoc/>
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -109,6 +144,13 @@ public partial class BatchOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);

@@ -22,10 +22,7 @@ public partial class BatchClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A <see cref="BatchOperation"/> that can be used to wait for 
     /// the operation to complete, or cancel the operation. </returns>
-    public virtual async Task<BatchOperation> CreateBatchAsync(
-        ReturnWhen returnWhen,
-        BinaryContent content,
-        RequestOptions options = null)
+    public virtual async Task<BatchOperation> CreateBatchAsync(ReturnWhen returnWhen, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -61,10 +58,7 @@ public partial class BatchClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A <see cref="BatchOperation"/> that can be used to wait for 
     /// the operation to complete, or cancel the operation. </returns>
-    public virtual BatchOperation CreateBatch(
-        ReturnWhen returnWhen,
-        BinaryContent content,
-        RequestOptions options = null)
+    public virtual BatchOperation CreateBatch(ReturnWhen returnWhen, BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 

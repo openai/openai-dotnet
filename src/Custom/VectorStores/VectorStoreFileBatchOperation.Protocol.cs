@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
+/// <summary>
+/// Long-running operation for creating a vector store file batch.
+/// </summary>
 public partial class VectorStoreFileBatchOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
@@ -19,8 +22,10 @@ public partial class VectorStoreFileBatchOperation : OperationResult
     
     private PollingInterval? _pollingInterval;
 
+    /// <inheritdoc/>
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
+    /// <inheritdoc/>
     public override bool IsCompleted { get; protected set; }
 
     // Generated protocol methods

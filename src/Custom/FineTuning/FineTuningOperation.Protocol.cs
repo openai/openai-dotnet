@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace OpenAI.FineTuning;
 
+/// <summary>
+/// A long-running operation for creating a new model from a given dataset.
+/// </summary>
 public partial class FineTuningOperation : OperationResult
 {
     private readonly ClientPipeline _pipeline;
@@ -33,10 +36,22 @@ public partial class FineTuningOperation : OperationResult
         RehydrationToken = new FineTuningOperationToken(jobId);
     }
 
+    /// <inheritdoc/>
     public override ContinuationToken? RehydrationToken { get; protected set; }
 
+    /// <inheritdoc/>
     public override bool IsCompleted { get; protected set; }
 
+    /// <summary>
+    /// Recreates a <see cref="FineTuningOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="FineTuningClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
     public static async Task<FineTuningOperation> RehydrateAsync(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(client, nameof(client));
@@ -53,6 +68,16 @@ public partial class FineTuningOperation : OperationResult
         return new FineTuningOperation(client.Pipeline, client.Endpoint, token.JobId, status, response);
     }
 
+    /// <summary>
+    /// Recreates a <see cref="FineTuningOperation"/> from a rehydration token.
+    /// </summary>
+    /// <param name="client"> The <see cref="FineTuningClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="rehydrationToken"> The rehydration token corresponding to 
+    /// the operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
     public static FineTuningOperation Rehydrate(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(client, nameof(client));
@@ -69,6 +94,7 @@ public partial class FineTuningOperation : OperationResult
         return new FineTuningOperation(client.Pipeline, client.Endpoint, token.JobId, status, response);
     }
 
+    /// <inheritdoc/>
     public override async Task WaitForCompletionAsync(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -85,6 +111,13 @@ public partial class FineTuningOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public async Task WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);
@@ -92,6 +125,7 @@ public partial class FineTuningOperation : OperationResult
         await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
     }
 
+    /// <inheritdoc/>
     public override void WaitForCompletion(CancellationToken cancellationToken = default)
     {
         _pollingInterval ??= new();
@@ -108,6 +142,13 @@ public partial class FineTuningOperation : OperationResult
         }
     }
 
+    /// <summary>
+    /// Waits for the operation to complete processing on the service.
+    /// </summary>
+    /// <param name="pollingInterval"> The time to wait between sending requests
+    /// for status updates from the service. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this
+    /// method call. </param>
     public void WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
     {
         _pollingInterval = new(pollingInterval);
