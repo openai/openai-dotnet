@@ -15,7 +15,7 @@ public static partial class OpenAIAudioModelFactory
         segments ??= new List<TranscribedSegment>();
 
         return new AudioTranscription(
-            task: default,
+            InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
             language,
             duration,
             text,
@@ -31,7 +31,7 @@ public static partial class OpenAIAudioModelFactory
         segments ??= new List<TranscribedSegment>();
 
         return new AudioTranslation(
-            task: default,
+            InternalCreateTranslationResponseVerboseJsonTask.Translate,
             language,
             duration,
             text,
