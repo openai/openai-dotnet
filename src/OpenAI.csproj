@@ -12,7 +12,7 @@
 
     <!-- Generate an XML documentation file for the project. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    
+
     <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageIcon>OpenAI.png</PackageIcon>
@@ -21,7 +21,7 @@
     <!-- Create a .snupkg file in addition to the .nupkg file. -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-   
+
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
@@ -29,7 +29,7 @@
 
     <!-- Disable missing XML documentation warnings -->
     <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
-    
+
     <!-- Disable obsolete warnings -->
     <NoWarn>$(NoWarn),0618</NoWarn>
 
@@ -63,7 +63,6 @@
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  
   <ItemGroup>
     <None Include="OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
@@ -73,5 +72,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.ClientModel" Version="1.1.0-beta.5" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
   </ItemGroup>
 </Project>
