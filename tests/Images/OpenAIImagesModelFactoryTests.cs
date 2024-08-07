@@ -8,12 +8,12 @@ namespace OpenAI.Tests.Images;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
-public partial class OpenAIImageModelFactoryTests
+public partial class OpenAIImagesModelFactoryTests
 {
     [Test]
     public void GeneratedImageWithNoPropertiesWorks()
     {
-        GeneratedImage generatedImage = OpenAIImageModelFactory.GeneratedImage();
+        GeneratedImage generatedImage = OpenAIImagesModelFactory.GeneratedImage();
 
         Assert.That(generatedImage.ImageBytes, Is.Null);
         Assert.That(generatedImage.ImageUri, Is.Null);
@@ -24,7 +24,7 @@ public partial class OpenAIImageModelFactoryTests
     public void GeneratedImageWithImageBytesWorks()
     {
         BinaryData imageBytes = BinaryData.FromString("Definitely an image.");
-        GeneratedImage generatedImage = OpenAIImageModelFactory.GeneratedImage(imageBytes: imageBytes);
+        GeneratedImage generatedImage = OpenAIImagesModelFactory.GeneratedImage(imageBytes: imageBytes);
 
         Assert.That(generatedImage.ImageBytes, Is.EqualTo(imageBytes));
         Assert.That(generatedImage.ImageUri, Is.Null);
@@ -35,7 +35,7 @@ public partial class OpenAIImageModelFactoryTests
     public void GeneratedImageWithImageUriWorks()
     {
         Uri imageUri = new Uri("https://definitely-a-website.com/");
-        GeneratedImage generatedImage = OpenAIImageModelFactory.GeneratedImage(imageUri: imageUri);
+        GeneratedImage generatedImage = OpenAIImagesModelFactory.GeneratedImage(imageUri: imageUri);
 
         Assert.That(generatedImage.ImageBytes, Is.Null);
         Assert.That(generatedImage.ImageUri, Is.EqualTo(imageUri));
@@ -46,7 +46,7 @@ public partial class OpenAIImageModelFactoryTests
     public void GeneratedImageWithRevisedPromptWorks()
     {
         string revisedPrompt = "I've been revised.";
-        GeneratedImage generatedImage = OpenAIImageModelFactory.GeneratedImage(revisedPrompt: revisedPrompt);
+        GeneratedImage generatedImage = OpenAIImagesModelFactory.GeneratedImage(revisedPrompt: revisedPrompt);
 
         Assert.That(generatedImage.ImageBytes, Is.Null);
         Assert.That(generatedImage.ImageUri, Is.Null);
@@ -56,7 +56,7 @@ public partial class OpenAIImageModelFactoryTests
     [Test]
     public void GeneratedImageCollectionWithNoPropertiesWorks()
     {
-        GeneratedImageCollection generatedImageCollection = OpenAIImageModelFactory.GeneratedImageCollection();
+        GeneratedImageCollection generatedImageCollection = OpenAIImagesModelFactory.GeneratedImageCollection();
 
         Assert.That(generatedImageCollection.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(generatedImageCollection.Count, Is.EqualTo(0));
@@ -66,7 +66,7 @@ public partial class OpenAIImageModelFactoryTests
     public void GeneratedImageCollectionWithCreatedAtWorks()
     {
         DateTimeOffset createdAt = DateTimeOffset.UtcNow;
-        GeneratedImageCollection generatedImageCollection = OpenAIImageModelFactory.GeneratedImageCollection(createdAt: createdAt);
+        GeneratedImageCollection generatedImageCollection = OpenAIImagesModelFactory.GeneratedImageCollection(createdAt: createdAt);
 
         Assert.That(generatedImageCollection.CreatedAt, Is.EqualTo(createdAt));
         Assert.That(generatedImageCollection.Count, Is.EqualTo(0));
@@ -76,10 +76,10 @@ public partial class OpenAIImageModelFactoryTests
     public void GeneratedImageCollectionWithItemsWorks()
     {
         IEnumerable<GeneratedImage> items = [
-            OpenAIImageModelFactory.GeneratedImage(revisedPrompt: "This is the first prompt."),
-            OpenAIImageModelFactory.GeneratedImage(revisedPrompt: "This is not the first prompt.")
+            OpenAIImagesModelFactory.GeneratedImage(revisedPrompt: "This is the first prompt."),
+            OpenAIImagesModelFactory.GeneratedImage(revisedPrompt: "This is not the first prompt.")
         ];
-        GeneratedImageCollection generatedImageCollection = OpenAIImageModelFactory.GeneratedImageCollection(items: items);
+        GeneratedImageCollection generatedImageCollection = OpenAIImagesModelFactory.GeneratedImageCollection(items: items);
 
         Assert.That(generatedImageCollection.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(generatedImageCollection.SequenceEqual(items), Is.True);

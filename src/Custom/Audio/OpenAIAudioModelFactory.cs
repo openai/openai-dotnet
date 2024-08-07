@@ -8,7 +8,6 @@ namespace OpenAI.Audio;
 public static partial class OpenAIAudioModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.AudioTranscription"/>. </summary>
-    /// <param name="duration"> The duration of the input audio. </param>
     /// <returns> A new <see cref="OpenAI.Audio.AudioTranscription"/> instance for mocking. </returns>
     public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null)
     {
@@ -26,7 +25,6 @@ public static partial class OpenAIAudioModelFactory
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.AudioTranslation"/>. </summary>
-    /// <param name="duration"> The duration of the input audio. </param>
     /// <returns> A new <see cref="OpenAI.Audio.AudioTranslation"/> instance for mocking. </returns>
     public static AudioTranslation AudioTranslation(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedSegment> segments = null)
     {
