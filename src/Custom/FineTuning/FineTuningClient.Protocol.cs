@@ -30,20 +30,19 @@ public partial class FineTuningClient
     ///
     /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
     /// </summary>
-    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
-    /// method should return when the service has finished running the 
-    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
-    /// after the operation has been created but may not have completed 
-    /// processing. </param>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A <see cref="FineTuningOperation"/> that can be used to wait for 
+    /// <returns> A <see cref="CreateJobOperation"/> that can be used to wait for 
     /// the operation to complete, get information about the fine tuning job, or 
     /// cancel the operation. </returns>
-    public virtual async Task<FineTuningOperation> CreateJobAsync(
-        ReturnWhen returnWhen,
+    public virtual async Task<CreateJobOperation> CreateJobAsync(
+        bool waitUntilCompleted,
         BinaryContent content,
         RequestOptions options = null)
     {
@@ -56,14 +55,8 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
-
-        await operation.WaitForCompletionAsync(options?.CancellationToken ?? default).ConfigureAwait(false);
-        return operation;
+        CreateJobOperation operation = new(_pipeline, _endpoint, jobId, status, response);
+        return await operation.WaitUntilAsync(waitUntilCompleted, options).ConfigureAwait(false);
     }
 
     // CUSTOM:
@@ -76,20 +69,19 @@ public partial class FineTuningClient
     ///
     /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
     /// </summary>
-    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
-    /// method should return when the service has finished running the 
-    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
-    /// after the operation has been created but may not have completed 
-    /// processing. </param>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A <see cref="FineTuningOperation"/> that can be used to wait for 
+    /// <returns> A <see cref="CreateJobOperation"/> that can be used to wait for 
     /// the operation to complete, get information about the fine tuning job, or 
     /// cancel the operation. </returns>
-    public virtual FineTuningOperation CreateJob(
-        ReturnWhen returnWhen,
+    public virtual CreateJobOperation CreateJob(
+        bool waitUntilCompleted,
         BinaryContent content,
         RequestOptions options = null)
     {
@@ -102,14 +94,8 @@ public partial class FineTuningClient
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
         string status = doc.RootElement.GetProperty("status"u8).GetString();
 
-        FineTuningOperation operation = new FineTuningOperation(_pipeline, _endpoint, jobId, status, response);
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
-
-        operation.WaitForCompletion(options?.CancellationToken ?? default);
-        return operation;
+        CreateJobOperation operation = new(_pipeline, _endpoint, jobId, status, response);
+        return operation.WaitUntil(waitUntilCompleted, options);
     }
 
     // CUSTOM:

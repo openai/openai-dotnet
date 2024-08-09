@@ -84,27 +84,35 @@ public partial class VectorStoreClient
     }
 
     /// <summary> Creates a vector store. </summary>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
-    /// <remarks> Create vector store. </remarks>
-    public virtual async Task<ClientResult<VectorStore>> CreateVectorStoreAsync(VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="CreateVectorStoreOperation"/> that can be used to wait for 
+    /// the vector store creation to complete. </returns>
+    public virtual async Task<CreateVectorStoreOperation> CreateVectorStoreAsync(bool waitUntilCompleted, VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
     {
         using BinaryContent content = vectorStore?.ToBinaryContent();
-        ClientResult result = await CreateVectorStoreAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return await CreateVectorStoreAsync(waitUntilCompleted, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
     /// <summary> Creates a vector store. </summary>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
-    /// <remarks> Create vector store. </remarks>
-    public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="CreateVectorStoreOperation"/> that can be used to wait for 
+    /// the vector store creation to complete. </returns>
+    public virtual CreateVectorStoreOperation CreateVectorStore(bool waitUntilCompleted, VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
     {
         using BinaryContent content = vectorStore?.ToBinaryContent();
-        ClientResult result = CreateVectorStore(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(VectorStore.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return CreateVectorStore(waitUntilCompleted, content, cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
@@ -216,14 +224,8 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetVectorStoresAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -242,14 +244,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetVectorStoresAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -265,14 +261,8 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetVectorStores(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -291,50 +281,52 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetVectorStores(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStore>;
     }
 
     /// <summary>
     /// Associates a single, uploaded file with a vector store, beginning ingestion of the file into the vector store.
     /// </summary>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
-    /// </returns>
-    public virtual async Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="AddFileToVectorStoreOperation"/> that can be used to wait for 
+    /// the vector store file addition to complete. </returns>
+    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="fileId"/> is null. </exception>
+    public virtual async Task<AddFileToVectorStoreOperation> AddFileToVectorStoreAsync(bool waitUntilCompleted, string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        ClientResult protocolResult = await AddFileToVectorStoreAsync(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
-        VectorStoreFileAssociation fileAssociation = VectorStoreFileAssociation.FromResponse(protocolResponse);
-        return ClientResult.FromValue(fileAssociation, protocolResponse);
+        return await AddFileToVectorStoreAsync(waitUntilCompleted, vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Associates a single, uploaded file with a vector store, beginning ingestion of the file into the vector store.
     /// </summary>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns>
-    /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
-    /// </returns>
-    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="AddFileToVectorStoreOperation"/> that can be used to wait for 
+    /// the vector store file addition to complete. </returns>
+    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="fileId"/> is null. </exception>
+    public virtual AddFileToVectorStoreOperation AddFileToVectorStore(bool waitUntilCompleted, string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        ClientResult protocolResult = AddFileToVectorStore(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions());
-        PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
-        VectorStoreFileAssociation fileAssociation = VectorStoreFileAssociation.FromResponse(protocolResponse);
-        return ClientResult.FromValue(fileAssociation, protocolResponse);
+        return AddFileToVectorStore(waitUntilCompleted, vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.ToRequestOptions());
     }
 
     /// <summary>
@@ -357,16 +349,8 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -385,16 +369,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -417,16 +393,8 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -445,16 +413,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -540,20 +500,19 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
+    /// Adds multiple files in a batch to the vector store, beginning the ingestion process.
     /// </summary>
-    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
-    /// method should return when the service has finished running the 
-    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
-    /// after the operation has been created but may not have completed 
-    /// processing. </param>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// <returns> A <see cref="CreateBatchFileJobOperation"/> that can be used to wait for 
     /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
-    public virtual async Task<VectorStoreFileBatchOperation> CreateBatchFileJobAsync(
-        ReturnWhen returnWhen,
+    public virtual async Task<CreateBatchFileJobOperation> CreateBatchFileJobAsync(
+        bool waitUntilCompleted,
         string vectorStoreId, 
         IEnumerable<string> fileIds,
         CancellationToken cancellationToken = default)
@@ -564,39 +523,23 @@ public partial class VectorStoreClient
         BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
         RequestOptions options = cancellationToken.ToRequestOptions();
 
-        using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
-        PipelineResponse response = await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
-        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-
-        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
-            _pipeline,
-            _endpoint,
-            ClientResult.FromValue(value, response));
-
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
-
-        await operation.WaitForCompletionAsync().ConfigureAwait(false);
-        return operation;
+        return await CreateBatchFileJobAsync(waitUntilCompleted, vectorStoreId, content, options).ConfigureAwait(false);
     }
 
     /// <summary>
     /// Begins a batch job to associate multiple jobs with a vector store, beginning the ingestion process.
     /// </summary>
-    /// <param name="returnWhen"> <see cref="ReturnWhen.Completed"/> if the
-    /// method should return when the service has finished running the 
-    /// operation, or <see cref="ReturnWhen.Started"/> if it should return 
-    /// after the operation has been created but may not have completed 
-    /// processing. </param>
+    /// <param name="waitUntilCompleted"> Value indicating whether the method
+    /// should return after the operation has been started and is still running
+    /// on the service, or wait until the operation has completed to return.
+    /// </param>
     /// <param name="vectorStoreId"> The ID of the vector store to associate files with. </param>
     /// <param name="fileIds"> The IDs of the files to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileBatchOperation"/> that can be used to wait for 
+    /// <returns> A <see cref="CreateBatchFileJobOperation"/> that can be used to wait for 
     /// the operation to complete, get information about the batch file job, or cancel the operation. </returns>
-    public virtual VectorStoreFileBatchOperation CreateBatchFileJob(
-        ReturnWhen returnWhen,
+    public virtual CreateBatchFileJobOperation CreateBatchFileJob(
+        bool waitUntilCompleted,
         string vectorStoreId,
         IEnumerable<string> fileIds, 
         CancellationToken cancellationToken = default)
@@ -607,21 +550,6 @@ public partial class VectorStoreClient
         BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds).ToBinaryContent();
         RequestOptions options = cancellationToken.ToRequestOptions();
 
-        using PipelineMessage message = CreateCreateVectorStoreFileBatchRequest(vectorStoreId, content, options);
-        PipelineResponse response = _pipeline.ProcessMessage(message, options);
-        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromResponse(response);
-
-        VectorStoreFileBatchOperation operation = new VectorStoreFileBatchOperation(
-            _pipeline,
-            _endpoint,
-            ClientResult.FromValue(value, response));
-
-        if (returnWhen == ReturnWhen.Started)
-        {
-            return operation;
-        }
-
-        operation.WaitForCompletion();
-        return operation;
+        return CreateBatchFileJob(waitUntilCompleted, vectorStoreId, content, options);
     }
 }

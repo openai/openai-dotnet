@@ -20,15 +20,17 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<Vec
 
     private readonly string? _before;
     private readonly string? _filter;
-    private readonly RequestOptions _options;
+    private readonly RequestOptions? _options;
 
     private string? _after;
+
+    public virtual ClientPipeline Pipeline => _pipeline;
 
     public VectorStoreFileBatchesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
         string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter,
-        RequestOptions options)
+        RequestOptions? options)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
@@ -93,7 +95,7 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<Vec
         return PageResult<VectorStoreFileAssociation>.Create(list.Data, pageToken, nextPageToken, response);
     }
 
-    internal virtual async Task<ClientResult> GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions options)
+    internal virtual async Task<ClientResult> GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
@@ -102,7 +104,7 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<Vec
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions options)
+    internal virtual ClientResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions? options)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
@@ -111,7 +113,7 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<Vec
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    internal PipelineMessage CreateGetFilesInVectorStoreBatchesRequest(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions options)
+    internal PipelineMessage CreateGetFilesInVectorStoreBatchesRequest(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter, RequestOptions? options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;

@@ -9,13 +9,12 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.FineTuning;
 
-#pragma warning disable OPENAI001
-
 [Parallelizable(ParallelScope.Fixtures)]
+[Category("FineTuning")]
 public partial class FineTuningTests
 {
     [Test]
-    public void BasicFineTuningOperationsWork()
+    public void BasicFineTuningJobOperationsWork()
     {
         // Upload training file first
         FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
@@ -34,7 +33,7 @@ public partial class FineTuningTests
         BinaryData input = BinaryData.FromString(json);
         using BinaryContent content = BinaryContent.Create(input);
 
-        FineTuningOperation operation = client.CreateJob(ReturnWhen.Started, content);
+        CreateJobOperation operation = client.CreateJob(waitUntilCompleted: false, content);
     }
 
     [OneTimeTearDown]
@@ -85,5 +84,3 @@ public partial class FineTuningTests
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
     private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
 }
-
-#pragma warning restore OPENAI001
