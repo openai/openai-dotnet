@@ -83,6 +83,16 @@ public partial class Embedding
         Vector = ConvertToVectorOfFloats(embeddingProperty);
     }
 
+    // CUSTOM: Entirely custom constructor used by the Model Factory.
+    /// <summary> Initializes a new instance of <see cref="Embedding"/>. </summary>
+    /// <param name="index"> The index of the embedding in the list of embeddings. </param>
+    /// <param name="vector"> The embedding vector, which is a list of floats. </param>
+    internal Embedding(int index, ReadOnlyMemory<float> vector)
+    {
+        Index = index;
+        Vector = vector;
+    }
+
     // CUSTOM: Added as a public, custom property. For slightly better performance, the embedding is always requested as a base64-encoded
     // string and then manually transformed into a more user-friendly ReadOnlyMemory<float>.
     /// <summary>
