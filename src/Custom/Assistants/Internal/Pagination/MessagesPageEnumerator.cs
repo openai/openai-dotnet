@@ -22,6 +22,8 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
     private readonly string _before;
     private readonly RequestOptions _options;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public MessagesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,

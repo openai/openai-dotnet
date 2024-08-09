@@ -23,6 +23,8 @@ internal partial class VectorStoreFilesPageEnumerator : PageEnumerator<VectorSto
 
     private string? _after;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public VectorStoreFilesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,

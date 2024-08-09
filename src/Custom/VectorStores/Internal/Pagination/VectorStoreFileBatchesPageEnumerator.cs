@@ -24,6 +24,8 @@ internal partial class VectorStoreFileBatchesPageEnumerator : PageEnumerator<Vec
 
     private string? _after;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public VectorStoreFileBatchesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,

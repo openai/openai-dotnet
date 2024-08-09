@@ -214,14 +214,8 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetVectorStoresAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -240,14 +234,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetVectorStoresAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -263,14 +251,8 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetVectorStores(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -289,14 +271,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoresPageToken pageToken = VectorStoresPageToken.FromToken(firstPageToken);
-        VectorStoresPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetVectorStores(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStore>;
     }
 
     /// <summary>
@@ -355,16 +331,8 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -383,16 +351,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -415,16 +375,8 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -443,16 +395,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         VectorStoreFilesPageToken pageToken = VectorStoreFilesPageToken.FromToken(firstPageToken);
-        VectorStoreFilesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -680,17 +624,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            batchJobId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(vectorStoreId, batchJobId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -732,17 +667,8 @@ public partial class VectorStoreClient
                 nameof(vectorStoreId));
         }
 
-        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.BatchId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetFileAssociationsAsync(vectorStoreId, batchJobId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -770,17 +696,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            vectorStoreId,
-            batchJobId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            options?.Filter?.ToString(),
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(vectorStoreId, batchJobId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -823,16 +740,7 @@ public partial class VectorStoreClient
                 nameof(vectorStoreId));
         }
 
-        VectorStoreFileBatchesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.VectorStoreId,
-            pageToken.BatchId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            pageToken.Filter,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetFileAssociations(vectorStoreId, batchJobId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
+            as PageCollection<VectorStoreFileAssociation>;
     }
 }
