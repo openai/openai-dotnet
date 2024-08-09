@@ -24,7 +24,7 @@ public partial class AssistantTests
     protected void Cleanup()
     {
         // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPEN_API_KEY")))
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
             return;
         }

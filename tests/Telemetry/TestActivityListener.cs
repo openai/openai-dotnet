@@ -35,7 +35,7 @@ internal class TestActivityListener : IDisposable
         _listener.Dispose();
     }
 
-    public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-3.5-turbo", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         Assert.NotNull(activity);
         Assert.AreEqual($"chat {requestModel}", activity.DisplayName);
@@ -64,7 +64,7 @@ internal class TestActivityListener : IDisposable
         }
     }
 
-    public static void ValidateChatActivity(Activity activity, Exception ex, string requestModel = "gpt-3.5-turbo", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatActivity(Activity activity, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         ValidateChatActivity(activity, (ChatCompletion)null, requestModel, host, port);
         Assert.AreEqual(ex.GetType().FullName, activity.GetTagItem("error.type"));

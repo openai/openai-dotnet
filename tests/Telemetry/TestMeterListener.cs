@@ -60,7 +60,7 @@ internal class TestMeterListener : IDisposable
         _listener.Dispose();
     }
 
-    public static void ValidateChatMetricTags(TestMeasurement measurement, ChatCompletion response, string requestModel = "gpt-3.5-turbo", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatMetricTags(TestMeasurement measurement, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         Assert.AreEqual("openai", measurement.tags["gen_ai.system"]);
         Assert.AreEqual("chat", measurement.tags["gen_ai.operation.name"]);
@@ -75,7 +75,7 @@ internal class TestMeterListener : IDisposable
         }
     }
 
-    public static void ValidateChatMetricTags(TestMeasurement measurement, Exception ex, string requestModel = "gpt-3.5-turbo", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatMetricTags(TestMeasurement measurement, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         ValidateChatMetricTags(measurement, (ChatCompletion)null, requestModel, host, port);
         Assert.True(measurement.tags.ContainsKey("error.type"));
