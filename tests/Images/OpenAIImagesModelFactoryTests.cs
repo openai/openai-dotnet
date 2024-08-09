@@ -7,7 +7,7 @@ using OpenAI.Images;
 namespace OpenAI.Tests.Images;
 
 [Parallelizable(ParallelScope.All)]
-[Category("Images")]
+[Category("Smoke")]
 public partial class OpenAIImagesModelFactoryTests
 {
     [Test]

@@ -6,7 +6,7 @@ using OpenAI.Embeddings;
 namespace OpenAI.Tests.Embeddings
 {
     [Parallelizable(ParallelScope.All)]
-    [Category("Embeddings")]
+    [Category("Smoke")]
     public partial class OpenAIEmbeddingsModelFactoryTests
     {
         [Test]
