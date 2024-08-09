@@ -53,6 +53,13 @@ public partial class AssistantResponseFormat
         = new(plainTextValue: null, objectType: JsonObjectValue, serializedAdditionalRawData: null);
 
     /// <summary>
+    /// Creates an instance of <see cref="AssistantResponseFormat"/> configured for JSON Schema mode.
+    /// </summary>
+    /// <param name="jsonSchema">The JSON schema that the model's output must conform to.</param>
+    /// <returns>A new <see cref="AssistantResponseFormat"/> instance configured to enforce the provided JSON schema.</returns>
+    public static AssistantResponseFormat JsonSchema(string jsonSchema) => new AssistantJsonSchemaResponseFormat(jsonSchema);
+
+    /// <summary>
     /// Creates a new instance of <see cref="AssistantResponseFormat"/> for mocking.
     /// </summary>
     protected AssistantResponseFormat()

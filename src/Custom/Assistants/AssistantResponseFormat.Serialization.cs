@@ -34,6 +34,15 @@ public partial class AssistantResponseFormat : IJsonModel<AssistantResponseForma
             writer.WriteStartObject();
             writer.WritePropertyName("type"u8);
             writer.WriteStringValue(formatInstance._objectType);
+            if(formatInstance is AssistantJsonSchemaResponseFormat assistantJsonSchemaResponseFormat)
+            {
+                writer.WritePropertyName("json_schema"u8);
+                using (var document = JsonDocument.Parse(assistantJsonSchemaResponseFormat.Schema))
+                {
+                    document.RootElement.WriteTo(writer);
+                }
+            }
+
             writer.WriteSerializedAdditionalRawData(formatInstance.SerializedAdditionalRawData, options);
             writer.WriteEndObject();
         }
