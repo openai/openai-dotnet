@@ -23,6 +23,8 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
 
     private string? _after;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public RunStepsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
