@@ -1,14 +1,19 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
+using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static OpenAI.Tests.Telemetry.TestMeterListener;
+using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
