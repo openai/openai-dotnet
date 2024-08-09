@@ -678,7 +678,29 @@ The first image shows a red apple with a smooth skin and a single leaf, while th
 
 ## How to work with Azure OpenAI
 
-Details for using the OpenAI .NET library with [Azure OpenAI](https://learn.microsoft.com/azure/ai-services/openai/overview) are coming soon. Please watch here and the [Azure.AI.OpenAI project](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI) for updates.
+For Azure OpenAI scenarios use the [Azure SDK](https://github.com/Azure/azure-sdk-for-net) and more specifically the [Azure OpenAI client library for .NET](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/openai/Azure.AI.OpenAI/README.md). 
+
+The Azure OpenAI client library for .NET is a companion to this library and all common capabilities between OpenAI and Azure OpenAI share the same scenario clients, methods, and request/response types. It is designed to make Azure specific scenarios straightforward, with extensions for Azure-specific concepts like Responsible AI content filter results and On Your Data integration.
+
+```c#
+AzureOpenAIClient azureClient = new(
+    new Uri("https://your-azure-openai-resource.com"),
+    new DefaultAzureCredential());
+ChatClient chatClient = azureClient.GetChatClient("my-gpt-35-turbo-deployment");
+
+ChatCompletion completion = chatClient.CompleteChat(
+    [
+        // System messages represent instructions or other guidance about how the assistant should behave
+        new SystemChatMessage("You are a helpful assistant that talks like a pirate."),
+        // User messages represent user input, whether historical or the most recen tinput
+        new UserChatMessage("Hi, can you help me?"),
+        // Assistant messages in a request represent conversation history for responses
+        new AssistantChatMessage("Arrr! Of course, me hearty! What can I do for ye?"),
+        new UserChatMessage("What's the best way to train a parrot?"),
+    ]);
+
+Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
+```
 
 ## Advanced scenarios
 
