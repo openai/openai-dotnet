@@ -26,7 +26,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
   - [Automatically retrying errors](#automatically-retrying-errors)
-- [Observability](#observability)
+  - [Observability](#observability)
 
 ## Getting started
 
@@ -751,6 +751,6 @@ By default, the client classes will automatically retry the following errors up 
 - 503 Service Unavailable
 - 504 Gateway Timeout
 
-## Observability
+### Observability
 
 OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/observability.md) for more details.
