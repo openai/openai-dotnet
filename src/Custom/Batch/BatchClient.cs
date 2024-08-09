@@ -2,7 +2,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
@@ -10,16 +9,22 @@ namespace OpenAI.Batch;
 [CodeGenSuppress("BatchClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
 [CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(InternalBatchCompletionTimeframe), typeof(IDictionary<string, string>))]
+[CodeGenSuppress("CreateBatch", typeof(BinaryContent), typeof(RequestOptions))]
+[CodeGenSuppress("CreateBatchAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveBatch", typeof(string))]
 [CodeGenSuppress("RetrieveBatchAsync", typeof(string))]
 [CodeGenSuppress("RetrieveBatch", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveBatchAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelBatch", typeof(string))]
 [CodeGenSuppress("CancelBatchAsync", typeof(string))]
+[CodeGenSuppress("CancelBatch", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("CancelBatchAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetBatches", typeof(string), typeof(int?))]
 [CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?))]
 public partial class BatchClient
 {
+    internal Uri Endpoint => _endpoint;
+
     /// <summary>
     /// Initializes a new instance of <see cref="BatchClient"/> that will use an API key when authenticating.
     /// </summary>

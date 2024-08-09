@@ -21,6 +21,8 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
     private readonly string _before;
     private readonly RequestOptions _options;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+ 
     public AssistantsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,

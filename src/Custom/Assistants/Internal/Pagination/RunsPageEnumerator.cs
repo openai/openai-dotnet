@@ -22,6 +22,8 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
     private readonly string _before;
     private readonly RequestOptions _options;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public RunsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,

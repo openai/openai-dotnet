@@ -70,7 +70,7 @@ public partial class AssistantClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IAsyncEnumerable<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -101,7 +101,7 @@ public partial class AssistantClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        AssistantsPageEnumerator enumerator = new AssistantsPageEnumerator(_pipeline, _endpoint, limit, order, after, before, options);
+        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -259,7 +259,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessagesPageEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -295,7 +295,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessagesPageEnumerator enumerator = new MessagesPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -381,7 +381,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunsPageEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -417,7 +417,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunsPageEnumerator enumerator = new RunsPageEnumerator(_pipeline, _endpoint, threadId, limit, order, after, before, options);
+        RunsPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 
@@ -495,7 +495,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.CreateAsync(enumerator);
     }
 
@@ -533,7 +533,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageEnumerator enumerator = new RunStepsPageEnumerator(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
+        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint, threadId, runId, limit, order, after, before, options);
         return PageCollectionHelpers.Create(enumerator);
     }
 

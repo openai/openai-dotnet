@@ -54,7 +54,7 @@ public partial class BatchTests : SyncAsyncTestBase
     public async Task CreateGetAndCancelBatchProtocol()
     {
         using MemoryStream testFileStream = new();
-        using StreamWriter streamWriter = new (testFileStream);
+        using StreamWriter streamWriter = new(testFileStream);
         string input = @"{""custom_id"": ""request-1"", ""method"": ""POST"", ""url"": ""/v1/chat/completions"", ""body"": {""model"": ""gpt-4o-mini"", ""messages"": [{""role"": ""system"", ""content"": ""You are a helpful assistant.""}, {""role"": ""user"", ""content"": ""What is 2+2?""}]}}";
         streamWriter.WriteLine(input);
         streamWriter.Flush();
@@ -75,11 +75,11 @@ public partial class BatchTests : SyncAsyncTestBase
                 testMetadataKey = "test metadata value",
             },
         }));
-        ClientResult batchResult = IsAsync
-            ? await client.CreateBatchAsync(content)
-            : client.CreateBatch(content);
+        CreateBatchOperation batchOperation = IsAsync
+            ? await client.CreateBatchAsync(waitUntilCompleted: false, content)
+            : client.CreateBatch(waitUntilCompleted: false, content);
 
-        BinaryData response = batchResult.GetRawResponse().Content;
+        BinaryData response = batchOperation.GetRawResponse().Content;
         JsonDocument jsonDocument = JsonDocument.Parse(response);
 
         JsonElement idElement = jsonDocument.RootElement.GetProperty("id");
@@ -100,18 +100,14 @@ public partial class BatchTests : SyncAsyncTestBase
         Assert.That(status, Is.EqualTo("validating"));
         Assert.That(testMetadataKey, Is.EqualTo("test metadata value"));
 
-        batchResult = IsAsync
-            ? await client.GetBatchAsync(id, options: null)
-            : client.GetBatch(id, options: null);
-
         JsonElement endpointElement = jsonDocument.RootElement.GetProperty("endpoint");
         string endpoint = endpointElement.GetString();
 
         Assert.That(endpoint, Is.EqualTo("/v1/chat/completions"));
 
-        batchResult = IsAsync
-            ? await client.CancelBatchAsync(id, options: null)
-            : client.CancelBatch(id, options: null);
+        ClientResult clientResult = IsAsync
+            ? await batchOperation.CancelBatchAsync(options: null)
+            : batchOperation.CancelBatch(options: null);
 
         statusElement = jsonDocument.RootElement.GetProperty("status");
         status = statusElement.GetString();
@@ -129,6 +125,80 @@ public partial class BatchTests : SyncAsyncTestBase
         //batchResult = await client.CancelBatchAsync(newBatchDynamic.id, options: null);
         //newBatchDynamic = batchResult.GetRawResponse().Content.ToObjectFromJson<dynamic>();
         //Assert.That(newBatchDynamic.status, Is.EqualTo("cancelling"));
+    }
+
+    [Test]
+    public async Task CanRehydrateBatchOperation()
+    {
+        using MemoryStream testFileStream = new();
+        using StreamWriter streamWriter = new(testFileStream);
+        string input = @"{""custom_id"": ""request-1"", ""method"": ""POST"", ""url"": ""/v1/chat/completions"", ""body"": {""model"": ""gpt-4o-mini"", ""messages"": [{""role"": ""system"", ""content"": ""You are a helpful assistant.""}, {""role"": ""user"", ""content"": ""What is 2+2?""}]}}";
+        streamWriter.WriteLine(input);
+        streamWriter.Flush();
+        testFileStream.Position = 0;
+
+        FileClient fileClient = new();
+        OpenAIFileInfo inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
+        Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
+
+        BatchClient client = GetTestClient();
+        BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
+        {
+            input_file_id = inputFile.Id,
+            endpoint = "/v1/chat/completions",
+            completion_window = "24h",
+            metadata = new
+            {
+                testMetadataKey = "test metadata value",
+            },
+        }));
+        CreateBatchOperation batchOperation = IsAsync
+            ? await client.CreateBatchAsync(waitUntilCompleted: false, content)
+            : client.CreateBatch(waitUntilCompleted: false, content);
+
+        // Simulate rehydration of the operation
+        BinaryData rehydrationBytes = batchOperation.RehydrationToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        CreateBatchOperation rehydratedOperation = IsAsync ?
+            await CreateBatchOperation.RehydrateAsync(client, rehydrationToken) :
+            CreateBatchOperation.Rehydrate(client, rehydrationToken);
+
+        static bool Validate(CreateBatchOperation operation)
+        {
+            BinaryData response = operation.GetRawResponse().Content;
+            JsonDocument jsonDocument = JsonDocument.Parse(response);
+
+            JsonElement idElement = jsonDocument.RootElement.GetProperty("id");
+            JsonElement createdAtElement = jsonDocument.RootElement.GetProperty("created_at");
+            JsonElement statusElement = jsonDocument.RootElement.GetProperty("status");
+            JsonElement metadataElement = jsonDocument.RootElement.GetProperty("metadata");
+            JsonElement testMetadataKeyElement = metadataElement.GetProperty("testMetadataKey");
+
+            string id = idElement.GetString();
+            long createdAt = createdAtElement.GetInt64();
+            string status = statusElement.GetString();
+            string testMetadataKey = testMetadataKeyElement.GetString();
+
+            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+
+            Assert.That(id, Is.Not.Null.And.Not.Empty);
+            Assert.That(createdAt, Is.GreaterThan(unixTime2024));
+            Assert.That(status, Is.EqualTo("validating"));
+            Assert.That(testMetadataKey, Is.EqualTo("test metadata value"));
+
+            return true;
+        }
+
+        Assert.IsTrue(Validate(batchOperation));
+        Assert.IsTrue(Validate(rehydratedOperation));
+
+        Task.WaitAll(
+            IsAsync ? batchOperation.WaitForCompletionAsync() : Task.Run(() => batchOperation.WaitForCompletion()),
+            IsAsync ? rehydratedOperation.WaitForCompletionAsync() : Task.Run(() => rehydratedOperation.WaitForCompletion()));
+
+        Assert.IsTrue(batchOperation.IsCompleted);
+        Assert.IsTrue(rehydratedOperation.IsCompleted);
     }
 
     private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
