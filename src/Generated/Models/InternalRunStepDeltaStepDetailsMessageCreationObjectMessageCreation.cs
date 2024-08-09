@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation()
         {
         }
@@ -18,7 +17,7 @@ namespace OpenAI.Assistants
         internal InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation(string messageId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             MessageId = messageId;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public string MessageId { get; }

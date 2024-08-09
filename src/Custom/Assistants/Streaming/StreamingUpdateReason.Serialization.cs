@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Assistants;
+namespace OpenAI.Assistants;
 
 internal static class StreamingUpdateReasonExtensions
 {

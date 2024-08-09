@@ -21,36 +21,46 @@ namespace OpenAI.Embeddings
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("input"u8);
+            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Input);
 #else
-            using (JsonDocument document = JsonDocument.Parse(Input))
-            {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                using (JsonDocument document = JsonDocument.Parse(Input))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model.ToString());
-            if (Optional.IsDefined(EncodingFormat))
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("encoding_format") != true && Optional.IsDefined(EncodingFormat))
             {
                 writer.WritePropertyName("encoding_format"u8);
                 writer.WriteStringValue(EncodingFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Dimensions))
+            if (SerializedAdditionalRawData?.ContainsKey("dimensions") != true && Optional.IsDefined(Dimensions))
             {
                 writer.WritePropertyName("dimensions"u8);
                 writer.WriteNumberValue(Dimensions.Value);
             }
-            if (Optional.IsDefined(User))
+            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(User))
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(User);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -127,8 +137,9 @@ namespace OpenAI.Embeddings
                     user = property.Value.GetString();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

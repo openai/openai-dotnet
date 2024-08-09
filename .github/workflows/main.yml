@@ -1,4 +1,6 @@
-name: Build and Test
+# This worflow is triggered on push to main, pull request, or by manual invocation.
+# It builds and unit tests the codebase.
+name: Build and Unit Test
 
 on:
   workflow_dispatch:
@@ -10,51 +12,36 @@ on:
 
 jobs:
   build: # Test, pack and publish the Open AI nuget package as a build artifact 
+    name: Build
     runs-on: ubuntu-latest
     env:
-      version_suffix_args: ${{ format('--version-suffix="alpha.{0}"', github.run_number) }}
+      version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.x
+          dotnet-version: '8.x'
 
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build and Pack
+      - name: Build and pack
         run: dotnet pack
           --configuration Release
           --output "${{github.workspace}}/artifacts/packages"
-          ${{ env.version_suffix_args }}
+          ${{ env.version_suffix_args}}
 
-      - name: Test
+      - name: Run unit tests
         run: dotnet test
           --configuration Release
-          --filter="TestCategory~${{ github.event_name == 'pull_request' && 'Offline' || 'Online' }}|TestCategory~Smoke"
-          --logger "trx;LogFileName=${{github.workspace}}/artifacts/test-results/full.trx"
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          --filter="TestCategory=Smoke&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=smoke"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
-
-      - name: NuGet Autenticate
-        if: github.event_name != 'pull_request'
-        run: dotnet nuget add source
-          "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          --name "github"
-          --username ${{ github.actor }}
-          --password ${{ secrets.GITHUB_TOKEN }}
-          --store-password-in-clear-text
-
-      - name: Publish
-        if: github.event_name != 'pull_request'
-        run: dotnet nuget push
-          ${{github.workspace}}/artifacts/packages/*.nupkg
-          --source "github"
-          --api-key ${{ secrets.GITHUB_TOKEN }}
-          --skip-duplicate

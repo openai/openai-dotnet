@@ -1,4 +1,4 @@
-﻿using System.ClientModel.Primitives;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;

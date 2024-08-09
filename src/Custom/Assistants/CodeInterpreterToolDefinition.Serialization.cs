@@ -20,7 +20,7 @@ public partial class CodeInterpreterToolDefinition : IJsonModel<CodeInterpreterT
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(Type);
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

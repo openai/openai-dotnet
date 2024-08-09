@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
         {
             _type = type;
             LastMessages = lastMessages;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal RunTruncationStrategy()

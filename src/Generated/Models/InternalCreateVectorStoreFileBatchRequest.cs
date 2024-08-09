@@ -10,8 +10,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalCreateVectorStoreFileBatchRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
         {
             Argument.AssertNotNull(fileIds, nameof(fileIds));
@@ -23,7 +22,7 @@ namespace OpenAI.VectorStores
         {
             FileIds = fileIds;
             ChunkingStrategy = chunkingStrategy;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateVectorStoreFileBatchRequest()

@@ -1,4 +1,4 @@
-﻿namespace OpenAI.FineTuning;
+namespace OpenAI.FineTuning;
 
 // CUSTOM: Made internal.
 

@@ -1,4 +1,4 @@
-﻿
+
 namespace OpenAI.Models;
 
 [CodeGenModel("DeleteModelResponse")]

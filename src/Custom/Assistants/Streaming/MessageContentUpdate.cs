@@ -17,24 +17,24 @@ public partial class MessageContentUpdate : StreamingUpdate
     /// <inheritdoc cref="MessageDeltaObject.Id"/>
     public string MessageId => _delta.Id;
 
-    /// <inheritdoc cref="MessageDeltaContentImageFileObject.Index"/>
+    /// <inheritdoc cref="InternalMessageDeltaContentImageFileObject.Index"/>
     public int MessageIndex => _textContent?.Index
         ?? _imageFileContent?.Index
         ?? _imageUrlContent?.Index
         ?? TextAnnotation?.ContentIndex
         ?? 0;
 
-    /// <inheritdoc cref="MessageDeltaObjectDelta.Role"/>
+    /// <inheritdoc cref="InternalMessageDeltaObjectDelta.Role"/>
     public MessageRole? Role => _delta.Delta?.Role;
 
-    /// <inheritdoc cref="MessageDeltaContentImageFileObjectImageFile.FileId"/>
+    /// <inheritdoc cref="InternalMessageDeltaContentImageFileObjectImageFile.FileId"/>
     public string ImageFileId => _imageFileContent?.ImageFile?.FileId;
 
     /// <inheritdoc cref="MessageImageDetail"/>
     public MessageImageDetail? ImageDetail => _imageFileContent?.ImageFile?.Detail?.ToMessageImageDetail()
         ?? _imageUrlContent?.ImageUrl?.Detail?.ToMessageImageDetail();
 
-    /// <inheritdoc cref="MessageDeltaContentTextObjectText.Value"/>
+    /// <inheritdoc cref="InternalMessageDeltaContentTextObjectText.Value"/>
     public string Text => _textContent?.Text?.Value;
 
     /// <summary>
@@ -42,18 +42,18 @@ public partial class MessageContentUpdate : StreamingUpdate
     /// </summary>
     public TextAnnotationUpdate TextAnnotation { get; }
 
-    private readonly MessageDeltaContentImageFileObject _imageFileContent;
-    private readonly MessageDeltaContentTextObject _textContent;
-    private readonly MessageDeltaContentImageUrlObject _imageUrlContent;
+    private readonly InternalMessageDeltaContentImageFileObject _imageFileContent;
+    private readonly InternalMessageDeltaContentTextObject _textContent;
+    private readonly InternalMessageDeltaContentImageUrlObject _imageUrlContent;
     private readonly InternalMessageDeltaObject _delta;
 
-    internal MessageContentUpdate(InternalMessageDeltaObject delta, MessageDeltaContent content)
+    internal MessageContentUpdate(InternalMessageDeltaObject delta, InternalMessageDeltaContent content)
         : base(StreamingUpdateReason.MessageUpdated)
     {
         _delta = delta;
-        _textContent = content as MessageDeltaContentTextObject;
-        _imageFileContent = content as MessageDeltaContentImageFileObject;
-        _imageUrlContent = content as MessageDeltaContentImageUrlObject;
+        _textContent = content as InternalMessageDeltaContentTextObject;
+        _imageFileContent = content as InternalMessageDeltaContentImageFileObject;
+        _imageUrlContent = content as InternalMessageDeltaContentImageUrlObject;
     }
 
     internal MessageContentUpdate(InternalMessageDeltaObject delta, TextAnnotationUpdate annotation)
@@ -70,12 +70,12 @@ public partial class MessageContentUpdate : StreamingUpdate
     {
         InternalMessageDeltaObject deltaObject = InternalMessageDeltaObject.DeserializeInternalMessageDeltaObject(element, options);
         List<MessageContentUpdate> updates = [];
-        foreach (MessageDeltaContent deltaContent in deltaObject.Delta.Content ?? [])
+        foreach (InternalMessageDeltaContent deltaContent in deltaObject.Delta.Content ?? [])
         {
             updates.Add(new(deltaObject, deltaContent));
-            if (deltaContent is MessageDeltaContentTextObject textContent)
+            if (deltaContent is InternalMessageDeltaContentTextObject textContent)
             {
-                foreach (MessageDeltaTextContentAnnotation internalAnnotation in textContent.Text.Annotations)
+                foreach (InternalMessageDeltaTextContentAnnotation internalAnnotation in textContent.Text.Annotations)
                 {
                     TextAnnotationUpdate annotation = new(internalAnnotation);
                     updates.Add(new(deltaObject, annotation));

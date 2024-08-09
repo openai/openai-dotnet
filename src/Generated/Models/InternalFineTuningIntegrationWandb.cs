@@ -9,8 +9,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningIntegrationWandb
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalFineTuningIntegrationWandb(string project)
         {
             Argument.AssertNotNull(project, nameof(project));
@@ -25,7 +24,7 @@ namespace OpenAI.FineTuning
             Name = name;
             Entity = entity;
             Tags = tags;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalFineTuningIntegrationWandb()

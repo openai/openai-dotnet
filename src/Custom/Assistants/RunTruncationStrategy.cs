@@ -38,7 +38,7 @@ namespace OpenAI.Assistants
         /// </list>
         /// </para>
         /// </summary>
-        private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
         /// <summary> The truncation strategy to use for the thread. The default is `auto`. If set to `last_messages`, the thread will be truncated to the n most recent messages in the thread. When set to `auto`, messages in the middle of the thread will be dropped to fit the context length of the model, `max_prompt_tokens`. </summary>
         [CodeGenMember("Type")]

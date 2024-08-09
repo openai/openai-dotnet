@@ -21,24 +21,31 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            if (Content != null && Optional.IsCollectionDefined(Content))
+            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
             {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStartArray();
-                foreach (var item in Content)
+                if (Content != null && Optional.IsCollectionDefined(Content))
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("content"u8);
+                    writer.WriteStartArray();
+                    foreach (var item in Content)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
-            }
-            else
-            {
-                writer.WriteNull("content");
-            }
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                else
                 {
+                    writer.WriteNull("content");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -93,8 +100,9 @@ namespace OpenAI.Chat
                     content = array;
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

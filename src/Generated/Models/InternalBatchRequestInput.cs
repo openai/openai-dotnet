@@ -9,8 +9,7 @@ namespace OpenAI.Batch
 {
     internal partial class InternalBatchRequestInput
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalBatchRequestInput()
         {
         }
@@ -20,7 +19,7 @@ namespace OpenAI.Batch
             CustomId = customId;
             Method = method;
             Url = url;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public string CustomId { get; set; }

@@ -9,8 +9,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalVectorStoreFileBatchObjectFileCounts
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalVectorStoreFileBatchObjectFileCounts(int inProgress, int completed, int failed, int cancelled, int total)
         {
             InProgress = inProgress;
@@ -27,7 +26,7 @@ namespace OpenAI.VectorStores
             Failed = failed;
             Cancelled = cancelled;
             Total = total;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalVectorStoreFileBatchObjectFileCounts()

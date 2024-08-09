@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;

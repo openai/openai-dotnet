@@ -77,7 +77,7 @@ public partial class Embedding
         Index = (int)index;
         EmbeddingProperty = embeddingProperty;
         Object = @object;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
 
         // Handle additional custom properties.
         Vector = ConvertToVectorOfFloats(embeddingProperty);

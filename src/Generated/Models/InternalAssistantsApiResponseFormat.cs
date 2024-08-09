@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantsApiResponseFormat
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalAssistantsApiResponseFormat()
         {
         }
@@ -18,7 +17,7 @@ namespace OpenAI.Assistants
         internal InternalAssistantsApiResponseFormat(InternalAssistantsApiResponseFormatType? type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Type = type;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public InternalAssistantsApiResponseFormatType? Type { get; set; }

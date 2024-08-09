@@ -244,7 +244,7 @@ public partial class AssistantTests
         Assert.That(messagesPage.Values.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
@@ -420,7 +420,7 @@ public partial class AssistantTests
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
@@ -434,7 +434,7 @@ public partial class AssistantTests
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
@@ -776,7 +776,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -834,7 +834,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -890,7 +890,7 @@ public partial class AssistantTests
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-3.5-turbo", new AssistantCreationOptions()
+            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });

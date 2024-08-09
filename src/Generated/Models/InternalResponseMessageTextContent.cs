@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalResponseMessageTextContent : MessageContent
     {
-        internal InternalResponseMessageTextContent(IDictionary<string, BinaryData> serializedAdditionalRawData, string type, MessageContentTextObjectText text) : base(serializedAdditionalRawData)
+        internal InternalResponseMessageTextContent(IDictionary<string, BinaryData> serializedAdditionalRawData, string type, InternalMessageContentTextObjectText text) : base(serializedAdditionalRawData)
         {
             _type = type;
             _text = text;

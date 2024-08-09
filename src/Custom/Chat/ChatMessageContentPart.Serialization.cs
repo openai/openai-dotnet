@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -29,7 +29,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             writer.WritePropertyName("image_url"u8);
             writer.WriteObjectValue(instance._imageUrl, options);
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 

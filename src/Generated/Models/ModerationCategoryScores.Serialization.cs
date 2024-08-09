@@ -21,32 +21,69 @@ namespace OpenAI.Moderations
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("hate"u8);
-            writer.WriteNumberValue(Hate);
-            writer.WritePropertyName("hate/threatening"u8);
-            writer.WriteNumberValue(HateThreatening);
-            writer.WritePropertyName("harassment"u8);
-            writer.WriteNumberValue(Harassment);
-            writer.WritePropertyName("harassment/threatening"u8);
-            writer.WriteNumberValue(HarassmentThreatening);
-            writer.WritePropertyName("self-harm"u8);
-            writer.WriteNumberValue(SelfHarm);
-            writer.WritePropertyName("self-harm/intent"u8);
-            writer.WriteNumberValue(SelfHarmIntent);
-            writer.WritePropertyName("self-harm/instructions"u8);
-            writer.WriteNumberValue(SelfHarmInstructions);
-            writer.WritePropertyName("sexual"u8);
-            writer.WriteNumberValue(Sexual);
-            writer.WritePropertyName("sexual/minors"u8);
-            writer.WriteNumberValue(SexualMinors);
-            writer.WritePropertyName("violence"u8);
-            writer.WriteNumberValue(Violence);
-            writer.WritePropertyName("violence/graphic"u8);
-            writer.WriteNumberValue(ViolenceGraphic);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("hate") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("hate"u8);
+                writer.WriteNumberValue(Hate);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("hate/threatening") != true)
+            {
+                writer.WritePropertyName("hate/threatening"u8);
+                writer.WriteNumberValue(HateThreatening);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("harassment") != true)
+            {
+                writer.WritePropertyName("harassment"u8);
+                writer.WriteNumberValue(Harassment);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("harassment/threatening") != true)
+            {
+                writer.WritePropertyName("harassment/threatening"u8);
+                writer.WriteNumberValue(HarassmentThreatening);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("self-harm") != true)
+            {
+                writer.WritePropertyName("self-harm"u8);
+                writer.WriteNumberValue(SelfHarm);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("self-harm/intent") != true)
+            {
+                writer.WritePropertyName("self-harm/intent"u8);
+                writer.WriteNumberValue(SelfHarmIntent);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("self-harm/instructions") != true)
+            {
+                writer.WritePropertyName("self-harm/instructions"u8);
+                writer.WriteNumberValue(SelfHarmInstructions);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("sexual") != true)
+            {
+                writer.WritePropertyName("sexual"u8);
+                writer.WriteNumberValue(Sexual);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("sexual/minors") != true)
+            {
+                writer.WritePropertyName("sexual/minors"u8);
+                writer.WriteNumberValue(SexualMinors);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("violence") != true)
+            {
+                writer.WritePropertyName("violence"u8);
+                writer.WriteNumberValue(Violence);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("violence/graphic") != true)
+            {
+                writer.WritePropertyName("violence/graphic"u8);
+                writer.WriteNumberValue(ViolenceGraphic);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -151,8 +188,9 @@ namespace OpenAI.Moderations
                     violenceGraphic = property.Value.GetSingle();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

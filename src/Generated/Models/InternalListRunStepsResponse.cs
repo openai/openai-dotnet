@@ -10,8 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalListRunStepsResponse
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalListRunStepsResponse(IEnumerable<RunStep> data, string firstId, string lastId, bool hasMore)
         {
             Argument.AssertNotNull(data, nameof(data));
@@ -31,7 +30,7 @@ namespace OpenAI.Assistants
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalListRunStepsResponse()

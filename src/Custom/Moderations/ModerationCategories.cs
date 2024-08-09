@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Moderations;
+namespace OpenAI.Moderations;
 
 [CodeGenModel("CreateModerationResponseResultCategories")]
 public partial class ModerationCategories

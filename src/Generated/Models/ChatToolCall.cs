@@ -9,20 +9,20 @@ namespace OpenAI.Chat
 {
     public partial class ChatToolCall
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal ChatToolCall(string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Kind = kind;
             Function = function;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal ChatToolCall()
         {
         }
 
-        public string Id { get; init; }
+        public string Id { get; set; }
     }
 }

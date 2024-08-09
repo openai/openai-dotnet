@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Files;
+namespace OpenAI.Files;
 
 [CodeGenModel("DeleteFileResponse")]
 internal partial class InternalDeleteFileResponse { }

@@ -21,16 +21,29 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            writer.WritePropertyName("delta"u8);
-            writer.WriteObjectValue(Delta, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("delta") != true)
+            {
+                writer.WritePropertyName("delta"u8);
+                writer.WriteObjectValue(Delta, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -67,7 +80,7 @@ namespace OpenAI.Assistants
             }
             string id = default;
             InternalMessageDeltaObjectObject @object = default;
-            MessageDeltaObjectDelta delta = default;
+            InternalMessageDeltaObjectDelta delta = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -84,11 +97,12 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("delta"u8))
                 {
-                    delta = MessageDeltaObjectDelta.DeserializeMessageDeltaObjectDelta(property.Value, options);
+                    delta = InternalMessageDeltaObjectDelta.DeserializeInternalMessageDeltaObjectDelta(property.Value, options);
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

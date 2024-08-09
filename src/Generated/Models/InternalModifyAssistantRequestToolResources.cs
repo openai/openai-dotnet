@@ -9,8 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalModifyAssistantRequestToolResources
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalModifyAssistantRequestToolResources()
         {
         }
@@ -19,7 +18,7 @@ namespace OpenAI.Assistants
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public InternalModifyAssistantRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }

@@ -9,9 +9,8 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociation
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal VectorStoreFileAssociation(string fileId, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError? lastError)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        internal VectorStoreFileAssociation(string fileId, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
             Argument.AssertNotNull(vectorStoreId, nameof(vectorStoreId));
@@ -24,7 +23,7 @@ namespace OpenAI.VectorStores
             LastError = lastError;
         }
 
-        internal VectorStoreFileAssociation(string fileId, InternalVectorStoreFileObjectObject @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError? lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreFileAssociation(string fileId, InternalVectorStoreFileObjectObject @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
             Object = @object;
@@ -34,7 +33,7 @@ namespace OpenAI.VectorStores
             Status = status;
             LastError = lastError;
             ChunkingStrategy = chunkingStrategy;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal VectorStoreFileAssociation()
@@ -43,6 +42,6 @@ namespace OpenAI.VectorStores
         public DateTimeOffset CreatedAt { get; }
         public string VectorStoreId { get; }
         public VectorStoreFileAssociationStatus Status { get; }
-        public VectorStoreFileAssociationError? LastError { get; }
+        public VectorStoreFileAssociationError LastError { get; }
     }
 }

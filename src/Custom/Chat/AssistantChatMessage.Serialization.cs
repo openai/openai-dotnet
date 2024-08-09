@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -58,7 +58,7 @@ public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
                 writer.WriteNull("content");
             }
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -26,7 +26,7 @@ public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
             writer.WritePropertyName("content"u8);
             writer.WriteStringValue(Content[0].Text);
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

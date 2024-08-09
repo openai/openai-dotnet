@@ -91,6 +91,6 @@ public partial class ThreadRun
     /// Assumed <c>true</c> if not otherwise specified.
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
-    public bool? ParallelToolCallsEnabled { get; init; }
+    public bool? ParallelToolCallsEnabled { get; }
 
 }

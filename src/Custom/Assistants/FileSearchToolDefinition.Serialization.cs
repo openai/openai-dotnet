@@ -28,7 +28,7 @@ public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinit
             writer.WriteNumberValue(MaxResults.Value);
             writer.WriteEndObject();
         }
-        writer.WriteSerializedAdditionalRawData(_serializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }
 }

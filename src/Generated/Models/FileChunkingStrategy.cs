@@ -9,8 +9,7 @@ namespace OpenAI.VectorStores
 {
     public abstract partial class FileChunkingStrategy
     {
-        private protected IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected FileChunkingStrategy()
         {
         }
@@ -18,9 +17,9 @@ namespace OpenAI.VectorStores
         internal FileChunkingStrategy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Type = type;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal string Type { get; init; }
+        internal string Type { get; set; }
     }
 }

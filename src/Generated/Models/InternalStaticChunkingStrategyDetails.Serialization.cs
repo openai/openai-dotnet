@@ -21,14 +21,24 @@ namespace OpenAI.VectorStores
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("max_chunk_size_tokens"u8);
-            writer.WriteNumberValue(MaxChunkSizeTokens);
-            writer.WritePropertyName("chunk_overlap_tokens"u8);
-            writer.WriteNumberValue(ChunkOverlapTokens);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("max_chunk_size_tokens") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("max_chunk_size_tokens"u8);
+                writer.WriteNumberValue(MaxChunkSizeTokens);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("chunk_overlap_tokens") != true)
+            {
+                writer.WritePropertyName("chunk_overlap_tokens"u8);
+                writer.WriteNumberValue(ChunkOverlapTokens);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -79,8 +89,9 @@ namespace OpenAI.VectorStores
                     chunkOverlapTokens = property.Value.GetInt32();
                     continue;
                 }
-                if (true)
+                if (options.Format != "W")
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
