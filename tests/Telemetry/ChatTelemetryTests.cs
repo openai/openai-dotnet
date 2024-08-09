@@ -18,6 +18,7 @@ namespace OpenAI.Tests.Telemetry;
 
 [TestFixture]
 [NonParallelizable]
+[Category("Smoke")]
 public class ChatTelemetryTests
 {
     private const string RequestModel = "requestModel";
