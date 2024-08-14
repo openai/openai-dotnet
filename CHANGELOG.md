@@ -4,7 +4,13 @@
 
 ### Features Added
 
-- Added `OpenAIAudioModelFactory`, `OpenAIEmbeddingsModelFactory`, and `OpenAIImagesModelFactory` static classes to the `Audio`, `Embeddings`, and `Images` namespaces, respectively. Model factories can be used to instantiate OpenAI models for mocking in non-live test scenarios.
+- Added the following model factories (static classes that can be used to instantiate OpenAI models for mocking in non-live test scenarios):
+  - `OpenAIAudioModelFactory` in the `OpenAI.Audio` namespace
+  - `OpenAIEmbeddingsModelFactory` in the `OpenAI.Embeddings` namespace
+  - `OpenAIFilesModelFactory` in the `OpenAI.Files` namespace
+  - `OpenAIImagesModelFactory` in the `OpenAI.Images` namespace
+  - `OpenAIModelsModelFactory` in the `OpenAI.Models` namespace
+  - `OpenAIModerationsModelFactory` in the `OpenAI.Moderations` namespace
 
 ### Breaking Changes
 
