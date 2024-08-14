@@ -89,7 +89,7 @@ namespace OpenAI.VectorStores
                     days = property.Value.GetInt32();
                     continue;
                 }
-                if (options.Format != "W")
+                if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));

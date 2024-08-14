@@ -357,7 +357,7 @@ namespace OpenAI.FineTuning
                     estimatedFinish = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
-                if (options.Format != "W")
+                if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
