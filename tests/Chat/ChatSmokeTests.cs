@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.Telemetry.TestMeterListener;
@@ -35,25 +36,26 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         long mockCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         BinaryData mockRequest = BinaryData.FromString($$"""
-            {
-              "model": "gpt-4o-mini",
-              "messages": [
-                { "role": "user", "content": "Hello, assistant!" }
-              ]
-            }
-            """);
+        {
+            "model": "gpt-4o-mini",
+            "messages": [
+            { "role": "user", "content": "Hello, assistant!" }
+            ]
+        }
+        """);
         BinaryData mockResponse = BinaryData.FromString($$"""
-            {
-                "id": "{{mockResponseId}}",
-                "created": {{mockCreated}},
-                "choices": [
-                  {
-                    "finish_reason": "stop",
-                    "message": { "role": "assistant", "content": "Hi there, user!" }
-                  }
-                ]
-            }
-            """);
+        {
+            "id": "{{mockResponseId}}",
+            "created": {{mockCreated}},
+            "choices": [
+                {
+                "finish_reason": "stop",
+                "message": { "role": "assistant", "content": "Hi there, user!" }
+                }
+            ],
+            "additional_property": "hello, additional world!"
+        }
+        """);
         MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
 
         OpenAIClientOptions options = new()
@@ -62,14 +64,25 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         };
         ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
 
-        ChatCompletion completion = IsAsync
+        ClientResult<ChatCompletion> completionResult = IsAsync
             ? await client.CompleteChatAsync(["Mock me!"])
             : client.CompleteChat(["Mock me!"]);
+        Assert.That(completionResult?.GetRawResponse(), Is.Not.Null);
+        Assert.That(completionResult.GetRawResponse().Content?.ToString(), Does.Contain("additional world"));
+
+        ChatCompletion completion = completionResult;
 
         Assert.That(completion.Id, Is.EqualTo(mockResponseId));
         Assert.That(completion.CreatedAt.ToUnixTimeSeconds, Is.EqualTo(mockCreated));
         Assert.That(completion.Role, Is.EqualTo(ChatMessageRole.Assistant));
         Assert.That(completion.Content[0].Text, Is.EqualTo("Hi there, user!"));
+
+        var data = (IDictionary<string, BinaryData>)
+            typeof(ChatCompletion)
+            .GetProperty("SerializedAdditionalRawData", BindingFlags.Instance | BindingFlags.NonPublic)
+            .GetValue(completion);
+        Assert.That(data, Is.Not.Null);
+        Assert.That(data.Count, Is.GreaterThan(0));
     }
 
     [Test]
