@@ -133,7 +133,7 @@ namespace OpenAI.VectorStores
                     fileCounts = VectorStoreFileCounts.DeserializeVectorStoreFileCounts(property.Value, options);
                     continue;
                 }
-                if (options.Format != "W")
+                if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));

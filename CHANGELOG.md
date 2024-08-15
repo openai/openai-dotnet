@@ -1,5 +1,23 @@
 # Release History
 
+## 2.0.0-beta.9 (Unreleased)
+
+### Features Added
+
+- Added the following model factories (static classes that can be used to instantiate OpenAI models for mocking in non-live test scenarios):
+  - `OpenAIAudioModelFactory` in the `OpenAI.Audio` namespace
+  - `OpenAIEmbeddingsModelFactory` in the `OpenAI.Embeddings` namespace
+  - `OpenAIFilesModelFactory` in the `OpenAI.Files` namespace
+  - `OpenAIImagesModelFactory` in the `OpenAI.Images` namespace
+  - `OpenAIModelsModelFactory` in the `OpenAI.Models` namespace
+  - `OpenAIModerationsModelFactory` in the `OpenAI.Moderations` namespace
+
+### Breaking Changes
+
+### Bugs Fixed
+
+### Other Changes
+
 ## 2.0.0-beta.8 (2024-07-31)
 
 ### Breaking Changes

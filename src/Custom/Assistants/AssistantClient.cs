@@ -118,14 +118,8 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetAssistantsAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<Assistant>;
     }
 
     /// <summary>
@@ -144,14 +138,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetAssistantsAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<Assistant>;
     }
 
     /// <summary>
@@ -167,14 +155,8 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetAssistants(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<Assistant>;
     }
 
     /// <summary>
@@ -193,14 +175,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        AssistantsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetAssistants(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<Assistant>;
     }
 
     /// <summary>
@@ -486,15 +462,8 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetMessagesAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<ThreadMessage>;
     }
 
     /// <summary>
@@ -513,15 +482,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
-        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetMessagesAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<ThreadMessage>;
     }
 
     /// <summary>
@@ -541,15 +503,8 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetMessages(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<ThreadMessage>;
     }
 
     /// <summary>
@@ -568,15 +523,9 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
-        MessagesPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
+        return GetMessages(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<ThreadMessage>;
 
-        return PageCollectionHelpers.Create(enumerator);
     }
 
     /// <summary>
@@ -888,15 +837,8 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetRunsAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<ThreadRun>;
     }
 
     /// <summary>
@@ -915,15 +857,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetRunsAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<ThreadRun>;
     }
 
     /// <summary>
@@ -943,15 +878,8 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetRuns(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<ThreadRun>;
     }
 
     /// <summary>
@@ -970,15 +898,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        RunsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetRuns(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<ThreadRun>;
     }
 
     /// <summary>
@@ -1168,16 +1089,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetRunStepsAsync(threadId, runId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<RunStep>;
     }
 
     /// <summary>
@@ -1196,16 +1109,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as AsyncPageCollection<RunStep>;
     }
 
     /// <summary>
@@ -1228,16 +1133,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            threadId,
-            runId,
-            options?.PageSize,
-            options?.Order?.ToString(),
-            options?.AfterId,
-            options?.BeforeId,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetRunSteps(threadId, runId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+            as PageCollection<RunStep>;
     }
 
     /// <summary>
@@ -1256,16 +1153,8 @@ public partial class AssistantClient
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
         RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        RunStepsPageEnumerator enumerator = new(_pipeline, _endpoint,
-            pageToken.ThreadId,
-            pageToken.RunId,
-            pageToken.Limit,
-            pageToken.Order,
-            pageToken.After,
-            pageToken.Before,
-            cancellationToken.ToRequestOptions());
-
-        return PageCollectionHelpers.Create(enumerator);
+        return GetRunSteps(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
+            as PageCollection<RunStep>;
     }
 
     /// <summary>

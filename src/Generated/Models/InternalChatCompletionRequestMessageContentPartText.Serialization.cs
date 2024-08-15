@@ -89,7 +89,7 @@ namespace OpenAI.Chat
                     text = property.Value.GetString();
                     continue;
                 }
-                if (options.Format != "W")
+                if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));

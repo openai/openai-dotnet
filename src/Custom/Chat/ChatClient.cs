@@ -1,3 +1,4 @@
+using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -14,6 +15,7 @@ namespace OpenAI.Chat;
 public partial class ChatClient
 {
     private readonly string _model;
+    private readonly OpenTelemetrySource _telemetry;
 
     /// <summary>
     /// Initializes a new instance of <see cref="ChatClient"/> that will use an API key when authenticating.
@@ -62,6 +64,7 @@ public partial class ChatClient
         _model = model;
         _pipeline = pipeline;
         _endpoint = endpoint;
+        _telemetry = new OpenTelemetrySource(model, endpoint);
     }
 
     /// <summary>
@@ -77,11 +80,22 @@ public partial class ChatClient
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
 
-        using BinaryContent content = options.ToBinaryContent();
+        try
+        {
+            using BinaryContent content = options.ToBinaryContent();
 
-        ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletion.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+            ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            ChatCompletion chatCompletion = ChatCompletion.FromResponse(result.GetRawResponse());
+            scope?.RecordChatCompletion(chatCompletion);
+            return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     /// <summary>
@@ -105,11 +119,22 @@ public partial class ChatClient
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
 
-        using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(ChatCompletion.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        try
+        {
+            using BinaryContent content = options.ToBinaryContent();
+            ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
+            ChatCompletion chatCompletion = ChatCompletion.FromResponse(result.GetRawResponse());
 
+            scope?.RecordChatCompletion(chatCompletion);
+            return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
+        }
+        catch (Exception ex)
+        {
+            scope?.RecordException(ex);
+            throw;
+        }
     }
 
     /// <summary>
@@ -200,7 +225,7 @@ public partial class ChatClient
     {
         options.Messages = messages.ToList();
         options.Model = _model;
-        options.Stream = stream 
+        options.Stream = stream
             ? true
             : null;
         options.StreamOptions = stream ? options.StreamOptions : null;

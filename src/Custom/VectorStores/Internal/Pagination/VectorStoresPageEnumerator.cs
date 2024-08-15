@@ -20,6 +20,8 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
 
     private string _after;
 
+    public virtual ClientPipeline Pipeline => _pipeline;
+
     public VectorStoresPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
@@ -96,7 +98,7 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    private PipelineMessage CreateGetVectorStoresRequest(int? limit, string order, string after, string before, RequestOptions options)
+    internal PipelineMessage CreateGetVectorStoresRequest(int? limit, string order, string after, string before, RequestOptions options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;

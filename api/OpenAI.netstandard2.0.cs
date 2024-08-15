@@ -1088,6 +1088,12 @@ namespace OpenAI.Audio {
         Nova = 4,
         Shimmer = 5
     }
+    public static class OpenAIAudioModelFactory {
+        public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null);
+        public static AudioTranslation AudioTranslation(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedSegment> segments = null);
+        public static TranscribedSegment TranscribedSegment(int id = 0, long seekOffset = 0, TimeSpan start = default, TimeSpan end = default, string text = null, IEnumerable<long> tokenIds = null, float temperature = 0, double averageLogProbability = 0, float compressionRatio = 0, double noSpeechProbability = 0);
+        public static TranscribedWord TranscribedWord(string word = null, TimeSpan start = default, TimeSpan end = default);
+    }
     public class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>, IPersistableModel<SpeechGenerationOptions> {
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
         public float? Speed { get; set; }
@@ -1593,6 +1599,11 @@ namespace OpenAI.Embeddings {
         string IPersistableModel<EmbeddingTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<EmbeddingTokenUsage>.Write(ModelReaderWriterOptions options);
     }
+    public static class OpenAIEmbeddingsModelFactory {
+        public static Embedding Embedding(int index = 0, IEnumerable<float> vector = null);
+        public static EmbeddingCollection EmbeddingCollection(IEnumerable<Embedding> items = null, string model = null, EmbeddingTokenUsage usage = null);
+        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokens = 0, int totalTokens = 0);
+    }
 }
 namespace OpenAI.Files {
     public class FileClient {
@@ -1699,6 +1710,10 @@ namespace OpenAI.Files {
         public static implicit operator OpenAIFilePurpose(string value);
         public static bool operator !=(OpenAIFilePurpose left, OpenAIFilePurpose right);
         public override readonly string ToString();
+    }
+    public static class OpenAIFilesModelFactory {
+        public static OpenAIFileInfo OpenAIFileInfo(string id = null, long? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null);
+        public static OpenAIFileInfoCollection OpenAIFileInfoCollection(IEnumerable<OpenAIFileInfo> items = null);
     }
     public readonly partial struct OpenAIFileStatus : IEquatable<OpenAIFileStatus> {
         private readonly object _dummy;
@@ -1868,6 +1883,10 @@ namespace OpenAI.Images {
         string IPersistableModel<ImageVariationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<ImageVariationOptions>.Write(ModelReaderWriterOptions options);
     }
+    public static class OpenAIImagesModelFactory {
+        public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null);
+    }
 }
 namespace OpenAI.Models {
     public class ModelClient {
@@ -1911,6 +1930,10 @@ namespace OpenAI.Models {
         OpenAIModelInfoCollection IPersistableModel<OpenAIModelInfoCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<OpenAIModelInfoCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<OpenAIModelInfoCollection>.Write(ModelReaderWriterOptions options);
+    }
+    public static class OpenAIModelsModelFactory {
+        public static OpenAIModelInfo OpenAIModelInfo(string id = null, DateTimeOffset createdAt = default, string ownedBy = null);
+        public static OpenAIModelInfoCollection OpenAIModelInfoCollection(IEnumerable<OpenAIModelInfo> items = null);
     }
 }
 namespace OpenAI.Moderations {
@@ -1983,6 +2006,12 @@ namespace OpenAI.Moderations {
         ModerationResult IPersistableModel<ModerationResult>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<ModerationResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<ModerationResult>.Write(ModelReaderWriterOptions options);
+    }
+    public static class OpenAIModerationsModelFactory {
+        public static ModerationCategories ModerationCategories(bool hate = false, bool hateThreatening = false, bool harassment = false, bool harassmentThreatening = false, bool selfHarm = false, bool selfHarmIntent = false, bool selfHarmInstructions = false, bool sexual = false, bool sexualMinors = false, bool violence = false, bool violenceGraphic = false);
+        public static ModerationCategoryScores ModerationCategoryScores(float hate = 0, float hateThreatening = 0, float harassment = 0, float harassmentThreatening = 0, float selfHarm = 0, float selfHarmIntent = 0, float selfHarmInstructions = 0, float sexual = 0, float sexualMinors = 0, float violence = 0, float violenceGraphic = 0);
+        public static ModerationCollection ModerationCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
+        public static ModerationResult ModerationResult(bool flagged = false, ModerationCategories categories = null, ModerationCategoryScores categoryScores = null);
     }
 }
 namespace OpenAI.VectorStores {

@@ -2,7 +2,7 @@
 
 [![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
 
-The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications. 
+The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications.
 
 It is generated from our [OpenAPI specification](https://github.com/openai/openai-openapi) in collaboration with Microsoft.
 
@@ -26,6 +26,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
   - [Automatically retrying errors](#automatically-retrying-errors)
+  - [Observability](#observability)
 
 ## Getting started
 
@@ -714,7 +715,7 @@ For example, to use the protocol method variant of the `ChatClient`'s `CompleteC
 ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 BinaryData input = BinaryData.FromBytes("""
-{  
+{
     "model": "gpt-4o",
     "messages": [
        {
@@ -749,3 +750,7 @@ By default, the client classes will automatically retry the following errors up 
 - 502 Bad Gateway
 - 503 Service Unavailable
 - 504 Gateway Timeout
+
+### Observability
+
+OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/observability.md) for more details.

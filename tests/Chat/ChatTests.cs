@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
+using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static OpenAI.Tests.Telemetry.TestMeterListener;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
@@ -333,5 +335,40 @@ public partial class ChatTests : SyncAsyncTestBase
         Assert.That(redProperty.GetString().ToLowerInvariant(), Contains.Substring("ff0000"));
         Assert.That(greenProperty.GetString().ToLowerInvariant(), Contains.Substring("00ff00"));
         Assert.That(blueProperty.GetString().ToLowerInvariant(), Contains.Substring("0000ff"));
+    }
+
+
+    [Test]
+    [NonParallelizable]
+    public async Task HelloWorldChatWithTracingAndMetrics()
+    {
+        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
+        using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
+
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
+        ClientResult<ChatCompletion> result = IsAsync
+            ? await client.CompleteChatAsync(messages)
+            : client.CompleteChat(messages);
+
+        Assert.AreEqual(1, activityListener.Activities.Count);
+        TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value);
+
+        List<TestMeasurement> durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
+        Assert.AreEqual(1, durations.Count);
+        ValidateChatMetricTags(durations.Single(), result.Value);
+
+        List<TestMeasurement> usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
+        Assert.AreEqual(2, usages.Count);
+
+        Assert.True(usages[0].tags.TryGetValue("gen_ai.token.type", out var type));
+        Assert.IsInstanceOf<string>(type);
+
+        TestMeasurement input = (type is "input") ? usages[0] : usages[1];
+        TestMeasurement output = (type is "input") ? usages[1] : usages[0];
+
+        Assert.AreEqual(result.Value.Usage.InputTokens, input.value);
+        Assert.AreEqual(result.Value.Usage.OutputTokens, output.value);
     }
 }
