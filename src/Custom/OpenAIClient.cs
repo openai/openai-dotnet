@@ -17,6 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI;
 
 // CUSTOM:
+// - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed cached clients. Clients are not singletons, and users can create multiple clients of the same type
 //   if needed (e.g., to target different OpenAI models). The Get*Client methods return new client instances.
 /// <summary>
@@ -58,52 +59,57 @@ namespace OpenAI;
 [CodeGenSuppress("GetVectorStoreClientClient")]
 public partial class OpenAIClient
 {
-    private readonly OpenAIClientOptions _options;
+    private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
+    private const string OpenAIBetaHeaderValue = "assistants=v2";
 
-    /// <summary>
-    /// The configured connection endpoint.
-    /// </summary>
-    protected Uri Endpoint => _endpoint;
-
-    /// <summary>
-    /// Creates a new instance of <see cref="OpenAIClient"/>. This type is used to share common
-    /// <see cref="ClientPipeline"/> and client configuration details across scenario client instances created via
-    /// methods like <see cref="GetChatClient(string)"/>.
-    /// </summary>
-    /// <param name="credential"> The API key to use when authenticating the client. </param>
-    /// <param name="options"> A common client options definition that all clients created by this <see cref="OpenAIClient"/> should use. </param>
-    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> is <c>null</c>. </exception>
-    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options = null)
-        : this(CreatePipeline(GetApiKey(credential, requireExplicitCredential: true), options), GetEndpoint(options), options)
+    private static class KnownHeaderNames
     {
-        _keyCredential = credential;
+        public const string OpenAIBeta = "OpenAI-Beta";
+        public const string OpenAIOrganization = "OpenAI-Organization";
+        public const string OpenAIProject = "OpenAI-Project";
+        public const string UserAgent = "User-Agent";
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="OpenAIClient"/>. This type is used to share common
-    /// <see cref="ClientPipeline"/> and client configuration details across scenario client instances created via
-    /// methods like <see cref="GetChatClient(string)"/>.
-    /// <para>
-    /// This constructor overload will use the value of the <c>OPENAI_API_KEY</c> environment variable as its
-    /// authentication mechanism. To provide an explicit credential, use an alternate constructor like
-    /// <see cref="OpenAIClient(ApiKeyCredential,OpenAIClientOptions)"/>.
-    /// </para>
-    /// </summary>
-    /// <param name="options"> A common client options definition that all clients created by this <see cref="OpenAIClient"/> should use. </param>
-    public OpenAIClient(OpenAIClientOptions options = default)
-        : this(CreatePipeline(GetApiKey(), options), GetEndpoint(options), options)
-    {}
+    private readonly OpenAIClientOptions _options;
 
-    /// <summary>
-    /// Creates a new instance of <see cref="OpenAIClient"/>.
-    /// </summary>
-    /// <param name="pipeline"> The common client pipeline that should be used for all created scenario clients. </param>
-    /// <param name="endpoint"> The HTTP endpoint to use. </param>
-    /// <param name="options"> The common client options that should be used for all created scenario clients. </param>
-    protected OpenAIClient(ClientPipeline pipeline, Uri endpoint, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public OpenAIClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
+
+        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
+    // CUSTOM: Added protected internal constructor that takes a ClientPipeline.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIClientOptions();
+
         _pipeline = pipeline;
-        _endpoint = endpoint;
+        _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
 
@@ -117,7 +123,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="AssistantClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual AssistantClient GetAssistantClient() => new(_pipeline, _endpoint, _options);
+    public virtual AssistantClient GetAssistantClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="AudioClient"/> that reuses the client configuration details provided to
@@ -128,7 +134,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="AudioClient"/>. </returns>
-    public virtual AudioClient GetAudioClient(string model) => new(_pipeline, model, _endpoint, _options);
+    public virtual AudioClient GetAudioClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="BatchClient"/> that reuses the client configuration details provided to
@@ -139,7 +145,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="BatchClient"/>. </returns>
-    public virtual BatchClient GetBatchClient() => new(_pipeline, _endpoint, _options);
+    public virtual BatchClient GetBatchClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ChatClient"/> that reuses the client configuration details provided to
@@ -150,7 +156,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ChatClient"/>. </returns>
-    public virtual ChatClient GetChatClient(string model) => new(_pipeline, model, _endpoint, _options);
+    public virtual ChatClient GetChatClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="EmbeddingClient"/> that reuses the client configuration details provided to
@@ -161,7 +167,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="EmbeddingClient"/>. </returns>
-    public virtual EmbeddingClient GetEmbeddingClient(string model) => new(_pipeline, model, _endpoint, _options);
+    public virtual EmbeddingClient GetEmbeddingClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="FileClient"/> that reuses the client configuration details provided to
@@ -172,7 +178,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="FileClient"/>. </returns>
-    public virtual FileClient GetFileClient() => new(_pipeline, _endpoint, _options);
+    public virtual FileClient GetFileClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="FineTuningClient"/> that reuses the client configuration details provided to
@@ -183,7 +189,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="FineTuningClient"/>. </returns>
-    public virtual FineTuningClient GetFineTuningClient() => new(_pipeline, _endpoint, _options);
+    public virtual FineTuningClient GetFineTuningClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ImageClient"/> that reuses the client configuration details provided to
@@ -194,7 +200,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ImageClient"/>. </returns>
-    public virtual ImageClient GetImageClient(string model) => new(_pipeline, model, _endpoint, _options);
+    public virtual ImageClient GetImageClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ModelClient"/> that reuses the client configuration details provided to
@@ -205,7 +211,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ModelClient"/>. </returns>
-    public virtual ModelClient GetModelClient() => new(_pipeline, _endpoint, _options);
+    public virtual ModelClient GetModelClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ModerationClient"/> that reuses the client configuration details provided to
@@ -216,7 +222,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ModerationClient"/>. </returns>
-    public virtual ModerationClient GetModerationClient(string model) => new(_pipeline, model, _endpoint, _options);
+    public virtual ModerationClient GetModerationClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
@@ -228,59 +234,35 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="ModelClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual VectorStoreClient GetVectorStoreClient() => new(_pipeline, _endpoint, _options);
+    public virtual VectorStoreClient GetVectorStoreClient() => new(_pipeline, _options);
 
-    internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options = null)
+    internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
     {
         return ClientPipeline.Create(
-            options ?? new(),
+            options,
             perCallPolicies: [
                 CreateAddBetaFeatureHeaderPolicy(),
                 CreateAddCustomHeadersPolicy(options),
             ],
-            perTryPolicies:
-            [
+            perTryPolicies: [
                 ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix)
             ],
-            beforeTransportPolicies: []);
+            beforeTransportPolicies: [
+            ]);
     }
 
-    internal static Uri GetEndpoint(OpenAIClientOptions options)
+    internal static Uri GetEndpoint(OpenAIClientOptions options = null)
     {
-        return options?.Endpoint ?? new(Environment.GetEnvironmentVariable(OpenAIEndpointEnvironmentVariable) ?? OpenAIV1Endpoint);
-    }
-
-    internal static ApiKeyCredential GetApiKey(ApiKeyCredential explicitCredential = null, bool requireExplicitCredential = false)
-    {
-        if (explicitCredential is not null)
-        {
-            return explicitCredential;
-        }
-        else if (requireExplicitCredential)
-        {
-            throw new ArgumentNullException(nameof(explicitCredential), $"A non-null credential value is required.");
-        }
-        else
-        {
-            string environmentApiKey = Environment.GetEnvironmentVariable(OpenAIApiKeyEnvironmentVariable);
-            if (string.IsNullOrEmpty(environmentApiKey))
-            {
-                throw new InvalidOperationException(
-                    $"No environment variable value was found for {OpenAIApiKeyEnvironmentVariable}. "
-                    + "Please either populate this environment variable or provide authentication information directly "
-                    + "to the client constructor.");
-            }
-            return new(environmentApiKey);
-        }
+        return options?.Endpoint ?? new(OpenAIV1Endpoint);
     }
 
     private static PipelinePolicy CreateAddBetaFeatureHeaderPolicy()
     {
         return new GenericActionPipelinePolicy((message) =>
         {
-            if (message?.Request?.Headers?.TryGetValue(OpenAIBetaFeatureHeaderName, out string _) == false)
+            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.OpenAIBeta, out string _) == false)
             {
-                message.Request.Headers.Set(OpenAIBetaFeatureHeaderName, OpenAIBetaAssistantsV1HeaderValue);
+                message.Request.Headers.Set(KnownHeaderNames.OpenAIBeta, OpenAIBetaHeaderValue);
             }
         });
     }
@@ -290,28 +272,20 @@ public partial class OpenAIClient
         TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.ApplicationId);
         return new GenericActionPipelinePolicy((message) =>
         {
-            if (message?.Request?.Headers?.TryGetValue(UserAgentHeaderName, out string _) == false)
+            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)
             {
-                message.Request.Headers.Set(UserAgentHeaderName, telemetryDetails.ToString());
+                message.Request.Headers.Set(KnownHeaderNames.UserAgent, telemetryDetails.ToString());
             }
 
             if (!string.IsNullOrEmpty(options?.OrganizationId))
             {
-                message.Request.Headers.Set(OpenAIOrganizationHeaderName, options.OrganizationId);
+                message.Request.Headers.Set(KnownHeaderNames.OpenAIOrganization, options.OrganizationId);
             }
+
             if (!string.IsNullOrEmpty(options?.ProjectId))
             {
-                message.Request.Headers.Set(OpenAIProjectHeaderName, options.ProjectId);
+                message.Request.Headers.Set(KnownHeaderNames.OpenAIProject, options.ProjectId);
             }
         });
     }
-
-    private const string OpenAIBetaFeatureHeaderName = "OpenAI-Beta";
-    private const string OpenAIOrganizationHeaderName = "OpenAI-Organization";
-    private const string OpenAIProjectHeaderName = "OpenAI-Project";
-    private const string OpenAIBetaAssistantsV1HeaderValue = "assistants=v2";
-    private const string OpenAIEndpointEnvironmentVariable = "OPENAI_ENDPOINT";
-    private const string OpenAIApiKeyEnvironmentVariable = "OPENAI_API_KEY";
-    private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
-    private const string UserAgentHeaderName = "User-Agent";
 }

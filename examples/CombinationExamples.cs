@@ -15,7 +15,7 @@ public partial class CombinationExamples
     public void AlpacaArtAssessor()
     {
         // First, we create an image using dall-e-3:
-        ImageClient imageClient = new("dall-e-3");
+        ImageClient imageClient = new("dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<GeneratedImage> imageResult = imageClient.GenerateImage(
             "a majestic alpaca on a mountain ridge, backed by an expansive blue sky accented with sparse clouds",
             new()
@@ -28,7 +28,7 @@ public partial class CombinationExamples
         Console.WriteLine($"Majestic alpaca available at:\n{imageGeneration.ImageUri.AbsoluteUri}");
 
         // Now, we'll ask a cranky art critic to evaluate the image using gpt-4-vision-preview:
-        ChatClient chatClient = new("gpt-4-vision-preview");
+        ChatClient chatClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ChatCompletion chatCompletion = chatClient.CompleteChat(
             [
                 new SystemChatMessage("Assume the role of a cranky art critic. When asked to describe or "
@@ -47,7 +47,7 @@ public partial class CombinationExamples
         Console.WriteLine($"Art critique of majestic alpaca:\n{chatResponseText}");
 
         // Finally, we'll get some text-to-speech for that critical evaluation using tts-1-hd:
-        AudioClient audioClient = new("tts-1-hd");
+        AudioClient audioClient = new("tts-1-hd", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<BinaryData> ttsResult = audioClient.GenerateSpeechFromText(
             text: chatResponseText,
             GeneratedSpeechVoice.Fable,
@@ -69,7 +69,7 @@ public partial class CombinationExamples
     public async Task CuriousCreatureCreator()
     {
         // First, we'll use gpt-4 to have a creative helper imagine a twist on a household pet
-        ChatClient creativeWriterClient = new("gpt-4");
+        ChatClient creativeWriterClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<ChatCompletion> creativeWriterResult = creativeWriterClient.CompleteChat(
             [
                 new SystemChatMessage("You're a creative helper that specializes in brainstorming designs for concepts that fuse ordinary, mundane items with a fantastical touch. In particular, you can provide good one-paragraph descriptions of concept images."),
@@ -83,7 +83,7 @@ public partial class CombinationExamples
         Console.WriteLine($"Creative helper's creature description:\n{description}");
 
         // Asynchronously, in parallel to the next steps, we'll get the creative description in the voice of Onyx
-        AudioClient ttsClient = new("tts-1-hd");
+        AudioClient ttsClient = new("tts-1-hd", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         Task<ClientResult<BinaryData>> imageDescriptionAudioTask = ttsClient.GenerateSpeechFromTextAsync(
             description,
             GeneratedSpeechVoice.Onyx,
@@ -103,7 +103,7 @@ public partial class CombinationExamples
         });
 
         // Meanwhile, we'll use dall-e-3 to generate a rendition of our LLM artist's vision
-        ImageClient imageGenerationClient = new("dall-e-3");
+        ImageClient imageGenerationClient = new("dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<GeneratedImage> imageGenerationResult = await imageGenerationClient.GenerateImageAsync(
             description,
             new ImageGenerationOptions()
@@ -115,7 +115,7 @@ public partial class CombinationExamples
         Console.WriteLine($"Creature image available at:\n{imageLocation.AbsoluteUri}");
 
         // Now, we'll use gpt-4-vision-preview to get a hopelessly taken assessment from a usually exigent art connoisseur
-        ChatClient imageCriticClient = new("gpt-4-vision-preview");
+        ChatClient imageCriticClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<ChatCompletion> criticalAppraisalResult = await imageCriticClient.CompleteChatAsync(
             [
                 new SystemChatMessage("Assume the role of an art critic. Although usually cranky and occasionally even referred to as a 'curmudgeon', you're somehow entirely smitten with the subject presented to you and, despite your best efforts, can't help but lavish praise when you're asked to appraise a provided image."),

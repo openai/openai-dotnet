@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-/// <summary>
-/// The service client for OpenAI assistants.
-/// </summary>
+/// <summary> The service client for OpenAI assistants operations. </summary>
 [Experimental("OPENAI001")]
 [CodeGenClient("Assistants")]
 [CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
@@ -32,47 +30,53 @@ public partial class AssistantClient
     private readonly InternalAssistantRunClient _runSubClient;
     private readonly InternalAssistantThreadClient _threadSubClient;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="AssistantClient"/> that will use an API key when authenticating.
-    /// </summary>
-    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(credential, requireExplicitCredential: true), options),
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="AssistantClient"/> that will use an API key from the OPENAI_API_KEY
-    /// environment variable when authenticating.
-    /// </summary>
-    /// <remarks>
-    /// To provide an explicit credential instead of using the environment variable, use an alternate constructor like
-    /// <see cref="AssistantClient(ApiKeyCredential,OpenAIClientOptions)"/>.
-    /// </remarks>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="InvalidOperationException"> The OPENAI_API_KEY environment variable was not found. </exception>
-    public AssistantClient(OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(), options),
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
-
-    /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
-    /// <param name="pipeline"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
-    /// <param name="endpoint"> OpenAI Endpoint. </param>
-    /// <param name="options"> Client-wide options to propagate settings from. </param>
-    protected internal AssistantClient(ClientPipeline pipeline, Uri endpoint, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public AssistantClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
+
+        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _messageSubClient = new(_pipeline, options);
+        _runSubClient = new(_pipeline, options);
+        _threadSubClient = new(_pipeline, options);
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIClientOptions();
+
         _pipeline = pipeline;
-        _endpoint = endpoint;
-        _messageSubClient = new(_pipeline, _endpoint, options);
-        _runSubClient = new(_pipeline, _endpoint, options);
-        _threadSubClient = new(_pipeline, _endpoint, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _messageSubClient = new(_pipeline, options);
+        _runSubClient = new(_pipeline, options);
+        _threadSubClient = new(_pipeline, options);
     }
 
     /// <summary> Creates a new assistant. </summary>

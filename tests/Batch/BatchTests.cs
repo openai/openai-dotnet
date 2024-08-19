@@ -60,7 +60,7 @@ public partial class BatchTests : SyncAsyncTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        FileClient fileClient = new();
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
         OpenAIFileInfo inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 

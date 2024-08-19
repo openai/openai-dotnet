@@ -102,6 +102,7 @@ public partial class ChatCompletionOptions
     [CodeGenMember("FunctionCall")]
     public ChatFunctionChoice FunctionChoice { get; set; }
 
+    // CUSTOM: Renamed.
     /// <summary>
     /// Whether to enable parallel function calling during tool use. 
     /// </summary>
@@ -110,4 +111,12 @@ public partial class ChatCompletionOptions
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
     public bool? ParallelToolCallsEnabled { get; set; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+    ///     <see href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</see>.
+    /// </summary>
+    [CodeGenMember("User")]
+    public string EndUserId { get; set; }
 }

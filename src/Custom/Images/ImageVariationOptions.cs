@@ -48,11 +48,21 @@ public partial class ImageVariationOptions
 
     // CUSTOM: Changed property type.
     /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>
+    [CodeGenMember("Size")]
     public GeneratedImageSize? Size { get; set; }
 
     // CUSTOM: Changed property type.
     /// <summary> The format in which the generated images are returned. Must be one of `url` or `b64_json`. </summary>
+    [CodeGenMember("ResponseFormat")]
     public GeneratedImageFormat? ResponseFormat { get; set; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+    ///     <see href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</see>.
+    /// </summary>
+    [CodeGenMember("User")]
+    public string EndUserId { get; set; }
 
     internal MultipartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename)
     {
@@ -83,9 +93,9 @@ public partial class ImageVariationOptions
             content.Add(Size.ToString(), "size");
         }
 
-        if (User is not null)
+        if (EndUserId is not null)
         {
-            content.Add(User, "user");
+            content.Add(EndUserId, "user");
         }
 
         return content;

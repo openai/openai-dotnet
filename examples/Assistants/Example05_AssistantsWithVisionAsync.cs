@@ -65,7 +65,7 @@ public partial class AssistantExamples
             }
         }
 
-        _ = await fileClient.DeleteFileAsync(pictureOfAppleFile);
+        _ = await fileClient.DeleteFileAsync(pictureOfAppleFile.Id);
         _ = await assistantClient.DeleteThreadAsync(thread);
         _ = await assistantClient.DeleteAssistantAsync(assistant);
     }
