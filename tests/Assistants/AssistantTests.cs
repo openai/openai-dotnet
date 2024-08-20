@@ -29,9 +29,9 @@ public partial class AssistantTests
             return;
         }
 
-        AssistantClient client = new();
-        FileClient fileClient = new();
-        VectorStoreClient vectorStoreClient = new();
+        AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
         RequestOptions requestOptions = new()
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,
@@ -273,7 +273,7 @@ public partial class AssistantTests
         });
         Validate(assistant);
 
-        FileClient fileClient = new();
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
         OpenAIFileInfo equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
@@ -450,7 +450,7 @@ public partial class AssistantTests
     [Test]
     public async Task StreamingRunWorks()
     {
-        AssistantClient client = new();
+        AssistantClient client = GetTestClient();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
 
@@ -557,7 +557,7 @@ public partial class AssistantTests
     public void BasicFileSearchWorks()
     {
         // First, we need to upload a simple test file.
-        FileClient fileClient = new();
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
         OpenAIFileInfo testFile = fileClient.UploadFile(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
@@ -944,7 +944,7 @@ public partial class AssistantTests
         });
         Validate(assistant);
 
-        FileClient fileClient = new();
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
         OpenAIFileInfo equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y

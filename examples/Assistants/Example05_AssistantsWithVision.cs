@@ -65,7 +65,7 @@ public partial class AssistantExamples
         }
 
         // Delete temporary resources, if desired
-        _ = fileClient.DeleteFile(pictureOfAppleFile);
+        _ = fileClient.DeleteFile(pictureOfAppleFile.Id);
         _ = assistantClient.DeleteThread(thread);
         _ = assistantClient.DeleteAssistant(assistant);
     }

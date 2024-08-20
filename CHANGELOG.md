@@ -5,14 +5,20 @@
 ### Features Added
 
 - Added the following model factories (static classes that can be used to instantiate OpenAI models for mocking in non-live test scenarios):
-  - `OpenAIAudioModelFactory` in the `OpenAI.Audio` namespace
-  - `OpenAIEmbeddingsModelFactory` in the `OpenAI.Embeddings` namespace
-  - `OpenAIFilesModelFactory` in the `OpenAI.Files` namespace
-  - `OpenAIImagesModelFactory` in the `OpenAI.Images` namespace
-  - `OpenAIModelsModelFactory` in the `OpenAI.Models` namespace
-  - `OpenAIModerationsModelFactory` in the `OpenAI.Moderations` namespace
+  - `OpenAIAudioModelFactory` in the `OpenAI.Audio` namespace (commit_hash)
+  - `OpenAIEmbeddingsModelFactory` in the `OpenAI.Embeddings` namespace (commit_hash)
+  - `OpenAIFilesModelFactory` in the `OpenAI.Files` namespace (commit_hash)
+  - `OpenAIImagesModelFactory` in the `OpenAI.Images` namespace (commit_hash)
+  - `OpenAIModelsModelFactory` in the `OpenAI.Models` namespace (commit_hash)
+  - `OpenAIModerationsModelFactory` in the `OpenAI.Moderations` namespace (commit_hash)
 
 ### Breaking Changes
+
+- Removed client constructors that do not explicitly take an API key parameter or an endpoint via an `OpenAIClientOptions` parameter, making it clearer how to appropriately instantiate a client. (commit_hash)
+- Removed the endpoint parameter from all client constructors, making it clearer that an alternative endpoint must be specified via the `OpenAIClientOptions` parameter. (commit_hash)
+- Removed `OpenAIClient`'s `Endpoint` `protected` property. (commit_hash)
+- Made `OpenAIClient`'s constructor that takes a `ClientPipeline` parameter `protected internal` instead of just `protected`. (commit_hash)
+- Renamed the `User` property in applicable Options classes to `EndUserId`, making its purpose clearer. (commit_hash)
 
 ### Bugs Fixed
 

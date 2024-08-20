@@ -4,6 +4,7 @@ using OpenAI.Tests.Utility;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Models;
 
@@ -20,7 +21,7 @@ public partial class ModelTests : SyncAsyncTestBase
     [Test]
     public async Task ListModels()
     {
-        ModelClient client = new();
+        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
 
         OpenAIModelInfoCollection allModels = IsAsync
             ? await client.GetModelsAsync()
@@ -33,7 +34,7 @@ public partial class ModelTests : SyncAsyncTestBase
     [Test]
     public async Task GetModelInfo()
     {
-        ModelClient client = new();
+        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
 
         string modelName = "gpt-4o-mini";
 

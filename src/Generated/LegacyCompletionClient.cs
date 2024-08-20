@@ -24,13 +24,6 @@ namespace OpenAI.LegacyCompletions
         {
         }
 
-        internal LegacyCompletionClient(ClientPipeline pipeline, ApiKeyCredential keyCredential, Uri endpoint)
-        {
-            _pipeline = pipeline;
-            _keyCredential = keyCredential;
-            _endpoint = endpoint;
-        }
-
         public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest requestBody)
         {
             Argument.AssertNotNull(requestBody, nameof(requestBody));

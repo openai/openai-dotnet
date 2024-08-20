@@ -45,7 +45,7 @@ public partial class AssistantExamples
         };
 
         #region Upload a mock file for use with file search
-        FileClient fileClient = new();
+        FileClient fileClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         OpenAIFileInfo favoriteNumberFile = fileClient.UploadFile(
             BinaryData.FromString("""
                 This file contains the favorite numbers for individuals.
@@ -59,7 +59,7 @@ public partial class AssistantExamples
         #endregion
 
         #region Create an assistant with functions, file search, and code interpreter all enabled
-        AssistantClient client = new();
+        AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         Assistant assistant = client.CreateAssistant("gpt-4-turbo", new AssistantCreationOptions()
         {
             Instructions = "Use functions to resolve family relations into the names of people. Use file search to "

@@ -359,7 +359,7 @@ public partial class VectorStoreTests
     {
         List<OpenAIFileInfo> files = [];
 
-        FileClient client = new();
+        FileClient client = GetTestClient<FileClient>(TestScenario.Files);
         for (int i = 0; i < count; i++)
         {
             OpenAIFileInfo file = client.UploadFile(
@@ -376,8 +376,8 @@ public partial class VectorStoreTests
     [TearDown]
     protected void Cleanup()
     {
-        FileClient fileClient = new();
-        VectorStoreClient vectorStoreClient = new();
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
         RequestOptions requestOptions = new()
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,

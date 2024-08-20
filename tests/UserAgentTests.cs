@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
@@ -29,7 +30,7 @@ public partial class UserAgentTests
         } : new();
         options.AddPolicy(policy, PipelinePosition.BeforeTransport);
 
-        ChatClient client = new("no-real-model-needed", options);
+        ChatClient client = new("no-real-model-needed", Environment.GetEnvironmentVariable("OPENAI_API_KEY"), options);
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow, };
         using BinaryContent emptyContent = BinaryContent.Create(new MemoryStream());
         _ = client.CompleteChat(emptyContent, noThrowOptions);

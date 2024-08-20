@@ -11,16 +11,15 @@ namespace OpenAI.Embeddings
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string user, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Input = input;
             Model = model;
             EncodingFormat = encodingFormat;
             Dimensions = dimensions;
-            User = user;
+            EndUserId = endUserId;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public int? Dimensions { get; set; }
-        public string User { get; set; }
     }
 }

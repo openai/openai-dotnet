@@ -9,7 +9,13 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Chat;
 
+// CUSTOM:
+// - Renamed.
+// - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
+// - Suppressed methods that only take the options parameter.
+/// <summary> The service client for OpenAI chat operations. </summary>
 [CodeGenClient("Chat")]
+[CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions))]
 [CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions))]
 public partial class ChatClient
@@ -17,63 +23,72 @@ public partial class ChatClient
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ChatClient"/> that will use an API key when authenticating.
-    /// </summary>
-    /// <param name="model"> The model name for chat completions that the client should use. </param>
-    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options = null)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(credential, requireExplicitCredential: true), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ChatClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    {
+    }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ChatClient"/> that will use an API key from the OPENAI_API_KEY
-    /// environment variable when authenticating.
-    /// </summary>
-    /// <remarks>
-    /// To provide an explicit credential instead of using the environment variable, use an alternate constructor like
-    /// <see cref="ChatClient(string,ApiKeyCredential,OpenAIClientOptions)"/>.
-    /// </remarks>
-    /// <param name="model"> The model name for chat completions that the client should use. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="InvalidOperationException"> The OPENAI_API_KEY environment variable was not found. </exception>
-    public ChatClient(string model, OpenAIClientOptions options = null)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="ChatClient"/>.
-    /// </summary>
-    /// <param name="pipeline"> The <see cref="ClientPipeline"/> instance to use. </param>
-    /// <param name="model"> The model name to use. </param>
-    /// <param name="endpoint"> The endpoint to use. </param>
-    protected internal ChatClient(ClientPipeline pipeline, string model, Uri endpoint, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Added telemetry support.
+    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
+
+        _model = model;
+        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _telemetry = new OpenTelemetrySource(model, _endpoint);
+    }
+
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Added telemetry support.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        options ??= new OpenAIClientOptions();
 
         _model = model;
         _pipeline = pipeline;
-        _endpoint = endpoint;
-        _telemetry = new OpenTelemetrySource(model, endpoint);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _telemetry = new OpenTelemetrySource(model, _endpoint);
     }
 
-    /// <summary>
-    /// Generates a single chat completion result for a provided set of input chat messages.
-    /// </summary>
-    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
-    /// <param name="options"> Additional options for the chat completion request. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A result for a single chat completion. </returns>
+    /// <summary> Generates a completion for the given chat. </summary>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <param name="options"> The options to configure the chat completion. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
@@ -98,21 +113,12 @@ public partial class ChatClient
         }
     }
 
-    /// <summary>
-    /// Generates a single chat completion result for a provided set of input chat messages.
-    /// </summary>
-    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
-    /// <returns> A result for a single chat completion. </returns>
-    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(params ChatMessage[] messages)
-        => await CompleteChatAsync(messages, default(ChatCompletionOptions)).ConfigureAwait(false);
-
-    /// <summary>
-    /// Generates a single chat completion result for a provided set of input chat messages.
-    /// </summary>
-    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
-    /// <param name="options"> Additional options for the chat completion request. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A result for a single chat completion. </returns>
+    /// <summary> Generates a completion for the given chat. </summary>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <param name="options"> The options to configure the chat completion. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
@@ -137,26 +143,33 @@ public partial class ChatClient
         }
     }
 
-    /// <summary>
-    /// Generates a single chat completion result for a provided set of input chat messages.
-    /// </summary>
-    /// <param name="messages"> The messages to provide as input and history for chat completion. </param>
-    /// <returns> A result for a single chat completion. </returns>
+    /// <summary> Generates a completion for the given chat. </summary>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
+    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(params ChatMessage[] messages)
+        => await CompleteChatAsync(messages, default(ChatCompletionOptions)).ConfigureAwait(false);
+
+    /// <summary> Generates a completion for the given chat. </summary>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages)
         => CompleteChat(messages, default(ChatCompletionOptions));
 
     /// <summary>
-    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
-    /// history.
+    ///     Generates a completion for the given chat. The completion is streamed back token by token as it is being
+    ///     generated by the model instead of waiting for it to be finished first.
     /// </summary>
     /// <remarks>
-    /// <see cref="AsyncCollectionResult{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
-    /// <see cref="IAsyncEnumerable{T}"/> interface.
+    ///     <see cref="AsyncCollectionResult{T}"/> implements the <see cref="IAsyncEnumerable{T}"/> interface and can be
+    ///     enumerated over using the <c>await foreach</c> pattern.
     /// </remarks>
-    /// <param name="messages"> The messages to provide as input for chat completion. </param>
-    /// <param name="options"> Additional options for the chat completion request. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A streaming result with incremental chat completion updates. </returns>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <param name="options"> The options to configure the chat completion. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
@@ -172,30 +185,18 @@ public partial class ChatClient
     }
 
     /// <summary>
-    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
-    /// history.
+    ///     Generates a completion for the given chat. The completion is streamed back token by token as it is being
+    ///     generated by the model instead of waiting for it to be finished first.
     /// </summary>
     /// <remarks>
-    /// <see cref="AsyncCollectionResult{T}"/> can be enumerated over using the <c>await foreach</c> pattern using the
-    /// <see cref="IAsyncEnumerable{T}"/> interface.
+    ///     <see cref="AsyncCollectionResult{T}"/> implements the <see cref="IAsyncEnumerable{T}"/> interface and can be
+    ///     enumerated over using the <c>await foreach</c> pattern.
     /// </remarks>
-    /// <param name="messages"> The messages to provide as input for chat completion. </param>
-    /// <returns> A streaming result with incremental chat completion updates. </returns>
-    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages)
-        => CompleteChatStreamingAsync(messages, default(ChatCompletionOptions));
-
-    /// <summary>
-    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
-    /// history.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="CollectionResult{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
-    /// <see cref="IEnumerable{T}"/> interface.
-    /// </remarks>
-    /// <param name="messages"> The messages to provide as input for chat completion. </param>
-    /// <param name="options"> Additional options for the chat completion request. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A streaming result with incremental chat completion updates. </returns>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <param name="options"> The options to configure the chat completion. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(messages, nameof(messages));
@@ -209,15 +210,30 @@ public partial class ChatClient
     }
 
     /// <summary>
-    /// Begins a streaming response for a chat completion request using the provided chat messages as input and
-    /// history.
+    ///     Generates a completion for the given chat. The completion is streamed back token by token as it is being
+    ///     generated by the model instead of waiting for it to be finished first.
     /// </summary>
     /// <remarks>
-    /// <see cref="CollectionResult{T}"/> can be enumerated over using the <c>foreach</c> pattern using the
-    /// <see cref="IEnumerable{T}"/> interface.
+    ///     <see cref="AsyncCollectionResult{T}"/> implements the <see cref="IAsyncEnumerable{T}"/> interface and can be
+    ///     enumerated over using the <c>await foreach</c> pattern.
     /// </remarks>
-    /// <param name="messages"> The messages to provide as input for chat completion. </param>
-    /// <returns> A streaming result with incremental chat completion updates. </returns>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
+    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(params ChatMessage[] messages)
+        => CompleteChatStreamingAsync(messages, default(ChatCompletionOptions));
+
+    /// <summary>
+    ///     Generates a completion for the given chat. The completion is streamed back token by token as it is being
+    ///     generated by the model instead of waiting for it to be finished first.
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="AsyncCollectionResult{T}"/> implements the <see cref="IAsyncEnumerable{T}"/> interface and can be
+    ///     enumerated over using the <c>await foreach</c> pattern.
+    /// </remarks>
+    /// <param name="messages"> The messages comprising the chat so far. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages)
         => CompleteChatStreaming(messages, default(ChatCompletionOptions));
 

@@ -28,7 +28,7 @@ public partial class EmbeddingTests : SyncAsyncTestBase
     [Test]
     public async Task GenerateSingleEmbedding()
     {
-        EmbeddingClient client = new("text-embedding-3-small");
+        EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         string input = "Hello, world!";
 
@@ -49,7 +49,7 @@ public partial class EmbeddingTests : SyncAsyncTestBase
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddings(EmbeddingsInputKind embeddingsInputKind)
     {
-        EmbeddingClient client = new("text-embedding-3-small");
+        EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         const int Dimensions = 456;
 

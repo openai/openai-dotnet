@@ -91,10 +91,10 @@ namespace OpenAI.Images
                     writer.WriteNull("style");
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(User))
+            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
             {
                 writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WriteStringValue(EndUserId);
             }
             if (SerializedAdditionalRawData != null)
             {

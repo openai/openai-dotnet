@@ -24,13 +24,6 @@ namespace OpenAI.Chat
         {
         }
 
-        internal ChatClient(ClientPipeline pipeline, ApiKeyCredential keyCredential, Uri endpoint)
-        {
-            _pipeline = pipeline;
-            _keyCredential = keyCredential;
-            _endpoint = endpoint;
-        }
-
         internal PipelineMessage CreateCreateChatCompletionRequest(BinaryContent content, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();

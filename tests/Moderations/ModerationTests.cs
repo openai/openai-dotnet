@@ -3,6 +3,7 @@ using OpenAI.Moderations;
 using OpenAI.Tests.Utility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Moderations;
 
@@ -19,7 +20,7 @@ public partial class ModerationTests : SyncAsyncTestBase
     [Test]
     public async Task ClassifySingleInput()
     {
-        ModerationClient client = new("text-moderation-stable");
+        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
 
         const string input = "I am killing all my houseplants!";
 
@@ -35,7 +36,7 @@ public partial class ModerationTests : SyncAsyncTestBase
     [Test]
     public async Task ClassifyMultipleInputs()
     {
-        ModerationClient client = new("text-moderation-stable");
+        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
 
         List<string> inputs =
             [
