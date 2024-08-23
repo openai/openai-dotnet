@@ -23,14 +23,11 @@ public partial class FunctionChatMessage : ChatMessage
     ///     restriction (e.g. JSON) imposed on this content.
     /// </param>
     public FunctionChatMessage(string functionName, string content = null)
+        : base(ChatMessageRole.Function, content)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
-        Role = "function";
         FunctionName = functionName;
-        Content = (content == null)
-            ? new ChangeTrackingList<ChatMessageContentPart>()
-            : [ChatMessageContentPart.CreateTextMessageContentPart(content)];
     }
 
     // CUSTOM: Renamed.

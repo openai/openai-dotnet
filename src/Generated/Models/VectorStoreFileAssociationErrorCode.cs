@@ -16,15 +16,13 @@ namespace OpenAI.VectorStores
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        private const string InternalErrorValue = "internal_error";
-        private const string FileNotFoundValue = "file_not_found";
-        private const string ParsingErrorValue = "parsing_error";
-        private const string UnhandledMimeTypeValue = "unhandled_mime_type";
+        private const string ServerErrorValue = "server_error";
+        private const string UnsupportedFileValue = "unsupported_file";
+        private const string InvalidFileValue = "invalid_file";
 
-        public static VectorStoreFileAssociationErrorCode InternalError { get; } = new VectorStoreFileAssociationErrorCode(InternalErrorValue);
-        public static VectorStoreFileAssociationErrorCode FileNotFound { get; } = new VectorStoreFileAssociationErrorCode(FileNotFoundValue);
-        public static VectorStoreFileAssociationErrorCode ParsingError { get; } = new VectorStoreFileAssociationErrorCode(ParsingErrorValue);
-        public static VectorStoreFileAssociationErrorCode UnhandledMimeType { get; } = new VectorStoreFileAssociationErrorCode(UnhandledMimeTypeValue);
+        public static VectorStoreFileAssociationErrorCode ServerError { get; } = new VectorStoreFileAssociationErrorCode(ServerErrorValue);
+        public static VectorStoreFileAssociationErrorCode UnsupportedFile { get; } = new VectorStoreFileAssociationErrorCode(UnsupportedFileValue);
+        public static VectorStoreFileAssociationErrorCode InvalidFile { get; } = new VectorStoreFileAssociationErrorCode(InvalidFileValue);
         public static bool operator ==(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right) => left.Equals(right);
         public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right) => !left.Equals(right);
         public static implicit operator VectorStoreFileAssociationErrorCode(string value) => new VectorStoreFileAssociationErrorCode(value);

@@ -24,21 +24,56 @@ namespace OpenAI.Chat;
 public partial class ToolChatMessage : ChatMessage
 {
     /// <summary>
-    /// Creates a new instance of <see cref="ToolChatMessage"/>.
+    /// Creates a new instance of <see cref="ToolChatMessage"/> using a collection of content items.
+    /// For <c>tool</c> messages, these can only be of type <c>text</c>.
     /// </summary>
-    /// <param name="toolCallId"> The <c>id</c> correlating to a <see cref="ChatToolCall"/> made by the model. </param>
-    /// <param name="content">
-    ///     The textual content, produced by the defined tool in response to the correlated <see cref="ChatToolCall"/>,
-    ///     that resolves the tool call and allows the logical conversation to continue. No format restrictions (e.g.
-    ///     JSON) are imposed on the content emitted by tools.
+    /// <param name="toolCallId">
+    ///     The ID of the tool call that this message responds to.
     /// </param>
-    public ToolChatMessage(string toolCallId, string content)
+    /// <param name="contentParts">
+    ///     The collection of content items associated with the message.
+    /// </param>
+    public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts)
+        : base(ChatMessageRole.Tool, contentParts)
     {
-        Argument.AssertNotNull(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
+
+        ToolCallId = toolCallId;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ToolChatMessage"/> using a collection of content items.
+    /// For <c>tool</c> messages, these can only be of type <c>text</c>.
+    /// </summary>
+    /// <param name="toolCallId">
+    ///     The ID of the tool call that this message responds to.
+    /// </param>
+    /// <param name="contentParts">
+    ///     The collection of content items associated with the message.
+    /// </param>
+    public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts)
+        : base(ChatMessageRole.Tool, contentParts)
+    {
+        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
+
+        ToolCallId = toolCallId;
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ToolChatMessage"/> with a single item of text content.
+    /// </summary>
+    /// <param name="toolCallId">
+    ///     The ID of the tool call that this message responds to.
+    /// </param>
+    /// <param name="content"> The text content of the message. </param>
+    public ToolChatMessage(string toolCallId, string content)
+        : base(ChatMessageRole.Tool, content)
+    {
+        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
         Argument.AssertNotNull(content, nameof(content));
 
-        Role = "tool";
         ToolCallId = toolCallId;
-        Content = [ChatMessageContentPart.CreateTextMessageContentPart(content)];
     }
 }

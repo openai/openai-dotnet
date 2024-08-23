@@ -17,11 +17,12 @@ namespace OpenAI
             Name = name;
         }
 
-        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Description = description;
             Name = name;
             Parameters = parameters;
+            Strict = strict;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
@@ -31,5 +32,6 @@ namespace OpenAI
 
         public string Description { get; set; }
         public string Name { get; set; }
+        public bool? Strict { get; set; }
     }
 }

@@ -15,13 +15,11 @@ namespace OpenAI.Chat
             Content = new ChangeTrackingList<ChatMessageContentPart>();
         }
 
-        internal ChatMessage(string role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Role = role;
             Content = content;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-
-        internal string Role { get; set; }
     }
 }

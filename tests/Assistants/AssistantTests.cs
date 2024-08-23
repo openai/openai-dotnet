@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
+using OpenAI.Chat;
 using OpenAI.Files;
 using OpenAI.VectorStores;
 using System;
@@ -8,6 +9,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -351,25 +353,24 @@ public partial class AssistantTests
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-4o-mini", new()
         {
-            ResponseFormat = AssistantResponseFormat.JsonObject,
+            ResponseFormat = AssistantResponseFormat.CreateAutoFormat(),
         });
         Validate(assistant);
-        Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+        Assert.That(assistant.ResponseFormat == "auto");
         assistant = client.ModifyAssistant(assistant, new()
         {
-            ResponseFormat = AssistantResponseFormat.Text,
+            ResponseFormat = AssistantResponseFormat.CreateTextFormat(),
         });
-        Assert.That(assistant.ResponseFormat, Is.EqualTo(AssistantResponseFormat.Text));
+        Assert.That(assistant.ResponseFormat == AssistantResponseFormat.CreateTextFormat());
         AssistantThread thread = client.CreateThread();
         Validate(thread);
         ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
         Validate(message);
         ThreadRun run = client.CreateRun(thread, assistant, new()
         {
-            ResponseFormat = AssistantResponseFormat.JsonObject,
+            ResponseFormat = AssistantResponseFormat.CreateJsonObjectFormat(),
         });
-        Validate(run);
-        Assert.That(run.ResponseFormat, Is.EqualTo(AssistantResponseFormat.JsonObject));
+        Assert.That(run.ResponseFormat == AssistantResponseFormat.CreateJsonObjectFormat());
     }
 
     [Test]
@@ -499,7 +500,11 @@ public partial class AssistantTests
     public async Task StreamingToolCall()
     {
         AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new("get_current_weather", "Gets the user's current weather");
+        FunctionToolDefinition getWeatherTool = new()
+        {
+            FunctionName = "get_current_weather",
+            Description = "Gets the user's current weather",
+        };
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new()
         {
             Tools = { getWeatherTool }

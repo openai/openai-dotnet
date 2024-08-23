@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class UnknownChatMessage : ChatMessage
     {
-        internal UnknownChatMessage(string role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(role, content, serializedAdditionalRawData)
+        internal UnknownChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(role, content, serializedAdditionalRawData)
         {
         }
 

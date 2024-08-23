@@ -21,6 +21,7 @@ public partial class MessageContentUpdate : StreamingUpdate
     public int MessageIndex => _textContent?.Index
         ?? _imageFileContent?.Index
         ?? _imageUrlContent?.Index
+        ?? _refusalContent?.Index
         ?? TextAnnotation?.ContentIndex
         ?? 0;
 
@@ -42,9 +43,12 @@ public partial class MessageContentUpdate : StreamingUpdate
     /// </summary>
     public TextAnnotationUpdate TextAnnotation { get; }
 
+    public string RefusalUpdate => _refusalContent?.Refusal;
+
     private readonly InternalMessageDeltaContentImageFileObject _imageFileContent;
     private readonly InternalMessageDeltaContentTextObject _textContent;
     private readonly InternalMessageDeltaContentImageUrlObject _imageUrlContent;
+    private readonly InternalMessageDeltaContentRefusalObject _refusalContent;
     private readonly InternalMessageDeltaObject _delta;
 
     internal MessageContentUpdate(InternalMessageDeltaObject delta, InternalMessageDeltaContent content)
@@ -54,6 +58,7 @@ public partial class MessageContentUpdate : StreamingUpdate
         _textContent = content as InternalMessageDeltaContentTextObject;
         _imageFileContent = content as InternalMessageDeltaContentImageFileObject;
         _imageUrlContent = content as InternalMessageDeltaContentImageUrlObject;
+        _refusalContent = content as InternalMessageDeltaContentRefusalObject;
     }
 
     internal MessageContentUpdate(InternalMessageDeltaObject delta, TextAnnotationUpdate annotation)

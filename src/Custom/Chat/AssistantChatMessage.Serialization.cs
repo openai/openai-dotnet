@@ -1,5 +1,5 @@
-using System;
 using System.ClientModel.Primitives;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 
@@ -17,47 +17,13 @@ public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
     protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
-        if (Optional.IsDefined(ParticipantName))
-        {
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(ParticipantName);
-        }
-        if (Optional.IsCollectionDefined(ToolCalls))
-        {
-            writer.WritePropertyName("tool_calls"u8);
-            writer.WriteStartArray();
-            foreach (var item in ToolCalls)
-            {
-                writer.WriteObjectValue(item, options);
-            }
-            writer.WriteEndArray();
-        }
-        if (Optional.IsDefined(FunctionCall))
-        {
-            if (FunctionCall != null)
-            {
-                writer.WritePropertyName("function_call"u8);
-                writer.WriteObjectValue(FunctionCall, options);
-            }
-            else
-            {
-                writer.WriteNull("function_call");
-            }
-        }
         writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(Role);
-        if (Optional.IsCollectionDefined(Content))
-        {
-            if (Content[0] != null)
-            {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStringValue(Content[0].Text);
-            }
-            else
-            {
-                writer.WriteNull("content");
-            }
-        }
+        writer.WriteStringValue(Role.ToSerialString());
+        ChatMessageContentPart.WriteCoreContentPartList(Content, writer, options);
+        writer.WriteOptionalProperty("refusal"u8, Refusal, options);
+        writer.WriteOptionalProperty("name"u8, ParticipantName, options);
+        writer.WriteOptionalCollection("tool_calls"u8, ToolCalls, options);
+        writer.WriteOptionalProperty("function_call"u8, FunctionCall, options);
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }

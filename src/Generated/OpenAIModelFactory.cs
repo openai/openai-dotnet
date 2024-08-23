@@ -44,14 +44,14 @@ namespace OpenAI
         {
             content ??= new List<ChatMessageContentPart>();
 
-            return new ToolChatMessage("tool", content?.ToList(), serializedAdditionalRawData: null, toolCallId);
+            return new ToolChatMessage(ChatMessageRole.Tool, content?.ToList(), serializedAdditionalRawData: null, toolCallId);
         }
 
         public static FunctionChatMessage FunctionChatMessage(IEnumerable<ChatMessageContentPart> content = null, string functionName = null)
         {
             content ??= new List<ChatMessageContentPart>();
 
-            return new FunctionChatMessage("function", content?.ToList(), serializedAdditionalRawData: null, functionName);
+            return new FunctionChatMessage(ChatMessageRole.Function, content?.ToList(), serializedAdditionalRawData: null, functionName);
         }
 
         public static ChatFunction ChatFunction(string functionDescription = null, string functionName = null, BinaryData functionParameters = null)

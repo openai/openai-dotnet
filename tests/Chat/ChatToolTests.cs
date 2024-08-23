@@ -1,8 +1,10 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -334,5 +336,85 @@ public partial class ChatToolTests : SyncAsyncTestBase
             : client.CompleteChat(messages, options);
 
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("bored"));
+    }
+
+    public enum SchemaPresence { WithSchema, WithoutSchema }
+    public enum StrictnessPresence { Unspecified, Strict, NotStrict }
+    public enum FailureExpectation { FailureExpected, FailureNotExpected }
+
+    [Test]
+    [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.Unspecified)]
+    [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.NotStrict)]
+    [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.Strict, FailureExpectation.FailureExpected)]
+    [TestCase(SchemaPresence.WithSchema, StrictnessPresence.Unspecified)]
+    [TestCase(SchemaPresence.WithSchema, StrictnessPresence.NotStrict)]
+    [TestCase(SchemaPresence.WithSchema, StrictnessPresence.Strict)]
+    public async Task StructuredOutputs(
+        SchemaPresence schemaPresence,
+        StrictnessPresence strictnessPresence,
+        FailureExpectation failureExpectation = FailureExpectation.FailureNotExpected)
+    {
+        // Note: proper output requires 2024-08-06 or later models
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+
+        const string toolName = "get_favorite_color_for_day_of_week";
+        const string toolDescription = "Given a weekday name like Tuesday, gets the favorite color of the user on that day.";
+        BinaryData toolSchema = schemaPresence == SchemaPresence.WithSchema
+            ? BinaryData.FromObjectAsJson(new
+            {
+                type = "object",
+                properties = new
+                {
+                    the_day_of_the_week = new
+                    {
+                        type = "string"
+                    }
+                },
+                required = new[] { "the_day_of_the_week" },
+                additionalProperties = !(strictnessPresence == StrictnessPresence.Strict),
+            })
+            : null;
+        bool? useStrictSchema = strictnessPresence switch
+        {
+            StrictnessPresence.Strict => true,
+            StrictnessPresence.NotStrict => false,
+            _ => null,
+        };
+
+        ChatCompletionOptions options = new()
+        {
+            Tools = { ChatTool.CreateFunctionTool(toolName, toolDescription, toolSchema, useStrictSchema) },
+        };
+
+        List<ChatMessage> messages = [
+            new SystemChatMessage("Call applicable tools when the user asks a question. Prefer JSON output when possible."),
+            new UserChatMessage("What's my favorite color on Tuesday?"),
+        ];
+
+        if (failureExpectation == FailureExpectation.FailureExpected)
+        {
+            ClientResultException thrownException = Assert.ThrowsAsync<ClientResultException>(async () =>
+            {
+                ChatCompletion completion = IsAsync
+                    ? await client.CompleteChatAsync(messages, options)
+                    : client.CompleteChat(messages, options);
+            });
+            Assert.That(thrownException.Message, Does.Contain("function.parameters"));
+        }
+        else
+        {
+            ChatCompletion completion = IsAsync
+                ? await client.CompleteChatAsync(messages, options)
+                : client.CompleteChat(messages, options);
+            Assert.That(completion.FinishReason, Is.EqualTo(ChatFinishReason.ToolCalls));
+            Assert.That(completion.ToolCalls, Has.Count.EqualTo(1));
+            Assert.That(completion.ToolCalls[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
+
+            if (schemaPresence == SchemaPresence.WithSchema && strictnessPresence == StrictnessPresence.Strict)
+            {
+                using JsonDocument argumentsDocument = JsonDocument.Parse(completion.ToolCalls[0].FunctionArguments);
+                Assert.That(argumentsDocument.RootElement.GetProperty("the_day_of_the_week").GetString(), Is.EqualTo("Tuesday"));
+            }
+        }
     }
 }

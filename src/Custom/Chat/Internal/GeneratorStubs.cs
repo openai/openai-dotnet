@@ -60,9 +60,6 @@ internal readonly partial struct InternalCreateChatCompletionFunctionResponseObj
 [CodeGenModel("CreateChatCompletionRequestModel")]
 internal readonly partial struct InternalCreateChatCompletionRequestModel { }
 
-[CodeGenModel("CreateChatCompletionRequestResponseFormatType")]
-internal readonly partial struct InternalCreateChatCompletionRequestResponseFormatType { }
-
 [CodeGenModel("CreateChatCompletionRequestToolChoice")]
 internal readonly partial struct InternalCreateChatCompletionRequestToolChoice { }
 
@@ -93,4 +90,12 @@ internal partial class InternalCreateChatCompletionStreamResponseUsage { }
 [CodeGenModel("FunctionParameters")]
 internal partial class InternalFunctionParameters { }
 
-
+[CodeGenModel("ChatResponseFormatText")] internal partial class InternalChatResponseFormatText { }
+[CodeGenModel("ChatResponseFormatJsonObject")] internal partial class InternalChatResponseFormatJsonObject { }
+[CodeGenModel("ChatResponseFormatJsonSchema")] internal partial class InternalChatResponseFormatJsonSchema { }
+[CodeGenModel("UnknownChatResponseFormat")] internal partial class InternalUnknownChatResponseFormat { }
+[CodeGenModel("ChatCompletionRequestMessageContentPartRefusal")] internal partial class InternalChatCompletionRequestMessageContentPartRefusal { }
+[CodeGenModel("ChatCompletionRequestMessageContentPartRefusalType")] internal readonly partial struct InternalChatCompletionRequestMessageContentPartRefusalType { }
+[CodeGenModel("CreateChatCompletionRequestServiceTier")] internal readonly partial struct InternalCreateChatCompletionRequestServiceTier { }
+[CodeGenModel("CreateChatCompletionResponseServiceTier")] internal readonly partial struct InternalCreateChatCompletionResponseServiceTier { }
+[CodeGenModel("CreateChatCompletionStreamResponseServiceTier")] internal readonly partial struct InternalCreateChatCompletionStreamResponseServiceTier { }

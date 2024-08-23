@@ -13,6 +13,7 @@ public partial class StreamingChatCompletionUpdate
     private IReadOnlyList<ChatMessageContentPart> _contentUpdate;
     private IReadOnlyList<StreamingChatToolCallUpdate> _toolCallUpdates;
     private IReadOnlyList<ChatTokenLogProbabilityInfo> _contentTokenLogProbabilities;
+    private IReadOnlyList<ChatTokenLogProbabilityInfo> _refusalTokenLogProbabilities;
 
     // CUSTOM:
     // - Made private. This property does not add value in the context of a strongly-typed class.
@@ -42,6 +43,10 @@ public partial class StreamingChatCompletionUpdate
     [CodeGenMember("Usage")]
     public ChatTokenUsage Usage { get; }
 
+    // CUSTOM: Made internal.
+    [CodeGenMember("ServiceTier")]
+    internal InternalCreateChatCompletionStreamResponseServiceTier? ServiceTier { get; }
+    
     // CUSTOM: Flattened choice property.
     /// <summary>
     /// Gets the <see cref="ChatFinishReason"/> associated with this update.
@@ -57,6 +62,11 @@ public partial class StreamingChatCompletionUpdate
     public IReadOnlyList<ChatTokenLogProbabilityInfo> ContentTokenLogProbabilities => (Choices.Count > 0 && Choices[0].Logprobs != null)
         ? Choices[0].Logprobs.Content
         : _contentTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+
+    // CUSTOM: Flattened refusal logprobs property.
+    public IReadOnlyList<ChatTokenLogProbabilityInfo> RefusalTokenLogProbabilities => (Choices.Count > 0 && Choices[0].Logprobs != null)
+        ? Choices[0].Logprobs.Refusal
+        : _refusalTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
 
     // CUSTOM: Flattened choice delta property.
     /// <summary>
@@ -98,6 +108,11 @@ public partial class StreamingChatCompletionUpdate
     /// </summary>
     public StreamingChatFunctionCallUpdate FunctionCallUpdate => (Choices.Count > 0)
         ? Choices[0].Delta.FunctionCall
+        : null;
+    
+    // CUSTOM: Flattened choice delta property.
+    public string RefusalUpdate => (Choices.Count > 0)
+        ? Choices[0].Delta?.Refusal
         : null;
 
     internal static List<StreamingChatCompletionUpdate> DeserializeStreamingChatCompletionUpdates(JsonElement element)

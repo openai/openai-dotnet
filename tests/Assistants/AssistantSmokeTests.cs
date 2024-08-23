@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OpenAI.Assistants;
+using OpenAI.Chat;
 using OpenAI.Files;
 using OpenAI.VectorStores;
 using System;
@@ -67,6 +68,41 @@ public partial class AssistantSmokeTests
         Assert.That(deserializedRunStep.Details.ToolCalls, Has.Count.EqualTo(1));
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs, Has.Count.EqualTo(1));
         Assert.That(deserializedRunStep.Details.ToolCalls[0].CodeInterpreterOutputs[0].Logs, Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public void ResponseFormatEquality()
+    {
+        Assert.That(AssistantResponseFormat.CreateAutoFormat() == "auto");
+        Assert.That(AssistantResponseFormat.CreateAutoFormat(), Is.EqualTo("auto"));
+        Assert.That(AssistantResponseFormat.CreateAutoFormat(), Is.Not.EqualTo("automatic"));
+        Assert.That(AssistantResponseFormat.CreateAutoFormat() == AssistantResponseFormat.CreateAutoFormat());
+        Assert.That(AssistantResponseFormat.CreateTextFormat() == AssistantResponseFormat.CreateTextFormat());
+        Assert.That(AssistantResponseFormat.CreateTextFormat(), Is.EqualTo(AssistantResponseFormat.CreateTextFormat()));
+        Assert.That(AssistantResponseFormat.CreateAutoFormat() != AssistantResponseFormat.CreateTextFormat());
+        Assert.That(AssistantResponseFormat.CreateAutoFormat(), Is.Not.EqualTo(AssistantResponseFormat.CreateTextFormat()));
+        Assert.That((AssistantResponseFormat)null == (AssistantResponseFormat)null);
+        Assert.That((AssistantResponseFormat)null != AssistantResponseFormat.CreateTextFormat());
+        Assert.That(AssistantResponseFormat.CreateTextFormat() != null);
+        Assert.That(AssistantResponseFormat.CreateTextFormat(), Is.Not.EqualTo(null));
+        Assert.That(null, Is.Not.EqualTo(AssistantResponseFormat.CreateTextFormat()));
+
+        AssistantResponseFormat jsonSchemaFormat = AssistantResponseFormat.CreateJsonSchemaFormat(
+            name: "test_schema",
+            description: "A description of the schema",
+            jsonSchema: BinaryData.FromString("""
+                {
+                  "type": "object",
+                  "properties": {
+                    "foo": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                }
+                """),
+            strictSchemaEnabled: true);
+
+        Assert.That(jsonSchemaFormat == AssistantResponseFormat.CreateJsonSchemaFormat("test_schema", BinaryData.FromObjectAsJson(new { })));
+        Assert.That(jsonSchemaFormat != AssistantResponseFormat.CreateJsonSchemaFormat("not_test_schema", BinaryData.FromObjectAsJson(new { })));
     }
 }
 

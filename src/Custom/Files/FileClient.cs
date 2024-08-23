@@ -25,6 +25,8 @@ namespace OpenAI.Files;
 [CodeGenSuppress("DownloadFile", typeof(string))]
 public partial class FileClient
 {
+    private InternalUploadsClient _internalUploadsClient;
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -66,6 +68,7 @@ public partial class FileClient
 
         _pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
+        _internalUploadsClient = new(pipeline, options);
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>

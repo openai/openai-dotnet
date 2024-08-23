@@ -12,6 +12,7 @@ public partial class ChatMessageContentPart
 {
     private readonly ChatMessageContentPartKind _kind;
     private readonly string _text;
+    private readonly string _refusal;
     private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUrl;
     private readonly string _dataUri;
 
@@ -51,10 +52,11 @@ public partial class ChatMessageContentPart
     /// <param name="text"> The text. </param>
     /// <param name="imageUrl"> The image URI. </param>
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal ChatMessageContentPart(string kind, string text, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal ChatMessageContentPart(string kind, string text, string refusal, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         _kind = new ChatMessageContentPartKind(kind);
         _text = text;
+        _refusal = refusal;
         _imageUrl = imageUrl;
         SerializedAdditionalRawData = serializedAdditionalRawData;
     }
@@ -68,6 +70,11 @@ public partial class ChatMessageContentPart
     /// The text content.
     /// </summary>
     public string Text => _text;
+
+    /// <summary>
+    /// The refusal message from the assistant.
+    /// </summary>
+    public string Refusal => _refusal;
 
     /// <summary>
     /// The image URI content.
@@ -99,6 +106,23 @@ public partial class ChatMessageContentPart
         Argument.AssertNotNull(text, nameof(text));
 
         return new(text);
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="ChatMessageContentPart"/> that encapsulates an assistant refusal message.
+    /// </summary>
+    /// <param name="refusal"> The refusal message from the assistant. </param>
+    /// <returns> A new instance of <see cref="ChatMessageContentPart"/>. </returns>
+    public static ChatMessageContentPart CreateRefusalMessageContentPart(string refusal)
+    {
+        Argument.AssertNotNull(refusal, nameof(refusal));
+
+        return new ChatMessageContentPart(
+            ChatMessageContentPartKind.Refusal.ToString(),
+            text: null,
+            refusal: refusal,
+            imageUrl: null,
+            serializedAdditionalRawData: null);
     }
 
     /// <summary>

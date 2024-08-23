@@ -69,6 +69,7 @@ internal partial class InternalChatCompletionResponseMessage : IJsonModel<Intern
             return null;
         }
         IReadOnlyList<ChatMessageContentPart> content = default;
+        string refusal = default;
         IReadOnlyList<ChatToolCall> toolCalls = default;
         ChatMessageRole role = default;
         ChatFunctionCall functionCall = default;
@@ -85,6 +86,15 @@ internal partial class InternalChatCompletionResponseMessage : IJsonModel<Intern
                 List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
                 array.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
                 content = array;
+                continue;
+            }
+            if (property.NameEquals("refusal"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                refusal = property.Value.GetString();
                 continue;
             }
             if (property.NameEquals("tool_calls"u8))
@@ -121,6 +131,6 @@ internal partial class InternalChatCompletionResponseMessage : IJsonModel<Intern
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new InternalChatCompletionResponseMessage(content ?? new ChangeTrackingList<ChatMessageContentPart>(), toolCalls ?? new ChangeTrackingList<ChatToolCall>(), role, functionCall, serializedAdditionalRawData);
+        return new InternalChatCompletionResponseMessage(content ?? new ChangeTrackingList<ChatMessageContentPart>(), refusal, toolCalls ?? new ChangeTrackingList<ChatToolCall>(), role, functionCall, serializedAdditionalRawData);
     }
 }

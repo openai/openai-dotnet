@@ -33,7 +33,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string name = default;
-            string role = default;
+            ChatMessageRole role = default;
             IList<ChatMessageContentPart> content = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -46,7 +46,7 @@ namespace OpenAI.Chat
                 }
                 if (property.NameEquals("role"u8))
                 {
-                    role = property.Value.GetString();
+                    role = property.Value.GetString().ToChatMessageRole();
                     continue;
                 }
                 if (property.NameEquals("content"u8))

@@ -43,6 +43,18 @@ namespace OpenAI
                 }
 #endif
             }
+            if (SerializedAdditionalRawData?.ContainsKey("strict") != true && Optional.IsDefined(Strict))
+            {
+                if (Strict != null)
+                {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict");
+                }
+            }
             if (SerializedAdditionalRawData != null)
             {
                 foreach (var item in SerializedAdditionalRawData)
@@ -88,6 +100,7 @@ namespace OpenAI
             string description = default;
             string name = default;
             BinaryData parameters = default;
+            bool? strict = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -111,6 +124,16 @@ namespace OpenAI
                     parameters = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
+                if (property.NameEquals("strict"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        strict = null;
+                        continue;
+                    }
+                    strict = property.Value.GetBoolean();
+                    continue;
+                }
                 if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
@@ -118,7 +141,7 @@ namespace OpenAI
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalFunctionDefinition(description, name, parameters, serializedAdditionalRawData);
+            return new InternalFunctionDefinition(description, name, parameters, strict, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalFunctionDefinition>.Write(ModelReaderWriterOptions options)

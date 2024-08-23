@@ -120,6 +120,9 @@ internal partial class InternalMessageContentItemFileObjectImageFile
 [CodeGenModel("MessageContentTextObjectText")]
 internal partial class InternalMessageContentTextObjectText { }
 
+[CodeGenModel("MessageContentRefusalObjectType")]
+internal readonly partial struct InternalMessageContentRefusalObjectType { }
+
 [CodeGenModel("RunStepDetailsMessageCreationObjectMessageCreation")]
 internal partial class InternalRunStepDetailsMessageCreationObjectMessageCreation { }
 
@@ -189,9 +192,6 @@ internal readonly partial struct InternalAssistantsNamedToolChoiceType { }
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObject { }
 
-[CodeGenModel("RunStepUpdateCodeInterpreterOutput")]
-internal abstract partial class InternalRunStepUpdateCodeInterpreterOutput { }
-
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeOutputImageObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject { }
 
@@ -231,12 +231,6 @@ internal partial class InternalRunStepDeltaStepDetails { }
 
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsFunctionObjectFunction")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction { }
-
-[CodeGenModel("AssistantsApiResponseFormat")]
-internal partial class InternalAssistantsApiResponseFormat { }
-
-[CodeGenModel("AssistantsApiResponseFormatType")]
-internal readonly partial struct InternalAssistantsApiResponseFormatType { }
 
 [CodeGenModel("AssistantsNamedToolChoiceFunction")]
 internal partial class InternalAssistantsNamedToolChoiceFunction { }
@@ -307,32 +301,14 @@ internal readonly partial struct InternalMessageObjectRole { }
 [CodeGenModel("CreateRunRequestModel")]
 internal readonly partial struct InternalCreateRunRequestModel { }
 
-[CodeGenModel("CreateRunRequestToolChoice")]
-internal readonly partial struct InternalCreateRunRequestToolChoice { }
-
-[CodeGenModel("CreateAssistantRequestResponseFormat1")]
-internal readonly partial struct InternalCreateAssistantRequestResponseFormat { }
-
 [CodeGenModel("CreateAssistantRequestToolResources")]
 internal partial class InternalCreateAssistantRequestToolResources { }
 
 [CodeGenModel("CreateAssistantRequestToolResourcesCodeInterpreter")]
 internal partial class InternalCreateAssistantRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("CreateAssistantRequestToolResourcesFileSearchBase")]
-internal partial class InternalCreateAssistantRequestToolResourcesFileSearchBase { }
-
-[CodeGenModel("CreateAssistantRequestToolResourcesFileSearchVectorStoreCreationHelpers")]
-internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVectorStoreCreationHelpers { }
-
-[CodeGenModel("CreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences")]
-internal partial class InternalCreateAssistantRequestToolResourcesFileSearchVectorStoreIdReferences { }
-
 [CodeGenModel("CreateThreadAndRunRequestModel")]
 internal readonly partial struct InternalCreateThreadAndRunRequestModel { }
-
-[CodeGenModel("CreateThreadAndRunRequestResponseFormat")]
-internal readonly partial struct InternalCreateThreadAndRunRequestResponseFormat { }
 
 [CodeGenModel("CreateThreadAndRunRequestToolChoice")]
 internal readonly partial struct InternalCreateThreadAndRunRequestToolChoice { }
@@ -343,9 +319,6 @@ internal partial class InternalCreateThreadAndRunRequestToolResources { }
 [CodeGenModel("CreateThreadAndRunRequestToolResourcesCodeInterpreter")]
 internal partial class InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("CreateThreadAndRunRequestToolResourcesFileSearch")]
-internal partial class InternalCreateThreadAndRunRequestToolResourcesFileSearch { }
-
 [CodeGenModel("CreateThreadRequestToolResources")]
 internal partial class InternalCreateThreadRequestToolResources { }
 
@@ -355,32 +328,17 @@ internal partial class InternalCreateThreadRequestToolResourcesCodeInterpreter {
 [CodeGenModel("CreateThreadRequestToolResourcesFileSearchBase")]
 internal partial class InternalCreateThreadRequestToolResourcesFileSearchBase { }
 
-[CodeGenModel("CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpers")]
-internal partial class InternalCreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpers { }
-
-[CodeGenModel("CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpersVectorStore")]
-internal partial class InternalCreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpersVectorStore { }
-
-[CodeGenModel("CreateThreadRequestToolResourcesFileSearchVectorStoreIdReferences")]
-internal partial class InternalCreateThreadRequestToolResourcesFileSearchVectorStoreIdReferences { }
-
 [CodeGenModel("ModifyAssistantRequestToolResources")]
 internal partial class InternalModifyAssistantRequestToolResources { }
 
 [CodeGenModel("ModifyAssistantRequestToolResourcesCodeInterpreter")]
 internal partial class InternalModifyAssistantRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("ModifyAssistantRequestToolResourcesFileSearch")]
-internal partial class InternalModifyAssistantRequestToolResourcesFileSearch { }
-
 [CodeGenModel("ModifyThreadRequestToolResources")]
 internal partial class InternalModifyThreadRequestToolResources { }
 
 [CodeGenModel("ModifyThreadRequestToolResourcesCodeInterpreter")]
 internal partial class InternalModifyThreadRequestToolResourcesCodeInterpreter { }
-
-[CodeGenModel("ModifyThreadRequestToolResourcesFileSearch")]
-internal partial class InternalModifyThreadRequestToolResourcesFileSearch { }
 
 [CodeGenModel("ThreadObjectToolResources")]
 internal partial class InternalThreadObjectToolResources { }
@@ -396,3 +354,10 @@ internal partial class InternalAssistantToolsFileSearchTypeOnly { }
 
 [CodeGenModel("AssistantToolsFileSearchTypeOnlyType")]
 internal readonly partial struct InternalAssistantToolsFileSearchTypeOnlyType { }
+
+[CodeGenModel("AssistantResponseFormatText")] internal partial class InternalAssistantResponseFormatText { }
+[CodeGenModel("AssistantResponseFormatJsonObject")] internal partial class InternalAssistantResponseFormatJsonObject { }
+[CodeGenModel("AssistantResponseFormatJsonSchema")] internal partial class InternalAssistantResponseFormatJsonSchema { }
+[CodeGenModel("UnknownAssistantResponseFormat")] internal partial class InternalUnknownAssistantResponseFormat { }
+[CodeGenModel("MessageDeltaContentRefusalObject")] internal partial class InternalMessageDeltaContentRefusalObject { }
+[CodeGenModel("ToolResourcesFileSearchIdsOnly")] internal partial class InternalToolResourcesFileSearchIdsOnly { }

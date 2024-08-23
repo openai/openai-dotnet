@@ -29,14 +29,7 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("file_search") != true && Optional.IsDefined(FileSearch))
             {
                 writer.WritePropertyName("file_search"u8);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(FileSearch);
-#else
-                using (JsonDocument document = JsonDocument.Parse(FileSearch))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(FileSearch, options);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -81,7 +74,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             InternalCreateThreadRequestToolResourcesCodeInterpreter codeInterpreter = default;
-            BinaryData fileSearch = default;
+            FileSearchToolResources fileSearch = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -101,7 +94,7 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    fileSearch = BinaryData.FromString(property.Value.GetRawText());
+                    fileSearch = FileSearchToolResources.DeserializeFileSearchToolResources(property.Value, options);
                     continue;
                 }
                 if (true)
