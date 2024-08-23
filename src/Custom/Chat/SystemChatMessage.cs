@@ -9,21 +9,40 @@ namespace OpenAI.Chat;
 /// restrictions for a model-based assistant.
 /// </summary>
 [CodeGenModel("ChatCompletionRequestSystemMessage")]
-[CodeGenSuppress("SystemChatMessage", typeof(IEnumerable<ChatMessageContentPart>))]
-// [CodeGenSuppress("SystemChatMessage", typeof(string), typeof(IList<ChatMessageContentPart>), typeof(IDictionary<string, BinaryData>), typeof(string))]
 public partial class SystemChatMessage : ChatMessage
 {
     /// <summary>
-    /// Creates a new instance of <see cref="SystemChatMessage"/>.
+    /// Creates a new instance of <see cref="SystemChatMessage"/> using a collection of content items.
+    /// For <c>system</c> messages, these can only be of type <c>text</c>.
     /// </summary>
-    /// <param name="content"> The <c>system</c> message text that guides the model's behavior. </param>
+    /// <param name="contentParts">
+    ///     The collection of content items associated with the message.
+    /// </param>
+    public SystemChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
+        : base(ChatMessageRole.System, contentParts)
+    { }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="SystemChatMessage"/> using a collection of content items.
+    /// For <c>system</c> messages, these can only be of type <c>text</c>.
+    /// </summary>
+    /// <param name="contentParts">
+    ///     The collection of content items associated with the message.
+    /// </param>
+    public SystemChatMessage(params ChatMessageContentPart[] contentParts)
+        : base(ChatMessageRole.System, contentParts)
+    {
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="SystemChatMessage"/> with a single item of text content.
+    /// </summary>
+    /// <param name="content"> The text content of the message. </param>
     public SystemChatMessage(string content)
+        : base(ChatMessageRole.System, content)
     {
         Argument.AssertNotNull(content, nameof(content));
-
-        Role = "system";
-        Content = new ChangeTrackingList<ChatMessageContentPart>(
-            (IList<ChatMessageContentPart>)[ChatMessageContentPart.CreateTextMessageContentPart(content)]);
     }
 
     /// <summary>

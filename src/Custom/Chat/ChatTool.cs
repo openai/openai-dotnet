@@ -68,6 +68,8 @@ public partial class ChatTool
     /// </remarks>
     public BinaryData FunctionParameters => Function?.Parameters;
 
+    public bool? StrictParameterSchemaEnabled => Function?.Strict;
+
     // CUSTOM: Added custom constructor.
     /// <summary>
     /// Creates a new instance of <see cref="ChatTool"/>.
@@ -75,14 +77,15 @@ public partial class ChatTool
     /// <param name="functionName"> The <c>name</c> of the function. </param>
     /// <param name="functionDescription"> The <c>description</c> of the function. </param>
     /// <param name="functionParameters"> The <c>parameters</c> into the function, in JSON Schema format. </param>
-    public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null)
+    public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? strictParameterSchemaEnabled = null)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
         InternalFunctionDefinition function = new(functionName)
         {
             Description = functionDescription,
-            Parameters = functionParameters
+            Parameters = functionParameters,
+            Strict = strictParameterSchemaEnabled,
         };
 
         return new(function);

@@ -19,11 +19,16 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
     internal static void DeserializeContentValue(JsonProperty property, ref IList<ChatMessageContentPart> content, ModelReaderWriterOptions options = null)
     {
         content ??= new ChangeTrackingList<ChatMessageContentPart>();
-        if (property.Value.ValueKind == JsonValueKind.String)
+
+        if (property.Value.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+        else if (property.Value.ValueKind == JsonValueKind.String)
         {
             content.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
         }
-        else
+        else if (property.Value.ValueKind == JsonValueKind.Array)
         {
             foreach (var item in property.Value.EnumerateArray())
             {

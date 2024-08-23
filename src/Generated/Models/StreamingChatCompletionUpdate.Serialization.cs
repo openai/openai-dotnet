@@ -46,6 +46,18 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
+            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(ServiceTier))
+            {
+                if (ServiceTier != null)
+                {
+                    writer.WritePropertyName("service_tier"u8);
+                    writer.WriteStringValue(ServiceTier.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("service_tier");
+                }
+            }
             if (SerializedAdditionalRawData?.ContainsKey("system_fingerprint") != true && Optional.IsDefined(SystemFingerprint))
             {
                 writer.WritePropertyName("system_fingerprint"u8);
@@ -107,6 +119,7 @@ namespace OpenAI.Chat
             IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = default;
             DateTimeOffset created = default;
             string model = default;
+            InternalCreateChatCompletionStreamResponseServiceTier? serviceTier = default;
             string systemFingerprint = default;
             InternalCreateChatCompletionStreamResponseObject @object = default;
             ChatTokenUsage usage = default;
@@ -137,6 +150,16 @@ namespace OpenAI.Chat
                 if (property.NameEquals("model"u8))
                 {
                     model = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("service_tier"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        serviceTier = null;
+                        continue;
+                    }
+                    serviceTier = new InternalCreateChatCompletionStreamResponseServiceTier(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("system_fingerprint"u8))
@@ -170,6 +193,7 @@ namespace OpenAI.Chat
                 choices,
                 created,
                 model,
+                serviceTier,
                 systemFingerprint,
                 @object,
                 usage,

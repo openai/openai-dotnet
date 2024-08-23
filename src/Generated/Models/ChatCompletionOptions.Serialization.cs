@@ -137,6 +137,18 @@ namespace OpenAI.Chat
                     writer.WriteNull("seed");
                 }
             }
+            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(_serviceTier))
+            {
+                if (_serviceTier != null)
+                {
+                    writer.WritePropertyName("service_tier"u8);
+                    writer.WriteStringValue(_serviceTier.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("service_tier");
+                }
+            }
             if (SerializedAdditionalRawData?.ContainsKey("stop") != true && Optional.IsCollectionDefined(StopSequences))
             {
                 if (StopSequences != null)
@@ -290,6 +302,7 @@ namespace OpenAI.Chat
             float? presencePenalty = default;
             ChatResponseFormat responseFormat = default;
             long? seed = default;
+            InternalCreateChatCompletionRequestServiceTier? serviceTier = default;
             IList<string> stop = default;
             bool? stream = default;
             InternalChatCompletionStreamOptions streamOptions = default;
@@ -402,6 +415,16 @@ namespace OpenAI.Chat
                         continue;
                     }
                     seed = property.Value.GetInt64();
+                    continue;
+                }
+                if (property.NameEquals("service_tier"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        serviceTier = null;
+                        continue;
+                    }
+                    serviceTier = new InternalCreateChatCompletionRequestServiceTier(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("stop"u8))
@@ -528,6 +551,7 @@ namespace OpenAI.Chat
                 presencePenalty,
                 responseFormat,
                 seed,
+                serviceTier,
                 stop ?? new ChangeTrackingList<string>(),
                 stream,
                 streamOptions,

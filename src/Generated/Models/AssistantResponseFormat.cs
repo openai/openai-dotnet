@@ -7,11 +7,19 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    public partial class AssistantResponseFormat
+    public abstract partial class AssistantResponseFormat
     {
-        internal AssistantResponseFormat(IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        protected AssistantResponseFormat()
         {
+        }
+
+        internal AssistantResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        {
+            Type = type;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
+
+        internal string Type { get; set; }
     }
 }

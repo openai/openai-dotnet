@@ -1,6 +1,4 @@
-using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -17,15 +15,11 @@ public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
     protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
+        writer.WritePropertyName("role"u8);
+        writer.WriteStringValue(Role.ToSerialString());
         writer.WritePropertyName("tool_call_id"u8);
         writer.WriteStringValue(ToolCallId);
-        writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(Role);
-        if (Optional.IsCollectionDefined(Content))
-        {
-            writer.WritePropertyName("content"u8);
-            writer.WriteStringValue(Content[0].Text);
-        }
+        ChatMessageContentPart.WriteCoreContentPartList(Content, writer, options);
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }

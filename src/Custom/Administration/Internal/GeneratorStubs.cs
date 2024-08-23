@@ -1,0 +1,36 @@
+namespace OpenAI.Administration;
+
+[CodeGenModel("AuditLogActorServiceAccount")] internal partial class InternalAuditLogActorServiceAccount { }
+[CodeGenModel("AuditLogActorUser")] internal partial class InternalAuditLogActorUser { }
+[CodeGenModel("AuditLogActorApiKey")] internal partial class InternalAuditLogActorApiKey { }
+[CodeGenModel("AuditLogActorSession")] internal partial class InternalAuditLogActorSession { }
+[CodeGenModel("AuditLogActor")] internal partial class InternalAuditLogActor { }
+[CodeGenModel("AuditLog")] internal partial class InternalAuditLog { }
+[CodeGenModel("ListAuditLogsResponse")] internal partial class InternalListAuditLogsResponse { }
+[CodeGenModel("Invite")] internal partial class InternalInvite { }
+[CodeGenModel("InviteListResponse")] internal partial class InternalInviteListResponse { }
+[CodeGenModel("InviteRequest")] internal partial class InternalInviteRequest { }
+[CodeGenModel("InviteDeleteResponse")] internal partial class InternalInviteDeleteResponse { }
+[CodeGenModel("User")] internal partial class InternalUser { }
+[CodeGenModel("UserListResponse")] internal partial class InternalUserListResponse { }
+[CodeGenModel("UserRoleUpdateRequest")] internal partial class InternalUserRoleUpdateRequest { }
+[CodeGenModel("UserDeleteResponse")] internal partial class InternalUserDeleteResponse { }
+[CodeGenModel("Project")] internal partial class InternalProject { }
+[CodeGenModel("ProjectListResponse")] internal partial class InternalProjectListResponse { }
+[CodeGenModel("ProjectCreateRequest")] internal partial class InternalProjectCreateRequest { }
+[CodeGenModel("ProjectUpdateRequest")] internal partial class InternalProjectUpdateRequest { }
+[CodeGenModel("DefaultProjectErrorResponse")] internal partial class InternalDefaultProjectErrorResponse { }
+[CodeGenModel("ProjectUser")] internal partial class InternalProjectUser { }
+[CodeGenModel("ProjectUserListResponse")] internal partial class InternalProjectUserListResponse { }
+[CodeGenModel("ProjectUserCreateRequest")] internal partial class InternalProjectUserCreateRequest { }
+[CodeGenModel("ProjectUserUpdateRequest")] internal partial class InternalProjectUserUpdateRequest { }
+[CodeGenModel("ProjectUserDeleteResponse")] internal partial class InternalProjectUserDeleteResponse { }
+[CodeGenModel("ProjectServiceAccount")] internal partial class InternalProjectServiceAccount { }
+[CodeGenModel("ProjectServiceAccountListResponse")] internal partial class InternalProjectServiceAccountListResponse { }
+[CodeGenModel("ProjectServiceAccountCreateRequest")] internal partial class InternalProjectServiceAccountCreateRequest { }
+[CodeGenModel("ProjectServiceAccountCreateResponse")] internal partial class InternalProjectServiceAccountCreateResponse { }
+[CodeGenModel("ProjectServiceAccountApiKey")] internal partial class InternalProjectServiceAccountApiKey { }
+[CodeGenModel("ProjectServiceAccountDeleteResponse")] internal partial class InternalProjectServiceAccountDeleteResponse { }
+[CodeGenModel("ProjectApiKey")] internal partial class InternalProjectApiKey { }
+[CodeGenModel("ProjectApiKeyListResponse")] internal partial class InternalProjectApiKeyListResponse { }
+[CodeGenModel("ProjectApiKeyDeleteResponse")] internal partial class InternalProjectApiKeyDeleteResponse { }

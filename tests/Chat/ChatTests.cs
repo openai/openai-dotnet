@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.Telemetry.TestMeterListener;
@@ -315,6 +316,30 @@ public partial class ChatTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task NonStrictJsonSchemaWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-mini");
+        ChatCompletionOptions options = new()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                "some_color_schema",
+                BinaryData.FromString("""
+                    {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": false
+                    }
+                    """),
+                "an object that describes color components by name",
+                strictSchemaEnabled: false)
+        };
+        ChatCompletion completion = IsAsync
+            ? await client.CompleteChatAsync(["What are the hex values for red, green, and blue?"], options)
+            : client.CompleteChat(["What are the hex values for red, green, and blue?"], options);
+        Console.WriteLine(completion);
+    }
+
+    [Test]
     public async Task JsonResult()
     {
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
@@ -322,7 +347,7 @@ public partial class ChatTests : SyncAsyncTestBase
             new UserChatMessage("Give me a JSON object with the following properties: red, green, and blue. The value "
                 + "of each property should be a string containing their RGB representation in hexadecimal.")
         ];
-        ChatCompletionOptions options = new() { ResponseFormat = ChatResponseFormat.JsonObject };
+        ChatCompletionOptions options = new() { ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat() };
         ClientResult<ChatCompletion> result = IsAsync
             ? await client.CompleteChatAsync(messages, options)
             : client.CompleteChat(messages, options);
@@ -337,6 +362,209 @@ public partial class ChatTests : SyncAsyncTestBase
         Assert.That(blueProperty.GetString().ToLowerInvariant(), Contains.Substring("0000ff"));
     }
 
+    [Test]
+    public async Task MultipartContentWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        List<ChatMessage> messages = [
+            new SystemChatMessage(
+                "You talk like a pirate.",
+                "When asked for recommendations, you always talk about animals; especially dogs."
+            ),
+            new UserChatMessage(
+                "Hello, assistant! I need some advice.",
+                "Can you recommend some small, cute things I can think about?"
+            )
+        ];
+        ChatCompletion completion = IsAsync
+            ? await client.CompleteChatAsync(messages)
+            : client.CompleteChat(messages);
+
+        Assert.That(completion.Content, Has.Count.EqualTo(1));
+        Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("ahoy").Or.Contain("matey"));
+        Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("pup").Or.Contain("kit"));
+    }
+
+    [Test]
+    public async Task StructuredOutputsWork()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What's heavier, a pound of feathers or sixteen ounces of steel?")
+        ];
+        ChatCompletionOptions options = new ChatCompletionOptions()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                "test_schema",
+                BinaryData.FromString("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "answer": {
+                          "type": "string"
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "answer",
+                        "steps"
+                      ],
+                      "additionalProperties": false
+                    }
+                    """),
+                "a single final answer with a supporting collection of steps",
+                strictSchemaEnabled: true)
+        };
+        ChatCompletion completion = IsAsync
+            ? await client.CompleteChatAsync(messages, options)
+            : client.CompleteChat(messages, options);
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.Refusal, Is.Null.Or.Empty);
+        Assert.That(completion.Content?.Count, Is.EqualTo(1));
+        JsonDocument contentDocument = null;
+        Assert.DoesNotThrow(() => contentDocument = JsonDocument.Parse(completion.Content[0].Text));
+        Assert.IsTrue(contentDocument.RootElement.TryGetProperty("answer", out JsonElement answerProperty));
+        Assert.IsTrue(answerProperty.ValueKind == JsonValueKind.String);
+        Assert.IsTrue(contentDocument.RootElement.TryGetProperty("steps", out JsonElement stepsProperty));
+        Assert.IsTrue(stepsProperty.ValueKind == JsonValueKind.Array);
+    }
+
+    [Test]
+    public async Task StructuredRefusalWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+        List<ChatMessage> messages = [
+            new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
+        ];
+        ChatCompletionOptions options = new ChatCompletionOptions()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                "food_recipe",
+                BinaryData.FromString("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "ingredients": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": ["name", "ingredients", "steps"],
+                      "additionalProperties": false
+                    }
+                    """),
+                "a description of a recipe to create a meal or dish",
+                strictSchemaEnabled: true),
+            Temperature = 0
+        };
+        ClientResult<ChatCompletion> completionResult = IsAsync
+            ? await client.CompleteChatAsync(messages, options)
+            : client.CompleteChat(messages, options);
+        ChatCompletion completion = completionResult;
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.Refusal, Is.Not.Null.Or.Empty);
+        Assert.That(completion.FinishReason, Is.EqualTo(ChatFinishReason.Stop));
+
+        AssistantChatMessage contextMessage = new(completion);
+        Assert.That(contextMessage.Refusal, Has.Length.GreaterThan(0));
+
+        messages.Add(contextMessage);
+        messages.Add("Why can't you help me?");
+
+        completion = IsAsync
+            ? await client.CompleteChatAsync(messages)
+            : client.CompleteChat(messages);
+        Assert.That(completion.Refusal, Is.Null.Or.Empty);
+        Assert.That(completion.Content, Has.Count.EqualTo(1));
+        Assert.That(completion.Content[0].Text, Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    [Ignore("As of 2024-08-20, refusal is not yet populated on streamed chat completion chunks.")]
+    public async Task StreamingStructuredRefusalWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
+        ];
+        ChatCompletionOptions options = new ChatCompletionOptions()
+        {
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                "food_recipe",
+                BinaryData.FromString("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "ingredients": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": ["name", "ingredients", "steps"],
+                      "additionalProperties": false
+                    }
+                    """), "a description of a recipe to create a meal or dish",
+                strictSchemaEnabled: true)
+        };
+
+        ChatFinishReason? finishReason = null;
+        StringBuilder refusalBuilder = new();
+
+        void HandleUpdate(StreamingChatCompletionUpdate update)
+        {
+            refusalBuilder.Append(update.RefusalUpdate);
+            if (update.FinishReason.HasValue)
+            {
+                Assert.That(finishReason, Is.Null);
+                finishReason = update.FinishReason;
+            }
+        }
+
+        if (IsAsync)
+        {
+            await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages))
+            {
+                HandleUpdate(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreaming(messages))
+            {
+                HandleUpdate(update);
+            }
+        }
+
+        Assert.That(refusalBuilder.ToString(), Is.Not.Null.Or.Empty);
+        Assert.That(finishReason, Is.EqualTo(ChatFinishReason.Stop));
+    }
 
     [Test]
     [NonParallelizable]

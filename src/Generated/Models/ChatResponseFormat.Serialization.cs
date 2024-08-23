@@ -5,11 +5,11 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat
 {
+    [PersistableModelProxy(typeof(InternalUnknownChatResponseFormat))]
     public partial class ChatResponseFormat : IJsonModel<ChatResponseFormat>
     {
         void IJsonModel<ChatResponseFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -21,10 +21,10 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true && Optional.IsDefined(Type))
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.Value.ToString());
+                writer.WriteStringValue(Type);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -68,28 +68,16 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalCreateChatCompletionRequestResponseFormatType? type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (element.TryGetProperty("type", out JsonElement discriminator))
             {
-                if (property.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    type = new InternalCreateChatCompletionRequestResponseFormatType(property.Value.GetString());
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    case "json_object": return InternalChatResponseFormatJsonObject.DeserializeInternalChatResponseFormatJsonObject(element, options);
+                    case "json_schema": return InternalChatResponseFormatJsonSchema.DeserializeInternalChatResponseFormatJsonSchema(element, options);
+                    case "text": return InternalChatResponseFormatText.DeserializeInternalChatResponseFormatText(element, options);
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ChatResponseFormat(type, serializedAdditionalRawData);
+            return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, options);
         }
 
         BinaryData IPersistableModel<ChatResponseFormat>.Write(ModelReaderWriterOptions options)

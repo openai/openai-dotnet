@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Assistants
 {
@@ -16,9 +17,10 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStoreCreationHelper(IList<string> fileIds, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreCreationHelper(IList<string> fileIds, FileChunkingStrategy chunkingStrategy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileIds = fileIds;
+            ChunkingStrategy = chunkingStrategy;
             Metadata = metadata;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }

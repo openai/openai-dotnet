@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Assistants
 {
@@ -30,6 +31,11 @@ namespace OpenAI.Assistants
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
+            {
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
             {
@@ -85,6 +91,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             IList<string> fileIds = default;
+            FileChunkingStrategy chunkingStrategy = default;
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -102,6 +109,15 @@ namespace OpenAI.Assistants
                         array.Add(item.GetString());
                     }
                     fileIds = array;
+                    continue;
+                }
+                if (property.NameEquals("chunking_strategy"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
                     continue;
                 }
                 if (property.NameEquals("metadata"u8))
@@ -125,7 +141,7 @@ namespace OpenAI.Assistants
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
+            return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), chunkingStrategy, metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<VectorStoreCreationHelper>.Write(ModelReaderWriterOptions options)

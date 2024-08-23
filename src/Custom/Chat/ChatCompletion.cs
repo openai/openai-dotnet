@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
 namespace OpenAI.Chat;
@@ -7,6 +8,7 @@ namespace OpenAI.Chat;
 public partial class ChatCompletion
 {
     private IReadOnlyList<ChatTokenLogProbabilityInfo> _contentTokenLogProbabilities;
+    private IReadOnlyList<ChatTokenLogProbabilityInfo> _refusalTokenLogProbabilities;
 
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     /// <summary> The object type, which is always `chat.completion`. </summary>
@@ -40,6 +42,11 @@ public partial class ChatCompletion
         ? Choices[0].Logprobs.Content
         : _contentTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
 
+    // CUSTOM: Flattened refusal logprobs property.
+    public IReadOnlyList<ChatTokenLogProbabilityInfo> RefusalTokenLogProbabilities => (Choices[0]?.Logprobs != null)
+        ? Choices[0].Logprobs.Refusal
+        : _refusalTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+
     // CUSTOM: Flattened choice message property.
     /// <summary>
     /// The role of the author of this message.
@@ -61,9 +68,18 @@ public partial class ChatCompletion
     // CUSTOM: Flattened choice message property.
     public ChatFunctionCall FunctionCall => Choices[0].Message.FunctionCall;
 
+    // CUSTOM: Flattened choice message property.
+    public string Refusal => Choices[0].Message.Refusal;
+
     /// <summary>
     /// Returns text representation of the first part of the first choice.
     /// </summary>
     /// <returns></returns>
-    public override string ToString() => Content[0].Text;
+    public override string ToString() => Content.Count > 0 ? Content[0].Text
+        : ToolCalls.Count > 0 ? ModelReaderWriter.Write(ToolCalls[0]).ToString()
+        : null;
+
+    // CUSTOM: Made internal.
+    [CodeGenMember("ServiceTier")]
+    internal InternalCreateChatCompletionResponseServiceTier? _serviceTier;
 }

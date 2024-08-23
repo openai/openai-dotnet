@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Chat;
 
@@ -14,47 +13,39 @@ namespace OpenAI.Chat;
 public partial class UserChatMessage : ChatMessage
 {
     /// <summary>
-    /// Creates a new instance of <see cref="UserChatMessage"/> with ordinary text <c>content</c>.
-    /// </summary>
-    /// <param name="content"> The textual content associated with the message. </param>
-    public UserChatMessage(string content)
-    {
-        Argument.AssertNotNull(content, nameof(content));
-
-        Role = "user";
-        Content = [ChatMessageContentPart.CreateTextMessageContentPart(content)];
-    }
-
-    /// <summary>
     /// Creates a new instance of <see cref="UserChatMessage"/> using a collection of content items that can
     /// include text and image information. This content format is currently only applicable to the
-    /// <c>gpt-4-vision-preview</c> model and will not be accepted by other models.
+    /// <c>gpt-4o</c> and later models and will not be accepted by older models.
     /// </summary>
     /// <param name="content">
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public UserChatMessage(IEnumerable<ChatMessageContentPart> content)
+        : base(ChatMessageRole.User, content)
     {
         Argument.AssertNotNullOrEmpty(content, nameof(content));
-
-        Role = "user";
-        Content = content.ToList();
     }
 
     /// <summary>
     /// Creates a new instance of <see cref="UserChatMessage"/> using a collection of content items that can
     /// include text and image information. This content format is currently only applicable to the
-    /// <c>gpt-4-vision-preview</c> model and will not be accepted by other models.
+    /// <c>gpt-4o</c> and later models and will not be accepted by older models.
     /// </summary>
     /// <param name="content">
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public UserChatMessage(params ChatMessageContentPart[] content)
-    {
-        Argument.AssertNotNullOrEmpty(content, nameof(content));
+        : base(ChatMessageRole.User, content)
+    { }
 
-        Role = "user";
-        Content = content.ToList();
+    /// <summary>
+    /// Creates a new instance of <see cref="UserChatMessage"/> with ordinary text <c>content</c>.
+    /// </summary>
+    /// <param name="content"> The textual content associated with the message. </param>
+    public UserChatMessage(string content)
+        : base(ChatMessageRole.User, content)
+    {
+        Argument.AssertNotNull(content, nameof(content));
     }
 
     // CUSTOM: Rename.

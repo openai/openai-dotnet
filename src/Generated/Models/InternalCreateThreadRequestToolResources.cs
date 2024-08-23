@@ -14,7 +14,7 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal InternalCreateThreadRequestToolResources(InternalCreateThreadRequestToolResourcesCodeInterpreter codeInterpreter, BinaryData fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateThreadRequestToolResources(InternalCreateThreadRequestToolResourcesCodeInterpreter codeInterpreter, FileSearchToolResources fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
@@ -22,6 +22,6 @@ namespace OpenAI.Assistants
         }
 
         public InternalCreateThreadRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
-        public BinaryData FileSearch { get; set; }
+        public FileSearchToolResources FileSearch { get; set; }
     }
 }

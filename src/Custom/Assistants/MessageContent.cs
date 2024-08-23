@@ -45,11 +45,13 @@ public abstract partial class MessageContent
     public string Text => AsInternalRequestText?.InternalText ?? AsInternalResponseText?.InternalText;
     /// <inheritdoc cref="InternalResponseMessageTextContent.InternalAnnotations"/>
     public IReadOnlyList<TextAnnotation> TextAnnotations => AsInternalResponseText?.InternalAnnotations ?? [];
+    public string Refusal => AsRefusal?.InternalRefusal;
 
     private InternalMessageImageFileContent AsInternalImageFile => this as InternalMessageImageFileContent;
     private InternalMessageImageUrlContent AsInternalImageUrl => this as InternalMessageImageUrlContent;
     private InternalResponseMessageTextContent AsInternalResponseText => this as InternalResponseMessageTextContent;
     private InternalRequestMessageTextContent AsInternalRequestText => this as InternalRequestMessageTextContent;
+    private InternalMessageRefusalContent AsRefusal => this as InternalMessageRefusalContent;
 
     /// <summary>
     /// The implicit conversion operator that infers an equivalent <see cref="MessageContent"/> 

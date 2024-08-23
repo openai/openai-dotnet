@@ -18,6 +18,10 @@ namespace OpenAI.Chat
 
         private const string Gpt4oValue = "gpt-4o";
         private const string Gpt4o20240513Value = "gpt-4o-2024-05-13";
+        private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
+        private const string Chatgpt4oLatestValue = "chatgpt-4o-latest";
+        private const string Gpt4oMiniValue = "gpt-4o-mini";
+        private const string Gpt4oMini20240718Value = "gpt-4o-mini-2024-07-18";
         private const string Gpt4TurboValue = "gpt-4-turbo";
         private const string Gpt4Turbo20240409Value = "gpt-4-turbo-2024-04-09";
         private const string Gpt40125PreviewValue = "gpt-4-0125-preview";
@@ -40,6 +44,10 @@ namespace OpenAI.Chat
 
         public static InternalCreateChatCompletionRequestModel Gpt4o { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oValue);
         public static InternalCreateChatCompletionRequestModel Gpt4o20240513 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240513Value);
+        public static InternalCreateChatCompletionRequestModel Gpt4o20240806 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240806Value);
+        public static InternalCreateChatCompletionRequestModel Chatgpt4oLatest { get; } = new InternalCreateChatCompletionRequestModel(Chatgpt4oLatestValue);
+        public static InternalCreateChatCompletionRequestModel Gpt4oMini { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMiniValue);
+        public static InternalCreateChatCompletionRequestModel Gpt4oMini20240718 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMini20240718Value);
         public static InternalCreateChatCompletionRequestModel Gpt4Turbo { get; } = new InternalCreateChatCompletionRequestModel(Gpt4TurboValue);
         public static InternalCreateChatCompletionRequestModel Gpt4Turbo20240409 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4Turbo20240409Value);
         public static InternalCreateChatCompletionRequestModel Gpt40125Preview { get; } = new InternalCreateChatCompletionRequestModel(Gpt40125PreviewValue);

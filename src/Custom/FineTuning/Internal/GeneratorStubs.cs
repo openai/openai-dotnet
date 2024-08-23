@@ -88,3 +88,10 @@ internal partial class InternalListPaginatedFineTuningJobsResponse { }
 
 [CodeGenModel("ListPaginatedFineTuningJobsResponseObject")]
 internal readonly partial struct InternalListPaginatedFineTuningJobsResponseObject { }
+
+[CodeGenModel("CreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum")] internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum { }
+[CodeGenModel("CreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum")] internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum { }
+[CodeGenModel("CreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum")] internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum { }
+[CodeGenModel("FineTuningJobHyperparametersBatchSizeChoiceEnum")] internal readonly partial struct InternalFineTuningJobHyperparametersBatchSizeChoiceEnum { }
+[CodeGenModel("FineTuningJobHyperparametersLearningRateMultiplierChoiceEnum")] internal readonly partial struct InternalFineTuningJobHyperparametersLearningRateMultiplierChoiceEnum { }
+[CodeGenModel("FineTuningJobHyperparametersNEpochsChoiceEnum")] internal readonly partial struct InternalFineTuningJobHyperparametersNEpochsChoiceEnum { }

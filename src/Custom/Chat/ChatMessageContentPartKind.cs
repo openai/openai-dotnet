@@ -18,10 +18,13 @@ public readonly partial struct ChatMessageContentPartKind : IEquatable<ChatMessa
     }
 
     private const string TextValue = "text";
+    private const string RefusalValue = "refusal";
     private const string ImageValue = "image_url";
 
     /// <summary> Text. </summary>
     public static ChatMessageContentPartKind Text { get; } = new ChatMessageContentPartKind(TextValue);
+    /// <summary> Refusal. </summary>
+    public static ChatMessageContentPartKind Refusal { get; } = new(RefusalValue);
     /// <summary> Image. </summary>
     public static ChatMessageContentPartKind Image { get; } = new ChatMessageContentPartKind(ImageValue);
 
