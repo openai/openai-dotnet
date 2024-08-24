@@ -17,6 +17,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
   - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
 - [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
 - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
+- [How to use structured outputs](#how-to-use-structured-outputs)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
@@ -294,6 +295,60 @@ do
             throw new NotImplementedException(chatCompletion.FinishReason.ToString());
     }
 } while (requiresAction);
+```
+
+## How to use structured outputs
+
+Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs.
+
+For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
+
+To use structured outputs to constrain chat completion content, set an appropriate `ChatResponseFormat` as in the following example:
+
+```csharp
+ChatCompletionOptions options = new()
+{
+    ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+        name: "math_reasoning",
+        jsonSchema: BinaryData.FromString("""
+            {
+                "type": "object",
+                "properties": {
+                "steps": {
+                    "type": "array",
+                    "items": {
+                    "type": "object",
+                    "properties": {
+                        "explanation": { "type": "string" },
+                        "output": { "type": "string" }
+                    },
+                    "required": ["explanation", "output"],
+                    "additionalProperties": false
+                    }
+                },
+                "final_answer": { "type": "string" }
+                },
+                "required": ["steps", "final_answer"],
+                "additionalProperties": false
+            }
+            """),
+    strictSchemaEnabled: true)
+};
+
+ChatCompletion chatCompletion = await client.CompleteChatAsync(
+    ["How can I solve 8x + 7 = -23?"],
+    options);
+
+using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
+        
+Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer").GetString()}");
+Console.WriteLine("Reasoning steps:");
+
+foreach (JsonElement stepElement in structuredJson.RootElement.GetProperty("steps").EnumerateArray())
+{
+    Console.WriteLine($"  - Explanation: {stepElement.GetProperty("explanation").GetString()}");
+    Console.WriteLine($"    Output: {stepElement.GetProperty("output")}");
+}
 ```
 
 ## How to generate text embeddings
