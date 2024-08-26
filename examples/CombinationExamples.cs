@@ -48,7 +48,7 @@ public partial class CombinationExamples
 
         // Finally, we'll get some text-to-speech for that critical evaluation using tts-1-hd:
         AudioClient audioClient = new("tts-1-hd", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        ClientResult<BinaryData> ttsResult = audioClient.GenerateSpeechFromText(
+        ClientResult<BinaryData> ttsResult = audioClient.GenerateSpeech(
             text: chatResponseText,
             GeneratedSpeechVoice.Fable,
             new SpeechGenerationOptions()
@@ -84,7 +84,7 @@ public partial class CombinationExamples
 
         // Asynchronously, in parallel to the next steps, we'll get the creative description in the voice of Onyx
         AudioClient ttsClient = new("tts-1-hd", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        Task<ClientResult<BinaryData>> imageDescriptionAudioTask = ttsClient.GenerateSpeechFromTextAsync(
+        Task<ClientResult<BinaryData>> imageDescriptionAudioTask = ttsClient.GenerateSpeechAsync(
             description,
             GeneratedSpeechVoice.Onyx,
             new SpeechGenerationOptions()
@@ -131,7 +131,7 @@ public partial class CombinationExamples
         Console.WriteLine($"Critic's appraisal:\n{appraisal}");
 
         // Finally, we'll get that art expert's laudations in the voice of Fable
-        ClientResult<BinaryData> appraisalAudioResult = await ttsClient.GenerateSpeechFromTextAsync(
+        ClientResult<BinaryData> appraisalAudioResult = await ttsClient.GenerateSpeechAsync(
             appraisal,
             GeneratedSpeechVoice.Fable,
             new SpeechGenerationOptions()

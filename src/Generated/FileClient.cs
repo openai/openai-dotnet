@@ -32,7 +32,7 @@ namespace OpenAI.Files
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files", false);
+            uri.AppendPath("/v1/files", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);
@@ -49,7 +49,7 @@ namespace OpenAI.Files
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files", false);
+            uri.AppendPath("/v1/files", false);
             if (purpose != null)
             {
                 uri.AppendQuery("purpose", purpose, true);
@@ -68,7 +68,7 @@ namespace OpenAI.Files
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files/", false);
+            uri.AppendPath("/v1/files/", false);
             uri.AppendPath(fileId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -84,7 +84,7 @@ namespace OpenAI.Files
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files/", false);
+            uri.AppendPath("/v1/files/", false);
             uri.AppendPath(fileId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -100,7 +100,7 @@ namespace OpenAI.Files
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files/", false);
+            uri.AppendPath("/v1/files/", false);
             uri.AppendPath(fileId, true);
             uri.AppendPath("/content", false);
             request.Uri = uri.ToUri();

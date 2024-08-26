@@ -113,7 +113,7 @@ internal partial class RunsPageEnumerator : PageEnumerator<ThreadRun>
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/threads/", false);
+        uri.AppendPath("/v1/threads/", false);
         uri.AppendPath(threadId, true);
         uri.AppendPath("/runs", false);
         if (limit != null)

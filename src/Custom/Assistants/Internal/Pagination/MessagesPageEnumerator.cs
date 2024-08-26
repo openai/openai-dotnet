@@ -115,7 +115,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/threads/", false);
+        uri.AppendPath("/v1/threads/", false);
         uri.AppendPath(threadId, true);
         uri.AppendPath("/messages", false);
         if (limit != null)

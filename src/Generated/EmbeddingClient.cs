@@ -32,7 +32,7 @@ namespace OpenAI.Embeddings
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/embeddings", false);
+            uri.AppendPath("/v1/embeddings", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");

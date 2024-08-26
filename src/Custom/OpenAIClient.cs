@@ -61,7 +61,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetVectorStoreClientClient")]
 public partial class OpenAIClient
 {
-    private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
+    private const string OpenAIV1Endpoint = "https://api.openai.com";
     private const string OpenAIBetaHeaderValue = "assistants=v2";
 
     private static class KnownHeaderNames
@@ -98,6 +98,7 @@ public partial class OpenAIClient
 
         _pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
+        _options = options;
     }
 
     // CUSTOM: Added protected internal constructor that takes a ClientPipeline.

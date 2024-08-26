@@ -116,7 +116,7 @@ internal partial class VectorStoreFilesPageEnumerator : PageEnumerator<VectorSto
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/vector_stores/", false);
+        uri.AppendPath("/v1/vector_stores/", false);
         uri.AppendPath(vectorStoreId, true);
         uri.AppendPath("/files", false);
         if (limit != null)

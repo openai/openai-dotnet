@@ -27,7 +27,7 @@ public partial class AudioClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> GenerateSpeechFromTextAsync(BinaryContent content, RequestOptions options = null)
+    public virtual async Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -48,7 +48,7 @@ public partial class AudioClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult GenerateSpeechFromText(BinaryContent content, RequestOptions options = null)
+    public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
