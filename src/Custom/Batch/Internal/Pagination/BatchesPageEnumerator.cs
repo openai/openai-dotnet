@@ -1,7 +1,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -89,7 +88,7 @@ internal partial class BatchesPageEnumerator : PageResultEnumerator
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/batches", false);
+        uri.AppendPath("/v1/batches", false);
         if (after != null)
         {
             uri.AppendQuery("after", after, true);
