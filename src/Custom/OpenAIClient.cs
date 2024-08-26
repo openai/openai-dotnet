@@ -98,6 +98,7 @@ public partial class OpenAIClient
 
         _pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
+        _options = options;
     }
 
     // CUSTOM: Added protected internal constructor that takes a ClientPipeline.
