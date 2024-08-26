@@ -1,5 +1,20 @@
 # Release History
 
+## 2.0.0-beta.10 (2024-08-26)
+
+### Breaking Changes
+
+- Renamed `AudioClient`'s `GenerateSpeechFromText` methods to simply `GenerateSpeech`. (commit_hash)
+- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. (commit_hash) 
+
+### Bugs Fixed
+
+- Fixed a newly introduced bug ([#185](https://github.com/openai/openai-dotnet/pull/185)) where providing `OpenAIClientOptions` to a top-level `OpenAIClient` did not carry over to scenario clients (e.g. `ChatClient`) created via that top-level client (commit_hash)
+
+### Other Changes
+
+- Removed the version path parameter "v1" from the default endpoint URL. (commit_hash)
+
 ## 2.0.0-beta.9 (2024-08-23)
 
 ### Features Added

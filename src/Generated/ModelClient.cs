@@ -32,7 +32,7 @@ namespace OpenAI.Models
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/models", false);
+            uri.AppendPath("/v1/models", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
@@ -47,7 +47,7 @@ namespace OpenAI.Models
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/models/", false);
+            uri.AppendPath("/v1/models/", false);
             uri.AppendPath(model, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -63,7 +63,7 @@ namespace OpenAI.Models
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/models/", false);
+            uri.AppendPath("/v1/models/", false);
             uri.AppendPath(model, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");

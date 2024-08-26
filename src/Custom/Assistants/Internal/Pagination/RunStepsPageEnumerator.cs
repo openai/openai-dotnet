@@ -119,7 +119,7 @@ internal partial class RunStepsPageEnumerator : PageEnumerator<RunStep>
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/threads/", false);
+        uri.AppendPath("/v1/threads/", false);
         uri.AppendPath(threadId, true);
         uri.AppendPath("/runs/", false);
         uri.AppendPath(runId, true);

@@ -66,7 +66,7 @@ namespace OpenAI.LegacyCompletions
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/completions", false);
+            uri.AppendPath("/v1/completions", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");

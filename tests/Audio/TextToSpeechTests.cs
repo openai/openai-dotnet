@@ -23,8 +23,8 @@ public partial class TextToSpeechTests : SyncAsyncTestBase
         AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_TTS);
 
         BinaryData audio = IsAsync
-            ? await client.GenerateSpeechFromTextAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer)
-            : client.GenerateSpeechFromText("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
+            ? await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer)
+            : client.GenerateSpeech("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
 
         Assert.That(audio, Is.Not.Null);
         ValidateGeneratedAudio(audio, "hello");
@@ -47,8 +47,8 @@ public partial class TextToSpeechTests : SyncAsyncTestBase
             : new() { ResponseFormat = responseFormat };
 
         BinaryData audio = IsAsync
-            ? await client.GenerateSpeechFromTextAsync("Hello, world!", GeneratedSpeechVoice.Alloy, options)
-            : client.GenerateSpeechFromText("Hello, world!", GeneratedSpeechVoice.Alloy, options);
+            ? await client.GenerateSpeechAsync("Hello, world!", GeneratedSpeechVoice.Alloy, options)
+            : client.GenerateSpeech("Hello, world!", GeneratedSpeechVoice.Alloy, options);
 
         Assert.That(audio, Is.Not.Null);
     }

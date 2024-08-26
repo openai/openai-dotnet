@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/assistants", false);
+            uri.AppendPath("/v1/assistants", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -49,7 +49,7 @@ namespace OpenAI.Assistants
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/assistants", false);
+            uri.AppendPath("/v1/assistants", false);
             if (limit != null)
             {
                 uri.AppendQuery("limit", limit.Value, true);
@@ -80,7 +80,7 @@ namespace OpenAI.Assistants
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/assistants/", false);
+            uri.AppendPath("/v1/assistants/", false);
             uri.AppendPath(assistantId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -96,7 +96,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/assistants/", false);
+            uri.AppendPath("/v1/assistants/", false);
             uri.AppendPath(assistantId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -114,7 +114,7 @@ namespace OpenAI.Assistants
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/assistants/", false);
+            uri.AppendPath("/v1/assistants/", false);
             uri.AppendPath(assistantId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");

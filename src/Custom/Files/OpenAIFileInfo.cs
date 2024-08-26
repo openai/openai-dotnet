@@ -10,5 +10,5 @@ public partial class OpenAIFileInfo
     // CUSTOM: Renamed.
     /// <summary> The size of the file, in bytes. </summary>
     [CodeGenMember("Bytes")]
-    public long? SizeInBytes { get; }
+    public int? SizeInBytes { get; }
 }
