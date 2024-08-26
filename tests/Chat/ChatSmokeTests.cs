@@ -594,13 +594,12 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport,
-            Endpoint = new Uri("https://api.openai.com/expected/test/endpoint"),
+            Endpoint = new Uri("https://my.custom.com/expected/test/endpoint"),
         };
         Uri observedEndpoint = null;
         options.AddPolicy(new TestPipelinePolicy(message =>
         {
             observedEndpoint = message?.Request?.Uri;
-            Console.WriteLine($"foo: {message.Request.Uri.AbsoluteUri}");
         }),
         PipelinePosition.PerCall);
 
@@ -609,6 +608,6 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         ClientResult first = firstClient.CompleteChat("Hello, world");
 
         Assert.That(observedEndpoint, Is.Not.Null);
-        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("expected/test/endpoint"));
+        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("my.custom.com/expected/test/endpoint"));
     }
 }
