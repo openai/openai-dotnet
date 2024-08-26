@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.Telemetry.TestMeterListener;
 using static OpenAI.Tests.TestHelpers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OpenAI.Tests.Chat;
 
@@ -593,13 +594,12 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport,
-            Endpoint = new Uri("https://api.openai.com/expected/test/endpoint"),
+            Endpoint = new Uri("https://my.custom.com/expected/test/endpoint"),
         };
         Uri observedEndpoint = null;
         options.AddPolicy(new TestPipelinePolicy(message =>
         {
             observedEndpoint = message?.Request?.Uri;
-            Console.WriteLine($"foo: {message.Request.Uri.AbsoluteUri}");
         }),
         PipelinePosition.PerCall);
 
@@ -608,6 +608,6 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         ClientResult first = firstClient.CompleteChat("Hello, world");
 
         Assert.That(observedEndpoint, Is.Not.Null);
-        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("expected/test/endpoint"));
+        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("my.custom.com/expected/test/endpoint"));
     }
 }
