@@ -48,7 +48,18 @@ To enable the instrumentation:
 
 Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client
 calls made by your application including those done by the OpenAI SDK.
-Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
+
+Check out [full example](../examples/OpenTelemetryExamples.cs) and [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
+
+### How to view telemetry
+
+You can view traces and metrics in any [telemetry system](https://opentelemetry.io/ecosystem/vendors/) compatible with OpenTelemetry.
+
+You may use [Aspire dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone) to test things out locally.
+
+Here's a trace produced by [OpenTelemetry sample](../examples/OpenTelemetryExamples.cs):
+
+![](./images/openai-tracing-with-opentelemetry.png)
 
 ### Available sources and meters
 
