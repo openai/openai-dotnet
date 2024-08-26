@@ -585,4 +585,29 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         FunctionChatMessage deserializedMessage = ModelReaderWriter.Read<FunctionChatMessage>(serializedMessage);
 #pragma warning restore
     }
+
+    [Test]
+    public void TopLevelClientOptionsPersistence()
+    {
+        MockPipelineTransport mockTransport = new(BinaryData.FromString("{}"), BinaryData.FromString("{}"));
+        OpenAIClientOptions options = new()
+        {
+            Transport = mockTransport,
+            Endpoint = new Uri("https://api.openai.com/expected/test/endpoint"),
+        };
+        Uri observedEndpoint = null;
+        options.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            observedEndpoint = message?.Request?.Uri;
+            Console.WriteLine($"foo: {message.Request.Uri.AbsoluteUri}");
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIClient topLevelClient = new(new("mock-credential"), options);
+        ChatClient firstClient = topLevelClient.GetChatClient("mock-model");
+        ClientResult first = firstClient.CompleteChat("Hello, world");
+
+        Assert.That(observedEndpoint, Is.Not.Null);
+        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("expected/test/endpoint"));
+    }
 }

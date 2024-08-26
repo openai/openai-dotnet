@@ -15,6 +15,22 @@ internal class PageCollectionHelpers
     public static AsyncPageCollection<T> CreateAsync<T>(PageEnumerator<T> enumerator)
         => new AsyncEnumeratorPageCollection<T>(enumerator);
 
+    public static IEnumerable<ClientResult> Create(PageResultEnumerator enumerator)
+    {
+        while (enumerator.MoveNext())
+        {
+            yield return enumerator.Current;
+        }
+    }
+
+    public static async IAsyncEnumerable<ClientResult> CreateAsync(PageResultEnumerator enumerator)
+    {
+        while (await enumerator.MoveNextAsync().ConfigureAwait(false))
+        {
+            yield return enumerator.Current;
+        }
+    }
+
     private class EnumeratorPageCollection<T> : PageCollection<T>
     {
         private readonly PageEnumerator<T> _enumerator;

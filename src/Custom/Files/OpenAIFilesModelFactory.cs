@@ -9,7 +9,7 @@ public static partial class OpenAIFilesModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfo"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Files.OpenAIFileInfo"/> instance for mocking. </returns>
-    public static OpenAIFileInfo OpenAIFileInfo(string id = null, long? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null)
+    public static OpenAIFileInfo OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null)
     {
         return new OpenAIFileInfo(
             id,

@@ -1,5 +1,29 @@
 # Release History
 
+## 2.0.0-beta.10 (Unreleased)
+
+### Features Added
+
+### Breaking Changes
+
+- Removed client constructors that do not explicitly take an API key parameter or an endpoint via an `OpenAIClientOptions` parameter, making it clearer how to appropriately instantiate a client. (commit_hash)
+- Removed the endpoint parameter from all client constructors, making it clearer that an alternative endpoint must be specified via the `OpenAIClientOptions` parameter. (commit_hash)
+- Removed `OpenAIClient`'s `Endpoint` `protected` property. (commit_hash)
+- Made `OpenAIClient`'s constructor that takes a `ClientPipeline` parameter `protected internal` instead of just `protected`. (commit_hash)
+- Renamed the `User` property in applicable Options classes to `EndUserId`, making its purpose clearer. (commit_hash)
+- Updated fine-tuning pagination methods `GetJobs`, `GetEvents`, and `GetJobCheckpoints` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
+- Updated the batching pagination method `GetBatches` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
+- Renamed `AudioClient`'s `GenerateSpeechFromText` methods to simply `GenerateSpeech`. (commit_hash)
+- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. (commit_hash) 
+
+### Bugs Fixed
+
+- Fixed a newly introduced bug ([#185](https://github.com/openai/openai-dotnet/pull/185)) where providing `OpenAIClientOptions` to a top-level `OpenAIClient` did not carry over to scenario clients (e.g. `ChatClient`) created via that top-level client
+
+### Other Changes
+
+- Removed the version path parameter "v1" from the default endpoint URL. (commit_hash)
+
 ## 2.0.0-beta.9 (2024-08-23)
 
 ### Features Added

@@ -32,7 +32,7 @@ namespace OpenAI.Images
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/images/generations", false);
+            uri.AppendPath("/v1/images/generations", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -49,7 +49,7 @@ namespace OpenAI.Images
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/images/edits", false);
+            uri.AppendPath("/v1/images/edits", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);
@@ -66,7 +66,7 @@ namespace OpenAI.Images
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/images/variations", false);
+            uri.AppendPath("/v1/images/variations", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);

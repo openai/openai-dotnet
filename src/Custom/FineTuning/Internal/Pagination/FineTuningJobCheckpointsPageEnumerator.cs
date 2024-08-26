@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
@@ -6,44 +6,39 @@ using System.Threading.Tasks;
 
 #nullable enable
 
-namespace OpenAI.Assistants;
+namespace OpenAI.FineTuning;
 
-internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
+internal partial class FineTuningJobCheckpointsPageEnumerator : PageResultEnumerator
 {
     private readonly ClientPipeline _pipeline;
     private readonly Uri _endpoint;
 
+    private readonly string _jobId;
     private readonly int? _limit;
-    private readonly string _order;
+    private readonly RequestOptions _options;
 
     private string _after;
 
-    private readonly string _before;
-    private readonly RequestOptions _options;
-
-    public virtual ClientPipeline Pipeline => _pipeline;
- 
-    public AssistantsPageEnumerator(
+    public FineTuningJobCheckpointsPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
-        int? limit, string order, string after, string before,
+         string jobId, string after, int? limit,
         RequestOptions options)
     {
         _pipeline = pipeline;
         _endpoint = endpoint;
 
-        _limit = limit;
-        _order = order;
+        _jobId = jobId;
         _after = after;
-        _before = before;
+        _limit = limit;
         _options = options;
     }
 
     public override async Task<ClientResult> GetFirstAsync()
-        => await GetAssistantsAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
+        => await GetJobCheckpointsAsync(_jobId, _after, _limit, _options).ConfigureAwait(false);
 
     public override ClientResult GetFirst()
-        => GetAssistants(_limit, _order, _after, _before, _options);
+        => GetJobCheckpoints(_jobId, _after, _limit, _options);
 
     public override async Task<ClientResult> GetNextAsync(ClientResult result)
     {
@@ -52,7 +47,7 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return await GetAssistantsAsync(_limit, _order, _after, _before, _options).ConfigureAwait(false);
+        return await GetJobCheckpointsAsync(_jobId, _after, _limit, _options).ConfigureAwait(false);
     }
 
     public override ClientResult GetNext(ClientResult result)
@@ -62,7 +57,7 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         _after = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return GetAssistants(_limit, _order, _after, _before, _options);
+        return GetJobCheckpoints(_jobId, _after, _limit, _options);
     }
 
     public override bool HasNext(ClientResult result)
@@ -75,31 +70,23 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         return hasMore;
     }
 
-    public override PageResult<Assistant> GetPageFromResult(ClientResult result)
+    internal virtual async Task<ClientResult> GetJobCheckpointsAsync(string jobId, string after, int? limit, RequestOptions options)
     {
-        PipelineResponse response = result.GetRawResponse();
+        Argument.AssertNotNullOrEmpty(jobId, nameof(jobId));
 
-        InternalListAssistantsResponse list = ModelReaderWriter.Read<InternalListAssistantsResponse>(response.Content)!;
-
-        AssistantsPageToken pageToken = AssistantsPageToken.FromOptions(_limit, _order, _after, _before);
-        AssistantsPageToken? nextPageToken = pageToken.GetNextPageToken(list.HasMore, list.LastId);
-
-        return PageResult<Assistant>.Create(list.Data, pageToken, nextPageToken, response);
-    }
-
-    internal virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
+        using PipelineMessage message = CreateGetFineTuningJobCheckpointsRequest(jobId, after, limit, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    internal virtual ClientResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+    internal virtual ClientResult GetJobCheckpoints(string jobId, string after, int? limit, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetAssistantsRequest(limit, order, after, before, options);
+        Argument.AssertNotNullOrEmpty(jobId, nameof(jobId));
+
+        using PipelineMessage message = CreateGetFineTuningJobCheckpointsRequest(jobId, after, limit, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
-    private PipelineMessage CreateGetAssistantsRequest(int? limit, string order, string after, string before, RequestOptions options)
+    internal PipelineMessage CreateGetFineTuningJobCheckpointsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
     {
         var message = _pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
@@ -107,22 +94,16 @@ internal partial class AssistantsPageEnumerator : PageEnumerator<Assistant>
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/v1/assistants", false);
-        if (limit != null)
-        {
-            uri.AppendQuery("limit", limit.Value, true);
-        }
-        if (order != null)
-        {
-            uri.AppendQuery("order", order, true);
-        }
+        uri.AppendPath("/fine_tuning/jobs/", false);
+        uri.AppendPath(fineTuningJobId, true);
+        uri.AppendPath("/checkpoints", false);
         if (after != null)
         {
             uri.AppendQuery("after", after, true);
         }
-        if (before != null)
+        if (limit != null)
         {
-            uri.AppendQuery("before", before, true);
+            uri.AppendQuery("limit", limit.Value, true);
         }
         request.Uri = uri.ToUri();
         request.Headers.Set("Accept", "application/json");

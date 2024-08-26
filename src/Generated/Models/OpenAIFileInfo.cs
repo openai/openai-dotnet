@@ -10,7 +10,7 @@ namespace OpenAI.Files
     public partial class OpenAIFileInfo
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal OpenAIFileInfo(string id, long? sizeInBytes, DateTimeOffset createdAt, string filename, OpenAIFilePurpose purpose, OpenAIFileStatus status)
+        internal OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, OpenAIFilePurpose purpose, OpenAIFileStatus status)
         {
             Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(filename, nameof(filename));
@@ -23,7 +23,7 @@ namespace OpenAI.Files
             Status = status;
         }
 
-        internal OpenAIFileInfo(string id, long? sizeInBytes, DateTimeOffset createdAt, string filename, InternalOpenAIFileObject @object, OpenAIFilePurpose purpose, OpenAIFileStatus status, string statusDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, InternalOpenAIFileObject @object, OpenAIFilePurpose purpose, OpenAIFileStatus status, string statusDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             SizeInBytes = sizeInBytes;

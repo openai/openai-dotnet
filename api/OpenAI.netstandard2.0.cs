@@ -999,11 +999,11 @@ namespace OpenAI.Audio {
         public AudioClient(string model, ApiKeyCredential credential);
         public virtual ClientPipeline Pipeline { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual ClientResult GenerateSpeechFromText(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<BinaryData> GenerateSpeechFromText(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public virtual Task<ClientResult> GenerateSpeechFromTextAsync(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<BinaryData>> GenerateSpeechFromTextAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
@@ -1170,8 +1170,8 @@ namespace OpenAI.Batch {
         public virtual Task<ClientResult> CreateBatchAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult GetBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
-        public virtual ClientResult GetBatches(string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetBatchesAsync(string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetBatches(string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
 }
 namespace OpenAI.Chat {
@@ -1720,7 +1720,7 @@ namespace OpenAI.Files {
         public string Filename { get; }
         public string Id { get; }
         public OpenAIFilePurpose Purpose { get; }
-        public long? SizeInBytes { get; }
+        public int? SizeInBytes { get; }
         public OpenAIFileStatus Status { get; }
         public string StatusDetails { get; }
         OpenAIFileInfo IJsonModel<OpenAIFileInfo>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1758,7 +1758,7 @@ namespace OpenAI.Files {
         public override readonly string ToString();
     }
     public static class OpenAIFilesModelFactory {
-        public static OpenAIFileInfo OpenAIFileInfo(string id = null, long? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null);
+        public static OpenAIFileInfo OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null);
         public static OpenAIFileInfoCollection OpenAIFileInfoCollection(IEnumerable<OpenAIFileInfo> items = null);
     }
     public readonly partial struct OpenAIFileStatus : IEquatable<OpenAIFileStatus> {
@@ -1792,12 +1792,12 @@ namespace OpenAI.FineTuning {
         public virtual Task<ClientResult> CreateJobAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult GetJob(string jobId, RequestOptions options);
         public virtual Task<ClientResult> GetJobAsync(string jobId, RequestOptions options);
-        public virtual ClientResult GetJobCheckpoints(string fineTuningJobId, string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobCheckpointsAsync(string fineTuningJobId, string after, int? limit, RequestOptions options);
-        public virtual ClientResult GetJobEvents(string jobId, string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobEventsAsync(string jobId, string after, int? limit, RequestOptions options);
-        public virtual ClientResult GetJobs(string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobsAsync(string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobCheckpoints(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobCheckpointsAsync(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobEvents(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobEventsAsync(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobs(string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobsAsync(string after, int? limit, RequestOptions options);
     }
 }
 namespace OpenAI.Images {
