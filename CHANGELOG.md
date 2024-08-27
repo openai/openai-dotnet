@@ -1,5 +1,18 @@
 # Release History
 
+## 2.0.0-beta.11 (Unreleased)
+
+### Features Added
+
+### Breaking Changes
+
+- Updated fine-tuning pagination methods `GetJobs`, `GetEvents`, and `GetJobCheckpoints` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
+- Updated the batching pagination method `GetBatches` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
+
+### Bugs Fixed
+
+### Other Changes
+
 ## 2.0.0-beta.10 (2024-08-26)
 
 ### Breaking Changes

@@ -1170,8 +1170,8 @@ namespace OpenAI.Batch {
         public virtual Task<ClientResult> CreateBatchAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult GetBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
-        public virtual ClientResult GetBatches(string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetBatchesAsync(string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetBatches(string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
 }
 namespace OpenAI.Chat {
@@ -1792,12 +1792,12 @@ namespace OpenAI.FineTuning {
         public virtual Task<ClientResult> CreateJobAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult GetJob(string jobId, RequestOptions options);
         public virtual Task<ClientResult> GetJobAsync(string jobId, RequestOptions options);
-        public virtual ClientResult GetJobCheckpoints(string fineTuningJobId, string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobCheckpointsAsync(string fineTuningJobId, string after, int? limit, RequestOptions options);
-        public virtual ClientResult GetJobEvents(string jobId, string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobEventsAsync(string jobId, string after, int? limit, RequestOptions options);
-        public virtual ClientResult GetJobs(string after, int? limit, RequestOptions options);
-        public virtual Task<ClientResult> GetJobsAsync(string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobCheckpoints(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobCheckpointsAsync(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobEvents(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobEventsAsync(string jobId, string after, int? limit, RequestOptions options);
+        public virtual IEnumerable<ClientResult> GetJobs(string after, int? limit, RequestOptions options);
+        public virtual IAsyncEnumerable<ClientResult> GetJobsAsync(string after, int? limit, RequestOptions options);
     }
 }
 namespace OpenAI.Images {
