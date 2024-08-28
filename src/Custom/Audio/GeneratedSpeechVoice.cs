@@ -1,34 +1,11 @@
-using System;
-
 namespace OpenAI.Audio;
 
+// CUSTOM: Renamed.
 /// <summary>
-/// Represents the available text-to-speech voices.
+///     The voice to use in the generated speech. Previews of the available voices can be found in the
+///     <see href="https://platform.openai.com/docs/guides/text-to-speech/voice-options">text-to-speech guide</see>.
 /// </summary>
 [CodeGenModel("CreateSpeechRequestVoice")]
-public enum GeneratedSpeechVoice
+public readonly partial struct GeneratedSpeechVoice
 {
-    /// <summary> Alloy. </summary>
-    [CodeGenMember("Alloy")]
-    Alloy,
-
-    /// <summary> Echo. </summary>
-    [CodeGenMember("Echo")]
-    Echo,
-
-    /// <summary> Fable. </summary>
-    [CodeGenMember("Fable")]
-    Fable,
-
-    /// <summary> Onyx. </summary>
-    [CodeGenMember("Onyx")]
-    Onyx,
-
-    /// <summary> Nova. </summary>
-    [CodeGenMember("Nova")]
-    Nova,
-
-    /// <summary> Shimmer. </summary>
-    [CodeGenMember("Shimmer")]
-    Shimmer,
 }

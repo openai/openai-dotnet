@@ -49,7 +49,7 @@ internal class StreamingUpdateCollection : CollectionResult<StreamingUpdate>
         private StreamingUpdate? _current;
         private bool _started;
 
-        public StreamingUpdateEnumerator(Func<ClientResult> getResult, 
+        public StreamingUpdateEnumerator(Func<ClientResult> getResult,
             StreamingUpdateCollection enumerable)
         {
             Debug.Assert(getResult is not null);

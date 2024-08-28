@@ -10,7 +10,7 @@ namespace OpenAI.VectorStores;
 
 internal class VectorStoreFileBatchesPageToken : ContinuationToken
 {
-    protected VectorStoreFileBatchesPageToken(string vectorStoreId,string batchId, int? limit, string? order, string? after, string? before, string? filter)
+    protected VectorStoreFileBatchesPageToken(string vectorStoreId, string batchId, int? limit, string? order, string? after, string? before, string? filter)
     {
         VectorStoreId = vectorStoreId;
         BatchId = batchId;

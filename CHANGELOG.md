@@ -8,6 +8,7 @@
 
 - Updated fine-tuning pagination methods `GetJobs`, `GetEvents`, and `GetJobCheckpoints` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
 - Updated the batching pagination method `GetBatches` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
+- Changed `GeneratedSpeechVoice` from an enum to an "extensible enum". (commit_hash)
 
 ### Bugs Fixed
 

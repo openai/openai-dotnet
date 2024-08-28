@@ -1092,13 +1092,25 @@ namespace OpenAI.Audio {
         Wav = 4,
         Pcm = 5
     }
-    public enum GeneratedSpeechVoice {
-        Alloy = 0,
-        Echo = 1,
-        Fable = 2,
-        Onyx = 3,
-        Nova = 4,
-        Shimmer = 5
+    public readonly partial struct GeneratedSpeechVoice : IEquatable<GeneratedSpeechVoice> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public GeneratedSpeechVoice(string value);
+        public static GeneratedSpeechVoice Alloy { get; }
+        public static GeneratedSpeechVoice Echo { get; }
+        public static GeneratedSpeechVoice Fable { get; }
+        public static GeneratedSpeechVoice Nova { get; }
+        public static GeneratedSpeechVoice Onyx { get; }
+        public static GeneratedSpeechVoice Shimmer { get; }
+        public readonly bool Equals(GeneratedSpeechVoice other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GeneratedSpeechVoice left, GeneratedSpeechVoice right);
+        public static implicit operator GeneratedSpeechVoice(string value);
+        public static bool operator !=(GeneratedSpeechVoice left, GeneratedSpeechVoice right);
+        public override readonly string ToString();
     }
     public static class OpenAIAudioModelFactory {
         public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null);

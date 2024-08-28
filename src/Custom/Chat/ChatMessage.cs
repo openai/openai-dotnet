@@ -61,7 +61,7 @@ public abstract partial class ChatMessage
         Role = role;
         foreach (ChatMessageContentPart contentPart in contentParts ?? [])
         {
-            Content.Add(contentPart); 
+            Content.Add(contentPart);
         }
     }
 
@@ -76,7 +76,7 @@ public abstract partial class ChatMessage
 
     // CUSTOM: use strongly-typed role.
     [CodeGenMember("Role")]
-    internal ChatMessageRole Role { get; set; } 
+    internal ChatMessageRole Role { get; set; }
 
     /// <inheritdoc cref="SystemChatMessage(string)"/>
     public static SystemChatMessage CreateSystemMessage(string content) => new(content);

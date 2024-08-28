@@ -36,7 +36,7 @@ public partial class AssistantCreationOptions
     /// </summary>
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; set; }
-    
+
     internal AssistantCreationOptions(InternalCreateAssistantRequestModel model)
         : this()
     {

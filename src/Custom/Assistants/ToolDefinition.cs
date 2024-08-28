@@ -4,7 +4,7 @@ namespace OpenAI.Assistants;
 
 [CodeGenModel("AssistantToolDefinition")]
 public abstract partial class ToolDefinition
-{   
+{
     public static CodeInterpreterToolDefinition CreateCodeInterpreter()
         => new CodeInterpreterToolDefinition();
     public static FileSearchToolDefinition CreateFileSearch(int? maxResults = null)

@@ -35,5 +35,5 @@ public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     /// <param name="overlappingTokenCount"></param>
     public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount)
         : this(new InternalStaticChunkingStrategyDetails(maxTokensPerChunk, overlappingTokenCount))
-    {}
+    { }
 }

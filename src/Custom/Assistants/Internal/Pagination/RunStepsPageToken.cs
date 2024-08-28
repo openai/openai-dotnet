@@ -69,7 +69,7 @@ internal class RunStepsPageToken : ContinuationToken
 
         return BinaryData.FromStream(stream);
     }
-    
+
     public RunStepsPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)

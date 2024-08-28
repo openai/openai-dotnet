@@ -9,7 +9,7 @@ namespace OpenAI;
 
 internal static partial class CustomSerializationHelpers
 {
-    internal static TOutput DeserializeNewInstance<TOutput,UInstanceInput>(
+    internal static TOutput DeserializeNewInstance<TOutput, UInstanceInput>(
         UInstanceInput existingInstance,
         Func<JsonElement, ModelReaderWriterOptions?, TOutput> deserializationFunc,
         ref Utf8JsonReader reader,
@@ -27,7 +27,7 @@ internal static partial class CustomSerializationHelpers
         return deserializationFunc.Invoke(document.RootElement, options);
     }
 
-    internal static TOutput DeserializeNewInstance<TOutput,UInstanceInput>(
+    internal static TOutput DeserializeNewInstance<TOutput, UInstanceInput>(
         UInstanceInput existingInstance,
         Func<JsonElement, ModelReaderWriterOptions, TOutput> deserializationFunc,
         BinaryData data,
@@ -49,9 +49,9 @@ internal static partial class CustomSerializationHelpers
         }
     }
 
-    internal static void SerializeInstance<TOutput,UInstanceInput>(
+    internal static void SerializeInstance<TOutput, UInstanceInput>(
         UInstanceInput instance,
-        Action<UInstanceInput,Utf8JsonWriter,ModelReaderWriterOptions> serializationFunc,
+        Action<UInstanceInput, Utf8JsonWriter, ModelReaderWriterOptions> serializationFunc,
         Utf8JsonWriter writer,
         ModelReaderWriterOptions options)
             where UInstanceInput : IJsonModel<TOutput>
@@ -87,7 +87,7 @@ internal static partial class CustomSerializationHelpers
         where T : IJsonModel<T>
             => AssertSupportedJsonWriteFormat<T, T>(instance, options);
 
-    internal static void AssertSupportedJsonWriteFormat<TOutput,UInstanceInput>(UInstanceInput instance, ModelReaderWriterOptions options)
+    internal static void AssertSupportedJsonWriteFormat<TOutput, UInstanceInput>(UInstanceInput instance, ModelReaderWriterOptions options)
         where UInstanceInput : IJsonModel<TOutput>
     {
         var format = options.Format == "W" ? ((IJsonModel<TOutput>)instance).GetFormatFromOptions(options) : options.Format;
@@ -101,7 +101,7 @@ internal static partial class CustomSerializationHelpers
         where T : IPersistableModel<T>
             => AssertSupportedPersistableWriteFormat<T, T>(instance, options);
 
-    internal static void AssertSupportedPersistableWriteFormat<TOutput,UInstanceInput>(UInstanceInput instance, ModelReaderWriterOptions options)
+    internal static void AssertSupportedPersistableWriteFormat<TOutput, UInstanceInput>(UInstanceInput instance, ModelReaderWriterOptions options)
         where UInstanceInput : IPersistableModel<TOutput>
     {
         var format = options.Format == "W" ? ((IPersistableModel<TOutput>)instance).GetFormatFromOptions(options) : options.Format;

@@ -7,7 +7,7 @@ public partial class ThreadMessage
 {
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `thread.message`. </summary>
-    [CodeGenMember("Object")] 
+    [CodeGenMember("Object")]
     internal InternalMessageObjectObject Object { get; } = InternalMessageObjectObject.ThreadMessage;
 
 

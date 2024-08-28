@@ -18,7 +18,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
     private readonly InternalRunStepDeltaStepDetailsToolCallsFunctionObject _asFunctionCall;
 
     /// <inheritdoc cref="InternalRunStepDelta.Id"/>
-    public string StepId  => _delta?.Id;
+    public string StepId => _delta?.Id;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation"/>
     public string CreatedMessageId => _asMessageCreation?.MessageCreation?.MessageId;

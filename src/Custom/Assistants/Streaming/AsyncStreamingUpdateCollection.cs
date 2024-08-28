@@ -53,7 +53,7 @@ internal class AsyncStreamingUpdateCollection : AsyncCollectionResult<StreamingU
         private bool _started;
 
         public AsyncStreamingUpdateEnumerator(Func<Task<ClientResult>> getResultAsync,
-            AsyncStreamingUpdateCollection enumerable, 
+            AsyncStreamingUpdateCollection enumerable,
             CancellationToken cancellationToken)
         {
             Debug.Assert(getResultAsync is not null);

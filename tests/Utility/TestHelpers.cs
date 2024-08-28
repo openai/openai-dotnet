@@ -57,7 +57,7 @@ internal static class TestHelpers
             TestScenario.Batch => new BatchClient(credential, options),
             TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-4o-mini", credential, options),
             TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", credential, options),
-            TestScenario.Files => new FileClient(credential,options),
+            TestScenario.Files => new FileClient(credential, options),
             TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", credential, options),
             TestScenario.Models => new ModelClient(credential, options),
             TestScenario.Moderations => new ModerationClient(overrideModel ?? "text-moderation-stable", credential, options),

@@ -39,7 +39,7 @@ public partial class EmbeddingTests : SyncAsyncTestBase
         Assert.That(embedding.Index, Is.EqualTo(0));
         Assert.That(embedding.Vector, Is.Not.Null);
         Assert.That(embedding.Vector.Span.Length, Is.EqualTo(1536));
-        
+
         float[] array = embedding.Vector.ToArray();
         Assert.That(array.Length, Is.EqualTo(1536));
     }

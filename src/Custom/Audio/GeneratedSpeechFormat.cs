@@ -27,6 +27,6 @@ public enum GeneratedSpeechFormat
     Wav,
 
     /// <summary> PCM (pulse-code modulation). /// </summary>
-    [CodeGenMember("Pcm")] 
+    [CodeGenMember("Pcm")]
     Pcm,
 }

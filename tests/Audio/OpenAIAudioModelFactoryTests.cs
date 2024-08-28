@@ -265,7 +265,7 @@ public partial class OpenAIAudioModelFactoryTests
     [Test]
     public void TranscribedSegmentWithTokenIdsWorks()
     {
-        IEnumerable<long> tokenIds = [ 9000000000, 9000000010 ];
+        IEnumerable<long> tokenIds = [9000000000, 9000000010];
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(tokenIds: tokenIds);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));

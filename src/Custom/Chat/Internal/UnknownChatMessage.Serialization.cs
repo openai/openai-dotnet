@@ -9,7 +9,7 @@ namespace OpenAI.Chat;
 internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
 {
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance<ChatMessage,UnknownChatMessage>(this, WriteCore, writer, options);
+        => CustomSerializationHelpers.SerializeInstance<ChatMessage, UnknownChatMessage>(this, WriteCore, writer, options);
 
     internal static void WriteCore(UnknownChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {

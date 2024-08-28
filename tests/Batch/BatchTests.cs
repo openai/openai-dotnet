@@ -94,7 +94,7 @@ public partial class BatchTests : SyncAsyncTestBase
     public async Task CreateGetAndCancelBatchProtocol()
     {
         using MemoryStream testFileStream = new();
-        using StreamWriter streamWriter = new (testFileStream);
+        using StreamWriter streamWriter = new(testFileStream);
         string input = @"{""custom_id"": ""request-1"", ""method"": ""POST"", ""url"": ""/v1/chat/completions"", ""body"": {""model"": ""gpt-4o-mini"", ""messages"": [{""role"": ""system"", ""content"": ""You are a helpful assistant.""}, {""role"": ""user"", ""content"": ""What is 2+2?""}]}}";
         streamWriter.WriteLine(input);
         streamWriter.Flush();

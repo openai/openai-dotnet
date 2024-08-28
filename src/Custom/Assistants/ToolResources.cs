@@ -13,7 +13,7 @@ public partial class ToolResources
     public FileSearchToolResources FileSearch { get; set; }
 
     public ToolResources()
-    {}
+    { }
 
     private void SerializeFileSearch(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => writer.WriteObjectValue(FileSearch, options);

@@ -256,7 +256,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageEdit(imageStream, imageFilePath, prompt,options);
+        return GenerateImageEdit(imageStream, imageFilePath, prompt, options);
     }
 
     /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>

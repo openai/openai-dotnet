@@ -214,7 +214,7 @@ public partial class ChatTests : SyncAsyncTestBase
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
         IList<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
         ChatCompletionOptions options;
-        
+
         if (includeLogProbabilities)
         {
             options = new()

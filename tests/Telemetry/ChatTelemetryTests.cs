@@ -186,7 +186,7 @@ public class ChatTelemetryTests
         var tasks = new Task[5];
         int numberOfSuccessfulResponses = 3;
         int totalPromptTokens = 0, totalCompletionTokens = 0;
-        for (int i = 0; i < tasks.Length; i ++)
+        for (int i = 0; i < tasks.Length; i++)
         {
             int t = i;
             // don't let Activity.Current escape the scope

@@ -12,5 +12,5 @@ public partial class ToolOutput
     /// <param name="output"> The output from the specified tool. </param>
     public ToolOutput(string toolCallId, string output)
         : this(toolCallId, output, null)
-    {}
+    { }
 }
