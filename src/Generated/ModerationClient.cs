@@ -32,7 +32,7 @@ namespace OpenAI.Moderations
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/moderations", false);
+            uri.AppendPath("/moderations", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");

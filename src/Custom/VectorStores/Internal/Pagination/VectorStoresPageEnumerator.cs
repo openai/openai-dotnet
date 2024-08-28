@@ -106,7 +106,7 @@ internal partial class VectorStoresPageEnumerator : PageEnumerator<VectorStore>
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/v1/vector_stores", false);
+        uri.AppendPath("/vector_stores", false);
         if (limit != null)
         {
             uri.AppendQuery("limit", limit.Value, true);

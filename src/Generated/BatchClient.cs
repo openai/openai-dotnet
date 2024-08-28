@@ -33,7 +33,7 @@ namespace OpenAI.Batch
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/batches", false);
+            uri.AppendPath("/batches", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -50,7 +50,7 @@ namespace OpenAI.Batch
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/batches", false);
+            uri.AppendPath("/batches", false);
             if (after != null)
             {
                 uri.AppendQuery("after", after, true);
@@ -73,7 +73,7 @@ namespace OpenAI.Batch
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/batches/", false);
+            uri.AppendPath("/batches/", false);
             uri.AppendPath(batchId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -89,7 +89,7 @@ namespace OpenAI.Batch
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/batches/", false);
+            uri.AppendPath("/batches/", false);
             uri.AppendPath(batchId, true);
             uri.AppendPath("/cancel", false);
             request.Uri = uri.ToUri();
