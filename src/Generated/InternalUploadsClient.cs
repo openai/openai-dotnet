@@ -174,7 +174,7 @@ namespace OpenAI.Files
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/uploads", false);
+            uri.AppendPath("/uploads", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -191,7 +191,7 @@ namespace OpenAI.Files
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/uploads/", false);
+            uri.AppendPath("/uploads/", false);
             uri.AppendPath(uploadId, true);
             uri.AppendPath("/parts", false);
             request.Uri = uri.ToUri();
@@ -210,7 +210,7 @@ namespace OpenAI.Files
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/uploads/", false);
+            uri.AppendPath("/uploads/", false);
             uri.AppendPath(uploadId, true);
             uri.AppendPath("/complete", false);
             request.Uri = uri.ToUri();
@@ -229,7 +229,7 @@ namespace OpenAI.Files
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/uploads/", false);
+            uri.AppendPath("/uploads/", false);
             uri.AppendPath(uploadId, true);
             uri.AppendPath("/cancel", false);
             request.Uri = uri.ToUri();

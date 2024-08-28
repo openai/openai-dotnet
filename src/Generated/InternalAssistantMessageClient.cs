@@ -48,7 +48,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages", false);
             request.Uri = uri.ToUri();
@@ -67,7 +67,7 @@ namespace OpenAI.Assistants
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages", false);
             if (limit != null)
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages/", false);
             uri.AppendPath(messageId, true);
@@ -118,7 +118,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages/", false);
             uri.AppendPath(messageId, true);
@@ -138,7 +138,7 @@ namespace OpenAI.Assistants
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages/", false);
             uri.AppendPath(messageId, true);

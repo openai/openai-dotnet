@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads", false);
+            uri.AppendPath("/threads", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -49,7 +49,7 @@ namespace OpenAI.Assistants
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -65,7 +65,7 @@ namespace OpenAI.Assistants
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -83,7 +83,7 @@ namespace OpenAI.Assistants
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/threads/", false);
+            uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");

@@ -88,7 +88,7 @@ internal partial class FineTuningJobsPageEnumerator : PageResultEnumerator
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/v1/fine_tuning/jobs", false);
+        uri.AppendPath("/fine_tuning/jobs", false);
         if (after != null)
         {
             uri.AppendQuery("after", after, true);

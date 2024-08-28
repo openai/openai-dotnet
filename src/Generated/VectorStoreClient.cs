@@ -32,7 +32,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores", false);
+            uri.AppendPath("/vector_stores", false);
             if (limit != null)
             {
                 uri.AppendQuery("limit", limit.Value, true);
@@ -63,7 +63,7 @@ namespace OpenAI.VectorStores
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores", false);
+            uri.AppendPath("/vector_stores", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
@@ -80,7 +80,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -96,7 +96,7 @@ namespace OpenAI.VectorStores
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -114,7 +114,7 @@ namespace OpenAI.VectorStores
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
@@ -130,7 +130,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files", false);
             if (limit != null)
@@ -167,7 +167,7 @@ namespace OpenAI.VectorStores
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files", false);
             request.Uri = uri.ToUri();
@@ -186,7 +186,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
@@ -204,7 +204,7 @@ namespace OpenAI.VectorStores
             request.Method = "DELETE";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
@@ -222,7 +222,7 @@ namespace OpenAI.VectorStores
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches", false);
             request.Uri = uri.ToUri();
@@ -241,7 +241,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches/", false);
             uri.AppendPath(batchId, true);
@@ -259,7 +259,7 @@ namespace OpenAI.VectorStores
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches/", false);
             uri.AppendPath(batchId, true);
@@ -278,7 +278,7 @@ namespace OpenAI.VectorStores
             request.Method = "GET";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/v1/vector_stores/", false);
+            uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches/", false);
             uri.AppendPath(batchId, true);

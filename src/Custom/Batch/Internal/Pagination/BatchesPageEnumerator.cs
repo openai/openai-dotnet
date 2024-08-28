@@ -88,7 +88,7 @@ internal partial class BatchesPageEnumerator : PageResultEnumerator
         request.Method = "GET";
         var uri = new ClientUriBuilder();
         uri.Reset(_endpoint);
-        uri.AppendPath("/v1/batches", false);
+        uri.AppendPath("/batches", false);
         if (after != null)
         {
             uri.AppendQuery("after", after, true);
