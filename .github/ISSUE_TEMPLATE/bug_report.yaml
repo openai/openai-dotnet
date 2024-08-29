@@ -7,12 +7,20 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
   - type: checkboxes
+    id: non_python
+    attributes:
+      label: Confirm this is not an issue with the OpenAI Python Library
+      description: Issues with the OpenAI Python Library should be reported in our [OpenAI Python SDK repo](https://github.com/openai/openai-python/issues)
+      options:
+        - label: This is not an issue with the OpenAI Python Library
+          required: true
+  - type: checkboxes
     id: non_api
     attributes:
       label: Confirm this is not an issue with the underlying OpenAI API
       description: Issues with the underlying OpenAI API should be reported in our [Developer Community](https://community.openai.com/c/api/7)
       options:
-        - label: This is an issue with the Python library
+        - label: This is not an issue with the OpenAI API
           required: true
   - type: checkboxes
     id: non_azure
