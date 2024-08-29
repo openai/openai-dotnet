@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("SubmitToolOutputsRunRequestToolOutput")]
 public partial class ToolOutput
 {
@@ -12,5 +15,5 @@ public partial class ToolOutput
     /// <param name="output"> The output from the specified tool. </param>
     public ToolOutput(string toolCallId, string output)
         : this(toolCallId, output, null)
-    {}
+    { }
 }

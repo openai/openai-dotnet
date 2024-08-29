@@ -15,7 +15,6 @@ public partial class AssistantExamples
     public void Example01_RetrievalAugmentedGeneration()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -99,7 +98,7 @@ public partial class AssistantExamples
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         PageCollection<ThreadMessage> messagePages
-            = assistantClient.GetMessages(threadRun.ThreadId,  new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+            = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
         IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
         foreach (ThreadMessage message in messages)

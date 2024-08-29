@@ -28,7 +28,7 @@ internal partial class InternalMessageImageFileContent
     /// <summary> Initializes a new instance of <see cref="InternalMessageImageFileContent"/>. </summary>
     internal InternalMessageImageFileContent(string imageFileId, MessageImageDetail? detail = null)
         : this(new InternalMessageContentItemFileObjectImageFile(imageFileId, detail?.ToSerialString(), null))
-    {}
+    { }
 
     /// <summary> Initializes a new instance of <see cref="InternalMessageImageFileContent"/>. </summary>
     /// <param name="imageFile"></param>

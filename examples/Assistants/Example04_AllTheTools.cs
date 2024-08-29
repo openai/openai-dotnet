@@ -14,8 +14,6 @@ public partial class AssistantExamples
     [Test]
     public void Example04_AllTheTools()
     {
-#pragma warning disable OPENAI001
-
         #region Define a function tool
         static string GetNameOfFamilyMember(string relation)
             => relation switch

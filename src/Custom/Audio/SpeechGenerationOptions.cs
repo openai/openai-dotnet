@@ -28,7 +28,7 @@ public partial class SpeechGenerationOptions
     /// `onyx`, `nova`, and `shimmer`. Previews of the voices are available in the
     /// [Text to speech guide](/docs/guides/text-to-speech/voice-options).
     /// </summary>
-    internal GeneratedSpeechVoice Voice { get; set;  }
+    internal GeneratedSpeechVoice Voice { get; set; }
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="SpeechGenerationOptions"/>. </summary>

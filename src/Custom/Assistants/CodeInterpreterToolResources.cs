@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
 /// <summary> The AssistantObjectToolResourcesCodeInterpreter. </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("AssistantObjectToolResourcesCodeInterpreter")]
 public partial class CodeInterpreterToolResources
 {

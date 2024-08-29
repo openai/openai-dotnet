@@ -27,7 +27,7 @@ internal partial class MessagesPageEnumerator : PageEnumerator<ThreadMessage>
     public MessagesPageEnumerator(
         ClientPipeline pipeline,
         Uri endpoint,
-        string threadId, 
+        string threadId,
         int? limit, string order, string after, string before,
         RequestOptions options)
     {

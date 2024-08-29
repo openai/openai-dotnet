@@ -301,7 +301,7 @@ public partial class AudioClient
     }
 
     #endregion
-    
+
     private void CreateSpeechGenerationOptions(string text, GeneratedSpeechVoice voice, ref SpeechGenerationOptions options)
     {
         options.Input = text;

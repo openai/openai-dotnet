@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -8,6 +9,7 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// The update type presented when a streamed event indicates a thread was created.
 /// </summary>
+[Experimental("OPENAI001")]
 public class ThreadUpdate : StreamingUpdate<AssistantThread>
 {
     /// <see cref="AssistantThread.Id"/>

@@ -1,10 +1,12 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
 /// <summary>
 /// Represents the possible states for a vector store file association.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("VectorStoreFileObjectStatus")]
 public enum VectorStoreFileAssociationStatus
 {

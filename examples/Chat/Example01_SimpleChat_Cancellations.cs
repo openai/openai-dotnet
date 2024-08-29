@@ -18,9 +18,10 @@ public partial class ChatExamples
         RequestOptions options = new() { CancellationToken = ct.Token };
 
         ChatMessage message = ChatMessage.CreateUserMessage("Say 'this is a test.'");
-        var body = new {
+        var body = new
+        {
             model = "gpt-4o",
-            messages = new[] { 
+            messages = new[] {
                 new
                 {
                     role = "user",
@@ -28,7 +29,7 @@ public partial class ChatExamples
                 }
             }
         };
-        
+
         BinaryData json = BinaryData.FromObjectAsJson(body);
         ClientResult result = client.CompleteChat(BinaryContent.Create(json), options);
 

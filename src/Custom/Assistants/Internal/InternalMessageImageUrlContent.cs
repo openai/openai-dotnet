@@ -28,7 +28,7 @@ internal partial class InternalMessageImageUrlContent
     /// <summary> Initializes a new instance of <see cref="InternalMessageImageUrlContent"/>. </summary>
     internal InternalMessageImageUrlContent(Uri url, MessageImageDetail? detail = null)
         : this(new InternalMessageContentImageUrlObjectImageUrl(url, detail?.ToSerialString(), null))
-        {}
+    { }
 
     /// <summary> Initializes a new instance of <see cref="InternalMessageImageUrlContent"/>. </summary>
     /// <param name="imageUrl"></param>

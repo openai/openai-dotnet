@@ -31,7 +31,7 @@ public partial class OpenAIEmbeddingsModelFactoryTests
     [Test]
     public void EmbeddingWithVectorWorks()
     {
-        IEnumerable<float> vector = [ 1f, 2f, 3f ];
+        IEnumerable<float> vector = [1f, 2f, 3f];
         Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding(vector: vector);
 
         Assert.That(embedding.Index, Is.EqualTo(default(int)));

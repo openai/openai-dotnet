@@ -36,6 +36,9 @@
     <!-- Disable unused fields warnings -->
     <NoWarn>$(NoWarn),0169</NoWarn>
 
+    <!-- Disable warnings for experimental APIs -->
+    <NoWarn>$(NoWarn),OPENAI001;</NoWarn>
+
     <Configurations>Debug;Release;Unsigned</Configurations>
   </PropertyGroup>
 

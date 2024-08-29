@@ -11,8 +11,8 @@ internal class TestMeterListener : IDisposable
 {
     public record TestMeasurement(object value, Dictionary<string, object> tags);
 
-    private readonly ConcurrentDictionary<string, List<TestMeasurement>> _measurements = new ();
-    private readonly ConcurrentDictionary<string, Instrument> _instruments = new ();
+    private readonly ConcurrentDictionary<string, List<TestMeasurement>> _measurements = new();
+    private readonly ConcurrentDictionary<string, Instrument> _instruments = new();
     private readonly MeterListener _listener;
     public TestMeterListener(string meterName)
     {
@@ -46,8 +46,8 @@ internal class TestMeterListener : IDisposable
         _instruments.TryAdd(instrument.Name, instrument);
 
         var testMeasurement = new TestMeasurement(measurement, new Dictionary<string, object>(tags.ToArray()));
-        _measurements.AddOrUpdate(instrument.Name, 
-            k => new() { testMeasurement }, 
+        _measurements.AddOrUpdate(instrument.Name,
+            k => new() { testMeasurement },
             (k, l) =>
             {
                 l.Add(testMeasurement);

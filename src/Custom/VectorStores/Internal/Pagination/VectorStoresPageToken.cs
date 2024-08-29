@@ -32,7 +32,7 @@ internal class VectorStoresPageToken : ContinuationToken
         using Utf8JsonWriter writer = new(stream);
 
         writer.WriteStartObject();
-        
+
         if (Limit.HasValue)
         {
             writer.WriteNumber("limit", Limit.Value);
@@ -60,7 +60,7 @@ internal class VectorStoresPageToken : ContinuationToken
 
         return BinaryData.FromStream(stream);
     }
-    
+
     public VectorStoresPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)

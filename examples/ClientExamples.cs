@@ -42,8 +42,6 @@ public partial class ClientExamples
     {
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         FileClient fileClient = openAIClient.GetFileClient();
-#pragma warning disable OPENAI001
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
-#pragma warning restore OPENAI001
     }
 }

@@ -7,6 +7,7 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// Represents the the configuration that controls when a vector store will be automatically deleted.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("VectorStoreExpirationAfter")]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
@@ -22,14 +23,14 @@ public partial class VectorStoreExpirationPolicy
 
     /// <summary> Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`. </summary>
     public required VectorStoreExpirationAnchor Anchor
-    { 
+    {
         get => _anchor;
         set => _anchor = value;
     }
 
     /// <summary> The number of days after the anchor time that the vector store will expire. </summary>
     public required int Days
-    { 
+    {
         get => _days;
         set => _days = value;
     }

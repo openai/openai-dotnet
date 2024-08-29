@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepUpdateCodeInterpreterOutput
 {

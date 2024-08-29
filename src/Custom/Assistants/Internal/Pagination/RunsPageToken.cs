@@ -65,7 +65,7 @@ internal class RunsPageToken : ContinuationToken
 
         return BinaryData.FromStream(stream);
     }
-    
+
     public RunsPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
 /// <summary>
@@ -5,6 +7,7 @@ namespace OpenAI.Assistants;
 /// expected downcast data type of the <see cref="StreamingUpdate"/> as well as to the expected data present in the
 /// payload.
 /// </summary>
+[Experimental("OPENAI001")]
 public enum StreamingUpdateReason
 {
     /// <summary>

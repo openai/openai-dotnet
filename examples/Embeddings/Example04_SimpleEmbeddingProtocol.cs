@@ -17,11 +17,12 @@ public partial class EmbeddingExamples
             + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
             + " attractions. We highly recommend this hotel.";
 
-        BinaryData input = BinaryData.FromObjectAsJson(new {
-               model = "text-embedding-3-small",
-               input = description,
-               encoding_format = "float"
-            });
+        BinaryData input = BinaryData.FromObjectAsJson(new
+        {
+            model = "text-embedding-3-small",
+            input = description,
+            encoding_format = "float"
+        });
 
         using BinaryContent content = BinaryContent.Create(input);
         ClientResult result = client.GenerateEmbeddings(content);

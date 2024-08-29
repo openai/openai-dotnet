@@ -18,7 +18,7 @@ internal partial class InternalCreateCompletionResponseChoice { }
 internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason { }
 
 [CodeGenModel("CreateCompletionResponseChoiceLogprobs")]
-internal partial class InternalCreateCompletionResponseChoiceLogprobs {  }
+internal partial class InternalCreateCompletionResponseChoiceLogprobs { }
 
 [CodeGenModel("CreateCompletionResponseObject")]
 internal readonly partial struct InternalCreateCompletionResponseObject { }
