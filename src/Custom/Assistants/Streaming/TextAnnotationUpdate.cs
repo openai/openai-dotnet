@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 public class TextAnnotationUpdate
 {
     /// <summary>

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.VectorStores;
 
 /// <summary>
 /// Represents addition options available when requesting a collection of <see cref="VectorStoreFileAssociation"/> instances.
 /// </summary>
+[Experimental("OPENAI001")]
 public class VectorStoreFileAssociationCollectionOptions
 {
     /// <summary>

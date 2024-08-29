@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.VectorStores;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("FileChunkingStrategyResponseParam")]
 public abstract partial class FileChunkingStrategy
-{   
+{
     /// <summary>
     /// Gets a value representing the default, automatic selection for a file chunking strategy.
     /// </summary>
@@ -32,5 +35,5 @@ public abstract partial class FileChunkingStrategy
     }
 
     private static InternalAutoChunkingStrategy _autoValue;
-    private static InternalUnknownChunkingStrategy _unknownValue; 
+    private static InternalUnknownChunkingStrategy _unknownValue;
 }

@@ -27,7 +27,7 @@ public partial class StreamingChatCompletionUpdate
     /// A list of chat completion choices. Can contain more than one elements if `n` is greater than 1. Can also be empty for the
     /// last chunk if you set `stream_options: {"include_usage": true}`.
     /// </summary>
-    [CodeGenMember("Choices")] 
+    [CodeGenMember("Choices")]
     internal IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> Choices { get; }
 
     // CUSTOM: Renamed.
@@ -46,13 +46,13 @@ public partial class StreamingChatCompletionUpdate
     // CUSTOM: Made internal.
     [CodeGenMember("ServiceTier")]
     internal InternalCreateChatCompletionStreamResponseServiceTier? ServiceTier { get; }
-    
+
     // CUSTOM: Flattened choice property.
     /// <summary>
     /// Gets the <see cref="ChatFinishReason"/> associated with this update.
     /// </summary>
     public ChatFinishReason? FinishReason => (Choices.Count > 0)
-        ? Choices[0].FinishReason 
+        ? Choices[0].FinishReason
         : null;
 
     // CUSTOM: Flattened choice logprobs property.
@@ -109,7 +109,7 @@ public partial class StreamingChatCompletionUpdate
     public StreamingChatFunctionCallUpdate FunctionCallUpdate => (Choices.Count > 0)
         ? Choices[0].Delta.FunctionCall
         : null;
-    
+
     // CUSTOM: Flattened choice delta property.
     public string RefusalUpdate => (Choices.Count > 0)
         ? Choices[0].Delta?.Refusal

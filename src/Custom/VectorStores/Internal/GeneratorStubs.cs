@@ -6,7 +6,7 @@ namespace OpenAI.VectorStores;
 internal partial class InternalCreateVectorStoreFileBatchRequest { }
 
 [CodeGenModel("CreateVectorStoreFileRequest")]
-internal partial class InternalCreateVectorStoreFileRequest {}
+internal partial class InternalCreateVectorStoreFileRequest { }
 
 [CodeGenModel("DeleteVectorStoreFileResponse")]
 internal partial class InternalDeleteVectorStoreFileResponse { }

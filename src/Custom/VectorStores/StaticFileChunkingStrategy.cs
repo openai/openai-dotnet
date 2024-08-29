@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("StaticChunkingStrategyResponseParam")]
 public partial class StaticFileChunkingStrategy : FileChunkingStrategy
 {
@@ -35,5 +35,5 @@ public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     /// <param name="overlappingTokenCount"></param>
     public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount)
         : this(new InternalStaticChunkingStrategyDetails(maxTokensPerChunk, overlappingTokenCount))
-    {}
+    { }
 }

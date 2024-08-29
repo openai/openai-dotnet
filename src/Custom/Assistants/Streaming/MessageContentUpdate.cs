@@ -1,5 +1,6 @@
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -12,6 +13,7 @@ namespace OpenAI.Assistants;
 /// and each content subcomponent, such as <see cref="TextAnnotationUpdate"/> instances, even if this information
 /// arrived in the same response chunk.
 /// </remarks>
+[Experimental("OPENAI001")]
 public partial class MessageContentUpdate : StreamingUpdate
 {
     /// <inheritdoc cref="MessageDeltaObject.Id"/>

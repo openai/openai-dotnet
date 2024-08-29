@@ -13,7 +13,8 @@ internal static class CancellationTokenExtensions
             return StreamRequestOptions;
         }
 
-        return new RequestOptions() { 
+        return new RequestOptions()
+        {
             CancellationToken = cancellationToken,
             BufferResponse = !streaming,
         };

@@ -34,7 +34,7 @@ namespace OpenAI.Audio
             if (SerializedAdditionalRawData?.ContainsKey("voice") != true)
             {
                 writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.ToSerialString());
+                writer.WriteStringValue(Voice.ToString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
@@ -109,7 +109,7 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("voice"u8))
                 {
-                    voice = property.Value.GetString().ToGeneratedSpeechVoice();
+                    voice = new GeneratedSpeechVoice(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("response_format"u8))

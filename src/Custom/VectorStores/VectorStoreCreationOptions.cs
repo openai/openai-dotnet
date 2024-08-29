@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("CreateVectorStoreRequest")]
 public partial class VectorStoreCreationOptions
 {

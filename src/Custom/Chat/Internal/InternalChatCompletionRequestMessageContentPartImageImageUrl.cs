@@ -56,7 +56,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     internal InternalChatCompletionRequestMessageContentPartImageImageUrl(string url, ImageChatMessageContentPartDetail? detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         Match parsedDataUri = ParseDataUriRegex().Match(url);
-        
+
         if (parsedDataUri.Success)
         {
             _imageBytes = BinaryData.FromBytes(Convert.FromBase64String(parsedDataUri.Groups["data"].Value));

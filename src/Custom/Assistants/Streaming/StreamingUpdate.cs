@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 
@@ -21,6 +22,7 @@ namespace OpenAI.Assistants;
 /// For threads: <see cref="ThreadUpdate"/>
 /// </para>
 /// </remarks>
+[Experimental("OPENAI001")]
 public abstract partial class StreamingUpdate
 {
     /// <summary>
@@ -79,6 +81,7 @@ public abstract partial class StreamingUpdate
 /// Represents a single item of streamed data that encapsulates an underlying response value type.
 /// </summary>
 /// <typeparam name="T"> The response value type of the "delta" payload. </typeparam>
+[Experimental("OPENAI001")]
 public partial class StreamingUpdate<T> : StreamingUpdate
     where T : class
 {

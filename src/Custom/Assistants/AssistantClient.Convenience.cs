@@ -152,7 +152,7 @@ public partial class AssistantClient
     /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
     /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
     public virtual PageCollection<ThreadMessage> GetMessages(
-        AssistantThread thread, 
+        AssistantThread thread,
         MessageCollectionOptions options = default)
     {
         Argument.AssertNotNull(thread, nameof(thread));

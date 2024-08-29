@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -11,6 +12,7 @@ namespace OpenAI.Assistants;
 /// Distinct <see cref="RequiredActionUpdate"/> instances will generated for each required action, meaning that
 /// parallel function calling will present multiple updates even if the tool calls arrive at the same time.
 /// </remarks>
+[Experimental("OPENAI001")]
 public class RequiredActionUpdate : RunUpdate
 {
     /// <inheritdoc cref="InternalRequiredFunctionToolCall.InternalName"/>

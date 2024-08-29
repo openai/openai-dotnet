@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Assistants;
@@ -8,6 +9,7 @@ namespace OpenAI.Assistants;
 //  - Required actions are abstracted into a forward-compatible, strongly-typed conceptual
 //    hierarchy and formatted into a more intuitive collection for the consumer.
 
+[Experimental("OPENAI001")]
 [CodeGenModel("RunObject")]
 public partial class ThreadRun
 {

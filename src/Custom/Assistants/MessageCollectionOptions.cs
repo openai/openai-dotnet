@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
 /// <summary>
 /// Represents addition options available when requesting a collection of <see cref="ThreadMessage"/> instances.
 /// </summary>
+[Experimental("OPENAI001")]
 public class MessageCollectionOptions
 {
     /// <summary>

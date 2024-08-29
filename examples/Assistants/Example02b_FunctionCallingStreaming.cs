@@ -63,7 +63,6 @@ public partial class AssistantExamples
         #endregion
 
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region Create a new assistant with function tools

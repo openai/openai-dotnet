@@ -34,7 +34,7 @@ public partial class ImageEditOptions
     /// </list>
     /// </para>
     /// </summary>
-    internal BinaryData Image { get; set;  }
+    internal BinaryData Image { get; set; }
 
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.

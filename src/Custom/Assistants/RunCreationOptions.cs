@@ -1,5 +1,6 @@
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
@@ -8,6 +9,7 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// Represents additional options available when creating a new <see cref="ThreadRun"/>.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("CreateRunRequest")]
 [CodeGenSuppress("RunCreationOptions", typeof(string))]
 [CodeGenSerialization(nameof(ToolConstraint), "tool_choice", SerializationValueHook = nameof(SerializeToolConstraint))]

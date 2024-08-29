@@ -13,7 +13,6 @@ public partial class AssistantExamples
     public async Task Example03_ListAssistantsWithPaginationAsync()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         int count = 0;

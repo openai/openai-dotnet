@@ -65,7 +65,7 @@ internal class MessagesPageToken : ContinuationToken
 
         return BinaryData.FromStream(stream);
     }
-    
+
     public MessagesPageToken? GetNextPageToken(bool hasMore, string? lastId)
     {
         if (!hasMore || lastId is null)

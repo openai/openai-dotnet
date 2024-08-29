@@ -46,7 +46,7 @@ public partial class ChatExamples
             options);
 
         using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
-        
+
         Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer").GetString()}");
         Console.WriteLine("Reasoning steps:");
 

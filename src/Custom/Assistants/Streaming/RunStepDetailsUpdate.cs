@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -8,6 +9,7 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// The update type presented when run step details, including tool call progress, have changed.
 /// </summary>
+[Experimental("OPENAI001")]
 public class RunStepDetailsUpdate : StreamingUpdate
 {
     internal readonly InternalRunStepDelta _delta;
@@ -18,7 +20,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
     private readonly InternalRunStepDeltaStepDetailsToolCallsFunctionObject _asFunctionCall;
 
     /// <inheritdoc cref="InternalRunStepDelta.Id"/>
-    public string StepId  => _delta?.Id;
+    public string StepId => _delta?.Id;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation"/>
     public string CreatedMessageId => _asMessageCreation?.MessageCreation?.MessageId;
