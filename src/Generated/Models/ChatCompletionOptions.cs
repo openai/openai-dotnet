@@ -43,7 +43,6 @@ namespace OpenAI.Chat
         public int? MaxTokens { get; set; }
         public float? PresencePenalty { get; set; }
         public ChatResponseFormat ResponseFormat { get; set; }
-        public long? Seed { get; set; }
         public float? Temperature { get; set; }
         public float? TopP { get; set; }
         public IList<ChatTool> Tools { get; }
