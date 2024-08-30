@@ -18,9 +18,12 @@
 ### Other Changes
 
 - Reverted the removal of the version path parameter "v1" from the default endpoint URL. (commit_hash)
-- Added the `Experimental` attribute to all public APIs in the `OpenAI.Assistants` namespace. (commit_hash)
-- Added the `Experimental` attribute to all public APIs in the `OpenAI.VectorStores` namespace. (commit_hash)
-
+- Added the `Experimental` attribute to the following APIs:
+  - All public APIs in the `OpenAI.Assistants` namespace. (commit_hash)
+  - All public APIs in the `OpenAI.VectorStores` namespace. (commit_hash)
+  - All public APIs in the `OpenAI.Batch` namespace. (commit_hash)
+  - All public APIs in the `OpenAI.FineTuning` namespace. (commit_hash)
+  - The `ChatCompletionOptions.Seed` property. (commit_hash) 
 
 ## 2.0.0-beta.10 (2024-08-26)
 

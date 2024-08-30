@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -136,4 +137,11 @@ public partial class ChatCompletionOptions
     /// </summary>
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
+
+    // CUSTOM: Added the Experimental attribute
+    /// <summary>
+    /// If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public long? Seed { get; set; }
 }
