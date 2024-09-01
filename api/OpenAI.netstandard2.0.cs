@@ -1084,13 +1084,25 @@ namespace OpenAI.Audio {
         string IPersistableModel<AudioTranslationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<AudioTranslationOptions>.Write(ModelReaderWriterOptions options);
     }
-    public enum GeneratedSpeechFormat {
-        Mp3 = 0,
-        Opus = 1,
-        Aac = 2,
-        Flac = 3,
-        Wav = 4,
-        Pcm = 5
+    public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public GeneratedSpeechFormat(string value);
+        public static GeneratedSpeechFormat Aac { get; }
+        public static GeneratedSpeechFormat Flac { get; }
+        public static GeneratedSpeechFormat Mp3 { get; }
+        public static GeneratedSpeechFormat Opus { get; }
+        public static GeneratedSpeechFormat Pcm { get; }
+        public static GeneratedSpeechFormat Wav { get; }
+        public readonly bool Equals(GeneratedSpeechFormat other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
+        public static implicit operator GeneratedSpeechFormat(string value);
+        public static bool operator !=(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
+        public override readonly string ToString();
     }
     public readonly partial struct GeneratedSpeechVoice : IEquatable<GeneratedSpeechVoice> {
         private readonly object _dummy;
@@ -1120,7 +1132,7 @@ namespace OpenAI.Audio {
     }
     public class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>, IPersistableModel<SpeechGenerationOptions> {
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
-        public float? Speed { get; set; }
+        public float? SpeedRatio { get; set; }
         SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         void IJsonModel<SpeechGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);

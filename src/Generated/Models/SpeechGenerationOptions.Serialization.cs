@@ -39,12 +39,12 @@ namespace OpenAI.Audio
             if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("speed") != true && Optional.IsDefined(Speed))
+            if (SerializedAdditionalRawData?.ContainsKey("speed") != true && Optional.IsDefined(SpeedRatio))
             {
                 writer.WritePropertyName("speed"u8);
-                writer.WriteNumberValue(Speed.Value);
+                writer.WriteNumberValue(SpeedRatio.Value);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -118,7 +118,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToGeneratedSpeechFormat();
+                    responseFormat = new GeneratedSpeechFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("speed"u8))
