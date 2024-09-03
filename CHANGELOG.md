@@ -18,6 +18,7 @@
 ### Bugs Fixed
 
 - Corrected an internal deserialization issue that caused recent updates to Assistants `file_search` to fail when streaming a run. Strongly typed support for `ranking_options` is not included but will arrive soon. (commit_hash)
+- Mitigated a .NET runtime issue that prevented `ChatResponseFormat` from serializing correct on targets including Unity. (commit_hash)
 
 ### Other Changes
 

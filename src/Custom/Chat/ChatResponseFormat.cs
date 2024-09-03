@@ -5,19 +5,44 @@ using System.ComponentModel;
 
 namespace OpenAI.Chat;
 
+/// <summary>
+///     The format that the model should output.
+///     <list>
+///         <item>
+///             Call <see cref="CreateTextFormat()"/> to create a <see cref="ChatResponseFormat"/> requesting plain
+///             text.
+///         </item>
+///         <item>
+///             Call <see cref="CreateJsonObjectFormat()"/> to create a <see cref="ChatResponseFormat"/> requesting
+///             valid JSON, a.k.a. JSON mode.
+///         </item>
+///         <item>
+///             Call <see cref="CreateJsonSchemaFormat(string, BinaryData, string, bool?)"/> to create a
+///             <see cref="ChatResponseFormat"/> requesting adherence to the specified JSON schema,
+///             a.k.a. structured outputs.
+///         </item>
+///     </list>
+/// </summary>
 [CodeGenModel("ChatResponseFormat")]
 public abstract partial class ChatResponseFormat : IEquatable<ChatResponseFormat>
 {
+    /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting plain text. </summary>
     public static ChatResponseFormat Text { get; } = new InternalChatResponseFormatText();
+
+    /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting valid JSON, a.k.a. JSON mode. </summary>
     public static ChatResponseFormat JsonObject { get; } = new InternalChatResponseFormatJsonObject();
 
+    /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting plain text. </summary>
     public static ChatResponseFormat CreateTextFormat() => new InternalChatResponseFormatText();
+
+    /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting valid JSON, a.k.a. JSON mode. </summary>
     public static ChatResponseFormat CreateJsonObjectFormat() => new InternalChatResponseFormatJsonObject();
-    public static ChatResponseFormat CreateJsonSchemaFormat(
-        string name,
-        BinaryData jsonSchema,
-        string description = null,
-        bool? strictSchemaEnabled = null)
+
+    /// <summary>
+    ///     Creates a new <see cref="ChatResponseFormat"/> requesting adherence to the specified JSON schema,
+    ///     a.k.a. structured outputs.
+    /// </summary>
+    public static ChatResponseFormat CreateJsonSchemaFormat(string name, BinaryData jsonSchema, string description = null, bool? strictSchemaEnabled = null)
     {
         Argument.AssertNotNullOrEmpty(name, nameof(name));
         Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
@@ -27,7 +52,8 @@ public abstract partial class ChatResponseFormat : IEquatable<ChatResponseFormat
             name,
             jsonSchema,
             strictSchemaEnabled,
-            null);
+            serializedAdditionalRawData: null);
+
         return new InternalChatResponseFormatJsonSchema(internalSchema);
     }
 
@@ -38,6 +64,7 @@ public abstract partial class ChatResponseFormat : IEquatable<ChatResponseFormat
         {
             return second is null;
         }
+
         return first.Equals(second);
     }
 

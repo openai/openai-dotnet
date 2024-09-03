@@ -6,17 +6,17 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 [CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Chat.ChatMessage>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
-internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
+internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
 {
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance<ChatMessage, UnknownChatMessage>(this, WriteCore, writer, options);
+        => CustomSerializationHelpers.SerializeInstance<ChatMessage, InternalUnknownChatMessage>(this, WriteCore, writer, options);
 
-    internal static void WriteCore(UnknownChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal static void WriteCore(InternalUnknownChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         instance.WriteCore(writer, options);
     }
 
-    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("role"u8);
@@ -26,7 +26,7 @@ internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
         writer.WriteEndObject();
     }
 
-    internal static UnknownChatMessage DeserializeUnknownChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+    internal static InternalUnknownChatMessage DeserializeUnknownChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;
 
@@ -65,6 +65,6 @@ internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new UnknownChatMessage(role.Value, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData);
+        return new InternalUnknownChatMessage(role.Value, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData);
     }
 }

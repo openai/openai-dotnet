@@ -5,11 +5,12 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat
 {
-    internal partial class UnknownChatMessage : IJsonModel<ChatMessage>
+    internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
     {
         ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
@@ -21,6 +22,40 @@ namespace OpenAI.Chat
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatMessage(document.RootElement, options);
+        }
+
+        internal static InternalUnknownChatMessage DeserializeInternalUnknownChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+        {
+            options ??= ModelSerializationExtensions.WireOptions;
+
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            ChatMessageRole role = default;
+            IList<ChatMessageContentPart> content = default;
+            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+            foreach (var property in element.EnumerateObject())
+            {
+                if (property.NameEquals("role"u8))
+                {
+                    role = property.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
+                if (property.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(property, ref content);
+                    continue;
+                }
+                if (true)
+                {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                }
+            }
+            serializedAdditionalRawData = rawDataDictionary;
+            return new InternalUnknownChatMessage(role, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options)
@@ -54,10 +89,10 @@ namespace OpenAI.Chat
 
         string IPersistableModel<ChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new UnknownChatMessage FromResponse(PipelineResponse response)
+        internal static new InternalUnknownChatMessage FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUnknownChatMessage(document.RootElement);
+            return DeserializeInternalUnknownChatMessage(document.RootElement);
         }
 
         internal override BinaryContent ToBinaryContent()
