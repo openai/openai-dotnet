@@ -53,7 +53,7 @@ public partial class CombinationExamples
             GeneratedSpeechVoice.Fable,
             new SpeechGenerationOptions()
             {
-                Speed = 0.9f,
+                SpeedRatio = 0.9f,
                 ResponseFormat = GeneratedSpeechFormat.Opus,
             });
         FileInfo ttsFileInfo = new($"{chatCompletion.Id}.opus");
@@ -89,7 +89,7 @@ public partial class CombinationExamples
             GeneratedSpeechVoice.Onyx,
             new SpeechGenerationOptions()
             {
-                Speed = 1.1f,
+                SpeedRatio = 1.1f,
                 ResponseFormat = GeneratedSpeechFormat.Opus,
             });
         _ = Task.Run(async () =>
@@ -136,7 +136,7 @@ public partial class CombinationExamples
             GeneratedSpeechVoice.Fable,
             new SpeechGenerationOptions()
             {
-                Speed = 0.9f,
+                SpeedRatio = 0.9f,
                 ResponseFormat = GeneratedSpeechFormat.Opus,
             });
         FileInfo criticAudioFileInfo = new($"{criticalAppraisalResult.Value.Id}-appraisal.opus");

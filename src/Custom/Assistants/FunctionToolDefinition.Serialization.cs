@@ -12,7 +12,7 @@ public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
     internal static void SerializeFunctionToolDefinition(FunctionToolDefinition instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("function"u8);

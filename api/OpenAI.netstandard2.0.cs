@@ -342,7 +342,7 @@ namespace OpenAI.Assistants {
         CodeInterpreterToolDefinition IPersistableModel<CodeInterpreterToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<CodeInterpreterToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<CodeInterpreterToolDefinition>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class CodeInterpreterToolResources : IJsonModel<CodeInterpreterToolResources>, IPersistableModel<CodeInterpreterToolResources> {
         public IList<string> FileIds { get; set; }
@@ -359,7 +359,7 @@ namespace OpenAI.Assistants {
         FileSearchToolDefinition IPersistableModel<FileSearchToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<FileSearchToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<FileSearchToolDefinition>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class FileSearchToolResources : IJsonModel<FileSearchToolResources>, IPersistableModel<FileSearchToolResources> {
         public IList<VectorStoreCreationHelper> NewVectorStores { get; }
@@ -382,7 +382,7 @@ namespace OpenAI.Assistants {
         FunctionToolDefinition IPersistableModel<FunctionToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<FunctionToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<FunctionToolDefinition>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class MessageCollectionOptions {
         public string AfterId { get; set; }
@@ -955,7 +955,7 @@ namespace OpenAI.Assistants {
         ToolDefinition IPersistableModel<ToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<ToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<ToolDefinition>.Write(ModelReaderWriterOptions options);
-        protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class ToolOutput : IJsonModel<ToolOutput>, IPersistableModel<ToolOutput> {
         public ToolOutput();
@@ -1084,13 +1084,25 @@ namespace OpenAI.Audio {
         string IPersistableModel<AudioTranslationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<AudioTranslationOptions>.Write(ModelReaderWriterOptions options);
     }
-    public enum GeneratedSpeechFormat {
-        Mp3 = 0,
-        Opus = 1,
-        Aac = 2,
-        Flac = 3,
-        Wav = 4,
-        Pcm = 5
+    public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public GeneratedSpeechFormat(string value);
+        public static GeneratedSpeechFormat Aac { get; }
+        public static GeneratedSpeechFormat Flac { get; }
+        public static GeneratedSpeechFormat Mp3 { get; }
+        public static GeneratedSpeechFormat Opus { get; }
+        public static GeneratedSpeechFormat Pcm { get; }
+        public static GeneratedSpeechFormat Wav { get; }
+        public readonly bool Equals(GeneratedSpeechFormat other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
+        public static implicit operator GeneratedSpeechFormat(string value);
+        public static bool operator !=(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
+        public override readonly string ToString();
     }
     public readonly partial struct GeneratedSpeechVoice : IEquatable<GeneratedSpeechVoice> {
         private readonly object _dummy;
@@ -1120,7 +1132,7 @@ namespace OpenAI.Audio {
     }
     public class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>, IPersistableModel<SpeechGenerationOptions> {
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
-        public float? Speed { get; set; }
+        public float? SpeedRatio { get; set; }
         SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         void IJsonModel<SpeechGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
@@ -1203,7 +1215,7 @@ namespace OpenAI.Chat {
         AssistantChatMessage IPersistableModel<AssistantChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<AssistantChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class ChatClient {
         protected ChatClient();
@@ -1335,7 +1347,7 @@ namespace OpenAI.Chat {
         ChatMessage IPersistableModel<ChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<ChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options);
-        protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>, IPersistableModel<ChatMessageContentPart> {
         public BinaryData ImageBytes { get; }
@@ -1403,6 +1415,7 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         bool IEquatable<ChatResponseFormat>.Equals(ChatResponseFormat other);
         public override string ToString();
+        protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class ChatTokenLogProbabilityInfo : IJsonModel<ChatTokenLogProbabilityInfo>, IPersistableModel<ChatTokenLogProbabilityInfo> {
         public float LogProbability { get; }
@@ -1510,7 +1523,7 @@ namespace OpenAI.Chat {
         FunctionChatMessage IPersistableModel<FunctionChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<FunctionChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<FunctionChatMessage>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public readonly partial struct ImageChatMessageContentPartDetail : IEquatable<ImageChatMessageContentPartDetail> {
         private readonly object _dummy;
@@ -1589,7 +1602,7 @@ namespace OpenAI.Chat {
         SystemChatMessage IPersistableModel<SystemChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<SystemChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<SystemChatMessage>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class ToolChatMessage : ChatMessage, IJsonModel<ToolChatMessage>, IPersistableModel<ToolChatMessage> {
         public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts);
@@ -1601,7 +1614,7 @@ namespace OpenAI.Chat {
         ToolChatMessage IPersistableModel<ToolChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<ToolChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<ToolChatMessage>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
     public class UserChatMessage : ChatMessage, IJsonModel<UserChatMessage>, IPersistableModel<UserChatMessage> {
         public UserChatMessage(params ChatMessageContentPart[] content);
@@ -1613,7 +1626,7 @@ namespace OpenAI.Chat {
         UserChatMessage IPersistableModel<UserChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
         string IPersistableModel<UserChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
         BinaryData IPersistableModel<UserChatMessage>.Write(ModelReaderWriterOptions options);
-        protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
     }
 }
 namespace OpenAI.Embeddings {

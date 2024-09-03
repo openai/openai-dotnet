@@ -43,5 +43,5 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
     internal static void WriteCore(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 }

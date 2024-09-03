@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
-using OpenAI.Chat;
 using OpenAI.Files;
 using OpenAI.VectorStores;
 using System;
@@ -9,7 +8,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -677,6 +675,67 @@ public partial class AssistantTests
         }
         Assert.That(messageCount > 1);
         Assert.That(hasCake, Is.True);
+    }
+
+    [Test]
+    public async Task BasicFileSearchStreamingWorks()
+    {
+        const string fileContent = """
+                The favorite food of several people:
+                - Summanus Ferdinand: tacos
+                - Tekakwitha Effie: pizza
+                - Filip Carola: cake
+                """;
+
+        const string fileName = "favorite_foods.txt";
+
+        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
+
+        // First, upload a simple test file.
+        OpenAIFileInfo testFile = fileClient.UploadFile(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
+        Validate(testFile);
+
+        // Create an assistant, using the creation helper to make a new vector store.
+        AssistantCreationOptions assistantCreationOptions = new()
+        {
+            Tools = { new FileSearchToolDefinition() },
+            ToolResources = new()
+            {
+                FileSearch = new()
+                {
+                    NewVectorStores = { new VectorStoreCreationHelper([testFile.Id]) }
+                }
+            }
+        };
+        Assistant assistant = client.CreateAssistant("gpt-4o-mini", assistantCreationOptions);
+        Validate(assistant);
+
+        Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
+        string vectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
+        _vectorStoreIdsToDelete.Add(vectorStoreId);
+
+        // Create a thread.
+        ThreadCreationOptions threadCreationOptions = new()
+        {
+            InitialMessages = { "Using the files you have available, what's Filip's favorite food?" }
+        };
+        AssistantThread thread = client.CreateThread(threadCreationOptions);
+        Validate(thread);
+
+        // Create run and stream the results.
+        AsyncCollectionResult<StreamingUpdate> streamingResult = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        string message = string.Empty;
+
+        await foreach (StreamingUpdate update in streamingResult)
+        {
+            if (update is MessageContentUpdate contentUpdate)
+            {
+                message += $"{contentUpdate.Text}";
+            }
+        }
+
+        Assert.That(message, Does.Contain("cake"));
     }
 
     [Test]

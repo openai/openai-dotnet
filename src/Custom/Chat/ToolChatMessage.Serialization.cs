@@ -12,7 +12,7 @@ public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
     internal static void SerializeToolChatMessage(ToolChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("role"u8);

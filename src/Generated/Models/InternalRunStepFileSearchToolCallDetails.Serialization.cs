@@ -33,7 +33,19 @@ namespace OpenAI.Assistants
                 foreach (var item in FileSearch)
                 {
                     writer.WritePropertyName(item.Key);
-                    writer.WriteStringValue(item.Value);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
                 }
                 writer.WriteEndObject();
             }
@@ -85,7 +97,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
-            IReadOnlyDictionary<string, string> fileSearch = default;
+            IReadOnlyDictionary<string, BinaryData> fileSearch = default;
             string type = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -98,10 +110,17 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("file_search"u8))
                 {
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
                     foreach (var property0 in property.Value.EnumerateObject())
                     {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
+                        if (property0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(property0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(property0.Name, BinaryData.FromString(property0.Value.GetRawText()));
+                        }
                     }
                     fileSearch = dictionary;
                     continue;
