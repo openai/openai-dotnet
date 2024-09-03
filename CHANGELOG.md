@@ -1,34 +1,33 @@
 # Release History
 
-## 2.0.0-beta.11 (Unreleased)
+## 2.0.0-beta.11 (2024-09-03)
 
 ### Features Added
 
-- Added the following model factory (a static class that can be used to instantiate OpenAI models for mocking in non-live test scenarios):
-  - `OpenAIChatModelFactory` in the `OpenAI.Chat` namespace
+- Added the `OpenAIChatModelFactory` in the `OpenAI.Chat` namespace (a static class that can be used to instantiate OpenAI models for mocking in non-live test scenarios). ([79014ab](https://github.com/openai/openai-dotnet/commit/79014abc01a00e13d5a334d3f6529ed590b8ee98))
 
 ### Breaking Changes
 
-- Updated fine-tuning pagination methods `GetJobs`, `GetEvents`, and `GetJobCheckpoints` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
-- Updated the batching pagination method `GetBatches` to return `IEnumerable<ClientResult>` instead of `ClientResult`. (commit_hash)
-- Changed `GeneratedSpeechVoice` from an enum to an "extensible enum". (commit_hash)
-- Changed `GeneratedSpeechFormat` from an enum to an "extensible enum". (commit_hash)
-- Renamed `SpeechGenerationOptions`'s `Speed` property to `SpeedRatio`. (commit_hash)
+- Updated fine-tuning pagination methods `GetJobs`, `GetEvents`, and `GetJobCheckpoints` to return `IEnumerable<ClientResult>` instead of `ClientResult`. ([5773292](https://github.com/openai/openai-dotnet/commit/57732927575c6c48f30bded0afb9f5b16d4f30da))
+- Updated the batching pagination method `GetBatches` to return `IEnumerable<ClientResult>` instead of `ClientResult`. ([5773292](https://github.com/openai/openai-dotnet/commit/57732927575c6c48f30bded0afb9f5b16d4f30da))
+- Changed `GeneratedSpeechVoice` from an enum to an "extensible enum". ([79014ab](https://github.com/openai/openai-dotnet/commit/79014abc01a00e13d5a334d3f6529ed590b8ee98))
+- Changed `GeneratedSpeechFormat` from an enum to an "extensible enum". ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
+- Renamed `SpeechGenerationOptions`'s `Speed` property to `SpeedRatio`. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
 
 ### Bugs Fixed
 
-- Corrected an internal deserialization issue that caused recent updates to Assistants `file_search` to fail when streaming a run. Strongly typed support for `ranking_options` is not included but will arrive soon. (commit_hash)
-- Mitigated a .NET runtime issue that prevented `ChatResponseFormat` from serializing correct on targets including Unity. (commit_hash)
+- Corrected an internal deserialization issue that caused recent updates to Assistants `file_search` to fail when streaming a run. Strongly typed support for `ranking_options` is not included but will arrive soon. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
+- Mitigated a .NET runtime issue that prevented `ChatResponseFormat` from serializing correct on targets including Unity. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
 
 ### Other Changes
 
-- Reverted the removal of the version path parameter "v1" from the default endpoint URL. (commit_hash)
+- Reverted the removal of the version path parameter "v1" from the default endpoint URL. ([583e9f6](https://github.com/openai/openai-dotnet/commit/583e9f6f519feeee0e2907e80bf7d5bf8302d93f))
 - Added the `Experimental` attribute to the following APIs:
-  - All public APIs in the `OpenAI.Assistants` namespace. (commit_hash)
-  - All public APIs in the `OpenAI.VectorStores` namespace. (commit_hash)
-  - All public APIs in the `OpenAI.Batch` namespace. (commit_hash)
-  - All public APIs in the `OpenAI.FineTuning` namespace. (commit_hash)
-  - The `ChatCompletionOptions.Seed` property. (commit_hash) 
+  - All public APIs in the `OpenAI.Assistants` namespace. ([79014ab](https://github.com/openai/openai-dotnet/commit/79014abc01a00e13d5a334d3f6529ed590b8ee98))
+  - All public APIs in the `OpenAI.VectorStores` namespace. ([79014ab](https://github.com/openai/openai-dotnet/commit/79014abc01a00e13d5a334d3f6529ed590b8ee98))
+  - All public APIs in the `OpenAI.Batch` namespace. ([0f5e024](https://github.com/openai/openai-dotnet/commit/0f5e0249cffd42755fc9a820e65fb025fd4f986c))
+  - All public APIs in the `OpenAI.FineTuning` namespace. ([0f5e024](https://github.com/openai/openai-dotnet/commit/0f5e0249cffd42755fc9a820e65fb025fd4f986c))
+  - The `ChatCompletionOptions.Seed` property. ([0f5e024](https://github.com/openai/openai-dotnet/commit/0f5e0249cffd42755fc9a820e65fb025fd4f986c))
 
 ## 2.0.0-beta.10 (2024-08-26)
 
