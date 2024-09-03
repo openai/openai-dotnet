@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>This is the OpenAI client library for developing .NET applications with rich experience.</Description>
     <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
-    <PackageTags>OpenAI</PackageTags>
+    <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
     <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix>beta.11</VersionSuffix>
