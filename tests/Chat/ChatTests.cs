@@ -754,9 +754,8 @@ public class ChatTests : SyncAsyncTestBase
     [NonParallelizable]
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
-        using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
+        using TestActivityListener activityListener = new TestActivityListener("Experimental.OpenAI.ChatClient");
+        using TestMeterListener meterListener = new TestMeterListener("Experimental.OpenAI.ChatClient");
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];

@@ -14,37 +14,27 @@ The instrumentation is **experimental** - volume and semantics of the telemetry 
 
 To enable the instrumentation:
 
-1. Set instrumentation feature-flag using one of the following options:
-
-   - set the `OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY` environment variable to `"true"`
-   - set the `OpenAI.Experimental.EnableOpenTelemetry` context switch to true in your application code when application
-     is starting and before initializing any OpenAI clients. For example:
-
-     ```csharp
-     AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
-     ```
-
-2. Enable OpenAI telemetry:
+1. Enable experimental OpenAI telemetry:
 
    ```csharp
    builder.Services.AddOpenTelemetry()
        .WithTracing(b =>
        {
-           b.AddSource("OpenAI.*")
+           b.AddSource("Experimental.OpenAI.*", "OpenAI.*")
              ...
             .AddOtlpExporter();
        })
        .WithMetrics(b =>
        {
-           b.AddMeter("OpenAI.*")
+           b.AddMeter("Experimental.OpenAI.*", "OpenAI.*")
             ...
             .AddOtlpExporter();
        });
    ```
 
-   Distributed tracing is enabled with `AddSource("OpenAI.*")` which tells OpenTelemetry to listen to all [ActivitySources](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitysource) with names starting with `OpenAI.*`.
+   Distributed tracing is enabled with `AddSource("Experimental.OpenAI.*", "OpenAI.*")` which tells OpenTelemetry to listen to all [ActivitySources](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitysource) with names starting with `Experimental.OpenAI.` (experimental ones) or sources which names start with `"OpenAI.*"` (stable ones).
 
-   Similarly, metrics are configured with `AddMeter("OpenAI.*")` which enables all OpenAI-related [Meters](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meter).
+   Similarly, metrics are configured with `AddMeter("Experimental.OpenAI.*", "OpenAI.*")` which enables all OpenAI-related [Meters](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meter).
 
 Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client
 calls made by your application including those done by the OpenAI SDK.
@@ -65,4 +55,4 @@ Here's a trace produced by [OpenTelemetry sample](../examples/OpenTelemetryExamp
 
 The following sources and meters are available:
 
-- `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
+- `Experimental.OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)

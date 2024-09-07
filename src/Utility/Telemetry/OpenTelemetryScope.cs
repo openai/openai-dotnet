@@ -10,8 +10,8 @@ namespace OpenAI.Telemetry;
 
 internal class OpenTelemetryScope : IDisposable
 {
-    private static readonly ActivitySource s_chatSource = new ActivitySource("OpenAI.ChatClient");
-    private static readonly Meter s_chatMeter = new Meter("OpenAI.ChatClient");
+    private static readonly ActivitySource s_chatSource = new ActivitySource("Experimental.OpenAI.ChatClient");
+    private static readonly Meter s_chatMeter = new Meter("Experimental.OpenAI.ChatClient");
 
     // TODO: add explicit histogram buckets once System.Diagnostics.DiagnosticSource 9.0 is used
     private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(GenAiClientOperationDurationMetricName, "s", "Measures GenAI operation duration.");
