@@ -1,9 +1,11 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.ClientModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
@@ -22,87 +24,349 @@ public partial class FileTests : SyncAsyncTestBase
     public async Task ListFiles()
     {
         FileClient client = GetTestClient();
+        using Stream file1 = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
+        using Stream file2 = BinaryData.FromString("Hello! This is another test text file. Please delete me.").ToStream();
+        string filename = "test-file-delete-me.txt";
+        string visionFilename = "images_dog_and_cat.png";
+        string visionFilePath = Path.Combine("Assets", visionFilename);
 
-        OpenAIFileInfoCollection allFiles = IsAsync
-            ? await client.GetFilesAsync()
-            : client.GetFiles();
-        Assert.That(allFiles.Count, Is.GreaterThan(0));
-        Console.WriteLine($"Total files count: {allFiles.Count}");
+        OpenAIFileInfo uploadedFile1 = null;
+        OpenAIFileInfo uploadedFile2 = null;
+        OpenAIFileInfo uploadedVisionFile = null;
+        OpenAIFileInfoCollection fileInfoCollection;
 
-        OpenAIFileInfoCollection assistantsFiles = IsAsync
-            ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
-            : client.GetFiles(OpenAIFilePurpose.Assistants);
-        Assert.That(assistantsFiles.Count, Is.GreaterThan(0).And.LessThan(allFiles.Count));
-        Console.WriteLine($"Assistant files count: {assistantsFiles.Count}");
+        try
+        {
+            uploadedFile1 = await client.UploadFileAsync(file1, filename, FileUploadPurpose.Assistants);
+            uploadedFile2 = await client.UploadFileAsync(file2, filename, FileUploadPurpose.Assistants);
+            uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
+
+            fileInfoCollection = IsAsync
+                ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
+                : client.GetFiles(OpenAIFilePurpose.Assistants);
+        }
+        finally
+        {
+            if (uploadedVisionFile != null)
+            {
+                await client.DeleteFileAsync(uploadedVisionFile.Id);
+            }
+
+            if (uploadedFile2 != null)
+            {
+                await client.DeleteFileAsync(uploadedFile2.Id);
+            }
+
+            if (uploadedFile1 != null)
+            {
+                await client.DeleteFileAsync(uploadedFile1.Id);
+            }
+        }
+
+        OpenAIFileInfo fileInfo1 = null;
+        OpenAIFileInfo fileInfo2 = null;
+        OpenAIFileInfo visionFileInfo = null;
+
+        foreach (OpenAIFileInfo item in fileInfoCollection)
+        {
+            if (item.Id == uploadedFile1.Id)
+            {
+                fileInfo1 = item;
+            }
+            else if (item.Id == uploadedFile2.Id)
+            {
+                fileInfo2 = item;
+            }
+            else if (item.Id == uploadedVisionFile.Id)
+            {
+                visionFileInfo = item;
+            }
+        }
+
+        Assert.That(fileInfo1, Is.Not.Null);
+        Assert.That(fileInfo1.SizeInBytes, Is.EqualTo(uploadedFile1.SizeInBytes));
+        Assert.That(fileInfo1.CreatedAt, Is.EqualTo(uploadedFile1.CreatedAt));
+        Assert.That(fileInfo1.Filename, Is.EqualTo(uploadedFile1.Filename));
+        Assert.That(fileInfo1.Purpose, Is.EqualTo(uploadedFile1.Purpose));
+#pragma warning disable CS0618
+        Assert.That(fileInfo1.Status, Is.EqualTo(uploadedFile1.Status));
+        Assert.That(fileInfo1.StatusDetails, Is.EqualTo(uploadedFile1.StatusDetails));
+#pragma warning restore CS0618
+
+        Assert.That(fileInfo2, Is.Not.Null);
+        Assert.That(fileInfo2.SizeInBytes, Is.EqualTo(uploadedFile2.SizeInBytes));
+        Assert.That(fileInfo2.CreatedAt, Is.EqualTo(uploadedFile2.CreatedAt));
+        Assert.That(fileInfo2.Filename, Is.EqualTo(uploadedFile2.Filename));
+        Assert.That(fileInfo2.Purpose, Is.EqualTo(uploadedFile2.Purpose));
+#pragma warning disable CS0618
+        Assert.That(fileInfo2.Status, Is.EqualTo(uploadedFile2.Status));
+        Assert.That(fileInfo2.StatusDetails, Is.EqualTo(uploadedFile2.StatusDetails));
+#pragma warning restore CS0618
+
+        Assert.That(visionFileInfo, Is.Null);
     }
 
     [Test]
-    public async Task UploadAndRetrieve()
+    public void ListFilesCanParseServiceError()
+    {
+        FileClient client = GetTestClient();
+        OpenAIFilePurpose fakePurpose = new OpenAIFilePurpose("world_domination");
+        ClientResultException ex = null;
+
+        if (IsAsync)
+        {
+            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFilesAsync(fakePurpose));
+        }
+        else
+        {
+            ex = Assert.Throws<ClientResultException>(() => client.GetFiles(fakePurpose));
+        }
+
+        Assert.That(ex.Status, Is.EqualTo(400));
+    }
+
+    public enum FileSourceKind
+    {
+        UsingStream,
+        UsingFilePath,
+        UsingBinaryData
+    }
+
+    private static Array s_fileSourceKindSource = Enum.GetValues(typeof(FileSourceKind));
+
+    [Test]
+    [TestCaseSource(nameof(s_fileSourceKindSource))]
+    public async Task UploadFile(FileSourceKind fileSourceKind)
+    {
+        FileClient client = GetTestClient();
+        string filename = "images_dog_and_cat.png";
+        string path = Path.Combine("Assets", filename);
+        OpenAIFileInfo fileInfo = null;
+
+        try
+        {
+            if (fileSourceKind == FileSourceKind.UsingStream)
+            {
+                using Stream file = File.OpenRead(path);
+
+                fileInfo = IsAsync
+                    ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision)
+                    : client.UploadFile(file, filename, FileUploadPurpose.Vision);
+            }
+            else if (fileSourceKind == FileSourceKind.UsingFilePath)
+            {
+                fileInfo = IsAsync
+                    ? await client.UploadFileAsync(path, FileUploadPurpose.Vision)
+                    : client.UploadFile(path, FileUploadPurpose.Vision);
+            }
+            else if (fileSourceKind == FileSourceKind.UsingBinaryData)
+            {
+                using Stream file = File.OpenRead(path);
+                BinaryData content = BinaryData.FromStream(file);
+
+                fileInfo = IsAsync
+                    ? await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision)
+                    : client.UploadFile(content, filename, FileUploadPurpose.Vision);
+            }
+            else
+            {
+                Assert.Fail("Invalid source kind.");
+            }
+        }
+        finally
+        {
+            if (fileInfo != null)
+            {
+                await client.DeleteFileAsync(fileInfo.Id);
+            }
+        }
+
+        long expectedSize = new FileInfo(path).Length;
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+        string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
+
+        Assert.That(fileInfo, Is.Not.Null);
+        Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
+        Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
+        Assert.That(fileInfo.Purpose, Is.EqualTo(OpenAIFilePurpose.Vision));
+#pragma warning disable CS0618
+        Assert.That(fileInfo.Status, Is.Not.EqualTo(default(OpenAIFileStatus)));
+#pragma warning restore CS0618
+    }
+
+    [Test]
+    public void UploadFileCanParseServiceError()
+    {
+        FileClient client = GetTestClient();
+        string filename = "images_dog_and_cat.png";
+        string path = Path.Combine("Assets", filename);
+        FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
+        ClientResultException ex = null;
+
+        if (IsAsync)
+        {
+            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
+        }
+        else
+        {
+            ex = Assert.Throws<ClientResultException>(() => client.UploadFile(path, fakePurpose));
+        }
+
+        Assert.That(ex.Status, Is.EqualTo(400));
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task DeleteFile(bool useFileInfoOverload)
     {
         FileClient client = GetTestClient();
         string fileContent = "Hello! This is a test text file. Please delete me.";
         using Stream file = BinaryData.FromString(fileContent).ToStream();
         string filename = "test-file-delete-me.txt";
 
-        // Upload file.
-        OpenAIFileInfo uploadedFile = IsAsync
-            ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants)
-            : client.UploadFile(file, filename, FileUploadPurpose.Assistants);
-        Assert.That(uploadedFile, Is.Not.Null);
+        OpenAIFileInfo uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+        bool deleted;
 
-        try
+        if (useFileInfoOverload)
         {
-            Assert.That(uploadedFile.Filename, Is.EqualTo(filename));
-            Assert.That(uploadedFile.Purpose, Is.EqualTo(OpenAIFilePurpose.Assistants));
-
-            // Retrieve file.
-            OpenAIFileInfo retrievedFile = IsAsync
-                ? await client.GetFileAsync(uploadedFile.Id)
-                : client.GetFile(uploadedFile.Id);
-            Assert.That(retrievedFile.Id, Is.EqualTo(uploadedFile.Id));
-            Assert.That(retrievedFile.Filename, Is.EqualTo(uploadedFile.Filename));
-        }
-        finally
-        {
-            // Delete file.
-            bool deleted = IsAsync
+            deleted = IsAsync
                 ? await client.DeleteFileAsync(uploadedFile.Id)
                 : client.DeleteFile(uploadedFile.Id);
-            Assert.That(deleted, Is.True);
         }
+        else
+        {
+            deleted = IsAsync
+                ? await client.DeleteFileAsync(uploadedFile.Id)
+                : client.DeleteFile(uploadedFile.Id);
+        }
+
+        Assert.That(deleted, Is.True);
     }
 
     [Test]
-    public async Task UploadAndDownloadContent()
+    public void DeleteFileCanParseServiceError()
     {
         FileClient client = GetTestClient();
-        string imagePath = Path.Combine("Assets", "images_dog_and_cat.png");
+        ClientResultException ex = null;
 
-        // Upload file.
-        OpenAIFileInfo uploadedFile = IsAsync
-            ? await client.UploadFileAsync(imagePath, FileUploadPurpose.Vision)
-            : client.UploadFile(imagePath, FileUploadPurpose.Vision);
-        Assert.That(uploadedFile, Is.Not.Null);
+        if (IsAsync)
+        {
+            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
+        }
+        else
+        {
+            ex = Assert.Throws<ClientResultException>(() => client.DeleteFile("fake_id"));
+        }
+
+        Assert.That(ex.Status, Is.EqualTo(404));
+    }
+
+    [Test]
+    public async Task GetFile()
+    {
+        FileClient client = GetTestClient();
+        using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
+        string filename = "test-file-delete-me.txt";
+        OpenAIFileInfo uploadedFile = null;
+        OpenAIFileInfo fileInfo;
 
         try
         {
-            Assert.That(uploadedFile.Filename, Is.EqualTo(imagePath));
-            Assert.That(uploadedFile.Purpose, Is.EqualTo(OpenAIFilePurpose.Vision));
+            uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
 
-            // Download file content.
-            BinaryData downloadedContent = IsAsync
-                ? await client.DownloadFileAsync(uploadedFile.Id)
-                : client.DownloadFile(uploadedFile.Id);
-            Assert.That(downloadedContent, Is.Not.Null);
+            fileInfo = IsAsync
+                ? await client.GetFileAsync(uploadedFile.Id)
+                : client.GetFile(uploadedFile.Id);
         }
         finally
         {
-            // Delete file.
-            bool deleted = IsAsync
-                ? await client.DeleteFileAsync(uploadedFile.Id)
-                : client.DeleteFile(uploadedFile.Id);
-            Assert.That(deleted, Is.True);
+            if (uploadedFile != null)
+            {
+                await client.DeleteFileAsync(uploadedFile.Id);
+            }
         }
+
+        Assert.That(fileInfo, Is.Not.Null);
+        Assert.That(fileInfo.Id, Is.EqualTo(uploadedFile.Id));
+        Assert.That(fileInfo.SizeInBytes, Is.EqualTo(uploadedFile.SizeInBytes));
+        Assert.That(fileInfo.CreatedAt, Is.EqualTo(uploadedFile.CreatedAt));
+        Assert.That(fileInfo.Filename, Is.EqualTo(uploadedFile.Filename));
+        Assert.That(fileInfo.Purpose, Is.EqualTo(uploadedFile.Purpose));
+#pragma warning disable CS0618
+        Assert.That(fileInfo.Status, Is.EqualTo(uploadedFile.Status));
+        Assert.That(fileInfo.StatusDetails, Is.EqualTo(uploadedFile.StatusDetails));
+#pragma warning restore CS0618
+    }
+
+    [Test]
+    public void GetFileCanParseServiceError()
+    {
+        FileClient client = GetTestClient();
+        ClientResultException ex = null;
+
+        if (IsAsync)
+        {
+            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
+        }
+        else
+        {
+            ex = Assert.Throws<ClientResultException>(() => client.GetFile("fake_id"));
+        }
+
+        Assert.That(ex.Status, Is.EqualTo(404));
+    }
+
+    [Test]
+    public async Task DownloadContent()
+    {
+        FileClient client = GetTestClient();
+        string filename = "images_dog_and_cat.png";
+        string path = Path.Combine("Assets", filename);
+        using Stream file = File.OpenRead(path);
+        OpenAIFileInfo uploadedFile = null;
+        BinaryData downloadedContent;
+
+        try
+        {
+            uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
+
+            downloadedContent = IsAsync
+                ? await client.DownloadFileAsync(uploadedFile.Id)
+                : client.DownloadFile(uploadedFile.Id);
+        }
+        finally
+        {
+            if (uploadedFile != null)
+            {
+                await client.DeleteFileAsync(uploadedFile.Id);
+            }
+        }
+
+        byte[] originalFileBytes = File.ReadAllBytes(path);
+        byte[] downloadedBytes = downloadedContent.ToArray();
+
+        Assert.That(downloadedBytes.SequenceEqual(originalFileBytes));
+    }
+
+    [Test]
+    public void DownloadFileCanParseServiceError()
+    {
+        FileClient client = GetTestClient();
+        ClientResultException ex = null;
+
+        if (IsAsync)
+        {
+            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
+        }
+        else
+        {
+            ex = Assert.Throws<ClientResultException>(() => client.DownloadFile("fake_id"));
+        }
+
+        Assert.That(ex.Status, Is.EqualTo(404));
     }
 
     [Test]

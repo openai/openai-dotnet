@@ -39,7 +39,7 @@ namespace OpenAI.Models
             return message;
         }
 
-        internal PipelineMessage CreateRetrieveRequest(string model, RequestOptions options)
+        internal PipelineMessage CreateRetrieveModelRequest(string model, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -55,7 +55,7 @@ namespace OpenAI.Models
             return message;
         }
 
-        internal PipelineMessage CreateDeleteRequest(string model, RequestOptions options)
+        internal PipelineMessage CreateDeleteModelRequest(string model, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

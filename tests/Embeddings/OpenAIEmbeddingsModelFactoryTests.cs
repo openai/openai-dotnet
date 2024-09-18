@@ -15,7 +15,7 @@ public partial class OpenAIEmbeddingsModelFactoryTests
         Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding();
 
         Assert.That(embedding.Index, Is.EqualTo(default(int)));
-        Assert.That(embedding.Vector.ToArray(), Is.Not.Null.And.Empty);
+        Assert.That(embedding.ToFloats().ToArray(), Is.Not.Null.And.Empty);
     }
 
     [Test]
@@ -25,7 +25,7 @@ public partial class OpenAIEmbeddingsModelFactoryTests
         Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding(index: index);
 
         Assert.That(embedding.Index, Is.EqualTo(index));
-        Assert.That(embedding.Vector.ToArray(), Is.Not.Null.And.Empty);
+        Assert.That(embedding.ToFloats().ToArray(), Is.Not.Null.And.Empty);
     }
 
     [Test]
@@ -35,7 +35,7 @@ public partial class OpenAIEmbeddingsModelFactoryTests
         Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding(vector: vector);
 
         Assert.That(embedding.Index, Is.EqualTo(default(int)));
-        Assert.That(embedding.Vector.ToArray().SequenceEqual(vector), Is.True);
+        Assert.That(embedding.ToFloats().ToArray().SequenceEqual(vector), Is.True);
     }
 
     [Test]

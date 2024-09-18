@@ -22,8 +22,8 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyAssistant", typeof(string), typeof(AssistantModificationOptions))]
 [CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
 [CodeGenSuppress("DeleteAssistant", typeof(string))]
-[CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetAssistants", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
+[CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(AssistantCollectionOrder?), typeof(string), typeof(string))]
+[CodeGenSuppress("GetAssistants", typeof(int?), typeof(AssistantCollectionOrder?), typeof(string), typeof(string))]
 public partial class AssistantClient
 {
     private readonly InternalAssistantMessageClient _messageSubClient;
@@ -122,7 +122,7 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetAssistantsAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetAssistantsAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as AsyncPageCollection<Assistant>;
     }
 
@@ -159,7 +159,7 @@ public partial class AssistantClient
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetAssistants(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetAssistants(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as PageCollection<Assistant>;
     }
 
@@ -466,7 +466,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetMessagesAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetMessagesAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as AsyncPageCollection<ThreadMessage>;
     }
 
@@ -507,7 +507,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetMessages(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetMessages(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as PageCollection<ThreadMessage>;
     }
 
@@ -841,7 +841,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetRunsAsync(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetRunsAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as AsyncPageCollection<ThreadRun>;
     }
 
@@ -882,7 +882,7 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetRuns(threadId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetRuns(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as PageCollection<ThreadRun>;
     }
 
@@ -1093,7 +1093,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return GetRunStepsAsync(threadId, runId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetRunStepsAsync(threadId, runId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as AsyncPageCollection<RunStep>;
     }
 
@@ -1137,7 +1137,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return GetRunSteps(threadId, runId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetRunSteps(threadId, runId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as PageCollection<RunStep>;
     }
 

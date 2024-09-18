@@ -136,7 +136,7 @@ public partial class AssistantExamples
         if (run.Status == RunStatus.Completed)
         {
             PageCollection<ThreadMessage> messagePages
-                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
             IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
             foreach (ThreadMessage message in messages)
@@ -173,7 +173,7 @@ public partial class AssistantExamples
             PageCollection<RunStep> runSteps = client.GetRunSteps(
                 run, new RunStepCollectionOptions()
                 {
-                    Order = ListOrder.OldestFirst
+                    Order = RunStepCollectionOrder.Ascending
                 });
             foreach (RunStep step in runSteps.GetAllValues())
             {

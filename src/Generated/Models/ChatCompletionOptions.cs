@@ -12,7 +12,7 @@ namespace OpenAI.Chat
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal ChatCompletionOptions(IList<ChatMessage> messages, InternalCreateChatCompletionRequestModel model, float? frequencyPenalty, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? topLogProbabilityCount, int? maxTokens, int? n, float? presencePenalty, ChatResponseFormat responseFormat, long? seed, InternalCreateChatCompletionRequestServiceTier? serviceTier, IList<string> stopSequences, bool? stream, InternalChatCompletionStreamOptions streamOptions, float? temperature, float? topP, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? parallelToolCallsEnabled, string endUserId, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatCompletionOptions(IList<ChatMessage> messages, InternalCreateChatCompletionRequestModel model, float? frequencyPenalty, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? topLogProbabilityCount, int? deprecatedMaxTokens, int? maxOutputTokenCount, int? n, float? presencePenalty, ChatResponseFormat responseFormat, long? seed, InternalCreateChatCompletionRequestServiceTier? serviceTier, IList<string> stopSequences, bool? stream, InternalChatCompletionStreamOptions streamOptions, float? temperature, float? topP, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? parallelToolCallsEnabled, string endUserId, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Messages = messages;
             Model = model;
@@ -20,7 +20,8 @@ namespace OpenAI.Chat
             LogitBiases = logitBiases;
             IncludeLogProbabilities = includeLogProbabilities;
             TopLogProbabilityCount = topLogProbabilityCount;
-            MaxTokens = maxTokens;
+            _deprecatedMaxTokens = deprecatedMaxTokens;
+            MaxOutputTokenCount = maxOutputTokenCount;
             N = n;
             PresencePenalty = presencePenalty;
             ResponseFormat = responseFormat;
@@ -40,12 +41,10 @@ namespace OpenAI.Chat
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
         public float? FrequencyPenalty { get; set; }
-        public int? MaxTokens { get; set; }
         public float? PresencePenalty { get; set; }
         public ChatResponseFormat ResponseFormat { get; set; }
         public float? Temperature { get; set; }
         public float? TopP { get; set; }
         public IList<ChatTool> Tools { get; }
-        public IList<ChatFunction> Functions { get; }
     }
 }

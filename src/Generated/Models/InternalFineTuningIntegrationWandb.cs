@@ -7,33 +7,25 @@ using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningIntegrationWandb
+    internal partial class InternalFineTuningIntegrationWandb : InternalFineTuningIntegration
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalFineTuningIntegrationWandb(string project)
+        internal InternalFineTuningIntegrationWandb(FineTuningIntegrationWandbWandb wandb)
         {
-            Argument.AssertNotNull(project, nameof(project));
+            Argument.AssertNotNull(wandb, nameof(wandb));
 
-            Project = project;
-            Tags = new ChangeTrackingList<string>();
+            Type = "wandb";
+            Wandb = wandb;
         }
 
-        internal InternalFineTuningIntegrationWandb(string project, string name, string entity, IReadOnlyList<string> tags, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFineTuningIntegrationWandb(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, FineTuningIntegrationWandbWandb wandb) : base(type, serializedAdditionalRawData)
         {
-            Project = project;
-            Name = name;
-            Entity = entity;
-            Tags = tags;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Wandb = wandb;
         }
 
         internal InternalFineTuningIntegrationWandb()
         {
         }
 
-        public string Project { get; }
-        public string Name { get; }
-        public string Entity { get; }
-        public IReadOnlyList<string> Tags { get; }
+        public FineTuningIntegrationWandbWandb Wandb { get; }
     }
 }

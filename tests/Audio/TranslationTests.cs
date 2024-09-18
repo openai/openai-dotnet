@@ -1,7 +1,9 @@
 ﻿using NUnit.Framework;
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
+using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -64,7 +66,7 @@ public partial class TranslationTests : SyncAsyncTestBase
 
         AudioTranslationOptions options = new()
         {
-            ResponseFormat = formatToTest,
+            ResponseFormat = formatToTest
         };
 
         AudioTranslation translation = IsAsync
@@ -72,5 +74,30 @@ public partial class TranslationTests : SyncAsyncTestBase
             : client.TranslateAudio(path, options);
 
         Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
+
+        if (formatToTest == AudioTranslationFormat.Verbose)
+        {
+            Assert.That(translation.Language, Is.EqualTo("english"));
+            Assert.That(translation.Duration, Is.GreaterThan(TimeSpan.Zero));
+            Assert.That(translation.Segments, Is.Not.Empty);
+
+            for (int i = 0; i < translation.Segments.Count; i++)
+            {
+                TranscribedSegment segment = translation.Segments[i];
+
+                if (i > 0)
+                {
+                    Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(translation.Segments[i - 1].EndTime));
+                }
+
+                Assert.That(segment.Id, Is.EqualTo(i));
+                Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+                Assert.That(segment.TokenIds, Is.Not.Null.And.Not.Empty);
+
+                Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+            }
+        }
     }
 }

@@ -99,7 +99,7 @@ namespace OpenAI.Batch
             string inputFileId = default;
             InternalCreateBatchRequestEndpoint endpoint = default;
             InternalBatchCompletionTimeframe completionWindow = default;
-            IDictionary<string, string> metadata = default;
+            IReadOnlyDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())

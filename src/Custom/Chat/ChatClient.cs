@@ -181,7 +181,7 @@ public partial class ChatClient
 
         async Task<ClientResult> getResultAsync() =>
             await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-        return new AsyncStreamingChatCompletionUpdateCollection(getResultAsync);
+        return new InternalAsyncStreamingChatCompletionUpdateCollection(getResultAsync);
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public partial class ChatClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult getResult() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
-        return new StreamingChatCompletionUpdateCollection(getResult);
+        return new InternalStreamingChatCompletionUpdateCollection(getResult);
     }
 
     /// <summary>

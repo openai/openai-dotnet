@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantResponseFormatJsonObject : AssistantResponseFormat
     {
-        internal InternalAssistantResponseFormatJsonObject()
+        public InternalAssistantResponseFormatJsonObject()
         {
             Type = "json_object";
         }

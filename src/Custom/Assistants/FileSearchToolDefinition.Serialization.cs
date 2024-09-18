@@ -12,7 +12,7 @@ public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinit
     internal static void SerializeFileSearchToolDefinition(FileSearchToolDefinition instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);
@@ -20,10 +20,7 @@ public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinit
         if (Optional.IsDefined(MaxResults))
         {
             writer.WritePropertyName("file_search"u8);
-            writer.WriteStartObject();
-            writer.WritePropertyName("max_num_results"u8);
-            writer.WriteNumberValue(MaxResults.Value);
-            writer.WriteEndObject();
+            writer.WriteObjectValue(_fileSearch, options);
         }
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();

@@ -74,7 +74,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string url = default;
-            ImageChatMessageContentPartDetail? detail = default;
+            ChatImageDetailLevel? detail = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -90,7 +90,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    detail = new ImageChatMessageContentPartDetail(property.Value.GetString());
+                    detail = new ChatImageDetailLevel(property.Value.GetString());
                     continue;
                 }
                 if (true)

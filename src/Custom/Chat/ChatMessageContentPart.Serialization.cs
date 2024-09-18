@@ -30,7 +30,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         else if (instance._kind == ChatMessageContentPartKind.Image)
         {
             writer.WritePropertyName("image_url"u8);
-            writer.WriteObjectValue(instance._imageUrl, options);
+            writer.WriteObjectValue(instance._imageUri, options);
         }
         writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
         writer.WriteEndObject();
@@ -71,7 +71,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         string kind = default;
         string text = default;
         string refusal = default;
-        InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl = default;
+        InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default;
         IDictionary<string, BinaryData> serializedAdditionalRawData = default;
         Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
         foreach (var property in element.EnumerateObject())
@@ -88,7 +88,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             }
             if (property.NameEquals("image_url"u8))
             {
-                imageUrl = InternalChatCompletionRequestMessageContentPartImageImageUrl.DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(property.Value, options);
+                imageUri = InternalChatCompletionRequestMessageContentPartImageImageUrl.DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(property.Value, options);
                 continue;
             }
             if (property.NameEquals("refusal"u8))
@@ -102,6 +102,6 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new ChatMessageContentPart(kind, text, refusal, imageUrl, serializedAdditionalRawData);
+        return new ChatMessageContentPart(kind, text, imageUri, refusal, serializedAdditionalRawData);
     }
 }

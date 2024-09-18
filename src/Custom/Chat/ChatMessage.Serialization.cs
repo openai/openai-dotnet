@@ -26,7 +26,7 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
         }
         else if (property.Value.ValueKind == JsonValueKind.String)
         {
-            content.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
+            content.Add(ChatMessageContentPart.CreateTextPart(property.Value.GetString()));
         }
         else if (property.Value.ValueKind == JsonValueKind.Array)
         {
@@ -43,5 +43,5 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
     internal static void WriteCore(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 }

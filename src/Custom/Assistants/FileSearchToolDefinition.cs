@@ -13,6 +13,12 @@ public partial class FileSearchToolDefinition : ToolDefinition
         set => _fileSearch.InternalMaxNumResults = value;
     }
 
+    public FileSearchRankingOptions RankingOptions
+    {
+        get => _fileSearch.RankingOptions;
+        set => _fileSearch.RankingOptions = value;
+    }
+
     /// <summary>
     /// Creates a new instance of <see cref="FileSearchToolDefinition"/>.
     /// </summary>
@@ -23,5 +29,5 @@ public partial class FileSearchToolDefinition : ToolDefinition
     }
 
     [CodeGenMember("FileSearch")]
-    private InternalAssistantToolsFileSearchFileSearch _fileSearch;
+    private readonly InternalAssistantToolsFileSearchFileSearch _fileSearch;
 }

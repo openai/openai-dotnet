@@ -24,12 +24,7 @@ namespace OpenAI.Chat
             if (SerializedAdditionalRawData?.ContainsKey("messages") != true)
             {
                 writer.WritePropertyName("messages"u8);
-                writer.WriteStartArray();
-                foreach (var item in Messages)
-                {
-                    writer.WriteObjectValue<ChatMessage>(item, options);
-                }
-                writer.WriteEndArray();
+                SerializeMessagesValue(writer, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("model") != true)
             {
@@ -84,16 +79,28 @@ namespace OpenAI.Chat
                     writer.WriteNull("top_logprobs");
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(MaxTokens))
+            if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(_deprecatedMaxTokens))
             {
-                if (MaxTokens != null)
+                if (_deprecatedMaxTokens != null)
                 {
                     writer.WritePropertyName("max_tokens"u8);
-                    writer.WriteNumberValue(MaxTokens.Value);
+                    writer.WriteNumberValue(_deprecatedMaxTokens.Value);
                 }
                 else
                 {
                     writer.WriteNull("max_tokens");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("max_completion_tokens") != true && Optional.IsDefined(MaxOutputTokenCount))
+            {
+                if (MaxOutputTokenCount != null)
+                {
+                    writer.WritePropertyName("max_completion_tokens"u8);
+                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_completion_tokens");
                 }
             }
             if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
@@ -245,7 +252,7 @@ namespace OpenAI.Chat
                 writer.WriteStartArray();
                 foreach (var item in Functions)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WriteObjectValue<ChatFunction>(item, options);
                 }
                 writer.WriteEndArray();
             }
@@ -298,6 +305,7 @@ namespace OpenAI.Chat
             bool? logprobs = default;
             int? topLogprobs = default;
             int? maxTokens = default;
+            int? maxCompletionTokens = default;
             int? n = default;
             float? presencePenalty = default;
             ChatResponseFormat responseFormat = default;
@@ -376,6 +384,16 @@ namespace OpenAI.Chat
                         continue;
                     }
                     maxTokens = property.Value.GetInt32();
+                    continue;
+                }
+                if (property.NameEquals("max_completion_tokens"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        maxCompletionTokens = null;
+                        continue;
+                    }
+                    maxCompletionTokens = property.Value.GetInt32();
                     continue;
                 }
                 if (property.NameEquals("n"u8))
@@ -547,6 +565,7 @@ namespace OpenAI.Chat
                 logprobs,
                 topLogprobs,
                 maxTokens,
+                maxCompletionTokens,
                 n,
                 presencePenalty,
                 responseFormat,

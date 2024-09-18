@@ -98,7 +98,7 @@ public partial class AssistantExamples
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         PageCollection<ThreadMessage> messagePages
-            = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
+            = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
         IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
 
         foreach (ThreadMessage message in messages)

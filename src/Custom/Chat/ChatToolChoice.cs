@@ -4,16 +4,33 @@ using System.Collections.Generic;
 namespace OpenAI.Chat;
 
 /// <summary>
-/// Represents <c>tool_choice</c>, the desired manner in which the model should use the <c>tools</c> defined in a
-/// chat completion request.
+///     The manner in which the model chooses which tool (if any) to call.
+///     <list>
+///         <item>
+///             Call <see cref="CreateAutoChoice()"/> to create a <see cref="ChatToolChoice"/> indicating that the
+///             model can freely pick between generating a message or calling one or more tools.
+///         </item>
+///         <item>
+///             Call <see cref="CreateNoneChoice()"/> to create a <see cref="ChatToolChoice"/> indicating that the
+///             model must not call any tools and that instead it must generate a message.
+///         </item>
+///         <item>
+///             Call <see cref="CreateRequiredChoice()"/> to create a <see cref="ChatToolChoice"/> indicating that the
+///             model must call one or more tools.
+///         </item>
+///         <item>
+///             Call <see cref="CreateFunctionChoice(string)"/> to create a <see cref="ChatToolChoice"/> indicating
+///             that the model must call the specified function.
+///         </item>
+///     </list>
 /// </summary>
 [CodeGenModel("ChatCompletionToolChoice")]
 [CodeGenSuppress("ChatToolChoice", typeof(IDictionary<string, BinaryData>))]
 public partial class ChatToolChoice
 {
-    private readonly bool _isPlainString;
-    private readonly string _string;
-    private readonly InternalChatCompletionNamedToolChoiceType _type;
+    private readonly bool _predefined;
+    private readonly string _predefinedValue;
+    private readonly InternalChatCompletionNamedToolChoiceType? _type;
     private readonly InternalChatCompletionNamedToolChoiceFunction _function;
 
     private const string AutoValue = "auto";
@@ -25,56 +42,71 @@ public partial class ChatToolChoice
     {
     }
 
-    // CUSTOM: Added custom internal constructor to handle the plain string representation (e.g. "auto", "none", etc.).
-    internal ChatToolChoice(string predefinedToolChoice)
+    // CUSTOM: Added to support deserialization.
+    internal ChatToolChoice(bool predefined, string predefinedValue, InternalChatCompletionNamedToolChoiceType? type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        Argument.AssertNotNull(predefinedToolChoice, nameof(predefinedToolChoice));
-
-        _string = predefinedToolChoice;
-        _isPlainString = true;
-    }
-
-    // CUSTOM: Added custom public constructor to handle the object representation.
-    /// <summary>
-    /// Creates a new instance of <see cref="ChatToolChoice"/> which requests that the model restricts its behavior
-    /// to calling the specified tool.
-    /// </summary>
-    /// <param name="tool"> The definition of the tool that the model should call. </param>
-    public ChatToolChoice(ChatTool tool)
-    {
-        Argument.AssertNotNull(tool, nameof(tool));
-
-        _function = new(tool.FunctionName);
-        _type = InternalChatCompletionNamedToolChoiceType.Function;
-        _isPlainString = false;
-    }
-
-    // CUSTOM: Added the function name parameter to the constructor that takes additional data to handle the object representation.
-    /// <summary> Initializes a new instance of <see cref="ChatToolChoice"/>. </summary>
-    /// <param name="functionName"> The function name. </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal ChatToolChoice(string functionName, IDictionary<string, BinaryData> serializedAdditionalRawData)
-    {
-        Argument.AssertNotNull(functionName, nameof(functionName));
-
-        _function = new(functionName);
-        _type = InternalChatCompletionNamedToolChoiceType.Function;
-        _isPlainString = false;
-
+        _predefined = predefined;
+        _predefinedValue = predefinedValue;
+        _type = type;
+        _function = function;
         SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     /// <summary>
-    /// Specifies that the model must freely pick between generating a message or calling one or more tools.
+    ///     Creates a new <see cref="ChatToolChoice"/> indicating that the model can freely pick between generating a
+    ///     message or calling one or more tools.
     /// </summary>
-    public static ChatToolChoice Auto { get; } = new ChatToolChoice(AutoValue);
+    public static ChatToolChoice CreateAutoChoice()
+    {
+        return new ChatToolChoice(
+            predefined: true,
+            predefinedValue: AutoValue,
+            type: null,
+            function: null,
+            serializedAdditionalRawData: null);
+    }
+
     /// <summary>
-    /// Specifies that the model must not invoke any tools, and instead it must generate an ordinary message. Note
-    /// that the tools that were provided may still influence the model's behavior even if they are not called.
+    ///     Creates a new <see cref="ChatToolChoice"/> indicating that the model must not call any tools and that
+    ///     instead it must generate a message.
     /// </summary>
-    public static ChatToolChoice None { get; } = new ChatToolChoice(NoneValue);
+    public static ChatToolChoice CreateNoneChoice()
+    {
+        return new ChatToolChoice(
+            predefined: true,
+            predefinedValue: NoneValue,
+            type: null,
+            function: null,
+            serializedAdditionalRawData: null);
+    }
+
     /// <summary>
-    /// Specifies that the model must call one or more tools.
+    ///     Creates a new <see cref="ChatToolChoice"/> indicating that the model must call one or more tools.
     /// </summary>
-    public static ChatToolChoice Required { get; } = new ChatToolChoice(RequiredValue);
+    public static ChatToolChoice CreateRequiredChoice()
+    {
+        return new ChatToolChoice(
+            predefined: true,
+            predefinedValue: RequiredValue,
+            type: null,
+            function: null,
+            serializedAdditionalRawData: null);
+    }
+
+    /// <summary>
+    ///     Creates a new <see cref="ChatToolChoice"/> indicating that the model must call the specified function.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"> <paramref name="functionName"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="functionName"/> is an empty string, and was expected to be non-empty. </exception>
+    public static ChatToolChoice CreateFunctionChoice(string functionName)
+    {
+        Argument.AssertNotNullOrEmpty(functionName, nameof(functionName));
+
+        return new ChatToolChoice(
+            predefined: false,
+            predefinedValue: null,
+            type: InternalChatCompletionNamedToolChoiceType.Function,
+            function: new InternalChatCompletionNamedToolChoiceFunction(functionName),
+            serializedAdditionalRawData: null);
+    }
 }

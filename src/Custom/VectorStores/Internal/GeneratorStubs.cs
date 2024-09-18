@@ -67,3 +67,6 @@ internal partial class InternalUnknownChunkingStrategy { }
 
 [CodeGenModel("UnknownFileChunkingStrategyResponseParam")]
 internal partial class InternalUnknownFileChunkingStrategyResponseParamProxy { }
+
+[CodeGenModel("ListFilesInVectorStoreBatchRequestOrder")]
+internal readonly partial struct InternalListFilesInVectorStoreBatchRequestOrder { }

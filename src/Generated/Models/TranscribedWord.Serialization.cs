@@ -29,12 +29,12 @@ namespace OpenAI.Audio
             if (SerializedAdditionalRawData?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
             }
             if (SerializedAdditionalRawData?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
             if (SerializedAdditionalRawData != null)
             {

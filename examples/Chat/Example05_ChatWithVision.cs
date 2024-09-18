@@ -19,8 +19,8 @@ public partial class ChatExamples
 
         List<ChatMessage> messages = [
             new UserChatMessage(
-                ChatMessageContentPart.CreateTextMessageContentPart("Please describe the following image."),
-                ChatMessageContentPart.CreateImageMessageContentPart(imageBytes, "image/png"))
+                ChatMessageContentPart.CreateTextPart("Please describe the following image."),
+                ChatMessageContentPart.CreateImagePart(imageBytes, "image/png"))
         ];
 
         ChatCompletion chatCompletion = client.CompleteChat(messages);

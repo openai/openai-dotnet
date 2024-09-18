@@ -66,8 +66,8 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
 
         ClientResult<ChatCompletion> completionResult = IsAsync
-            ? await client.CompleteChatAsync(["Mock me!"])
-            : client.CompleteChat(["Mock me!"]);
+            ? await client.CompleteChatAsync([ new UserChatMessage("Mock me!") ])
+            : client.CompleteChat([ new UserChatMessage("Mock me!") ]);
         Assert.That(completionResult?.GetRawResponse(), Is.Not.Null);
         Assert.That(completionResult.GetRawResponse().Content?.ToString(), Does.Contain("additional world"));
 
@@ -160,7 +160,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            choice = ChatToolChoice.Auto;
+            choice = ChatToolChoice.CreateAutoChoice();
         }
 
         BinaryData serializedChoice = ModelReaderWriter.Write(choice);
@@ -196,7 +196,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            choice = new ChatToolChoice(ChatTool.CreateFunctionTool(functionName));
+            choice = ChatToolChoice.CreateFunctionChoice(functionName);
         }
 
         BinaryData serializedChoice = ModelReaderWriter.Write(choice);
@@ -227,6 +227,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         }
     }
 
+#pragma warning disable CS0618
     [Test]
     [TestCase(true)]
     [TestCase(false)]
@@ -253,7 +254,9 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(choiceAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.String));
         Assert.That(choiceAsJson.RootElement.ToString(), Is.EqualTo("auto"));
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     [TestCase(true)]
     [TestCase(false)]
@@ -277,9 +280,8 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-#pragma warning disable CS0618
+
             choice = new ChatFunctionChoice(new ChatFunction(functionName));
-#pragma warning restore CS0618
         }
 
         BinaryData serializedChoice = ModelReaderWriter.Write(choice);
@@ -300,6 +302,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
             Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
         }
     }
+#pragma warning restore CS0618
 
     [Test]
     [TestCase(true)]
@@ -325,7 +328,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            part = ChatMessageContentPart.CreateTextMessageContentPart(text);
+            part = ChatMessageContentPart.CreateTextPart(text);
         }
 
         BinaryData serializedPart = ModelReaderWriter.Write(part);
@@ -379,7 +382,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            part = ChatMessageContentPart.CreateImageMessageContentPart(new Uri(uri), ImageChatMessageContentPartDetail.High);
+            part = ChatMessageContentPart.CreateImagePart(new Uri(uri), ChatImageDetailLevel.High);
         }
 
         BinaryData serializedPart = ModelReaderWriter.Write(part);
@@ -454,7 +457,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            part = ChatMessageContentPart.CreateImageMessageContentPart(imageData, imageMediaType, ImageChatMessageContentPartDetail.Auto);
+            part = ChatMessageContentPart.CreateImagePart(imageData, imageMediaType, ChatImageDetailLevel.Auto);
         }
 
         BinaryData serializedPart = ModelReaderWriter.Write(part);
@@ -494,8 +497,8 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
     public void SerializeCompoundContent()
     {
         UserChatMessage message = new(
-            ChatMessageContentPart.CreateTextMessageContentPart("Describe this image for me:"),
-            ChatMessageContentPart.CreateImageMessageContentPart(new Uri("https://api.openai.com/test")));
+            ChatMessageContentPart.CreateTextPart("Describe this image for me:"),
+            ChatMessageContentPart.CreateImagePart(new Uri("https://api.openai.com/test")));
         string serializedMessage = ModelReaderWriter.Write(message).ToString();
         Assert.That(serializedMessage, Does.Contain("this image"));
         Assert.That(serializedMessage, Does.Contain("openai.com/test"));
@@ -532,10 +535,10 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(serialized, Does.Not.Contain("content"));
     }
 
+#pragma warning disable CS0618
     [Test]
     public void SerializeMessagesWithNullProperties()
     {
-#pragma warning disable CS0618 // FunctionChatMessage is deprecated
         AssistantChatMessage assistantMessage = ModelReaderWriter.Read<AssistantChatMessage>(BinaryData.FromString("""
             {
                 "role": "assistant",
@@ -578,14 +581,13 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
             """));
         Assert.That(assistantMessage.Content, Has.Count.EqualTo(1));
         Assert.That(assistantMessage.Content[0], Is.Null);
-        FunctionChatMessage functionMessage = new("my_function");
-        functionMessage.Content.Add(null);
+        FunctionChatMessage functionMessage = new("my_function", null);
         BinaryData serializedMessage = ModelReaderWriter.Write(functionMessage);
         Console.WriteLine(serializedMessage.ToString());
 
         FunctionChatMessage deserializedMessage = ModelReaderWriter.Read<FunctionChatMessage>(serializedMessage);
-#pragma warning restore
     }
+#pragma warning restore CS0618
 
     [Test]
     public void TopLevelClientOptionsPersistence()
@@ -605,7 +607,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
 
         OpenAIClient topLevelClient = new(new("mock-credential"), options);
         ChatClient firstClient = topLevelClient.GetChatClient("mock-model");
-        ClientResult first = firstClient.CompleteChat("Hello, world");
+        ClientResult first = firstClient.CompleteChat(new UserChatMessage("Hello, world"));
 
         Assert.That(observedEndpoint, Is.Not.Null);
         Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("my.custom.com/expected/test/endpoint"));

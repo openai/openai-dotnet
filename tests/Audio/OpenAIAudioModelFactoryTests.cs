@@ -161,15 +161,15 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment();
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
@@ -179,69 +179,69 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(id: id);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(id));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithSeekOffsetWorks()
     {
-        long seekOffset = 9000000000;
+        int seekOffset = 900000000;
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(seekOffset: seekOffset);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
         Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(seekOffset));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithStartWorks()
     {
-        TimeSpan start = TimeSpan.FromSeconds(45);
-        TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(start: start);
+        TimeSpan startTime = TimeSpan.FromSeconds(45);
+        TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(startTime: startTime);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(start));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(startTime));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithEndWorks()
     {
-        TimeSpan end = TimeSpan.FromSeconds(45);
-        TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(end: end);
+        TimeSpan endTime = TimeSpan.FromSeconds(45);
+        TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(endTime: endTime);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(end));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(endTime));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
@@ -251,33 +251,33 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(text: text);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.EqualTo(text));
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithTokenIdsWorks()
     {
-        IEnumerable<long> tokenIds = [9000000000, 9000000010];
+        IEnumerable<int> tokenIds = [900000000, 900000001];
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(tokenIds: tokenIds);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds.SequenceEqual(tokenIds), Is.True);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
@@ -287,33 +287,33 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(temperature: temperature);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(temperature));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithAverageLogProbabilityWorks()
     {
-        double averageLogProbability = -3.1415;
+        float averageLogProbability = -3.1415f;
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(averageLogProbability: averageLogProbability);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(averageLogProbability));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
@@ -323,31 +323,31 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(compressionRatio: compressionRatio);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(compressionRatio));
-        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(default(float)));
     }
 
     [Test]
     public void TranscribedSegmentWithNoSpeechProbabilityWorks()
     {
-        double noSpeechProbability = 0.02;
+        float noSpeechProbability = 0.02f;
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(noSpeechProbability: noSpeechProbability);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
-        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(long)));
-        Assert.That(transcribedSegment.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedSegment.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.SeekOffset, Is.EqualTo(default(int)));
+        Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
         Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
-        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(double)));
+        Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.NoSpeechProbability, Is.EqualTo(noSpeechProbability));
     }
@@ -358,8 +358,8 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord();
 
         Assert.That(transcribedWord.Word, Is.Null);
-        Assert.That(transcribedWord.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedWord.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.EndTime, Is.EqualTo(default(TimeSpan)));
     }
 
     [Test]
@@ -369,29 +369,29 @@ public partial class OpenAIAudioModelFactoryTests
         TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord(word: word);
 
         Assert.That(transcribedWord.Word, Is.EqualTo(word));
-        Assert.That(transcribedWord.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedWord.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.EndTime, Is.EqualTo(default(TimeSpan)));
     }
 
     [Test]
     public void TranscribedWordWithStartWorks()
     {
-        TimeSpan start = TimeSpan.FromSeconds(45);
-        TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord(start: start);
+        TimeSpan startTime = TimeSpan.FromSeconds(45);
+        TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord(startTime: startTime);
 
         Assert.That(transcribedWord.Word, Is.Null);
-        Assert.That(transcribedWord.Start, Is.EqualTo(start));
-        Assert.That(transcribedWord.End, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.StartTime, Is.EqualTo(startTime));
+        Assert.That(transcribedWord.EndTime, Is.EqualTo(default(TimeSpan)));
     }
 
     [Test]
     public void TranscribedWordWithEndWorks()
     {
-        TimeSpan end = TimeSpan.FromSeconds(45);
-        TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord(end: end);
+        TimeSpan endTime = TimeSpan.FromSeconds(45);
+        TranscribedWord transcribedWord = OpenAIAudioModelFactory.TranscribedWord(endTime: endTime);
 
         Assert.That(transcribedWord.Word, Is.Null);
-        Assert.That(transcribedWord.Start, Is.EqualTo(default(TimeSpan)));
-        Assert.That(transcribedWord.End, Is.EqualTo(end));
+        Assert.That(transcribedWord.StartTime, Is.EqualTo(default(TimeSpan)));
+        Assert.That(transcribedWord.EndTime, Is.EqualTo(endTime));
     }
 }

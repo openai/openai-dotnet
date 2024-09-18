@@ -97,8 +97,8 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            IReadOnlyList<ChatTokenLogProbabilityInfo> content = default;
-            IReadOnlyList<ChatTokenLogProbabilityInfo> refusal = default;
+            IReadOnlyList<ChatTokenLogProbabilityDetails> content = default;
+            IReadOnlyList<ChatTokenLogProbabilityDetails> refusal = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -107,13 +107,13 @@ namespace OpenAI.Chat
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
-                        content = new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+                        content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
                         continue;
                     }
-                    List<ChatTokenLogProbabilityInfo> array = new List<ChatTokenLogProbabilityInfo>();
+                    List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(ChatTokenLogProbabilityInfo.DeserializeChatTokenLogProbabilityInfo(item, options));
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
                     }
                     content = array;
                     continue;
@@ -122,13 +122,13 @@ namespace OpenAI.Chat
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
-                        refusal = new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+                        refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
                         continue;
                     }
-                    List<ChatTokenLogProbabilityInfo> array = new List<ChatTokenLogProbabilityInfo>();
+                    List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(ChatTokenLogProbabilityInfo.DeserializeChatTokenLogProbabilityInfo(item, options));
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
                     }
                     refusal = array;
                     continue;

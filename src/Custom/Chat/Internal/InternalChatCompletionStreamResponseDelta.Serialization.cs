@@ -87,7 +87,7 @@ internal partial class InternalChatCompletionStreamResponseDelta : IJsonModel<In
                     continue;
                 }
                 List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
-                array.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
+                array.Add(ChatMessageContentPart.CreateTextPart(property.Value.GetString()));
                 content = array;
                 continue;
             }

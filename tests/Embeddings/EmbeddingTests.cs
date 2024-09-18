@@ -37,10 +37,12 @@ public partial class EmbeddingTests : SyncAsyncTestBase
             : client.GenerateEmbedding(input);
         Assert.That(embedding, Is.Not.Null);
         Assert.That(embedding.Index, Is.EqualTo(0));
-        Assert.That(embedding.Vector, Is.Not.Null);
-        Assert.That(embedding.Vector.Span.Length, Is.EqualTo(1536));
 
-        float[] array = embedding.Vector.ToArray();
+        ReadOnlyMemory<float> vector = embedding.ToFloats();
+        Assert.That(vector, Is.Not.Null);
+        Assert.That(vector.Span.Length, Is.EqualTo(1536));
+
+        float[] array = vector.ToArray();
         Assert.That(array.Length, Is.EqualTo(1536));
     }
 
@@ -96,10 +98,12 @@ public partial class EmbeddingTests : SyncAsyncTestBase
         for (int i = 0; i < embeddings.Count; i++)
         {
             Assert.That(embeddings[i].Index, Is.EqualTo(i));
-            Assert.That(embeddings[i].Vector, Is.Not.Null);
-            Assert.That(embeddings[i].Vector.Span.Length, Is.EqualTo(Dimensions));
 
-            float[] array = embeddings[i].Vector.ToArray();
+            ReadOnlyMemory<float> vector = embeddings[i].ToFloats();
+            Assert.That(vector, Is.Not.Null);
+            Assert.That(vector.Span.Length, Is.EqualTo(Dimensions));
+
+            float[] array = vector.ToArray();
             Assert.That(array.Length, Is.EqualTo(Dimensions));
         }
     }
@@ -121,6 +125,44 @@ public partial class EmbeddingTests : SyncAsyncTestBase
             _ = IsAsync
                 ? await client.GenerateEmbeddingAsync("foo", options)
                 : client.GenerateEmbedding("foo", options);
+        }
+        catch (Exception ex)
+        {
+            caughtException = ex;
+        }
+
+        Assert.That(caughtException, Is.InstanceOf<ClientResultException>());
+        Assert.That(caughtException.Message, Contains.Substring("dimensions"));
+    }
+
+    [Test]
+    [TestCase(EmbeddingsInputKind.UsingStrings)]
+    [TestCase(EmbeddingsInputKind.UsingIntegers)]
+    public async Task GenerateMultipleEmbeddingsWithBadOptions(EmbeddingsInputKind embeddingsInputKind)
+    {
+        EmbeddingClient client = GetTestClient();
+
+        EmbeddingGenerationOptions options = new()
+        {
+            Dimensions = -42,
+        };
+
+        Exception caughtException = null;
+
+        try
+        {
+            if (embeddingsInputKind == EmbeddingsInputKind.UsingStrings)
+            {
+                _ = IsAsync
+                    ? await client.GenerateEmbeddingsAsync(["prompt"], options)
+                    : client.GenerateEmbeddings(["prompt"], options);
+            }
+            else if (embeddingsInputKind == EmbeddingsInputKind.UsingIntegers)
+            {
+                _ = IsAsync
+                    ? await client.GenerateEmbeddingsAsync([[1]], options)
+                    : client.GenerateEmbeddings([[1]], options);
+            }
         }
         catch (Exception ex)
         {

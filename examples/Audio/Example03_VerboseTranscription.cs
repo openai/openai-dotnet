@@ -29,14 +29,14 @@ public partial class AudioExamples
         Console.WriteLine($"Words:");
         foreach (TranscribedWord word in transcription.Words)
         {
-            Console.WriteLine($"  {word.Word,15} : {word.Start.TotalMilliseconds,5:0} - {word.End.TotalMilliseconds,5:0}");
+            Console.WriteLine($"  {word.Word,15} : {word.StartTime.TotalMilliseconds,5:0} - {word.EndTime.TotalMilliseconds,5:0}");
         }
 
         Console.WriteLine();
         Console.WriteLine($"Segments:");
         foreach (TranscribedSegment segment in transcription.Segments)
         {
-            Console.WriteLine($"  {segment.Text,90} : {segment.Start.TotalMilliseconds,5:0} - {segment.End.TotalMilliseconds,5:0}");
+            Console.WriteLine($"  {segment.Text,90} : {segment.StartTime.TotalMilliseconds,5:0} - {segment.EndTime.TotalMilliseconds,5:0}");
         }
     }
 }

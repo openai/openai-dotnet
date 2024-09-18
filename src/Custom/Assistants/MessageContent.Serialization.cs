@@ -12,7 +12,7 @@ public abstract partial class MessageContent : IJsonModel<MessageContent>
     internal static void WriteCore(MessageContent instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 
     internal static MessageContent DeserializeMessageContent(JsonElement element, ModelReaderWriterOptions options = null)
     {

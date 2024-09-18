@@ -9,20 +9,20 @@ namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedWord
     {
-        internal TranscribedWord(string word, TimeSpan start, TimeSpan end)
+        internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime)
         {
             Argument.AssertNotNull(word, nameof(word));
 
             Word = word;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
         }
 
-        internal TranscribedWord(string word, TimeSpan start, TimeSpan end, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Word = word;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
@@ -31,7 +31,5 @@ namespace OpenAI.Audio
         }
 
         public string Word { get; }
-        public TimeSpan Start { get; }
-        public TimeSpan End { get; }
     }
 }

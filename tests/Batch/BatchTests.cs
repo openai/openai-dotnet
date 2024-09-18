@@ -25,6 +25,8 @@ public partial class BatchTests : SyncAsyncTestBase
     [Test]
     public void ListBatchesProtocol()
     {
+        AssertSyncOnly();
+
         BatchClient client = GetTestClient();
         IEnumerable<ClientResult> pageResults = client.GetBatches(after: null, limit: null, options: null);
 
@@ -59,6 +61,8 @@ public partial class BatchTests : SyncAsyncTestBase
     [Test]
     public async Task ListBatchesProtocolAsync()
     {
+        AssertAsyncOnly();
+
         BatchClient client = GetTestClient();
         IAsyncEnumerable<ClientResult> pageResults = client.GetBatchesAsync(after: null, limit: null, options: null);
 

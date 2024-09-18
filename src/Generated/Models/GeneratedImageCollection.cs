@@ -11,6 +11,5 @@ namespace OpenAI.Images
 {
     public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
     {
-        public DateTimeOffset Created { get; }
     }
 }

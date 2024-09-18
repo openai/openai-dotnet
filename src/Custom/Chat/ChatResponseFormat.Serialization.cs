@@ -15,5 +15,5 @@ public abstract partial class ChatResponseFormat : IJsonModel<ChatResponseFormat
     internal static void WriteCore(ChatResponseFormat instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 }

@@ -8,10 +8,10 @@ namespace OpenAI.Models;
 
 [CodeGenSuppress("GetModelsAsync", typeof(RequestOptions))]
 [CodeGenSuppress("GetModels", typeof(RequestOptions))]
-[CodeGenSuppress("RetrieveAsync", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("Retrieve", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("DeleteAsync", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("Delete", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("RetrieveModelAsync", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("RetrieveModel", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("DeleteModelAsync", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("DeleteModel", typeof(string), typeof(RequestOptions))]
 public partial class ModelClient
 {
     /// <summary>
@@ -57,7 +57,7 @@ public partial class ModelClient
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
-        using PipelineMessage message = CreateRetrieveRequest(model, options);
+        using PipelineMessage message = CreateRetrieveModelRequest(model, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -76,7 +76,7 @@ public partial class ModelClient
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
-        using PipelineMessage message = CreateRetrieveRequest(model, options);
+        using PipelineMessage message = CreateRetrieveModelRequest(model, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
@@ -94,7 +94,7 @@ public partial class ModelClient
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
-        using PipelineMessage message = CreateDeleteRequest(model, options);
+        using PipelineMessage message = CreateDeleteModelRequest(model, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -112,7 +112,7 @@ public partial class ModelClient
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
-        using PipelineMessage message = CreateDeleteRequest(model, options);
+        using PipelineMessage message = CreateDeleteModelRequest(model, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

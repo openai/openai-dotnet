@@ -25,8 +25,8 @@ public partial class ModerationTests : SyncAsyncTestBase
         const string input = "I am killing all my houseplants!";
 
         ModerationResult moderation = IsAsync
-            ? await client.ClassifyTextInputAsync(input)
-            : client.ClassifyTextInput(input);
+            ? await client.ClassifyTextAsync(input)
+            : client.ClassifyText(input);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
         Assert.That(moderation.Categories.Violence, Is.True);
@@ -45,8 +45,8 @@ public partial class ModerationTests : SyncAsyncTestBase
             ];
 
         ModerationCollection moderations = IsAsync
-            ? await client.ClassifyTextInputsAsync(inputs)
-            : client.ClassifyTextInputs(inputs);
+            ? await client.ClassifyTextAsync(inputs)
+            : client.ClassifyText(inputs);
         Assert.That(moderations, Is.Not.Null);
         Assert.That(moderations.Count, Is.EqualTo(2));
         Assert.That(moderations.Model, Does.StartWith("text-moderation"));

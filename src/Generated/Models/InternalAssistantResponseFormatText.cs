@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantResponseFormatText : AssistantResponseFormat
     {
-        internal InternalAssistantResponseFormatText()
+        public InternalAssistantResponseFormatText()
         {
             Type = "text";
         }

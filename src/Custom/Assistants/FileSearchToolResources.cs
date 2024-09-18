@@ -16,7 +16,7 @@ public partial class FileSearchToolResources
     public IList<string> VectorStoreIds
     {
         get => _vectorStoreIds;
-        set
+        internal set
         {
             _vectorStoreIds = new ChangeTrackingList<string>();
             foreach (string item in value)

@@ -18,7 +18,7 @@ public partial class EmbeddingExamples
         EmbeddingGenerationOptions options = new() { Dimensions = 512 };
 
         Embedding embedding = client.GenerateEmbedding(description, options);
-        ReadOnlyMemory<float> vector = embedding.Vector;
+        ReadOnlyMemory<float> vector = embedding.ToFloats();
 
         Console.WriteLine($"Dimension: {vector.Length}");
         Console.WriteLine($"Floats: ");

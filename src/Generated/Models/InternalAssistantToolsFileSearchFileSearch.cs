@@ -14,10 +14,12 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal InternalAssistantToolsFileSearchFileSearch(int? internalMaxNumResults, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalAssistantToolsFileSearchFileSearch(int? internalMaxNumResults, FileSearchRankingOptions rankingOptions, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             InternalMaxNumResults = internalMaxNumResults;
+            RankingOptions = rankingOptions;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
+        public FileSearchRankingOptions RankingOptions { get; set; }
     }
 }

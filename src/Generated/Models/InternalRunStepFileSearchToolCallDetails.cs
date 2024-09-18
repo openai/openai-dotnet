@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepFileSearchToolCallDetails : RunStepToolCall
     {
-        internal InternalRunStepFileSearchToolCallDetails(string id, IReadOnlyDictionary<string, BinaryData> fileSearch)
+        internal InternalRunStepFileSearchToolCallDetails(string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch)
         {
             Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(fileSearch, nameof(fileSearch));
@@ -19,7 +19,7 @@ namespace OpenAI.Assistants
             FileSearch = fileSearch;
         }
 
-        internal InternalRunStepFileSearchToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, IReadOnlyDictionary<string, BinaryData> fileSearch) : base(type, serializedAdditionalRawData)
+        internal InternalRunStepFileSearchToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(type, serializedAdditionalRawData)
         {
             Id = id;
             FileSearch = fileSearch;
@@ -30,6 +30,6 @@ namespace OpenAI.Assistants
         }
 
         public string Id { get; }
-        public IReadOnlyDictionary<string, BinaryData> FileSearch { get; }
+        public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; }
     }
 }

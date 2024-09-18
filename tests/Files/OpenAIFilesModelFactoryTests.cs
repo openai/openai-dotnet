@@ -10,6 +10,7 @@ namespace OpenAI.Tests.Files;
 [Category("Smoke")]
 public partial class OpenAIFilesModelFactoryTests
 {
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithNoPropertiesWorks()
     {
@@ -23,7 +24,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithIdWorks()
     {
@@ -38,7 +41,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithSizeInBytesWorks()
     {
@@ -53,7 +58,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithCreatedAtWorks()
     {
@@ -68,7 +75,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithFilenameWorks()
     {
@@ -83,7 +92,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithPurposeWorks()
     {
@@ -98,7 +109,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithStatusWorks()
     {
@@ -113,7 +126,9 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(status));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
+#pragma warning restore CS0618
 
+#pragma warning disable CS0618
     [Test]
     public void OpenAIFileInfoWithStatusDetailsWorks()
     {
@@ -128,6 +143,7 @@ public partial class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.EqualTo(statusDetails));
     }
+#pragma warning restore CS0618
 
     [Test]
     public void OpenAIFileInfoCollectionWithNoPropertiesWorks()

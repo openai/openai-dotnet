@@ -22,10 +22,10 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("ModifyVectorStore", typeof(string), typeof(VectorStoreModificationOptions))]
 [CodeGenSuppress("DeleteVectorStoreAsync", typeof(string))]
 [CodeGenSuppress("DeleteVectorStore", typeof(string))]
-[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(ListOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(ListOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
-[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(ListOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
+[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string))]
+[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string))]
+[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreFileAssociationCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
+[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreFileAssociationCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest))]
 [CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string))]
@@ -38,8 +38,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string))]
 [CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string))]
 [CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string))]
-[CodeGenSuppress("GetFilesInVectorStoreBatchesAsync", typeof(string), typeof(string), typeof(int?), typeof(ListOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
-[CodeGenSuppress("GetFilesInVectorStoreBatches", typeof(string), typeof(string), typeof(int?), typeof(ListOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
+[CodeGenSuppress("GetFilesInVectorStoreBatchesAsync", typeof(string), typeof(string), typeof(int?), typeof(InternalListFilesInVectorStoreBatchRequestOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
+[CodeGenSuppress("GetFilesInVectorStoreBatches", typeof(string), typeof(string), typeof(int?), typeof(InternalListFilesInVectorStoreBatchRequestOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?))]
 [Experimental("OPENAI001")]
 public partial class VectorStoreClient
 {
@@ -219,7 +219,7 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetVectorStoresAsync(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetVectorStoresAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as AsyncPageCollection<VectorStore>;
     }
 
@@ -256,7 +256,7 @@ public partial class VectorStoreClient
         VectorStoreCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetVectorStores(options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
+        return GetVectorStores(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
             as PageCollection<VectorStore>;
     }
 
@@ -336,7 +336,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        return GetFileAssociationsAsync(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+        return GetFileAssociationsAsync(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
             as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
@@ -380,7 +380,7 @@ public partial class VectorStoreClient
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        return GetFileAssociations(vectorStoreId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+        return GetFileAssociations(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
             as PageCollection<VectorStoreFileAssociation>;
     }
 
@@ -629,7 +629,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return GetFileAssociationsAsync(vectorStoreId, batchJobId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+        return GetFileAssociationsAsync(vectorStoreId, batchJobId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
             as AsyncPageCollection<VectorStoreFileAssociation>;
     }
 
@@ -701,7 +701,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
 
-        return GetFileAssociations(vectorStoreId, batchJobId, options?.PageSize, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
+        return GetFileAssociations(vectorStoreId, batchJobId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
             as PageCollection<VectorStoreFileAssociation>;
     }
 

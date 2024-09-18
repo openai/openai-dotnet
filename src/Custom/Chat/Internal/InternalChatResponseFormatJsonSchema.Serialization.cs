@@ -12,7 +12,7 @@ internal partial class InternalChatResponseFormatJsonSchema : IJsonModel<Interna
     internal static void SerializeInternalChatResponseFormatJsonSchema(InternalChatResponseFormatJsonSchema instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         if (SerializedAdditionalRawData?.ContainsKey("json_schema") != true)
