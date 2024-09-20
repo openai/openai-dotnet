@@ -18,7 +18,6 @@ namespace OpenAI.Tests.VectorStores;
 
 [TestFixture(true)]
 [TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Assistants")]
 public class VectorStoresTests : SyncAsyncTestBase
 {

@@ -20,7 +20,6 @@ namespace OpenAI.Tests.Assistants;
 
 [TestFixture(true)]
 [TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Assistants")]
 public class AssistantsTests : SyncAsyncTestBase
 {

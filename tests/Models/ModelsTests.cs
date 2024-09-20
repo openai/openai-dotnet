@@ -92,7 +92,9 @@ public class ModelsTests : SyncAsyncTestBase
             ex = Assert.Throws<ClientResultException>(() => client.DeleteModel("fake_id"));
         }
 
-        Assert.That(ex.Status, Is.EqualTo(403));
+        // If the model exists but the user doesn't own it, the service returns 403.
+        // If the model doesn't exist at all, the service returns 404.
+        Assert.That(ex.Status, Is.EqualTo(404));
     }
 
     [Test]
