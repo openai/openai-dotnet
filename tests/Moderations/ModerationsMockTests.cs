@@ -1,19 +1,20 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Moderations;
+using OpenAI.Tests.Utility;
+using System;
 using System.ClientModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenAI.Moderations;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Moderations;
 
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Moderations")]
 [Category("Smoke")]
-public partial class ModerationsMockTests : SyncAsyncTestBase
+public class ModerationsMockTests : SyncAsyncTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 

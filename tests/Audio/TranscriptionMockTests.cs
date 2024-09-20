@@ -13,6 +13,7 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 [Category("Smoke")]
 public partial class TranscriptionMockTests : SyncAsyncTestBase
 {

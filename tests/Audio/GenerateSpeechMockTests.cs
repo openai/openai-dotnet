@@ -10,6 +10,7 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 [Category("Smoke")]
 internal class GenerateSpeechMockTests : SyncAsyncTestBase
 {

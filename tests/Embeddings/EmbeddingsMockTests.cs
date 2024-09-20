@@ -1,19 +1,20 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Embeddings;
+using OpenAI.Tests.Utility;
+using System;
 using System.ClientModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenAI.Embeddings;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Embeddings;
 
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Embeddings")]
 [Category("Smoke")]
-public partial class EmbeddingsMockTests : SyncAsyncTestBase
+public class EmbeddingsMockTests : SyncAsyncTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 

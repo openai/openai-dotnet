@@ -3,9 +3,9 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
+using System.Threading;
 
 #nullable enable
 
@@ -16,26 +16,45 @@ namespace OpenAI.Chat;
 /// </summary>
 internal class InternalStreamingChatCompletionUpdateCollection : CollectionResult<StreamingChatCompletionUpdate>
 {
-    private readonly Func<ClientResult> _getResult;
+    private readonly Func<ClientResult> _sendRequest;
+    private readonly CancellationToken _cancellationToken;
 
-    public InternalStreamingChatCompletionUpdateCollection(Func<ClientResult> getResult) : base()
+    public InternalStreamingChatCompletionUpdateCollection(
+        Func< ClientResult> sendRequest,
+        CancellationToken cancellationToken)
     {
-        Argument.AssertNotNull(getResult, nameof(getResult));
+        Argument.AssertNotNull(sendRequest, nameof(sendRequest));
 
-        _getResult = getResult;
+        _sendRequest = sendRequest;
+        _cancellationToken = cancellationToken;
     }
 
-    public override IEnumerator<StreamingChatCompletionUpdate> GetEnumerator()
+    public override ContinuationToken? GetContinuationToken(ClientResult page)
+        // Continuation is not supported for SSE streams.
+        => null;
+
+    public override IEnumerable<ClientResult> GetRawPages()
     {
-        return new StreamingChatUpdateEnumerator(_getResult, this);
+        // We don't currently support resuming a dropped connection from the
+        // last received event, so the response collection has a single element.
+        yield return _sendRequest();
+    }
+
+    protected override IEnumerable<StreamingChatCompletionUpdate> GetValuesFromPage(ClientResult page)
+    {
+        using IEnumerator<StreamingChatCompletionUpdate> enumerator = new StreamingChatUpdateEnumerator(page, _cancellationToken);
+        while (enumerator.MoveNext())
+        {
+            yield return enumerator.Current;
+        }
     }
 
     private sealed class StreamingChatUpdateEnumerator : IEnumerator<StreamingChatCompletionUpdate>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
-        private readonly Func<ClientResult> _getResult;
-        private readonly InternalStreamingChatCompletionUpdateCollection _enumerable;
+        private readonly CancellationToken _cancellationToken;
+        private readonly PipelineResponse _response;
 
         // These enumerators represent what is effectively a doubly-nested
         // loop over the outer event collection and the inner update collection,
@@ -50,20 +69,18 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
         private StreamingChatCompletionUpdate? _current;
         private bool _started;
 
-        public StreamingChatUpdateEnumerator(Func<ClientResult> getResult,
-            InternalStreamingChatCompletionUpdateCollection enumerable)
+        public StreamingChatUpdateEnumerator(ClientResult page, CancellationToken cancellationToken)
         {
-            Debug.Assert(getResult is not null);
-            Debug.Assert(enumerable is not null);
+            Argument.AssertNotNull(page, nameof(page));
 
-            _getResult = getResult!;
-            _enumerable = enumerable!;
+            _response = page.GetRawResponse();
+            _cancellationToken = cancellationToken;
         }
 
         StreamingChatCompletionUpdate IEnumerator<StreamingChatCompletionUpdate>.Current
             => _current!;
 
-        object IEnumerator.Current => throw new NotImplementedException();
+        object IEnumerator.Current => _current!;
 
         public bool MoveNext()
         {
@@ -72,6 +89,7 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
                 throw new ObjectDisposedException(nameof(StreamingChatUpdateEnumerator));
             }
 
+            _cancellationToken.ThrowIfCancellationRequested();
             _events ??= CreateEventEnumerator();
             _started = true;
 
@@ -106,16 +124,12 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
 
         private IEnumerator<SseItem<byte[]>> CreateEventEnumerator()
         {
-            ClientResult result = _getResult();
-            PipelineResponse response = result.GetRawResponse();
-            _enumerable.SetRawResponse(response);
-
-            if (response.ContentStream is null)
+            if (_response.ContentStream is null)
             {
                 throw new InvalidOperationException("Unable to create result from response with null ContentStream");
             }
 
-            IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
+            IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(_response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
             return enumerable.GetEnumerator();
         }
 
@@ -137,10 +151,8 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
                 _events.Dispose();
                 _events = null;
 
-                // Dispose the response so we don't leave the unbuffered
-                // network stream open.
-                PipelineResponse response = _enumerable.GetRawResponse();
-                response.Dispose();
+                // Dispose the response so we don't leave the network connection open.
+                _response?.Dispose();
             }
         }
     }

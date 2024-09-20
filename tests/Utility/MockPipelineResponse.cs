@@ -28,6 +28,8 @@ public class MockPipelineResponse : PipelineResponse
         _reasonPhrase = reasonPhrase;
     }
 
+    public bool IsDisposed => _disposed;
+
     public override int Status => _status;
 
     public void SetStatus(int value) => _status = value;

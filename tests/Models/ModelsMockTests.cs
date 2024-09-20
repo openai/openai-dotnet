@@ -1,17 +1,18 @@
-﻿using System.ClientModel;
-using System.Linq;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Models;
 using OpenAI.Tests.Utility;
+using System.ClientModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Models;
 
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Models")]
 [Category("Smoke")]
-public partial class ModelsMockTests : SyncAsyncTestBase
+public class ModelsMockTests : SyncAsyncTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 

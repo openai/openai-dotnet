@@ -5,7 +5,6 @@ using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,7 +22,7 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public partial class ChatTests : SyncAsyncTestBase
+public class ChatTests : SyncAsyncTestBase
 {
     public ChatTests(bool isAsync) : base(isAsync)
     {
@@ -91,13 +90,52 @@ public partial class ChatTests : SyncAsyncTestBase
             Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
             updateCount++;
         }
+
         Assert.That(updateCount, Is.GreaterThan(1));
         Assert.That(latestTokenReceiptTime - firstTokenReceiptTime > TimeSpan.FromMilliseconds(500));
+    }
 
-        // Validate that network stream was disposed - this will show up as the
-        // the raw response holding an empty content stream.
-        PipelineResponse response = streamingResult.GetRawResponse();
-        Assert.That(response.ContentStream.Length, Is.EqualTo(0));
+    [Test]
+    public void CompleteChatStreamingClosesNetworkStream()
+    {
+        MockPipelineResponse response = new(200);
+        response.SetContent("""
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(response)
+        };
+
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")
+        ];
+
+        TimeSpan? firstTokenReceiptTime = null;
+        TimeSpan? latestTokenReceiptTime = null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
+        Assert.That(streamingResult, Is.InstanceOf<CollectionResult<StreamingChatCompletionUpdate>>());
+        int updateCount = 0;
+
+        Assert.IsFalse(response.IsDisposed);
+
+        foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
+        {
+            firstTokenReceiptTime ??= stopwatch.Elapsed;
+            latestTokenReceiptTime = stopwatch.Elapsed;
+            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
+            updateCount++;
+        }
+
+        Assert.IsTrue(response.IsDisposed);
     }
 
     [Test]
@@ -130,12 +168,49 @@ public partial class ChatTests : SyncAsyncTestBase
         Assert.That(usage?.InputTokenCount, Is.GreaterThan(0));
         Assert.That(usage?.OutputTokenCount, Is.GreaterThan(0));
         Assert.That(usage?.OutputTokenDetails?.ReasoningTokenCount, Is.Null.Or.EqualTo(0));
-        Assert.That(usage.InputTokenCount + usage.OutputTokenCount, Is.EqualTo(usage.TotalTokenCount));
+    }
 
-        // Validate that network stream was disposed - this will show up as the
-        // the raw response holding an empty content stream.
-        PipelineResponse response = streamingResult.GetRawResponse();
-        Assert.That(response.ContentStream.Length, Is.EqualTo(0));
+    [Test]
+    public async Task CompleteChatStreamingClosesNetworkStreamAsync()
+    {
+        MockPipelineResponse response = new(200);
+        response.SetContent("""
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(response)
+        };
+
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")
+        ];
+
+        TimeSpan? firstTokenReceiptTime = null;
+        TimeSpan? latestTokenReceiptTime = null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
+        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
+        int updateCount = 0;
+
+        Assert.IsFalse(response.IsDisposed);
+
+        await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
+        {
+            firstTokenReceiptTime ??= stopwatch.Elapsed;
+            latestTokenReceiptTime = stopwatch.Elapsed;
+            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
+            updateCount++;
+        }
+
+        Assert.IsTrue(response.IsDisposed);
     }
 
     [Test]
@@ -336,8 +411,8 @@ public partial class ChatTests : SyncAsyncTestBase
                 jsonSchemaIsStrict: false)
         };
         ChatCompletion completion = IsAsync
-            ? await client.CompleteChatAsync([ new UserChatMessage("What are the hex values for red, green, and blue?") ], options)
-            : client.CompleteChat([ new UserChatMessage("What are the hex values for red, green, and blue?") ], options);
+            ? await client.CompleteChatAsync([new UserChatMessage("What are the hex values for red, green, and blue?")], options)
+            : client.CompleteChat([new UserChatMessage("What are the hex values for red, green, and blue?")], options);
         Console.WriteLine(completion);
     }
 

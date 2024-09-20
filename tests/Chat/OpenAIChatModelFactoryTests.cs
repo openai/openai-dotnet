@@ -7,6 +7,7 @@ using OpenAI.Chat;
 namespace OpenAI.Tests.Chat;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Chat")]
 [Category("Smoke")]
 public partial class OpenAIChatModelFactoryTests
 {

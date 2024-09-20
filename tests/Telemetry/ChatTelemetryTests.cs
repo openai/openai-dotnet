@@ -18,6 +18,7 @@ namespace OpenAI.Tests.Telemetry;
 
 [TestFixture]
 [NonParallelizable]
+[Category("Telemetry")]
 [Category("Smoke")]
 public class ChatTelemetryTests
 {

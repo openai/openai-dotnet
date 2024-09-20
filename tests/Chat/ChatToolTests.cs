@@ -16,7 +16,7 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public partial class ChatToolTests : SyncAsyncTestBase
+public class ChatToolTests : SyncAsyncTestBase
 {
     public ChatToolTests(bool isAsync) : base(isAsync)
     {

@@ -4,7 +4,7 @@ using OpenAI.Files;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -16,8 +16,10 @@ namespace OpenAI.Tests.Batch;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Batch")]
-public partial class BatchTests : SyncAsyncTestBase
+public class BatchTests : SyncAsyncTestBase
 {
+    private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
+
     public BatchTests(bool isAsync) : base(isAsync)
     {
     }
@@ -28,10 +30,10 @@ public partial class BatchTests : SyncAsyncTestBase
         AssertSyncOnly();
 
         BatchClient client = GetTestClient();
-        IEnumerable<ClientResult> pageResults = client.GetBatches(after: null, limit: null, options: null);
+        CollectionResult batches = client.GetBatches(after: null, limit: null, options: null);
 
         int pageCount = 0;
-        foreach (ClientResult pageResult in pageResults)
+        foreach (ClientResult pageResult in batches.GetRawPages())
         {
             BinaryData response = pageResult.GetRawResponse().Content;
             using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -64,10 +66,10 @@ public partial class BatchTests : SyncAsyncTestBase
         AssertAsyncOnly();
 
         BatchClient client = GetTestClient();
-        IAsyncEnumerable<ClientResult> pageResults = client.GetBatchesAsync(after: null, limit: null, options: null);
+        AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
 
         int pageCount = 0;
-        await foreach (ClientResult pageResult in pageResults)
+        await foreach (ClientResult pageResult in batches.GetRawPagesAsync())
         {
             BinaryData response = pageResult.GetRawResponse().Content;
             using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -174,6 +176,4 @@ public partial class BatchTests : SyncAsyncTestBase
         //newBatchDynamic = batchResult.GetRawResponse().Content.ToObjectFromJson<dynamic>();
         //Assert.That(newBatchDynamic.status, Is.EqualTo("cancelling"));
     }
-
-    private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
 }

@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Embeddings;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenAI.Tests.Embeddings;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Embeddings")]
 [Category("Smoke")]
-public partial class OpenAIEmbeddingsModelFactoryTests
+public class OpenAIEmbeddingsModelFactoryTests
 {
     [Test]
     public void EmbeddingWithNoPropertiesWorks()

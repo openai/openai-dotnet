@@ -27,6 +27,11 @@
   - `TotalTokens` is renamed to `TotalTokenCount`
 - Removed the common `ListOrder` enum from the top-level `OpenAI` namespace in favor of individual enums in their corresponding sub-namespace. (commit_hash)
 - Renamed the `PageSize` property to `PageSizeLimit`. (commit_hash)
+- Updated deletion methods to return a result object instead of a `bool`. Affected methods:
+  - `DeleteAssitant`, `DeleteMessage`, and `DeleteThread` in `AssistantClient`.
+  - `DeleteVectorStore` and `RemoveFileFromStore` in `VectorStoreClient`.
+  - `DeleteModel` in `ModelClient`.
+  - `DeleteFile` in `FileClient`.
 - Removed setters from collection properties. (commit_hash)
 - Renamed `ChatTokenLogProbabilityInfo` to `ChatTokenLogProbabilityDetails`. (commit_hash)
 - Renamed `ChatTokenTopLogProbabilityInfo` to `ChatTokenTopLogProbabilityDetails`. (commit_hash)

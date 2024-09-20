@@ -23,6 +23,27 @@ public partial class ChatClient
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
 
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ChatClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ChatClient(string model, string apiKey, OpenAIClientOptions options) : this(model, new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
@@ -179,9 +200,9 @@ public partial class ChatClient
 
         using BinaryContent content = options.ToBinaryContent();
 
-        async Task<ClientResult> getResultAsync() =>
+        async Task<ClientResult> sendRequestAsync() =>
             await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-        return new InternalAsyncStreamingChatCompletionUpdateCollection(getResultAsync);
+        return new InternalAsyncStreamingChatCompletionUpdateCollection(sendRequestAsync, cancellationToken);
     }
 
     /// <summary>
@@ -205,8 +226,8 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult getResult() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
-        return new InternalStreamingChatCompletionUpdateCollection(getResult);
+        ClientResult sendRequest() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
+        return new InternalStreamingChatCompletionUpdateCollection(sendRequest, cancellationToken);
     }
 
     /// <summary>

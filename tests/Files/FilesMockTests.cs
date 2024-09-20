@@ -1,20 +1,21 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
+using System;
 using System.ClientModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Files;
 
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Files")]
 [Category("Smoke")]
-public partial class FilesMockTests : SyncAsyncTestBase
+public class FilesMockTests : SyncAsyncTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 

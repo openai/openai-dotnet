@@ -1,14 +1,15 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Images;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using OpenAI.Images;
 
 namespace OpenAI.Tests.Images;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Images")]
 [Category("Smoke")]
-public partial class OpenAIImagesModelFactoryTests
+public class OpenAIImagesModelFactoryTests
 {
     [Test]
     public void GeneratedImageWithNoPropertiesWorks()

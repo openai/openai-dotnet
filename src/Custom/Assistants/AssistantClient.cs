@@ -30,6 +30,23 @@ public partial class AssistantClient
     private readonly InternalAssistantRunClient _runSubClient;
     private readonly InternalAssistantThreadClient _threadSubClient;
 
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public AssistantClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public AssistantClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -114,16 +131,19 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="Assistant"/>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
+    /// <returns> A collection of <see cref="Assistant"/>. </returns>
+    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetAssistantsAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<Assistant>;
+        AsyncCollectionResult result = GetAssistantsAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<Assistant> assistantCollection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<Assistant>'.");
+        }
+
+        return assistantCollection;
     }
 
     /// <summary>
@@ -131,19 +151,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="Assistant"/>. </returns>
-    public virtual AsyncPageCollection<Assistant> GetAssistantsAsync(
+    /// <returns> A collection of <see cref="Assistant"/>. </returns>
+    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        return GetAssistantsAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<Assistant>;
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
+        AsyncCollectionResult result = GetAssistantsAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<Assistant> assistantCollection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<Assistant>'.");
+        }
+
+        return assistantCollection;
     }
 
     /// <summary>
@@ -151,16 +174,19 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="Assistant"/>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(
+    /// <returns> A collection of <see cref="Assistant"/>. </returns>
+    public virtual CollectionResult<Assistant> GetAssistants(
         AssistantCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
-        return GetAssistants(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as PageCollection<Assistant>;
+        CollectionResult result = GetAssistants(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<Assistant> assistantCollection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<Assistant>'.");
+        }
+
+        return assistantCollection;
     }
 
     /// <summary>
@@ -168,19 +194,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="Assistant"/>. </returns>
-    public virtual PageCollection<Assistant> GetAssistants(
+    /// <returns> A collection of <see cref="Assistant"/>. </returns>
+    public virtual CollectionResult<Assistant> GetAssistants(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        AssistantsPageToken pageToken = AssistantsPageToken.FromToken(firstPageToken);
-        return GetAssistants(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions())
-            as PageCollection<Assistant>;
+        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
+        CollectionResult result = GetAssistants(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<Assistant> assistantCollection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<Assistant>'.");
+        }
+
+        return assistantCollection;
     }
 
     /// <summary>
@@ -251,14 +280,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="assistantId"> The ID of the assistant to delete. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteAssistantAsync(string assistantId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="AssistantDeletionResult"/> instance. </returns>
+    public virtual async Task<ClientResult<AssistantDeletionResult>> DeleteAssistantAsync(string assistantId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = await DeleteAssistantAsync(assistantId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response
-            => InternalDeleteAssistantResponse.FromResponse(response).Deleted);
+            => AssistantDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -266,14 +295,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="assistantId"> The ID of the assistant to delete. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteAssistant(string assistantId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="AssistantDeletionResult"/> instance. </returns>
+    public virtual ClientResult<AssistantDeletionResult> DeleteAssistant(string assistantId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = DeleteAssistant(assistantId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response
-            => InternalDeleteAssistantResponse.FromResponse(response).Deleted);
+            => AssistantDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -365,14 +394,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to delete. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteThreadAsync(string threadId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="ThreadDeletionResult"/> instance. </returns>
+    public virtual async Task<ClientResult<ThreadDeletionResult>> DeleteThreadAsync(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = await DeleteThreadAsync(threadId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response
-            => InternalDeleteThreadResponse.FromResponse(response).Deleted);
+            => ThreadDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -380,14 +409,14 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="threadId"> The ID of the thread to delete. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteThread(string threadId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="ThreadDeletionResult"/> instance. </returns>
+    public virtual ClientResult<ThreadDeletionResult> DeleteThread(string threadId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = DeleteThread(threadId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response
-            => InternalDeleteThreadResponse.FromResponse(response).Deleted);
+            => ThreadDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -455,19 +484,22 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         string threadId,
         MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetMessagesAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<ThreadMessage>;
+        AsyncCollectionResult result = GetMessagesAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<ThreadMessage> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadMessage>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -475,19 +507,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
-        return GetMessagesAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<ThreadMessage>;
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
+        AsyncCollectionResult result = GetMessagesAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<ThreadMessage> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadMessage>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -496,19 +531,22 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread to list messages from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual PageCollection<ThreadMessage> GetMessages(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         string threadId,
         MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetMessages(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as PageCollection<ThreadMessage>;
+        CollectionResult result = GetMessages(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<ThreadMessage> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadMessage>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -516,19 +554,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual PageCollection<ThreadMessage> GetMessages(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        MessagesPageToken pageToken = MessagesPageToken.FromToken(firstPageToken);
-        return GetMessages(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as PageCollection<ThreadMessage>;
+        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
+        CollectionResult result = GetMessages(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<ThreadMessage> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadMessage>'.");
+        }
+
+        return collection;
 
     }
 
@@ -607,15 +648,15 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the message. </param>
     /// <param name="messageId"> The ID of the message. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual async Task<ClientResult<bool>> DeleteMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="MessageDeletionResult"/> instance. </returns>
+    public virtual async Task<ClientResult<MessageDeletionResult>> DeleteMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = await DeleteMessageAsync(threadId, messageId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return CreateResultFromProtocol(protocolResult, response =>
-            InternalDeleteMessageResponse.FromResponse(response).Deleted);
+            MessageDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -624,15 +665,15 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread associated with the message. </param>
     /// <param name="messageId"> The ID of the message. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteMessage(string threadId, string messageId, CancellationToken cancellationToken = default)
+    /// <returns> A <see cref="MessageDeletionResult"/> instance. </returns>
+    public virtual ClientResult<MessageDeletionResult> DeleteMessage(string threadId, string messageId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = DeleteMessage(threadId, messageId, cancellationToken.ToRequestOptions());
         return CreateResultFromProtocol(protocolResult, response =>
-            InternalDeleteMessageResponse.FromResponse(response).Deleted);
+            MessageDeletionResult.FromResponse(response));
     }
 
     /// <summary>
@@ -699,11 +740,11 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        async Task<ClientResult> getResultAsync() =>
+        async Task<ClientResult> sendRequestAsync() =>
             await CreateRunAsync(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
-        return new AsyncStreamingUpdateCollection(getResultAsync);
+        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
     }
 
     /// <summary>
@@ -727,9 +768,8 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        ClientResult getResult() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
+        ClientResult sendRequest() => CreateRun(threadId, options.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
+        return new StreamingUpdateCollection(sendRequest, cancellationToken);
     }
 
     /// <summary>
@@ -793,11 +833,11 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        async Task<ClientResult> getResultAsync() =>
+        async Task<ClientResult> sendRequestAsync() =>
             await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
-        return new AsyncStreamingUpdateCollection(getResultAsync);
+        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
     }
 
     /// <summary>
@@ -819,9 +859,8 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        ClientResult getResult() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
+        ClientResult sendRequest() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
+        return new StreamingUpdateCollection(sendRequest, cancellationToken);
     }
 
     /// <summary>
@@ -830,19 +869,22 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         string threadId,
         RunCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetRunsAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<ThreadRun>;
+        AsyncCollectionResult result = GetRunsAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<ThreadRun> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadRun>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -850,19 +892,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        return GetRunsAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<ThreadRun>;
+        RunCollectionPageToken pageToken = RunCollectionPageToken.FromToken(firstPageToken);
+        AsyncCollectionResult result = GetRunsAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<ThreadRun> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadRun>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -871,19 +916,22 @@ public partial class AssistantClient
     /// <param name="threadId"> The ID of the thread that runs in the list should be associated with. </param>
     /// <param name="options"> Options describing the collection to return. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual PageCollection<ThreadRun> GetRuns(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual CollectionResult<ThreadRun> GetRuns(
         string threadId,
         RunCollectionOptions options = default,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-        return GetRuns(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as PageCollection<ThreadRun>;
+        CollectionResult result = GetRuns(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<ThreadRun> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadRun>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -891,19 +939,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual PageCollection<ThreadRun> GetRuns(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual CollectionResult<ThreadRun> GetRuns(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        RunsPageToken pageToken = RunsPageToken.FromToken(firstPageToken);
-        return GetRuns(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as PageCollection<ThreadRun>;
+        RunCollectionPageToken pageToken = RunCollectionPageToken.FromToken(firstPageToken);
+        CollectionResult result = GetRuns(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<ThreadRun> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadRun>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -1008,11 +1059,11 @@ public partial class AssistantClient
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
             .ToBinaryContent();
 
-        async Task<ClientResult> getResultAsync() =>
+        async Task<ClientResult> sendRequestAsync() =>
             await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true))
             .ConfigureAwait(false);
 
-        return new AsyncStreamingUpdateCollection(getResultAsync);
+        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
     }
 
     /// <summary>
@@ -1036,9 +1087,8 @@ public partial class AssistantClient
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null)
             .ToBinaryContent();
 
-        ClientResult getResult() => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
-
-        return new StreamingUpdateCollection(getResult);
+        ClientResult sendRequest() => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
+        return new StreamingUpdateCollection(sendRequest, cancellationToken);
     }
 
     /// <summary>
@@ -1080,11 +1130,8 @@ public partial class AssistantClient
     /// <param name="runId"> The ID of the run to list run steps from. </param>
     /// <param name="options"></param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         string threadId,
         string runId,
         RunStepCollectionOptions options = default,
@@ -1094,7 +1141,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         return GetRunStepsAsync(threadId, runId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<RunStep>;
+            as AsyncCollectionResult<RunStep>;
     }
 
     /// <summary>
@@ -1102,19 +1149,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        return GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as AsyncPageCollection<RunStep>;
+        RunStepCollectionPageToken pageToken = RunStepCollectionPageToken.FromToken(firstPageToken);
+        AsyncCollectionResult result = GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+        
+        if (result is not AsyncCollectionResult<RunStep> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<RunStep>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -1124,11 +1174,8 @@ public partial class AssistantClient
     /// <param name="runId"> The ID of the run to list run steps from. </param>
     /// <param name="options"></param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual CollectionResult<RunStep> GetRunSteps(
         string threadId,
         string runId,
         RunStepCollectionOptions options = default,
@@ -1137,8 +1184,14 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return GetRunSteps(threadId, runId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as PageCollection<RunStep>;
+        CollectionResult result = GetRunSteps(threadId, runId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<RunStep> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<RunStep>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>
@@ -1146,19 +1199,22 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual CollectionResult<RunStep> GetRunSteps(
         ContinuationToken firstPageToken,
         CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
 
-        RunStepsPageToken pageToken = RunStepsPageToken.FromToken(firstPageToken);
-        return GetRunSteps(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as PageCollection<RunStep>;
+        RunStepCollectionPageToken pageToken = RunStepCollectionPageToken.FromToken(firstPageToken);
+        CollectionResult result = GetRunSteps(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not CollectionResult<RunStep> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<RunStep>'.");
+        }
+
+        return collection;
     }
 
     /// <summary>

@@ -22,6 +22,23 @@ namespace OpenAI.Models;
 
 public partial class ModelClient
 {
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ModelClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public ModelClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ModelClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public ModelClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -113,14 +130,12 @@ public partial class ModelClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<bool>> DeleteModelAsync(string model, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ModelDeletionResult>> DeleteModelAsync(string model, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         ClientResult result = await DeleteModelAsync(model, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        PipelineResponse response = result?.GetRawResponse();
-        InternalDeleteModelResponse value = InternalDeleteModelResponse.FromResponse(response);
-        return ClientResult.FromValue(value.Deleted, response);
+        return ClientResult.FromValue(ModelDeletionResult.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified fine-tuned model. </summary>
@@ -129,13 +144,11 @@ public partial class ModelClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<bool> DeleteModel(string model, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         ClientResult result = DeleteModel(model, cancellationToken.ToRequestOptions());
-        PipelineResponse response = result?.GetRawResponse();
-        InternalDeleteModelResponse value = InternalDeleteModelResponse.FromResponse(response);
-        return ClientResult.FromValue(value.Deleted, response);
+        return ClientResult.FromValue(ModelDeletionResult.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 }

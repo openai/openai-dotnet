@@ -7,6 +7,7 @@ using OpenAI.Audio;
 namespace OpenAI.Tests.Audio;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Audio")]
 [Category("Smoke")]
 public partial class OpenAIAudioModelFactoryTests
 {

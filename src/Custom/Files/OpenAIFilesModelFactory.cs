@@ -7,6 +7,17 @@ namespace OpenAI.Files;
 /// <summary> Model factory for models. </summary>
 public static partial class OpenAIFilesModelFactory
 {
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Files.FileDeletionResult"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Files.FileDeletionResult"/> instance for mocking. </returns>
+    public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = default)
+    {
+        return new FileDeletionResult(
+            fileId,
+            InternalDeleteFileResponseObject.File,
+            deleted,
+            serializedAdditionalRawData: null);
+    }
+
     /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfo"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Files.OpenAIFileInfo"/> instance for mocking. </returns>
     public static OpenAIFileInfo OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null)

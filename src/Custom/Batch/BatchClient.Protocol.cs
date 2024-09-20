@@ -1,7 +1,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
@@ -50,10 +49,9 @@ public partial class BatchClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual IAsyncEnumerable<ClientResult> GetBatchesAsync(string after, int? limit, RequestOptions options)
+    public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options)
     {
-        BatchesPageEnumerator enumerator = new BatchesPageEnumerator(_pipeline, _endpoint, after, limit, options);
-        return PageCollectionHelpers.CreateAsync(enumerator);
+        return new AsyncBatchCollectionResult(this, _pipeline, options, limit, after);
     }
 
     /// <summary>
@@ -64,10 +62,9 @@ public partial class BatchClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual IEnumerable<ClientResult> GetBatches(string after, int? limit, RequestOptions options)
+    public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options)
     {
-        BatchesPageEnumerator enumerator = new BatchesPageEnumerator(_pipeline, _endpoint, after, limit, options);
-        return PageCollectionHelpers.Create(enumerator);
+        return new BatchCollectionResult(this, _pipeline, options, limit, after);
     }
 
     /// <summary>

@@ -8,14 +8,8 @@ internal partial class InternalCreateVectorStoreFileBatchRequest { }
 [CodeGenModel("CreateVectorStoreFileRequest")]
 internal partial class InternalCreateVectorStoreFileRequest { }
 
-[CodeGenModel("DeleteVectorStoreFileResponse")]
-internal partial class InternalDeleteVectorStoreFileResponse { }
-
 [CodeGenModel("DeleteVectorStoreFileResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreFileResponseObject { }
-
-[CodeGenModel("DeleteVectorStoreResponse")]
-internal partial class InternalDeleteVectorStoreResponse { }
 
 [CodeGenModel("DeleteVectorStoreResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreResponseObject { }

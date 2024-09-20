@@ -1,20 +1,21 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Chat;
+using OpenAI.Tests.Utility;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
-using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Chat;
 
 [TestFixture(true)]
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
+[Category("Chat")]
 [Category("Smoke")]
-public partial class ChatMockTests : SyncAsyncTestBase
+public class ChatMockTests : SyncAsyncTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 

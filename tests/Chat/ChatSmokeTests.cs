@@ -1,21 +1,16 @@
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.Telemetry.TestMeterListener;
-using static OpenAI.Tests.TestHelpers;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OpenAI.Tests.Chat;
 
@@ -24,7 +19,7 @@ namespace OpenAI.Tests.Chat;
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
 [Category("Smoke")]
-public partial class ChatSmokeTests : SyncAsyncTestBase
+public class ChatSmokeTests : SyncAsyncTestBase
 {
     public ChatSmokeTests(bool isAsync) : base(isAsync)
     {
@@ -605,7 +600,7 @@ public partial class ChatSmokeTests : SyncAsyncTestBase
         }),
         PipelinePosition.PerCall);
 
-        OpenAIClient topLevelClient = new(new("mock-credential"), options);
+        OpenAIClient topLevelClient = new(new ApiKeyCredential("mock-credential"), options);
         ChatClient firstClient = topLevelClient.GetChatClient("mock-model");
         ClientResult first = firstClient.CompleteChat(new UserChatMessage("Hello, world"));
 
