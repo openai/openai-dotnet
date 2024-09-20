@@ -7,7 +7,6 @@ namespace OpenAI.Tests.Assistants;
 
 #pragma warning disable OPENAI001
 
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Assistants")]
 [Category("Smoke")]
 public class AssistantsSmokeTests
