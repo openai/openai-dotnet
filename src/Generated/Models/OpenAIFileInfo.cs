@@ -45,7 +45,5 @@ namespace OpenAI.Files
         public string Filename { get; }
 
         public OpenAIFilePurpose Purpose { get; }
-        public OpenAIFileStatus Status { get; }
-        public string StatusDetails { get; }
     }
 }

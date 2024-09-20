@@ -12,7 +12,7 @@ internal partial class InternalResponseMessageTextContent : IJsonModel<InternalR
     internal static void SerializeInternalResponseMessageTextContent(InternalResponseMessageTextContent instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);

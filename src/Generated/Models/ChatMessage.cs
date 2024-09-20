@@ -10,10 +10,6 @@ namespace OpenAI.Chat
     public abstract partial class ChatMessage
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected ChatMessage()
-        {
-            Content = new ChangeTrackingList<ChatMessageContentPart>();
-        }
 
         internal ChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

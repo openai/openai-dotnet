@@ -1,15 +1,45 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using OpenAI.Models;
 
 namespace OpenAI.Tests.Models;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Models")]
 [Category("Smoke")]
-public partial class OpenAIModelsModelFactoryTests
+public class OpenAIModelsModelFactoryTests
 {
+    [Test]
+    public void ModelDeletionResultWithNoPropertiesWorks()
+    {
+        ModelDeletionResult modelDeletionResult = OpenAIModelsModelFactory.ModelDeletionResult();
+
+        Assert.That(modelDeletionResult.ModelId, Is.Null);
+        Assert.That(modelDeletionResult.Deleted, Is.EqualTo(false));
+    }
+
+    [Test]
+    public void ModelDeletionResultWithModelIdWorks()
+    {
+        string modelId = "modelId";
+        ModelDeletionResult modelDeletionResult = OpenAIModelsModelFactory.ModelDeletionResult(modelId: modelId);
+
+        Assert.That(modelDeletionResult.ModelId, Is.EqualTo(modelId));
+        Assert.That(modelDeletionResult.Deleted, Is.EqualTo(false));
+    }
+
+    [Test]
+    public void ModelDeletionResultWithDeletedWorks()
+    {
+        bool deleted = true;
+        ModelDeletionResult modelDeletionResult = OpenAIModelsModelFactory.ModelDeletionResult(deleted: deleted);
+
+        Assert.That(modelDeletionResult.ModelId, Is.Null);
+        Assert.That(modelDeletionResult.Deleted, Is.EqualTo(deleted));
+    }
+
     [Test]
     public void OpenAIModelInfoWithNoPropertiesWorks()
     {

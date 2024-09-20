@@ -76,20 +76,11 @@ internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObjectF
 [CodeGenModel("MessageDeltaContent")]
 internal partial class InternalMessageDeltaContent { }
 
-[CodeGenModel("DeleteAssistantResponse")]
-internal partial class InternalDeleteAssistantResponse { }
-
 [CodeGenModel("DeleteAssistantResponseObject")]
 internal readonly partial struct InternalDeleteAssistantResponseObject { }
 
-[CodeGenModel("DeleteThreadResponse")]
-internal partial class InternalDeleteThreadResponse { }
-
 [CodeGenModel("DeleteThreadResponseObject")]
 internal readonly partial struct InternalDeleteThreadResponseObject { }
-
-[CodeGenModel("DeleteMessageResponse")]
-internal partial class InternalDeleteMessageResponse { }
 
 [CodeGenModel("DeleteMessageResponseObject")]
 internal readonly partial struct InternalDeleteMessageResponseObject { }
@@ -355,9 +346,32 @@ internal partial class InternalAssistantToolsFileSearchTypeOnly { }
 [CodeGenModel("AssistantToolsFileSearchTypeOnlyType")]
 internal readonly partial struct InternalAssistantToolsFileSearchTypeOnlyType { }
 
-[CodeGenModel("AssistantResponseFormatText")] internal partial class InternalAssistantResponseFormatText { }
-[CodeGenModel("AssistantResponseFormatJsonObject")] internal partial class InternalAssistantResponseFormatJsonObject { }
-[CodeGenModel("AssistantResponseFormatJsonSchema")] internal partial class InternalAssistantResponseFormatJsonSchema { }
-[CodeGenModel("UnknownAssistantResponseFormat")] internal partial class InternalUnknownAssistantResponseFormat { }
-[CodeGenModel("MessageDeltaContentRefusalObject")] internal partial class InternalMessageDeltaContentRefusalObject { }
-[CodeGenModel("ToolResourcesFileSearchIdsOnly")] internal partial class InternalToolResourcesFileSearchIdsOnly { }
+[CodeGenModel("AssistantResponseFormatText")]
+internal partial class InternalAssistantResponseFormatText { }
+
+[CodeGenModel("AssistantResponseFormatJsonObject")]
+internal partial class InternalAssistantResponseFormatJsonObject { }
+
+[CodeGenModel("AssistantResponseFormatJsonSchema")]
+internal partial class InternalAssistantResponseFormatJsonSchema { }
+
+[CodeGenModel("UnknownAssistantResponseFormat")]
+internal partial class InternalUnknownAssistantResponseFormat { }
+
+[CodeGenModel("MessageDeltaContentRefusalObject")]
+internal partial class InternalMessageDeltaContentRefusalObject { }
+
+[CodeGenModel("ToolResourcesFileSearchIdsOnly")]
+internal partial class InternalToolResourcesFileSearchIdsOnly { }
+
+[CodeGenModel("RunStepDetailsToolCallsFileSearchRankingOptionsObject")]
+internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject { }
+
+[CodeGenModel("RunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker")]
+internal readonly partial struct InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker { }
+
+[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContent")]
+internal partial class InternalRunStepDetailsToolCallsFileSearchResultObjectContent { }
+
+[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContentType")]
+internal readonly partial struct InternalRunStepDetailsToolCallsFileSearchResultObjectContentType { }

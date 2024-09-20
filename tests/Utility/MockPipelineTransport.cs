@@ -18,6 +18,12 @@ public class MockPipelineTransport : PipelineTransport
         MockResponse.SetContent(responseData.ToArray(), bufferImmediately: true);
     }
 
+    public MockPipelineTransport(MockPipelineResponse response)
+    {
+        MockRequest = new MockPipelineRequest();
+        MockResponse = response;
+    }
+
     protected override PipelineMessage CreateMessageCore()
     {
         return new MockPipelineMessage(MockRequest);

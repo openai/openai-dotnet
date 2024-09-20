@@ -8,14 +8,8 @@ internal partial class InternalCreateVectorStoreFileBatchRequest { }
 [CodeGenModel("CreateVectorStoreFileRequest")]
 internal partial class InternalCreateVectorStoreFileRequest { }
 
-[CodeGenModel("DeleteVectorStoreFileResponse")]
-internal partial class InternalDeleteVectorStoreFileResponse { }
-
 [CodeGenModel("DeleteVectorStoreFileResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreFileResponseObject { }
-
-[CodeGenModel("DeleteVectorStoreResponse")]
-internal partial class InternalDeleteVectorStoreResponse { }
 
 [CodeGenModel("DeleteVectorStoreResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreResponseObject { }
@@ -67,3 +61,6 @@ internal partial class InternalUnknownChunkingStrategy { }
 
 [CodeGenModel("UnknownFileChunkingStrategyResponseParam")]
 internal partial class InternalUnknownFileChunkingStrategyResponseParamProxy { }
+
+[CodeGenModel("ListFilesInVectorStoreBatchRequestOrder")]
+internal readonly partial struct InternalListFilesInVectorStoreBatchRequestOrder { }

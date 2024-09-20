@@ -67,7 +67,7 @@ internal class OpenTelemetryScope : IDisposable
         if (_activity?.IsAllDataRequested == true)
         {
             RecordCommonAttributes();
-            SetActivityTagIfNotNull(GenAiRequestMaxTokensKey, options?.MaxTokens);
+            SetActivityTagIfNotNull(GenAiRequestMaxTokensKey, options?.MaxOutputTokenCount);
             SetActivityTagIfNotNull(GenAiRequestTemperatureKey, options?.Temperature);
             SetActivityTagIfNotNull(GenAiRequestTopPKey, options?.TopP);
         }
@@ -77,7 +77,7 @@ internal class OpenTelemetryScope : IDisposable
 
     public void RecordChatCompletion(ChatCompletion completion)
     {
-        RecordMetrics(completion.Model, null, completion.Usage?.InputTokens, completion.Usage?.OutputTokens);
+        RecordMetrics(completion.Model, null, completion.Usage?.InputTokenCount, completion.Usage?.OutputTokenCount);
 
         if (_activity?.IsAllDataRequested == true)
         {
@@ -146,8 +146,8 @@ internal class OpenTelemetryScope : IDisposable
     {
         SetActivityTagIfNotNull(GenAiResponseIdKey, responseId);
         SetActivityTagIfNotNull(GenAiResponseModelKey, model);
-        SetActivityTagIfNotNull(GenAiUsageInputTokensKey, usage?.InputTokens);
-        SetActivityTagIfNotNull(GenAiUsageOutputTokensKey, usage?.OutputTokens);
+        SetActivityTagIfNotNull(GenAiUsageInputTokensKey, usage?.InputTokenCount);
+        SetActivityTagIfNotNull(GenAiUsageOutputTokensKey, usage?.OutputTokenCount);
         SetFinishReasonAttribute(finishReason);
     }
 

@@ -7,8 +7,8 @@ namespace OpenAI.Chat;
 [CodeGenModel("CreateChatCompletionResponse")]
 public partial class ChatCompletion
 {
-    private IReadOnlyList<ChatTokenLogProbabilityInfo> _contentTokenLogProbabilities;
-    private IReadOnlyList<ChatTokenLogProbabilityInfo> _refusalTokenLogProbabilities;
+    private IReadOnlyList<ChatTokenLogProbabilityDetails> _contentTokenLogProbabilities;
+    private IReadOnlyList<ChatTokenLogProbabilityDetails> _refusalTokenLogProbabilities;
 
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     /// <summary> The object type, which is always `chat.completion`. </summary>
@@ -38,14 +38,14 @@ public partial class ChatCompletion
     /// <summary>
     /// Log probability information.
     /// </summary>
-    public IReadOnlyList<ChatTokenLogProbabilityInfo> ContentTokenLogProbabilities => (Choices[0].Logprobs != null)
+    public IReadOnlyList<ChatTokenLogProbabilityDetails> ContentTokenLogProbabilities => (Choices[0].Logprobs != null)
         ? Choices[0].Logprobs.Content
-        : _contentTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+        : _contentTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
 
     // CUSTOM: Flattened refusal logprobs property.
-    public IReadOnlyList<ChatTokenLogProbabilityInfo> RefusalTokenLogProbabilities => (Choices[0]?.Logprobs != null)
+    public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities => (Choices[0]?.Logprobs != null)
         ? Choices[0].Logprobs.Refusal
-        : _refusalTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+        : _refusalTokenLogProbabilities ??= new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
 
     // CUSTOM: Flattened choice message property.
     /// <summary>
@@ -66,6 +66,7 @@ public partial class ChatCompletion
     public IReadOnlyList<ChatToolCall> ToolCalls => Choices[0].Message.ToolCalls;
 
     // CUSTOM: Flattened choice message property.
+    [Obsolete($"This property is obsolete. Please use {nameof(ToolCalls)} instead.")]
     public ChatFunctionCall FunctionCall => Choices[0].Message.FunctionCall;
 
     // CUSTOM: Flattened choice message property.

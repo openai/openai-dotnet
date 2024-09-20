@@ -3,7 +3,7 @@ using System;
 
 namespace OpenAI.Tests.Miscellaneous;
 
-public partial class GitHubTests
+public class GitHubTests
 {
     [Test(Description = "Test that we can use a GitHub secret")]
     [Category("Online")]

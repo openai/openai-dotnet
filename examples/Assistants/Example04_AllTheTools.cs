@@ -135,10 +135,8 @@ public partial class AssistantExamples
         // With the run complete, list the messages and display their content
         if (run.Status == RunStatus.Completed)
         {
-            PageCollection<ThreadMessage> messagePages
-                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
-            IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
-
+            CollectionResult<ThreadMessage> messages
+                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
             foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");
@@ -170,12 +168,12 @@ public partial class AssistantExamples
             #endregion
 
             #region List run steps for details about tool calls
-            PageCollection<RunStep> runSteps = client.GetRunSteps(
+            CollectionResult<RunStep> runSteps = client.GetRunSteps(
                 run, new RunStepCollectionOptions()
                 {
-                    Order = ListOrder.OldestFirst
+                    Order = RunStepCollectionOrder.Ascending
                 });
-            foreach (RunStep step in runSteps.GetAllValues())
+            foreach (RunStep step in runSteps)
             {
                 Console.WriteLine($"Run step: {step.Status}");
                 foreach (RunStepToolCall toolCall in step.Details.ToolCalls)

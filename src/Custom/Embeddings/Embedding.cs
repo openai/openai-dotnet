@@ -74,13 +74,13 @@ public partial class Embedding
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
     internal Embedding(int index, BinaryData embeddingProperty, InternalEmbeddingObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        Index = (int)index;
+        Index = index;
         EmbeddingProperty = embeddingProperty;
         Object = @object;
         SerializedAdditionalRawData = serializedAdditionalRawData;
 
         // Handle additional custom properties.
-        Vector = ConvertToVectorOfFloats(embeddingProperty);
+        _vector = ConvertToVectorOfFloats(embeddingProperty);
     }
 
     // CUSTOM: Entirely custom constructor used by the Model Factory.
@@ -90,15 +90,18 @@ public partial class Embedding
     internal Embedding(int index, ReadOnlyMemory<float> vector)
     {
         Index = index;
-        Vector = vector;
+        _vector = vector;
     }
 
-    // CUSTOM: Added as a public, custom property. For slightly better performance, the embedding is always requested as a base64-encoded
+    private ReadOnlyMemory<float> _vector;
+
+    // CUSTOM: Added as a public, custom method. For slightly better performance, the embedding is always requested as a base64-encoded
     // string and then manually transformed into a more user-friendly ReadOnlyMemory<float>.
     /// <summary>
-    /// The embedding vector, which is a list of floats.
+    /// Gets the embedding vector as a list of floats.
     /// </summary>
-    public ReadOnlyMemory<float> Vector { get; }
+    /// <returns>A read-only memory segment of floats representing the embedding vector.</returns>
+    public ReadOnlyMemory<float> ToFloats() => _vector;
 
     // CUSTOM: Implemented custom logic to transform from BinaryData to ReadOnlyMemory<float>.
     private static ReadOnlyMemory<float> ConvertToVectorOfFloats(BinaryData binaryData)

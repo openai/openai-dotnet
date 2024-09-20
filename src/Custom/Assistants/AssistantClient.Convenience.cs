@@ -33,7 +33,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="assistant"> The assistant to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual Task<ClientResult<bool>> DeleteAssistantAsync(Assistant assistant)
+    public virtual Task<ClientResult<AssistantDeletionResult>> DeleteAssistantAsync(Assistant assistant)
         => DeleteAssistantAsync(assistant?.Id);
 
     /// <summary>
@@ -41,7 +41,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="assistant"> The assistant to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteAssistant(Assistant assistant)
+    public virtual ClientResult<AssistantDeletionResult> DeleteAssistant(Assistant assistant)
         => DeleteAssistant(assistant?.Id);
 
     /// <summary>
@@ -83,7 +83,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual Task<ClientResult<bool>> DeleteThreadAsync(AssistantThread thread)
+    public virtual Task<ClientResult<ThreadDeletionResult>> DeleteThreadAsync(AssistantThread thread)
         => DeleteThreadAsync(thread?.Id);
 
     /// <summary>
@@ -91,7 +91,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteThread(AssistantThread thread)
+    public virtual ClientResult<ThreadDeletionResult> DeleteThread(AssistantThread thread)
         => DeleteThread(thread?.Id);
 
     /// <summary>
@@ -129,11 +129,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual AsyncPageCollection<ThreadMessage> GetMessagesAsync(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
         AssistantThread thread,
         MessageCollectionOptions options = default)
     {
@@ -147,11 +144,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread to list messages from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadMessage"/>. </returns>
-    public virtual PageCollection<ThreadMessage> GetMessages(
+    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
+    public virtual CollectionResult<ThreadMessage> GetMessages(
         AssistantThread thread,
         MessageCollectionOptions options = default)
     {
@@ -199,7 +193,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="message"> The message to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual Task<ClientResult<bool>> DeleteMessageAsync(ThreadMessage message)
+    public virtual Task<ClientResult<MessageDeletionResult>> DeleteMessageAsync(ThreadMessage message)
         => DeleteMessageAsync(message?.ThreadId, message?.Id);
 
     /// <summary>
@@ -207,7 +201,7 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="message"> The message to delete. </param>
     /// <returns> A value indicating whether the deletion was successful. </returns>
-    public virtual ClientResult<bool> DeleteMessage(ThreadMessage message)
+    public virtual ClientResult<MessageDeletionResult> DeleteMessage(ThreadMessage message)
         => DeleteMessage(message?.ThreadId, message?.Id);
 
     /// <summary>
@@ -313,11 +307,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual AsyncPageCollection<ThreadRun> GetRunsAsync(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(
         AssistantThread thread,
         RunCollectionOptions options = default)
     {
@@ -331,11 +322,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="thread"> The thread that runs in the list should be associated with. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="ThreadRun"/>. </returns>
-    public virtual PageCollection<ThreadRun> GetRuns(
+    /// <returns> A collection of <see cref="ThreadRun"/>. </returns>
+    public virtual CollectionResult<ThreadRun> GetRuns(
         AssistantThread thread,
         RunCollectionOptions options = default)
     {
@@ -431,11 +419,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="AsyncPageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="AsyncPageCollection{T}.GetAllValuesAsync(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="AsyncPageCollection{T}.GetCurrentPageAsync"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual AsyncPageCollection<RunStep> GetRunStepsAsync(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
         ThreadRun run,
         RunStepCollectionOptions options = default)
     {
@@ -449,11 +434,8 @@ public partial class AssistantClient
     /// </summary>
     /// <param name="run"> The run to list run steps from. </param>
     /// <param name="options"> Options describing the collection to return. </param>
-    /// <remarks> <see cref="PageCollection{T}"/> holds pages of values. To obtain a collection of values, call
-    /// <see cref="PageCollection{T}.GetAllValues(System.Threading.CancellationToken)"/>. To obtain the current
-    /// page of values, call <see cref="PageCollection{T}.GetCurrentPage"/>.</remarks>
-    /// <returns> A collection of pages of <see cref="RunStep"/>. </returns>
-    public virtual PageCollection<RunStep> GetRunSteps(
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual CollectionResult<RunStep> GetRunSteps(
         ThreadRun run,
         RunStepCollectionOptions options = default)
     {

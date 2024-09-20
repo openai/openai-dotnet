@@ -17,8 +17,7 @@ public partial class AssistantExamples
 
         int count = 0;
 
-        AsyncPageCollection<Assistant> assistantPages = client.GetAssistantsAsync();
-        IAsyncEnumerable<Assistant> assistants = assistantPages.GetAllValuesAsync();
+        AsyncCollectionResult<Assistant> assistants = client.GetAssistantsAsync();
         await foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

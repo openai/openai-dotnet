@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantResponseFormatJsonSchema : AssistantResponseFormat
     {
-        internal InternalAssistantResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
+        public InternalAssistantResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
         {
             Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 

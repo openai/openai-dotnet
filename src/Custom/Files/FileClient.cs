@@ -27,6 +27,27 @@ public partial class FileClient
 {
     private InternalUploadsClient _internalUploadsClient;
 
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public FileClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public FileClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -51,6 +72,7 @@ public partial class FileClient
 
         _pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
+        _internalUploadsClient = new(_pipeline, options);
     }
 
     // CUSTOM:
@@ -200,20 +222,36 @@ public partial class FileClient
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
-    /// <param name="purpose"> Only return files with the given purpose. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual async Task<ClientResult<OpenAIFileInfoCollection>> GetFilesAsync(OpenAIFilePurpose? purpose = null, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIFileInfoCollection>> GetFilesAsync(CancellationToken cancellationToken = default)
     {
-        ClientResult result = await GetFilesAsync(purpose?.ToString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await GetFilesAsync(null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(OpenAIFileInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    public virtual ClientResult<OpenAIFileInfoCollection> GetFiles(CancellationToken cancellationToken = default)
+    {
+        ClientResult result = GetFiles(null, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(OpenAIFileInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
     /// <param name="purpose"> Only return files with the given purpose. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual ClientResult<OpenAIFileInfoCollection> GetFiles(OpenAIFilePurpose? purpose = null, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIFileInfoCollection>> GetFilesAsync(OpenAIFilePurpose purpose, CancellationToken cancellationToken = default)
     {
-        ClientResult result = GetFiles(purpose?.ToString(), cancellationToken.ToRequestOptions());
+        ClientResult result = await GetFilesAsync(purpose.ToString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(OpenAIFileInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+    }
+
+    /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
+    /// <param name="purpose"> Only return files with the given purpose. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    public virtual ClientResult<OpenAIFileInfoCollection> GetFiles(OpenAIFilePurpose purpose, CancellationToken cancellationToken = default)
+    {
+        ClientResult result = GetFiles(purpose.ToString(), cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(OpenAIFileInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -248,13 +286,12 @@ public partial class FileClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="fileId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="fileId"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<bool>> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<FileDeletionResult>> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = await DeleteFileAsync(fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        InternalDeleteFileResponse internalDeletion = InternalDeleteFileResponse.FromResponse(result.GetRawResponse());
-        return ClientResult.FromValue(internalDeletion.Deleted, result.GetRawResponse());
+        return ClientResult.FromValue(FileDeletionResult.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified file. </summary>
@@ -262,13 +299,12 @@ public partial class FileClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="fileId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="fileId"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<bool> DeleteFile(string fileId, CancellationToken cancellationToken = default)
+    public virtual ClientResult<FileDeletionResult> DeleteFile(string fileId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = DeleteFile(fileId, cancellationToken.ToRequestOptions());
-        InternalDeleteFileResponse internalDeletion = InternalDeleteFileResponse.FromResponse(result.GetRawResponse());
-        return ClientResult.FromValue(internalDeletion.Deleted, result.GetRawResponse());
+        return ClientResult.FromValue(FileDeletionResult.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Downloads the content of the specified file. </summary>

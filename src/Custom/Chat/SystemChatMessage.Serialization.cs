@@ -1,6 +1,4 @@
-using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -14,7 +12,7 @@ public partial class SystemChatMessage : IJsonModel<SystemChatMessage>
     internal static void SerializeSystemChatMessage(SystemChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
         writer.WritePropertyName("role"u8);

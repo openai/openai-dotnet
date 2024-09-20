@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -8,6 +9,7 @@ namespace OpenAI.Chat;
 /// </summary>
 [CodeGenModel("CreateChatCompletionRequest")]
 [CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel))]
+[CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
 public partial class ChatCompletionOptions
@@ -97,9 +99,7 @@ public partial class ChatCompletionOptions
     // CUSTOM:
     // - Renamed.
     // - Changed type to avoid BinaryData.
-    /// <summary>
-    /// Deprecated in favor of <see cref="ToolChoice"/>.
-    /// </summary>
+    [Obsolete($"This property is obsolete. Please use {nameof(ToolChoice)} instead.")]
     [CodeGenMember("FunctionCall")]
     public ChatFunctionChoice FunctionChoice { get; set; }
 
@@ -138,10 +138,25 @@ public partial class ChatCompletionOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    // CUSTOM: Added the Experimental attribute
+    // CUSTOM: Added the Experimental attribute.
     /// <summary>
     /// If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
     /// </summary>
     [Experimental("OPENAI001")]
     public long? Seed { get; set; }
+
+    // CUSTOM: Hide deprecated max_tokens and reroute to newer max_completion_tokens.
+    [CodeGenMember("MaxTokens")]
+    internal int? _deprecatedMaxTokens { get; set; }
+
+    // CUSTOM: Add legacy `max_tokens` routing.
+    /// <summary>
+    /// An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and, on applicable models, reasoning tokens.
+    /// </summary>
+    [CodeGenMember("MaxCompletionTokens")]
+    public int? MaxOutputTokenCount { get; set; }
+
+    // CUSTOM: Added the Obsolete attribute.
+    [Obsolete($"This property is obsolete. Please use {nameof(Tools)} instead.")]
+    public IList<ChatFunction> Functions { get; }
 }

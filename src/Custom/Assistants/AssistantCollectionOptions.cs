@@ -2,35 +2,33 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-/// <summary>
-/// Represents addition options available when requesting a collection of <see cref="Assistant"/> instances.
-/// </summary>
+/// <summary> The options to configure how <see cref="Assistant"/> objects are retrieved and paginated. </summary>
 [Experimental("OPENAI001")]
 public class AssistantCollectionOptions
 {
-    /// <summary>
-    /// Creates a new instance of <see cref="AssistantCollectionOptions"/>.
-    /// </summary>
+    /// <summary> Initializes a new instance of <see cref="AssistantCollectionOptions"/>. </summary>
     public AssistantCollectionOptions() { }
 
-    /// <summary>
-    /// The <c>order</c> that results should appear in the list according to
-    /// their <c>created_at</c> timestamp.
+    /// <summary> 
+    ///     A limit on the number of <see cref="Assistant"/> objects to be returned per page.
     /// </summary>
-    public ListOrder? Order { get; set; }
+    public int? PageSizeLimit { get; set; }
 
     /// <summary>
-    /// The number of values to return in a page result.
+    ///     The order in which to retrieve <see cref="Assistant"/> objects when sorted by their
+    ///     <see cref="Assistant.CreatedAt"/> timestamp.
     /// </summary>
-    public int? PageSize { get; set; }
+    public AssistantCollectionOrder? Order { get; set; }
 
     /// <summary>
-    /// The id of the item preceeding the first item in the collection.
+    ///     The <see cref="Assistant.Id"/> used to retrieve the page of <see cref="Assistant"/> objects that come
+    ///     after this one.
     /// </summary>
     public string AfterId { get; set; }
 
     /// <summary>
-    /// The id of the item following the last item in the collection.
+    ///     The <see cref="Assistant.Id"/> used to retrieve the page of <see cref="Assistant"/> objects that come
+    ///     before this one.
     /// </summary>
     public string BeforeId { get; set; }
 }

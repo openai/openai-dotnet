@@ -11,6 +11,11 @@ namespace OpenAI.Chat;
 [CodeGenModel("ChatCompletionRequestAssistantMessage")]
 public partial class AssistantChatMessage : ChatMessage
 {
+    // CUSTOM: Made internal.
+    internal AssistantChatMessage()
+    {
+    }
+
     /// <summary>
     /// Creates a new instance of <see cref="AssistantChatMessage"/> using a collection of content items.
     /// For <c>assistant</c> messages, this can be one or more of type <c>text</c> or exactly one of type <c>refusal</c>.
@@ -53,9 +58,8 @@ public partial class AssistantChatMessage : ChatMessage
     /// were provided by the model.
     /// </summary>
     /// <param name="toolCalls"> The <c>tool_calls</c> made by the model. </param>
-    /// <param name="content"> Optional text content associated with the message. </param>
-    public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls, string content = null)
-        : base(ChatMessageRole.Assistant, content)
+    public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls)
+        : base(ChatMessageRole.Assistant)
     {
         Argument.AssertNotNull(toolCalls, nameof(toolCalls));
 
@@ -70,9 +74,8 @@ public partial class AssistantChatMessage : ChatMessage
     /// (deprecated in favor of <c>tool_calls</c>) that was made by the model.
     /// </summary>
     /// <param name="functionCall"> The <c>function_call</c> made by the model. </param>
-    /// <param name="content"> Optional text content associated with the message. </param>
-    public AssistantChatMessage(ChatFunctionCall functionCall, string content = null)
-        : base(ChatMessageRole.Assistant, content)
+    public AssistantChatMessage(ChatFunctionCall functionCall)
+        : base(ChatMessageRole.Assistant)
     {
         Argument.AssertNotNull(functionCall, nameof(functionCall));
 
@@ -123,6 +126,6 @@ public partial class AssistantChatMessage : ChatMessage
     [CodeGenMember("ToolCalls")]
     public IList<ChatToolCall> ToolCalls { get; } = new ChangeTrackingList<ChatToolCall>();
 
-    // CUSTOM: Made internal.
-    internal AssistantChatMessage() { }
+    [Obsolete($"This property is obsolete. Please use {nameof(ToolCalls)} instead.")]
+    public ChatFunctionCall FunctionCall { get; set; }
 }

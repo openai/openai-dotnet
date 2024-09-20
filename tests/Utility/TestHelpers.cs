@@ -5,6 +5,7 @@ using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.Files;
+using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
@@ -42,10 +43,10 @@ internal static class TestHelpers
 
     public static OpenAIClient GetTestTopLevelClient() => GetTestClient<OpenAIClient>(TestScenario.TopLevel);
 
-    public static T GetTestClient<T>(TestScenario scenario, string overrideModel = null)
+    public static T GetTestClient<T>(TestScenario scenario, string overrideModel = null, OpenAIClientOptions options = default)
     {
-        OpenAIClientOptions options = new();
-        ApiKeyCredential credential = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        options ??= new();
+        ApiKeyCredential credential = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         options.AddPolicy(GetDumpPolicy(), PipelinePosition.PerTry);
         object clientObject = scenario switch
         {
@@ -58,6 +59,7 @@ internal static class TestHelpers
             TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-4o-mini", credential, options),
             TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", credential, options),
             TestScenario.Files => new FileClient(credential, options),
+            TestScenario.FineTuning => new FineTuningClient(credential, options),
             TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", credential, options),
             TestScenario.Models => new ModelClient(credential, options),
             TestScenario.Moderations => new ModerationClient(overrideModel ?? "text-moderation-stable", credential, options),

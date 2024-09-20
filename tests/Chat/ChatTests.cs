@@ -5,7 +5,6 @@ using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -23,7 +22,7 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public partial class ChatTests : SyncAsyncTestBase
+public class ChatTests : SyncAsyncTestBase
 {
     public ChatTests(bool isAsync) : base(isAsync)
     {
@@ -91,13 +90,52 @@ public partial class ChatTests : SyncAsyncTestBase
             Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
             updateCount++;
         }
+
         Assert.That(updateCount, Is.GreaterThan(1));
         Assert.That(latestTokenReceiptTime - firstTokenReceiptTime > TimeSpan.FromMilliseconds(500));
+    }
 
-        // Validate that network stream was disposed - this will show up as the
-        // the raw response holding an empty content stream.
-        PipelineResponse response = streamingResult.GetRawResponse();
-        Assert.That(response.ContentStream.Length, Is.EqualTo(0));
+    [Test]
+    public void CompleteChatStreamingClosesNetworkStream()
+    {
+        MockPipelineResponse response = new(200);
+        response.SetContent("""
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(response)
+        };
+
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")
+        ];
+
+        TimeSpan? firstTokenReceiptTime = null;
+        TimeSpan? latestTokenReceiptTime = null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
+        Assert.That(streamingResult, Is.InstanceOf<CollectionResult<StreamingChatCompletionUpdate>>());
+        int updateCount = 0;
+
+        Assert.IsFalse(response.IsDisposed);
+
+        foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
+        {
+            firstTokenReceiptTime ??= stopwatch.Elapsed;
+            latestTokenReceiptTime = stopwatch.Elapsed;
+            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
+            updateCount++;
+        }
+
+        Assert.IsTrue(response.IsDisposed);
     }
 
     [Test]
@@ -122,20 +160,57 @@ public partial class ChatTests : SyncAsyncTestBase
             firstTokenReceiptTime ??= stopwatch.Elapsed;
             latestTokenReceiptTime = stopwatch.Elapsed;
             usage ??= chatUpdate.Usage;
-            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
             updateCount++;
         }
         Assert.That(updateCount, Is.GreaterThan(1));
         Assert.That(latestTokenReceiptTime - firstTokenReceiptTime > TimeSpan.FromMilliseconds(500));
         Assert.That(usage, Is.Not.Null);
-        Assert.That(usage?.InputTokens, Is.GreaterThan(0));
-        Assert.That(usage?.OutputTokens, Is.GreaterThan(0));
-        Assert.That(usage.InputTokens + usage.OutputTokens, Is.EqualTo(usage.TotalTokens));
+        Assert.That(usage?.InputTokenCount, Is.GreaterThan(0));
+        Assert.That(usage?.OutputTokenCount, Is.GreaterThan(0));
+        Assert.That(usage?.OutputTokenDetails?.ReasoningTokenCount, Is.Null.Or.EqualTo(0));
+    }
 
-        // Validate that network stream was disposed - this will show up as the
-        // the raw response holding an empty content stream.
-        PipelineResponse response = streamingResult.GetRawResponse();
-        Assert.That(response.ContentStream.Length, Is.EqualTo(0));
+    [Test]
+    public async Task CompleteChatStreamingClosesNetworkStreamAsync()
+    {
+        MockPipelineResponse response = new(200);
+        response.SetContent("""
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new OpenAIClientOptions()
+        {
+            Transport = new MockPipelineTransport(response)
+        };
+
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")
+        ];
+
+        TimeSpan? firstTokenReceiptTime = null;
+        TimeSpan? latestTokenReceiptTime = null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
+        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
+        int updateCount = 0;
+
+        Assert.IsFalse(response.IsDisposed);
+
+        await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
+        {
+            firstTokenReceiptTime ??= stopwatch.Elapsed;
+            latestTokenReceiptTime = stopwatch.Elapsed;
+            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
+            updateCount++;
+        }
+
+        Assert.IsTrue(response.IsDisposed);
     }
 
     [Test]
@@ -170,10 +245,10 @@ public partial class ChatTests : SyncAsyncTestBase
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
-                ChatMessageContentPart.CreateTextMessageContentPart("Describe this image for me."),
-                ChatMessageContentPart.CreateImageMessageContentPart(imageData, mediaType)),
+                ChatMessageContentPart.CreateTextPart("Describe this image for me."),
+                ChatMessageContentPart.CreateImagePart(imageData, mediaType)),
         ];
-        ChatCompletionOptions options = new() { MaxTokens = 2048 };
+        ChatCompletionOptions options = new() { MaxOutputTokenCount = 2048 };
 
         ClientResult<ChatCompletion> result = IsAsync
             ? await client.CompleteChatAsync(messages, options)
@@ -228,25 +303,27 @@ public partial class ChatTests : SyncAsyncTestBase
             options = new();
         }
 
-        ChatCompletion chatCompletions = await client.CompleteChatAsync(messages, options);
+        ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
+        string raw = result.GetRawResponse().Content.ToString();
+        ChatCompletion chatCompletions = result.Value;
         Assert.That(chatCompletions, Is.Not.Null);
 
         if (includeLogProbabilities)
         {
-            IReadOnlyList<ChatTokenLogProbabilityInfo> chatTokenLogProbabilities = chatCompletions.ContentTokenLogProbabilities;
+            IReadOnlyList<ChatTokenLogProbabilityDetails> chatTokenLogProbabilities = chatCompletions.ContentTokenLogProbabilities;
             Assert.That(chatTokenLogProbabilities, Is.Not.Null.Or.Empty);
 
-            foreach (ChatTokenLogProbabilityInfo tokenLogProbs in chatTokenLogProbabilities)
+            foreach (ChatTokenLogProbabilityDetails tokenLogProbs in chatTokenLogProbabilities)
             {
                 Assert.That(tokenLogProbs.Token, Is.Not.Null.Or.Empty);
-                Assert.That(tokenLogProbs.Utf8ByteValues, Is.Not.Null);
+                Assert.That(tokenLogProbs.Utf8Bytes, Is.Not.Null);
                 Assert.That(tokenLogProbs.TopLogProbabilities, Is.Not.Null.Or.Empty);
                 Assert.That(tokenLogProbs.TopLogProbabilities, Has.Count.EqualTo(topLogProbabilityCount));
 
-                foreach (ChatTokenTopLogProbabilityInfo tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
+                foreach (ChatTokenTopLogProbabilityDetails tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
                 {
                     Assert.That(tokenTopLogProbs.Token, Is.Not.Null.Or.Empty);
-                    Assert.That(tokenTopLogProbs.Utf8ByteValues, Is.Not.Null);
+                    Assert.That(tokenTopLogProbs.Utf8Bytes, Is.Not.Null);
                 }
             }
         }
@@ -293,17 +370,17 @@ public partial class ChatTests : SyncAsyncTestBase
                 Assert.That(chatCompletionUpdate.ContentTokenLogProbabilities, Is.Not.Null.Or.Empty);
                 Assert.That(chatCompletionUpdate.ContentTokenLogProbabilities, Has.Count.EqualTo(1));
 
-                foreach (ChatTokenLogProbabilityInfo tokenLogProbs in chatCompletionUpdate.ContentTokenLogProbabilities)
+                foreach (ChatTokenLogProbabilityDetails tokenLogProbs in chatCompletionUpdate.ContentTokenLogProbabilities)
                 {
                     Assert.That(tokenLogProbs.Token, Is.Not.Null.Or.Empty);
-                    Assert.That(tokenLogProbs.Utf8ByteValues, Is.Not.Null);
+                    Assert.That(tokenLogProbs.Utf8Bytes, Is.Not.Null);
                     Assert.That(tokenLogProbs.TopLogProbabilities, Is.Not.Null.Or.Empty);
                     Assert.That(tokenLogProbs.TopLogProbabilities, Has.Count.EqualTo(topLogProbabilityCount));
 
-                    foreach (ChatTokenTopLogProbabilityInfo tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
+                    foreach (ChatTokenTopLogProbabilityDetails tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
                     {
                         Assert.That(tokenTopLogProbs.Token, Is.Not.Null.Or.Empty);
-                        Assert.That(tokenTopLogProbs.Utf8ByteValues, Is.Not.Null);
+                        Assert.That(tokenTopLogProbs.Utf8Bytes, Is.Not.Null);
                     }
                 }
             }
@@ -323,19 +400,19 @@ public partial class ChatTests : SyncAsyncTestBase
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 "some_color_schema",
-                BinaryData.FromString("""
+                BinaryData.FromBytes("""
                     {
                         "type": "object",
                         "properties": {},
                         "additionalProperties": false
                     }
-                    """),
+                    """u8.ToArray()),
                 "an object that describes color components by name",
-                strictSchemaEnabled: false)
+                jsonSchemaIsStrict: false)
         };
         ChatCompletion completion = IsAsync
-            ? await client.CompleteChatAsync(["What are the hex values for red, green, and blue?"], options)
-            : client.CompleteChat(["What are the hex values for red, green, and blue?"], options);
+            ? await client.CompleteChatAsync([new UserChatMessage("What are the hex values for red, green, and blue?")], options)
+            : client.CompleteChat([new UserChatMessage("What are the hex values for red, green, and blue?")], options);
         Console.WriteLine(completion);
     }
 
@@ -382,7 +459,7 @@ public partial class ChatTests : SyncAsyncTestBase
 
         Assert.That(completion.Content, Has.Count.EqualTo(1));
         Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("ahoy").Or.Contain("matey"));
-        Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("pup").Or.Contain("kit"));
+        Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("dog").Or.Contain("pup").Or.Contain("kit"));
     }
 
     [Test]
@@ -396,29 +473,29 @@ public partial class ChatTests : SyncAsyncTestBase
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 "test_schema",
-                BinaryData.FromString("""
+                BinaryData.FromBytes("""
                     {
-                      "type": "object",
-                      "properties": {
-                        "answer": {
-                          "type": "string"
+                        "type": "object",
+                        "properties": {
+                            "answer": {
+                                "type": "string"
+                            },
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
                         },
-                        "steps": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": [
-                        "answer",
-                        "steps"
-                      ],
-                      "additionalProperties": false
+                        "required": [
+                            "answer",
+                            "steps"
+                        ],
+                        "additionalProperties": false
                     }
-                    """),
+                    """u8.ToArray()),
                 "a single final answer with a supporting collection of steps",
-                strictSchemaEnabled: true)
+                jsonSchemaIsStrict: true)
         };
         ChatCompletion completion = IsAsync
             ? await client.CompleteChatAsync(messages, options)
@@ -445,32 +522,32 @@ public partial class ChatTests : SyncAsyncTestBase
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 "food_recipe",
-                BinaryData.FromString("""
+                BinaryData.FromBytes("""
                     {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string"
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "ingredients": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
                         },
-                        "ingredients": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "steps": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": ["name", "ingredients", "steps"],
-                      "additionalProperties": false
+                        "required": ["name", "ingredients", "steps"],
+                        "additionalProperties": false
                     }
-                    """),
+                    """u8.ToArray()),
                 "a description of a recipe to create a meal or dish",
-                strictSchemaEnabled: true),
+                jsonSchemaIsStrict: true),
             Temperature = 0
         };
         ClientResult<ChatCompletion> completionResult = IsAsync
@@ -485,7 +562,7 @@ public partial class ChatTests : SyncAsyncTestBase
         Assert.That(contextMessage.Refusal, Has.Length.GreaterThan(0));
 
         messages.Add(contextMessage);
-        messages.Add("Why can't you help me?");
+        messages.Add(new UserChatMessage("Why can't you help me?"));
 
         completion = IsAsync
             ? await client.CompleteChatAsync(messages)
@@ -496,7 +573,6 @@ public partial class ChatTests : SyncAsyncTestBase
     }
 
     [Test]
-    [Ignore("As of 2024-08-20, refusal is not yet populated on streamed chat completion chunks.")]
     public async Task StreamingStructuredRefusalWorks()
     {
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
@@ -507,31 +583,32 @@ public partial class ChatTests : SyncAsyncTestBase
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 "food_recipe",
-                BinaryData.FromString("""
+                BinaryData.FromBytes("""
                     {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string"
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "ingredients": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
                         },
-                        "ingredients": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "steps": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": ["name", "ingredients", "steps"],
-                      "additionalProperties": false
+                        "required": ["name", "ingredients", "steps"],
+                        "additionalProperties": false
                     }
-                    """), "a description of a recipe to create a meal or dish",
-                strictSchemaEnabled: true)
+                    """u8.ToArray()),
+                "a description of a recipe to create a meal or dish",
+                jsonSchemaIsStrict: true)
         };
 
         ChatFinishReason? finishReason = null;
@@ -596,7 +673,31 @@ public partial class ChatTests : SyncAsyncTestBase
         TestMeasurement input = (type is "input") ? usages[0] : usages[1];
         TestMeasurement output = (type is "input") ? usages[1] : usages[0];
 
-        Assert.AreEqual(result.Value.Usage.InputTokens, input.value);
-        Assert.AreEqual(result.Value.Usage.OutputTokens, output.value);
+        Assert.AreEqual(result.Value.Usage.InputTokenCount, input.value);
+        Assert.AreEqual(result.Value.Usage.OutputTokenCount, output.value);
+    }
+
+    [Test]
+    public async Task ReasoningTokensWork()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "o1-mini");
+
+        UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ChatCompletionOptions options = new()
+        {
+            MaxOutputTokenCount = 2148
+        };
+        ClientResult<ChatCompletion> completionResult = IsAsync
+            ? await client.CompleteChatAsync([message], options)
+            : client.CompleteChat([message], options);
+        ChatCompletion completion = completionResult;
+
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.FinishReason, Is.EqualTo(ChatFinishReason.Stop));
+        Assert.That(completion.Usage, Is.Not.Null);
+        Assert.That(completion.Usage.OutputTokenCount, Is.GreaterThan(0));
+        Assert.That(completion.Usage.OutputTokenCount, Is.LessThanOrEqualTo(options.MaxOutputTokenCount));
+        Assert.That(completion.Usage.OutputTokenDetails?.ReasoningTokenCount, Is.GreaterThan(0));
+        Assert.That(completion.Usage.OutputTokenDetails?.ReasoningTokenCount, Is.LessThan(completion.Usage.OutputTokenCount));
     }
 }

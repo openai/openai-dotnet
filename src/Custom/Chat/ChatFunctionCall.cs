@@ -19,6 +19,7 @@ namespace OpenAI.Chat;
 ///     request.
 /// </para>
 /// </remarks>
+[Obsolete($"This class is obsolete. Please use {nameof(ChatToolCall)} instead.")]
 [CodeGenModel("ChatCompletionRequestAssistantMessageFunctionCall")]
 public partial class ChatFunctionCall
 {

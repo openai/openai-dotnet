@@ -13,9 +13,9 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
 
     internal static void SerializeChatToolChoice(ChatToolChoice instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        if (instance._isPlainString)
+        if (instance._predefined)
         {
-            writer.WriteStringValue(instance._string);
+            writer.WriteStringValue(instance._predefinedValue);
         }
         else
         {
@@ -39,7 +39,12 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
         }
         else if (element.ValueKind == JsonValueKind.String)
         {
-            return new ChatToolChoice(element.ToString());
+            return new ChatToolChoice(
+                predefined: true,
+                predefinedValue: element.ToString(),
+                type: null,
+                function: null,
+                serializedAdditionalRawData: null);
         }
         else
         {
@@ -65,7 +70,12 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new ChatToolChoice(function.Name, serializedAdditionalRawData);
+            return new ChatToolChoice(
+                predefined: false,
+                predefinedValue: null,
+                type: InternalChatCompletionNamedToolChoiceType.Function,
+                function: new InternalChatCompletionNamedToolChoiceFunction(function.Name),
+                serializedAdditionalRawData: rawDataDictionary);
         }
     }
 }

@@ -10,24 +10,24 @@ namespace OpenAI.Chat
     public partial class ChatTokenUsage
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ChatTokenUsage(int outputTokens, int inputTokens, int totalTokens)
+        internal ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount)
         {
-            OutputTokens = outputTokens;
-            InputTokens = inputTokens;
-            TotalTokens = totalTokens;
+            OutputTokenCount = outputTokenCount;
+            InputTokenCount = inputTokenCount;
+            TotalTokenCount = totalTokenCount;
         }
 
-        internal ChatTokenUsage(int outputTokens, int inputTokens, int totalTokens, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, ChatOutputTokenUsageDetails outputTokenDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            OutputTokens = outputTokens;
-            InputTokens = inputTokens;
-            TotalTokens = totalTokens;
+            OutputTokenCount = outputTokenCount;
+            InputTokenCount = inputTokenCount;
+            TotalTokenCount = totalTokenCount;
+            OutputTokenDetails = outputTokenDetails;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal ChatTokenUsage()
         {
         }
-        public int TotalTokens { get; }
     }
 }

@@ -18,6 +18,5 @@ namespace OpenAI.Chat
         }
 
         public string Refusal { get; set; }
-        public ChatFunctionCall FunctionCall { get; set; }
     }
 }

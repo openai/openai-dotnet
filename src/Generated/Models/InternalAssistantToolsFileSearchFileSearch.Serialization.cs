@@ -26,6 +26,11 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("max_num_results"u8);
                 writer.WriteNumberValue(InternalMaxNumResults.Value);
             }
+            if (SerializedAdditionalRawData?.ContainsKey("ranking_options") != true && Optional.IsDefined(RankingOptions))
+            {
+                writer.WritePropertyName("ranking_options"u8);
+                writer.WriteObjectValue(RankingOptions, options);
+            }
             if (SerializedAdditionalRawData != null)
             {
                 foreach (var item in SerializedAdditionalRawData)
@@ -69,6 +74,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             int? maxNumResults = default;
+            FileSearchRankingOptions rankingOptions = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -82,6 +88,15 @@ namespace OpenAI.Assistants
                     maxNumResults = property.Value.GetInt32();
                     continue;
                 }
+                if (property.NameEquals("ranking_options"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(property.Value, options);
+                    continue;
+                }
                 if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
@@ -89,7 +104,7 @@ namespace OpenAI.Assistants
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalAssistantToolsFileSearchFileSearch(maxNumResults, serializedAdditionalRawData);
+            return new InternalAssistantToolsFileSearchFileSearch(maxNumResults, rankingOptions, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.Write(ModelReaderWriterOptions options)

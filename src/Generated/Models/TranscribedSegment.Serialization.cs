@@ -34,12 +34,12 @@ namespace OpenAI.Audio
             if (SerializedAdditionalRawData?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Convert.ToDouble(Start.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
             }
             if (SerializedAdditionalRawData?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(Convert.ToDouble(End.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
             if (SerializedAdditionalRawData?.ContainsKey("text") != true)
             {
@@ -119,15 +119,15 @@ namespace OpenAI.Audio
             options ??= ModelSerializationExtensions.WireOptions;
 
             int id = default;
-            long seek = default;
+            int seek = default;
             TimeSpan start = default;
             TimeSpan end = default;
             string text = default;
-            IReadOnlyList<long> tokens = default;
+            IReadOnlyList<int> tokens = default;
             float temperature = default;
-            double avgLogprob = default;
+            float avgLogprob = default;
             float compressionRatio = default;
-            double noSpeechProb = default;
+            float noSpeechProb = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -139,7 +139,7 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("seek"u8))
                 {
-                    seek = property.Value.GetInt64();
+                    seek = property.Value.GetInt32();
                     continue;
                 }
                 if (property.NameEquals("start"u8))
@@ -159,10 +159,10 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("tokens"u8))
                 {
-                    List<long> array = new List<long>();
+                    List<int> array = new List<int>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(item.GetInt64());
+                        array.Add(item.GetInt32());
                     }
                     tokens = array;
                     continue;
@@ -174,7 +174,7 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("avg_logprob"u8))
                 {
-                    avgLogprob = property.Value.GetDouble();
+                    avgLogprob = property.Value.GetSingle();
                     continue;
                 }
                 if (property.NameEquals("compression_ratio"u8))
@@ -184,7 +184,7 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("no_speech_prob"u8))
                 {
-                    noSpeechProb = property.Value.GetDouble();
+                    noSpeechProb = property.Value.GetSingle();
                     continue;
                 }
                 if (true)

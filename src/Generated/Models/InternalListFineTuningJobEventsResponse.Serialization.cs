@@ -21,6 +21,11 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
+            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
             if (SerializedAdditionalRawData?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
@@ -78,18 +83,24 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IReadOnlyList<InternalFineTuningJobEvent> data = default;
+            bool hasMore = default;
+            IReadOnlyList<FineTuningJobEvent> data = default;
             InternalListFineTuningJobEventsResponseObject @object = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
+                if (property.NameEquals("has_more"u8))
+                {
+                    hasMore = property.Value.GetBoolean();
+                    continue;
+                }
                 if (property.NameEquals("data"u8))
                 {
-                    List<InternalFineTuningJobEvent> array = new List<InternalFineTuningJobEvent>();
+                    List<FineTuningJobEvent> array = new List<FineTuningJobEvent>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(InternalFineTuningJobEvent.DeserializeInternalFineTuningJobEvent(item, options));
+                        array.Add(FineTuningJobEvent.DeserializeFineTuningJobEvent(item, options));
                     }
                     data = array;
                     continue;
@@ -106,7 +117,7 @@ namespace OpenAI.FineTuning
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalListFineTuningJobEventsResponse(data, @object, serializedAdditionalRawData);
+            return new InternalListFineTuningJobEventsResponse(hasMore, data, @object, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalListFineTuningJobEventsResponse>.Write(ModelReaderWriterOptions options)

@@ -12,5 +12,5 @@ public abstract partial class ToolDefinition : IJsonModel<ToolDefinition>
     internal static void WriteCore(ToolDefinition instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    protected internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
 }

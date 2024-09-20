@@ -19,7 +19,7 @@ public partial class ModerationClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> ClassifyTextInputsAsync(BinaryContent content, RequestOptions options = null)
+    public virtual async Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 
@@ -36,7 +36,7 @@ public partial class ModerationClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult ClassifyTextInputs(BinaryContent content, RequestOptions options = null)
+    public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null)
     {
         Argument.AssertNotNull(content, nameof(content));
 

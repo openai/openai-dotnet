@@ -18,6 +18,7 @@ namespace OpenAI.Tests.Telemetry;
 
 [TestFixture]
 [NonParallelizable]
+[Category("Telemetry")]
 [Category("Smoke")]
 public class ChatTelemetryTests
 {
@@ -134,7 +135,7 @@ public class ChatTelemetryTests
         var options = new ChatCompletionOptions()
         {
             Temperature = 0.42f,
-            MaxTokens = 200,
+            MaxOutputTokenCount = 200,
             TopP = 0.9f
         };
         SetMessages(options, new UserChatMessage("hello"));
@@ -145,7 +146,7 @@ public class ChatTelemetryTests
         {
             Assert.AreEqual(options.Temperature.Value, (float)Activity.Current.GetTagItem("gen_ai.request.temperature"), 0.01);
             Assert.AreEqual(options.TopP.Value, (float)Activity.Current.GetTagItem("gen_ai.request.top_p"), 0.01);
-            Assert.AreEqual(options.MaxTokens.Value, Activity.Current.GetTagItem("gen_ai.request.max_tokens"));
+            Assert.AreEqual(options.MaxOutputTokenCount.Value, Activity.Current.GetTagItem("gen_ai.request.max_tokens"));
             scope.RecordChatCompletion(chatCompletion);
         }
         Assert.Null(Activity.Current);

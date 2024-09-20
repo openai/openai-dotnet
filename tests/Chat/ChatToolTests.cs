@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -18,14 +16,15 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public partial class ChatToolTests : SyncAsyncTestBase
+public class ChatToolTests : SyncAsyncTestBase
 {
     public ChatToolTests(bool isAsync) : base(isAsync)
     {
     }
 
+    private const string GetNumberForWordToolName = "get_number_for_word";
     private static ChatTool s_numberForWordTool = ChatTool.CreateFunctionTool(
-        "get_number_for_word",
+        GetNumberForWordToolName,
         "gets an arbitrary number assigned to a given word",
         BinaryData.FromString("""
             {
@@ -39,17 +38,15 @@ public partial class ChatToolTests : SyncAsyncTestBase
             """)
         );
 
-    private const string GetFavoriteColorToolFunctionName = "get_favorite_color";
-
+    private const string GetFavoriteColorToolName = "get_favorite_color";
     private static ChatTool s_getFavoriteColorTool = ChatTool.CreateFunctionTool(
-        GetFavoriteColorToolFunctionName,
+        GetFavoriteColorToolName,
         "gets the favorite color of the caller"
     );
 
-    private const string GetFavoriteColorForMonthToolFunctionName = "get_favorite_color_for_month";
-
+    private const string GetFavoriteColorForMonthToolName = "get_favorite_color_for_month";
     private static ChatTool s_getFavoriteColorForMonthTool = ChatTool.CreateFunctionTool(
-        GetFavoriteColorForMonthToolFunctionName,
+        GetFavoriteColorForMonthToolName,
         "gets the caller's favorite color for a given month",
         BinaryData.FromString("""
             {
@@ -64,14 +61,13 @@ public partial class ChatToolTests : SyncAsyncTestBase
             }
             """)
     );
-
-    private const string GetFavoriteColorForMonthFunctionName = "get_favorite_color_for_month";
 
 #pragma warning disable CS0618
-    private static ChatFunction s_getFavoriteColorForMonthFunction = new ChatFunction(
-        GetFavoriteColorForMonthToolFunctionName,
-        "gets the caller's favorite color for a given month",
-        BinaryData.FromString("""
+    private const string GetFavoriteColorForMonthFunctionName = "get_favorite_color_for_month";
+    private static ChatFunction s_getFavoriteColorForMonthFunction = new ChatFunction(GetFavoriteColorForMonthFunctionName)
+    {
+        FunctionDescription = "gets the caller's favorite color for a given month",
+        FunctionParameters = BinaryData.FromString("""
             {
                 "type": "object",
                 "properties": {
@@ -83,11 +79,10 @@ public partial class ChatToolTests : SyncAsyncTestBase
                 "required": [ "month_name" ]
             }
             """)
-    );
+    };
 #pragma warning restore CS0618
 
     private const string GetWeatherForCityToolName = "get_weather_for_city";
-
     private static ChatTool s_getWeatherForCityTool = ChatTool.CreateFunctionTool(
         GetWeatherForCityToolName,
         "gets the current weather for a given city",
@@ -106,7 +101,6 @@ public partial class ChatToolTests : SyncAsyncTestBase
     );
 
     private const string GetMoodForWeatherToolName = "get_mood_for_weather";
-
     private static ChatTool s_getMoodForWeatherTool = ChatTool.CreateFunctionTool(
         GetMoodForWeatherToolName,
         "gets the caller's mood for a given weather",
@@ -133,9 +127,9 @@ public partial class ChatToolTests : SyncAsyncTestBase
         foreach (var (choice, reason) in new (ChatToolChoice, ChatFinishReason)[]
         {
             (null, ChatFinishReason.ToolCalls),
-            (ChatToolChoice.None, ChatFinishReason.Stop),
-            (new ChatToolChoice(s_numberForWordTool), ChatFinishReason.Stop),
-            (ChatToolChoice.Auto, ChatFinishReason.ToolCalls),
+            (ChatToolChoice.CreateNoneChoice(), ChatFinishReason.Stop),
+            (ChatToolChoice.CreateFunctionChoice(GetNumberForWordToolName), ChatFinishReason.Stop),
+            (ChatToolChoice.CreateAutoChoice(), ChatFinishReason.ToolCalls),
             // TODO: Add test for ChatToolChoice.Required
         })
         {
@@ -168,7 +162,7 @@ public partial class ChatToolTests : SyncAsyncTestBase
         Assert.That(result.Value.ToolCalls.Count, Is.EqualTo(1));
         var toolCall = result.Value.ToolCalls[0];
         var toolCallArguments = BinaryData.FromString(toolCall.FunctionArguments).ToObjectFromJson<Dictionary<string, object>>();
-        Assert.That(toolCall.FunctionName, Is.EqualTo(GetFavoriteColorToolFunctionName));
+        Assert.That(toolCall.FunctionName, Is.EqualTo(GetFavoriteColorToolName));
         Assert.That(toolCall.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(toolCallArguments.Count, Is.EqualTo(0));
 
@@ -200,7 +194,7 @@ public partial class ChatToolTests : SyncAsyncTestBase
         Assert.That(result.Value.FinishReason, Is.EqualTo(ChatFinishReason.ToolCalls));
         Assert.That(result.Value.ToolCalls?.Count, Is.EqualTo(1));
         var toolCall = result.Value.ToolCalls[0];
-        Assert.That(toolCall.FunctionName, Is.EqualTo(GetFavoriteColorForMonthToolFunctionName));
+        Assert.That(toolCall.FunctionName, Is.EqualTo(GetFavoriteColorForMonthToolName));
         JsonObject argumentsJson = JsonSerializer.Deserialize<JsonObject>(toolCall.FunctionArguments);
         Assert.That(argumentsJson.Count, Is.EqualTo(1));
         Assert.That(argumentsJson.ContainsKey("month_name"));
@@ -213,6 +207,7 @@ public partial class ChatToolTests : SyncAsyncTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("chartreuse"));
     }
 
+#pragma warning disable CS0618
     [Test]
     public async Task FunctionsWork()
     {
@@ -237,14 +232,13 @@ public partial class ChatToolTests : SyncAsyncTestBase
         Assert.That(argumentsJson.ContainsKey("month_name"));
         Assert.That(argumentsJson["month_name"].ToString().ToLowerInvariant(), Is.EqualTo("february"));
         messages.Add(new AssistantChatMessage(result.Value));
-#pragma warning disable CS0618
         messages.Add(new FunctionChatMessage(GetFavoriteColorForMonthFunctionName, "chartreuse"));
-#pragma warning restore CS0618
         result = IsAsync
             ? await client.CompleteChatAsync(messages, options)
             : client.CompleteChat(messages, options);
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("chartreuse"));
     }
+#pragma warning restore CS0618
 
     [Test]
     public async Task ParallelToolCalls()

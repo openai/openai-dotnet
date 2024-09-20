@@ -17,7 +17,7 @@ public partial class EmbeddingExamples
             + " attractions. We highly recommend this hotel.";
 
         Embedding embedding = await client.GenerateEmbeddingAsync(description);
-        ReadOnlyMemory<float> vector = embedding.Vector;
+        ReadOnlyMemory<float> vector = embedding.ToFloats();    
 
         Console.WriteLine($"Dimension: {vector.Length}");
         Console.WriteLine($"Floats: ");

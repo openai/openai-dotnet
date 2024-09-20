@@ -43,22 +43,22 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
-[CodeGenSuppress("GetAssistantClientClient")]
-[CodeGenSuppress("GetAudioClientClient")]
-[CodeGenSuppress("GetBatchClientClient")]
-[CodeGenSuppress("GetChatClientClient")]
-[CodeGenSuppress("GetEmbeddingClientClient")]
-[CodeGenSuppress("GetFileClientClient")]
-[CodeGenSuppress("GetFineTuningClientClient")]
-[CodeGenSuppress("GetImageClientClient")]
-[CodeGenSuppress("GetInternalAssistantMessageClientClient")]
-[CodeGenSuppress("GetInternalAssistantRunClientClient")]
-[CodeGenSuppress("GetInternalAssistantThreadClientClient")]
-[CodeGenSuppress("GetInternalUploadsClientClient")]
-[CodeGenSuppress("GetLegacyCompletionClientClient")]
-[CodeGenSuppress("GetModelClientClient")]
-[CodeGenSuppress("GetModerationClientClient")]
-[CodeGenSuppress("GetVectorStoreClientClient")]
+[CodeGenSuppress("GetAssistantClient")]
+[CodeGenSuppress("GetAudioClient")]
+[CodeGenSuppress("GetBatchClient")]
+[CodeGenSuppress("GetChatClient")]
+[CodeGenSuppress("GetEmbeddingClient")]
+[CodeGenSuppress("GetFileClient")]
+[CodeGenSuppress("GetFineTuningClient")]
+[CodeGenSuppress("GetImageClient")]
+[CodeGenSuppress("GetInternalAssistantMessageClient")]
+[CodeGenSuppress("GetInternalAssistantRunClient")]
+[CodeGenSuppress("GetInternalAssistantThreadClient")]
+[CodeGenSuppress("GetInternalUploadsClient")]
+[CodeGenSuppress("GetLegacyCompletionClient")]
+[CodeGenSuppress("GetModelClient")]
+[CodeGenSuppress("GetModerationClient")]
+[CodeGenSuppress("GetVectorStoreClient")]
 public partial class OpenAIClient
 {
     private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
@@ -73,6 +73,23 @@ public partial class OpenAIClient
     }
 
     private readonly OpenAIClientOptions _options;
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public OpenAIClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public OpenAIClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
+    {
+    }
 
     // CUSTOM:
     // - Used a custom pipeline.

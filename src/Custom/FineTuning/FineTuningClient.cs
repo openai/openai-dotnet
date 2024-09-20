@@ -13,8 +13,8 @@ namespace OpenAI.FineTuning;
 [Experimental("OPENAI001")]
 [CodeGenClient("FineTuning")]
 [CodeGenSuppress("FineTuningClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
-[CodeGenSuppress("CreateFineTuningJobAsync", typeof(InternalCreateFineTuningJobRequest))]
-[CodeGenSuppress("CreateFineTuningJob", typeof(InternalCreateFineTuningJobRequest))]
+[CodeGenSuppress("CreateFineTuningJobAsync", typeof(FineTuningOptions))]
+[CodeGenSuppress("CreateFineTuningJob", typeof(FineTuningOptions))]
 [CodeGenSuppress("GetPaginatedFineTuningJobsAsync", typeof(string), typeof(int?))]
 [CodeGenSuppress("GetPaginatedFineTuningJobs", typeof(string), typeof(int?))]
 [CodeGenSuppress("RetrieveFineTuningJobAsync", typeof(string))]
@@ -27,6 +27,23 @@ namespace OpenAI.FineTuning;
 [CodeGenSuppress("GetFineTuningJobCheckpoints", typeof(string), typeof(string), typeof(int?))]
 public partial class FineTuningClient
 {
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FineTuningClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public FineTuningClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FineTuningClient">. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public FineTuningClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.

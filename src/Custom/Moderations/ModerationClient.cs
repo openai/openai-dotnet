@@ -21,6 +21,27 @@ public partial class ModerationClient
 {
     private readonly string _model;
 
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ModerationClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ModerationClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ModerationClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ModerationClient(string model, string apiKey, OpenAIClientOptions options) : this(model, new ApiKeyCredential(apiKey), options)
+    {
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
@@ -82,7 +103,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<ModerationResult>> ClassifyTextInputAsync(string input, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -90,7 +111,7 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await ClassifyTextInputsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -99,7 +120,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<ModerationResult> ClassifyTextInput(string input, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ModerationResult> ClassifyText(string input, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -107,7 +128,7 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(input), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = ClassifyTextInputs(content, cancellationToken.ToRequestOptions());
+        ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -116,7 +137,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<ModerationCollection>> ClassifyTextInputsAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ModerationCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -124,7 +145,7 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await ClassifyTextInputsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -133,7 +154,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<ModerationCollection> ClassifyTextInputs(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ModerationCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -141,7 +162,7 @@ public partial class ModerationClient
         CreateModerationOptions(BinaryData.FromObjectAsJson(inputs), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = ClassifyTextInputs(content, cancellationToken.ToRequestOptions());
+        ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(ModerationCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 

@@ -14,6 +14,10 @@ public class MockPipelineRequest : PipelineRequest
 
     protected override BinaryContent ContentCore { get; set; }
 
+    public MockPipelineRequest()
+    {
+    }
+
     public MockPipelineRequest(BinaryData requestData)
     {
         ContentCore = BinaryContent.Create(requestData);

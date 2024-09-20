@@ -7,7 +7,7 @@ using System.IO;
 
 namespace OpenAI.Tests.Miscellaneous;
 
-public partial class UserAgentTests
+public class UserAgentTests
 {
     [Test]
     public void DefaultUserAgentStringWorks() => UserAgentStringWorks(useApplicationId: false);

@@ -7,6 +7,7 @@ using OpenAI.Moderations;
 namespace OpenAI.Tests.Moderations;
 
 [Parallelizable(ParallelScope.All)]
+[Category("Moderations")]
 [Category("Smoke")]
 public partial class OpenAIModerationsModelFactoryTests
 {

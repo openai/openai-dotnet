@@ -24,7 +24,7 @@ public readonly partial struct ChatMessageContentPartKind : IEquatable<ChatMessa
     /// <summary> Text. </summary>
     public static ChatMessageContentPartKind Text { get; } = new ChatMessageContentPartKind(TextValue);
     /// <summary> Refusal. </summary>
-    public static ChatMessageContentPartKind Refusal { get; } = new(RefusalValue);
+    public static ChatMessageContentPartKind Refusal { get; } = new ChatMessageContentPartKind(RefusalValue);
     /// <summary> Image. </summary>
     public static ChatMessageContentPartKind Image { get; } = new ChatMessageContentPartKind(ImageValue);
 
@@ -43,7 +43,7 @@ public readonly partial struct ChatMessageContentPartKind : IEquatable<ChatMessa
 
     /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => _value?.GetHashCode() ?? 0;
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
     /// <inheritdoc />
     public override string ToString() => _value;
 }

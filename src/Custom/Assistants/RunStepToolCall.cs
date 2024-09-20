@@ -23,6 +23,10 @@ public partial class RunStepToolCall
     public string FunctionArguments => AsFunction?.InternalArguments;
     public string FunctionOutput => AsFunction?.InternalOutput;
 
+    public FileSearchRanker? FileSearchRanker => AsFileSearch?.FileSearch?.RankingOptions?.Ranker;
+    public float? FileSearchScoreThreshold => AsFileSearch?.FileSearch?.RankingOptions?.ScoreThreshold;
+    public IReadOnlyList<RunStepFileSearchResult> FileSearchResults => AsFileSearch?.FileSearch?.Results;
+
     public RunStepToolCallKind ToolKind
         => AsCodeInterpreter is not null ? RunStepToolCallKind.CodeInterpreter
         : AsFileSearch is not null ? RunStepToolCallKind.FileSearch

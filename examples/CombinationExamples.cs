@@ -34,12 +34,12 @@ public partial class CombinationExamples
                 new SystemChatMessage("Assume the role of a cranky art critic. When asked to describe or "
                     + "evaluate imagery, focus on criticizing elements of subject, composition, and other details."),
                 new UserChatMessage(
-                    ChatMessageContentPart.CreateTextMessageContentPart("describe the following image in a few sentences"),
-                    ChatMessageContentPart.CreateImageMessageContentPart(imageGeneration.ImageUri)),
+                    ChatMessageContentPart.CreateTextPart("describe the following image in a few sentences"),
+                    ChatMessageContentPart.CreateImagePart(imageGeneration.ImageUri)),
             ],
             new ChatCompletionOptions()
             {
-                MaxTokens = 2048,
+                MaxOutputTokenCount = 2048,
             }
             );
 
@@ -77,7 +77,7 @@ public partial class CombinationExamples
             ],
             new ChatCompletionOptions()
             {
-                MaxTokens = 2048,
+                MaxOutputTokenCount = 2048,
             });
         string description = creativeWriterResult.Value.Content[0].Text;
         Console.WriteLine($"Creative helper's creature description:\n{description}");
@@ -120,12 +120,12 @@ public partial class CombinationExamples
             [
                 new SystemChatMessage("Assume the role of an art critic. Although usually cranky and occasionally even referred to as a 'curmudgeon', you're somehow entirely smitten with the subject presented to you and, despite your best efforts, can't help but lavish praise when you're asked to appraise a provided image."),
                 new UserChatMessage(
-                    ChatMessageContentPart.CreateTextMessageContentPart("Evaluate this image for me. What is it, and what do you think of it?"),
-                    ChatMessageContentPart.CreateImageMessageContentPart(imageLocation)),
+                    ChatMessageContentPart.CreateTextPart("Evaluate this image for me. What is it, and what do you think of it?"),
+                    ChatMessageContentPart.CreateImagePart(imageLocation)),
             ],
             new ChatCompletionOptions()
             {
-                MaxTokens = 2048,
+                MaxOutputTokenCount = 2048,
             });
         string appraisal = criticalAppraisalResult.Value.Content[0].Text;
         Console.WriteLine($"Critic's appraisal:\n{appraisal}");

@@ -10,15 +10,15 @@ namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedSegment
     {
-        internal TranscribedSegment(int id, long seekOffset, TimeSpan start, TimeSpan end, string text, IEnumerable<long> tokenIds, float temperature, double averageLogProbability, float compressionRatio, double noSpeechProbability)
+        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, IEnumerable<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability)
         {
             Argument.AssertNotNull(text, nameof(text));
             Argument.AssertNotNull(tokenIds, nameof(tokenIds));
 
             Id = id;
             SeekOffset = seekOffset;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
             TokenIds = tokenIds.ToList();
             Temperature = temperature;
@@ -27,12 +27,12 @@ namespace OpenAI.Audio
             NoSpeechProbability = noSpeechProbability;
         }
 
-        internal TranscribedSegment(int id, long seekOffset, TimeSpan start, TimeSpan end, string text, IReadOnlyList<long> tokenIds, float temperature, double averageLogProbability, float compressionRatio, double noSpeechProbability, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, IReadOnlyList<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             SeekOffset = seekOffset;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
             TokenIds = tokenIds;
             Temperature = temperature;
@@ -47,8 +47,6 @@ namespace OpenAI.Audio
         }
 
         public int Id { get; }
-        public TimeSpan Start { get; }
-        public TimeSpan End { get; }
         public string Text { get; }
         public float Temperature { get; }
         public float CompressionRatio { get; }

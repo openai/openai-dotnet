@@ -9,7 +9,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalUnknownChunkingStrategy : FileChunkingStrategy
     {
-        internal InternalUnknownChunkingStrategy()
+        public InternalUnknownChunkingStrategy()
         {
             Type = "other";
         }

@@ -14,6 +14,6 @@ namespace OpenAI.Chat
         internal InternalChatCompletionRequestMessageContentPartImageImageUrl()
         {
         }
-        public ImageChatMessageContentPartDetail? Detail { get; set; }
+        public ChatImageDetailLevel? Detail { get; set; }
     }
 }

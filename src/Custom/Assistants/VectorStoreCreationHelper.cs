@@ -13,13 +13,13 @@ public partial class VectorStoreCreationHelper
     [CodeGenMember("ChunkingStrategy")]
     public FileChunkingStrategy ChunkingStrategy { get; set; }
 
-    public VectorStoreCreationHelper(IEnumerable<string> fileIds, IDictionary<string, string> metadata = null)
+    public VectorStoreCreationHelper(IEnumerable<string> fileIds)
     {
         FileIds = fileIds.ToList();
-        Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
     }
 
-    public VectorStoreCreationHelper(IEnumerable<OpenAIFileInfo> files, IDictionary<string, string> metadata = null)
-        : this(files?.Select(file => file.Id) ?? [], metadata)
+    public VectorStoreCreationHelper(IEnumerable<OpenAIFileInfo> files)
+        : this(files?.Select(file => file.Id) ?? [])
     { }
 }

@@ -2,35 +2,33 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
-/// <summary>
-/// Represents addition options available when requesting a collection of <see cref="VectorStore"/> instances.
-/// </summary>
+/// <summary> The options to configure how <see cref="VectorStore"/> objects are retrieved and paginated. </summary>
 [Experimental("OPENAI001")]
 public class VectorStoreCollectionOptions
 {
-    /// <summary>
-    /// Creates a new instance of <see cref="VectorStoreCollectionOptions"/>.
-    /// </summary>
+    /// <summary> Initializes a new instance of <see cref="VectorStoreCollectionOptions"/>. </summary>
     public VectorStoreCollectionOptions() { }
 
-    /// <summary>
-    /// The <c>order</c> that results should appear in the list according to
-    /// their <c>created_at</c> timestamp.
+    /// <summary> 
+    ///     A limit on the number of <see cref="VectorStore"/> objects to be returned per page.
     /// </summary>
-    public ListOrder? Order { get; set; }
+    public int? PageSizeLimit { get; set; }
 
     /// <summary>
-    /// The number of values to return in a page result.
+    ///     The order in which to retrieve <see cref="VectorStore"/> objects when sorted by their
+    ///     <see cref="VectorStore.CreatedAt"/> timestamp.
     /// </summary>
-    public int? PageSize { get; set; }
+    public VectorStoreCollectionOrder? Order { get; set; }
 
     /// <summary>
-    /// The id of the item preceeding the first item in the collection.
+    ///     The <see cref="VectorStore.Id"/> used to retrieve the page of <see cref="VectorStore"/> objects that come
+    ///     after this one.
     /// </summary>
     public string AfterId { get; set; }
 
     /// <summary>
-    /// The id of the item following the last item in the collection.
+    ///     The <see cref="VectorStore.Id"/> used to retrieve the page of <see cref="VectorStore"/> objects that come
+    ///     before this one.
     /// </summary>
     public string BeforeId { get; set; }
 }

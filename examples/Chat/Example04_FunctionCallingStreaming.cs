@@ -101,8 +101,13 @@ public partial class ChatExamples
                             }
 
                             // Next, add the assistant message with tool calls to the conversation history.
+                            var assistantChatMessage = new AssistantChatMessage(toolCalls);
                             string content = contentBuilder.Length > 0 ? contentBuilder.ToString() : null;
-                            messages.Add(new AssistantChatMessage(toolCalls, content));
+                            if (content != null)
+                            {
+                                assistantChatMessage.Content.Add(ChatMessageContentPart.CreateTextPart(content));
+                            }
+                            messages.Add(assistantChatMessage);
 
                             // Then, add a new tool message for each tool call to be resolved.
                             foreach (ChatToolCall toolCall in toolCalls)
