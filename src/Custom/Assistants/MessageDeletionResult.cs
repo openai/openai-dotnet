@@ -1,8 +1,12 @@
-﻿namespace OpenAI.Assistants;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace OpenAI.Assistants;
+
+[Experimental("OPENAI001")]
 [CodeGenModel("DeleteMessageResponse")]
 public partial class MessageDeletionResult
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string MessageId { get; }
 

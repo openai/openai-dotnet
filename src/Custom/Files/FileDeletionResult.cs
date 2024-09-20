@@ -3,6 +3,7 @@
 [CodeGenModel("DeleteFileResponse")]
 public partial class FileDeletionResult
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string FileId { get; }
 

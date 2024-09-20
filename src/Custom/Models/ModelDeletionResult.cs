@@ -3,6 +3,7 @@
 [CodeGenModel("DeleteModelResponse")]
 public partial class ModelDeletionResult
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string ModelId { get; }
 

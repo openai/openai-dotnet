@@ -1,8 +1,12 @@
-﻿namespace OpenAI.VectorStores;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace OpenAI.VectorStores;
+
+[Experimental("OPENAI001")]
 [CodeGenModel("DeleteVectorStoreResponse")]
 public partial class VectorStoreDeletionResult
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string VectorStoreId { get; }
 

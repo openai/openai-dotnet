@@ -1,8 +1,12 @@
-﻿namespace OpenAI.Assistants;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace OpenAI.Assistants;
+
+[Experimental("OPENAI001")]
 [CodeGenModel("DeleteThreadResponse")]
 public partial class ThreadDeletionResult
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string ThreadId { get; }
 
