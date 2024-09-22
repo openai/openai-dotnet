@@ -2,6 +2,7 @@
 using OpenAI.Chat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -9,7 +10,7 @@ namespace OpenAI.Examples;
 public partial class ChatExamples
 {
     [Test]
-    public async Task Example06_ChatSerializationAsync()
+    public async Task Example08_ChatSerializationAsync()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -30,9 +31,10 @@ public partial class ChatExamples
             ]
             """u8.ToArray());
 
-        List<ChatMessage> messages = DeserializeMessages(serializedData);
+        List<ChatMessage> messages = DeserializeMessages(serializedData).ToList();
 
         ChatCompletion completion = await client.CompleteChatAsync(messages);
+
         messages.Add(new AssistantChatMessage(completion));
 
         foreach (ChatMessage message in messages)

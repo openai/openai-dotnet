@@ -17,7 +17,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
   - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
 - [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
 - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
-- [How to use structured outputs](#how-to-use-structured-outputs)
+- [How to use chat completions with structured outputs](#how-to-use-structured-outputs)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
@@ -65,19 +65,19 @@ While you can pass your API key directly as a string, it is highly recommended t
 
 The library is organized into several namespaces corresponding to OpenAI feature areas. Each namespace contains a corresponding client class.
 
-| Namespace                     | Client class                 | Notes               |
-| ------------------------------|------------------------------|---------------------|
-| `OpenAI.Assistants`           | `AssistantClient`            | \[Experimental\]    |
-| `OpenAI.Audio`                | `AudioClient`                |                     |
-| `OpenAI.Batch`                | `BatchClient`                |                     |
-| `OpenAI.Chat`                 | `ChatClient`                 |                     |
-| `OpenAI.Embeddings`           | `EmbeddingClient`            |                     |
-| `OpenAI.FineTuning`           | `FineTuningClient`           |                     |
-| `OpenAI.Files`                | `FileClient`                 |                     |
-| `OpenAI.Images`               | `ImageClient`                |                     |
-| `OpenAI.Models`               | `ModelClient`                |                     |
-| `OpenAI.Moderations`          | `ModerationClient`           |                     |
-| `OpenAI.VectorStores`         | `VectorStoreClient`          | \[Experimental\]    |
+| Namespace                     | Client class                 | Notes                                                             |
+| ------------------------------|------------------------------|-------------------------------------------------------------------|
+| `OpenAI.Assistants`           | `AssistantClient`            | ![Experimental](https://img.shields.io/badge/experimental-purple) |
+| `OpenAI.Audio`                | `AudioClient`                |                                                                   |
+| `OpenAI.Batch`                | `BatchClient`                | ![Experimental](https://img.shields.io/badge/experimental-purple) |
+| `OpenAI.Chat`                 | `ChatClient`                 |                                                                   |
+| `OpenAI.Embeddings`           | `EmbeddingClient`            |                                                                   |
+| `OpenAI.FineTuning`           | `FineTuningClient`           | ![Experimental](https://img.shields.io/badge/experimental-purple) |
+| `OpenAI.Files`                | `FileClient`                 |                                                                   |
+| `OpenAI.Images`               | `ImageClient`                |                                                                   |
+| `OpenAI.Models`               | `ModelClient`                |                                                                   |
+| `OpenAI.Moderations`          | `ModerationClient`           |                                                                   |
+| `OpenAI.VectorStores`         | `VectorStoreClient`          | ![Experimental](https://img.shields.io/badge/experimental-purple) |
 
 ### Using the async API
 
@@ -297,7 +297,7 @@ do
 } while (requiresAction);
 ```
 
-## How to use structured outputs
+## How to use chat completions with structured outputs
 
 Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs.
 

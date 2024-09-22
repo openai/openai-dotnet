@@ -10,7 +10,7 @@ namespace OpenAI.Examples;
 public partial class ChatExamples
 {
     [Test]
-    public async Task Example05_ChatWithVisionAsync()
+    public async Task Example05_VisionAsync()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

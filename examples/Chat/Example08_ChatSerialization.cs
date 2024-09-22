@@ -4,7 +4,7 @@ using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 using System.Text.Json;
 
 namespace OpenAI.Examples;
@@ -12,19 +12,14 @@ namespace OpenAI.Examples;
 public partial class ChatExamples
 {
     #region
-    public static List<ChatMessage> DeserializeMessages(BinaryData data)
+    public static IEnumerable<ChatMessage> DeserializeMessages(BinaryData data)
     {
-        List<ChatMessage> messages = [];
-        using JsonDocument messagesAsJson = JsonDocument.Parse(data.ToString());
+        using JsonDocument messagesAsJson = JsonDocument.Parse(data.ToMemory());
 
         foreach (JsonElement jsonElement in messagesAsJson.RootElement.EnumerateArray())
         {
-            BinaryData jsonElementAsData = BinaryData.FromString(jsonElement.ToString());
-            ChatMessage message = ModelReaderWriter.Read<ChatMessage>(jsonElementAsData, ModelReaderWriterOptions.Json);
-            messages.Add(message);
+            yield return ModelReaderWriter.Read<ChatMessage>(BinaryData.FromObjectAsJson(jsonElement), ModelReaderWriterOptions.Json);
         }
-
-        return messages;
     }
     #endregion
 
@@ -35,10 +30,12 @@ public partial class ChatExamples
         using Utf8JsonWriter writer = new(stream);
 
         writer.WriteStartArray();
-        foreach (ChatMessage message in messages)
+
+        foreach (IJsonModel<ChatMessage> message in messages)
         {
-            (message as IJsonModel<ChatMessage>).Write(writer, ModelReaderWriterOptions.Json);
+            message.Write(writer, ModelReaderWriterOptions.Json);
         }
+
         writer.WriteEndArray();
         writer.Flush();
 
@@ -47,7 +44,7 @@ public partial class ChatExamples
     #endregion
 
     [Test]
-    public void Example06_ChatSerialization()
+    public void Example08_ChatSerialization()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -68,9 +65,10 @@ public partial class ChatExamples
             ]
             """u8.ToArray());
 
-        List<ChatMessage> messages = DeserializeMessages(serializedData);
+        List<ChatMessage> messages = DeserializeMessages(serializedData).ToList();
 
         ChatCompletion completion = client.CompleteChat(messages);
+
         messages.Add(new AssistantChatMessage(completion));
 
         foreach (ChatMessage message in messages)

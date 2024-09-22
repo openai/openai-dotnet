@@ -11,7 +11,7 @@ public partial class ChatExamples
     [Test]
     public async Task Example02_SimpleChatStreamingAsync()
     {
-        ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         AsyncCollectionResult<StreamingChatCompletionUpdate> updates
             = client.CompleteChatStreamingAsync("Say 'this is a test.'");
