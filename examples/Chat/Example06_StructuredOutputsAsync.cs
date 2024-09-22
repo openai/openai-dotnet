@@ -1,16 +1,22 @@
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
 public partial class ChatExamples
 {
     [Test]
-    public void Example07_StructuredOutputs()
+    public async Task Example06_StructuredOutputsAsync()
     {
         ChatClient client = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+        List<ChatMessage> messages = [
+            new UserChatMessage("How can I solve 8x + 7 = -23?"),
+        ];
 
         ChatCompletionOptions options = new()
         {
@@ -41,9 +47,7 @@ public partial class ChatExamples
                 jsonSchemaIsStrict: true)
         };
 
-        ChatCompletion chatCompletion = client.CompleteChat(
-            [ new UserChatMessage("How can I solve 8x + 7 = -23?") ],
-            options);
+        ChatCompletion chatCompletion = await client.CompleteChatAsync(messages, options);
 
         using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
 

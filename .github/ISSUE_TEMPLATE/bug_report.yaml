@@ -6,30 +6,16 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-  - type: checkboxes
-    id: non_python
+  - type: dropdown
+    id: service-kind
     attributes:
-      label: Confirm this is not an issue with the OpenAI Python Library
-      description: Issues with the OpenAI Python Library should be reported in our [OpenAI Python SDK repo](https://github.com/openai/openai-python/issues)
+      label: Service
+      description: Select whether you are using OpenAI or Azure OpenAI
       options:
-        - label: This is not an issue with the OpenAI Python Library
-          required: true
-  - type: checkboxes
-    id: non_api
-    attributes:
-      label: Confirm this is not an issue with the underlying OpenAI API
-      description: Issues with the underlying OpenAI API should be reported in our [Developer Community](https://community.openai.com/c/api/7)
-      options:
-        - label: This is not an issue with the OpenAI API
-          required: true
-  - type: checkboxes
-    id: non_azure
-    attributes:
-      label: Confirm this is not an issue with Azure OpenAI
-      description: Issues related to Azure OpenAI should be reported in the [Azure SDK repo](https://github.com/Azure/azure-sdk-for-net/issues)
-      options:
-        - label: This is not an issue with Azure OpenAI
-          required: true
+        - OpenAI
+        - Azure OpenAI
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:
@@ -41,7 +27,7 @@ body:
   - type: textarea
     id: repro-steps
     attributes:
-      label: To Reproduce
+      label: Steps to reproduce
       description: Steps to reproduce the behavior.
       placeholder: |
         1. Fetch a '...'
@@ -68,13 +54,11 @@ body:
     id: language-version
     attributes:
       label: .NET version
-      placeholder: 
     validations:
       required: true
   - type: input
     id: lib-version
     attributes:
       label: Library version
-      placeholder: 
     validations:
       required: true

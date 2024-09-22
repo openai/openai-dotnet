@@ -10,7 +10,7 @@ namespace OpenAI.Examples;
 public partial class EmbeddingExamples
 {
     [Test]
-    public async Task Example04_SimpleEmbeddingProtocolAsync()
+    public async Task Example04_EmbeddingProtocolAsync()
     {
         EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

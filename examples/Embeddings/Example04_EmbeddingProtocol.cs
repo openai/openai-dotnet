@@ -9,7 +9,7 @@ namespace OpenAI.Examples;
 public partial class EmbeddingExamples
 {
     [Test]
-    public void Example04_SimpleEmbeddingProtocol()
+    public void Example04_EmbeddingProtocol()
     {
         EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

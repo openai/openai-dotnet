@@ -3,14 +3,13 @@ using OpenAI.Chat;
 using System;
 using System.ClientModel;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
 public partial class ChatExamples
 {
     [Test]
-    public async Task Example06_SimpleChatProtocolAsync()
+    public void Example07_ChatProtocol()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -27,7 +26,7 @@ public partial class ChatExamples
             """u8.ToArray());
 
         using BinaryContent content = BinaryContent.Create(input);
-        ClientResult result = await client.CompleteChatAsync(content);
+        ClientResult result = client.CompleteChat(content);
         BinaryData output = result.GetRawResponse().Content;
 
         using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
