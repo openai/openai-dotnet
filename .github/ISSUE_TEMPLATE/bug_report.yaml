@@ -27,7 +27,7 @@ body:
   - type: textarea
     id: repro-steps
     attributes:
-      label: To Reproduce
+      label: Steps to reproduce
       description: Steps to reproduce the behavior.
       placeholder: |
         1. Fetch a '...'
