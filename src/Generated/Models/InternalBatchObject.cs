@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Batch
+namespace OpenAI.Batch;
+
+internal readonly partial struct InternalBatchObject : IEquatable<InternalBatchObject>
 {
-    internal readonly partial struct InternalBatchObject : IEquatable<InternalBatchObject>
+    private readonly string _value;
+
+    public InternalBatchObject(string value)
     {
-        private readonly string _value;
-
-        public InternalBatchObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string BatchValue = "batch";
-
-        public static InternalBatchObject Batch { get; } = new InternalBatchObject(BatchValue);
-        public static bool operator ==(InternalBatchObject left, InternalBatchObject right) => left.Equals(right);
-        public static bool operator !=(InternalBatchObject left, InternalBatchObject right) => !left.Equals(right);
-        public static implicit operator InternalBatchObject(string value) => new InternalBatchObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalBatchObject other && Equals(other);
-        public bool Equals(InternalBatchObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string BatchValue = "batch";
+
+    public static InternalBatchObject Batch { get; } = new InternalBatchObject(BatchValue);
+    public static bool operator ==(InternalBatchObject left, InternalBatchObject right) => left.Equals(right);
+    public static bool operator !=(InternalBatchObject left, InternalBatchObject right) => !left.Equals(right);
+    public static implicit operator InternalBatchObject(string value) => new InternalBatchObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalBatchObject other && Equals(other);
+    public bool Equals(InternalBatchObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

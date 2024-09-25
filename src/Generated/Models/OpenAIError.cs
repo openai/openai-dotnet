@@ -5,38 +5,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Internal
+namespace OpenAI.Internal;
+
+internal partial class OpenAIError
 {
-    internal partial class OpenAIError
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal OpenAIError(string code, string message, string param, string type)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal OpenAIError(string code, string message, string param, string type)
-        {
-            Argument.AssertNotNull(message, nameof(message));
-            Argument.AssertNotNull(type, nameof(type));
+        Argument.AssertNotNull(message, nameof(message));
+        Argument.AssertNotNull(type, nameof(type));
 
-            Code = code;
-            Message = message;
-            Param = param;
-            Type = type;
-        }
-
-        internal OpenAIError(string code, string message, string param, string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Code = code;
-            Message = message;
-            Param = param;
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal OpenAIError()
-        {
-        }
-
-        public string Code { get; }
-        public string Message { get; }
-        public string Param { get; }
-        public string Type { get; }
+        Code = code;
+        Message = message;
+        Param = param;
+        Type = type;
     }
+
+    internal OpenAIError(string code, string message, string param, string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Code = code;
+        Message = message;
+        Param = param;
+        Type = type;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal OpenAIError()
+    {
+    }
+
+    public string Code { get; }
+    public string Message { get; }
+    public string Param { get; }
+    public string Type { get; }
 }

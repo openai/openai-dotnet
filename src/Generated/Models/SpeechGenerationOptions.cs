@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
-{
-    public partial class SpeechGenerationOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Audio;
 
-        internal SpeechGenerationOptions(InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, GeneratedSpeechFormat? responseFormat, float? speedRatio, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Model = model;
-            Input = input;
-            Voice = voice;
-            ResponseFormat = responseFormat;
-            SpeedRatio = speedRatio;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-        public GeneratedSpeechFormat? ResponseFormat { get; set; }
+public partial class SpeechGenerationOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal SpeechGenerationOptions(InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, GeneratedSpeechFormat? responseFormat, float? speedRatio, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Model = model;
+        Input = input;
+        Voice = voice;
+        ResponseFormat = responseFormat;
+        SpeedRatio = speedRatio;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+    public GeneratedSpeechFormat? ResponseFormat { get; set; }
 }

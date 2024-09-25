@@ -5,15 +5,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public abstract partial class MessageContent
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Assistants;
 
-        internal MessageContent(IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public abstract partial class MessageContent
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal MessageContent(IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

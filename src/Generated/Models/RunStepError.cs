@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class RunStepError
 {
-    public partial class RunStepError
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal RunStepError(RunStepErrorCode code, string message)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal RunStepError(RunStepErrorCode code, string message)
-        {
-            Argument.AssertNotNull(message, nameof(message));
+        Argument.AssertNotNull(message, nameof(message));
 
-            Code = code;
-            Message = message;
-        }
-
-        internal RunStepError(RunStepErrorCode code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Code = code;
-            Message = message;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal RunStepError()
-        {
-        }
-
-        public RunStepErrorCode Code { get; }
-        public string Message { get; }
+        Code = code;
+        Message = message;
     }
+
+    internal RunStepError(RunStepErrorCode code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Code = code;
+        Message = message;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal RunStepError()
+    {
+    }
+
+    public RunStepErrorCode Code { get; }
+    public string Message { get; }
 }

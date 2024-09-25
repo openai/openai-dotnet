@@ -3,7 +3,6 @@ using OpenAI.Audio;
 using OpenAI.Tests.Utility;
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -13,12 +12,8 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranslationTests : SyncAsyncTestBase
+public partial class TranslationTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public TranslationTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     public enum AudioSourceKind
     {
         UsingStream,

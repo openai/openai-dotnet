@@ -8,191 +8,190 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Embeddings
-{
-    public partial class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>
-    {
-        void IJsonModel<EmbeddingGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Embeddings;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
+public partial class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>
+{
+    void IJsonModel<EmbeddingGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("input") != true)
+        {
+            writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Input);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+            using (JsonDocument document = JsonDocument.Parse(Input))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
+#endif
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+        {
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("encoding_format") != true && Optional.IsDefined(EncodingFormat))
+        {
+            writer.WritePropertyName("encoding_format"u8);
+            writer.WriteStringValue(EncodingFormat.Value.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("dimensions") != true && Optional.IsDefined(Dimensions))
+        {
+            writer.WritePropertyName("dimensions"u8);
+            writer.WriteNumberValue(Dimensions.Value);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
+        {
+            writer.WritePropertyName("user"u8);
+            writer.WriteStringValue(EndUserId);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(item.Value);
+#else
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
 #endif
             }
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("encoding_format") != true && Optional.IsDefined(EncodingFormat))
-            {
-                writer.WritePropertyName("encoding_format"u8);
-                writer.WriteStringValue(EncodingFormat.Value.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("dimensions") != true && Optional.IsDefined(Dimensions))
-            {
-                writer.WritePropertyName("dimensions"u8);
-                writer.WriteNumberValue(Dimensions.Value);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
-            {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(EndUserId);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{format}' format.");
         }
 
-        EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
+    internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        BinaryData input = default;
+        InternalCreateEmbeddingRequestModel model = default;
+        InternalCreateEmbeddingRequestEncodingFormat? encodingFormat = default;
+        int? dimensions = default;
+        string user = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("input"u8))
             {
-                return null;
+                input = BinaryData.FromString(property.Value.GetRawText());
+                continue;
             }
-            BinaryData input = default;
-            InternalCreateEmbeddingRequestModel model = default;
-            InternalCreateEmbeddingRequestEncodingFormat? encodingFormat = default;
-            int? dimensions = default;
-            string user = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("model"u8))
             {
-                if (property.NameEquals("input"u8))
+                model = new InternalCreateEmbeddingRequestModel(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("encoding_format"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    input = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
-                if (property.NameEquals("model"u8))
-                {
-                    model = new InternalCreateEmbeddingRequestModel(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("encoding_format"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    encodingFormat = new InternalCreateEmbeddingRequestEncodingFormat(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("dimensions"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    dimensions = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("user"u8))
-                {
-                    user = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                encodingFormat = new InternalCreateEmbeddingRequestEncodingFormat(property.Value.GetString());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new EmbeddingGenerationOptions(
-                input,
-                model,
-                encodingFormat,
-                dimensions,
-                user,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<EmbeddingGenerationOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("dimensions"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                dimensions = property.Value.GetInt32();
+                continue;
             }
-        }
-
-        EmbeddingGenerationOptions IPersistableModel<EmbeddingGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("user"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{options.Format}' format.");
+                user = property.Value.GetString();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new EmbeddingGenerationOptions(
+            input,
+            model,
+            encodingFormat,
+            dimensions,
+            user,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<EmbeddingGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<EmbeddingGenerationOptions>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static EmbeddingGenerationOptions FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeEmbeddingGenerationOptions(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    EmbeddingGenerationOptions IPersistableModel<EmbeddingGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<EmbeddingGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static EmbeddingGenerationOptions FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeEmbeddingGenerationOptions(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

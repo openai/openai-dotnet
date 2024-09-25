@@ -5,35 +5,34 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class FineTuningJobError
 {
-    internal partial class FineTuningJobError
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal FineTuningJobError(string code, string message, string param)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal FineTuningJobError(string code, string message, string param)
-        {
-            Argument.AssertNotNull(code, nameof(code));
-            Argument.AssertNotNull(message, nameof(message));
+        Argument.AssertNotNull(code, nameof(code));
+        Argument.AssertNotNull(message, nameof(message));
 
-            Code = code;
-            Message = message;
-            Param = param;
-        }
-
-        internal FineTuningJobError(string code, string message, string param, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Code = code;
-            Message = message;
-            Param = param;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal FineTuningJobError()
-        {
-        }
-
-        public string Code { get; }
-        public string Message { get; }
-        public string Param { get; }
+        Code = code;
+        Message = message;
+        Param = param;
     }
+
+    internal FineTuningJobError(string code, string message, string param, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Code = code;
+        Message = message;
+        Param = param;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal FineTuningJobError()
+    {
+    }
+
+    public string Code { get; }
+    public string Message { get; }
+    public string Param { get; }
 }

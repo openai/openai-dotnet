@@ -8,159 +8,158 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Chat
-{
-    public partial class ChatFunction : IJsonModel<ChatFunction>
-    {
-        void IJsonModel<ChatFunction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ChatFunction)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Chat;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("description") != true && Optional.IsDefined(FunctionDescription))
-            {
-                writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(FunctionDescription);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(FunctionName);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("parameters") != true && Optional.IsDefined(FunctionParameters))
-            {
-                writer.WritePropertyName("parameters"u8);
+public partial class ChatFunction : IJsonModel<ChatFunction>
+{
+    void IJsonModel<ChatFunction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ChatFunction)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("description") != true && Optional.IsDefined(FunctionDescription))
+        {
+            writer.WritePropertyName("description"u8);
+            writer.WriteStringValue(FunctionDescription);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+        {
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(FunctionName);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("parameters") != true && Optional.IsDefined(FunctionParameters))
+        {
+            writer.WritePropertyName("parameters"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(FunctionParameters);
 #else
-                using (JsonDocument document = JsonDocument.Parse(FunctionParameters))
+            using (JsonDocument document = JsonDocument.Parse(FunctionParameters))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
+#endif
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(item.Value);
+#else
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
 #endif
             }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    ChatFunction IJsonModel<ChatFunction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ChatFunction)} does not support reading '{format}' format.");
         }
 
-        ChatFunction IJsonModel<ChatFunction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ChatFunction)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeChatFunction(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatFunction(document.RootElement, options);
+    internal static ChatFunction DeserializeChatFunction(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static ChatFunction DeserializeChatFunction(JsonElement element, ModelReaderWriterOptions options = null)
+        string description = default;
+        string name = default;
+        BinaryData parameters = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("description"u8))
             {
-                return null;
+                description = property.Value.GetString();
+                continue;
             }
-            string description = default;
-            string name = default;
-            BinaryData parameters = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("name"u8))
             {
-                if (property.NameEquals("description"u8))
+                name = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("parameters"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    description = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("name"u8))
-                {
-                    name = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("parameters"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    parameters = BinaryData.FromString(property.Value.GetRawText());
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                parameters = BinaryData.FromString(property.Value.GetRawText());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ChatFunction(description, name, parameters, serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<ChatFunction>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunction)} does not support writing '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new ChatFunction(description, name, parameters, serializedAdditionalRawData);
+    }
 
-        ChatFunction IPersistableModel<ChatFunction>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<ChatFunction>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeChatFunction(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunction)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ChatFunction)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<ChatFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    ChatFunction IPersistableModel<ChatFunction>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunction>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static ChatFunction FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatFunction(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeChatFunction(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(ChatFunction)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<ChatFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static ChatFunction FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeChatFunction(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

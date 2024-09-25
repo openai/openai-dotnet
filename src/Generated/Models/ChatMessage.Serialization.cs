@@ -8,86 +8,85 @@ using System.ClientModel.Primitives;
 using System.Text.Json;
 using OpenAI.FineTuning;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+[PersistableModelProxy(typeof(InternalUnknownChatMessage))]
+public partial class ChatMessage : IJsonModel<ChatMessage>
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatMessage))]
-    public partial class ChatMessage : IJsonModel<ChatMessage>
+    ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatMessage(document.RootElement, options);
+            throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{format}' format.");
         }
 
-        internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeChatMessage(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
+    internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        if (element.TryGetProperty("role", out JsonElement discriminator))
+        {
+            switch (discriminator.GetString())
             {
-                return null;
+                case null: return InternalFineTuneChatCompletionRequestAssistantMessage.DeserializeInternalFineTuneChatCompletionRequestAssistantMessage(element, options);
+                case "assistant": return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
+                case "function": return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
+                case "system": return SystemChatMessage.DeserializeSystemChatMessage(element, options);
+                case "tool": return ToolChatMessage.DeserializeToolChatMessage(element, options);
+                case "user": return UserChatMessage.DeserializeUserChatMessage(element, options);
             }
-            if (element.TryGetProperty("role", out JsonElement discriminator))
-            {
-                switch (discriminator.GetString())
+        }
+        return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, options);
+    }
+
+    BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    ChatMessage IPersistableModel<ChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    case null: return InternalFineTuneChatCompletionRequestAssistantMessage.DeserializeInternalFineTuneChatCompletionRequestAssistantMessage(element, options);
-                    case "assistant": return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
-                    case "function": return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
-                    case "system": return SystemChatMessage.DeserializeSystemChatMessage(element, options);
-                    case "tool": return ToolChatMessage.DeserializeToolChatMessage(element, options);
-                    case "user": return UserChatMessage.DeserializeUserChatMessage(element, options);
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeChatMessage(document.RootElement, options);
                 }
-            }
-            return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, options);
+            default:
+                throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<ChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static ChatMessage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeChatMessage(document.RootElement);
+    }
 
-        ChatMessage IPersistableModel<ChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeChatMessage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static ChatMessage FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatMessage(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

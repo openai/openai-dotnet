@@ -5,29 +5,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject
 {
-    internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(float scoreThreshold)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(float scoreThreshold)
-        {
-            ScoreThreshold = scoreThreshold;
-        }
-
-        internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker ranker, float scoreThreshold, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Ranker = ranker;
-            ScoreThreshold = scoreThreshold;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject()
-        {
-        }
-
-        public InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker Ranker { get; } = InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker.Default20240821;
-
-        public float ScoreThreshold { get; }
+        ScoreThreshold = scoreThreshold;
     }
+
+    internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker ranker, float scoreThreshold, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Ranker = ranker;
+        ScoreThreshold = scoreThreshold;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject()
+    {
+    }
+
+    public InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker Ranker { get; } = InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker.Default20240821;
+
+    public float ScoreThreshold { get; }
 }

@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Embeddings
+namespace OpenAI.Embeddings;
+
+public partial class Embedding
 {
-    public partial class Embedding
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal Embedding()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-
-        internal Embedding()
-        {
-        }
-
-        public int Index { get; }
     }
+
+    public int Index { get; }
 }

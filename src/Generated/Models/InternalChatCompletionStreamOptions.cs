@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionStreamOptions
 {
-    internal partial class InternalChatCompletionStreamOptions
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalChatCompletionStreamOptions()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalChatCompletionStreamOptions()
-        {
-        }
-
-        internal InternalChatCompletionStreamOptions(bool? includeUsage, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            IncludeUsage = includeUsage;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public bool? IncludeUsage { get; set; }
     }
+
+    internal InternalChatCompletionStreamOptions(bool? includeUsage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        IncludeUsage = includeUsage;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public bool? IncludeUsage { get; set; }
 }

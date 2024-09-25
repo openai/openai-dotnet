@@ -5,9 +5,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class FunctionToolDefinition : ToolDefinition
 {
-    public partial class FunctionToolDefinition : ToolDefinition
-    {
-    }
 }

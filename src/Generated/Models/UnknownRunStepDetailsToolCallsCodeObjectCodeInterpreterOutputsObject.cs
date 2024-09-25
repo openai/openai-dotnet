@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject : RunStepCodeInterpreterOutput
-    {
-        internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.Assistants;
 
-        internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject()
-        {
-        }
+internal partial class UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject : RunStepCodeInterpreterOutput
+{
+    internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject()
+    {
     }
 }

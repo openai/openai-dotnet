@@ -5,19 +5,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public partial class RunTruncationStrategy
-    {
-        internal RunTruncationStrategy(InternalTruncationObjectType type, int? lastMessages, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            _type = type;
-            LastMessages = lastMessages;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+namespace OpenAI.Assistants;
 
-        internal RunTruncationStrategy()
-        {
-        }
+public partial class RunTruncationStrategy
+{
+    internal RunTruncationStrategy(InternalTruncationObjectType type, int? lastMessages, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        _type = type;
+        LastMessages = lastMessages;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal RunTruncationStrategy()
+    {
     }
 }

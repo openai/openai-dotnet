@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal readonly partial struct InternalMessageContentTextObjectType : IEquatable<InternalMessageContentTextObjectType>
 {
-    internal readonly partial struct InternalMessageContentTextObjectType : IEquatable<InternalMessageContentTextObjectType>
+    private readonly string _value;
+
+    public InternalMessageContentTextObjectType(string value)
     {
-        private readonly string _value;
-
-        public InternalMessageContentTextObjectType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string TextValue = "text";
-
-        public static InternalMessageContentTextObjectType Text { get; } = new InternalMessageContentTextObjectType(TextValue);
-        public static bool operator ==(InternalMessageContentTextObjectType left, InternalMessageContentTextObjectType right) => left.Equals(right);
-        public static bool operator !=(InternalMessageContentTextObjectType left, InternalMessageContentTextObjectType right) => !left.Equals(right);
-        public static implicit operator InternalMessageContentTextObjectType(string value) => new InternalMessageContentTextObjectType(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalMessageContentTextObjectType other && Equals(other);
-        public bool Equals(InternalMessageContentTextObjectType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string TextValue = "text";
+
+    public static InternalMessageContentTextObjectType Text { get; } = new InternalMessageContentTextObjectType(TextValue);
+    public static bool operator ==(InternalMessageContentTextObjectType left, InternalMessageContentTextObjectType right) => left.Equals(right);
+    public static bool operator !=(InternalMessageContentTextObjectType left, InternalMessageContentTextObjectType right) => !left.Equals(right);
+    public static implicit operator InternalMessageContentTextObjectType(string value) => new InternalMessageContentTextObjectType(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalMessageContentTextObjectType other && Equals(other);
+    public bool Equals(InternalMessageContentTextObjectType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

@@ -3,14 +3,8 @@
 namespace OpenAI;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Struct, AllowMultiple = true)]
-internal sealed class CodeGenSuppressAttribute : Attribute
+internal sealed class CodeGenSuppressAttribute(string member, params Type[] parameters) : Attribute
 {
-    public string Member { get; }
-    public Type[] Parameters { get; }
-
-    public CodeGenSuppressAttribute(string member, params Type[] parameters)
-    {
-        Member = member;
-        Parameters = parameters;
-    }
+    public string Member { get; } = member;
+    public Type[] Parameters { get; } = parameters;
 }

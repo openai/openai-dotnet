@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    internal partial class InternalUnknownChatResponseFormat : ChatResponseFormat
-    {
-        internal InternalUnknownChatResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.Chat;
 
-        internal InternalUnknownChatResponseFormat()
-        {
-        }
+internal partial class InternalUnknownChatResponseFormat : ChatResponseFormat
+{
+    internal InternalUnknownChatResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal InternalUnknownChatResponseFormat()
+    {
     }
 }

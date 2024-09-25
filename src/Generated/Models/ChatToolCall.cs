@@ -5,24 +5,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ChatToolCall
 {
-    public partial class ChatToolCall
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal ChatToolCall(string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-
-        internal ChatToolCall(string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            Kind = kind;
-            Function = function;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ChatToolCall()
-        {
-        }
-
-        public string Id { get; set; }
+        Id = id;
+        Kind = kind;
+        Function = function;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+
+    internal ChatToolCall()
+    {
+    }
+
+    public string Id { get; set; }
 }

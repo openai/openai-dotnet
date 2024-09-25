@@ -1,23 +1,15 @@
 ﻿using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests;
 
-internal partial class TestPipelinePolicy : PipelinePolicy
+internal partial class TestPipelinePolicy(Action<PipelineMessage> processMessageAction) : PipelinePolicy
 {
-    private Action<PipelineMessage> _processMessageAction;
-
-    public TestPipelinePolicy(Action<PipelineMessage> processMessageAction)
-    {
-        _processMessageAction = processMessageAction;
-    }
-
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
+        processMessageAction(message);
         if (currentIndex < pipeline.Count - 1)
         {
             pipeline[currentIndex + 1].Process(message, pipeline, currentIndex + 1);
@@ -26,7 +18,7 @@ internal partial class TestPipelinePolicy : PipelinePolicy
 
     public override async ValueTask ProcessAsync(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
+        processMessageAction(message);
         if (currentIndex < pipeline.Count - 1)
         {
             await pipeline[currentIndex + 1].ProcessAsync(message, pipeline, currentIndex + 1);

@@ -6,32 +6,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter
 {
-    internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IEnumerable<RunStepCodeInterpreterOutput> outputs)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IEnumerable<RunStepCodeInterpreterOutput> outputs)
-        {
-            Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(outputs, nameof(outputs));
+        Argument.AssertNotNull(input, nameof(input));
+        Argument.AssertNotNull(outputs, nameof(outputs));
 
-            Input = input;
-            Outputs = outputs.ToList();
-        }
-
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Input = input;
-            Outputs = outputs;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter()
-        {
-        }
-
-        public string Input { get; }
-        public IReadOnlyList<RunStepCodeInterpreterOutput> Outputs { get; }
+        Input = input;
+        Outputs = outputs.ToList();
     }
+
+    internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Input = input;
+        Outputs = outputs;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter()
+    {
+    }
+
+    public string Input { get; }
+    public IReadOnlyList<RunStepCodeInterpreterOutput> Outputs { get; }
 }

@@ -5,26 +5,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
-{
-    public partial class AudioTranscriptionOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Audio;
 
-        internal AudioTranscriptionOptions(BinaryData file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<BinaryData> timestampGranularities, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            File = file;
-            Model = model;
-            Language = language;
-            Prompt = prompt;
-            ResponseFormat = responseFormat;
-            Temperature = temperature;
-            TimestampGranularities = timestampGranularities;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-        public string Language { get; set; }
-        public string Prompt { get; set; }
-        public AudioTranscriptionFormat? ResponseFormat { get; set; }
-        public float? Temperature { get; set; }
+public partial class AudioTranscriptionOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal AudioTranscriptionOptions(BinaryData file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<BinaryData> timestampGranularities, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        File = file;
+        Model = model;
+        Language = language;
+        Prompt = prompt;
+        ResponseFormat = responseFormat;
+        Temperature = temperature;
+        TimestampGranularities = timestampGranularities;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+    public string Language { get; set; }
+    public string Prompt { get; set; }
+    public AudioTranscriptionFormat? ResponseFormat { get; set; }
+    public float? Temperature { get; set; }
 }

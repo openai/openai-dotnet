@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalAssistantResponseFormatJsonObject : AssistantResponseFormat
-    {
-        public InternalAssistantResponseFormatJsonObject()
-        {
-            Type = "json_object";
-        }
+namespace OpenAI.Assistants;
 
-        internal InternalAssistantResponseFormatJsonObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+internal partial class InternalAssistantResponseFormatJsonObject : AssistantResponseFormat
+{
+    public InternalAssistantResponseFormatJsonObject()
+    {
+        Type = "json_object";
+    }
+
+    internal InternalAssistantResponseFormatJsonObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
     }
 }

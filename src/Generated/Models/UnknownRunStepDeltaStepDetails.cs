@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class UnknownRunStepDeltaStepDetails : InternalRunStepDeltaStepDetails
-    {
-        internal UnknownRunStepDeltaStepDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.Assistants;
 
-        internal UnknownRunStepDeltaStepDetails()
-        {
-        }
+internal partial class UnknownRunStepDeltaStepDetails : InternalRunStepDeltaStepDetails
+{
+    internal UnknownRunStepDeltaStepDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal UnknownRunStepDeltaStepDetails()
+    {
     }
 }

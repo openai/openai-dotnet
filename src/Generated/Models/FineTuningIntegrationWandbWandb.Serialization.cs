@@ -8,197 +8,196 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.FineTuning
-{
-    internal partial class FineTuningIntegrationWandbWandb : IJsonModel<FineTuningIntegrationWandbWandb>
-    {
-        void IJsonModel<FineTuningIntegrationWandbWandb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.FineTuning;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("project") != true)
+internal partial class FineTuningIntegrationWandbWandb : IJsonModel<FineTuningIntegrationWandbWandb>
+{
+    void IJsonModel<FineTuningIntegrationWandbWandb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("project") != true)
+        {
+            writer.WritePropertyName("project"u8);
+            writer.WriteStringValue(Project);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("name") != true && Optional.IsDefined(Name))
+        {
+            if (Name != null)
             {
-                writer.WritePropertyName("project"u8);
-                writer.WriteStringValue(Project);
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("name") != true && Optional.IsDefined(Name))
+            else
             {
-                if (Name != null)
-                {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name");
-                }
+                writer.WriteNull("name");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("entity") != true && Optional.IsDefined(Entity))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("entity") != true && Optional.IsDefined(Entity))
+        {
+            if (Entity != null)
             {
-                if (Entity != null)
-                {
-                    writer.WritePropertyName("entity"u8);
-                    writer.WriteStringValue(Entity);
-                }
-                else
-                {
-                    writer.WriteNull("entity");
-                }
+                writer.WritePropertyName("entity"u8);
+                writer.WriteStringValue(Entity);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tags") != true && Optional.IsCollectionDefined(Tags))
+            else
             {
-                writer.WritePropertyName("tags"u8);
-                writer.WriteStartArray();
-                foreach (var item in Tags)
-                {
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
+                writer.WriteNull("entity");
             }
-            if (SerializedAdditionalRawData != null)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tags") != true && Optional.IsCollectionDefined(Tags))
+        {
+            writer.WritePropertyName("tags"u8);
+            writer.WriteStartArray();
+            foreach (var item in Tags)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WriteStringValue(item);
+            }
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    FineTuningIntegrationWandbWandb IJsonModel<FineTuningIntegrationWandbWandb>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{format}' format.");
         }
 
-        FineTuningIntegrationWandbWandb IJsonModel<FineTuningIntegrationWandbWandb>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
+    internal static FineTuningIntegrationWandbWandb DeserializeFineTuningIntegrationWandbWandb(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static FineTuningIntegrationWandbWandb DeserializeFineTuningIntegrationWandbWandb(JsonElement element, ModelReaderWriterOptions options = null)
+        string project = default;
+        string name = default;
+        string entity = default;
+        IReadOnlyList<string> tags = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("project"u8))
             {
-                return null;
+                project = property.Value.GetString();
+                continue;
             }
-            string project = default;
-            string name = default;
-            string entity = default;
-            IReadOnlyList<string> tags = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("name"u8))
             {
-                if (property.NameEquals("project"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    project = property.Value.GetString();
+                    name = null;
                     continue;
                 }
-                if (property.NameEquals("name"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        name = null;
-                        continue;
-                    }
-                    name = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("entity"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        entity = null;
-                        continue;
-                    }
-                    entity = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("tags"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetString());
-                    }
-                    tags = array;
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                name = property.Value.GetString();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new FineTuningIntegrationWandbWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<FineTuningIntegrationWandbWandb>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("entity"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    entity = null;
+                    continue;
+                }
+                entity = property.Value.GetString();
+                continue;
             }
-        }
-
-        FineTuningIntegrationWandbWandb IPersistableModel<FineTuningIntegrationWandbWandb>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("tags"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                List<string> array = new List<string>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(item.GetString());
+                }
+                tags = array;
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new FineTuningIntegrationWandbWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<FineTuningIntegrationWandbWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<FineTuningIntegrationWandbWandb>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static FineTuningIntegrationWandbWandb FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeFineTuningIntegrationWandbWandb(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    FineTuningIntegrationWandbWandb IPersistableModel<FineTuningIntegrationWandbWandb>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<FineTuningIntegrationWandbWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static FineTuningIntegrationWandbWandb FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeFineTuningIntegrationWandbWandb(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

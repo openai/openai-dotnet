@@ -7,10 +7,9 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+[PersistableModelProxy(typeof(InternalUnknownAssistantResponseFormat))]
+public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
 {
-    [PersistableModelProxy(typeof(InternalUnknownAssistantResponseFormat))]
-    public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
-    {
-    }
 }

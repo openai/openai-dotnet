@@ -15,13 +15,9 @@ namespace OpenAI.Tests.Chat;
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
 [Category("Smoke")]
-public class ChatMockTests : SyncAsyncTestBase
+public class ChatMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public ChatMockTests(bool isAsync) : base(isAsync)
-    {
-    }
 
     private static readonly List<ChatMessage> s_messages = new()
     {

@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal abstract partial class FineTuningIntegration
 {
-    internal abstract partial class FineTuningIntegration
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    protected FineTuningIntegration()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected FineTuningIntegration()
-        {
-        }
-
-        internal FineTuningIntegration(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal string Type { get; set; }
     }
+
+    internal FineTuningIntegration(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Type = type;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal string Type { get; set; }
 }

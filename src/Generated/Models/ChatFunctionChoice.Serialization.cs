@@ -7,62 +7,61 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
 {
-    public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
+    ChatFunctionChoice IJsonModel<ChatFunctionChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        ChatFunctionChoice IJsonModel<ChatFunctionChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatFunctionChoice(document.RootElement, options);
+            throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{format}' format.");
         }
 
-        BinaryData IPersistableModel<ChatFunctionChoice>.Write(ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeChatFunctionChoice(document.RootElement, options);
+    }
+
+    BinaryData IPersistableModel<ChatFunctionChoice>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support writing '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        ChatFunctionChoice IPersistableModel<ChatFunctionChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
+    ChatFunctionChoice IPersistableModel<ChatFunctionChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeChatFunctionChoice(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeChatFunctionChoice(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<ChatFunctionChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    string IPersistableModel<ChatFunctionChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ChatFunctionChoice FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatFunctionChoice(document.RootElement);
-        }
+    internal static ChatFunctionChoice FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeChatFunctionChoice(document.RootElement);
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

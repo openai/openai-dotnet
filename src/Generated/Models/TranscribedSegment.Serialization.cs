@@ -8,252 +8,251 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Audio
-{
-    public partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IJsonModel<object>
-    {
-        void IJsonModel<TranscribedSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(TranscribedSegment)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Audio;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+public partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IJsonModel<object>
+{
+    void IJsonModel<TranscribedSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(TranscribedSegment)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteNumberValue(Id);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("seek") != true)
+        {
+            writer.WritePropertyName("seek"u8);
+            writer.WriteNumberValue(SeekOffset);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("start") != true)
+        {
+            writer.WritePropertyName("start"u8);
+            writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("end") != true)
+        {
+            writer.WritePropertyName("end"u8);
+            writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("text") != true)
+        {
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tokens") != true)
+        {
+            writer.WritePropertyName("tokens"u8);
+            writer.WriteStartArray();
+            foreach (var item in TokenIds)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteNumberValue(Id);
+                writer.WriteNumberValue(item);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("seek") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("temperature") != true)
+        {
+            writer.WritePropertyName("temperature"u8);
+            writer.WriteNumberValue(Temperature);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("avg_logprob") != true)
+        {
+            writer.WritePropertyName("avg_logprob"u8);
+            writer.WriteNumberValue(AverageLogProbability);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("compression_ratio") != true)
+        {
+            writer.WritePropertyName("compression_ratio"u8);
+            writer.WriteNumberValue(CompressionRatio);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("no_speech_prob") != true)
+        {
+            writer.WritePropertyName("no_speech_prob"u8);
+            writer.WriteNumberValue(NoSpeechProbability);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("seek"u8);
-                writer.WriteNumberValue(SeekOffset);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("start") != true)
-            {
-                writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("end") != true)
-            {
-                writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("tokens") != true)
-            {
-                writer.WritePropertyName("tokens"u8);
-                writer.WriteStartArray();
-                foreach (var item in TokenIds)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    writer.WriteNumberValue(item);
+                    continue;
                 }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true)
-            {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("avg_logprob") != true)
-            {
-                writer.WritePropertyName("avg_logprob"u8);
-                writer.WriteNumberValue(AverageLogProbability);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("compression_ratio") != true)
-            {
-                writer.WritePropertyName("compression_ratio"u8);
-                writer.WriteNumberValue(CompressionRatio);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("no_speech_prob") != true)
-            {
-                writer.WritePropertyName("no_speech_prob"u8);
-                writer.WriteNumberValue(NoSpeechProbability);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    TranscribedSegment IJsonModel<TranscribedSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(TranscribedSegment)} does not support reading '{format}' format.");
         }
 
-        TranscribedSegment IJsonModel<TranscribedSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeTranscribedSegment(document.RootElement, options);
+    }
+
+    void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedSegment>)this).Write(writer, options);
+
+    object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedSegment>)this).Create(ref reader, options);
+
+    internal static TranscribedSegment DeserializeTranscribedSegment(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        int id = default;
+        int seek = default;
+        TimeSpan start = default;
+        TimeSpan end = default;
+        string text = default;
+        IReadOnlyList<int> tokens = default;
+        float temperature = default;
+        float avgLogprob = default;
+        float compressionRatio = default;
+        float noSpeechProb = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(TranscribedSegment)} does not support reading '{format}' format.");
+                id = property.Value.GetInt32();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeTranscribedSegment(document.RootElement, options);
-        }
-
-        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedSegment>)this).Write(writer, options);
-
-        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedSegment>)this).Create(ref reader, options);
-
-        internal static TranscribedSegment DeserializeTranscribedSegment(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            int id = default;
-            int seek = default;
-            TimeSpan start = default;
-            TimeSpan end = default;
-            string text = default;
-            IReadOnlyList<int> tokens = default;
-            float temperature = default;
-            float avgLogprob = default;
-            float compressionRatio = default;
-            float noSpeechProb = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("seek"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("seek"u8))
-                {
-                    seek = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("start"u8))
-                {
-                    start = TimeSpan.FromSeconds(property.Value.GetDouble());
-                    continue;
-                }
-                if (property.NameEquals("end"u8))
-                {
-                    end = TimeSpan.FromSeconds(property.Value.GetDouble());
-                    continue;
-                }
-                if (property.NameEquals("text"u8))
-                {
-                    text = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("tokens"u8))
-                {
-                    List<int> array = new List<int>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetInt32());
-                    }
-                    tokens = array;
-                    continue;
-                }
-                if (property.NameEquals("temperature"u8))
-                {
-                    temperature = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("avg_logprob"u8))
-                {
-                    avgLogprob = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("compression_ratio"u8))
-                {
-                    compressionRatio = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("no_speech_prob"u8))
-                {
-                    noSpeechProb = property.Value.GetSingle();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                seek = property.Value.GetInt32();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new TranscribedSegment(
-                id,
-                seek,
-                start,
-                end,
-                text,
-                tokens,
-                temperature,
-                avgLogprob,
-                compressionRatio,
-                noSpeechProb,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<TranscribedSegment>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("start"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(TranscribedSegment)} does not support writing '{options.Format}' format.");
+                start = TimeSpan.FromSeconds(property.Value.GetDouble());
+                continue;
             }
-        }
-
-        TranscribedSegment IPersistableModel<TranscribedSegment>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("end"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeTranscribedSegment(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(TranscribedSegment)} does not support reading '{options.Format}' format.");
+                end = TimeSpan.FromSeconds(property.Value.GetDouble());
+                continue;
+            }
+            if (property.NameEquals("text"u8))
+            {
+                text = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("tokens"u8))
+            {
+                List<int> array = new List<int>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(item.GetInt32());
+                }
+                tokens = array;
+                continue;
+            }
+            if (property.NameEquals("temperature"u8))
+            {
+                temperature = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("avg_logprob"u8))
+            {
+                avgLogprob = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("compression_ratio"u8))
+            {
+                compressionRatio = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("no_speech_prob"u8))
+            {
+                noSpeechProb = property.Value.GetSingle();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new TranscribedSegment(
+            id,
+            seek,
+            start,
+            end,
+            text,
+            tokens,
+            temperature,
+            avgLogprob,
+            compressionRatio,
+            noSpeechProb,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<TranscribedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<TranscribedSegment>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
 
-        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).Write(options);
-
-        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).Create(data, options);
-
-        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options);
-
-        internal static TranscribedSegment FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeTranscribedSegment(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(TranscribedSegment)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal BinaryContent ToBinaryContent()
+    TranscribedSegment IPersistableModel<TranscribedSegment>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeTranscribedSegment(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(TranscribedSegment)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<TranscribedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).Write(options);
+
+    object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).Create(data, options);
+
+    string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedSegment>)this).GetFormatFromOptions(options);
+
+    internal static TranscribedSegment FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeTranscribedSegment(document.RootElement);
+    }
+
+    internal BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

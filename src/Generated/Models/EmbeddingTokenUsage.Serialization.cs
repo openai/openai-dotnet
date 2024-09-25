@@ -8,137 +8,136 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Embeddings
-{
-    public partial class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>
-    {
-        void IJsonModel<EmbeddingTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Embeddings;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens") != true)
+public partial class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>
+{
+    void IJsonModel<EmbeddingTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens") != true)
+        {
+            writer.WritePropertyName("prompt_tokens"u8);
+            writer.WriteNumberValue(InputTokens);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("total_tokens") != true)
+        {
+            writer.WritePropertyName("total_tokens"u8);
+            writer.WriteNumberValue(TotalTokens);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("prompt_tokens"u8);
-                writer.WriteNumberValue(InputTokens);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    EmbeddingTokenUsage IJsonModel<EmbeddingTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support reading '{format}' format.");
         }
 
-        EmbeddingTokenUsage IJsonModel<EmbeddingTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeEmbeddingTokenUsage(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeEmbeddingTokenUsage(document.RootElement, options);
+    internal static EmbeddingTokenUsage DeserializeEmbeddingTokenUsage(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static EmbeddingTokenUsage DeserializeEmbeddingTokenUsage(JsonElement element, ModelReaderWriterOptions options = null)
+        int promptTokens = default;
+        int totalTokens = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("prompt_tokens"u8))
             {
-                return null;
+                promptTokens = property.Value.GetInt32();
+                continue;
             }
-            int promptTokens = default;
-            int totalTokens = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("total_tokens"u8))
             {
-                if (property.NameEquals("prompt_tokens"u8))
+                totalTokens = property.Value.GetInt32();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new EmbeddingTokenUsage(promptTokens, totalTokens, serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<EmbeddingTokenUsage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    EmbeddingTokenUsage IPersistableModel<EmbeddingTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    promptTokens = property.Value.GetInt32();
-                    continue;
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeEmbeddingTokenUsage(document.RootElement, options);
                 }
-                if (property.NameEquals("total_tokens"u8))
-                {
-                    totalTokens = property.Value.GetInt32();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new EmbeddingTokenUsage(promptTokens, totalTokens, serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<EmbeddingTokenUsage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<EmbeddingTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static EmbeddingTokenUsage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeEmbeddingTokenUsage(document.RootElement);
+    }
 
-        EmbeddingTokenUsage IPersistableModel<EmbeddingTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeEmbeddingTokenUsage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(EmbeddingTokenUsage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<EmbeddingTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static EmbeddingTokenUsage FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeEmbeddingTokenUsage(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

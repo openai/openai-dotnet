@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Images
-{
-    public partial class ImageGenerationOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Images;
 
-        internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Prompt = prompt;
-            Model = model;
-            N = n;
-            Quality = quality;
-            ResponseFormat = responseFormat;
-            Size = size;
-            Style = style;
-            EndUserId = endUserId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-        public GeneratedImageQuality? Quality { get; set; }
-        public GeneratedImageFormat? ResponseFormat { get; set; }
-        public GeneratedImageSize? Size { get; set; }
-        public GeneratedImageStyle? Style { get; set; }
+public partial class ImageGenerationOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Prompt = prompt;
+        Model = model;
+        N = n;
+        Quality = quality;
+        ResponseFormat = responseFormat;
+        Size = size;
+        Style = style;
+        EndUserId = endUserId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+    public GeneratedImageQuality? Quality { get; set; }
+    public GeneratedImageFormat? ResponseFormat { get; set; }
+    public GeneratedImageSize? Size { get; set; }
+    public GeneratedImageStyle? Style { get; set; }
 }

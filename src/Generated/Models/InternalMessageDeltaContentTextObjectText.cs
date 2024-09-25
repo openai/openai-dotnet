@@ -5,24 +5,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentTextObjectText
 {
-    internal partial class InternalMessageDeltaContentTextObjectText
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalMessageDeltaContentTextObjectText()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaContentTextObjectText()
-        {
-            Annotations = new ChangeTrackingList<InternalMessageDeltaTextContentAnnotation>();
-        }
-
-        internal InternalMessageDeltaContentTextObjectText(string value, IReadOnlyList<InternalMessageDeltaTextContentAnnotation> annotations, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Value = value;
-            Annotations = annotations;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string Value { get; }
-        public IReadOnlyList<InternalMessageDeltaTextContentAnnotation> Annotations { get; }
+        Annotations = new ChangeTrackingList<InternalMessageDeltaTextContentAnnotation>();
     }
+
+    internal InternalMessageDeltaContentTextObjectText(string value, IReadOnlyList<InternalMessageDeltaTextContentAnnotation> annotations, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Value = value;
+        Annotations = annotations;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string Value { get; }
+    public IReadOnlyList<InternalMessageDeltaTextContentAnnotation> Annotations { get; }
 }

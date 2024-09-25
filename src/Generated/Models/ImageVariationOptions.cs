@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Images
-{
-    public partial class ImageVariationOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Images;
 
-        internal ImageVariationOptions(BinaryData image, InternalCreateImageVariationRequestModel? model, long? n, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Image = image;
-            Model = model;
-            N = n;
-            ResponseFormat = responseFormat;
-            Size = size;
-            EndUserId = endUserId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class ImageVariationOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal ImageVariationOptions(BinaryData image, InternalCreateImageVariationRequestModel? model, long? n, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Image = image;
+        Model = model;
+        N = n;
+        ResponseFormat = responseFormat;
+        Size = size;
+        EndUserId = endUserId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalFinetuneCompletionRequestInput
 {
-    internal partial class InternalFinetuneCompletionRequestInput
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalFinetuneCompletionRequestInput()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalFinetuneCompletionRequestInput()
-        {
-        }
-
-        internal InternalFinetuneCompletionRequestInput(string prompt, string completion, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Prompt = prompt;
-            Completion = completion;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string Prompt { get; set; }
-        public string Completion { get; set; }
     }
+
+    internal InternalFinetuneCompletionRequestInput(string prompt, string completion, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Prompt = prompt;
+        Completion = completion;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string Prompt { get; set; }
+    public string Completion { get; set; }
 }

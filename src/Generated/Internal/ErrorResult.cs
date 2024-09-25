@@ -5,19 +5,18 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 
-namespace OpenAI
+namespace OpenAI;
+
+internal class ErrorResult<T> : ClientResult<T>
 {
-    internal class ErrorResult<T> : ClientResult<T>
+    private readonly PipelineResponse _response;
+    private readonly ClientResultException _exception;
+
+    public ErrorResult(PipelineResponse response, ClientResultException exception) : base(default, response)
     {
-        private readonly PipelineResponse _response;
-        private readonly ClientResultException _exception;
-
-        public ErrorResult(PipelineResponse response, ClientResultException exception) : base(default, response)
-        {
-            _response = response;
-            _exception = exception;
-        }
-
-        public override T Value => throw _exception;
+        _response = response;
+        _exception = exception;
     }
+
+    public override T Value => throw _exception;
 }

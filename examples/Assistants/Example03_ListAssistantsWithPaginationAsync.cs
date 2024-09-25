@@ -2,7 +2,6 @@
 using OpenAI.Assistants;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;

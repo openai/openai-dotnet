@@ -5,32 +5,31 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRequiredFunctionToolCall
 {
-    internal partial class InternalRequiredFunctionToolCall
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRequiredFunctionToolCall(string id, InternalRunToolCallObjectFunction internalFunction)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRequiredFunctionToolCall(string id, InternalRunToolCallObjectFunction internalFunction)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(internalFunction, nameof(internalFunction));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(internalFunction, nameof(internalFunction));
 
-            Id = id;
-            _internalFunction = internalFunction;
-        }
-
-        internal InternalRequiredFunctionToolCall(string id, object type, InternalRunToolCallObjectFunction internalFunction, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            _type = type;
-            _internalFunction = internalFunction;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRequiredFunctionToolCall()
-        {
-        }
-
-        public string Id { get; }
+        Id = id;
+        _internalFunction = internalFunction;
     }
+
+    internal InternalRequiredFunctionToolCall(string id, object type, InternalRunToolCallObjectFunction internalFunction, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        _type = type;
+        _internalFunction = internalFunction;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalRequiredFunctionToolCall()
+    {
+    }
+
+    public string Id { get; }
 }

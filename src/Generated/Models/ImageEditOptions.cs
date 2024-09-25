@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Images
-{
-    public partial class ImageEditOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Images;
 
-        internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Image = image;
-            Prompt = prompt;
-            Mask = mask;
-            Model = model;
-            N = n;
-            Size = size;
-            ResponseFormat = responseFormat;
-            EndUserId = endUserId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class ImageEditOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Image = image;
+        Prompt = prompt;
+        Mask = mask;
+        Model = model;
+        N = n;
+        Size = size;
+        ResponseFormat = responseFormat;
+        EndUserId = endUserId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

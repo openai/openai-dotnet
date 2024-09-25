@@ -5,20 +5,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject : InternalRunStepDeltaStepDetails
 {
-    internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject : InternalRunStepDeltaStepDetails
+    internal InternalRunStepDeltaStepDetailsMessageCreationObject()
     {
-        internal InternalRunStepDeltaStepDetailsMessageCreationObject()
-        {
-            Type = "message_creation";
-        }
-
-        internal InternalRunStepDeltaStepDetailsMessageCreationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation messageCreation) : base(type, serializedAdditionalRawData)
-        {
-            MessageCreation = messageCreation;
-        }
-
-        public InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation MessageCreation { get; }
+        Type = "message_creation";
     }
+
+    internal InternalRunStepDeltaStepDetailsMessageCreationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation messageCreation) : base(type, serializedAdditionalRawData)
+    {
+        MessageCreation = messageCreation;
+    }
+
+    public InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation MessageCreation { get; }
 }

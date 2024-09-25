@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal readonly partial struct InternalListFineTuningJobEventsResponseObject : IEquatable<InternalListFineTuningJobEventsResponseObject>
 {
-    internal readonly partial struct InternalListFineTuningJobEventsResponseObject : IEquatable<InternalListFineTuningJobEventsResponseObject>
+    private readonly string _value;
+
+    public InternalListFineTuningJobEventsResponseObject(string value)
     {
-        private readonly string _value;
-
-        public InternalListFineTuningJobEventsResponseObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string ListValue = "list";
-
-        public static InternalListFineTuningJobEventsResponseObject List { get; } = new InternalListFineTuningJobEventsResponseObject(ListValue);
-        public static bool operator ==(InternalListFineTuningJobEventsResponseObject left, InternalListFineTuningJobEventsResponseObject right) => left.Equals(right);
-        public static bool operator !=(InternalListFineTuningJobEventsResponseObject left, InternalListFineTuningJobEventsResponseObject right) => !left.Equals(right);
-        public static implicit operator InternalListFineTuningJobEventsResponseObject(string value) => new InternalListFineTuningJobEventsResponseObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalListFineTuningJobEventsResponseObject other && Equals(other);
-        public bool Equals(InternalListFineTuningJobEventsResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string ListValue = "list";
+
+    public static InternalListFineTuningJobEventsResponseObject List { get; } = new InternalListFineTuningJobEventsResponseObject(ListValue);
+    public static bool operator ==(InternalListFineTuningJobEventsResponseObject left, InternalListFineTuningJobEventsResponseObject right) => left.Equals(right);
+    public static bool operator !=(InternalListFineTuningJobEventsResponseObject left, InternalListFineTuningJobEventsResponseObject right) => !left.Equals(right);
+    public static implicit operator InternalListFineTuningJobEventsResponseObject(string value) => new InternalListFineTuningJobEventsResponseObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalListFineTuningJobEventsResponseObject other && Equals(other);
+    public bool Equals(InternalListFineTuningJobEventsResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

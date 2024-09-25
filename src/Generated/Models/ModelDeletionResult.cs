@@ -5,30 +5,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Models
+namespace OpenAI.Models;
+
+public partial class ModelDeletionResult
 {
-    public partial class ModelDeletionResult
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal ModelDeletionResult(string modelId, bool deleted)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ModelDeletionResult(string modelId, bool deleted)
-        {
-            Argument.AssertNotNull(modelId, nameof(modelId));
+        Argument.AssertNotNull(modelId, nameof(modelId));
 
-            ModelId = modelId;
-            Deleted = deleted;
-        }
-
-        internal ModelDeletionResult(string modelId, bool deleted, InternalDeleteModelResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            ModelId = modelId;
-            Deleted = deleted;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ModelDeletionResult()
-        {
-        }
-        public bool Deleted { get; }
+        ModelId = modelId;
+        Deleted = deleted;
     }
+
+    internal ModelDeletionResult(string modelId, bool deleted, InternalDeleteModelResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        ModelId = modelId;
+        Deleted = deleted;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal ModelDeletionResult()
+    {
+    }
+    public bool Deleted { get; }
 }

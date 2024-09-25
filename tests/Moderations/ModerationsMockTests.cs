@@ -14,14 +14,9 @@ namespace OpenAI.Tests.Moderations;
 [Parallelizable(ParallelScope.All)]
 [Category("Moderations")]
 [Category("Smoke")]
-public class ModerationsMockTests : SyncAsyncTestBase
+public class ModerationsMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public ModerationsMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [Test]
     public async Task ClassifyTextInputDeserializesHateCategory()

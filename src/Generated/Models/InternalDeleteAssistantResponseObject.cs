@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal readonly partial struct InternalDeleteAssistantResponseObject : IEquatable<InternalDeleteAssistantResponseObject>
 {
-    internal readonly partial struct InternalDeleteAssistantResponseObject : IEquatable<InternalDeleteAssistantResponseObject>
+    private readonly string _value;
+
+    public InternalDeleteAssistantResponseObject(string value)
     {
-        private readonly string _value;
-
-        public InternalDeleteAssistantResponseObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string AssistantDeletedValue = "assistant.deleted";
-
-        public static InternalDeleteAssistantResponseObject AssistantDeleted { get; } = new InternalDeleteAssistantResponseObject(AssistantDeletedValue);
-        public static bool operator ==(InternalDeleteAssistantResponseObject left, InternalDeleteAssistantResponseObject right) => left.Equals(right);
-        public static bool operator !=(InternalDeleteAssistantResponseObject left, InternalDeleteAssistantResponseObject right) => !left.Equals(right);
-        public static implicit operator InternalDeleteAssistantResponseObject(string value) => new InternalDeleteAssistantResponseObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalDeleteAssistantResponseObject other && Equals(other);
-        public bool Equals(InternalDeleteAssistantResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string AssistantDeletedValue = "assistant.deleted";
+
+    public static InternalDeleteAssistantResponseObject AssistantDeleted { get; } = new InternalDeleteAssistantResponseObject(AssistantDeletedValue);
+    public static bool operator ==(InternalDeleteAssistantResponseObject left, InternalDeleteAssistantResponseObject right) => left.Equals(right);
+    public static bool operator !=(InternalDeleteAssistantResponseObject left, InternalDeleteAssistantResponseObject right) => !left.Equals(right);
+    public static implicit operator InternalDeleteAssistantResponseObject(string value) => new InternalDeleteAssistantResponseObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalDeleteAssistantResponseObject other && Equals(other);
+    public bool Equals(InternalDeleteAssistantResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

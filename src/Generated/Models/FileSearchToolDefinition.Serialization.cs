@@ -8,100 +8,99 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinition>
 {
-    public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinition>
+    FileSearchToolDefinition IJsonModel<FileSearchToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        FileSearchToolDefinition IJsonModel<FileSearchToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFileSearchToolDefinition(document.RootElement, options);
+            throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support reading '{format}' format.");
         }
 
-        internal static FileSearchToolDefinition DeserializeFileSearchToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeFileSearchToolDefinition(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
+    internal static FileSearchToolDefinition DeserializeFileSearchToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        InternalAssistantToolsFileSearchFileSearch fileSearch = default;
+        string type = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("file_search"u8))
             {
-                return null;
-            }
-            InternalAssistantToolsFileSearchFileSearch fileSearch = default;
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("file_search"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    fileSearch = InternalAssistantToolsFileSearchFileSearch.DeserializeInternalAssistantToolsFileSearchFileSearch(property.Value, options);
                     continue;
                 }
-                if (property.NameEquals("type"u8))
-                {
-                    type = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                fileSearch = InternalAssistantToolsFileSearchFileSearch.DeserializeInternalAssistantToolsFileSearchFileSearch(property.Value, options);
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new FileSearchToolDefinition(type, serializedAdditionalRawData, fileSearch);
-        }
-
-        BinaryData IPersistableModel<FileSearchToolDefinition>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("type"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support writing '{options.Format}' format.");
+                type = property.Value.GetString();
+                continue;
             }
-        }
-
-        FileSearchToolDefinition IPersistableModel<FileSearchToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeFileSearchToolDefinition(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support reading '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new FileSearchToolDefinition(type, serializedAdditionalRawData, fileSearch);
+    }
 
-        string IPersistableModel<FileSearchToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<FileSearchToolDefinition>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static new FileSearchToolDefinition FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeFileSearchToolDefinition(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal override BinaryContent ToBinaryContent()
+    FileSearchToolDefinition IPersistableModel<FileSearchToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeFileSearchToolDefinition(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<FileSearchToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static new FileSearchToolDefinition FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeFileSearchToolDefinition(document.RootElement);
+    }
+
+    internal override BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

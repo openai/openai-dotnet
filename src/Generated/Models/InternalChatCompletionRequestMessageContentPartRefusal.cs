@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionRequestMessageContentPartRefusal
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartRefusal
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalChatCompletionRequestMessageContentPartRefusal(string refusal)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalChatCompletionRequestMessageContentPartRefusal(string refusal)
-        {
-            Argument.AssertNotNull(refusal, nameof(refusal));
+        Argument.AssertNotNull(refusal, nameof(refusal));
 
-            Refusal = refusal;
-        }
-
-        internal InternalChatCompletionRequestMessageContentPartRefusal(InternalChatCompletionRequestMessageContentPartRefusalType type, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            Refusal = refusal;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalChatCompletionRequestMessageContentPartRefusal()
-        {
-        }
-
-        public InternalChatCompletionRequestMessageContentPartRefusalType Type { get; } = InternalChatCompletionRequestMessageContentPartRefusalType.Refusal;
-
-        public string Refusal { get; }
+        Refusal = refusal;
     }
+
+    internal InternalChatCompletionRequestMessageContentPartRefusal(InternalChatCompletionRequestMessageContentPartRefusalType type, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Type = type;
+        Refusal = refusal;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalChatCompletionRequestMessageContentPartRefusal()
+    {
+    }
+
+    public InternalChatCompletionRequestMessageContentPartRefusalType Type { get; } = InternalChatCompletionRequestMessageContentPartRefusalType.Refusal;
+
+    public string Refusal { get; }
 }

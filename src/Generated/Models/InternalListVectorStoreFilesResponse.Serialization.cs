@@ -8,186 +8,185 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.VectorStores
-{
-    internal partial class InternalListVectorStoreFilesResponse : IJsonModel<InternalListVectorStoreFilesResponse>
-    {
-        void IJsonModel<InternalListVectorStoreFilesResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.VectorStores;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+internal partial class InternalListVectorStoreFilesResponse : IJsonModel<InternalListVectorStoreFilesResponse>
+{
+    void IJsonModel<InternalListVectorStoreFilesResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+        {
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (var item in Data)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("first_id") != true)
+        {
+            writer.WritePropertyName("first_id"u8);
+            writer.WriteStringValue(FirstId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("last_id") != true)
+        {
+            writer.WritePropertyName("last_id"u8);
+            writer.WriteStringValue(LastId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+        {
+            writer.WritePropertyName("has_more"u8);
+            writer.WriteBooleanValue(HasMore);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (var item in Data)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    writer.WriteObjectValue(item, options);
+                    continue;
                 }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("first_id") != true)
-            {
-                writer.WritePropertyName("first_id"u8);
-                writer.WriteStringValue(FirstId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("last_id") != true)
-            {
-                writer.WritePropertyName("last_id"u8);
-                writer.WriteStringValue(LastId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
-            {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalListVectorStoreFilesResponse IJsonModel<InternalListVectorStoreFilesResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support reading '{format}' format.");
         }
 
-        InternalListVectorStoreFilesResponse IJsonModel<InternalListVectorStoreFilesResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, options);
+    }
+
+    internal static InternalListVectorStoreFilesResponse DeserializeInternalListVectorStoreFilesResponse(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        InternalListVectorStoreFilesResponseObject @object = default;
+        IReadOnlyList<VectorStoreFileAssociation> data = default;
+        string firstId = default;
+        string lastId = default;
+        bool hasMore = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("object"u8))
             {
-                throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support reading '{format}' format.");
+                @object = new InternalListVectorStoreFilesResponseObject(property.Value.GetString());
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, options);
-        }
-
-        internal static InternalListVectorStoreFilesResponse DeserializeInternalListVectorStoreFilesResponse(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("data"u8))
             {
-                return null;
+                List<VectorStoreFileAssociation> array = new List<VectorStoreFileAssociation>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(VectorStoreFileAssociation.DeserializeVectorStoreFileAssociation(item, options));
+                }
+                data = array;
+                continue;
             }
-            InternalListVectorStoreFilesResponseObject @object = default;
-            IReadOnlyList<VectorStoreFileAssociation> data = default;
-            string firstId = default;
-            string lastId = default;
-            bool hasMore = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("first_id"u8))
             {
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalListVectorStoreFilesResponseObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("data"u8))
-                {
-                    List<VectorStoreFileAssociation> array = new List<VectorStoreFileAssociation>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(VectorStoreFileAssociation.DeserializeVectorStoreFileAssociation(item, options));
-                    }
-                    data = array;
-                    continue;
-                }
-                if (property.NameEquals("first_id"u8))
-                {
-                    firstId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("last_id"u8))
-                {
-                    lastId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("has_more"u8))
-                {
-                    hasMore = property.Value.GetBoolean();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                firstId = property.Value.GetString();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalListVectorStoreFilesResponse(
-                @object,
-                data,
-                firstId,
-                lastId,
-                hasMore,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalListVectorStoreFilesResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("last_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support writing '{options.Format}' format.");
+                lastId = property.Value.GetString();
+                continue;
             }
-        }
-
-        InternalListVectorStoreFilesResponse IPersistableModel<InternalListVectorStoreFilesResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("has_more"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support reading '{options.Format}' format.");
+                hasMore = property.Value.GetBoolean();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalListVectorStoreFilesResponse(
+            @object,
+            data,
+            firstId,
+            lastId,
+            hasMore,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalListVectorStoreFilesResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalListVectorStoreFilesResponse>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalListVectorStoreFilesResponse FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalListVectorStoreFilesResponse(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalListVectorStoreFilesResponse IPersistableModel<InternalListVectorStoreFilesResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoreFilesResponse>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalListVectorStoreFilesResponse)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalListVectorStoreFilesResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalListVectorStoreFilesResponse FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalListVectorStoreFilesResponse(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

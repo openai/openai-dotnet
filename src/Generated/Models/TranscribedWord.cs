@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
+namespace OpenAI.Audio;
+
+public readonly partial struct TranscribedWord
 {
-    public readonly partial struct TranscribedWord
+    internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime)
     {
-        internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime)
-        {
-            Argument.AssertNotNull(word, nameof(word));
+        Argument.AssertNotNull(word, nameof(word));
 
-            Word = word;
-            StartTime = startTime;
-            EndTime = endTime;
-        }
-
-        internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Word = word;
-            StartTime = startTime;
-            EndTime = endTime;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public TranscribedWord()
-        {
-        }
-
-        public string Word { get; }
+        Word = word;
+        StartTime = startTime;
+        EndTime = endTime;
     }
+
+    internal TranscribedWord(string word, TimeSpan startTime, TimeSpan endTime, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Word = word;
+        StartTime = startTime;
+        EndTime = endTime;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public TranscribedWord()
+    {
+    }
+
+    public string Word { get; }
 }

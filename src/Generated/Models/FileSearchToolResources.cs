@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public partial class FileSearchToolResources
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Assistants;
 
-        internal FileSearchToolResources(IList<string> vectorStoreIds, IList<VectorStoreCreationHelper> newVectorStores, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            VectorStoreIds = vectorStoreIds;
-            NewVectorStores = newVectorStores;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class FileSearchToolResources
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal FileSearchToolResources(IList<string> vectorStoreIds, IList<VectorStoreCreationHelper> newVectorStores, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        VectorStoreIds = vectorStoreIds;
+        NewVectorStores = newVectorStores;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

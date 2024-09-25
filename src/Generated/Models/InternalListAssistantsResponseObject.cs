@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal readonly partial struct InternalListAssistantsResponseObject : IEquatable<InternalListAssistantsResponseObject>
 {
-    internal readonly partial struct InternalListAssistantsResponseObject : IEquatable<InternalListAssistantsResponseObject>
+    private readonly string _value;
+
+    public InternalListAssistantsResponseObject(string value)
     {
-        private readonly string _value;
-
-        public InternalListAssistantsResponseObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string ListValue = "list";
-
-        public static InternalListAssistantsResponseObject List { get; } = new InternalListAssistantsResponseObject(ListValue);
-        public static bool operator ==(InternalListAssistantsResponseObject left, InternalListAssistantsResponseObject right) => left.Equals(right);
-        public static bool operator !=(InternalListAssistantsResponseObject left, InternalListAssistantsResponseObject right) => !left.Equals(right);
-        public static implicit operator InternalListAssistantsResponseObject(string value) => new InternalListAssistantsResponseObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalListAssistantsResponseObject other && Equals(other);
-        public bool Equals(InternalListAssistantsResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string ListValue = "list";
+
+    public static InternalListAssistantsResponseObject List { get; } = new InternalListAssistantsResponseObject(ListValue);
+    public static bool operator ==(InternalListAssistantsResponseObject left, InternalListAssistantsResponseObject right) => left.Equals(right);
+    public static bool operator !=(InternalListAssistantsResponseObject left, InternalListAssistantsResponseObject right) => !left.Equals(right);
+    public static implicit operator InternalListAssistantsResponseObject(string value) => new InternalListAssistantsResponseObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalListAssistantsResponseObject other && Equals(other);
+    public bool Equals(InternalListAssistantsResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

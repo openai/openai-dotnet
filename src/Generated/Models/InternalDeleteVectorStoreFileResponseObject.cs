@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+internal readonly partial struct InternalDeleteVectorStoreFileResponseObject : IEquatable<InternalDeleteVectorStoreFileResponseObject>
 {
-    internal readonly partial struct InternalDeleteVectorStoreFileResponseObject : IEquatable<InternalDeleteVectorStoreFileResponseObject>
+    private readonly string _value;
+
+    public InternalDeleteVectorStoreFileResponseObject(string value)
     {
-        private readonly string _value;
-
-        public InternalDeleteVectorStoreFileResponseObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string VectorStoreFileDeletedValue = "vector_store.file.deleted";
-
-        public static InternalDeleteVectorStoreFileResponseObject VectorStoreFileDeleted { get; } = new InternalDeleteVectorStoreFileResponseObject(VectorStoreFileDeletedValue);
-        public static bool operator ==(InternalDeleteVectorStoreFileResponseObject left, InternalDeleteVectorStoreFileResponseObject right) => left.Equals(right);
-        public static bool operator !=(InternalDeleteVectorStoreFileResponseObject left, InternalDeleteVectorStoreFileResponseObject right) => !left.Equals(right);
-        public static implicit operator InternalDeleteVectorStoreFileResponseObject(string value) => new InternalDeleteVectorStoreFileResponseObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalDeleteVectorStoreFileResponseObject other && Equals(other);
-        public bool Equals(InternalDeleteVectorStoreFileResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string VectorStoreFileDeletedValue = "vector_store.file.deleted";
+
+    public static InternalDeleteVectorStoreFileResponseObject VectorStoreFileDeleted { get; } = new InternalDeleteVectorStoreFileResponseObject(VectorStoreFileDeletedValue);
+    public static bool operator ==(InternalDeleteVectorStoreFileResponseObject left, InternalDeleteVectorStoreFileResponseObject right) => left.Equals(right);
+    public static bool operator !=(InternalDeleteVectorStoreFileResponseObject left, InternalDeleteVectorStoreFileResponseObject right) => !left.Equals(right);
+    public static implicit operator InternalDeleteVectorStoreFileResponseObject(string value) => new InternalDeleteVectorStoreFileResponseObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalDeleteVectorStoreFileResponseObject other && Equals(other);
+    public bool Equals(InternalDeleteVectorStoreFileResponseObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

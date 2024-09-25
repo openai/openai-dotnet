@@ -15,14 +15,9 @@ namespace OpenAI.Tests.Audio;
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 [Category("Smoke")]
-public partial class TranscriptionMockTests : SyncAsyncTestBase
+public partial class TranscriptionMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public TranscriptionMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     public enum AudioSourceKind
     {

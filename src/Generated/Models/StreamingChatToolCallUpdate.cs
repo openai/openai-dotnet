@@ -5,26 +5,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class StreamingChatToolCallUpdate
 {
-    public partial class StreamingChatToolCallUpdate
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal StreamingChatToolCallUpdate(int index, string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-
-        internal StreamingChatToolCallUpdate(int index, string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Index = index;
-            Id = id;
-            Kind = kind;
-            Function = function;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal StreamingChatToolCallUpdate()
-        {
-        }
-
-        public int Index { get; }
-        public string Id { get; }
+        Index = index;
+        Id = id;
+        Kind = kind;
+        Function = function;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+
+    internal StreamingChatToolCallUpdate()
+    {
+    }
+
+    public int Index { get; }
+    public string Id { get; }
 }

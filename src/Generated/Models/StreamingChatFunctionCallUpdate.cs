@@ -5,20 +5,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    public partial class StreamingChatFunctionCallUpdate
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal StreamingChatFunctionCallUpdate()
-        {
-        }
+namespace OpenAI.Chat;
 
-        internal StreamingChatFunctionCallUpdate(string functionArgumentsUpdate, string functionName, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FunctionArgumentsUpdate = functionArgumentsUpdate;
-            FunctionName = functionName;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class StreamingChatFunctionCallUpdate
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal StreamingChatFunctionCallUpdate()
+    {
+    }
+
+    internal StreamingChatFunctionCallUpdate(string functionArgumentsUpdate, string functionName, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FunctionArgumentsUpdate = functionArgumentsUpdate;
+        FunctionName = functionName;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

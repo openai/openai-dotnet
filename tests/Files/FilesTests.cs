@@ -14,13 +14,9 @@ namespace OpenAI.Tests.Files;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Files")]
-public class FilesTests : SyncAsyncTestBase
+public class FilesTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static FileClient GetTestClient() => GetTestClient<FileClient>(TestScenario.Files);
-
-    public FilesTests(bool isAsync) : base(isAsync)
-    {
-    }
 
     [Test]
     public async Task ListFiles()

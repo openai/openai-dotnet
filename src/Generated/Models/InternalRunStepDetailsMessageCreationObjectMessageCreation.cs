@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsMessageCreationObjectMessageCreation
 {
-    internal partial class InternalRunStepDetailsMessageCreationObjectMessageCreation
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRunStepDetailsMessageCreationObjectMessageCreation(string messageId)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsMessageCreationObjectMessageCreation(string messageId)
-        {
-            Argument.AssertNotNull(messageId, nameof(messageId));
+        Argument.AssertNotNull(messageId, nameof(messageId));
 
-            MessageId = messageId;
-        }
-
-        internal InternalRunStepDetailsMessageCreationObjectMessageCreation(string messageId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            MessageId = messageId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRunStepDetailsMessageCreationObjectMessageCreation()
-        {
-        }
-
-        public string MessageId { get; }
+        MessageId = messageId;
     }
+
+    internal InternalRunStepDetailsMessageCreationObjectMessageCreation(string messageId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        MessageId = messageId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalRunStepDetailsMessageCreationObjectMessageCreation()
+    {
+    }
+
+    public string MessageId { get; }
 }

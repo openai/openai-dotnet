@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation
 {
-    internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation()
-        {
-        }
-
-        internal InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation(string fileId, string quote, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileId = fileId;
-            Quote = quote;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string FileId { get; }
-        public string Quote { get; }
     }
+
+    internal InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation(string fileId, string quote, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileId = fileId;
+        Quote = quote;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string FileId { get; }
+    public string Quote { get; }
 }

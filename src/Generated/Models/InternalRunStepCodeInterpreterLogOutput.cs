@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepCodeInterpreterLogOutput : RunStepCodeInterpreterOutput
 {
-    internal partial class InternalRunStepCodeInterpreterLogOutput : RunStepCodeInterpreterOutput
+    internal InternalRunStepCodeInterpreterLogOutput(string internalLogs)
     {
-        internal InternalRunStepCodeInterpreterLogOutput(string internalLogs)
-        {
-            Argument.AssertNotNull(internalLogs, nameof(internalLogs));
+        Argument.AssertNotNull(internalLogs, nameof(internalLogs));
 
-            Type = "logs";
-            InternalLogs = internalLogs;
-        }
+        Type = "logs";
+        InternalLogs = internalLogs;
+    }
 
-        internal InternalRunStepCodeInterpreterLogOutput(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string internalLogs) : base(type, serializedAdditionalRawData)
-        {
-            InternalLogs = internalLogs;
-        }
+    internal InternalRunStepCodeInterpreterLogOutput(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string internalLogs) : base(type, serializedAdditionalRawData)
+    {
+        InternalLogs = internalLogs;
+    }
 
-        internal InternalRunStepCodeInterpreterLogOutput()
-        {
-        }
+    internal InternalRunStepCodeInterpreterLogOutput()
+    {
     }
 }

@@ -8,136 +8,135 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalRunObjectRequiredActionSubmitToolOutputs : IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>
-    {
-        void IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("tool_calls") != true)
+internal partial class InternalRunObjectRequiredActionSubmitToolOutputs : IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>
+{
+    void IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("tool_calls") != true)
+        {
+            writer.WritePropertyName("tool_calls"u8);
+            writer.WriteStartArray();
+            foreach (var item in ToolCalls)
             {
-                writer.WritePropertyName("tool_calls"u8);
-                writer.WriteStartArray();
-                foreach (var item in ToolCalls)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData != null)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalRunObjectRequiredActionSubmitToolOutputs IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support reading '{format}' format.");
         }
 
-        InternalRunObjectRequiredActionSubmitToolOutputs IJsonModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement, options);
+    internal static InternalRunObjectRequiredActionSubmitToolOutputs DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalRunObjectRequiredActionSubmitToolOutputs DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(JsonElement element, ModelReaderWriterOptions options = null)
+        IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("tool_calls"u8))
             {
-                return null;
-            }
-            IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("tool_calls"u8))
+                List<InternalRequiredFunctionToolCall> array = new List<InternalRequiredFunctionToolCall>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    List<InternalRequiredFunctionToolCall> array = new List<InternalRequiredFunctionToolCall>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(InternalRequiredFunctionToolCall.DeserializeInternalRequiredFunctionToolCall(item, options));
-                    }
-                    toolCalls = array;
-                    continue;
+                    array.Add(InternalRequiredFunctionToolCall.DeserializeInternalRequiredFunctionToolCall(item, options));
                 }
-                if (true)
+                toolCalls = array;
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalRunObjectRequiredActionSubmitToolOutputs(toolCalls, serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalRunObjectRequiredActionSubmitToolOutputs IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement, options);
                 }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRunObjectRequiredActionSubmitToolOutputs(toolCalls, serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static InternalRunObjectRequiredActionSubmitToolOutputs FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement);
+    }
 
-        InternalRunObjectRequiredActionSubmitToolOutputs IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunObjectRequiredActionSubmitToolOutputs)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunObjectRequiredActionSubmitToolOutputs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static InternalRunObjectRequiredActionSubmitToolOutputs FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

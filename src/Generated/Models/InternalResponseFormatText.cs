@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Internal
-{
-    internal partial class InternalResponseFormatText : InternalOmniTypedResponseFormat
-    {
-        public InternalResponseFormatText()
-        {
-            Type = "text";
-        }
+namespace OpenAI.Internal;
 
-        internal InternalResponseFormatText(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+internal partial class InternalResponseFormatText : InternalOmniTypedResponseFormat
+{
+    public InternalResponseFormatText()
+    {
+        Type = "text";
+    }
+
+    internal InternalResponseFormatText(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
     }
 }

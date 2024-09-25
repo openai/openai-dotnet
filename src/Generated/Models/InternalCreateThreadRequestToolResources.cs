@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalCreateThreadRequestToolResources
 {
-    internal partial class InternalCreateThreadRequestToolResources
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalCreateThreadRequestToolResources()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalCreateThreadRequestToolResources()
-        {
-        }
-
-        internal InternalCreateThreadRequestToolResources(InternalCreateThreadRequestToolResourcesCodeInterpreter codeInterpreter, FileSearchToolResources fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            CodeInterpreter = codeInterpreter;
-            FileSearch = fileSearch;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public InternalCreateThreadRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
-        public FileSearchToolResources FileSearch { get; set; }
     }
+
+    internal InternalCreateThreadRequestToolResources(InternalCreateThreadRequestToolResourcesCodeInterpreter codeInterpreter, FileSearchToolResources fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        CodeInterpreter = codeInterpreter;
+        FileSearch = fileSearch;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public InternalCreateThreadRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
+    public FileSearchToolResources FileSearch { get; set; }
 }

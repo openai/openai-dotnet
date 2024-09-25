@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+internal partial class InternalStaticChunkingStrategyRequestParam : InternalFileChunkingStrategyRequestParam
 {
-    internal partial class InternalStaticChunkingStrategyRequestParam : InternalFileChunkingStrategyRequestParam
+    public InternalStaticChunkingStrategyRequestParam(InternalStaticChunkingStrategyDetails @static)
     {
-        public InternalStaticChunkingStrategyRequestParam(InternalStaticChunkingStrategyDetails @static)
-        {
-            Argument.AssertNotNull(@static, nameof(@static));
+        Argument.AssertNotNull(@static, nameof(@static));
 
-            Type = "static";
-            Static = @static;
-        }
-
-        internal InternalStaticChunkingStrategyRequestParam(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalStaticChunkingStrategyDetails @static) : base(type, serializedAdditionalRawData)
-        {
-            Static = @static;
-        }
-
-        internal InternalStaticChunkingStrategyRequestParam()
-        {
-        }
-
-        public InternalStaticChunkingStrategyDetails Static { get; }
+        Type = "static";
+        Static = @static;
     }
+
+    internal InternalStaticChunkingStrategyRequestParam(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalStaticChunkingStrategyDetails @static) : base(type, serializedAdditionalRawData)
+    {
+        Static = @static;
+    }
+
+    internal InternalStaticChunkingStrategyRequestParam()
+    {
+    }
+
+    public InternalStaticChunkingStrategyDetails Static { get; }
 }

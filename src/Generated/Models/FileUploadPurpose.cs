@@ -5,36 +5,35 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Files
+namespace OpenAI.Files;
+
+public readonly partial struct FileUploadPurpose : IEquatable<FileUploadPurpose>
 {
-    public readonly partial struct FileUploadPurpose : IEquatable<FileUploadPurpose>
+    private readonly string _value;
+
+    public FileUploadPurpose(string value)
     {
-        private readonly string _value;
-
-        public FileUploadPurpose(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string AssistantsValue = "assistants";
-        private const string BatchValue = "batch";
-        private const string FineTuneValue = "fine-tune";
-        private const string VisionValue = "vision";
-
-        public static FileUploadPurpose Assistants { get; } = new FileUploadPurpose(AssistantsValue);
-        public static FileUploadPurpose Batch { get; } = new FileUploadPurpose(BatchValue);
-        public static FileUploadPurpose FineTune { get; } = new FileUploadPurpose(FineTuneValue);
-        public static FileUploadPurpose Vision { get; } = new FileUploadPurpose(VisionValue);
-        public static bool operator ==(FileUploadPurpose left, FileUploadPurpose right) => left.Equals(right);
-        public static bool operator !=(FileUploadPurpose left, FileUploadPurpose right) => !left.Equals(right);
-        public static implicit operator FileUploadPurpose(string value) => new FileUploadPurpose(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is FileUploadPurpose other && Equals(other);
-        public bool Equals(FileUploadPurpose other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string AssistantsValue = "assistants";
+    private const string BatchValue = "batch";
+    private const string FineTuneValue = "fine-tune";
+    private const string VisionValue = "vision";
+
+    public static FileUploadPurpose Assistants { get; } = new FileUploadPurpose(AssistantsValue);
+    public static FileUploadPurpose Batch { get; } = new FileUploadPurpose(BatchValue);
+    public static FileUploadPurpose FineTune { get; } = new FileUploadPurpose(FineTuneValue);
+    public static FileUploadPurpose Vision { get; } = new FileUploadPurpose(VisionValue);
+    public static bool operator ==(FileUploadPurpose left, FileUploadPurpose right) => left.Equals(right);
+    public static bool operator !=(FileUploadPurpose left, FileUploadPurpose right) => !left.Equals(right);
+    public static implicit operator FileUploadPurpose(string value) => new FileUploadPurpose(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is FileUploadPurpose other && Equals(other);
+    public bool Equals(FileUploadPurpose other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

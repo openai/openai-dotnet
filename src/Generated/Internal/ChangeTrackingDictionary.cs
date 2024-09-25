@@ -6,159 +6,158 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace OpenAI
+namespace OpenAI;
+
+internal class ChangeTrackingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
 {
-    internal class ChangeTrackingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
+    private IDictionary<TKey, TValue> _innerDictionary;
+
+    public ChangeTrackingDictionary()
     {
-        private IDictionary<TKey, TValue> _innerDictionary;
+    }
 
-        public ChangeTrackingDictionary()
+    public ChangeTrackingDictionary(IDictionary<TKey, TValue> dictionary)
+    {
+        if (dictionary == null)
         {
+            return;
         }
+        _innerDictionary = new Dictionary<TKey, TValue>(dictionary);
+    }
 
-        public ChangeTrackingDictionary(IDictionary<TKey, TValue> dictionary)
+    public ChangeTrackingDictionary(IReadOnlyDictionary<TKey, TValue> dictionary)
+    {
+        if (dictionary == null)
         {
-            if (dictionary == null)
-            {
-                return;
-            }
-            _innerDictionary = new Dictionary<TKey, TValue>(dictionary);
+            return;
         }
-
-        public ChangeTrackingDictionary(IReadOnlyDictionary<TKey, TValue> dictionary)
+        _innerDictionary = new Dictionary<TKey, TValue>();
+        foreach (var pair in dictionary)
         {
-            if (dictionary == null)
-            {
-                return;
-            }
-            _innerDictionary = new Dictionary<TKey, TValue>();
-            foreach (var pair in dictionary)
-            {
-                _innerDictionary.Add(pair);
-            }
+            _innerDictionary.Add(pair);
         }
+    }
 
-        public bool IsUndefined => _innerDictionary == null;
+    public bool IsUndefined => _innerDictionary == null;
 
-        public int Count => IsUndefined ? 0 : EnsureDictionary().Count;
+    public int Count => IsUndefined ? 0 : EnsureDictionary().Count;
 
-        public bool IsReadOnly => IsUndefined ? false : EnsureDictionary().IsReadOnly;
+    public bool IsReadOnly => IsUndefined ? false : EnsureDictionary().IsReadOnly;
 
-        public ICollection<TKey> Keys => IsUndefined ? Array.Empty<TKey>() : EnsureDictionary().Keys;
+    public ICollection<TKey> Keys => IsUndefined ? Array.Empty<TKey>() : EnsureDictionary().Keys;
 
-        public ICollection<TValue> Values => IsUndefined ? Array.Empty<TValue>() : EnsureDictionary().Values;
+    public ICollection<TValue> Values => IsUndefined ? Array.Empty<TValue>() : EnsureDictionary().Values;
 
-        public TValue this[TKey key]
-        {
-            get
-            {
-                if (IsUndefined)
-                {
-                    throw new KeyNotFoundException(nameof(key));
-                }
-                return EnsureDictionary()[key];
-            }
-            set
-            {
-                EnsureDictionary()[key] = value;
-            }
-        }
-
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
-
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
-
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+    public TValue this[TKey key]
+    {
+        get
         {
             if (IsUndefined)
             {
-                IEnumerator<KeyValuePair<TKey, TValue>> enumerateEmpty()
-                {
-                    yield break;
-                }
-                return enumerateEmpty();
+                throw new KeyNotFoundException(nameof(key));
             }
-            return EnsureDictionary().GetEnumerator();
+            return EnsureDictionary()[key];
         }
-
-        IEnumerator IEnumerable.GetEnumerator()
+        set
         {
-            return GetEnumerator();
+            EnsureDictionary()[key] = value;
         }
+    }
 
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            EnsureDictionary().Add(item);
-        }
+    IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
-        public void Clear()
-        {
-            EnsureDictionary().Clear();
-        }
+    IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
-        public bool Contains(KeyValuePair<TKey, TValue> item)
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+    {
+        if (IsUndefined)
         {
-            if (IsUndefined)
+            IEnumerator<KeyValuePair<TKey, TValue>> enumerateEmpty()
             {
-                return false;
+                yield break;
             }
-            return EnsureDictionary().Contains(item);
+            return enumerateEmpty();
         }
+        return EnsureDictionary().GetEnumerator();
+    }
 
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
-        {
-            if (IsUndefined)
-            {
-                return;
-            }
-            EnsureDictionary().CopyTo(array, index);
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            if (IsUndefined)
-            {
-                return false;
-            }
-            return EnsureDictionary().Remove(item);
-        }
+    public void Add(KeyValuePair<TKey, TValue> item)
+    {
+        EnsureDictionary().Add(item);
+    }
 
-        public void Add(TKey key, TValue value)
-        {
-            EnsureDictionary().Add(key, value);
-        }
+    public void Clear()
+    {
+        EnsureDictionary().Clear();
+    }
 
-        public bool ContainsKey(TKey key)
+    public bool Contains(KeyValuePair<TKey, TValue> item)
+    {
+        if (IsUndefined)
         {
-            if (IsUndefined)
-            {
-                return false;
-            }
-            return EnsureDictionary().ContainsKey(key);
+            return false;
         }
+        return EnsureDictionary().Contains(item);
+    }
 
-        public bool Remove(TKey key)
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
+    {
+        if (IsUndefined)
         {
-            if (IsUndefined)
-            {
-                return false;
-            }
-            return EnsureDictionary().Remove(key);
+            return;
         }
+        EnsureDictionary().CopyTo(array, index);
+    }
 
-        public bool TryGetValue(TKey key, out TValue value)
+    public bool Remove(KeyValuePair<TKey, TValue> item)
+    {
+        if (IsUndefined)
         {
-            if (IsUndefined)
-            {
-                value = default;
-                return false;
-            }
-            return EnsureDictionary().TryGetValue(key, out value);
+            return false;
         }
+        return EnsureDictionary().Remove(item);
+    }
 
-        public IDictionary<TKey, TValue> EnsureDictionary()
+    public void Add(TKey key, TValue value)
+    {
+        EnsureDictionary().Add(key, value);
+    }
+
+    public bool ContainsKey(TKey key)
+    {
+        if (IsUndefined)
         {
-            return _innerDictionary ??= new Dictionary<TKey, TValue>();
+            return false;
         }
+        return EnsureDictionary().ContainsKey(key);
+    }
+
+    public bool Remove(TKey key)
+    {
+        if (IsUndefined)
+        {
+            return false;
+        }
+        return EnsureDictionary().Remove(key);
+    }
+
+    public bool TryGetValue(TKey key, out TValue value)
+    {
+        if (IsUndefined)
+        {
+            value = default;
+            return false;
+        }
+        return EnsureDictionary().TryGetValue(key, out value);
+    }
+
+    public IDictionary<TKey, TValue> EnsureDictionary()
+    {
+        return _innerDictionary ??= new Dictionary<TKey, TValue>();
     }
 }

@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal abstract partial class InternalRunStepDeltaStepDetails
 {
-    internal abstract partial class InternalRunStepDeltaStepDetails
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    protected InternalRunStepDeltaStepDetails()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected InternalRunStepDeltaStepDetails()
-        {
-        }
-
-        internal InternalRunStepDeltaStepDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal string Type { get; set; }
     }
+
+    internal InternalRunStepDeltaStepDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Type = type;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal string Type { get; set; }
 }

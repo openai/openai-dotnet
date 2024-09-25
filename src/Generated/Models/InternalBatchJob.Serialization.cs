@@ -8,418 +8,417 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Batch
-{
-    internal partial class InternalBatchJob : IJsonModel<InternalBatchJob>
-    {
-        void IJsonModel<InternalBatchJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Batch;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+internal partial class InternalBatchJob : IJsonModel<InternalBatchJob>
+{
+    void IJsonModel<InternalBatchJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("endpoint") != true)
+        {
+            writer.WritePropertyName("endpoint"u8);
+            writer.WriteStringValue(Endpoint);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("errors") != true && Optional.IsDefined(Errors))
+        {
+            writer.WritePropertyName("errors"u8);
+            writer.WriteObjectValue(Errors, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("input_file_id") != true)
+        {
+            writer.WritePropertyName("input_file_id"u8);
+            writer.WriteStringValue(InputFileId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("completion_window") != true)
+        {
+            writer.WritePropertyName("completion_window"u8);
+            writer.WriteStringValue(CompletionWindow);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+        {
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("output_file_id") != true && Optional.IsDefined(OutputFileId))
+        {
+            writer.WritePropertyName("output_file_id"u8);
+            writer.WriteStringValue(OutputFileId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("error_file_id") != true && Optional.IsDefined(ErrorFileId))
+        {
+            writer.WritePropertyName("error_file_id"u8);
+            writer.WriteStringValue(ErrorFileId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        {
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("in_progress_at") != true && Optional.IsDefined(InProgressAt))
+        {
+            writer.WritePropertyName("in_progress_at"u8);
+            writer.WriteNumberValue(InProgressAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("expires_at") != true && Optional.IsDefined(ExpiresAt))
+        {
+            writer.WritePropertyName("expires_at"u8);
+            writer.WriteNumberValue(ExpiresAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("finalizing_at") != true && Optional.IsDefined(FinalizingAt))
+        {
+            writer.WritePropertyName("finalizing_at"u8);
+            writer.WriteNumberValue(FinalizingAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true && Optional.IsDefined(CompletedAt))
+        {
+            writer.WritePropertyName("completed_at"u8);
+            writer.WriteNumberValue(CompletedAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("failed_at") != true && Optional.IsDefined(FailedAt))
+        {
+            writer.WritePropertyName("failed_at"u8);
+            writer.WriteNumberValue(FailedAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("expired_at") != true && Optional.IsDefined(ExpiredAt))
+        {
+            writer.WritePropertyName("expired_at"u8);
+            writer.WriteNumberValue(ExpiredAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("cancelling_at") != true && Optional.IsDefined(CancellingAt))
+        {
+            writer.WritePropertyName("cancelling_at"u8);
+            writer.WriteNumberValue(CancellingAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("cancelled_at") != true && Optional.IsDefined(CancelledAt))
+        {
+            writer.WritePropertyName("cancelled_at"u8);
+            writer.WriteNumberValue(CancelledAt.Value, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("request_counts") != true && Optional.IsDefined(RequestCounts))
+        {
+            writer.WritePropertyName("request_counts"u8);
+            writer.WriteObjectValue(RequestCounts, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+        {
+            if (Metadata != null)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("endpoint") != true)
-            {
-                writer.WritePropertyName("endpoint"u8);
-                writer.WriteStringValue(Endpoint);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("errors") != true && Optional.IsDefined(Errors))
-            {
-                writer.WritePropertyName("errors"u8);
-                writer.WriteObjectValue(Errors, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("input_file_id") != true)
-            {
-                writer.WritePropertyName("input_file_id"u8);
-                writer.WriteStringValue(InputFileId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("completion_window") != true)
-            {
-                writer.WritePropertyName("completion_window"u8);
-                writer.WriteStringValue(CompletionWindow);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("output_file_id") != true && Optional.IsDefined(OutputFileId))
-            {
-                writer.WritePropertyName("output_file_id"u8);
-                writer.WriteStringValue(OutputFileId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("error_file_id") != true && Optional.IsDefined(ErrorFileId))
-            {
-                writer.WritePropertyName("error_file_id"u8);
-                writer.WriteStringValue(ErrorFileId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("in_progress_at") != true && Optional.IsDefined(InProgressAt))
-            {
-                writer.WritePropertyName("in_progress_at"u8);
-                writer.WriteNumberValue(InProgressAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("expires_at") != true && Optional.IsDefined(ExpiresAt))
-            {
-                writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("finalizing_at") != true && Optional.IsDefined(FinalizingAt))
-            {
-                writer.WritePropertyName("finalizing_at"u8);
-                writer.WriteNumberValue(FinalizingAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true && Optional.IsDefined(CompletedAt))
-            {
-                writer.WritePropertyName("completed_at"u8);
-                writer.WriteNumberValue(CompletedAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("failed_at") != true && Optional.IsDefined(FailedAt))
-            {
-                writer.WritePropertyName("failed_at"u8);
-                writer.WriteNumberValue(FailedAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("expired_at") != true && Optional.IsDefined(ExpiredAt))
-            {
-                writer.WritePropertyName("expired_at"u8);
-                writer.WriteNumberValue(ExpiredAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("cancelling_at") != true && Optional.IsDefined(CancellingAt))
-            {
-                writer.WritePropertyName("cancelling_at"u8);
-                writer.WriteNumberValue(CancellingAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("cancelled_at") != true && Optional.IsDefined(CancelledAt))
-            {
-                writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteNumberValue(CancelledAt.Value, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("request_counts") != true && Optional.IsDefined(RequestCounts))
-            {
-                writer.WritePropertyName("request_counts"u8);
-                writer.WriteObjectValue(RequestCounts, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
-            {
-                if (Metadata != null)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalBatchJob IJsonModel<InternalBatchJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{format}' format.");
         }
 
-        InternalBatchJob IJsonModel<InternalBatchJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalBatchJob(document.RootElement, options);
+    }
+
+    internal static InternalBatchJob DeserializeInternalBatchJob(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        string id = default;
+        InternalBatchObject @object = default;
+        string endpoint = default;
+        InternalBatchErrors errors = default;
+        string inputFileId = default;
+        string completionWindow = default;
+        InternalBatchStatus status = default;
+        string outputFileId = default;
+        string errorFileId = default;
+        DateTimeOffset createdAt = default;
+        DateTimeOffset? inProgressAt = default;
+        DateTimeOffset? expiresAt = default;
+        DateTimeOffset? finalizingAt = default;
+        DateTimeOffset? completedAt = default;
+        DateTimeOffset? failedAt = default;
+        DateTimeOffset? expiredAt = default;
+        DateTimeOffset? cancellingAt = default;
+        DateTimeOffset? cancelledAt = default;
+        InternalBatchRequestCounts requestCounts = default;
+        IReadOnlyDictionary<string, string> metadata = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{format}' format.");
+                id = property.Value.GetString();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalBatchJob(document.RootElement, options);
-        }
-
-        internal static InternalBatchJob DeserializeInternalBatchJob(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
+                @object = new InternalBatchObject(property.Value.GetString());
+                continue;
             }
-            string id = default;
-            InternalBatchObject @object = default;
-            string endpoint = default;
-            InternalBatchErrors errors = default;
-            string inputFileId = default;
-            string completionWindow = default;
-            InternalBatchStatus status = default;
-            string outputFileId = default;
-            string errorFileId = default;
-            DateTimeOffset createdAt = default;
-            DateTimeOffset? inProgressAt = default;
-            DateTimeOffset? expiresAt = default;
-            DateTimeOffset? finalizingAt = default;
-            DateTimeOffset? completedAt = default;
-            DateTimeOffset? failedAt = default;
-            DateTimeOffset? expiredAt = default;
-            DateTimeOffset? cancellingAt = default;
-            DateTimeOffset? cancelledAt = default;
-            InternalBatchRequestCounts requestCounts = default;
-            IReadOnlyDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("endpoint"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalBatchObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("endpoint"u8))
-                {
-                    endpoint = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("errors"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    errors = InternalBatchErrors.DeserializeInternalBatchErrors(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("input_file_id"u8))
-                {
-                    inputFileId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("completion_window"u8))
-                {
-                    completionWindow = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = new InternalBatchStatus(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("output_file_id"u8))
-                {
-                    outputFileId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("error_file_id"u8))
-                {
-                    errorFileId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("in_progress_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    inProgressAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("expires_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("finalizing_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    finalizingAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("completed_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("failed_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("expired_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    expiredAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("cancelling_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    cancellingAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("cancelled_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("request_counts"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    requestCounts = InternalBatchRequestCounts.DeserializeInternalBatchRequestCounts(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                endpoint = property.Value.GetString();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalBatchJob(
-                id,
-                @object,
-                endpoint,
-                errors,
-                inputFileId,
-                completionWindow,
-                status,
-                outputFileId,
-                errorFileId,
-                createdAt,
-                inProgressAt,
-                expiresAt,
-                finalizingAt,
-                completedAt,
-                failedAt,
-                expiredAt,
-                cancellingAt,
-                cancelledAt,
-                requestCounts,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalBatchJob>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("errors"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                errors = InternalBatchErrors.DeserializeInternalBatchErrors(property.Value, options);
+                continue;
             }
-        }
-
-        InternalBatchJob IPersistableModel<InternalBatchJob>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("input_file_id"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalBatchJob(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{options.Format}' format.");
+                inputFileId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("completion_window"u8))
+            {
+                completionWindow = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("status"u8))
+            {
+                status = new InternalBatchStatus(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("output_file_id"u8))
+            {
+                outputFileId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("error_file_id"u8))
+            {
+                errorFileId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("created_at"u8))
+            {
+                createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("in_progress_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                inProgressAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("expires_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                expiresAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("finalizing_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                finalizingAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("completed_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("failed_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("expired_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                expiredAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("cancelling_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                cancellingAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("cancelled_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("request_counts"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                requestCounts = InternalBatchRequestCounts.DeserializeInternalBatchRequestCounts(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalBatchJob(
+            id,
+            @object,
+            endpoint,
+            errors,
+            inputFileId,
+            completionWindow,
+            status,
+            outputFileId,
+            errorFileId,
+            createdAt,
+            inProgressAt,
+            expiresAt,
+            finalizingAt,
+            completedAt,
+            failedAt,
+            expiredAt,
+            cancellingAt,
+            cancelledAt,
+            requestCounts,
+            metadata ?? new ChangeTrackingDictionary<string, string>(),
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalBatchJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalBatchJob>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalBatchJob FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchJob(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalBatchJob IPersistableModel<InternalBatchJob>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalBatchJob(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalBatchJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalBatchJob FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalBatchJob(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

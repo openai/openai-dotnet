@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentImageUrlObject : InternalMessageDeltaContent
 {
-    internal partial class InternalMessageDeltaContentImageUrlObject : InternalMessageDeltaContent
+    internal InternalMessageDeltaContentImageUrlObject(int index)
     {
-        internal InternalMessageDeltaContentImageUrlObject(int index)
-        {
-            Type = "image_url";
-            Index = index;
-        }
-
-        internal InternalMessageDeltaContentImageUrlObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalMessageDeltaContentImageUrlObjectImageUrl imageUrl) : base(type, serializedAdditionalRawData)
-        {
-            Index = index;
-            ImageUrl = imageUrl;
-        }
-
-        internal InternalMessageDeltaContentImageUrlObject()
-        {
-        }
-
-        public int Index { get; }
-        public InternalMessageDeltaContentImageUrlObjectImageUrl ImageUrl { get; }
+        Type = "image_url";
+        Index = index;
     }
+
+    internal InternalMessageDeltaContentImageUrlObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalMessageDeltaContentImageUrlObjectImageUrl imageUrl) : base(type, serializedAdditionalRawData)
+    {
+        Index = index;
+        ImageUrl = imageUrl;
+    }
+
+    internal InternalMessageDeltaContentImageUrlObject()
+    {
+    }
+
+    public int Index { get; }
+    public InternalMessageDeltaContentImageUrlObjectImageUrl ImageUrl { get; }
 }

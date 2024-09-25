@@ -5,33 +5,32 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalFineTuningJobCheckpointMetrics
 {
-    internal partial class InternalFineTuningJobCheckpointMetrics
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalFineTuningJobCheckpointMetrics()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalFineTuningJobCheckpointMetrics()
-        {
-        }
-
-        internal InternalFineTuningJobCheckpointMetrics(float? step, float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Step = step;
-            TrainLoss = trainLoss;
-            TrainMeanTokenAccuracy = trainMeanTokenAccuracy;
-            ValidLoss = validLoss;
-            ValidMeanTokenAccuracy = validMeanTokenAccuracy;
-            FullValidLoss = fullValidLoss;
-            FullValidMeanTokenAccuracy = fullValidMeanTokenAccuracy;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public float? Step { get; }
-        public float? TrainLoss { get; }
-        public float? TrainMeanTokenAccuracy { get; }
-        public float? ValidLoss { get; }
-        public float? ValidMeanTokenAccuracy { get; }
-        public float? FullValidLoss { get; }
-        public float? FullValidMeanTokenAccuracy { get; }
     }
+
+    internal InternalFineTuningJobCheckpointMetrics(float? step, float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Step = step;
+        TrainLoss = trainLoss;
+        TrainMeanTokenAccuracy = trainMeanTokenAccuracy;
+        ValidLoss = validLoss;
+        ValidMeanTokenAccuracy = validMeanTokenAccuracy;
+        FullValidLoss = fullValidLoss;
+        FullValidMeanTokenAccuracy = fullValidMeanTokenAccuracy;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public float? Step { get; }
+    public float? TrainLoss { get; }
+    public float? TrainMeanTokenAccuracy { get; }
+    public float? ValidLoss { get; }
+    public float? ValidMeanTokenAccuracy { get; }
+    public float? FullValidLoss { get; }
+    public float? FullValidMeanTokenAccuracy { get; }
 }

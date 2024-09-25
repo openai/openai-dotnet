@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class UnknownAssistantToolDefinition : ToolDefinition
-    {
-        internal UnknownAssistantToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.Assistants;
 
-        internal UnknownAssistantToolDefinition()
-        {
-        }
+internal partial class UnknownAssistantToolDefinition : ToolDefinition
+{
+    internal UnknownAssistantToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal UnknownAssistantToolDefinition()
+    {
     }
 }

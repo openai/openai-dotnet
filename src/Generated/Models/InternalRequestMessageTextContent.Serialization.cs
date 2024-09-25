@@ -8,96 +8,95 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRequestMessageTextContent : IJsonModel<InternalRequestMessageTextContent>
 {
-    internal partial class InternalRequestMessageTextContent : IJsonModel<InternalRequestMessageTextContent>
+    InternalRequestMessageTextContent IJsonModel<InternalRequestMessageTextContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        InternalRequestMessageTextContent IJsonModel<InternalRequestMessageTextContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalRequestMessageTextContent(document.RootElement, options);
+            throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support reading '{format}' format.");
         }
 
-        internal static InternalRequestMessageTextContent DeserializeInternalRequestMessageTextContent(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalRequestMessageTextContent(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
+    internal static InternalRequestMessageTextContent DeserializeInternalRequestMessageTextContent(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        InternalMessageRequestContentTextObjectType type = default;
+        string text = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("type"u8))
             {
-                return null;
+                type = new InternalMessageRequestContentTextObjectType(property.Value.GetString());
+                continue;
             }
-            InternalMessageRequestContentTextObjectType type = default;
-            string text = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("text"u8))
             {
-                if (property.NameEquals("type"u8))
+                text = property.Value.GetString();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalRequestMessageTextContent(serializedAdditionalRawData, type, text);
+    }
+
+    BinaryData IPersistableModel<InternalRequestMessageTextContent>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalRequestMessageTextContent IPersistableModel<InternalRequestMessageTextContent>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    type = new InternalMessageRequestContentTextObjectType(property.Value.GetString());
-                    continue;
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalRequestMessageTextContent(document.RootElement, options);
                 }
-                if (property.NameEquals("text"u8))
-                {
-                    text = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRequestMessageTextContent(serializedAdditionalRawData, type, text);
+            default:
+                throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<InternalRequestMessageTextContent>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<InternalRequestMessageTextContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static new InternalRequestMessageTextContent FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalRequestMessageTextContent(document.RootElement);
+    }
 
-        InternalRequestMessageTextContent IPersistableModel<InternalRequestMessageTextContent>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRequestMessageTextContent>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalRequestMessageTextContent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRequestMessageTextContent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRequestMessageTextContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static new InternalRequestMessageTextContent FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRequestMessageTextContent(document.RootElement);
-        }
-
-        internal override BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal override BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

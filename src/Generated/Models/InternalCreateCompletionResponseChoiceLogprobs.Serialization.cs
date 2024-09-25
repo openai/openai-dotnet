@@ -8,238 +8,237 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.LegacyCompletions
-{
-    internal partial class InternalCreateCompletionResponseChoiceLogprobs : IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>
-    {
-        void IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.LegacyCompletions;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("text_offset") != true && Optional.IsCollectionDefined(TextOffset))
+internal partial class InternalCreateCompletionResponseChoiceLogprobs : IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>
+{
+    void IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("text_offset") != true && Optional.IsCollectionDefined(TextOffset))
+        {
+            writer.WritePropertyName("text_offset"u8);
+            writer.WriteStartArray();
+            foreach (var item in TextOffset)
             {
-                writer.WritePropertyName("text_offset"u8);
-                writer.WriteStartArray();
-                foreach (var item in TextOffset)
-                {
-                    writer.WriteNumberValue(item);
-                }
-                writer.WriteEndArray();
+                writer.WriteNumberValue(item);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("token_logprobs") != true && Optional.IsCollectionDefined(TokenLogprobs))
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("token_logprobs") != true && Optional.IsCollectionDefined(TokenLogprobs))
+        {
+            writer.WritePropertyName("token_logprobs"u8);
+            writer.WriteStartArray();
+            foreach (var item in TokenLogprobs)
             {
-                writer.WritePropertyName("token_logprobs"u8);
-                writer.WriteStartArray();
-                foreach (var item in TokenLogprobs)
-                {
-                    writer.WriteNumberValue(item);
-                }
-                writer.WriteEndArray();
+                writer.WriteNumberValue(item);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tokens") != true && Optional.IsCollectionDefined(Tokens))
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tokens") != true && Optional.IsCollectionDefined(Tokens))
+        {
+            writer.WritePropertyName("tokens"u8);
+            writer.WriteStartArray();
+            foreach (var item in Tokens)
             {
-                writer.WritePropertyName("tokens"u8);
-                writer.WriteStartArray();
-                foreach (var item in Tokens)
-                {
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("top_logprobs") != true && Optional.IsCollectionDefined(TopLogprobs))
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("top_logprobs") != true && Optional.IsCollectionDefined(TopLogprobs))
+        {
+            writer.WritePropertyName("top_logprobs"u8);
+            writer.WriteStartArray();
+            foreach (var item in TopLogprobs)
             {
-                writer.WritePropertyName("top_logprobs"u8);
-                writer.WriteStartArray();
-                foreach (var item in TopLogprobs)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStartObject();
-                    foreach (var item0 in item)
-                    {
-                        writer.WritePropertyName(item0.Key);
-                        writer.WriteNumberValue(item0.Value);
-                    }
-                    writer.WriteEndObject();
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WriteStartObject();
+                foreach (var item0 in item)
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    writer.WritePropertyName(item0.Key);
+                    writer.WriteNumberValue(item0.Value);
+                }
+                writer.WriteEndObject();
+            }
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalCreateCompletionResponseChoiceLogprobs IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support reading '{format}' format.");
         }
 
-        InternalCreateCompletionResponseChoiceLogprobs IJsonModel<InternalCreateCompletionResponseChoiceLogprobs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement, options);
+    internal static InternalCreateCompletionResponseChoiceLogprobs DeserializeInternalCreateCompletionResponseChoiceLogprobs(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalCreateCompletionResponseChoiceLogprobs DeserializeInternalCreateCompletionResponseChoiceLogprobs(JsonElement element, ModelReaderWriterOptions options = null)
+        IReadOnlyList<int> textOffset = default;
+        IReadOnlyList<float> tokenLogprobs = default;
+        IReadOnlyList<string> tokens = default;
+        IReadOnlyList<IDictionary<string, float>> topLogprobs = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("text_offset"u8))
             {
-                return null;
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                List<int> array = new List<int>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(item.GetInt32());
+                }
+                textOffset = array;
+                continue;
             }
-            IReadOnlyList<int> textOffset = default;
-            IReadOnlyList<float> tokenLogprobs = default;
-            IReadOnlyList<string> tokens = default;
-            IReadOnlyList<IDictionary<string, float>> topLogprobs = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("token_logprobs"u8))
             {
-                if (property.NameEquals("text_offset"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<int> array = new List<int>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetInt32());
-                    }
-                    textOffset = array;
                     continue;
                 }
-                if (property.NameEquals("token_logprobs"u8))
+                List<float> array = new List<float>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<float> array = new List<float>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetSingle());
-                    }
-                    tokenLogprobs = array;
+                    array.Add(item.GetSingle());
+                }
+                tokenLogprobs = array;
+                continue;
+            }
+            if (property.NameEquals("tokens"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (property.NameEquals("tokens"u8))
+                List<string> array = new List<string>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetString());
-                    }
-                    tokens = array;
+                    array.Add(item.GetString());
+                }
+                tokens = array;
+                continue;
+            }
+            if (property.NameEquals("top_logprobs"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (property.NameEquals("top_logprobs"u8))
+                List<IDictionary<string, float>> array = new List<IDictionary<string, float>>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (item.ValueKind == JsonValueKind.Null)
                     {
-                        continue;
+                        array.Add(null);
                     }
-                    List<IDictionary<string, float>> array = new List<IDictionary<string, float>>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    else
                     {
-                        if (item.ValueKind == JsonValueKind.Null)
+                        Dictionary<string, float> dictionary = new Dictionary<string, float>();
+                        foreach (var property0 in item.EnumerateObject())
                         {
-                            array.Add(null);
+                            dictionary.Add(property0.Name, property0.Value.GetSingle());
                         }
-                        else
-                        {
-                            Dictionary<string, float> dictionary = new Dictionary<string, float>();
-                            foreach (var property0 in item.EnumerateObject())
-                            {
-                                dictionary.Add(property0.Name, property0.Value.GetSingle());
-                            }
-                            array.Add(dictionary);
-                        }
+                        array.Add(dictionary);
                     }
-                    topLogprobs = array;
-                    continue;
                 }
-                if (true)
+                topLogprobs = array;
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalCreateCompletionResponseChoiceLogprobs(textOffset ?? new ChangeTrackingList<int>(), tokenLogprobs ?? new ChangeTrackingList<float>(), tokens ?? new ChangeTrackingList<string>(), topLogprobs ?? new ChangeTrackingList<IDictionary<string, float>>(), serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalCreateCompletionResponseChoiceLogprobs IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement, options);
                 }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateCompletionResponseChoiceLogprobs(textOffset ?? new ChangeTrackingList<int>(), tokenLogprobs ?? new ChangeTrackingList<float>(), tokens ?? new ChangeTrackingList<string>(), topLogprobs ?? new ChangeTrackingList<IDictionary<string, float>>(), serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static InternalCreateCompletionResponseChoiceLogprobs FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement);
+    }
 
-        InternalCreateCompletionResponseChoiceLogprobs IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoiceLogprobs)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateCompletionResponseChoiceLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static InternalCreateCompletionResponseChoiceLogprobs FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionResponseChoiceLogprobs(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

@@ -9,169 +9,168 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace OpenAI.Files
-{
-    internal partial class InternalFileUploadOptions : IJsonModel<InternalFileUploadOptions>
-    {
-        void IJsonModel<InternalFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Files;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("file") != true)
-            {
-                writer.WritePropertyName("file"u8);
+internal partial class InternalFileUploadOptions : IJsonModel<InternalFileUploadOptions>
+{
+    void IJsonModel<InternalFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("file") != true)
+        {
+            writer.WritePropertyName("file"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(global::System.BinaryData.FromStream(File));
 #else
-                using (JsonDocument document = JsonDocument.Parse(BinaryData.FromStream(File)))
+            using (JsonDocument document = JsonDocument.Parse(BinaryData.FromStream(File)))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
+#endif
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("purpose") != true)
+        {
+            writer.WritePropertyName("purpose"u8);
+            writer.WriteStringValue(Purpose.ToString());
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(item.Value);
+#else
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
 #endif
             }
-            if (SerializedAdditionalRawData?.ContainsKey("purpose") != true)
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalFileUploadOptions IJsonModel<InternalFileUploadOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{format}' format.");
+        }
+
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalFileUploadOptions(document.RootElement, options);
+    }
+
+    internal static InternalFileUploadOptions DeserializeInternalFileUploadOptions(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        Stream file = default;
+        FileUploadPurpose purpose = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("file"u8))
             {
-                writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose.ToString());
+                file = BinaryData.FromString(property.Value.GetRawText()).ToStream();
+                continue;
             }
-            if (SerializedAdditionalRawData != null)
+            if (property.NameEquals("purpose"u8))
             {
-                foreach (var item in SerializedAdditionalRawData)
+                purpose = new FileUploadPurpose(property.Value.GetString());
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalFileUploadOptions(file, purpose, serializedAdditionalRawData);
+    }
+
+    private BinaryData SerializeMultipart(ModelReaderWriterOptions options)
+    {
+        using MultipartFormDataBinaryContent content = ToMultipartBinaryBody();
+        using MemoryStream stream = new MemoryStream();
+        content.WriteTo(stream);
+        if (stream.Position > int.MaxValue)
+        {
+            return BinaryData.FromStream(stream);
+        }
+        else
+        {
+            return new BinaryData(stream.GetBuffer().AsMemory(0, (int)stream.Position));
+        }
+    }
+
+    internal virtual MultipartFormDataBinaryContent ToMultipartBinaryBody()
+    {
+        MultipartFormDataBinaryContent content = new MultipartFormDataBinaryContent();
+        content.Add(File, "file", "file", "application/octet-stream");
+        content.Add(Purpose.ToString(), "purpose");
+        return content;
+    }
+
+    BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            case "MFD":
+                return SerializeMultipart(options);
+            default:
+                throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalFileUploadOptions(document.RootElement, options);
                 }
-            }
-            writer.WriteEndObject();
+            default:
+                throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        InternalFileUploadOptions IJsonModel<InternalFileUploadOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{format}' format.");
-            }
+    string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "MFD";
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalFileUploadOptions(document.RootElement, options);
-        }
+    internal static InternalFileUploadOptions FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalFileUploadOptions(document.RootElement);
+    }
 
-        internal static InternalFileUploadOptions DeserializeInternalFileUploadOptions(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            Stream file = default;
-            FileUploadPurpose purpose = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("file"u8))
-                {
-                    file = BinaryData.FromString(property.Value.GetRawText()).ToStream();
-                    continue;
-                }
-                if (property.NameEquals("purpose"u8))
-                {
-                    purpose = new FileUploadPurpose(property.Value.GetString());
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalFileUploadOptions(file, purpose, serializedAdditionalRawData);
-        }
-
-        private BinaryData SerializeMultipart(ModelReaderWriterOptions options)
-        {
-            using MultipartFormDataBinaryContent content = ToMultipartBinaryBody();
-            using MemoryStream stream = new MemoryStream();
-            content.WriteTo(stream);
-            if (stream.Position > int.MaxValue)
-            {
-                return BinaryData.FromStream(stream);
-            }
-            else
-            {
-                return new BinaryData(stream.GetBuffer().AsMemory(0, (int)stream.Position));
-            }
-        }
-
-        internal virtual MultipartFormDataBinaryContent ToMultipartBinaryBody()
-        {
-            MultipartFormDataBinaryContent content = new MultipartFormDataBinaryContent();
-            content.Add(File, "file", "file", "application/octet-stream");
-            content.Add(Purpose.ToString(), "purpose");
-            return content;
-        }
-
-        BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                case "MFD":
-                    return SerializeMultipart(options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalFileUploadOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "MFD";
-
-        internal static InternalFileUploadOptions FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalFileUploadOptions(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

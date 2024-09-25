@@ -8,188 +8,187 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.VectorStores
-{
-    public partial class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>
-    {
-        void IJsonModel<VectorStoreBatchFileJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.VectorStores;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+public partial class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>
+{
+    void IJsonModel<VectorStoreBatchFileJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(BatchId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteObjectValue<object>(Object, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        {
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("vector_store_id") != true)
+        {
+            writer.WritePropertyName("vector_store_id"u8);
+            writer.WriteStringValue(VectorStoreId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+        {
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("file_counts") != true)
+        {
+            writer.WritePropertyName("file_counts"u8);
+            writer.WriteObjectValue<VectorStoreFileCounts>(FileCounts, options);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(BatchId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteObjectValue<object>(Object, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("vector_store_id") != true)
-            {
-                writer.WritePropertyName("vector_store_id"u8);
-                writer.WriteStringValue(VectorStoreId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("file_counts") != true)
-            {
-                writer.WritePropertyName("file_counts"u8);
-                writer.WriteObjectValue<VectorStoreFileCounts>(FileCounts, options);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    VectorStoreBatchFileJob IJsonModel<VectorStoreBatchFileJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support reading '{format}' format.");
         }
 
-        VectorStoreBatchFileJob IJsonModel<VectorStoreBatchFileJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeVectorStoreBatchFileJob(document.RootElement, options);
+    }
+
+    internal static VectorStoreBatchFileJob DeserializeVectorStoreBatchFileJob(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        string id = default;
+        object @object = default;
+        DateTimeOffset createdAt = default;
+        string vectorStoreId = default;
+        VectorStoreBatchFileJobStatus status = default;
+        VectorStoreFileCounts fileCounts = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support reading '{format}' format.");
+                id = property.Value.GetString();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeVectorStoreBatchFileJob(document.RootElement, options);
-        }
-
-        internal static VectorStoreBatchFileJob DeserializeVectorStoreBatchFileJob(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
+                @object = property.Value.GetObject();
+                continue;
             }
-            string id = default;
-            object @object = default;
-            DateTimeOffset createdAt = default;
-            string vectorStoreId = default;
-            VectorStoreBatchFileJobStatus status = default;
-            VectorStoreFileCounts fileCounts = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("created_at"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = property.Value.GetObject();
-                    continue;
-                }
-                if (property.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("vector_store_id"u8))
-                {
-                    vectorStoreId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = new VectorStoreBatchFileJobStatus(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("file_counts"u8))
-                {
-                    fileCounts = VectorStoreFileCounts.DeserializeVectorStoreFileCounts(property.Value, options);
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new VectorStoreBatchFileJob(
-                id,
-                @object,
-                createdAt,
-                vectorStoreId,
-                status,
-                fileCounts,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<VectorStoreBatchFileJob>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("vector_store_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support writing '{options.Format}' format.");
+                vectorStoreId = property.Value.GetString();
+                continue;
             }
-        }
-
-        VectorStoreBatchFileJob IPersistableModel<VectorStoreBatchFileJob>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("status"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeVectorStoreBatchFileJob(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support reading '{options.Format}' format.");
+                status = new VectorStoreBatchFileJobStatus(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("file_counts"u8))
+            {
+                fileCounts = VectorStoreFileCounts.DeserializeVectorStoreFileCounts(property.Value, options);
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new VectorStoreBatchFileJob(
+            id,
+            @object,
+            createdAt,
+            vectorStoreId,
+            status,
+            fileCounts,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<VectorStoreBatchFileJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<VectorStoreBatchFileJob>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static VectorStoreBatchFileJob FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreBatchFileJob(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    VectorStoreBatchFileJob IPersistableModel<VectorStoreBatchFileJob>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreBatchFileJob>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeVectorStoreBatchFileJob(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<VectorStoreBatchFileJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static VectorStoreBatchFileJob FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeVectorStoreBatchFileJob(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

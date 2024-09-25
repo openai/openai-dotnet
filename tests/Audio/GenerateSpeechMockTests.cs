@@ -12,14 +12,9 @@ namespace OpenAI.Tests.Audio;
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 [Category("Smoke")]
-internal class GenerateSpeechMockTests : SyncAsyncTestBase
+internal class GenerateSpeechMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public GenerateSpeechMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [Test]
     public void GenerateSpeechRespectsTheCancellationToken()

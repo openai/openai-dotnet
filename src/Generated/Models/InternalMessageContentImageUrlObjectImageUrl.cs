@@ -5,29 +5,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentImageUrlObjectImageUrl
 {
-    internal partial class InternalMessageContentImageUrlObjectImageUrl
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalMessageContentImageUrlObjectImageUrl(Uri url)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalMessageContentImageUrlObjectImageUrl(Uri url)
-        {
-            Argument.AssertNotNull(url, nameof(url));
+        Argument.AssertNotNull(url, nameof(url));
 
-            Url = url;
-        }
-
-        internal InternalMessageContentImageUrlObjectImageUrl(Uri url, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Url = url;
-            Detail = detail;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentImageUrlObjectImageUrl()
-        {
-        }
-
-        public Uri Url { get; set; }
+        Url = url;
     }
+
+    internal InternalMessageContentImageUrlObjectImageUrl(Uri url, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Url = url;
+        Detail = detail;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalMessageContentImageUrlObjectImageUrl()
+    {
+    }
+
+    public Uri Url { get; set; }
 }

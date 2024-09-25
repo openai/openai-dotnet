@@ -1,6 +1,3 @@
-using OpenAI.Embeddings;
-using OpenAI.Images;
-using OpenAI.Internal;
 using System;
 using System.IO;
 

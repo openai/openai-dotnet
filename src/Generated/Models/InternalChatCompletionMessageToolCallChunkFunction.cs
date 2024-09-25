@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionMessageToolCallChunkFunction
 {
-    internal partial class InternalChatCompletionMessageToolCallChunkFunction
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalChatCompletionMessageToolCallChunkFunction()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalChatCompletionMessageToolCallChunkFunction()
-        {
-        }
-
-        internal InternalChatCompletionMessageToolCallChunkFunction(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Name = name;
-            Arguments = arguments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string Name { get; }
-        public string Arguments { get; }
     }
+
+    internal InternalChatCompletionMessageToolCallChunkFunction(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Name = name;
+        Arguments = arguments;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string Name { get; }
+    public string Arguments { get; }
 }

@@ -1,8 +1,4 @@
 namespace OpenAI.Chat;
-
-using System;
-using System.Text.Json;
-
 /// <summary>
 /// A base representation of an incremental update to a streaming tool call that is part of a streaming chat completion
 /// request.

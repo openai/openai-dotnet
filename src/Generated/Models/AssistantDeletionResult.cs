@@ -5,30 +5,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class AssistantDeletionResult
 {
-    public partial class AssistantDeletionResult
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal AssistantDeletionResult(string assistantId, bool deleted)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal AssistantDeletionResult(string assistantId, bool deleted)
-        {
-            Argument.AssertNotNull(assistantId, nameof(assistantId));
+        Argument.AssertNotNull(assistantId, nameof(assistantId));
 
-            AssistantId = assistantId;
-            Deleted = deleted;
-        }
-
-        internal AssistantDeletionResult(string assistantId, bool deleted, InternalDeleteAssistantResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            AssistantId = assistantId;
-            Deleted = deleted;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal AssistantDeletionResult()
-        {
-        }
-        public bool Deleted { get; }
+        AssistantId = assistantId;
+        Deleted = deleted;
     }
+
+    internal AssistantDeletionResult(string assistantId, bool deleted, InternalDeleteAssistantResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        AssistantId = assistantId;
+        Deleted = deleted;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal AssistantDeletionResult()
+    {
+    }
+    public bool Deleted { get; }
 }

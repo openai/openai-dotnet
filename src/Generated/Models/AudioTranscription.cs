@@ -5,41 +5,40 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
+namespace OpenAI.Audio;
+
+public partial class AudioTranscription
 {
-    public partial class AudioTranscription
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal AudioTranscription(string language, TimeSpan? duration, string text)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal AudioTranscription(string language, TimeSpan? duration, string text)
-        {
-            Argument.AssertNotNull(language, nameof(language));
-            Argument.AssertNotNull(text, nameof(text));
+        Argument.AssertNotNull(language, nameof(language));
+        Argument.AssertNotNull(text, nameof(text));
 
-            Language = language;
-            Duration = duration;
-            Text = text;
-            Words = new ChangeTrackingList<TranscribedWord>();
-            Segments = new ChangeTrackingList<TranscribedSegment>();
-        }
-
-        internal AudioTranscription(InternalCreateTranscriptionResponseVerboseJsonTask task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Task = task;
-            Language = language;
-            Duration = duration;
-            Text = text;
-            Words = words;
-            Segments = segments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal AudioTranscription()
-        {
-        }
-
-        public string Language { get; }
-        public string Text { get; }
-        public IReadOnlyList<TranscribedWord> Words { get; }
-        public IReadOnlyList<TranscribedSegment> Segments { get; }
+        Language = language;
+        Duration = duration;
+        Text = text;
+        Words = new ChangeTrackingList<TranscribedWord>();
+        Segments = new ChangeTrackingList<TranscribedSegment>();
     }
+
+    internal AudioTranscription(InternalCreateTranscriptionResponseVerboseJsonTask task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Task = task;
+        Language = language;
+        Duration = duration;
+        Text = text;
+        Words = words;
+        Segments = segments;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal AudioTranscription()
+    {
+    }
+
+    public string Language { get; }
+    public string Text { get; }
+    public IReadOnlyList<TranscribedWord> Words { get; }
+    public IReadOnlyList<TranscribedSegment> Segments { get; }
 }

@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentTextAnnotationsFileCitationObjectFileCitation
 {
-    internal partial class InternalMessageContentTextAnnotationsFileCitationObjectFileCitation
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId)
-        {
-            Argument.AssertNotNull(fileId, nameof(fileId));
+        Argument.AssertNotNull(fileId, nameof(fileId));
 
-            FileId = fileId;
-        }
-
-        internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileId = fileId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation()
-        {
-        }
-
-        public string FileId { get; set; }
+        FileId = fileId;
     }
+
+    internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileId = fileId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation()
+    {
+    }
+
+    public string FileId { get; set; }
 }

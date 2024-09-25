@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public partial class CodeInterpreterToolResources
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Assistants;
 
-        internal CodeInterpreterToolResources(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileIds = fileIds;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class CodeInterpreterToolResources
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal CodeInterpreterToolResources(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileIds = fileIds;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

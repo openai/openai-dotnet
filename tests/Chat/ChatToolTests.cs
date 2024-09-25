@@ -16,12 +16,8 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public class ChatToolTests : SyncAsyncTestBase
+public class ChatToolTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public ChatToolTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     private const string GetNumberForWordToolName = "get_number_for_word";
     private static ChatTool s_numberForWordTool = ChatTool.CreateFunctionTool(
         GetNumberForWordToolName,

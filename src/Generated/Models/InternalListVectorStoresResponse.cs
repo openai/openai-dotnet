@@ -6,42 +6,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+internal partial class InternalListVectorStoresResponse
 {
-    internal partial class InternalListVectorStoresResponse
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalListVectorStoresResponse(IEnumerable<VectorStore> data, string firstId, string lastId, bool hasMore)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListVectorStoresResponse(IEnumerable<VectorStore> data, string firstId, string lastId, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(firstId, nameof(firstId));
-            Argument.AssertNotNull(lastId, nameof(lastId));
+        Argument.AssertNotNull(data, nameof(data));
+        Argument.AssertNotNull(firstId, nameof(firstId));
+        Argument.AssertNotNull(lastId, nameof(lastId));
 
-            Data = data.ToList();
-            FirstId = firstId;
-            LastId = lastId;
-            HasMore = hasMore;
-        }
-
-        internal InternalListVectorStoresResponse(InternalListVectorStoresResponseObject @object, IReadOnlyList<VectorStore> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Object = @object;
-            Data = data;
-            FirstId = firstId;
-            LastId = lastId;
-            HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalListVectorStoresResponse()
-        {
-        }
-
-        public InternalListVectorStoresResponseObject Object { get; } = InternalListVectorStoresResponseObject.List;
-
-        public IReadOnlyList<VectorStore> Data { get; }
-        public string FirstId { get; }
-        public string LastId { get; }
-        public bool HasMore { get; }
+        Data = data.ToList();
+        FirstId = firstId;
+        LastId = lastId;
+        HasMore = hasMore;
     }
+
+    internal InternalListVectorStoresResponse(InternalListVectorStoresResponseObject @object, IReadOnlyList<VectorStore> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Object = @object;
+        Data = data;
+        FirstId = firstId;
+        LastId = lastId;
+        HasMore = hasMore;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalListVectorStoresResponse()
+    {
+    }
+
+    public InternalListVectorStoresResponseObject Object { get; } = InternalListVectorStoresResponseObject.List;
+
+    public IReadOnlyList<VectorStore> Data { get; }
+    public string FirstId { get; }
+    public string LastId { get; }
+    public bool HasMore { get; }
 }

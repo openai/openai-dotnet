@@ -7,21 +7,20 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class ToolConstraint : IJsonModel<ToolConstraint>
 {
-    public partial class ToolConstraint : IJsonModel<ToolConstraint>
+    string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static ToolConstraint FromResponse(PipelineResponse response)
     {
-        string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeToolConstraint(document.RootElement);
+    }
 
-        internal static ToolConstraint FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeToolConstraint(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

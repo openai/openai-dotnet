@@ -8,146 +8,145 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
 {
-    public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
+    AssistantChatMessage IJsonModel<AssistantChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        AssistantChatMessage IJsonModel<AssistantChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeAssistantChatMessage(document.RootElement, options);
+            throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{format}' format.");
         }
 
-        internal static AssistantChatMessage DeserializeAssistantChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeAssistantChatMessage(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            string refusal = default;
-            string name = default;
-            IList<ChatToolCall> toolCalls = default;
-            ChatFunctionCall functionCall = default;
-            ChatMessageRole role = default;
-            IList<ChatMessageContentPart> content = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("refusal"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        refusal = null;
-                        continue;
-                    }
-                    refusal = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("name"u8))
-                {
-                    name = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("tool_calls"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<ChatToolCall> array = new List<ChatToolCall>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(ChatToolCall.DeserializeChatToolCall(item, options));
-                    }
-                    toolCalls = array;
-                    continue;
-                }
-                if (property.NameEquals("function_call"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        functionCall = null;
-                        continue;
-                    }
-                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("role"u8))
-                {
-                    role = property.Value.GetString().ToChatMessageRole();
-                    continue;
-                }
-                if (property.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(property, ref content);
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new AssistantChatMessage(
-                role,
-                content ?? new ChangeTrackingList<ChatMessageContentPart>(),
-                serializedAdditionalRawData,
-                refusal,
-                name,
-                toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall);
+    internal static AssistantChatMessage DeserializeAssistantChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options)
+        string refusal = default;
+        string name = default;
+        IList<ChatToolCall> toolCalls = default;
+        ChatFunctionCall functionCall = default;
+        ChatMessageRole role = default;
+        IList<ChatMessageContentPart> content = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("refusal"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    refusal = null;
+                    continue;
+                }
+                refusal = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("name"u8))
+            {
+                name = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("tool_calls"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                List<ChatToolCall> array = new List<ChatToolCall>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(ChatToolCall.DeserializeChatToolCall(item, options));
+                }
+                toolCalls = array;
+                continue;
+            }
+            if (property.NameEquals("function_call"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    functionCall = null;
+                    continue;
+                }
+                functionCall = ChatFunctionCall.DeserializeChatFunctionCall(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("role"u8))
+            {
+                role = property.Value.GetString().ToChatMessageRole();
+                continue;
+            }
+            if (property.NameEquals("content"u8))
+            {
+                DeserializeContentValue(property, ref content);
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new AssistantChatMessage(
+            role,
+            content ?? new ChangeTrackingList<ChatMessageContentPart>(),
+            serializedAdditionalRawData,
+            refusal,
+            name,
+            toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
+            functionCall);
+    }
 
-        AssistantChatMessage IPersistableModel<AssistantChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeAssistantChatMessage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<AssistantChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    AssistantChatMessage IPersistableModel<AssistantChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static new AssistantChatMessage FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistantChatMessage(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeAssistantChatMessage(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal override BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<AssistantChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static new AssistantChatMessage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeAssistantChatMessage(document.RootElement);
+    }
+
+    internal override BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

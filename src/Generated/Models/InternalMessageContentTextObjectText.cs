@@ -6,32 +6,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentTextObjectText
 {
-    internal partial class InternalMessageContentTextObjectText
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalMessageContentTextObjectText(string value, IEnumerable<InternalMessageContentTextObjectAnnotation> annotations)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalMessageContentTextObjectText(string value, IEnumerable<InternalMessageContentTextObjectAnnotation> annotations)
-        {
-            Argument.AssertNotNull(value, nameof(value));
-            Argument.AssertNotNull(annotations, nameof(annotations));
+        Argument.AssertNotNull(value, nameof(value));
+        Argument.AssertNotNull(annotations, nameof(annotations));
 
-            Value = value;
-            Annotations = annotations.ToList();
-        }
-
-        internal InternalMessageContentTextObjectText(string value, IList<InternalMessageContentTextObjectAnnotation> annotations, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Value = value;
-            Annotations = annotations;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentTextObjectText()
-        {
-        }
-
-        public string Value { get; set; }
-        public IList<InternalMessageContentTextObjectAnnotation> Annotations { get; }
+        Value = value;
+        Annotations = annotations.ToList();
     }
+
+    internal InternalMessageContentTextObjectText(string value, IList<InternalMessageContentTextObjectAnnotation> annotations, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Value = value;
+        Annotations = annotations;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalMessageContentTextObjectText()
+    {
+    }
+
+    public string Value { get; set; }
+    public IList<InternalMessageContentTextObjectAnnotation> Annotations { get; }
 }

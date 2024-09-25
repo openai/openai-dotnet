@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObject : RunStepCodeInterpreterOutput
 {
-    internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObject : RunStepCodeInterpreterOutput
+    internal InternalRunStepDetailsToolCallsCodeOutputImageObject(InternalRunStepDetailsToolCallsCodeOutputImageObjectImage image)
     {
-        internal InternalRunStepDetailsToolCallsCodeOutputImageObject(InternalRunStepDetailsToolCallsCodeOutputImageObjectImage image)
-        {
-            Argument.AssertNotNull(image, nameof(image));
+        Argument.AssertNotNull(image, nameof(image));
 
-            Type = "image";
-            _image = image;
-        }
+        Type = "image";
+        _image = image;
+    }
 
-        internal InternalRunStepDetailsToolCallsCodeOutputImageObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDetailsToolCallsCodeOutputImageObjectImage image) : base(type, serializedAdditionalRawData)
-        {
-            _image = image;
-        }
+    internal InternalRunStepDetailsToolCallsCodeOutputImageObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDetailsToolCallsCodeOutputImageObjectImage image) : base(type, serializedAdditionalRawData)
+    {
+        _image = image;
+    }
 
-        internal InternalRunStepDetailsToolCallsCodeOutputImageObject()
-        {
-        }
+    internal InternalRunStepDetailsToolCallsCodeOutputImageObject()
+    {
     }
 }

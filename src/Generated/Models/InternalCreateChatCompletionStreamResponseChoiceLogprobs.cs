@@ -6,29 +6,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
 {
-    internal partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityDetails> content, IEnumerable<ChatTokenLogProbabilityDetails> refusal)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityDetails> content, IEnumerable<ChatTokenLogProbabilityDetails> refusal)
-        {
-            Content = content?.ToList();
-            Refusal = refusal?.ToList();
-        }
-
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Content = content;
-            Refusal = refusal;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs()
-        {
-        }
-
-        public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
-        public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
+        Content = content?.ToList();
+        Refusal = refusal?.ToList();
     }
+
+    internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Content = content;
+        Refusal = refusal;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalCreateChatCompletionStreamResponseChoiceLogprobs()
+    {
+    }
+
+    public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
+    public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
 }

@@ -5,32 +5,31 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
+    internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, IReadOnlyDictionary<string, BinaryData> fileSearch)
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, IReadOnlyDictionary<string, BinaryData> fileSearch)
-        {
-            Argument.AssertNotNull(fileSearch, nameof(fileSearch));
+        Argument.AssertNotNull(fileSearch, nameof(fileSearch));
 
-            Type = "file_search";
-            Index = index;
-            FileSearch = fileSearch;
-        }
-
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string id, IReadOnlyDictionary<string, BinaryData> fileSearch) : base(type, serializedAdditionalRawData)
-        {
-            Index = index;
-            Id = id;
-            FileSearch = fileSearch;
-        }
-
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject()
-        {
-        }
-
-        public int Index { get; }
-        public string Id { get; }
-        public IReadOnlyDictionary<string, BinaryData> FileSearch { get; }
+        Type = "file_search";
+        Index = index;
+        FileSearch = fileSearch;
     }
+
+    internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string id, IReadOnlyDictionary<string, BinaryData> fileSearch) : base(type, serializedAdditionalRawData)
+    {
+        Index = index;
+        Id = id;
+        FileSearch = fileSearch;
+    }
+
+    internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject()
+    {
+    }
+
+    public int Index { get; }
+    public string Id { get; }
+    public IReadOnlyDictionary<string, BinaryData> FileSearch { get; }
 }

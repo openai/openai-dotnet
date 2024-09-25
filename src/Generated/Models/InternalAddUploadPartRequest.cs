@@ -6,28 +6,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace OpenAI.Files
+namespace OpenAI.Files;
+
+internal partial class InternalAddUploadPartRequest
 {
-    internal partial class InternalAddUploadPartRequest
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalAddUploadPartRequest(Stream data)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalAddUploadPartRequest(Stream data)
-        {
-            Argument.AssertNotNull(data, nameof(data));
+        Argument.AssertNotNull(data, nameof(data));
 
-            Data = data;
-        }
-
-        internal InternalAddUploadPartRequest(Stream data, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Data = data;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalAddUploadPartRequest()
-        {
-        }
-
-        public Stream Data { get; }
+        Data = data;
     }
+
+    internal InternalAddUploadPartRequest(Stream data, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Data = data;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalAddUploadPartRequest()
+    {
+    }
+
+    public Stream Data { get; }
 }
