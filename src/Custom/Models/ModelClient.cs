@@ -84,18 +84,18 @@ public partial class ModelClient
 
     /// <summary> Gets basic information about each of the models that are currently available, such as their corresponding owner and availability. </summary>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual async Task<ClientResult<OpenAIModelInfoCollection>> GetModelsAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetModelsAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIModelInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIModelCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the models that are currently available, such as their corresponding owner and availability. </summary>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual ClientResult<OpenAIModelInfoCollection> GetModels(CancellationToken cancellationToken = default)
+    public virtual ClientResult<OpenAIModelCollection> GetModels(CancellationToken cancellationToken = default)
     {
         ClientResult result = GetModels(cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIModelInfoCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIModelCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified model, such as its owner and availability. </summary>
@@ -103,12 +103,12 @@ public partial class ModelClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<OpenAIModelInfo>> GetModelAsync(string model, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIModel>> GetModelAsync(string model, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         ClientResult result = await GetModelAsync(model, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIModelInfo.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIModel.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified model, such as its owner and availability. </summary>
@@ -116,12 +116,12 @@ public partial class ModelClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<OpenAIModelInfo> GetModel(string model, CancellationToken cancellationToken = default)
+    public virtual ClientResult<OpenAIModel> GetModel(string model, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         ClientResult result = GetModel(model, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIModelInfo.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIModel.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified fine-tuned model. </summary>

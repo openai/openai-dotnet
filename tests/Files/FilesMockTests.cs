@@ -63,7 +63,7 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfo fileInfo = IsAsync
+        OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
             : client.GetFile("file_id");
 
@@ -80,7 +80,7 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfo fileInfo = IsAsync
+        OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
             : client.GetFile("file_id");
 
@@ -98,7 +98,7 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfo fileInfo = IsAsync
+        OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
             : client.GetFile("file_id");
 
@@ -118,7 +118,7 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfo fileInfo = IsAsync
+        OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
             : client.GetFile("file_id");
 
@@ -137,7 +137,7 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfo fileInfo = IsAsync
+        OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
             : client.GetFile("file_id");
 
@@ -173,7 +173,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "id": "returned_file_id"
         }
         """);
-        OpenAIFileInfo fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
         Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
     }
@@ -187,7 +187,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "created_at": 1704096000
         }
         """);
-        OpenAIFileInfo fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
         Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
@@ -202,7 +202,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "purpose": "{{purpose.stringValue}}"
         }
         """);
-        OpenAIFileInfo fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
         Assert.That(fileInfo.Purpose, Is.EqualTo(purpose.expectedValue));
     }
@@ -218,7 +218,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "status": "{{status.stringValue}}"
         }
         """);
-        OpenAIFileInfo fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
         Assert.That(fileInfo.Status, Is.EqualTo(status.expectedValue));
     }
@@ -234,7 +234,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "status_details": "This is definitely an error."
         }
         """);
-        OpenAIFileInfo fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
         Assert.That(fileInfo.StatusDetails, Is.EqualTo("This is definitely an error."));
     }
@@ -274,10 +274,10 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfoCollection fileInfoCollection = IsAsync
+        OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
             : client.GetFiles(OpenAIFilePurpose.Assistants);
-        OpenAIFileInfo fileInfo = fileInfoCollection.Single();
+        OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
     }
@@ -296,10 +296,10 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfoCollection fileInfoCollection = IsAsync
+        OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
             : client.GetFiles(OpenAIFilePurpose.Assistants);
-        OpenAIFileInfo fileInfo = fileInfoCollection.Single();
+        OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
@@ -319,10 +319,10 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfoCollection fileInfoCollection = IsAsync
+        OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
             : client.GetFiles(OpenAIFilePurpose.Assistants);
-        OpenAIFileInfo fileInfo = fileInfoCollection.Single();
+        OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Purpose, Is.EqualTo(purpose.expectedValue));
     }
@@ -343,10 +343,10 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfoCollection fileInfoCollection = IsAsync
+        OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
             : client.GetFiles(OpenAIFilePurpose.Assistants);
-        OpenAIFileInfo fileInfo = fileInfoCollection.Single();
+        OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Status, Is.EqualTo(status.expectedValue));
     }
@@ -367,10 +367,10 @@ public class FilesMockTests : SyncAsyncTestBase
         """);
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
 
-        OpenAIFileInfoCollection fileInfoCollection = IsAsync
+        OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
             : client.GetFiles(OpenAIFilePurpose.Assistants);
-        OpenAIFileInfo fileInfo = fileInfoCollection.Single();
+        OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.StatusDetails, Is.EqualTo("This is definitely an error."));
     }
@@ -444,7 +444,7 @@ public class FilesMockTests : SyncAsyncTestBase
         };
     }
 
-    private async ValueTask<OpenAIFileInfo> InvokeUploadFileSyncOrAsync(OpenAIClientOptions clientOptions, FileSourceKind fileSourceKind)
+    private async ValueTask<OpenAIFile> InvokeUploadFileSyncOrAsync(OpenAIClientOptions clientOptions, FileSourceKind fileSourceKind)
     {
         FileClient client = new FileClient(s_fakeCredential, clientOptions);
         string filename = "images_dog_and_cat.png";

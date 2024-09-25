@@ -44,7 +44,7 @@ public partial class AssistantExamples
 
         #region Upload a mock file for use with file search
         FileClient fileClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        OpenAIFileInfo favoriteNumberFile = fileClient.UploadFile(
+        OpenAIFile favoriteNumberFile = fileClient.UploadFile(
             BinaryData.FromString("""
                 This file contains the favorite numbers for individuals.
 

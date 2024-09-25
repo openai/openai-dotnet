@@ -34,7 +34,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
 
         string input = "Hello, world!";
 
-        Embedding embedding = IsAsync
+        OpenAIEmbedding embedding = IsAsync
             ? await client.GenerateEmbeddingAsync(input)
             : client.GenerateEmbedding(input);
         Assert.That(embedding, Is.Not.Null);
@@ -62,7 +62,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
             Dimensions = Dimensions,
         };
 
-        EmbeddingCollection embeddings = null;
+        OpenAIEmbeddingCollection embeddings = null;
 
         if (embeddingsInputKind == EmbeddingsInputKind.UsingStrings)
         {
@@ -94,8 +94,8 @@ public class EmbeddingsTests : SyncAsyncTestBase
         Assert.That(embeddings, Is.Not.Null);
         Assert.That(embeddings.Count, Is.EqualTo(3));
         Assert.That(embeddings.Model, Is.EqualTo("text-embedding-3-small"));
-        Assert.That(embeddings.Usage.InputTokens, Is.GreaterThan(0));
-        Assert.That(embeddings.Usage.TotalTokens, Is.GreaterThan(0));
+        Assert.That(embeddings.Usage.InputTokenCount, Is.GreaterThan(0));
+        Assert.That(embeddings.Usage.TotalTokenCount, Is.GreaterThan(0));
 
         for (int i = 0; i < embeddings.Count; i++)
         {

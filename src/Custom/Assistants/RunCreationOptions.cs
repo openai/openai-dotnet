@@ -75,7 +75,7 @@ public partial class RunCreationOptions
     /// Assumed <c>true</c> if not otherwise specified.
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
-    public bool? ParallelToolCallsEnabled { get; set; }
+    public bool? AllowParallelToolCalls { get; set; }
 
     /// <summary>
     /// A run-specific collection of tool definitions that will override the assistant-level defaults. If not provided,

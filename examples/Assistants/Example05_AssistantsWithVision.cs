@@ -16,7 +16,7 @@ public partial class AssistantExamples
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
-        OpenAIFileInfo pictureOfAppleFile = fileClient.UploadFile(
+        OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
             "picture-of-apple.jpg",
             FileUploadPurpose.Vision);
         Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
@@ -38,7 +38,7 @@ public partial class AssistantExamples
                         [
                             "Hello, assistant! Please compare these two images for me:",
                             MessageContent.FromImageFileId(pictureOfAppleFile.Id),
-                            MessageContent.FromImageUrl(linkToPictureOfOrange),
+                            MessageContent.FromImageUri(linkToPictureOfOrange),
                         ]),
                 }
         });

@@ -111,7 +111,7 @@ public partial class ChatCompletionOptions
     /// Assumed <c>true</c> if not otherwise specified.
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
-    public bool? ParallelToolCallsEnabled { get; set; }
+    public bool? AllowParallelToolCalls { get; set; }
 
     /// <summary>
     /// An object specifying the format that the model must output.

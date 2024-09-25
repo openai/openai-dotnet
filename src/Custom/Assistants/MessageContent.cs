@@ -26,7 +26,7 @@ public abstract partial class MessageContent
     /// <param name="imageUri"></param>
     /// <param name="detail"></param>
     /// <returns></returns>
-    public static MessageContent FromImageUrl(Uri imageUri, MessageImageDetail? detail = null)
+    public static MessageContent FromImageUri(Uri imageUri, MessageImageDetail? detail = null)
         => new InternalMessageImageUrlContent(imageUri, detail);
 
     /// <summary>
@@ -38,7 +38,7 @@ public abstract partial class MessageContent
         => new InternalRequestMessageTextContent(text);
 
     /// <inheritdoc cref="InternalMessageImageUrlContent.InternalUrl"/>
-    public Uri ImageUrl => AsInternalImageUrl?.InternalUrl;
+    public Uri ImageUri => AsInternalImageUrl?.InternalUrl;
     /// <inheritdoc cref="InternalMessageImageFileContent.InternalFileId"/>
     public string ImageFileId => AsInternalImageFile?.InternalFileId;
     /// <inheritdoc cref="InternalMessageImageFileContent.InternalDetail"/>

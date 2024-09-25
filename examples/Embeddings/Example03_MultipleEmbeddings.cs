@@ -18,9 +18,9 @@ public partial class EmbeddingExamples
             + " attractions. We highly recommend this hotel.";
         List<string> inputs = [category, description];
 
-        EmbeddingCollection collection = client.GenerateEmbeddings(inputs);
+        OpenAIEmbeddingCollection collection = client.GenerateEmbeddings(inputs);
 
-        foreach (Embedding embedding in collection)
+        foreach (OpenAIEmbedding embedding in collection)
         {
             ReadOnlyMemory<float> vector = embedding.ToFloats();
 

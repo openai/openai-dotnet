@@ -18,11 +18,11 @@ public static partial class OpenAIModelsModelFactory
             serializedAdditionalRawData: null);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModelInfo"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Models.OpenAIModelInfo"/> instance for mocking. </returns>
-    public static OpenAIModelInfo OpenAIModelInfo(string id = null, DateTimeOffset createdAt = default, string ownedBy = null)
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModel"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Models.OpenAIModel"/> instance for mocking. </returns>
+    public static OpenAIModel OpenAIModel(string id = null, DateTimeOffset createdAt = default, string ownedBy = null)
     {
-        return new OpenAIModelInfo(
+        return new OpenAIModel(
             id,
             createdAt,
             InternalModelObject.Model,
@@ -30,13 +30,13 @@ public static partial class OpenAIModelsModelFactory
             serializedAdditionalRawData: null);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModelInfoCollection"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Models.OpenAIModelInfoCollection"/> instance for mocking. </returns>
-    public static OpenAIModelInfoCollection OpenAIModelInfoCollection(IEnumerable<OpenAIModelInfo> items = null)
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModelCollection"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Models.OpenAIModelCollection"/> instance for mocking. </returns>
+    public static OpenAIModelCollection OpenAIModelCollection(IEnumerable<OpenAIModel> items = null)
     {
-        items ??= new List<OpenAIModelInfo>();
+        items ??= new List<OpenAIModel>();
 
-        return new OpenAIModelInfoCollection(
+        return new OpenAIModelCollection(
             InternalListModelsResponseObject.List,
             items.ToList(),
             serializedAdditionalRawData: null);

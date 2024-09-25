@@ -29,8 +29,8 @@ public class ModerationsTests : SyncAsyncTestBase
             : client.ClassifyText(input);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
-        Assert.That(moderation.Categories.Violence, Is.True);
-        Assert.That(moderation.CategoryScores.Violence, Is.GreaterThan(0.5));
+        Assert.That(moderation.Violence.Flagged, Is.True);
+        Assert.That(moderation.Violence.Score, Is.GreaterThan(0.5));
     }
 
     [Test]
@@ -44,7 +44,7 @@ public class ModerationsTests : SyncAsyncTestBase
                 "I am killing all my houseplants!"
             ];
 
-        ModerationCollection moderations = IsAsync
+        ModerationResultCollection moderations = IsAsync
             ? await client.ClassifyTextAsync(inputs)
             : client.ClassifyText(inputs);
         Assert.That(moderations, Is.Not.Null);
@@ -57,13 +57,7 @@ public class ModerationsTests : SyncAsyncTestBase
 
         Assert.That(moderations[1], Is.Not.Null);
         Assert.That(moderations[1].Flagged, Is.True);
-        Assert.That(moderations[1].Categories.Violence, Is.True);
-        Assert.That(moderations[1].CategoryScores.Violence, Is.GreaterThan(0.5));
-    }
-
-    [Test]
-    public void SerializeModerationCollection()
-    {
-        // TODO: Add this test.
+        Assert.That(moderations[1].Violence.Flagged, Is.True);
+        Assert.That(moderations[1].Violence.Score, Is.GreaterThan(0.5));
     }
 }

@@ -19,7 +19,7 @@ public partial class VectorStoreCreationHelper
         Metadata = new ChangeTrackingDictionary<string, string>();
     }
 
-    public VectorStoreCreationHelper(IEnumerable<OpenAIFileInfo> files)
+    public VectorStoreCreationHelper(IEnumerable<OpenAIFile> files)
         : this(files?.Select(file => file.Id) ?? [])
     { }
 }
