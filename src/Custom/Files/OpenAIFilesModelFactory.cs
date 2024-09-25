@@ -20,9 +20,9 @@ public static partial class OpenAIFilesModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfo"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Files.OpenAIFileInfo"/> instance for mocking. </returns>
-    public static OpenAIFileInfo OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null)
+    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, OpenAIFilePurpose purpose = default, OpenAIFileStatus status = default, string statusDetails = null)
     {
-        return new OpenAIFileInfo(
+        return new OpenAIFile(
             id,
             sizeInBytes,
             createdAt,
@@ -34,13 +34,13 @@ public static partial class OpenAIFilesModelFactory
             serializedAdditionalRawData: null);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfoCollection"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Files.OpenAIFileInfoCollection"/> instance for mocking. </returns>
-    public static OpenAIFileInfoCollection OpenAIFileInfoCollection(IEnumerable<OpenAIFileInfo> items = null)
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileCollection"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Files.OpenAIFileCollection"/> instance for mocking. </returns>
+    public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> items = null)
     {
-        items ??= new List<OpenAIFileInfo>();
+        items ??= new List<OpenAIFile>();
 
-        return new OpenAIFileInfoCollection(
+        return new OpenAIFileCollection(
             items.ToList(),
             InternalListFilesResponseObject.List,
             serializedAdditionalRawData: null);

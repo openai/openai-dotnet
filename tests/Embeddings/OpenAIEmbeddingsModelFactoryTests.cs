@@ -13,7 +13,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     [Test]
     public void EmbeddingWithNoPropertiesWorks()
     {
-        Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding();
+        OpenAIEmbedding embedding = OpenAIEmbeddingsModelFactory.OpenAIEmbedding();
 
         Assert.That(embedding.Index, Is.EqualTo(default(int)));
         Assert.That(embedding.ToFloats().ToArray(), Is.Not.Null.And.Empty);
@@ -23,7 +23,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingWithIndexWorks()
     {
         int index = 10;
-        Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding(index: index);
+        OpenAIEmbedding embedding = OpenAIEmbeddingsModelFactory.OpenAIEmbedding(index: index);
 
         Assert.That(embedding.Index, Is.EqualTo(index));
         Assert.That(embedding.ToFloats().ToArray(), Is.Not.Null.And.Empty);
@@ -33,7 +33,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingWithVectorWorks()
     {
         IEnumerable<float> vector = [1f, 2f, 3f];
-        Embedding embedding = OpenAIEmbeddingsModelFactory.Embedding(vector: vector);
+        OpenAIEmbedding embedding = OpenAIEmbeddingsModelFactory.OpenAIEmbedding(vector: vector);
 
         Assert.That(embedding.Index, Is.EqualTo(default(int)));
         Assert.That(embedding.ToFloats().ToArray().SequenceEqual(vector), Is.True);
@@ -42,7 +42,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     [Test]
     public void EmbeddingCollectionWithNoPropertiesWorks()
     {
-        EmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.EmbeddingCollection();
+        OpenAIEmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection();
 
         Assert.That(embeddingCollection.Count, Is.EqualTo(0));
         Assert.That(embeddingCollection.Model, Is.Null);
@@ -52,11 +52,11 @@ public class OpenAIEmbeddingsModelFactoryTests
     [Test]
     public void EmbeddingCollectionWithItemsWorks()
     {
-        IEnumerable<Embedding> items = [
-            OpenAIEmbeddingsModelFactory.Embedding(index: 10),
-            OpenAIEmbeddingsModelFactory.Embedding(index: 20)
+        IEnumerable<OpenAIEmbedding> items = [
+            OpenAIEmbeddingsModelFactory.OpenAIEmbedding(index: 10),
+            OpenAIEmbeddingsModelFactory.OpenAIEmbedding(index: 20)
         ];
-        EmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.EmbeddingCollection(items: items);
+        OpenAIEmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection(items: items);
 
         Assert.That(embeddingCollection.SequenceEqual(items), Is.True);
         Assert.That(embeddingCollection.Model, Is.Null);
@@ -67,7 +67,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingCollectionWithModelWorks()
     {
         string model = "supermodel";
-        EmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.EmbeddingCollection(model: model);
+        OpenAIEmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection(model: model);
 
         Assert.That(embeddingCollection.Count, Is.EqualTo(0));
         Assert.That(embeddingCollection.Model, Is.EqualTo(model));
@@ -78,7 +78,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingCollectionWithUsageWorks()
     {
         EmbeddingTokenUsage usage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokens: 10);
-        EmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.EmbeddingCollection(usage: usage);
+        OpenAIEmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection(usage: usage);
 
         Assert.That(embeddingCollection.Count, Is.EqualTo(0));
         Assert.That(embeddingCollection.Model, Is.Null);
@@ -90,8 +90,8 @@ public class OpenAIEmbeddingsModelFactoryTests
     {
         EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage();
 
-        Assert.That(embeddingTokenUsage.InputTokens, Is.EqualTo(default(int)));
-        Assert.That(embeddingTokenUsage.TotalTokens, Is.EqualTo(default(int)));
+        Assert.That(embeddingTokenUsage.InputTokenCount, Is.EqualTo(default(int)));
+        Assert.That(embeddingTokenUsage.TotalTokenCount, Is.EqualTo(default(int)));
     }
 
     [Test]
@@ -100,8 +100,8 @@ public class OpenAIEmbeddingsModelFactoryTests
         int inputTokens = 10;
         EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokens: inputTokens);
 
-        Assert.That(embeddingTokenUsage.InputTokens, Is.EqualTo(10));
-        Assert.That(embeddingTokenUsage.TotalTokens, Is.EqualTo(default(int)));
+        Assert.That(embeddingTokenUsage.InputTokenCount, Is.EqualTo(10));
+        Assert.That(embeddingTokenUsage.TotalTokenCount, Is.EqualTo(default(int)));
     }
 
     [Test]
@@ -110,7 +110,7 @@ public class OpenAIEmbeddingsModelFactoryTests
         int totalTokens = 10;
         EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(totalTokens: totalTokens);
 
-        Assert.That(embeddingTokenUsage.InputTokens, Is.EqualTo(default(int)));
-        Assert.That(embeddingTokenUsage.TotalTokens, Is.EqualTo(totalTokens));
+        Assert.That(embeddingTokenUsage.InputTokenCount, Is.EqualTo(default(int)));
+        Assert.That(embeddingTokenUsage.TotalTokenCount, Is.EqualTo(totalTokens));
     }
 }

@@ -50,7 +50,7 @@ public partial class AssistantExamples
             }
             """).ToStream();
 
-        OpenAIFileInfo salesFile = await fileClient.UploadFileAsync(
+        OpenAIFile salesFile = await fileClient.UploadFileAsync(
             document,
             "monthly_sales.json",
             FileUploadPurpose.Assistants);
@@ -130,7 +130,7 @@ public partial class AssistantExamples
                 }
                 if (!string.IsNullOrEmpty(contentItem.ImageFileId))
                 {
-                    OpenAIFileInfo imageInfo = await fileClient.GetFileAsync(contentItem.ImageFileId);
+                    OpenAIFile imageInfo = await fileClient.GetFileAsync(contentItem.ImageFileId);
                     BinaryData imageBytes = await fileClient.DownloadFileAsync(contentItem.ImageFileId);
                     using FileStream stream = File.OpenWrite($"{imageInfo.Filename}.png");
                     imageBytes.ToStream().CopyTo(stream);

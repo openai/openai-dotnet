@@ -41,65 +41,65 @@ public class OpenAIModelsModelFactoryTests
     }
 
     [Test]
-    public void OpenAIModelInfoWithNoPropertiesWorks()
+    public void OpenAIModelWithNoPropertiesWorks()
     {
-        OpenAIModelInfo openAIModelInfo = OpenAIModelsModelFactory.OpenAIModelInfo();
+        OpenAIModel openAIModel = OpenAIModelsModelFactory.OpenAIModel();
 
-        Assert.That(openAIModelInfo.Id, Is.Null);
-        Assert.That(openAIModelInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
-        Assert.That(openAIModelInfo.OwnedBy, Is.Null);
+        Assert.That(openAIModel.Id, Is.Null);
+        Assert.That(openAIModel.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
+        Assert.That(openAIModel.OwnedBy, Is.Null);
     }
 
     [Test]
-    public void OpenAIModelInfoWithIdWorks()
+    public void OpenAIModelWithIdWorks()
     {
         string id = "modelId";
-        OpenAIModelInfo openAIModelInfo = OpenAIModelsModelFactory.OpenAIModelInfo(id: id);
+        OpenAIModel openAIModel = OpenAIModelsModelFactory.OpenAIModel(id: id);
 
-        Assert.That(openAIModelInfo.Id, Is.EqualTo(id));
-        Assert.That(openAIModelInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
-        Assert.That(openAIModelInfo.OwnedBy, Is.Null);
+        Assert.That(openAIModel.Id, Is.EqualTo(id));
+        Assert.That(openAIModel.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
+        Assert.That(openAIModel.OwnedBy, Is.Null);
     }
 
     [Test]
-    public void OpenAIModelInfoWithCreatedAtWorks()
+    public void OpenAIModelWithCreatedAtWorks()
     {
         DateTimeOffset createdAt = DateTimeOffset.UtcNow;
-        OpenAIModelInfo openAIModelInfo = OpenAIModelsModelFactory.OpenAIModelInfo(createdAt: createdAt);
+        OpenAIModel openAIModel = OpenAIModelsModelFactory.OpenAIModel(createdAt: createdAt);
 
-        Assert.That(openAIModelInfo.Id, Is.Null);
-        Assert.That(openAIModelInfo.CreatedAt, Is.EqualTo(createdAt));
-        Assert.That(openAIModelInfo.OwnedBy, Is.Null);
+        Assert.That(openAIModel.Id, Is.Null);
+        Assert.That(openAIModel.CreatedAt, Is.EqualTo(createdAt));
+        Assert.That(openAIModel.OwnedBy, Is.Null);
     }
 
     [Test]
-    public void OpenAIModelInfoWithOwnedByWorks()
+    public void OpenAIModelWithOwnedByWorks()
     {
         string ownedBy = "The people";
-        OpenAIModelInfo openAIModelInfo = OpenAIModelsModelFactory.OpenAIModelInfo(ownedBy: ownedBy);
+        OpenAIModel openAIModel = OpenAIModelsModelFactory.OpenAIModel(ownedBy: ownedBy);
 
-        Assert.That(openAIModelInfo.Id, Is.Null);
-        Assert.That(openAIModelInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
-        Assert.That(openAIModelInfo.OwnedBy, Is.EqualTo(ownedBy));
+        Assert.That(openAIModel.Id, Is.Null);
+        Assert.That(openAIModel.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
+        Assert.That(openAIModel.OwnedBy, Is.EqualTo(ownedBy));
     }
 
     [Test]
-    public void OpenAIModelInfoCollectionWithNoPropertiesWorks()
+    public void OpenAIModelCollectionWithNoPropertiesWorks()
     {
-        OpenAIModelInfoCollection openAIModelInfoCollection = OpenAIModelsModelFactory.OpenAIModelInfoCollection();
+        OpenAIModelCollection openAIModelCollection = OpenAIModelsModelFactory.OpenAIModelCollection();
 
-        Assert.That(openAIModelInfoCollection.Count, Is.EqualTo(0));
+        Assert.That(openAIModelCollection.Count, Is.EqualTo(0));
     }
 
     [Test]
-    public void OpenAIModelInfoCollectionWithItemsWorks()
+    public void OpenAIModelCollectionWithItemsWorks()
     {
-        IEnumerable<OpenAIModelInfo> items = [
-            OpenAIModelsModelFactory.OpenAIModelInfo(id: "firstModel"),
-            OpenAIModelsModelFactory.OpenAIModelInfo(id: "secondModel")
+        IEnumerable<OpenAIModel> items = [
+            OpenAIModelsModelFactory.OpenAIModel(id: "firstModel"),
+            OpenAIModelsModelFactory.OpenAIModel(id: "secondModel")
         ];
-        OpenAIModelInfoCollection openAIModelInfoCollection = OpenAIModelsModelFactory.OpenAIModelInfoCollection(items: items);
+        OpenAIModelCollection openAIModelCollection = OpenAIModelsModelFactory.OpenAIModelCollection(items: items);
 
-        Assert.That(openAIModelInfoCollection.SequenceEqual(items), Is.True);
+        Assert.That(openAIModelCollection.SequenceEqual(items), Is.True);
     }
 }

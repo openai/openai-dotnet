@@ -23,10 +23,6 @@ public partial class MessageFailureDetails { }
 public readonly partial struct MessageFailureReason { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunCompletionUsage")]
-public partial class RunTokenUsage { }
-
-[Experimental("OPENAI001")]
 [CodeGenModel("RunObjectLastError")]
 public partial class RunError { }
 

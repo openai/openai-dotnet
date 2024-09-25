@@ -123,7 +123,7 @@ namespace OpenAI.Files
             InternalUploadStatus status = default;
             DateTimeOffset expiresAt = default;
             InternalUploadObject? @object = default;
-            OpenAIFileInfo file = default;
+            OpenAIFile file = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -179,7 +179,7 @@ namespace OpenAI.Files
                         file = null;
                         continue;
                     }
-                    file = OpenAIFileInfo.DeserializeOpenAIFileInfo(property.Value, options);
+                    file = OpenAIFile.DeserializeOpenAIFile(property.Value, options);
                     continue;
                 }
                 if (true)

@@ -24,12 +24,12 @@ namespace OpenAI.Embeddings
             if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens") != true)
             {
                 writer.WritePropertyName("prompt_tokens"u8);
-                writer.WriteNumberValue(InputTokens);
+                writer.WriteNumberValue(InputTokenCount);
             }
             if (SerializedAdditionalRawData?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             if (SerializedAdditionalRawData != null)
             {

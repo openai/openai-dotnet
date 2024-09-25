@@ -32,10 +32,10 @@ public class FilesTests : SyncAsyncTestBase
         string visionFilename = "images_dog_and_cat.png";
         string visionFilePath = Path.Combine("Assets", visionFilename);
 
-        OpenAIFileInfo uploadedFile1 = null;
-        OpenAIFileInfo uploadedFile2 = null;
-        OpenAIFileInfo uploadedVisionFile = null;
-        OpenAIFileInfoCollection fileInfoCollection;
+        OpenAIFile uploadedFile1 = null;
+        OpenAIFile uploadedFile2 = null;
+        OpenAIFile uploadedVisionFile = null;
+        OpenAIFileCollection fileInfoCollection;
 
         try
         {
@@ -65,11 +65,11 @@ public class FilesTests : SyncAsyncTestBase
             }
         }
 
-        OpenAIFileInfo fileInfo1 = null;
-        OpenAIFileInfo fileInfo2 = null;
-        OpenAIFileInfo visionFileInfo = null;
+        OpenAIFile fileInfo1 = null;
+        OpenAIFile fileInfo2 = null;
+        OpenAIFile visionFileInfo = null;
 
-        foreach (OpenAIFileInfo item in fileInfoCollection)
+        foreach (OpenAIFile item in fileInfoCollection)
         {
             if (item.Id == uploadedFile1.Id)
             {
@@ -143,7 +143,7 @@ public class FilesTests : SyncAsyncTestBase
         FileClient client = GetTestClient();
         string filename = "images_dog_and_cat.png";
         string path = Path.Combine("Assets", filename);
-        OpenAIFileInfo fileInfo = null;
+        OpenAIFile fileInfo = null;
 
         try
         {
@@ -229,7 +229,7 @@ public class FilesTests : SyncAsyncTestBase
         using Stream file = BinaryData.FromString(fileContent).ToStream();
         string filename = "test-file-delete-me.txt";
 
-        OpenAIFileInfo uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+        OpenAIFile uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
         FileDeletionResult result;
 
         if (useFileInfoOverload)
@@ -273,8 +273,8 @@ public class FilesTests : SyncAsyncTestBase
         FileClient client = GetTestClient();
         using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
         string filename = "test-file-delete-me.txt";
-        OpenAIFileInfo uploadedFile = null;
-        OpenAIFileInfo fileInfo;
+        OpenAIFile uploadedFile = null;
+        OpenAIFile fileInfo;
 
         try
         {
@@ -329,7 +329,7 @@ public class FilesTests : SyncAsyncTestBase
         string filename = "images_dog_and_cat.png";
         string path = Path.Combine("Assets", filename);
         using Stream file = File.OpenRead(path);
-        OpenAIFileInfo uploadedFile = null;
+        OpenAIFile uploadedFile = null;
         BinaryData downloadedContent;
 
         try
@@ -384,7 +384,7 @@ public class FilesTests : SyncAsyncTestBase
         FileClient client = GetTestClient();
         string filename = "你好.txt";
         BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
-        OpenAIFileInfo uploadedFile = IsAsync
+        OpenAIFile uploadedFile = IsAsync
             ? await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants)
             : client.UploadFile(fileContent, filename, FileUploadPurpose.Assistants);
         Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));

@@ -66,7 +66,7 @@ public partial class VectorStoreClient
     /// <returns>
     /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
     /// </returns>
-    public virtual Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(VectorStore vectorStore, OpenAIFileInfo file)
+    public virtual Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(VectorStore vectorStore, OpenAIFile file)
         => AddFileToVectorStoreAsync(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -77,7 +77,7 @@ public partial class VectorStoreClient
     /// <returns>
     /// A <see cref="VectorStoreFileAssociation"/> instance that represents the new association.
     /// </returns>
-    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(VectorStore vectorStore, OpenAIFileInfo file)
+    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(VectorStore vectorStore, OpenAIFile file)
         => AddFileToVectorStore(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -117,7 +117,7 @@ public partial class VectorStoreClient
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(
         VectorStore vectorStore,
-        OpenAIFileInfo file)
+        OpenAIFile file)
             => GetFileAssociationAsync(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -129,7 +129,7 @@ public partial class VectorStoreClient
     /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
     public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(
         VectorStore vectorStore,
-        OpenAIFileInfo file)
+        OpenAIFile file)
             => GetFileAssociation(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -137,12 +137,12 @@ public partial class VectorStoreClient
     /// store.
     /// </summary>
     /// <remarks>
-    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(OpenAIFileInfo)"/>.
+    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(OpenAIFile)"/>.
     /// </remarks>
     /// <param name="vectorStore"> The vector store that the file should be removed from. </param>
     /// <param name="file"> The file to remove from the vector store. </param>
     /// <returns> A <see cref="FileFromStoreRemovalResult"/> instance. </returns>
-    public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(VectorStore vectorStore, OpenAIFileInfo file)
+    public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(VectorStore vectorStore, OpenAIFile file)
         => RemoveFileFromStoreAsync(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -150,12 +150,12 @@ public partial class VectorStoreClient
     /// store.
     /// </summary>
     /// <remarks>
-    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(OpenAIFileInfo)"/>.
+    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(OpenAIFile)"/>.
     /// </remarks>
     /// <param name="vectorStore"> The vector store that the file should be removed from. </param>
     /// <param name="file"> The file to remove from the vector store. </param>
     /// <returns> A <see cref="FileFromStoreRemovalResult"/> instance. </returns>
-    public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(VectorStore vectorStore, OpenAIFileInfo file)
+    public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(VectorStore vectorStore, OpenAIFile file)
         => RemoveFileFromStore(vectorStore?.Id, file?.Id);
 
     /// <summary>
@@ -164,7 +164,7 @@ public partial class VectorStoreClient
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
+    public virtual Task<ClientResult<VectorStoreBatchFileJob>> CreateBatchFileJobAsync(VectorStore vectorStore, IEnumerable<OpenAIFile> files)
         => CreateBatchFileJobAsync(vectorStore?.Id, files?.Select(file => file.Id));
 
     /// <summary>
@@ -173,7 +173,7 @@ public partial class VectorStoreClient
     /// <param name="vectorStore"> The vector store to associate files with. </param>
     /// <param name="files"> The files to associate with the vector store. </param>
     /// <returns> A <see cref="VectorStoreBatchFileJob"/> instance representing the batch operation. </returns>
-    public virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(VectorStore vectorStore, IEnumerable<OpenAIFileInfo> files)
+    public virtual ClientResult<VectorStoreBatchFileJob> CreateBatchFileJob(VectorStore vectorStore, IEnumerable<OpenAIFile> files)
         => CreateBatchFileJob(vectorStore?.Id, files?.Select(file => file.Id));
 
     /// <summary>

@@ -24,12 +24,12 @@ public class ModelsTests : SyncAsyncTestBase
     {
         ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
 
-        OpenAIModelInfoCollection allModels = IsAsync
+        OpenAIModelCollection allModels = IsAsync
             ? await client.GetModelsAsync()
             : client.GetModels();
 
-        OpenAIModelInfo whisper = allModels.First(m => m.Id.Contains("whisper", StringComparison.InvariantCultureIgnoreCase));
-        OpenAIModelInfo turbo = allModels.First(m => m.Id.Contains("turbo", StringComparison.InvariantCultureIgnoreCase));
+        OpenAIModel whisper = allModels.First(m => m.Id.Contains("whisper", StringComparison.InvariantCultureIgnoreCase));
+        OpenAIModel turbo = allModels.First(m => m.Id.Contains("turbo", StringComparison.InvariantCultureIgnoreCase));
         long unixTime2020 = (new DateTimeOffset(2020, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
         Assert.That(whisper.Id, Is.Not.EqualTo(turbo.Id));
@@ -47,7 +47,7 @@ public class ModelsTests : SyncAsyncTestBase
         ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
         string modelId = "gpt-4o-mini";
 
-        OpenAIModelInfo model = IsAsync
+        OpenAIModel model = IsAsync
             ? await client.GetModelAsync(modelId)
             : client.GetModel(modelId);
 

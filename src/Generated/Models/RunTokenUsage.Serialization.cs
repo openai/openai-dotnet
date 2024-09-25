@@ -24,17 +24,17 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("completion_tokens") != true)
             {
                 writer.WritePropertyName("completion_tokens"u8);
-                writer.WriteNumberValue(CompletionTokens);
+                writer.WriteNumberValue(OutputTokenCount);
             }
             if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens") != true)
             {
                 writer.WritePropertyName("prompt_tokens"u8);
-                writer.WriteNumberValue(PromptTokens);
+                writer.WriteNumberValue(InputTokenCount);
             }
             if (SerializedAdditionalRawData?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             if (SerializedAdditionalRawData != null)
             {

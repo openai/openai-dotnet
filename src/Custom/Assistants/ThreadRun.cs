@@ -23,7 +23,7 @@ public partial class ThreadRun
     internal readonly InternalRunRequiredAction _internalRequiredAction;
 
     // CUSTOM: Removed null check for `toolConstraint` and `responseFormat`.
-    internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? parallelToolCallsEnabled, AssistantResponseFormat responseFormat)
+    internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat)
     {
         Argument.AssertNotNull(id, nameof(id));
         Argument.AssertNotNull(threadId, nameof(threadId));
@@ -54,7 +54,7 @@ public partial class ThreadRun
         MaxCompletionTokens = maxCompletionTokens;
         TruncationStrategy = truncationStrategy;
         ToolConstraint = toolConstraint;
-        ParallelToolCallsEnabled = parallelToolCallsEnabled;
+        AllowParallelToolCalls = allowParallelToolCalls;
         ResponseFormat = responseFormat;
     }
 
@@ -93,6 +93,6 @@ public partial class ThreadRun
     /// Assumed <c>true</c> if not otherwise specified.
     /// </remarks>
     [CodeGenMember("ParallelToolCalls")]
-    public bool? ParallelToolCallsEnabled { get; }
+    public bool? AllowParallelToolCalls { get; }
 
 }

@@ -42,7 +42,7 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
         """);
         EmbeddingClient client = new EmbeddingClient("model", s_fakeCredential, clientOptions);
 
-        Embedding embedding = IsAsync
+        OpenAIEmbedding embedding = IsAsync
             ? await client.GenerateEmbeddingAsync("prompt")
             : client.GenerateEmbedding("prompt");
 
@@ -83,12 +83,12 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
         """);
         EmbeddingClient client = new EmbeddingClient("model", s_fakeCredential, clientOptions);
 
-        EmbeddingCollection embeddings = IsAsync
+        OpenAIEmbeddingCollection embeddings = IsAsync
             ? await client.GenerateEmbeddingsAsync(["prompt"])
             : client.GenerateEmbeddings(["prompt"]);
 
-        Assert.That(embeddings.Usage.InputTokens, Is.EqualTo(10));
-        Assert.That(embeddings.Usage.TotalTokens, Is.EqualTo(20));
+        Assert.That(embeddings.Usage.InputTokenCount, Is.EqualTo(10));
+        Assert.That(embeddings.Usage.TotalTokenCount, Is.EqualTo(20));
     }
 
     [Test]
@@ -110,10 +110,10 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
         """);
         EmbeddingClient client = new EmbeddingClient("model", s_fakeCredential, clientOptions);
 
-        EmbeddingCollection embeddings = IsAsync
+        OpenAIEmbeddingCollection embeddings = IsAsync
             ? await client.GenerateEmbeddingsAsync(["prompt"])
             : client.GenerateEmbeddings(["prompt"]);
-        Embedding embedding = embeddings.Single();
+        OpenAIEmbedding embedding = embeddings.Single();
 
         float[] vector = embedding.ToFloats().ToArray();
         Assert.That(vector.SequenceEqual([1f, 2f, 3f]));
@@ -152,12 +152,12 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
         """);
         EmbeddingClient client = new EmbeddingClient("model", s_fakeCredential, clientOptions);
 
-        EmbeddingCollection embeddings = IsAsync
+        OpenAIEmbeddingCollection embeddings = IsAsync
             ? await client.GenerateEmbeddingsAsync([[1]])
             : client.GenerateEmbeddings([[1]]);
 
-        Assert.That(embeddings.Usage.InputTokens, Is.EqualTo(10));
-        Assert.That(embeddings.Usage.TotalTokens, Is.EqualTo(20));
+        Assert.That(embeddings.Usage.InputTokenCount, Is.EqualTo(10));
+        Assert.That(embeddings.Usage.TotalTokenCount, Is.EqualTo(20));
     }
 
     [Test]
@@ -179,10 +179,10 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
         """);
         EmbeddingClient client = new EmbeddingClient("model", s_fakeCredential, clientOptions);
 
-        EmbeddingCollection embeddings = IsAsync
+        OpenAIEmbeddingCollection embeddings = IsAsync
             ? await client.GenerateEmbeddingsAsync([[1]])
             : client.GenerateEmbeddings([[1]]);
-        Embedding embedding = embeddings.Single();
+        OpenAIEmbedding embedding = embeddings.Single();
 
         float[] vector = embedding.ToFloats().ToArray();
         Assert.That(vector.SequenceEqual([1f, 2f, 3f]));

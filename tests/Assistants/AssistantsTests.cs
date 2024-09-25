@@ -26,7 +26,7 @@ public class AssistantsTests : SyncAsyncTestBase
     private readonly List<Assistant> _assistantsToDelete = [];
     private readonly List<AssistantThread> _threadsToDelete = [];
     private readonly List<ThreadMessage> _messagesToDelete = [];
-    private readonly List<OpenAIFileInfo> _filesToDelete = [];
+    private readonly List<OpenAIFile> _filesToDelete = [];
     private readonly List<string> _vectorStoreIdsToDelete = [];
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -68,7 +68,7 @@ public class AssistantsTests : SyncAsyncTestBase
         {
             Console.WriteLine($"Cleanup: {thread.Id} -> {client.DeleteThread(thread.Id, requestOptions)?.GetRawResponse().Status}");
         }
-        foreach (OpenAIFileInfo file in _filesToDelete)
+        foreach (OpenAIFile file in _filesToDelete)
         {
             Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse().Status}");
         }
@@ -272,7 +272,7 @@ public class AssistantsTests : SyncAsyncTestBase
                     MessageRole.User,
                     [
                         "Can you describe this image for me?",
-                        MessageContent.FromImageUrl(new Uri("https://test.openai.com/image.png"))
+                        MessageContent.FromImageUri(new Uri("https://test.openai.com/image.png"))
                     ])
                 {
                     Metadata =
@@ -298,7 +298,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(messages[1].Content[0], Is.Not.Null);
         Assert.That(messages[1].Content[0].Text, Is.EqualTo("Can you describe this image for me?"));
         Assert.That(messages[1].Content[1], Is.Not.Null);
-        Assert.That(messages[1].Content[1].ImageUrl.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+        Assert.That(messages[1].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
     [Test]
@@ -371,7 +371,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Validate(assistant);
 
         FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
-        OpenAIFileInfo equationFile = fileClient.UploadFile(
+        OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
             2,5
@@ -409,7 +409,7 @@ public class AssistantsTests : SyncAsyncTestBase
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
 
         List<RunStep> runSteps = IsAsync
             ? await client.GetRunStepsAsync(run).ToListAsync()
@@ -793,7 +793,7 @@ public class AssistantsTests : SyncAsyncTestBase
     {
         // First, we need to upload a simple test file.
         FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
-        OpenAIFileInfo testFile = fileClient.UploadFile(
+        OpenAIFile testFile = fileClient.UploadFile(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
 
@@ -972,7 +972,7 @@ public class AssistantsTests : SyncAsyncTestBase
         AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
 
         // First, upload a simple test file.
-        OpenAIFileInfo testFile = fileClient.UploadFile(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
+        OpenAIFile testFile = fileClient.UploadFile(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
         Validate(testFile);
 
         // Create an assistant, using the creation helper to make a new vector store.
@@ -1657,7 +1657,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Validate(assistant);
 
         FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
-        OpenAIFileInfo equationFile = fileClient.UploadFile(
+        OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
             2,5
@@ -1695,7 +1695,7 @@ public class AssistantsTests : SyncAsyncTestBase
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
 
         IReadOnlyList<string> runSteps;
         IReadOnlyList<string> rehydratedRunSteps;
@@ -1732,7 +1732,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Validate(assistant);
 
         FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
-        OpenAIFileInfo equationFile = fileClient.UploadFile(
+        OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
             2,5
@@ -1770,7 +1770,7 @@ public class AssistantsTests : SyncAsyncTestBase
             run = client.GetRun(run);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokens, Is.GreaterThan(0));
+        Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
 
         IReadOnlyList<string> runSteps;
         IReadOnlyList<string> rehydratedRunSteps;
@@ -1885,7 +1885,7 @@ public class AssistantsTests : SyncAsyncTestBase
         {
             Assert.That(run?.Id, Is.Not.Null);
         }
-        else if (target is OpenAIFileInfo file)
+        else if (target is OpenAIFile file)
         {
             Assert.That(file?.Id, Is.Not.Null);
             _filesToDelete.Add(file);

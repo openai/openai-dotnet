@@ -272,7 +272,7 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(ParallelToolCallsEnabled.Value);
+                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
             }
             if (SerializedAdditionalRawData?.ContainsKey("response_format") != true)
             {

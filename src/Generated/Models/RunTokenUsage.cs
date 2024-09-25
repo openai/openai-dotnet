@@ -10,27 +10,23 @@ namespace OpenAI.Assistants
     public partial class RunTokenUsage
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal RunTokenUsage(int completionTokens, int promptTokens, int totalTokens)
+        internal RunTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount)
         {
-            CompletionTokens = completionTokens;
-            PromptTokens = promptTokens;
-            TotalTokens = totalTokens;
+            OutputTokenCount = outputTokenCount;
+            InputTokenCount = inputTokenCount;
+            TotalTokenCount = totalTokenCount;
         }
 
-        internal RunTokenUsage(int completionTokens, int promptTokens, int totalTokens, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            CompletionTokens = completionTokens;
-            PromptTokens = promptTokens;
-            TotalTokens = totalTokens;
+            OutputTokenCount = outputTokenCount;
+            InputTokenCount = inputTokenCount;
+            TotalTokenCount = totalTokenCount;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal RunTokenUsage()
         {
         }
-
-        public int CompletionTokens { get; }
-        public int PromptTokens { get; }
-        public int TotalTokens { get; }
     }
 }

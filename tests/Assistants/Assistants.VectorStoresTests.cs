@@ -23,7 +23,7 @@ public class VectorStoresTests : SyncAsyncTestBase
 {
     private readonly List<VectorStoreBatchFileJob> _jobsToCancel = [];
     private readonly List<VectorStoreFileAssociation> _associationsToRemove = [];
-    private readonly List<OpenAIFileInfo> _filesToDelete = [];
+    private readonly List<OpenAIFile> _filesToDelete = [];
     private readonly List<VectorStore> _vectorStoresToDelete = [];
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
@@ -51,7 +51,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(deletionResult.Deleted, Is.True);
         _vectorStoresToDelete.RemoveAt(_vectorStoresToDelete.Count - 1);
 
-        IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(5);
         VectorStoreCreationOptions creationOptions = new VectorStoreCreationOptions()
         {
             FileIds = { testFiles[0].Id },
@@ -205,9 +205,9 @@ public class VectorStoresTests : SyncAsyncTestBase
         VectorStore vectorStore = client.CreateVectorStore();
         Validate(vectorStore);
 
-        IReadOnlyList<OpenAIFileInfo> files = GetNewTestFiles(3);
+        IReadOnlyList<OpenAIFile> files = GetNewTestFiles(3);
 
-        foreach (OpenAIFileInfo file in files)
+        foreach (OpenAIFile file in files)
         {
             VectorStoreFileAssociation association = IsAsync
                 ? await client.AddFileToVectorStoreAsync(vectorStore, file)
@@ -265,9 +265,9 @@ public class VectorStoresTests : SyncAsyncTestBase
         VectorStore vectorStore = client.CreateVectorStore();
         Validate(vectorStore);
 
-        IReadOnlyList<OpenAIFileInfo> files = GetNewTestFiles(6);
+        IReadOnlyList<OpenAIFile> files = GetNewTestFiles(6);
 
-        foreach (OpenAIFileInfo file in files)
+        foreach (OpenAIFile file in files)
         {
             VectorStoreFileAssociation association = client.AddFileToVectorStore(vectorStore, file);
             Validate(association);
@@ -345,9 +345,9 @@ public class VectorStoresTests : SyncAsyncTestBase
         VectorStore vectorStore = client.CreateVectorStore();
         Validate(vectorStore);
 
-        IReadOnlyList<OpenAIFileInfo> files = GetNewTestFiles(6);
+        IReadOnlyList<OpenAIFile> files = GetNewTestFiles(6);
 
-        foreach (OpenAIFileInfo file in files)
+        foreach (OpenAIFile file in files)
         {
             VectorStoreFileAssociation association = client.AddFileToVectorStore(vectorStore, file);
             Validate(association);
@@ -427,7 +427,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         VectorStore vectorStore = client.CreateVectorStore();
         Validate(vectorStore);
 
-        IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(5);
 
         VectorStoreBatchFileJob batchJob = client.CreateBatchFileJob(vectorStore, testFiles);
         Validate(batchJob);
@@ -483,7 +483,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     [TestCase(ChunkingStrategyKind.Static)]
     public async Task CanApplyChunkingStrategy(ChunkingStrategyKind strategyKind)
     {
-        IReadOnlyList<OpenAIFileInfo> testFiles = GetNewTestFiles(5);
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(5);
 
         VectorStoreClient client = GetTestClient();
 
@@ -565,14 +565,14 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
     }
 
-    private IReadOnlyList<OpenAIFileInfo> GetNewTestFiles(int count)
+    private IReadOnlyList<OpenAIFile> GetNewTestFiles(int count)
     {
-        List<OpenAIFileInfo> files = [];
+        List<OpenAIFile> files = [];
 
         FileClient client = GetTestClient<FileClient>(TestScenario.Files);
         for (int i = 0; i < count; i++)
         {
-            OpenAIFileInfo file = client.UploadFile(
+            OpenAIFile file = client.UploadFile(
                 BinaryData.FromString("This is a test file").ToStream(),
                 $"test_file_{i.ToString().PadLeft(3, '0')}.txt",
                 FileUploadPurpose.Assistants);
@@ -602,7 +602,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             ClientResult protocolResult = vectorStoreClient.RemoveFileFromStore(association.VectorStoreId, association.FileId, requestOptions);
             Console.WriteLine($"Cleanup: {association.FileId}<->{association.VectorStoreId} => {protocolResult?.GetRawResponse()?.Status}");
         }
-        foreach (OpenAIFileInfo file in _filesToDelete)
+        foreach (OpenAIFile file in _filesToDelete)
         {
             Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse()?.Status}");
         }
@@ -634,7 +634,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             Assert.That(association?.VectorStoreId, Is.Not.Null);
             _associationsToRemove.Add(association);
         }
-        else if (target is OpenAIFileInfo file)
+        else if (target is OpenAIFile file)
         {
             Assert.That(file?.Id, Is.Not.Null);
             _filesToDelete.Add(file);
