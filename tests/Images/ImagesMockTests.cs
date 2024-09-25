@@ -15,14 +15,9 @@ namespace OpenAI.Tests.Images;
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
 [Category("Smoke")]
-public class ImagesMockTests : SyncAsyncTestBase
+public class ImagesMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public ImagesMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     public enum ImageSourceKind
     {

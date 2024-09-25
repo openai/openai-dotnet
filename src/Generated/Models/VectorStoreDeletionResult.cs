@@ -5,30 +5,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreDeletionResult
 {
-    public partial class VectorStoreDeletionResult
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal VectorStoreDeletionResult(string vectorStoreId, bool deleted)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal VectorStoreDeletionResult(string vectorStoreId, bool deleted)
-        {
-            Argument.AssertNotNull(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNull(vectorStoreId, nameof(vectorStoreId));
 
-            VectorStoreId = vectorStoreId;
-            Deleted = deleted;
-        }
-
-        internal VectorStoreDeletionResult(string vectorStoreId, bool deleted, InternalDeleteVectorStoreResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            VectorStoreId = vectorStoreId;
-            Deleted = deleted;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal VectorStoreDeletionResult()
-        {
-        }
-        public bool Deleted { get; }
+        VectorStoreId = vectorStoreId;
+        Deleted = deleted;
     }
+
+    internal VectorStoreDeletionResult(string vectorStoreId, bool deleted, InternalDeleteVectorStoreResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        VectorStoreId = vectorStoreId;
+        Deleted = deleted;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal VectorStoreDeletionResult()
+    {
+    }
+    public bool Deleted { get; }
 }

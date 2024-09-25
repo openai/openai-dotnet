@@ -8,171 +8,170 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.LegacyCompletions
-{
-    internal partial class InternalCreateCompletionResponseChoice : IJsonModel<InternalCreateCompletionResponseChoice>
-    {
-        void IJsonModel<InternalCreateCompletionResponseChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.LegacyCompletions;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("finish_reason") != true)
+internal partial class InternalCreateCompletionResponseChoice : IJsonModel<InternalCreateCompletionResponseChoice>
+{
+    void IJsonModel<InternalCreateCompletionResponseChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("finish_reason") != true)
+        {
+            writer.WritePropertyName("finish_reason"u8);
+            writer.WriteStringValue(FinishReason.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+        {
+            writer.WritePropertyName("index"u8);
+            writer.WriteNumberValue(Index);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true)
+        {
+            if (Logprobs != null)
             {
-                writer.WritePropertyName("finish_reason"u8);
-                writer.WriteStringValue(FinishReason.ToString());
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteObjectValue(Logprobs, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            else
             {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
+                writer.WriteNull("logprobs");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("text") != true)
+        {
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                if (Logprobs != null)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteObjectValue(Logprobs, options);
+                    continue;
                 }
-                else
-                {
-                    writer.WriteNull("logprobs");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalCreateCompletionResponseChoice IJsonModel<InternalCreateCompletionResponseChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support reading '{format}' format.");
         }
 
-        InternalCreateCompletionResponseChoice IJsonModel<InternalCreateCompletionResponseChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
+    internal static InternalCreateCompletionResponseChoice DeserializeInternalCreateCompletionResponseChoice(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalCreateCompletionResponseChoice DeserializeInternalCreateCompletionResponseChoice(JsonElement element, ModelReaderWriterOptions options = null)
+        InternalCreateCompletionResponseChoiceFinishReason finishReason = default;
+        int index = default;
+        InternalCreateCompletionResponseChoiceLogprobs logprobs = default;
+        string text = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("finish_reason"u8))
             {
-                return null;
+                finishReason = new InternalCreateCompletionResponseChoiceFinishReason(property.Value.GetString());
+                continue;
             }
-            InternalCreateCompletionResponseChoiceFinishReason finishReason = default;
-            int index = default;
-            InternalCreateCompletionResponseChoiceLogprobs logprobs = default;
-            string text = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("index"u8))
             {
-                if (property.NameEquals("finish_reason"u8))
+                index = property.Value.GetInt32();
+                continue;
+            }
+            if (property.NameEquals("logprobs"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    finishReason = new InternalCreateCompletionResponseChoiceFinishReason(property.Value.GetString());
+                    logprobs = null;
                     continue;
                 }
-                if (property.NameEquals("index"u8))
-                {
-                    index = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("logprobs"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        logprobs = null;
-                        continue;
-                    }
-                    logprobs = InternalCreateCompletionResponseChoiceLogprobs.DeserializeInternalCreateCompletionResponseChoiceLogprobs(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("text"u8))
-                {
-                    text = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                logprobs = InternalCreateCompletionResponseChoiceLogprobs.DeserializeInternalCreateCompletionResponseChoiceLogprobs(property.Value, options);
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateCompletionResponseChoice(finishReason, index, logprobs, text, serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalCreateCompletionResponseChoice>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("text"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{options.Format}' format.");
+                text = property.Value.GetString();
+                continue;
             }
-        }
-
-        InternalCreateCompletionResponseChoice IPersistableModel<InternalCreateCompletionResponseChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support reading '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalCreateCompletionResponseChoice(finishReason, index, logprobs, text, serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalCreateCompletionResponseChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalCreateCompletionResponseChoice>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalCreateCompletionResponseChoice FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionResponseChoice(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalCreateCompletionResponseChoice IPersistableModel<InternalCreateCompletionResponseChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalCreateCompletionResponseChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalCreateCompletionResponseChoice FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalCreateCompletionResponseChoice(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

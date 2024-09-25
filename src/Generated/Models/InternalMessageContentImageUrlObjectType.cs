@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal readonly partial struct InternalMessageContentImageUrlObjectType : IEquatable<InternalMessageContentImageUrlObjectType>
 {
-    internal readonly partial struct InternalMessageContentImageUrlObjectType : IEquatable<InternalMessageContentImageUrlObjectType>
+    private readonly string _value;
+
+    public InternalMessageContentImageUrlObjectType(string value)
     {
-        private readonly string _value;
-
-        public InternalMessageContentImageUrlObjectType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string ImageUrlValue = "image_url";
-
-        public static InternalMessageContentImageUrlObjectType ImageUrl { get; } = new InternalMessageContentImageUrlObjectType(ImageUrlValue);
-        public static bool operator ==(InternalMessageContentImageUrlObjectType left, InternalMessageContentImageUrlObjectType right) => left.Equals(right);
-        public static bool operator !=(InternalMessageContentImageUrlObjectType left, InternalMessageContentImageUrlObjectType right) => !left.Equals(right);
-        public static implicit operator InternalMessageContentImageUrlObjectType(string value) => new InternalMessageContentImageUrlObjectType(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalMessageContentImageUrlObjectType other && Equals(other);
-        public bool Equals(InternalMessageContentImageUrlObjectType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string ImageUrlValue = "image_url";
+
+    public static InternalMessageContentImageUrlObjectType ImageUrl { get; } = new InternalMessageContentImageUrlObjectType(ImageUrlValue);
+    public static bool operator ==(InternalMessageContentImageUrlObjectType left, InternalMessageContentImageUrlObjectType right) => left.Equals(right);
+    public static bool operator !=(InternalMessageContentImageUrlObjectType left, InternalMessageContentImageUrlObjectType right) => !left.Equals(right);
+    public static implicit operator InternalMessageContentImageUrlObjectType(string value) => new InternalMessageContentImageUrlObjectType(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalMessageContentImageUrlObjectType other && Equals(other);
+    public bool Equals(InternalMessageContentImageUrlObjectType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

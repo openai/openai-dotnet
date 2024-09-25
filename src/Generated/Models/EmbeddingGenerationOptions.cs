@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Embeddings
-{
-    public partial class EmbeddingGenerationOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Embeddings;
 
-        internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Input = input;
-            Model = model;
-            EncodingFormat = encodingFormat;
-            Dimensions = dimensions;
-            EndUserId = endUserId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-        public int? Dimensions { get; set; }
+public partial class EmbeddingGenerationOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal EmbeddingGenerationOptions(BinaryData input, InternalCreateEmbeddingRequestModel model, InternalCreateEmbeddingRequestEncodingFormat? encodingFormat, int? dimensions, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Input = input;
+        Model = model;
+        EncodingFormat = encodingFormat;
+        Dimensions = dimensions;
+        EndUserId = endUserId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
+    public int? Dimensions { get; set; }
 }

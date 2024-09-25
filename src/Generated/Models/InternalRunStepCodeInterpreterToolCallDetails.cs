@@ -5,30 +5,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepCodeInterpreterToolCallDetails : RunStepToolCall
 {
-    internal partial class InternalRunStepCodeInterpreterToolCallDetails : RunStepToolCall
+    internal InternalRunStepCodeInterpreterToolCallDetails(string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter)
     {
-        internal InternalRunStepCodeInterpreterToolCallDetails(string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(codeInterpreter, nameof(codeInterpreter));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(codeInterpreter, nameof(codeInterpreter));
 
-            Type = "code_interpreter";
-            Id = id;
-            _codeInterpreter = codeInterpreter;
-        }
-
-        internal InternalRunStepCodeInterpreterToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(type, serializedAdditionalRawData)
-        {
-            Id = id;
-            _codeInterpreter = codeInterpreter;
-        }
-
-        internal InternalRunStepCodeInterpreterToolCallDetails()
-        {
-        }
-
-        public string Id { get; }
+        Type = "code_interpreter";
+        Id = id;
+        _codeInterpreter = codeInterpreter;
     }
+
+    internal InternalRunStepCodeInterpreterToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(type, serializedAdditionalRawData)
+    {
+        Id = id;
+        _codeInterpreter = codeInterpreter;
+    }
+
+    internal InternalRunStepCodeInterpreterToolCallDetails()
+    {
+    }
+
+    public string Id { get; }
 }

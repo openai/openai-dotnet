@@ -5,37 +5,36 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation
 {
-    internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation
+    public InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex)
     {
-        public InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex)
-        {
-            Argument.AssertNotNull(text, nameof(text));
-            Argument.AssertNotNull(fileCitation, nameof(fileCitation));
+        Argument.AssertNotNull(text, nameof(text));
+        Argument.AssertNotNull(fileCitation, nameof(fileCitation));
 
-            Type = "file_citation";
-            Text = text;
-            FileCitation = fileCitation;
-            StartIndex = startIndex;
-            EndIndex = endIndex;
-        }
-
-        internal InternalMessageContentTextAnnotationsFileCitationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(type, serializedAdditionalRawData)
-        {
-            Text = text;
-            FileCitation = fileCitation;
-            StartIndex = startIndex;
-            EndIndex = endIndex;
-        }
-
-        internal InternalMessageContentTextAnnotationsFileCitationObject()
-        {
-        }
-
-        public string Text { get; set; }
-        public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; set; }
-        public int StartIndex { get; set; }
-        public int EndIndex { get; set; }
+        Type = "file_citation";
+        Text = text;
+        FileCitation = fileCitation;
+        StartIndex = startIndex;
+        EndIndex = endIndex;
     }
+
+    internal InternalMessageContentTextAnnotationsFileCitationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(type, serializedAdditionalRawData)
+    {
+        Text = text;
+        FileCitation = fileCitation;
+        StartIndex = startIndex;
+        EndIndex = endIndex;
+    }
+
+    internal InternalMessageContentTextAnnotationsFileCitationObject()
+    {
+    }
+
+    public string Text { get; set; }
+    public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; set; }
+    public int StartIndex { get; set; }
+    public int EndIndex { get; set; }
 }

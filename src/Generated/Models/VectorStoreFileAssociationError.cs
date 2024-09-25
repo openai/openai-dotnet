@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreFileAssociationError
 {
-    public partial class VectorStoreFileAssociationError
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message)
-        {
-            Argument.AssertNotNull(message, nameof(message));
+        Argument.AssertNotNull(message, nameof(message));
 
-            Code = code;
-            Message = message;
-        }
-
-        internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Code = code;
-            Message = message;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal VectorStoreFileAssociationError()
-        {
-        }
-
-        public VectorStoreFileAssociationErrorCode Code { get; }
-        public string Message { get; }
+        Code = code;
+        Message = message;
     }
+
+    internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Code = code;
+        Message = message;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal VectorStoreFileAssociationError()
+    {
+    }
+
+    public VectorStoreFileAssociationErrorCode Code { get; }
+    public string Message { get; }
 }

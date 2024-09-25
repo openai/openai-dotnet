@@ -2,14 +2,9 @@
 
 namespace OpenAI.Tests.Utility
 {
-    public class SyncAsyncTestBase
+    public class SyncAsyncTestBase(bool isAsync)
     {
-        public bool IsAsync { get; }
-
-        public SyncAsyncTestBase(bool isAsync)
-        {
-            IsAsync = isAsync;
-        }
+        public bool IsAsync { get; } = isAsync;
 
         protected void AssertAsyncOnly()
         {

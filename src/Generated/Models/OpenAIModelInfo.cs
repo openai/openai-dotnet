@@ -5,36 +5,35 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Models
+namespace OpenAI.Models;
+
+public partial class OpenAIModelInfo
 {
-    public partial class OpenAIModelInfo
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal OpenAIModelInfo(string id, DateTimeOffset createdAt, string ownedBy)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal OpenAIModelInfo(string id, DateTimeOffset createdAt, string ownedBy)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(ownedBy, nameof(ownedBy));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(ownedBy, nameof(ownedBy));
 
-            Id = id;
-            CreatedAt = createdAt;
-            OwnedBy = ownedBy;
-        }
-
-        internal OpenAIModelInfo(string id, DateTimeOffset createdAt, InternalModelObject @object, string ownedBy, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            CreatedAt = createdAt;
-            Object = @object;
-            OwnedBy = ownedBy;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal OpenAIModelInfo()
-        {
-        }
-
-        public string Id { get; }
-
-        public string OwnedBy { get; }
+        Id = id;
+        CreatedAt = createdAt;
+        OwnedBy = ownedBy;
     }
+
+    internal OpenAIModelInfo(string id, DateTimeOffset createdAt, InternalModelObject @object, string ownedBy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        CreatedAt = createdAt;
+        Object = @object;
+        OwnedBy = ownedBy;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal OpenAIModelInfo()
+    {
+    }
+
+    public string Id { get; }
+
+    public string OwnedBy { get; }
 }

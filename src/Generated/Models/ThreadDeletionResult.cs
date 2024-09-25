@@ -5,30 +5,29 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class ThreadDeletionResult
 {
-    public partial class ThreadDeletionResult
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal ThreadDeletionResult(string threadId, bool deleted)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ThreadDeletionResult(string threadId, bool deleted)
-        {
-            Argument.AssertNotNull(threadId, nameof(threadId));
+        Argument.AssertNotNull(threadId, nameof(threadId));
 
-            ThreadId = threadId;
-            Deleted = deleted;
-        }
-
-        internal ThreadDeletionResult(string threadId, bool deleted, InternalDeleteThreadResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            ThreadId = threadId;
-            Deleted = deleted;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ThreadDeletionResult()
-        {
-        }
-        public bool Deleted { get; }
+        ThreadId = threadId;
+        Deleted = deleted;
     }
+
+    internal ThreadDeletionResult(string threadId, bool deleted, InternalDeleteThreadResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        ThreadId = threadId;
+        Deleted = deleted;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal ThreadDeletionResult()
+    {
+    }
+    public bool Deleted { get; }
 }

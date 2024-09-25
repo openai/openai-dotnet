@@ -8,90 +8,89 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class UnknownAssistantToolDefinition : IJsonModel<ToolDefinition>
 {
-    internal partial class UnknownAssistantToolDefinition : IJsonModel<ToolDefinition>
+    ToolDefinition IJsonModel<ToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        ToolDefinition IJsonModel<ToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ToolDefinition)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeToolDefinition(document.RootElement, options);
+            throw new FormatException($"The model {nameof(ToolDefinition)} does not support reading '{format}' format.");
         }
 
-        internal static UnknownAssistantToolDefinition DeserializeUnknownAssistantToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeToolDefinition(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
+    internal static UnknownAssistantToolDefinition DeserializeUnknownAssistantToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        string type = "Unknown";
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("type"u8))
             {
-                return null;
+                type = property.Value.GetString();
+                continue;
             }
-            string type = "Unknown";
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (true)
             {
-                if (property.NameEquals("type"u8))
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new UnknownAssistantToolDefinition(type, serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<ToolDefinition>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ToolDefinition)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    ToolDefinition IPersistableModel<ToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    type = property.Value.GetString();
-                    continue;
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeToolDefinition(document.RootElement, options);
                 }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new UnknownAssistantToolDefinition(type, serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(ToolDefinition)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<ToolDefinition>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<ToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ToolDefinition)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static new UnknownAssistantToolDefinition FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeUnknownAssistantToolDefinition(document.RootElement);
+    }
 
-        ToolDefinition IPersistableModel<ToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeToolDefinition(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ToolDefinition)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static new UnknownAssistantToolDefinition FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUnknownAssistantToolDefinition(document.RootElement);
-        }
-
-        internal override BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create<ToolDefinition>(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal override BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create<ToolDefinition>(this, ModelSerializationExtensions.WireOptions);
     }
 }

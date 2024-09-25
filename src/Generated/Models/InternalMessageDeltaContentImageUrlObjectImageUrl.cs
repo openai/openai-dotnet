@@ -5,22 +5,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentImageUrlObjectImageUrl
 {
-    internal partial class InternalMessageDeltaContentImageUrlObjectImageUrl
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalMessageDeltaContentImageUrlObjectImageUrl()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaContentImageUrlObjectImageUrl()
-        {
-        }
-
-        internal InternalMessageDeltaContentImageUrlObjectImageUrl(Uri url, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Url = url;
-            Detail = detail;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public Uri Url { get; }
     }
+
+    internal InternalMessageDeltaContentImageUrlObjectImageUrl(Uri url, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Url = url;
+        Detail = detail;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public Uri Url { get; }
 }

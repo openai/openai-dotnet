@@ -5,13 +5,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class FileSearchToolDefinition : ToolDefinition
 {
-    public partial class FileSearchToolDefinition : ToolDefinition
+    internal FileSearchToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalAssistantToolsFileSearchFileSearch fileSearch) : base(type, serializedAdditionalRawData)
     {
-        internal FileSearchToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalAssistantToolsFileSearchFileSearch fileSearch) : base(type, serializedAdditionalRawData)
-        {
-            _fileSearch = fileSearch;
-        }
+        _fileSearch = fileSearch;
     }
 }

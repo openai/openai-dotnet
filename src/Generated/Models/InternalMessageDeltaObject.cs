@@ -5,35 +5,34 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaObject
 {
-    internal partial class InternalMessageDeltaObject
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectDelta delta)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectDelta delta)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(delta, nameof(delta));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(delta, nameof(delta));
 
-            Id = id;
-            Delta = delta;
-        }
-
-        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, InternalMessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            Object = @object;
-            Delta = delta;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageDeltaObject()
-        {
-        }
-
-        public string Id { get; }
-        public InternalMessageDeltaObjectObject Object { get; } = InternalMessageDeltaObjectObject.ThreadMessageDelta;
-
-        public InternalMessageDeltaObjectDelta Delta { get; }
+        Id = id;
+        Delta = delta;
     }
+
+    internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, InternalMessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        Object = @object;
+        Delta = delta;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalMessageDeltaObject()
+    {
+    }
+
+    public string Id { get; }
+    public InternalMessageDeltaObjectObject Object { get; } = InternalMessageDeltaObjectObject.ThreadMessageDelta;
+
+    public InternalMessageDeltaObjectDelta Delta { get; }
 }

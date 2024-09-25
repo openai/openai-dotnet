@@ -5,33 +5,32 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI
+namespace OpenAI;
+
+internal partial class InternalFunctionDefinition
 {
-    internal partial class InternalFunctionDefinition
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalFunctionDefinition(string name)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalFunctionDefinition(string name)
-        {
-            Argument.AssertNotNull(name, nameof(name));
+        Argument.AssertNotNull(name, nameof(name));
 
-            Name = name;
-        }
-
-        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Description = description;
-            Name = name;
-            Parameters = parameters;
-            Strict = strict;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalFunctionDefinition()
-        {
-        }
-
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public bool? Strict { get; set; }
+        Name = name;
     }
+
+    internal InternalFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Description = description;
+        Name = name;
+        Parameters = parameters;
+        Strict = strict;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalFunctionDefinition()
+    {
+    }
+
+    public string Description { get; set; }
+    public string Name { get; set; }
+    public bool? Strict { get; set; }
 }

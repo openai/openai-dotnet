@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : RunStepUpdateCodeInterpreterOutput
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : RunStepUpdateCodeInterpreterOutput
+    internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(int index)
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(int index)
-        {
-            Type = "image";
-            Index = index;
-        }
-
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage image) : base(type, serializedAdditionalRawData)
-        {
-            Index = index;
-            Image = image;
-        }
-
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject()
-        {
-        }
-
-        public int Index { get; }
-        public InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage Image { get; }
+        Type = "image";
+        Index = index;
     }
+
+    internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage image) : base(type, serializedAdditionalRawData)
+    {
+        Index = index;
+        Image = image;
+    }
+
+    internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject()
+    {
+    }
+
+    public int Index { get; }
+    public InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage Image { get; }
 }

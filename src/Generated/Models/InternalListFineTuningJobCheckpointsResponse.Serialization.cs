@@ -8,210 +8,209 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.FineTuning
-{
-    internal partial class InternalListFineTuningJobCheckpointsResponse : IJsonModel<InternalListFineTuningJobCheckpointsResponse>
-    {
-        void IJsonModel<InternalListFineTuningJobCheckpointsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.FineTuning;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+internal partial class InternalListFineTuningJobCheckpointsResponse : IJsonModel<InternalListFineTuningJobCheckpointsResponse>
+{
+    void IJsonModel<InternalListFineTuningJobCheckpointsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+        {
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (var item in Data)
             {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (var item in Data)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("first_id") != true && Optional.IsDefined(FirstId))
+        {
+            if (FirstId != null)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WritePropertyName("first_id"u8);
+                writer.WriteStringValue(FirstId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("first_id") != true && Optional.IsDefined(FirstId))
+            else
             {
-                if (FirstId != null)
-                {
-                    writer.WritePropertyName("first_id"u8);
-                    writer.WriteStringValue(FirstId);
-                }
-                else
-                {
-                    writer.WriteNull("first_id");
-                }
+                writer.WriteNull("first_id");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("last_id") != true && Optional.IsDefined(LastId))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("last_id") != true && Optional.IsDefined(LastId))
+        {
+            if (LastId != null)
             {
-                if (LastId != null)
-                {
-                    writer.WritePropertyName("last_id"u8);
-                    writer.WriteStringValue(LastId);
-                }
-                else
-                {
-                    writer.WriteNull("last_id");
-                }
+                writer.WritePropertyName("last_id"u8);
+                writer.WriteStringValue(LastId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+            else
             {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
+                writer.WriteNull("last_id");
             }
-            if (SerializedAdditionalRawData != null)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+        {
+            writer.WritePropertyName("has_more"u8);
+            writer.WriteBooleanValue(HasMore);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalListFineTuningJobCheckpointsResponse IJsonModel<InternalListFineTuningJobCheckpointsResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{format}' format.");
         }
 
-        InternalListFineTuningJobCheckpointsResponse IJsonModel<InternalListFineTuningJobCheckpointsResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
+    internal static InternalListFineTuningJobCheckpointsResponse DeserializeInternalListFineTuningJobCheckpointsResponse(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalListFineTuningJobCheckpointsResponse DeserializeInternalListFineTuningJobCheckpointsResponse(JsonElement element, ModelReaderWriterOptions options = null)
+        IReadOnlyList<InternalFineTuningJobCheckpoint> data = default;
+        InternalListFineTuningJobCheckpointsResponseObject @object = default;
+        string firstId = default;
+        string lastId = default;
+        bool hasMore = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("data"u8))
             {
-                return null;
-            }
-            IReadOnlyList<InternalFineTuningJobCheckpoint> data = default;
-            InternalListFineTuningJobCheckpointsResponseObject @object = default;
-            string firstId = default;
-            string lastId = default;
-            bool hasMore = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("data"u8))
+                List<InternalFineTuningJobCheckpoint> array = new List<InternalFineTuningJobCheckpoint>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    List<InternalFineTuningJobCheckpoint> array = new List<InternalFineTuningJobCheckpoint>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(InternalFineTuningJobCheckpoint.DeserializeInternalFineTuningJobCheckpoint(item, options));
-                    }
-                    data = array;
+                    array.Add(InternalFineTuningJobCheckpoint.DeserializeInternalFineTuningJobCheckpoint(item, options));
+                }
+                data = array;
+                continue;
+            }
+            if (property.NameEquals("object"u8))
+            {
+                @object = new InternalListFineTuningJobCheckpointsResponseObject(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("first_id"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    firstId = null;
                     continue;
                 }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalListFineTuningJobCheckpointsResponseObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("first_id"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        firstId = null;
-                        continue;
-                    }
-                    firstId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("last_id"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        lastId = null;
-                        continue;
-                    }
-                    lastId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("has_more"u8))
-                {
-                    hasMore = property.Value.GetBoolean();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                firstId = property.Value.GetString();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalListFineTuningJobCheckpointsResponse(
-                data,
-                @object,
-                firstId,
-                lastId,
-                hasMore,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("last_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    lastId = null;
+                    continue;
+                }
+                lastId = property.Value.GetString();
+                continue;
             }
-        }
-
-        InternalListFineTuningJobCheckpointsResponse IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("has_more"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{options.Format}' format.");
+                hasMore = property.Value.GetBoolean();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalListFineTuningJobCheckpointsResponse(
+            data,
+            @object,
+            firstId,
+            lastId,
+            hasMore,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalListFineTuningJobCheckpointsResponse FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalListFineTuningJobCheckpointsResponse IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalListFineTuningJobCheckpointsResponse FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

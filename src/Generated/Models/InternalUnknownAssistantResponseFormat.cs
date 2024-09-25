@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalUnknownAssistantResponseFormat : AssistantResponseFormat
-    {
-        internal InternalUnknownAssistantResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.Assistants;
 
-        internal InternalUnknownAssistantResponseFormat()
-        {
-        }
+internal partial class InternalUnknownAssistantResponseFormat : AssistantResponseFormat
+{
+    internal InternalUnknownAssistantResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal InternalUnknownAssistantResponseFormat()
+    {
     }
 }

@@ -9,181 +9,180 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI.VectorStores;
 
-namespace OpenAI.Assistants
-{
-    public partial class VectorStoreCreationHelper : IJsonModel<VectorStoreCreationHelper>
-    {
-        void IJsonModel<VectorStoreCreationHelper>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
+public partial class VectorStoreCreationHelper : IJsonModel<VectorStoreCreationHelper>
+{
+    void IJsonModel<VectorStoreCreationHelper>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("file_ids") != true && Optional.IsCollectionDefined(FileIds))
+        {
+            writer.WritePropertyName("file_ids"u8);
+            writer.WriteStartArray();
+            foreach (var item in FileIds)
+            {
+                writer.WriteStringValue(item);
+            }
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
+        {
+            writer.WritePropertyName("chunking_strategy"u8);
+            writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+        {
+            writer.WritePropertyName("metadata"u8);
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("file_ids") != true && Optional.IsCollectionDefined(FileIds))
+            foreach (var item in Metadata)
             {
-                writer.WritePropertyName("file_ids"u8);
-                writer.WriteStartArray();
-                foreach (var item in FileIds)
-                {
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
-            {
-                writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
-            {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
-                {
-                    writer.WritePropertyName(item.Key);
-                    writer.WriteStringValue(item.Value);
-                }
-                writer.WriteEndObject();
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
+                writer.WritePropertyName(item.Key);
+                writer.WriteStringValue(item.Value);
             }
             writer.WriteEndObject();
         }
-
-        VectorStoreCreationHelper IJsonModel<VectorStoreCreationHelper>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        if (SerializedAdditionalRawData != null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            foreach (var item in SerializedAdditionalRawData)
             {
-                throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeVectorStoreCreationHelper(document.RootElement, options);
-        }
-
-        internal static VectorStoreCreationHelper DeserializeVectorStoreCreationHelper(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            IList<string> fileIds = default;
-            FileChunkingStrategy chunkingStrategy = default;
-            IDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("file_ids"u8))
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetString());
-                    }
-                    fileIds = array;
                     continue;
                 }
-                if (property.NameEquals("chunking_strategy"u8))
+                writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+				writer.WriteRawValue(item.Value);
+#else
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+        }
+        writer.WriteEndObject();
+    }
+
+    VectorStoreCreationHelper IJsonModel<VectorStoreCreationHelper>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support reading '{format}' format.");
+        }
+
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeVectorStoreCreationHelper(document.RootElement, options);
+    }
+
+    internal static VectorStoreCreationHelper DeserializeVectorStoreCreationHelper(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        IList<string> fileIds = default;
+        FileChunkingStrategy chunkingStrategy = default;
+        IDictionary<string, string> metadata = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("file_ids"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (property.NameEquals("metadata"u8))
+                List<string> array = new List<string>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
+                    array.Add(item.GetString());
+                }
+                fileIds = array;
+                continue;
+            }
+            if (property.NameEquals("chunking_strategy"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (true)
+                chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    continue;
                 }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), chunkingStrategy, metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<VectorStoreCreationHelper>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support writing '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), chunkingStrategy, metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
+    }
 
-        VectorStoreCreationHelper IPersistableModel<VectorStoreCreationHelper>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<VectorStoreCreationHelper>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeVectorStoreCreationHelper(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<VectorStoreCreationHelper>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    VectorStoreCreationHelper IPersistableModel<VectorStoreCreationHelper>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<VectorStoreCreationHelper>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static VectorStoreCreationHelper FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreCreationHelper(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeVectorStoreCreationHelper(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(VectorStoreCreationHelper)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<VectorStoreCreationHelper>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static VectorStoreCreationHelper FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeVectorStoreCreationHelper(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

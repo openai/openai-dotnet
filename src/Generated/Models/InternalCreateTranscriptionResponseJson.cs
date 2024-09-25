@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
+namespace OpenAI.Audio;
+
+internal partial class InternalCreateTranscriptionResponseJson
 {
-    internal partial class InternalCreateTranscriptionResponseJson
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalCreateTranscriptionResponseJson(string text)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalCreateTranscriptionResponseJson(string text)
-        {
-            Argument.AssertNotNull(text, nameof(text));
+        Argument.AssertNotNull(text, nameof(text));
 
-            Text = text;
-        }
-
-        internal InternalCreateTranscriptionResponseJson(string text, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Text = text;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateTranscriptionResponseJson()
-        {
-        }
-
-        public string Text { get; }
+        Text = text;
     }
+
+    internal InternalCreateTranscriptionResponseJson(string text, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Text = text;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalCreateTranscriptionResponseJson()
+    {
+    }
+
+    public string Text { get; }
 }

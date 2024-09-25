@@ -7,62 +7,61 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class MessageContent : IJsonModel<MessageContent>
 {
-    public partial class MessageContent : IJsonModel<MessageContent>
+    MessageContent IJsonModel<MessageContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        MessageContent IJsonModel<MessageContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMessageContent(document.RootElement, options);
+            throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{format}' format.");
         }
 
-        BinaryData IPersistableModel<MessageContent>.Write(ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeMessageContent(document.RootElement, options);
+    }
+
+    BinaryData IPersistableModel<MessageContent>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(MessageContent)} does not support writing '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(MessageContent)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        MessageContent IPersistableModel<MessageContent>.Create(BinaryData data, ModelReaderWriterOptions options)
+    MessageContent IPersistableModel<MessageContent>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContent>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeMessageContent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeMessageContent(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<MessageContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    string IPersistableModel<MessageContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static MessageContent FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeMessageContent(document.RootElement);
-        }
+    internal static MessageContent FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeMessageContent(document.RootElement);
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

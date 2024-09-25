@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal abstract partial class InternalMessageDeltaTextContentAnnotation
 {
-    internal abstract partial class InternalMessageDeltaTextContentAnnotation
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    protected InternalMessageDeltaTextContentAnnotation()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected InternalMessageDeltaTextContentAnnotation()
-        {
-        }
-
-        internal InternalMessageDeltaTextContentAnnotation(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal string Type { get; set; }
     }
+
+    internal InternalMessageDeltaTextContentAnnotation(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Type = type;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal string Type { get; set; }
 }

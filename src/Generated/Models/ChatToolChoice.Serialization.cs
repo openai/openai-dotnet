@@ -7,62 +7,61 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
 {
-    public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
+    ChatToolChoice IJsonModel<ChatToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        ChatToolChoice IJsonModel<ChatToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ChatToolChoice)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatToolChoice(document.RootElement, options);
+            throw new FormatException($"The model {nameof(ChatToolChoice)} does not support reading '{format}' format.");
         }
 
-        BinaryData IPersistableModel<ChatToolChoice>.Write(ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeChatToolChoice(document.RootElement, options);
+    }
+
+    BinaryData IPersistableModel<ChatToolChoice>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ChatToolChoice)} does not support writing '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ChatToolChoice)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        ChatToolChoice IPersistableModel<ChatToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
+    ChatToolChoice IPersistableModel<ChatToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeChatToolChoice(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatToolChoice)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeChatToolChoice(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(ChatToolChoice)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<ChatToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    string IPersistableModel<ChatToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ChatToolChoice FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatToolChoice(document.RootElement);
-        }
+    internal static ChatToolChoice FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeChatToolChoice(document.RootElement);
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

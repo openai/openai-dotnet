@@ -12,12 +12,8 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class GenerateSpeechTests : SyncAsyncTestBase
+public partial class GenerateSpeechTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public GenerateSpeechTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     [Test]
     public async Task BasicTextToSpeechWorks()
     {

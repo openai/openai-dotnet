@@ -6,28 +6,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunObjectRequiredActionSubmitToolOutputs
 {
-    internal partial class InternalRunObjectRequiredActionSubmitToolOutputs
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRunObjectRequiredActionSubmitToolOutputs(IEnumerable<InternalRequiredFunctionToolCall> toolCalls)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunObjectRequiredActionSubmitToolOutputs(IEnumerable<InternalRequiredFunctionToolCall> toolCalls)
-        {
-            Argument.AssertNotNull(toolCalls, nameof(toolCalls));
+        Argument.AssertNotNull(toolCalls, nameof(toolCalls));
 
-            ToolCalls = toolCalls.ToList();
-        }
-
-        internal InternalRunObjectRequiredActionSubmitToolOutputs(IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            ToolCalls = toolCalls;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRunObjectRequiredActionSubmitToolOutputs()
-        {
-        }
-
-        public IReadOnlyList<InternalRequiredFunctionToolCall> ToolCalls { get; }
+        ToolCalls = toolCalls.ToList();
     }
+
+    internal InternalRunObjectRequiredActionSubmitToolOutputs(IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        ToolCalls = toolCalls;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalRunObjectRequiredActionSubmitToolOutputs()
+    {
+    }
+
+    public IReadOnlyList<InternalRequiredFunctionToolCall> ToolCalls { get; }
 }

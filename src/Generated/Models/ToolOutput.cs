@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class ToolOutput
 {
-    public partial class ToolOutput
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public ToolOutput()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public ToolOutput()
-        {
-        }
-
-        internal ToolOutput(string toolCallId, string output, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            ToolCallId = toolCallId;
-            Output = output;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string ToolCallId { get; set; }
-        public string Output { get; set; }
     }
+
+    internal ToolOutput(string toolCallId, string output, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        ToolCallId = toolCallId;
+        Output = output;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string ToolCallId { get; set; }
+    public string Output { get; set; }
 }

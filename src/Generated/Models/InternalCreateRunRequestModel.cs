@@ -5,74 +5,73 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal readonly partial struct InternalCreateRunRequestModel : IEquatable<InternalCreateRunRequestModel>
 {
-    internal readonly partial struct InternalCreateRunRequestModel : IEquatable<InternalCreateRunRequestModel>
+    private readonly string _value;
+
+    public InternalCreateRunRequestModel(string value)
     {
-        private readonly string _value;
-
-        public InternalCreateRunRequestModel(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string Gpt4oValue = "gpt-4o";
-        private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
-        private const string Gpt4o20240513Value = "gpt-4o-2024-05-13";
-        private const string Gpt4oMiniValue = "gpt-4o-mini";
-        private const string Gpt4oMini20240718Value = "gpt-4o-mini-2024-07-18";
-        private const string Gpt4TurboValue = "gpt-4-turbo";
-        private const string Gpt4Turbo20240409Value = "gpt-4-turbo-2024-04-09";
-        private const string Gpt40125PreviewValue = "gpt-4-0125-preview";
-        private const string Gpt4TurboPreviewValue = "gpt-4-turbo-preview";
-        private const string Gpt41106PreviewValue = "gpt-4-1106-preview";
-        private const string Gpt4VisionPreviewValue = "gpt-4-vision-preview";
-        private const string Gpt4Value = "gpt-4";
-        private const string Gpt40314Value = "gpt-4-0314";
-        private const string Gpt40613Value = "gpt-4-0613";
-        private const string Gpt432kValue = "gpt-4-32k";
-        private const string Gpt432k0314Value = "gpt-4-32k-0314";
-        private const string Gpt432k0613Value = "gpt-4-32k-0613";
-        private const string Gpt35TurboValue = "gpt-3.5-turbo";
-        private const string Gpt35Turbo16kValue = "gpt-3.5-turbo-16k";
-        private const string Gpt35Turbo0613Value = "gpt-3.5-turbo-0613";
-        private const string Gpt35Turbo1106Value = "gpt-3.5-turbo-1106";
-        private const string Gpt35Turbo0125Value = "gpt-3.5-turbo-0125";
-        private const string Gpt35Turbo16k0613Value = "gpt-3.5-turbo-16k-0613";
-
-        public static InternalCreateRunRequestModel Gpt4o { get; } = new InternalCreateRunRequestModel(Gpt4oValue);
-        public static InternalCreateRunRequestModel Gpt4o20240806 { get; } = new InternalCreateRunRequestModel(Gpt4o20240806Value);
-        public static InternalCreateRunRequestModel Gpt4o20240513 { get; } = new InternalCreateRunRequestModel(Gpt4o20240513Value);
-        public static InternalCreateRunRequestModel Gpt4oMini { get; } = new InternalCreateRunRequestModel(Gpt4oMiniValue);
-        public static InternalCreateRunRequestModel Gpt4oMini20240718 { get; } = new InternalCreateRunRequestModel(Gpt4oMini20240718Value);
-        public static InternalCreateRunRequestModel Gpt4Turbo { get; } = new InternalCreateRunRequestModel(Gpt4TurboValue);
-        public static InternalCreateRunRequestModel Gpt4Turbo20240409 { get; } = new InternalCreateRunRequestModel(Gpt4Turbo20240409Value);
-        public static InternalCreateRunRequestModel Gpt40125Preview { get; } = new InternalCreateRunRequestModel(Gpt40125PreviewValue);
-        public static InternalCreateRunRequestModel Gpt4TurboPreview { get; } = new InternalCreateRunRequestModel(Gpt4TurboPreviewValue);
-        public static InternalCreateRunRequestModel Gpt41106Preview { get; } = new InternalCreateRunRequestModel(Gpt41106PreviewValue);
-        public static InternalCreateRunRequestModel Gpt4VisionPreview { get; } = new InternalCreateRunRequestModel(Gpt4VisionPreviewValue);
-        public static InternalCreateRunRequestModel Gpt4 { get; } = new InternalCreateRunRequestModel(Gpt4Value);
-        public static InternalCreateRunRequestModel Gpt40314 { get; } = new InternalCreateRunRequestModel(Gpt40314Value);
-        public static InternalCreateRunRequestModel Gpt40613 { get; } = new InternalCreateRunRequestModel(Gpt40613Value);
-        public static InternalCreateRunRequestModel Gpt432k { get; } = new InternalCreateRunRequestModel(Gpt432kValue);
-        public static InternalCreateRunRequestModel Gpt432k0314 { get; } = new InternalCreateRunRequestModel(Gpt432k0314Value);
-        public static InternalCreateRunRequestModel Gpt432k0613 { get; } = new InternalCreateRunRequestModel(Gpt432k0613Value);
-        public static InternalCreateRunRequestModel Gpt35Turbo { get; } = new InternalCreateRunRequestModel(Gpt35TurboValue);
-        public static InternalCreateRunRequestModel Gpt35Turbo16k { get; } = new InternalCreateRunRequestModel(Gpt35Turbo16kValue);
-        public static InternalCreateRunRequestModel Gpt35Turbo0613 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo0613Value);
-        public static InternalCreateRunRequestModel Gpt35Turbo1106 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo1106Value);
-        public static InternalCreateRunRequestModel Gpt35Turbo0125 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo0125Value);
-        public static InternalCreateRunRequestModel Gpt35Turbo16k0613 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo16k0613Value);
-        public static bool operator ==(InternalCreateRunRequestModel left, InternalCreateRunRequestModel right) => left.Equals(right);
-        public static bool operator !=(InternalCreateRunRequestModel left, InternalCreateRunRequestModel right) => !left.Equals(right);
-        public static implicit operator InternalCreateRunRequestModel(string value) => new InternalCreateRunRequestModel(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalCreateRunRequestModel other && Equals(other);
-        public bool Equals(InternalCreateRunRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string Gpt4oValue = "gpt-4o";
+    private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
+    private const string Gpt4o20240513Value = "gpt-4o-2024-05-13";
+    private const string Gpt4oMiniValue = "gpt-4o-mini";
+    private const string Gpt4oMini20240718Value = "gpt-4o-mini-2024-07-18";
+    private const string Gpt4TurboValue = "gpt-4-turbo";
+    private const string Gpt4Turbo20240409Value = "gpt-4-turbo-2024-04-09";
+    private const string Gpt40125PreviewValue = "gpt-4-0125-preview";
+    private const string Gpt4TurboPreviewValue = "gpt-4-turbo-preview";
+    private const string Gpt41106PreviewValue = "gpt-4-1106-preview";
+    private const string Gpt4VisionPreviewValue = "gpt-4-vision-preview";
+    private const string Gpt4Value = "gpt-4";
+    private const string Gpt40314Value = "gpt-4-0314";
+    private const string Gpt40613Value = "gpt-4-0613";
+    private const string Gpt432kValue = "gpt-4-32k";
+    private const string Gpt432k0314Value = "gpt-4-32k-0314";
+    private const string Gpt432k0613Value = "gpt-4-32k-0613";
+    private const string Gpt35TurboValue = "gpt-3.5-turbo";
+    private const string Gpt35Turbo16kValue = "gpt-3.5-turbo-16k";
+    private const string Gpt35Turbo0613Value = "gpt-3.5-turbo-0613";
+    private const string Gpt35Turbo1106Value = "gpt-3.5-turbo-1106";
+    private const string Gpt35Turbo0125Value = "gpt-3.5-turbo-0125";
+    private const string Gpt35Turbo16k0613Value = "gpt-3.5-turbo-16k-0613";
+
+    public static InternalCreateRunRequestModel Gpt4o { get; } = new InternalCreateRunRequestModel(Gpt4oValue);
+    public static InternalCreateRunRequestModel Gpt4o20240806 { get; } = new InternalCreateRunRequestModel(Gpt4o20240806Value);
+    public static InternalCreateRunRequestModel Gpt4o20240513 { get; } = new InternalCreateRunRequestModel(Gpt4o20240513Value);
+    public static InternalCreateRunRequestModel Gpt4oMini { get; } = new InternalCreateRunRequestModel(Gpt4oMiniValue);
+    public static InternalCreateRunRequestModel Gpt4oMini20240718 { get; } = new InternalCreateRunRequestModel(Gpt4oMini20240718Value);
+    public static InternalCreateRunRequestModel Gpt4Turbo { get; } = new InternalCreateRunRequestModel(Gpt4TurboValue);
+    public static InternalCreateRunRequestModel Gpt4Turbo20240409 { get; } = new InternalCreateRunRequestModel(Gpt4Turbo20240409Value);
+    public static InternalCreateRunRequestModel Gpt40125Preview { get; } = new InternalCreateRunRequestModel(Gpt40125PreviewValue);
+    public static InternalCreateRunRequestModel Gpt4TurboPreview { get; } = new InternalCreateRunRequestModel(Gpt4TurboPreviewValue);
+    public static InternalCreateRunRequestModel Gpt41106Preview { get; } = new InternalCreateRunRequestModel(Gpt41106PreviewValue);
+    public static InternalCreateRunRequestModel Gpt4VisionPreview { get; } = new InternalCreateRunRequestModel(Gpt4VisionPreviewValue);
+    public static InternalCreateRunRequestModel Gpt4 { get; } = new InternalCreateRunRequestModel(Gpt4Value);
+    public static InternalCreateRunRequestModel Gpt40314 { get; } = new InternalCreateRunRequestModel(Gpt40314Value);
+    public static InternalCreateRunRequestModel Gpt40613 { get; } = new InternalCreateRunRequestModel(Gpt40613Value);
+    public static InternalCreateRunRequestModel Gpt432k { get; } = new InternalCreateRunRequestModel(Gpt432kValue);
+    public static InternalCreateRunRequestModel Gpt432k0314 { get; } = new InternalCreateRunRequestModel(Gpt432k0314Value);
+    public static InternalCreateRunRequestModel Gpt432k0613 { get; } = new InternalCreateRunRequestModel(Gpt432k0613Value);
+    public static InternalCreateRunRequestModel Gpt35Turbo { get; } = new InternalCreateRunRequestModel(Gpt35TurboValue);
+    public static InternalCreateRunRequestModel Gpt35Turbo16k { get; } = new InternalCreateRunRequestModel(Gpt35Turbo16kValue);
+    public static InternalCreateRunRequestModel Gpt35Turbo0613 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo0613Value);
+    public static InternalCreateRunRequestModel Gpt35Turbo1106 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo1106Value);
+    public static InternalCreateRunRequestModel Gpt35Turbo0125 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo0125Value);
+    public static InternalCreateRunRequestModel Gpt35Turbo16k0613 { get; } = new InternalCreateRunRequestModel(Gpt35Turbo16k0613Value);
+    public static bool operator ==(InternalCreateRunRequestModel left, InternalCreateRunRequestModel right) => left.Equals(right);
+    public static bool operator !=(InternalCreateRunRequestModel left, InternalCreateRunRequestModel right) => !left.Equals(right);
+    public static implicit operator InternalCreateRunRequestModel(string value) => new InternalCreateRunRequestModel(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalCreateRunRequestModel other && Equals(other);
+    public bool Equals(InternalCreateRunRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

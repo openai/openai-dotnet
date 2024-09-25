@@ -8,126 +8,125 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage : IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>
-    {
-        void IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("file_id") != true && Optional.IsDefined(FileId))
+internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage : IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>
+{
+    void IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("file_id") != true && Optional.IsDefined(FileId))
+        {
+            writer.WritePropertyName("file_id"u8);
+            writer.WriteStringValue(FileId);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support reading '{format}' format.");
         }
 
-        InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement, options);
+    internal static InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(JsonElement element, ModelReaderWriterOptions options = null)
+        string fileId = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("file_id"u8))
             {
-                return null;
+                fileId = property.Value.GetString();
+                continue;
             }
-            string fileId = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (true)
             {
-                if (property.NameEquals("file_id"u8))
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(fileId, serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    fileId = property.Value.GetString();
-                    continue;
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement, options);
                 }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(fileId, serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement);
+    }
 
-        InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

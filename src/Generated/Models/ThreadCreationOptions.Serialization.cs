@@ -8,196 +8,195 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    public partial class ThreadCreationOptions : IJsonModel<ThreadCreationOptions>
-    {
-        void IJsonModel<ThreadCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("messages") != true && Optional.IsCollectionDefined(InternalMessages))
+public partial class ThreadCreationOptions : IJsonModel<ThreadCreationOptions>
+{
+    void IJsonModel<ThreadCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("messages") != true && Optional.IsCollectionDefined(InternalMessages))
+        {
+            writer.WritePropertyName("messages"u8);
+            writer.WriteStartArray();
+            foreach (var item in InternalMessages)
             {
-                writer.WritePropertyName("messages"u8);
-                writer.WriteStartArray();
-                foreach (var item in InternalMessages)
-                {
-                    writer.WriteObjectValue<MessageCreationOptions>(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue<MessageCreationOptions>(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tool_resources") != true && Optional.IsDefined(ToolResources))
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tool_resources") != true && Optional.IsDefined(ToolResources))
+        {
+            if (ToolResources != null)
             {
-                if (ToolResources != null)
-                {
-                    writer.WritePropertyName("tool_resources"u8);
-                    writer.WriteObjectValue<ToolResources>(ToolResources, options);
-                }
-                else
-                {
-                    writer.WriteNull("tool_resources");
-                }
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue<ToolResources>(ToolResources, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+            else
             {
-                if (Metadata != null)
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
+                writer.WriteNull("tool_resources");
             }
-            if (SerializedAdditionalRawData != null)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+        {
+            if (Metadata != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    ThreadCreationOptions IJsonModel<ThreadCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support reading '{format}' format.");
         }
 
-        ThreadCreationOptions IJsonModel<ThreadCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeThreadCreationOptions(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeThreadCreationOptions(document.RootElement, options);
+    internal static ThreadCreationOptions DeserializeThreadCreationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static ThreadCreationOptions DeserializeThreadCreationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        IList<MessageCreationOptions> messages = default;
+        ToolResources toolResources = default;
+        IDictionary<string, string> metadata = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("messages"u8))
             {
-                return null;
-            }
-            IList<MessageCreationOptions> messages = default;
-            ToolResources toolResources = default;
-            IDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("messages"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<MessageCreationOptions> array = new List<MessageCreationOptions>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(MessageCreationOptions.DeserializeMessageCreationOptions(item, options));
-                    }
-                    messages = array;
                     continue;
                 }
-                if (property.NameEquals("tool_resources"u8))
+                List<MessageCreationOptions> array = new List<MessageCreationOptions>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = Assistants.ToolResources.DeserializeToolResources(property.Value, options);
+                    array.Add(MessageCreationOptions.DeserializeMessageCreationOptions(item, options));
+                }
+                messages = array;
+                continue;
+            }
+            if (property.NameEquals("tool_resources"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    toolResources = null;
                     continue;
                 }
-                if (property.NameEquals("metadata"u8))
+                toolResources = Assistants.ToolResources.DeserializeToolResources(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
                     continue;
                 }
-                if (true)
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    dictionary.Add(property0.Name, property0.Value.GetString());
                 }
+                metadata = dictionary;
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ThreadCreationOptions(messages ?? new ChangeTrackingList<MessageCreationOptions>(), toolResources, metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<ThreadCreationOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support writing '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new ThreadCreationOptions(messages ?? new ChangeTrackingList<MessageCreationOptions>(), toolResources, metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
+    }
 
-        ThreadCreationOptions IPersistableModel<ThreadCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<ThreadCreationOptions>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeThreadCreationOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<ThreadCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    ThreadCreationOptions IPersistableModel<ThreadCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static ThreadCreationOptions FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeThreadCreationOptions(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeThreadCreationOptions(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(ThreadCreationOptions)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<ThreadCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static ThreadCreationOptions FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeThreadCreationOptions(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

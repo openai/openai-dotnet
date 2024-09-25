@@ -5,26 +5,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Batch
+namespace OpenAI.Batch;
+
+internal partial class InternalBatchRequestOutputResponse
 {
-    internal partial class InternalBatchRequestOutputResponse
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalBatchRequestOutputResponse()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalBatchRequestOutputResponse()
-        {
-            Body = new ChangeTrackingDictionary<string, BinaryData>();
-        }
-
-        internal InternalBatchRequestOutputResponse(int? statusCode, string requestId, IReadOnlyDictionary<string, BinaryData> body, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            StatusCode = statusCode;
-            RequestId = requestId;
-            Body = body;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public int? StatusCode { get; }
-        public string RequestId { get; }
-        public IReadOnlyDictionary<string, BinaryData> Body { get; }
+        Body = new ChangeTrackingDictionary<string, BinaryData>();
     }
+
+    internal InternalBatchRequestOutputResponse(int? statusCode, string requestId, IReadOnlyDictionary<string, BinaryData> body, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        StatusCode = statusCode;
+        RequestId = requestId;
+        Body = body;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public int? StatusCode { get; }
+    public string RequestId { get; }
+    public IReadOnlyDictionary<string, BinaryData> Body { get; }
 }

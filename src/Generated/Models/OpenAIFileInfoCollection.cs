@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace OpenAI.Files
+namespace OpenAI.Files;
+
+public partial class OpenAIFileInfoCollection : ReadOnlyCollection<OpenAIFileInfo>
 {
-    public partial class OpenAIFileInfoCollection : ReadOnlyCollection<OpenAIFileInfo>
-    {
-    }
 }

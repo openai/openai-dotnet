@@ -15,12 +15,8 @@ namespace OpenAI.Tests.Audio;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranscriptionTests : SyncAsyncTestBase
+public partial class TranscriptionTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public TranscriptionTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     public enum AudioSourceKind
     {
         UsingStream,

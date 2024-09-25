@@ -5,12 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public partial class FileSearchRankingOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Assistants;
 
-        public FileSearchRanker? Ranker { get; set; }
-    }
+public partial class FileSearchRankingOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    public FileSearchRanker? Ranker { get; set; }
 }

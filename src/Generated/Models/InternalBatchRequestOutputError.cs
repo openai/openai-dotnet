@@ -5,23 +5,22 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Batch
+namespace OpenAI.Batch;
+
+internal partial class InternalBatchRequestOutputError
 {
-    internal partial class InternalBatchRequestOutputError
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalBatchRequestOutputError()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalBatchRequestOutputError()
-        {
-        }
-
-        internal InternalBatchRequestOutputError(string code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Code = code;
-            Message = message;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string Code { get; }
-        public string Message { get; }
     }
+
+    internal InternalBatchRequestOutputError(string code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Code = code;
+        Message = message;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string Code { get; }
+    public string Message { get; }
 }

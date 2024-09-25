@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
-{
-    public partial class StaticFileChunkingStrategy : FileChunkingStrategy
-    {
-        internal StaticFileChunkingStrategy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalStaticChunkingStrategyDetails internalDetails) : base(type, serializedAdditionalRawData)
-        {
-            _internalDetails = internalDetails;
-        }
+namespace OpenAI.VectorStores;
 
-        internal StaticFileChunkingStrategy()
-        {
-        }
+public partial class StaticFileChunkingStrategy : FileChunkingStrategy
+{
+    internal StaticFileChunkingStrategy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalStaticChunkingStrategyDetails internalDetails) : base(type, serializedAdditionalRawData)
+    {
+        _internalDetails = internalDetails;
+    }
+
+    internal StaticFileChunkingStrategy()
+    {
     }
 }

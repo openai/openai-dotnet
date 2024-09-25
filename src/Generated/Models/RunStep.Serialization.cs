@@ -8,403 +8,402 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    public partial class RunStep : IJsonModel<RunStep>
-    {
-        void IJsonModel<RunStep>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(RunStep)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+public partial class RunStep : IJsonModel<RunStep>
+{
+    void IJsonModel<RunStep>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(RunStep)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        {
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
+        {
+            writer.WritePropertyName("assistant_id"u8);
+            writer.WriteStringValue(AssistantId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
+        {
+            writer.WritePropertyName("thread_id"u8);
+            writer.WriteStringValue(ThreadId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("run_id") != true)
+        {
+            writer.WritePropertyName("run_id"u8);
+            writer.WriteStringValue(RunId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+        {
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Type.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+        {
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("step_details") != true)
+        {
+            writer.WritePropertyName("step_details"u8);
+            writer.WriteObjectValue<RunStepDetails>(Details, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("last_error") != true)
+        {
+            if (LastError != null)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WritePropertyName("last_error"u8);
+                writer.WriteObjectValue(LastError, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteNull("last_error");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("expired_at") != true)
+        {
+            if (ExpiredAt != null)
             {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("expired_at"u8);
+                writer.WriteNumberValue(ExpiredAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
+            else
             {
-                writer.WritePropertyName("assistant_id"u8);
-                writer.WriteStringValue(AssistantId);
+                writer.WriteNull("expired_at");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("cancelled_at") != true)
+        {
+            if (CancelledAt != null)
             {
-                writer.WritePropertyName("thread_id"u8);
-                writer.WriteStringValue(ThreadId);
+                writer.WritePropertyName("cancelled_at"u8);
+                writer.WriteNumberValue(CancelledAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("run_id") != true)
+            else
             {
-                writer.WritePropertyName("run_id"u8);
-                writer.WriteStringValue(RunId);
+                writer.WriteNull("cancelled_at");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("failed_at") != true)
+        {
+            if (FailedAt != null)
             {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WritePropertyName("failed_at"u8);
+                writer.WriteNumberValue(FailedAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            else
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteNull("failed_at");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("step_details") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
+        {
+            if (CompletedAt != null)
             {
-                writer.WritePropertyName("step_details"u8);
-                writer.WriteObjectValue<RunStepDetails>(Details, options);
+                writer.WritePropertyName("completed_at"u8);
+                writer.WriteNumberValue(CompletedAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("last_error") != true)
+            else
             {
-                if (LastError != null)
+                writer.WriteNull("completed_at");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+        {
+            if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+            {
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WritePropertyName("last_error"u8);
-                    writer.WriteObjectValue(LastError, options);
-                }
-                else
-                {
-                    writer.WriteNull("last_error");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("expired_at") != true)
-            {
-                if (ExpiredAt != null)
-                {
-                    writer.WritePropertyName("expired_at"u8);
-                    writer.WriteNumberValue(ExpiredAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("expired_at");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("cancelled_at") != true)
-            {
-                if (CancelledAt != null)
-                {
-                    writer.WritePropertyName("cancelled_at"u8);
-                    writer.WriteNumberValue(CancelledAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("cancelled_at");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("failed_at") != true)
-            {
-                if (FailedAt != null)
-                {
-                    writer.WritePropertyName("failed_at"u8);
-                    writer.WriteNumberValue(FailedAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("failed_at");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
-            {
-                if (CompletedAt != null)
-                {
-                    writer.WritePropertyName("completed_at"u8);
-                    writer.WriteNumberValue(CompletedAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("completed_at");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
-            {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("usage") != true)
-            {
-                if (Usage != null)
-                {
-                    writer.WritePropertyName("usage"u8);
-                    writer.WriteObjectValue(Usage, options);
-                }
-                else
-                {
-                    writer.WriteNull("usage");
-                }
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("usage") != true)
+        {
+            if (Usage != null)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
+            }
+            else
+            {
+                writer.WriteNull("usage");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    RunStep IJsonModel<RunStep>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(RunStep)} does not support reading '{format}' format.");
         }
 
-        RunStep IJsonModel<RunStep>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeRunStep(document.RootElement, options);
+    }
+
+    internal static RunStep DeserializeRunStep(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        string id = default;
+        InternalRunStepObjectObject @object = default;
+        DateTimeOffset createdAt = default;
+        string assistantId = default;
+        string threadId = default;
+        string runId = default;
+        RunStepType type = default;
+        RunStepStatus status = default;
+        RunStepDetails stepDetails = default;
+        RunStepError lastError = default;
+        DateTimeOffset? expiredAt = default;
+        DateTimeOffset? cancelledAt = default;
+        DateTimeOffset? failedAt = default;
+        DateTimeOffset? completedAt = default;
+        IReadOnlyDictionary<string, string> metadata = default;
+        RunStepTokenUsage usage = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(RunStep)} does not support reading '{format}' format.");
+                id = property.Value.GetString();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRunStep(document.RootElement, options);
-        }
-
-        internal static RunStep DeserializeRunStep(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
+                @object = new InternalRunStepObjectObject(property.Value.GetString());
+                continue;
             }
-            string id = default;
-            InternalRunStepObjectObject @object = default;
-            DateTimeOffset createdAt = default;
-            string assistantId = default;
-            string threadId = default;
-            string runId = default;
-            RunStepType type = default;
-            RunStepStatus status = default;
-            RunStepDetails stepDetails = default;
-            RunStepError lastError = default;
-            DateTimeOffset? expiredAt = default;
-            DateTimeOffset? cancelledAt = default;
-            DateTimeOffset? failedAt = default;
-            DateTimeOffset? completedAt = default;
-            IReadOnlyDictionary<string, string> metadata = default;
-            RunStepTokenUsage usage = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("created_at"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalRunStepObjectObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("assistant_id"u8))
-                {
-                    assistantId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("thread_id"u8))
-                {
-                    threadId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("run_id"u8))
-                {
-                    runId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("type"u8))
-                {
-                    type = new RunStepType(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = new RunStepStatus(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("step_details"u8))
-                {
-                    stepDetails = RunStepDetails.DeserializeRunStepDetails(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("last_error"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        lastError = null;
-                        continue;
-                    }
-                    lastError = RunStepError.DeserializeRunStepError(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("expired_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        expiredAt = null;
-                        continue;
-                    }
-                    expiredAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("cancelled_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        cancelledAt = null;
-                        continue;
-                    }
-                    cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("failed_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        failedAt = null;
-                        continue;
-                    }
-                    failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("completed_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        completedAt = null;
-                        continue;
-                    }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        metadata = new ChangeTrackingDictionary<string, string>();
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (property.NameEquals("usage"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        usage = null;
-                        continue;
-                    }
-                    usage = RunStepTokenUsage.DeserializeRunStepTokenUsage(property.Value, options);
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new RunStep(
-                id,
-                @object,
-                createdAt,
-                assistantId,
-                threadId,
-                runId,
-                type,
-                status,
-                stepDetails,
-                lastError,
-                expiredAt,
-                cancelledAt,
-                failedAt,
-                completedAt,
-                metadata,
-                usage,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<RunStep>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("assistant_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(RunStep)} does not support writing '{options.Format}' format.");
+                assistantId = property.Value.GetString();
+                continue;
             }
-        }
-
-        RunStep IPersistableModel<RunStep>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("thread_id"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeRunStep(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunStep)} does not support reading '{options.Format}' format.");
+                threadId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("run_id"u8))
+            {
+                runId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("type"u8))
+            {
+                type = new RunStepType(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("status"u8))
+            {
+                status = new RunStepStatus(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("step_details"u8))
+            {
+                stepDetails = RunStepDetails.DeserializeRunStepDetails(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("last_error"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    lastError = null;
+                    continue;
+                }
+                lastError = RunStepError.DeserializeRunStepError(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("expired_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    expiredAt = null;
+                    continue;
+                }
+                expiredAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("cancelled_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    cancelledAt = null;
+                    continue;
+                }
+                cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("failed_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    failedAt = null;
+                    continue;
+                }
+                failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("completed_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    completedAt = null;
+                    continue;
+                }
+                completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    metadata = new ChangeTrackingDictionary<string, string>();
+                    continue;
+                }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
+            }
+            if (property.NameEquals("usage"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    usage = null;
+                    continue;
+                }
+                usage = RunStepTokenUsage.DeserializeRunStepTokenUsage(property.Value, options);
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new RunStep(
+            id,
+            @object,
+            createdAt,
+            assistantId,
+            threadId,
+            runId,
+            type,
+            status,
+            stepDetails,
+            lastError,
+            expiredAt,
+            cancelledAt,
+            failedAt,
+            completedAt,
+            metadata,
+            usage,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<RunStep>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<RunStep>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static RunStep FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeRunStep(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(RunStep)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    RunStep IPersistableModel<RunStep>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<RunStep>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeRunStep(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(RunStep)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<RunStep>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static RunStep FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeRunStep(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

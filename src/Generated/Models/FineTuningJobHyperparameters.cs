@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal readonly partial struct FineTuningJobHyperparameters
 {
-    internal readonly partial struct FineTuningJobHyperparameters
+    internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier)
     {
-        internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier)
-        {
-            Argument.AssertNotNull(nEpochs, nameof(nEpochs));
-            Argument.AssertNotNull(batchSize, nameof(batchSize));
-            Argument.AssertNotNull(learningRateMultiplier, nameof(learningRateMultiplier));
+        Argument.AssertNotNull(nEpochs, nameof(nEpochs));
+        Argument.AssertNotNull(batchSize, nameof(batchSize));
+        Argument.AssertNotNull(learningRateMultiplier, nameof(learningRateMultiplier));
 
-            NEpochs = nEpochs;
-            BatchSize = batchSize;
-            LearningRateMultiplier = learningRateMultiplier;
-        }
+        NEpochs = nEpochs;
+        BatchSize = batchSize;
+        LearningRateMultiplier = learningRateMultiplier;
+    }
 
-        internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            NEpochs = nEpochs;
-            BatchSize = batchSize;
-            LearningRateMultiplier = learningRateMultiplier;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+    internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        NEpochs = nEpochs;
+        BatchSize = batchSize;
+        LearningRateMultiplier = learningRateMultiplier;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
 
-        public FineTuningJobHyperparameters()
-        {
-        }
+    public FineTuningJobHyperparameters()
+    {
     }
 }

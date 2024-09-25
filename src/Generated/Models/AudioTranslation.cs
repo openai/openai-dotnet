@@ -5,38 +5,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Audio
+namespace OpenAI.Audio;
+
+public partial class AudioTranslation
 {
-    public partial class AudioTranslation
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal AudioTranslation(string language, TimeSpan? duration, string text)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal AudioTranslation(string language, TimeSpan? duration, string text)
-        {
-            Argument.AssertNotNull(language, nameof(language));
-            Argument.AssertNotNull(text, nameof(text));
+        Argument.AssertNotNull(language, nameof(language));
+        Argument.AssertNotNull(text, nameof(text));
 
-            Language = language;
-            Duration = duration;
-            Text = text;
-            Segments = new ChangeTrackingList<TranscribedSegment>();
-        }
-
-        internal AudioTranslation(InternalCreateTranslationResponseVerboseJsonTask task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Task = task;
-            Language = language;
-            Duration = duration;
-            Text = text;
-            Segments = segments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal AudioTranslation()
-        {
-        }
-
-        public string Language { get; }
-        public string Text { get; }
-        public IReadOnlyList<TranscribedSegment> Segments { get; }
+        Language = language;
+        Duration = duration;
+        Text = text;
+        Segments = new ChangeTrackingList<TranscribedSegment>();
     }
+
+    internal AudioTranslation(InternalCreateTranslationResponseVerboseJsonTask task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Task = task;
+        Language = language;
+        Duration = duration;
+        Text = text;
+        Segments = segments;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal AudioTranslation()
+    {
+    }
+
+    public string Language { get; }
+    public string Text { get; }
+    public IReadOnlyList<TranscribedSegment> Segments { get; }
 }

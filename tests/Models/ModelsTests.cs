@@ -13,12 +13,8 @@ namespace OpenAI.Tests.Models;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Models")]
-public class ModelsTests : SyncAsyncTestBase
+public class ModelsTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public ModelsTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     [Test]
     public async Task ListModels()
     {

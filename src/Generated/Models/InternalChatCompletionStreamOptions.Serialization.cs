@@ -8,130 +8,129 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Chat
-{
-    internal partial class InternalChatCompletionStreamOptions : IJsonModel<InternalChatCompletionStreamOptions>
-    {
-        void IJsonModel<InternalChatCompletionStreamOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Chat;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("include_usage") != true && Optional.IsDefined(IncludeUsage))
+internal partial class InternalChatCompletionStreamOptions : IJsonModel<InternalChatCompletionStreamOptions>
+{
+    void IJsonModel<InternalChatCompletionStreamOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("include_usage") != true && Optional.IsDefined(IncludeUsage))
+        {
+            writer.WritePropertyName("include_usage"u8);
+            writer.WriteBooleanValue(IncludeUsage.Value);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("include_usage"u8);
-                writer.WriteBooleanValue(IncludeUsage.Value);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
-        }
-
-        InternalChatCompletionStreamOptions IJsonModel<InternalChatCompletionStreamOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionStreamOptions(document.RootElement, options);
-        }
-
-        internal static InternalChatCompletionStreamOptions DeserializeInternalChatCompletionStreamOptions(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            bool? includeUsage = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("include_usage"u8))
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    includeUsage = property.Value.GetBoolean();
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalChatCompletionStreamOptions IJsonModel<InternalChatCompletionStreamOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support reading '{format}' format.");
+        }
+
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalChatCompletionStreamOptions(document.RootElement, options);
+    }
+
+    internal static InternalChatCompletionStreamOptions DeserializeInternalChatCompletionStreamOptions(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        bool? includeUsage = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("include_usage"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (true)
+                includeUsage = property.Value.GetBoolean();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalChatCompletionStreamOptions(includeUsage, serializedAdditionalRawData);
+    }
+
+    BinaryData IPersistableModel<InternalChatCompletionStreamOptions>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    InternalChatCompletionStreamOptions IPersistableModel<InternalChatCompletionStreamOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalChatCompletionStreamOptions(document.RootElement, options);
                 }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalChatCompletionStreamOptions(includeUsage, serializedAdditionalRawData);
+            default:
+                throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<InternalChatCompletionStreamOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<InternalChatCompletionStreamOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static InternalChatCompletionStreamOptions FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalChatCompletionStreamOptions(document.RootElement);
+    }
 
-        InternalChatCompletionStreamOptions IPersistableModel<InternalChatCompletionStreamOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalChatCompletionStreamOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionStreamOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionStreamOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static InternalChatCompletionStreamOptions FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionStreamOptions(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

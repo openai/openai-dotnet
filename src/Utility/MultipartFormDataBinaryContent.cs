@@ -12,15 +12,10 @@ namespace OpenAI;
 
 internal class MultipartFormDataBinaryContent : BinaryContent
 {
-    private readonly MultipartFormDataContent _multipartContent;
+    private readonly MultipartFormDataContent _multipartContent = new(CreateBoundary());
 
     private const int BoundaryLength = 70;
     private const string BoundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
-
-    public MultipartFormDataBinaryContent()
-    {
-        _multipartContent = new MultipartFormDataContent(CreateBoundary());
-    }
 
     public string ContentType
     {

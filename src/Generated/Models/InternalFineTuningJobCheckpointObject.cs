@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal readonly partial struct InternalFineTuningJobCheckpointObject : IEquatable<InternalFineTuningJobCheckpointObject>
 {
-    internal readonly partial struct InternalFineTuningJobCheckpointObject : IEquatable<InternalFineTuningJobCheckpointObject>
+    private readonly string _value;
+
+    public InternalFineTuningJobCheckpointObject(string value)
     {
-        private readonly string _value;
-
-        public InternalFineTuningJobCheckpointObject(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string FineTuningJobCheckpointValue = "fine_tuning.job.checkpoint";
-
-        public static InternalFineTuningJobCheckpointObject FineTuningJobCheckpoint { get; } = new InternalFineTuningJobCheckpointObject(FineTuningJobCheckpointValue);
-        public static bool operator ==(InternalFineTuningJobCheckpointObject left, InternalFineTuningJobCheckpointObject right) => left.Equals(right);
-        public static bool operator !=(InternalFineTuningJobCheckpointObject left, InternalFineTuningJobCheckpointObject right) => !left.Equals(right);
-        public static implicit operator InternalFineTuningJobCheckpointObject(string value) => new InternalFineTuningJobCheckpointObject(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalFineTuningJobCheckpointObject other && Equals(other);
-        public bool Equals(InternalFineTuningJobCheckpointObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string FineTuningJobCheckpointValue = "fine_tuning.job.checkpoint";
+
+    public static InternalFineTuningJobCheckpointObject FineTuningJobCheckpoint { get; } = new InternalFineTuningJobCheckpointObject(FineTuningJobCheckpointValue);
+    public static bool operator ==(InternalFineTuningJobCheckpointObject left, InternalFineTuningJobCheckpointObject right) => left.Equals(right);
+    public static bool operator !=(InternalFineTuningJobCheckpointObject left, InternalFineTuningJobCheckpointObject right) => !left.Equals(right);
+    public static implicit operator InternalFineTuningJobCheckpointObject(string value) => new InternalFineTuningJobCheckpointObject(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalFineTuningJobCheckpointObject other && Equals(other);
+    public bool Equals(InternalFineTuningJobCheckpointObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

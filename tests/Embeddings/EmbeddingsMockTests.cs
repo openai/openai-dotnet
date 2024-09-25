@@ -14,14 +14,9 @@ namespace OpenAI.Tests.Embeddings;
 [Parallelizable(ParallelScope.All)]
 [Category("Embeddings")]
 [Category("Smoke")]
-public class EmbeddingsMockTests : SyncAsyncTestBase
+public class EmbeddingsMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public EmbeddingsMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [Test]
     public async Task GenerateEmbeddingDeserializesVector()

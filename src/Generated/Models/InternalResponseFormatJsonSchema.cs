@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Internal
+namespace OpenAI.Internal;
+
+internal partial class InternalResponseFormatJsonSchema : InternalOmniTypedResponseFormat
 {
-    internal partial class InternalResponseFormatJsonSchema : InternalOmniTypedResponseFormat
+    public InternalResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
     {
-        public InternalResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
-        {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
+        Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
-            Type = "json_schema";
-            JsonSchema = jsonSchema;
-        }
-
-        internal InternalResponseFormatJsonSchema(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(type, serializedAdditionalRawData)
-        {
-            JsonSchema = jsonSchema;
-        }
-
-        internal InternalResponseFormatJsonSchema()
-        {
-        }
-
-        public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
+        Type = "json_schema";
+        JsonSchema = jsonSchema;
     }
+
+    internal InternalResponseFormatJsonSchema(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(type, serializedAdditionalRawData)
+    {
+        JsonSchema = jsonSchema;
+    }
+
+    internal InternalResponseFormatJsonSchema()
+    {
+    }
+
+    public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
 }

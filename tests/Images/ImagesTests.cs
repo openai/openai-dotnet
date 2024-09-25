@@ -15,13 +15,9 @@ namespace OpenAI.Tests.Images;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
-public class ImagesTests : SyncAsyncTestBase
+public class ImagesTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private const string CatPrompt = "A big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera.";
-
-    public ImagesTests(bool isAsync) : base(isAsync)
-    {
-    }
 
     public enum ImageSourceKind
     {

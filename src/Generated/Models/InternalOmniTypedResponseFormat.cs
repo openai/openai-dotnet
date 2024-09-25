@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Internal
+namespace OpenAI.Internal;
+
+internal abstract partial class InternalOmniTypedResponseFormat
 {
-    internal abstract partial class InternalOmniTypedResponseFormat
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    protected InternalOmniTypedResponseFormat()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected InternalOmniTypedResponseFormat()
-        {
-        }
-
-        internal InternalOmniTypedResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal string Type { get; set; }
     }
+
+    internal InternalOmniTypedResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Type = type;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal string Type { get; set; }
 }

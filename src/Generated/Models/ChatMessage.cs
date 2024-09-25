@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    public abstract partial class ChatMessage
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Chat;
 
-        internal ChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Role = role;
-            Content = content;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public abstract partial class ChatMessage
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal ChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Role = role;
+        Content = content;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

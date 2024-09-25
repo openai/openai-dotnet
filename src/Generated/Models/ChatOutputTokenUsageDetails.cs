@@ -5,19 +5,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    public partial class ChatOutputTokenUsageDetails
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ChatOutputTokenUsageDetails()
-        {
-        }
+namespace OpenAI.Chat;
 
-        internal ChatOutputTokenUsageDetails(int reasoningTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            ReasoningTokenCount = reasoningTokenCount;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+public partial class ChatOutputTokenUsageDetails
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal ChatOutputTokenUsageDetails()
+    {
+    }
+
+    internal ChatOutputTokenUsageDetails(int reasoningTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        ReasoningTokenCount = reasoningTokenCount;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

@@ -6,30 +6,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+internal partial class InternalCreateVectorStoreFileBatchRequest
 {
-    internal partial class InternalCreateVectorStoreFileBatchRequest
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
-        {
-            Argument.AssertNotNull(fileIds, nameof(fileIds));
+        Argument.AssertNotNull(fileIds, nameof(fileIds));
 
-            FileIds = fileIds.ToList();
-        }
-
-        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileIds = fileIds;
-            ChunkingStrategy = chunkingStrategy;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateVectorStoreFileBatchRequest()
-        {
-        }
-
-        public IList<string> FileIds { get; }
-        public BinaryData ChunkingStrategy { get; set; }
+        FileIds = fileIds.ToList();
     }
+
+    internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileIds = fileIds;
+        ChunkingStrategy = chunkingStrategy;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalCreateVectorStoreFileBatchRequest()
+    {
+    }
+
+    public IList<string> FileIds { get; }
+    public BinaryData ChunkingStrategy { get; set; }
 }

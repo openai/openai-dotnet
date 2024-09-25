@@ -19,7 +19,7 @@ namespace OpenAI.Tests.VectorStores;
 [TestFixture(true)]
 [TestFixture(false)]
 [Category("Assistants")]
-public class VectorStoresTests : SyncAsyncTestBase
+public class VectorStoresTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private readonly List<VectorStoreBatchFileJob> _jobsToCancel = [];
     private readonly List<VectorStoreFileAssociation> _associationsToRemove = [];
@@ -29,11 +29,6 @@ public class VectorStoresTests : SyncAsyncTestBase
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
     private static VectorStoreClient GetTestClient() => GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
-
-    public VectorStoresTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [Test]
     public async Task CanCreateGetAndDeleteVectorStores()

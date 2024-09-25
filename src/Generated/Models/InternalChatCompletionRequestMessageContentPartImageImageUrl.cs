@@ -5,15 +5,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Chat;
 
-        internal InternalChatCompletionRequestMessageContentPartImageImageUrl()
-        {
-        }
-        public ChatImageDetailLevel? Detail { get; set; }
+internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal InternalChatCompletionRequestMessageContentPartImageImageUrl()
+    {
     }
+    public ChatImageDetailLevel? Detail { get; set; }
 }

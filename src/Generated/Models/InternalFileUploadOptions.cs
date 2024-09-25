@@ -6,17 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace OpenAI.Files
-{
-    internal partial class InternalFileUploadOptions
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+namespace OpenAI.Files;
 
-        internal InternalFileUploadOptions(Stream file, FileUploadPurpose purpose, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            File = file;
-            Purpose = purpose;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+internal partial class InternalFileUploadOptions
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+
+    internal InternalFileUploadOptions(Stream file, FileUploadPurpose purpose, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        File = file;
+        Purpose = purpose;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

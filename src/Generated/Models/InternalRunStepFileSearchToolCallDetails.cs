@@ -5,31 +5,30 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepFileSearchToolCallDetails : RunStepToolCall
 {
-    internal partial class InternalRunStepFileSearchToolCallDetails : RunStepToolCall
+    internal InternalRunStepFileSearchToolCallDetails(string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch)
     {
-        internal InternalRunStepFileSearchToolCallDetails(string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(fileSearch, nameof(fileSearch));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(fileSearch, nameof(fileSearch));
 
-            Type = "file_search";
-            Id = id;
-            FileSearch = fileSearch;
-        }
-
-        internal InternalRunStepFileSearchToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(type, serializedAdditionalRawData)
-        {
-            Id = id;
-            FileSearch = fileSearch;
-        }
-
-        internal InternalRunStepFileSearchToolCallDetails()
-        {
-        }
-
-        public string Id { get; }
-        public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; }
+        Type = "file_search";
+        Id = id;
+        FileSearch = fileSearch;
     }
+
+    internal InternalRunStepFileSearchToolCallDetails(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(type, serializedAdditionalRawData)
+    {
+        Id = id;
+        FileSearch = fileSearch;
+    }
+
+    internal InternalRunStepFileSearchToolCallDetails()
+    {
+    }
+
+    public string Id { get; }
+    public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; }
 }

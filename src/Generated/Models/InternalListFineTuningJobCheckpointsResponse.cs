@@ -6,38 +6,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalListFineTuningJobCheckpointsResponse
 {
-    internal partial class InternalListFineTuningJobCheckpointsResponse
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<InternalFineTuningJobCheckpoint> data, bool hasMore)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<InternalFineTuningJobCheckpoint> data, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
+        Argument.AssertNotNull(data, nameof(data));
 
-            Data = data.ToList();
-            HasMore = hasMore;
-        }
-
-        internal InternalListFineTuningJobCheckpointsResponse(IReadOnlyList<InternalFineTuningJobCheckpoint> data, InternalListFineTuningJobCheckpointsResponseObject @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Data = data;
-            Object = @object;
-            FirstId = firstId;
-            LastId = lastId;
-            HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalListFineTuningJobCheckpointsResponse()
-        {
-        }
-
-        public IReadOnlyList<InternalFineTuningJobCheckpoint> Data { get; }
-        public InternalListFineTuningJobCheckpointsResponseObject Object { get; } = InternalListFineTuningJobCheckpointsResponseObject.List;
-
-        public string FirstId { get; }
-        public string LastId { get; }
-        public bool HasMore { get; }
+        Data = data.ToList();
+        HasMore = hasMore;
     }
+
+    internal InternalListFineTuningJobCheckpointsResponse(IReadOnlyList<InternalFineTuningJobCheckpoint> data, InternalListFineTuningJobCheckpointsResponseObject @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Data = data;
+        Object = @object;
+        FirstId = firstId;
+        LastId = lastId;
+        HasMore = hasMore;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalListFineTuningJobCheckpointsResponse()
+    {
+    }
+
+    public IReadOnlyList<InternalFineTuningJobCheckpoint> Data { get; }
+    public InternalListFineTuningJobCheckpointsResponseObject Object { get; } = InternalListFineTuningJobCheckpointsResponseObject.List;
+
+    public string FirstId { get; }
+    public string LastId { get; }
+    public bool HasMore { get; }
 }

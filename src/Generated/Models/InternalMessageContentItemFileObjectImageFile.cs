@@ -5,29 +5,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentItemFileObjectImageFile
 {
-    internal partial class InternalMessageContentItemFileObjectImageFile
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalMessageContentItemFileObjectImageFile(string fileId)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalMessageContentItemFileObjectImageFile(string fileId)
-        {
-            Argument.AssertNotNull(fileId, nameof(fileId));
+        Argument.AssertNotNull(fileId, nameof(fileId));
 
-            FileId = fileId;
-        }
-
-        internal InternalMessageContentItemFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileId = fileId;
-            Detail = detail;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentItemFileObjectImageFile()
-        {
-        }
-
-        public string FileId { get; set; }
+        FileId = fileId;
     }
+
+    internal InternalMessageContentItemFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileId = fileId;
+        Detail = detail;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalMessageContentItemFileObjectImageFile()
+    {
+    }
+
+    public string FileId { get; set; }
 }

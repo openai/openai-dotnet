@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionNamedToolChoiceFunction
 {
-    internal partial class InternalChatCompletionNamedToolChoiceFunction
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalChatCompletionNamedToolChoiceFunction(string name)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalChatCompletionNamedToolChoiceFunction(string name)
-        {
-            Argument.AssertNotNull(name, nameof(name));
+        Argument.AssertNotNull(name, nameof(name));
 
-            Name = name;
-        }
-
-        internal InternalChatCompletionNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Name = name;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalChatCompletionNamedToolChoiceFunction()
-        {
-        }
-
-        public string Name { get; }
+        Name = name;
     }
+
+    internal InternalChatCompletionNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Name = name;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalChatCompletionNamedToolChoiceFunction()
+    {
+    }
+
+    public string Name { get; }
 }

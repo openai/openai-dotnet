@@ -5,33 +5,32 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalCreateFineTuningJobRequestWandbIntegrationWandb
 {
-    internal partial class InternalCreateFineTuningJobRequestWandbIntegrationWandb
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project)
-        {
-            Argument.AssertNotNull(project, nameof(project));
+        Argument.AssertNotNull(project, nameof(project));
 
-            Project = project;
-            Tags = new ChangeTrackingList<string>();
-        }
-
-        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project, string name, string entity, IList<string> tags, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Project = project;
-            Name = name;
-            Entity = entity;
-            Tags = tags;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb()
-        {
-        }
-        public string Name { get; set; }
-        public string Entity { get; set; }
-        public IList<string> Tags { get; }
+        Project = project;
+        Tags = new ChangeTrackingList<string>();
     }
+
+    internal InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project, string name, string entity, IList<string> tags, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Project = project;
+        Name = name;
+        Entity = entity;
+        Tags = tags;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalCreateFineTuningJobRequestWandbIntegrationWandb()
+    {
+    }
+    public string Name { get; set; }
+    public string Entity { get; set; }
+    public IList<string> Tags { get; }
 }

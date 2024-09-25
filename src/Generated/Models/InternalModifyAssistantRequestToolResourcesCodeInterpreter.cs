@@ -5,22 +5,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalModifyAssistantRequestToolResourcesCodeInterpreter
 {
-    internal partial class InternalModifyAssistantRequestToolResourcesCodeInterpreter
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalModifyAssistantRequestToolResourcesCodeInterpreter()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalModifyAssistantRequestToolResourcesCodeInterpreter()
-        {
-            FileIds = new ChangeTrackingList<string>();
-        }
-
-        internal InternalModifyAssistantRequestToolResourcesCodeInterpreter(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileIds = fileIds;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public IList<string> FileIds { get; }
+        FileIds = new ChangeTrackingList<string>();
     }
+
+    internal InternalModifyAssistantRequestToolResourcesCodeInterpreter(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileIds = fileIds;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public IList<string> FileIds { get; }
 }

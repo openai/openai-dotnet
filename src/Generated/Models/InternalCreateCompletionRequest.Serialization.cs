@@ -9,548 +9,547 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI.Chat;
 
-namespace OpenAI.LegacyCompletions
-{
-    internal partial class InternalCreateCompletionRequest : IJsonModel<InternalCreateCompletionRequest>
-    {
-        void IJsonModel<InternalCreateCompletionRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.LegacyCompletions;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+internal partial class InternalCreateCompletionRequest : IJsonModel<InternalCreateCompletionRequest>
+{
+    void IJsonModel<InternalCreateCompletionRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+        {
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("prompt") != true)
+        {
+            if (Prompt != null)
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("prompt") != true)
-            {
-                if (Prompt != null)
-                {
-                    writer.WritePropertyName("prompt"u8);
+                writer.WritePropertyName("prompt"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Prompt);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(Prompt))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(Prompt))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
-                else
-                {
-                    writer.WriteNull("prompt");
-                }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("best_of") != true && Optional.IsDefined(BestOf))
+            else
             {
-                if (BestOf != null)
-                {
-                    writer.WritePropertyName("best_of"u8);
-                    writer.WriteNumberValue(BestOf.Value);
-                }
-                else
-                {
-                    writer.WriteNull("best_of");
-                }
+                writer.WriteNull("prompt");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("echo") != true && Optional.IsDefined(Echo))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("best_of") != true && Optional.IsDefined(BestOf))
+        {
+            if (BestOf != null)
             {
-                if (Echo != null)
-                {
-                    writer.WritePropertyName("echo"u8);
-                    writer.WriteBooleanValue(Echo.Value);
-                }
-                else
-                {
-                    writer.WriteNull("echo");
-                }
+                writer.WritePropertyName("best_of"u8);
+                writer.WriteNumberValue(BestOf.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("frequency_penalty") != true && Optional.IsDefined(FrequencyPenalty))
+            else
             {
-                if (FrequencyPenalty != null)
-                {
-                    writer.WritePropertyName("frequency_penalty"u8);
-                    writer.WriteNumberValue(FrequencyPenalty.Value);
-                }
-                else
-                {
-                    writer.WriteNull("frequency_penalty");
-                }
+                writer.WriteNull("best_of");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logit_bias") != true && Optional.IsCollectionDefined(LogitBias))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("echo") != true && Optional.IsDefined(Echo))
+        {
+            if (Echo != null)
             {
-                if (LogitBias != null)
-                {
-                    writer.WritePropertyName("logit_bias"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in LogitBias)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteNumberValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("logit_bias");
-                }
+                writer.WritePropertyName("echo"u8);
+                writer.WriteBooleanValue(Echo.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true && Optional.IsDefined(Logprobs))
+            else
             {
-                if (Logprobs != null)
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteNumberValue(Logprobs.Value);
-                }
-                else
-                {
-                    writer.WriteNull("logprobs");
-                }
+                writer.WriteNull("echo");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(MaxTokens))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("frequency_penalty") != true && Optional.IsDefined(FrequencyPenalty))
+        {
+            if (FrequencyPenalty != null)
             {
-                if (MaxTokens != null)
-                {
-                    writer.WritePropertyName("max_tokens"u8);
-                    writer.WriteNumberValue(MaxTokens.Value);
-                }
-                else
-                {
-                    writer.WriteNull("max_tokens");
-                }
+                writer.WritePropertyName("frequency_penalty"u8);
+                writer.WriteNumberValue(FrequencyPenalty.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
+            else
             {
-                if (N != null)
-                {
-                    writer.WritePropertyName("n"u8);
-                    writer.WriteNumberValue(N.Value);
-                }
-                else
-                {
-                    writer.WriteNull("n");
-                }
+                writer.WriteNull("frequency_penalty");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("presence_penalty") != true && Optional.IsDefined(PresencePenalty))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("logit_bias") != true && Optional.IsCollectionDefined(LogitBias))
+        {
+            if (LogitBias != null)
             {
-                if (PresencePenalty != null)
+                writer.WritePropertyName("logit_bias"u8);
+                writer.WriteStartObject();
+                foreach (var item in LogitBias)
                 {
-                    writer.WritePropertyName("presence_penalty"u8);
-                    writer.WriteNumberValue(PresencePenalty.Value);
+                    writer.WritePropertyName(item.Key);
+                    writer.WriteNumberValue(item.Value);
                 }
-                else
-                {
-                    writer.WriteNull("presence_penalty");
-                }
+                writer.WriteEndObject();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("seed") != true && Optional.IsDefined(Seed))
+            else
             {
-                if (Seed != null)
-                {
-                    writer.WritePropertyName("seed"u8);
-                    writer.WriteNumberValue(Seed.Value);
-                }
-                else
-                {
-                    writer.WriteNull("seed");
-                }
+                writer.WriteNull("logit_bias");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stop") != true && Optional.IsDefined(Stop))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true && Optional.IsDefined(Logprobs))
+        {
+            if (Logprobs != null)
             {
-                if (Stop != null)
-                {
-                    writer.WritePropertyName("stop"u8);
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteNumberValue(Logprobs.Value);
+            }
+            else
+            {
+                writer.WriteNull("logprobs");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(MaxTokens))
+        {
+            if (MaxTokens != null)
+            {
+                writer.WritePropertyName("max_tokens"u8);
+                writer.WriteNumberValue(MaxTokens.Value);
+            }
+            else
+            {
+                writer.WriteNull("max_tokens");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
+        {
+            if (N != null)
+            {
+                writer.WritePropertyName("n"u8);
+                writer.WriteNumberValue(N.Value);
+            }
+            else
+            {
+                writer.WriteNull("n");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("presence_penalty") != true && Optional.IsDefined(PresencePenalty))
+        {
+            if (PresencePenalty != null)
+            {
+                writer.WritePropertyName("presence_penalty"u8);
+                writer.WriteNumberValue(PresencePenalty.Value);
+            }
+            else
+            {
+                writer.WriteNull("presence_penalty");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("seed") != true && Optional.IsDefined(Seed))
+        {
+            if (Seed != null)
+            {
+                writer.WritePropertyName("seed"u8);
+                writer.WriteNumberValue(Seed.Value);
+            }
+            else
+            {
+                writer.WriteNull("seed");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("stop") != true && Optional.IsDefined(Stop))
+        {
+            if (Stop != null)
+            {
+                writer.WritePropertyName("stop"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Stop);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(Stop))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(Stop))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
-                else
-                {
-                    writer.WriteNull("stop");
-                }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stream") != true && Optional.IsDefined(Stream))
+            else
             {
-                if (Stream != null)
-                {
-                    writer.WritePropertyName("stream"u8);
-                    writer.WriteBooleanValue(Stream.Value);
-                }
-                else
-                {
-                    writer.WriteNull("stream");
-                }
+                writer.WriteNull("stop");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stream_options") != true && Optional.IsDefined(StreamOptions))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("stream") != true && Optional.IsDefined(Stream))
+        {
+            if (Stream != null)
             {
-                if (StreamOptions != null)
-                {
-                    writer.WritePropertyName("stream_options"u8);
-                    writer.WriteObjectValue(StreamOptions, options);
-                }
-                else
-                {
-                    writer.WriteNull("stream_options");
-                }
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("suffix") != true && Optional.IsDefined(Suffix))
+            else
             {
-                if (Suffix != null)
-                {
-                    writer.WritePropertyName("suffix"u8);
-                    writer.WriteStringValue(Suffix);
-                }
-                else
-                {
-                    writer.WriteNull("suffix");
-                }
+                writer.WriteNull("stream");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("stream_options") != true && Optional.IsDefined(StreamOptions))
+        {
+            if (StreamOptions != null)
             {
-                if (Temperature != null)
-                {
-                    writer.WritePropertyName("temperature"u8);
-                    writer.WriteNumberValue(Temperature.Value);
-                }
-                else
-                {
-                    writer.WriteNull("temperature");
-                }
+                writer.WritePropertyName("stream_options"u8);
+                writer.WriteObjectValue(StreamOptions, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(TopP))
+            else
             {
-                if (TopP != null)
-                {
-                    writer.WritePropertyName("top_p"u8);
-                    writer.WriteNumberValue(TopP.Value);
-                }
-                else
-                {
-                    writer.WriteNull("top_p");
-                }
+                writer.WriteNull("stream_options");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(User))
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("suffix") != true && Optional.IsDefined(Suffix))
+        {
+            if (Suffix != null)
             {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WritePropertyName("suffix"u8);
+                writer.WriteStringValue(Suffix);
             }
-            if (SerializedAdditionalRawData != null)
+            else
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WriteNull("suffix");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+        {
+            if (Temperature != null)
+            {
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature.Value);
+            }
+            else
+            {
+                writer.WriteNull("temperature");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(TopP))
+        {
+            if (TopP != null)
+            {
+                writer.WritePropertyName("top_p"u8);
+                writer.WriteNumberValue(TopP.Value);
+            }
+            else
+            {
+                writer.WriteNull("top_p");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(User))
+        {
+            writer.WritePropertyName("user"u8);
+            writer.WriteStringValue(User);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalCreateCompletionRequest IJsonModel<InternalCreateCompletionRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support reading '{format}' format.");
         }
 
-        InternalCreateCompletionRequest IJsonModel<InternalCreateCompletionRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
+    }
+
+    internal static InternalCreateCompletionRequest DeserializeInternalCreateCompletionRequest(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        InternalCreateCompletionRequestModel model = default;
+        BinaryData prompt = default;
+        int? bestOf = default;
+        bool? echo = default;
+        float? frequencyPenalty = default;
+        IDictionary<string, int> logitBias = default;
+        int? logprobs = default;
+        int? maxTokens = default;
+        int? n = default;
+        float? presencePenalty = default;
+        long? seed = default;
+        BinaryData stop = default;
+        bool? stream = default;
+        InternalChatCompletionStreamOptions streamOptions = default;
+        string suffix = default;
+        float? temperature = default;
+        float? topP = default;
+        string user = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("model"u8))
             {
-                throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support reading '{format}' format.");
+                model = new InternalCreateCompletionRequestModel(property.Value.GetString());
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
-        }
-
-        internal static InternalCreateCompletionRequest DeserializeInternalCreateCompletionRequest(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("prompt"u8))
             {
-                return null;
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    prompt = null;
+                    continue;
+                }
+                prompt = BinaryData.FromString(property.Value.GetRawText());
+                continue;
             }
-            InternalCreateCompletionRequestModel model = default;
-            BinaryData prompt = default;
-            int? bestOf = default;
-            bool? echo = default;
-            float? frequencyPenalty = default;
-            IDictionary<string, int> logitBias = default;
-            int? logprobs = default;
-            int? maxTokens = default;
-            int? n = default;
-            float? presencePenalty = default;
-            long? seed = default;
-            BinaryData stop = default;
-            bool? stream = default;
-            InternalChatCompletionStreamOptions streamOptions = default;
-            string suffix = default;
-            float? temperature = default;
-            float? topP = default;
-            string user = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("best_of"u8))
             {
-                if (property.NameEquals("model"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    model = new InternalCreateCompletionRequestModel(property.Value.GetString());
+                    bestOf = null;
                     continue;
                 }
-                if (property.NameEquals("prompt"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        prompt = null;
-                        continue;
-                    }
-                    prompt = BinaryData.FromString(property.Value.GetRawText());
-                    continue;
-                }
-                if (property.NameEquals("best_of"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        bestOf = null;
-                        continue;
-                    }
-                    bestOf = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("echo"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        echo = null;
-                        continue;
-                    }
-                    echo = property.Value.GetBoolean();
-                    continue;
-                }
-                if (property.NameEquals("frequency_penalty"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        frequencyPenalty = null;
-                        continue;
-                    }
-                    frequencyPenalty = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("logit_bias"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, int> dictionary = new Dictionary<string, int>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetInt32());
-                    }
-                    logitBias = dictionary;
-                    continue;
-                }
-                if (property.NameEquals("logprobs"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        logprobs = null;
-                        continue;
-                    }
-                    logprobs = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("max_tokens"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        maxTokens = null;
-                        continue;
-                    }
-                    maxTokens = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("n"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        n = null;
-                        continue;
-                    }
-                    n = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("presence_penalty"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        presencePenalty = null;
-                        continue;
-                    }
-                    presencePenalty = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("seed"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        seed = null;
-                        continue;
-                    }
-                    seed = property.Value.GetInt64();
-                    continue;
-                }
-                if (property.NameEquals("stop"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        stop = null;
-                        continue;
-                    }
-                    stop = BinaryData.FromString(property.Value.GetRawText());
-                    continue;
-                }
-                if (property.NameEquals("stream"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        stream = null;
-                        continue;
-                    }
-                    stream = property.Value.GetBoolean();
-                    continue;
-                }
-                if (property.NameEquals("stream_options"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        streamOptions = null;
-                        continue;
-                    }
-                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("suffix"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        suffix = null;
-                        continue;
-                    }
-                    suffix = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("temperature"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        temperature = null;
-                        continue;
-                    }
-                    temperature = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("top_p"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        topP = null;
-                        continue;
-                    }
-                    topP = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("user"u8))
-                {
-                    user = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                bestOf = property.Value.GetInt32();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateCompletionRequest(
-                model,
-                prompt,
-                bestOf,
-                echo,
-                frequencyPenalty,
-                logitBias ?? new ChangeTrackingDictionary<string, int>(),
-                logprobs,
-                maxTokens,
-                n,
-                presencePenalty,
-                seed,
-                stop,
-                stream,
-                streamOptions,
-                suffix,
-                temperature,
-                topP,
-                user,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalCreateCompletionRequest>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("echo"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    echo = null;
+                    continue;
+                }
+                echo = property.Value.GetBoolean();
+                continue;
             }
-        }
-
-        InternalCreateCompletionRequest IPersistableModel<InternalCreateCompletionRequest>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("frequency_penalty"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support reading '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    frequencyPenalty = null;
+                    continue;
+                }
+                frequencyPenalty = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("logit_bias"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                Dictionary<string, int> dictionary = new Dictionary<string, int>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetInt32());
+                }
+                logitBias = dictionary;
+                continue;
+            }
+            if (property.NameEquals("logprobs"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    logprobs = null;
+                    continue;
+                }
+                logprobs = property.Value.GetInt32();
+                continue;
+            }
+            if (property.NameEquals("max_tokens"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    maxTokens = null;
+                    continue;
+                }
+                maxTokens = property.Value.GetInt32();
+                continue;
+            }
+            if (property.NameEquals("n"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    n = null;
+                    continue;
+                }
+                n = property.Value.GetInt32();
+                continue;
+            }
+            if (property.NameEquals("presence_penalty"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    presencePenalty = null;
+                    continue;
+                }
+                presencePenalty = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("seed"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    seed = null;
+                    continue;
+                }
+                seed = property.Value.GetInt64();
+                continue;
+            }
+            if (property.NameEquals("stop"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    stop = null;
+                    continue;
+                }
+                stop = BinaryData.FromString(property.Value.GetRawText());
+                continue;
+            }
+            if (property.NameEquals("stream"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    stream = null;
+                    continue;
+                }
+                stream = property.Value.GetBoolean();
+                continue;
+            }
+            if (property.NameEquals("stream_options"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    streamOptions = null;
+                    continue;
+                }
+                streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("suffix"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    suffix = null;
+                    continue;
+                }
+                suffix = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("temperature"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    temperature = null;
+                    continue;
+                }
+                temperature = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("top_p"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    topP = null;
+                    continue;
+                }
+                topP = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("user"u8))
+            {
+                user = property.Value.GetString();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalCreateCompletionRequest(
+            model,
+            prompt,
+            bestOf,
+            echo,
+            frequencyPenalty,
+            logitBias ?? new ChangeTrackingDictionary<string, int>(),
+            logprobs,
+            maxTokens,
+            n,
+            presencePenalty,
+            seed,
+            stop,
+            stream,
+            streamOptions,
+            suffix,
+            temperature,
+            topP,
+            user,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalCreateCompletionRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalCreateCompletionRequest>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalCreateCompletionRequest FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionRequest(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalCreateCompletionRequest IPersistableModel<InternalCreateCompletionRequest>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalCreateCompletionRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalCreateCompletionRequest FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalCreateCompletionRequest(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

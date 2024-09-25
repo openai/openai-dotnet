@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath
 {
-    internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath()
-        {
-        }
-
-        internal InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileId = fileId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string FileId { get; }
     }
+
+    internal InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileId = fileId;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string FileId { get; }
 }

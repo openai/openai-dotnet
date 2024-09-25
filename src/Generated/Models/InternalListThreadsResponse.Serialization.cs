@@ -8,186 +8,185 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalListThreadsResponse : IJsonModel<InternalListThreadsResponse>
-    {
-        void IJsonModel<InternalListThreadsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+internal partial class InternalListThreadsResponse : IJsonModel<InternalListThreadsResponse>
+{
+    void IJsonModel<InternalListThreadsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+        {
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (var item in Data)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("data") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("first_id") != true)
+        {
+            writer.WritePropertyName("first_id"u8);
+            writer.WriteStringValue(FirstId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("last_id") != true)
+        {
+            writer.WritePropertyName("last_id"u8);
+            writer.WriteStringValue(LastId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+        {
+            writer.WritePropertyName("has_more"u8);
+            writer.WriteBooleanValue(HasMore);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (var item in Data)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    writer.WriteObjectValue(item, options);
+                    continue;
                 }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("first_id") != true)
-            {
-                writer.WritePropertyName("first_id"u8);
-                writer.WriteStringValue(FirstId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("last_id") != true)
-            {
-                writer.WritePropertyName("last_id"u8);
-                writer.WriteStringValue(LastId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
-            {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalListThreadsResponse IJsonModel<InternalListThreadsResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support reading '{format}' format.");
         }
 
-        InternalListThreadsResponse IJsonModel<InternalListThreadsResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalListThreadsResponse(document.RootElement, options);
+    }
+
+    internal static InternalListThreadsResponse DeserializeInternalListThreadsResponse(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        InternalListThreadsResponseObject @object = default;
+        IReadOnlyList<AssistantThread> data = default;
+        string firstId = default;
+        string lastId = default;
+        bool hasMore = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("object"u8))
             {
-                throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support reading '{format}' format.");
+                @object = new InternalListThreadsResponseObject(property.Value.GetString());
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalListThreadsResponse(document.RootElement, options);
-        }
-
-        internal static InternalListThreadsResponse DeserializeInternalListThreadsResponse(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("data"u8))
             {
-                return null;
+                List<AssistantThread> array = new List<AssistantThread>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(AssistantThread.DeserializeAssistantThread(item, options));
+                }
+                data = array;
+                continue;
             }
-            InternalListThreadsResponseObject @object = default;
-            IReadOnlyList<AssistantThread> data = default;
-            string firstId = default;
-            string lastId = default;
-            bool hasMore = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("first_id"u8))
             {
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalListThreadsResponseObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("data"u8))
-                {
-                    List<AssistantThread> array = new List<AssistantThread>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(AssistantThread.DeserializeAssistantThread(item, options));
-                    }
-                    data = array;
-                    continue;
-                }
-                if (property.NameEquals("first_id"u8))
-                {
-                    firstId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("last_id"u8))
-                {
-                    lastId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("has_more"u8))
-                {
-                    hasMore = property.Value.GetBoolean();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                firstId = property.Value.GetString();
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalListThreadsResponse(
-                @object,
-                data,
-                firstId,
-                lastId,
-                hasMore,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalListThreadsResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("last_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support writing '{options.Format}' format.");
+                lastId = property.Value.GetString();
+                continue;
             }
-        }
-
-        InternalListThreadsResponse IPersistableModel<InternalListThreadsResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("has_more"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalListThreadsResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support reading '{options.Format}' format.");
+                hasMore = property.Value.GetBoolean();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalListThreadsResponse(
+            @object,
+            data,
+            firstId,
+            lastId,
+            hasMore,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<InternalListThreadsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<InternalListThreadsResponse>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalListThreadsResponse FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalListThreadsResponse(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    InternalListThreadsResponse IPersistableModel<InternalListThreadsResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalListThreadsResponse>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalListThreadsResponse(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalListThreadsResponse)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<InternalListThreadsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalListThreadsResponse FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalListThreadsResponse(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

@@ -11,12 +11,8 @@ namespace OpenAI.Tests.Moderations;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Moderations")]
-public class ModerationsTests : SyncAsyncTestBase
+public class ModerationsTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public ModerationsTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     [Test]
     public async Task ClassifySingleInput()
     {

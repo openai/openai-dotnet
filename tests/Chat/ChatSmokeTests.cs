@@ -19,12 +19,8 @@ namespace OpenAI.Tests.Chat;
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
 [Category("Smoke")]
-public class ChatSmokeTests : SyncAsyncTestBase
+public class ChatSmokeTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public ChatSmokeTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     [Test]
     public async Task SmokeTest()
     {

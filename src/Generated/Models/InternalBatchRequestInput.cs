@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Batch
+namespace OpenAI.Batch;
+
+internal partial class InternalBatchRequestInput
 {
-    internal partial class InternalBatchRequestInput
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalBatchRequestInput()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalBatchRequestInput()
-        {
-        }
-
-        internal InternalBatchRequestInput(string customId, InternalBatchRequestInputMethod? method, Uri url, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            CustomId = customId;
-            Method = method;
-            Url = url;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string CustomId { get; set; }
-        public InternalBatchRequestInputMethod? Method { get; set; }
-        public Uri Url { get; set; }
     }
+
+    internal InternalBatchRequestInput(string customId, InternalBatchRequestInputMethod? method, Uri url, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        CustomId = customId;
+        Method = method;
+        Url = url;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string CustomId { get; set; }
+    public InternalBatchRequestInputMethod? Method { get; set; }
+    public Uri Url { get; set; }
 }

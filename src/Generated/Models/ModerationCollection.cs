@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace OpenAI.Moderations
+namespace OpenAI.Moderations;
+
+public partial class ModerationCollection : ReadOnlyCollection<ModerationResult>
 {
-    public partial class ModerationCollection : ReadOnlyCollection<ModerationResult>
-    {
-        public string Id { get; }
-        public string Model { get; }
-    }
+    public string Id { get; }
+    public string Model { get; }
 }

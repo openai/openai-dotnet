@@ -5,34 +5,33 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public readonly partial struct MessageStatus : IEquatable<MessageStatus>
 {
-    public readonly partial struct MessageStatus : IEquatable<MessageStatus>
+    private readonly string _value;
+
+    public MessageStatus(string value)
     {
-        private readonly string _value;
-
-        public MessageStatus(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string InProgressValue = "in_progress";
-        private const string IncompleteValue = "incomplete";
-        private const string CompletedValue = "completed";
-
-        public static MessageStatus InProgress { get; } = new MessageStatus(InProgressValue);
-        public static MessageStatus Incomplete { get; } = new MessageStatus(IncompleteValue);
-        public static MessageStatus Completed { get; } = new MessageStatus(CompletedValue);
-        public static bool operator ==(MessageStatus left, MessageStatus right) => left.Equals(right);
-        public static bool operator !=(MessageStatus left, MessageStatus right) => !left.Equals(right);
-        public static implicit operator MessageStatus(string value) => new MessageStatus(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is MessageStatus other && Equals(other);
-        public bool Equals(MessageStatus other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string InProgressValue = "in_progress";
+    private const string IncompleteValue = "incomplete";
+    private const string CompletedValue = "completed";
+
+    public static MessageStatus InProgress { get; } = new MessageStatus(InProgressValue);
+    public static MessageStatus Incomplete { get; } = new MessageStatus(IncompleteValue);
+    public static MessageStatus Completed { get; } = new MessageStatus(CompletedValue);
+    public static bool operator ==(MessageStatus left, MessageStatus right) => left.Equals(right);
+    public static bool operator !=(MessageStatus left, MessageStatus right) => !left.Equals(right);
+    public static implicit operator MessageStatus(string value) => new MessageStatus(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is MessageStatus other && Equals(other);
+    public bool Equals(MessageStatus other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

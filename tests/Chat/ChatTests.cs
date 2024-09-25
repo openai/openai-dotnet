@@ -5,13 +5,11 @@ using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -25,12 +23,8 @@ namespace OpenAI.Tests.Chat;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
-public class ChatTests : SyncAsyncTestBase
+public class ChatTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public ChatTests(bool isAsync) : base(isAsync)
-    {
-    }
-
     [Test]
     public async Task HelloWorldChat()
     {

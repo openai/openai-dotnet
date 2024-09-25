@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalAssistantsNamedToolChoiceFunction
 {
-    internal partial class InternalAssistantsNamedToolChoiceFunction
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalAssistantsNamedToolChoiceFunction(string name)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalAssistantsNamedToolChoiceFunction(string name)
-        {
-            Argument.AssertNotNull(name, nameof(name));
+        Argument.AssertNotNull(name, nameof(name));
 
-            Name = name;
-        }
-
-        internal InternalAssistantsNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Name = name;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalAssistantsNamedToolChoiceFunction()
-        {
-        }
-
-        public string Name { get; set; }
+        Name = name;
     }
+
+    internal InternalAssistantsNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Name = name;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalAssistantsNamedToolChoiceFunction()
+    {
+    }
+
+    public string Name { get; set; }
 }

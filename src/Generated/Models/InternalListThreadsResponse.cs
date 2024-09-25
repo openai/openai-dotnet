@@ -6,42 +6,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalListThreadsResponse
 {
-    internal partial class InternalListThreadsResponse
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalListThreadsResponse(IEnumerable<AssistantThread> data, string firstId, string lastId, bool hasMore)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListThreadsResponse(IEnumerable<AssistantThread> data, string firstId, string lastId, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(firstId, nameof(firstId));
-            Argument.AssertNotNull(lastId, nameof(lastId));
+        Argument.AssertNotNull(data, nameof(data));
+        Argument.AssertNotNull(firstId, nameof(firstId));
+        Argument.AssertNotNull(lastId, nameof(lastId));
 
-            Data = data.ToList();
-            FirstId = firstId;
-            LastId = lastId;
-            HasMore = hasMore;
-        }
-
-        internal InternalListThreadsResponse(InternalListThreadsResponseObject @object, IReadOnlyList<AssistantThread> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Object = @object;
-            Data = data;
-            FirstId = firstId;
-            LastId = lastId;
-            HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalListThreadsResponse()
-        {
-        }
-
-        public InternalListThreadsResponseObject Object { get; } = InternalListThreadsResponseObject.List;
-
-        public IReadOnlyList<AssistantThread> Data { get; }
-        public string FirstId { get; }
-        public string LastId { get; }
-        public bool HasMore { get; }
+        Data = data.ToList();
+        FirstId = firstId;
+        LastId = lastId;
+        HasMore = hasMore;
     }
+
+    internal InternalListThreadsResponse(InternalListThreadsResponseObject @object, IReadOnlyList<AssistantThread> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Object = @object;
+        Data = data;
+        FirstId = firstId;
+        LastId = lastId;
+        HasMore = hasMore;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalListThreadsResponse()
+    {
+    }
+
+    public InternalListThreadsResponseObject Object { get; } = InternalListThreadsResponseObject.List;
+
+    public IReadOnlyList<AssistantThread> Data { get; }
+    public string FirstId { get; }
+    public string LastId { get; }
+    public bool HasMore { get; }
 }

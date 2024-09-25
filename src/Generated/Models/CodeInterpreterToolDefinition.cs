@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    public partial class CodeInterpreterToolDefinition : ToolDefinition
-    {
-        public CodeInterpreterToolDefinition()
-        {
-            Type = "code_interpreter";
-        }
+namespace OpenAI.Assistants;
 
-        internal CodeInterpreterToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+public partial class CodeInterpreterToolDefinition : ToolDefinition
+{
+    public CodeInterpreterToolDefinition()
+    {
+        Type = "code_interpreter";
+    }
+
+    internal CodeInterpreterToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
     }
 }

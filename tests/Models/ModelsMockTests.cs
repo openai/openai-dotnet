@@ -12,14 +12,9 @@ namespace OpenAI.Tests.Models;
 [Parallelizable(ParallelScope.All)]
 [Category("Models")]
 [Category("Smoke")]
-public class ModelsMockTests : SyncAsyncTestBase
+public class ModelsMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public ModelsMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [Test]
     public async Task GetModelDeserializesCreatedAt()

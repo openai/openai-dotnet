@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreModificationOptions
 {
-    public partial class VectorStoreModificationOptions
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public VectorStoreModificationOptions()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public VectorStoreModificationOptions()
-        {
-            Metadata = new ChangeTrackingDictionary<string, string>();
-        }
-
-        internal VectorStoreModificationOptions(string name, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Name = name;
-            ExpirationPolicy = expirationPolicy;
-            Metadata = metadata;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public string Name { get; set; }
-        public IDictionary<string, string> Metadata { get; set; }
+        Metadata = new ChangeTrackingDictionary<string, string>();
     }
+
+    internal VectorStoreModificationOptions(string name, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Name = name;
+        ExpirationPolicy = expirationPolicy;
+        Metadata = metadata;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public string Name { get; set; }
+    public IDictionary<string, string> Metadata { get; set; }
 }

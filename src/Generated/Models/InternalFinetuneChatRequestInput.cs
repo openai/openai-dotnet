@@ -6,30 +6,29 @@ using System;
 using System.Collections.Generic;
 using OpenAI.Chat;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalFinetuneChatRequestInput
 {
-    internal partial class InternalFinetuneChatRequestInput
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalFinetuneChatRequestInput()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalFinetuneChatRequestInput()
-        {
-            Messages = new ChangeTrackingList<BinaryData>();
-            Tools = new ChangeTrackingList<ChatTool>();
-            Functions = new ChangeTrackingList<ChatFunction>();
-        }
-
-        internal InternalFinetuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Messages = messages;
-            Tools = tools;
-            ParallelToolCalls = parallelToolCalls;
-            Functions = functions;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public IList<BinaryData> Messages { get; }
-        public IList<ChatTool> Tools { get; }
-        public bool? ParallelToolCalls { get; set; }
-        public IList<ChatFunction> Functions { get; }
+        Messages = new ChangeTrackingList<BinaryData>();
+        Tools = new ChangeTrackingList<ChatTool>();
+        Functions = new ChangeTrackingList<ChatFunction>();
     }
+
+    internal InternalFinetuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Messages = messages;
+        Tools = tools;
+        ParallelToolCalls = parallelToolCalls;
+        Functions = functions;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public IList<BinaryData> Messages { get; }
+    public IList<ChatTool> Tools { get; }
+    public bool? ParallelToolCalls { get; set; }
+    public IList<ChatFunction> Functions { get; }
 }

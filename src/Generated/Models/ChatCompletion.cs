@@ -6,44 +6,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ChatCompletion
 {
-    public partial class ChatCompletion
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal ChatCompletion(string id, IEnumerable<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ChatCompletion(string id, IEnumerable<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(choices, nameof(choices));
-            Argument.AssertNotNull(model, nameof(model));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(choices, nameof(choices));
+        Argument.AssertNotNull(model, nameof(model));
 
-            Id = id;
-            Choices = choices.ToList();
-            CreatedAt = createdAt;
-            Model = model;
-        }
-
-        internal ChatCompletion(string id, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model, InternalCreateChatCompletionResponseServiceTier? serviceTier, string systemFingerprint, InternalCreateChatCompletionResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            Choices = choices;
-            CreatedAt = createdAt;
-            Model = model;
-            _serviceTier = serviceTier;
-            SystemFingerprint = systemFingerprint;
-            Object = @object;
-            Usage = usage;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ChatCompletion()
-        {
-        }
-
-        public string Id { get; }
-        public string Model { get; }
-        public string SystemFingerprint { get; }
-
-        public ChatTokenUsage Usage { get; }
+        Id = id;
+        Choices = choices.ToList();
+        CreatedAt = createdAt;
+        Model = model;
     }
+
+    internal ChatCompletion(string id, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model, InternalCreateChatCompletionResponseServiceTier? serviceTier, string systemFingerprint, InternalCreateChatCompletionResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        Choices = choices;
+        CreatedAt = createdAt;
+        Model = model;
+        _serviceTier = serviceTier;
+        SystemFingerprint = systemFingerprint;
+        Object = @object;
+        Usage = usage;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal ChatCompletion()
+    {
+    }
+
+    public string Id { get; }
+    public string Model { get; }
+    public string SystemFingerprint { get; }
+
+    public ChatTokenUsage Usage { get; }
 }

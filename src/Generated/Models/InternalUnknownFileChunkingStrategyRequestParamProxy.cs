@@ -5,16 +5,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
-{
-    internal partial class InternalUnknownFileChunkingStrategyRequestParamProxy : InternalFileChunkingStrategyRequestParam
-    {
-        internal InternalUnknownFileChunkingStrategyRequestParamProxy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+namespace OpenAI.VectorStores;
 
-        internal InternalUnknownFileChunkingStrategyRequestParamProxy()
-        {
-        }
+internal partial class InternalUnknownFileChunkingStrategyRequestParamProxy : InternalFileChunkingStrategyRequestParam
+{
+    internal InternalUnknownFileChunkingStrategyRequestParamProxy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
+    }
+
+    internal InternalUnknownFileChunkingStrategyRequestParamProxy()
+    {
     }
 }

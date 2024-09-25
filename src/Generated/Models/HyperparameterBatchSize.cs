@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal readonly partial struct HyperparameterBatchSize : IEquatable<HyperparameterBatchSize>
 {
-    internal readonly partial struct HyperparameterBatchSize : IEquatable<HyperparameterBatchSize>
+    private readonly string _value;
+
+    public HyperparameterBatchSize(string value)
     {
-        private readonly string _value;
-
-        public HyperparameterBatchSize(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string AutoValue = "auto";
-
-        public static HyperparameterBatchSize Auto { get; } = new HyperparameterBatchSize(AutoValue);
-        public static bool operator ==(HyperparameterBatchSize left, HyperparameterBatchSize right) => left.Equals(right);
-        public static bool operator !=(HyperparameterBatchSize left, HyperparameterBatchSize right) => !left.Equals(right);
-        public static implicit operator HyperparameterBatchSize(string value) => new HyperparameterBatchSize(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is HyperparameterBatchSize other && Equals(other);
-        public bool Equals(HyperparameterBatchSize other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string AutoValue = "auto";
+
+    public static HyperparameterBatchSize Auto { get; } = new HyperparameterBatchSize(AutoValue);
+    public static bool operator ==(HyperparameterBatchSize left, HyperparameterBatchSize right) => left.Equals(right);
+    public static bool operator !=(HyperparameterBatchSize left, HyperparameterBatchSize right) => !left.Equals(right);
+    public static implicit operator HyperparameterBatchSize(string value) => new HyperparameterBatchSize(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is HyperparameterBatchSize other && Equals(other);
+    public bool Equals(HyperparameterBatchSize other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

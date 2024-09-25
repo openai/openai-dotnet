@@ -5,10 +5,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ChatMessageContentPart
 {
-    public partial class ChatMessageContentPart
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-    }
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 }

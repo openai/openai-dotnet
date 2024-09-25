@@ -8,141 +8,140 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.VectorStores
-{
-    internal partial class InternalCreateVectorStoreFileRequest : IJsonModel<InternalCreateVectorStoreFileRequest>
-    {
-        void IJsonModel<InternalCreateVectorStoreFileRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.VectorStores;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("file_id") != true)
+internal partial class InternalCreateVectorStoreFileRequest : IJsonModel<InternalCreateVectorStoreFileRequest>
+{
+    void IJsonModel<InternalCreateVectorStoreFileRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("file_id") != true)
+        {
+            writer.WritePropertyName("file_id"u8);
+            writer.WriteStringValue(FileId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
+        {
+            writer.WritePropertyName("chunking_strategy"u8);
+            writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
-            {
-                writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalCreateVectorStoreFileRequest IJsonModel<InternalCreateVectorStoreFileRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support reading '{format}' format.");
         }
 
-        InternalCreateVectorStoreFileRequest IJsonModel<InternalCreateVectorStoreFileRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement, options);
+    internal static InternalCreateVectorStoreFileRequest DeserializeInternalCreateVectorStoreFileRequest(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalCreateVectorStoreFileRequest DeserializeInternalCreateVectorStoreFileRequest(JsonElement element, ModelReaderWriterOptions options = null)
+        string fileId = default;
+        FileChunkingStrategy chunkingStrategy = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("file_id"u8))
             {
-                return null;
+                fileId = property.Value.GetString();
+                continue;
             }
-            string fileId = default;
-            FileChunkingStrategy chunkingStrategy = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("chunking_strategy"u8))
             {
-                if (property.NameEquals("file_id"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    fileId = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("chunking_strategy"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateVectorStoreFileRequest(fileId, chunkingStrategy, serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalCreateVectorStoreFileRequest>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support writing '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalCreateVectorStoreFileRequest(fileId, chunkingStrategy, serializedAdditionalRawData);
+    }
 
-        InternalCreateVectorStoreFileRequest IPersistableModel<InternalCreateVectorStoreFileRequest>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<InternalCreateVectorStoreFileRequest>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<InternalCreateVectorStoreFileRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    InternalCreateVectorStoreFileRequest IPersistableModel<InternalCreateVectorStoreFileRequest>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileRequest>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalCreateVectorStoreFileRequest FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<InternalCreateVectorStoreFileRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalCreateVectorStoreFileRequest FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalCreateVectorStoreFileRequest(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

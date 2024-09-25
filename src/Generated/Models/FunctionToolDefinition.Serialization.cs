@@ -8,96 +8,95 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
 {
-    public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
+    FunctionToolDefinition IJsonModel<FunctionToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        FunctionToolDefinition IJsonModel<FunctionToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFunctionToolDefinition(document.RootElement, options);
+            throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support reading '{format}' format.");
         }
 
-        internal static FunctionToolDefinition DeserializeFunctionToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeFunctionToolDefinition(document.RootElement, options);
+    }
 
-            if (element.ValueKind == JsonValueKind.Null)
+    internal static FunctionToolDefinition DeserializeFunctionToolDefinition(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+        InternalFunctionDefinition function = default;
+        string type = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("function"u8))
             {
-                return null;
+                function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(property.Value, options);
+                continue;
             }
-            InternalFunctionDefinition function = default;
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("type"u8))
             {
-                if (property.NameEquals("function"u8))
+                type = property.Value.GetString();
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+            }
+        }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new FunctionToolDefinition(type, serializedAdditionalRawData, function);
+    }
+
+    BinaryData IPersistableModel<FunctionToolDefinition>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support writing '{options.Format}' format.");
+        }
+    }
+
+    FunctionToolDefinition IPersistableModel<FunctionToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
+        {
+            case "J":
                 {
-                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(property.Value, options);
-                    continue;
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeFunctionToolDefinition(document.RootElement, options);
                 }
-                if (property.NameEquals("type"u8))
-                {
-                    type = property.Value.GetString();
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
-            }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new FunctionToolDefinition(type, serializedAdditionalRawData, function);
+            default:
+                throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        BinaryData IPersistableModel<FunctionToolDefinition>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
+    string IPersistableModel<FunctionToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support writing '{options.Format}' format.");
-            }
-        }
+    internal static new FunctionToolDefinition FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeFunctionToolDefinition(document.RootElement);
+    }
 
-        FunctionToolDefinition IPersistableModel<FunctionToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeFunctionToolDefinition(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FunctionToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static new FunctionToolDefinition FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeFunctionToolDefinition(document.RootElement);
-        }
-
-        internal override BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal override BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

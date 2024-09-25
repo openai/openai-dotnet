@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails
 {
-    internal partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails
+    internal InternalRunStepDetailsMessageCreationObject(InternalRunStepDetailsMessageCreationObjectMessageCreation messageCreation)
     {
-        internal InternalRunStepDetailsMessageCreationObject(InternalRunStepDetailsMessageCreationObjectMessageCreation messageCreation)
-        {
-            Argument.AssertNotNull(messageCreation, nameof(messageCreation));
+        Argument.AssertNotNull(messageCreation, nameof(messageCreation));
 
-            Type = "message_creation";
-            _messageCreation = messageCreation;
-        }
+        Type = "message_creation";
+        _messageCreation = messageCreation;
+    }
 
-        internal InternalRunStepDetailsMessageCreationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDetailsMessageCreationObjectMessageCreation messageCreation) : base(type, serializedAdditionalRawData)
-        {
-            _messageCreation = messageCreation;
-        }
+    internal InternalRunStepDetailsMessageCreationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalRunStepDetailsMessageCreationObjectMessageCreation messageCreation) : base(type, serializedAdditionalRawData)
+    {
+        _messageCreation = messageCreation;
+    }
 
-        internal InternalRunStepDetailsMessageCreationObject()
-        {
-        }
+    internal InternalRunStepDetailsMessageCreationObject()
+    {
     }
 }

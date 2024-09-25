@@ -5,25 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class HyperparameterOptions
 {
-    internal partial class HyperparameterOptions
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public HyperparameterOptions()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public HyperparameterOptions()
-        {
-        }
-
-        internal HyperparameterOptions(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            NEpochs = nEpochs;
-            BatchSize = batchSize;
-            LearningRateMultiplier = learningRateMultiplier;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public BinaryData NEpochs { get; set; }
-        public BinaryData BatchSize { get; set; }
-        public BinaryData LearningRateMultiplier { get; set; }
     }
+
+    internal HyperparameterOptions(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        NEpochs = nEpochs;
+        BatchSize = batchSize;
+        LearningRateMultiplier = learningRateMultiplier;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public BinaryData NEpochs { get; set; }
+    public BinaryData BatchSize { get; set; }
+    public BinaryData LearningRateMultiplier { get; set; }
 }

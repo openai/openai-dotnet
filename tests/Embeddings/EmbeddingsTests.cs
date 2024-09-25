@@ -13,13 +13,9 @@ namespace OpenAI.Tests.Embeddings;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Embeddings")]
-public class EmbeddingsTests : SyncAsyncTestBase
+public class EmbeddingsTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static EmbeddingClient GetTestClient() => GetTestClient<EmbeddingClient>(TestScenario.Embeddings);
-
-    public EmbeddingsTests(bool isAsync) : base(isAsync)
-    {
-    }
 
     public enum EmbeddingsInputKind
     {

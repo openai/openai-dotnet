@@ -6,66 +6,65 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class ThreadMessage
 {
-    public partial class ThreadMessage
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, IEnumerable<MessageContent> content, string assistantId, string runId, IEnumerable<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, IEnumerable<MessageContent> content, string assistantId, string runId, IEnumerable<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(threadId, nameof(threadId));
-            Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(threadId, nameof(threadId));
+        Argument.AssertNotNull(content, nameof(content));
 
-            Id = id;
-            CreatedAt = createdAt;
-            ThreadId = threadId;
-            Status = status;
-            IncompleteDetails = incompleteDetails;
-            CompletedAt = completedAt;
-            IncompleteAt = incompleteAt;
-            Role = role;
-            Content = content.ToList();
-            AssistantId = assistantId;
-            RunId = runId;
-            Attachments = attachments?.ToList();
-            Metadata = metadata;
-        }
-
-        internal ThreadMessage(string id, InternalMessageObjectObject @object, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyList<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            Object = @object;
-            CreatedAt = createdAt;
-            ThreadId = threadId;
-            Status = status;
-            IncompleteDetails = incompleteDetails;
-            CompletedAt = completedAt;
-            IncompleteAt = incompleteAt;
-            Role = role;
-            Content = content;
-            AssistantId = assistantId;
-            RunId = runId;
-            Attachments = attachments;
-            Metadata = metadata;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ThreadMessage()
-        {
-        }
-
-        public string Id { get; }
-
-        public DateTimeOffset CreatedAt { get; }
-        public string ThreadId { get; }
-        public MessageStatus Status { get; }
-        public MessageFailureDetails IncompleteDetails { get; }
-        public DateTimeOffset? CompletedAt { get; }
-        public DateTimeOffset? IncompleteAt { get; }
-        public IReadOnlyList<MessageContent> Content { get; }
-        public string AssistantId { get; }
-        public string RunId { get; }
-        public IReadOnlyDictionary<string, string> Metadata { get; }
+        Id = id;
+        CreatedAt = createdAt;
+        ThreadId = threadId;
+        Status = status;
+        IncompleteDetails = incompleteDetails;
+        CompletedAt = completedAt;
+        IncompleteAt = incompleteAt;
+        Role = role;
+        Content = content.ToList();
+        AssistantId = assistantId;
+        RunId = runId;
+        Attachments = attachments?.ToList();
+        Metadata = metadata;
     }
+
+    internal ThreadMessage(string id, InternalMessageObjectObject @object, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyList<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        Object = @object;
+        CreatedAt = createdAt;
+        ThreadId = threadId;
+        Status = status;
+        IncompleteDetails = incompleteDetails;
+        CompletedAt = completedAt;
+        IncompleteAt = incompleteAt;
+        Role = role;
+        Content = content;
+        AssistantId = assistantId;
+        RunId = runId;
+        Attachments = attachments;
+        Metadata = metadata;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal ThreadMessage()
+    {
+    }
+
+    public string Id { get; }
+
+    public DateTimeOffset CreatedAt { get; }
+    public string ThreadId { get; }
+    public MessageStatus Status { get; }
+    public MessageFailureDetails IncompleteDetails { get; }
+    public DateTimeOffset? CompletedAt { get; }
+    public DateTimeOffset? IncompleteAt { get; }
+    public IReadOnlyList<MessageContent> Content { get; }
+    public string AssistantId { get; }
+    public string RunId { get; }
+    public IReadOnlyDictionary<string, string> Metadata { get; }
 }

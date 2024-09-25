@@ -7,62 +7,61 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
 {
-    internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
+    InternalChatCompletionResponseMessage IJsonModel<InternalChatCompletionResponseMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
     {
-        InternalChatCompletionResponseMessage IJsonModel<InternalChatCompletionResponseMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
+            throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{format}' format.");
         }
 
-        BinaryData IPersistableModel<InternalChatCompletionResponseMessage>.Write(ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
+    }
+
+    BinaryData IPersistableModel<InternalChatCompletionResponseMessage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        InternalChatCompletionResponseMessage IPersistableModel<InternalChatCompletionResponseMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    InternalChatCompletionResponseMessage IPersistableModel<InternalChatCompletionResponseMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<InternalChatCompletionResponseMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    string IPersistableModel<InternalChatCompletionResponseMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalChatCompletionResponseMessage FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionResponseMessage(document.RootElement);
-        }
+    internal static InternalChatCompletionResponseMessage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalChatCompletionResponseMessage(document.RootElement);
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

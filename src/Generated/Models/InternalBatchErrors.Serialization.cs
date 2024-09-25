@@ -8,155 +8,154 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Batch
-{
-    internal partial class InternalBatchErrors : IJsonModel<InternalBatchErrors>
-    {
-        void IJsonModel<InternalBatchErrors>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Batch;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true && Optional.IsDefined(Object))
+internal partial class InternalBatchErrors : IJsonModel<InternalBatchErrors>
+{
+    void IJsonModel<InternalBatchErrors>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true && Optional.IsDefined(Object))
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.Value.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("data") != true && Optional.IsCollectionDefined(Data))
+        {
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (var item in Data)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.Value.ToString());
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("data") != true && Optional.IsCollectionDefined(Data))
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
             {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (var item in Data)
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {
-                    writer.WriteObjectValue(item, options);
+                    continue;
                 }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    InternalBatchErrors IJsonModel<InternalBatchErrors>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support reading '{format}' format.");
         }
 
-        InternalBatchErrors IJsonModel<InternalBatchErrors>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalBatchErrors(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalBatchErrors(document.RootElement, options);
+    internal static InternalBatchErrors DeserializeInternalBatchErrors(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static InternalBatchErrors DeserializeInternalBatchErrors(JsonElement element, ModelReaderWriterOptions options = null)
+        InternalBatchErrorsObject? @object = default;
+        IReadOnlyList<InternalBatchError> data = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
-            }
-            InternalBatchErrorsObject? @object = default;
-            IReadOnlyList<InternalBatchError> data = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                if (property.NameEquals("object"u8))
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    @object = new InternalBatchErrorsObject(property.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("data"u8))
+                @object = new InternalBatchErrorsObject(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("data"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<InternalBatchError> array = new List<InternalBatchError>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(InternalBatchError.DeserializeInternalBatchError(item, options));
-                    }
-                    data = array;
                     continue;
                 }
-                if (true)
+                List<InternalBatchError> array = new List<InternalBatchError>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    array.Add(InternalBatchError.DeserializeInternalBatchError(item, options));
                 }
+                data = array;
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalBatchErrors(@object, data ?? new ChangeTrackingList<InternalBatchError>(), serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<InternalBatchErrors>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support writing '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new InternalBatchErrors(@object, data ?? new ChangeTrackingList<InternalBatchError>(), serializedAdditionalRawData);
+    }
 
-        InternalBatchErrors IPersistableModel<InternalBatchErrors>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<InternalBatchErrors>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalBatchErrors(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<InternalBatchErrors>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    InternalBatchErrors IPersistableModel<InternalBatchErrors>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalBatchErrors>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalBatchErrors FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchErrors(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalBatchErrors(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalBatchErrors)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<InternalBatchErrors>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalBatchErrors FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalBatchErrors(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

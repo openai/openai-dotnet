@@ -8,399 +8,398 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    public partial class ThreadMessage : IJsonModel<ThreadMessage>
-    {
-        void IJsonModel<ThreadMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(ThreadMessage)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+public partial class ThreadMessage : IJsonModel<ThreadMessage>
+{
+    void IJsonModel<ThreadMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ThreadMessage)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        {
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
+        {
+            writer.WritePropertyName("thread_id"u8);
+            writer.WriteStringValue(ThreadId);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+        {
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("incomplete_details") != true)
+        {
+            if (IncompleteDetails != null)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WritePropertyName("incomplete_details"u8);
+                writer.WriteObjectValue(IncompleteDetails, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteNull("incomplete_details");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
+        {
+            if (CompletedAt != null)
             {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("completed_at"u8);
+                writer.WriteNumberValue(CompletedAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
+            else
             {
-                writer.WritePropertyName("thread_id"u8);
-                writer.WriteStringValue(ThreadId);
+                writer.WriteNull("completed_at");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("incomplete_at") != true)
+        {
+            if (IncompleteAt != null)
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WritePropertyName("incomplete_at"u8);
+                writer.WriteNumberValue(IncompleteAt.Value, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("incomplete_details") != true)
+            else
             {
-                if (IncompleteDetails != null)
-                {
-                    writer.WritePropertyName("incomplete_details"u8);
-                    writer.WriteObjectValue(IncompleteDetails, options);
-                }
-                else
-                {
-                    writer.WriteNull("incomplete_details");
-                }
+                writer.WriteNull("incomplete_at");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("role") != true)
+        {
+            writer.WritePropertyName("role"u8);
+            writer.WriteStringValue(Role.ToSerialString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("content") != true)
+        {
+            writer.WritePropertyName("content"u8);
+            writer.WriteStartArray();
+            foreach (var item in Content)
             {
-                if (CompletedAt != null)
-                {
-                    writer.WritePropertyName("completed_at"u8);
-                    writer.WriteNumberValue(CompletedAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("completed_at");
-                }
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("incomplete_at") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
+        {
+            if (AssistantId != null)
             {
-                if (IncompleteAt != null)
-                {
-                    writer.WritePropertyName("incomplete_at"u8);
-                    writer.WriteNumberValue(IncompleteAt.Value, "U");
-                }
-                else
-                {
-                    writer.WriteNull("incomplete_at");
-                }
+                writer.WritePropertyName("assistant_id"u8);
+                writer.WriteStringValue(AssistantId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("role") != true)
+            else
             {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
+                writer.WriteNull("assistant_id");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("run_id") != true)
+        {
+            if (RunId != null)
             {
-                writer.WritePropertyName("content"u8);
+                writer.WritePropertyName("run_id"u8);
+                writer.WriteStringValue(RunId);
+            }
+            else
+            {
+                writer.WriteNull("run_id");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("attachments") != true)
+        {
+            if (Attachments != null && Optional.IsCollectionDefined(Attachments))
+            {
+                writer.WritePropertyName("attachments"u8);
                 writer.WriteStartArray();
-                foreach (var item in Content)
+                foreach (var item in Attachments)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WriteObjectValue<MessageCreationAttachment>(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
+            else
             {
-                if (AssistantId != null)
-                {
-                    writer.WritePropertyName("assistant_id"u8);
-                    writer.WriteStringValue(AssistantId);
-                }
-                else
-                {
-                    writer.WriteNull("assistant_id");
-                }
+                writer.WriteNull("attachments");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("run_id") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+        {
+            if (Metadata != null && Optional.IsCollectionDefined(Metadata))
             {
-                if (RunId != null)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WritePropertyName("run_id"u8);
-                    writer.WriteStringValue(RunId);
-                }
-                else
-                {
-                    writer.WriteNull("run_id");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("attachments") != true)
-            {
-                if (Attachments != null && Optional.IsCollectionDefined(Attachments))
-                {
-                    writer.WritePropertyName("attachments"u8);
-                    writer.WriteStartArray();
-                    foreach (var item in Attachments)
-                    {
-                        writer.WriteObjectValue<MessageCreationAttachment>(item, options);
-                    }
-                    writer.WriteEndArray();
-                }
-                else
-                {
-                    writer.WriteNull("attachments");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
-            {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    ThreadMessage IJsonModel<ThreadMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ThreadMessage)} does not support reading '{format}' format.");
         }
 
-        ThreadMessage IJsonModel<ThreadMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeThreadMessage(document.RootElement, options);
+    }
+
+    internal static ThreadMessage DeserializeThreadMessage(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        string id = default;
+        InternalMessageObjectObject @object = default;
+        DateTimeOffset createdAt = default;
+        string threadId = default;
+        MessageStatus status = default;
+        MessageFailureDetails incompleteDetails = default;
+        DateTimeOffset? completedAt = default;
+        DateTimeOffset? incompleteAt = default;
+        MessageRole role = default;
+        IReadOnlyList<MessageContent> content = default;
+        string assistantId = default;
+        string runId = default;
+        IReadOnlyList<MessageCreationAttachment> attachments = default;
+        IReadOnlyDictionary<string, string> metadata = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(ThreadMessage)} does not support reading '{format}' format.");
+                id = property.Value.GetString();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeThreadMessage(document.RootElement, options);
-        }
-
-        internal static ThreadMessage DeserializeThreadMessage(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
+                @object = new InternalMessageObjectObject(property.Value.GetString());
+                continue;
             }
-            string id = default;
-            InternalMessageObjectObject @object = default;
-            DateTimeOffset createdAt = default;
-            string threadId = default;
-            MessageStatus status = default;
-            MessageFailureDetails incompleteDetails = default;
-            DateTimeOffset? completedAt = default;
-            DateTimeOffset? incompleteAt = default;
-            MessageRole role = default;
-            IReadOnlyList<MessageContent> content = default;
-            string assistantId = default;
-            string runId = default;
-            IReadOnlyList<MessageCreationAttachment> attachments = default;
-            IReadOnlyDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("created_at"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalMessageObjectObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("thread_id"u8))
-                {
-                    threadId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = new MessageStatus(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("incomplete_details"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        incompleteDetails = null;
-                        continue;
-                    }
-                    incompleteDetails = MessageFailureDetails.DeserializeMessageFailureDetails(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("completed_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        completedAt = null;
-                        continue;
-                    }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("incomplete_at"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        incompleteAt = null;
-                        continue;
-                    }
-                    incompleteAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("role"u8))
-                {
-                    role = property.Value.GetString().ToMessageRole();
-                    continue;
-                }
-                if (property.NameEquals("content"u8))
-                {
-                    List<MessageContent> array = new List<MessageContent>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(MessageContent.DeserializeMessageContent(item, options));
-                    }
-                    content = array;
-                    continue;
-                }
-                if (property.NameEquals("assistant_id"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        assistantId = null;
-                        continue;
-                    }
-                    assistantId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("run_id"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        runId = null;
-                        continue;
-                    }
-                    runId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("attachments"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        attachments = new ChangeTrackingList<MessageCreationAttachment>();
-                        continue;
-                    }
-                    List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
-                    }
-                    attachments = array;
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        metadata = new ChangeTrackingDictionary<string, string>();
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ThreadMessage(
-                id,
-                @object,
-                createdAt,
-                threadId,
-                status,
-                incompleteDetails,
-                completedAt,
-                incompleteAt,
-                role,
-                content,
-                assistantId,
-                runId,
-                attachments,
-                metadata,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<ThreadMessage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("thread_id"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(ThreadMessage)} does not support writing '{options.Format}' format.");
+                threadId = property.Value.GetString();
+                continue;
             }
-        }
-
-        ThreadMessage IPersistableModel<ThreadMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("status"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeThreadMessage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ThreadMessage)} does not support reading '{options.Format}' format.");
+                status = new MessageStatus(property.Value.GetString());
+                continue;
+            }
+            if (property.NameEquals("incomplete_details"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    incompleteDetails = null;
+                    continue;
+                }
+                incompleteDetails = MessageFailureDetails.DeserializeMessageFailureDetails(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("completed_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    completedAt = null;
+                    continue;
+                }
+                completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("incomplete_at"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    incompleteAt = null;
+                    continue;
+                }
+                incompleteAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
+            }
+            if (property.NameEquals("role"u8))
+            {
+                role = property.Value.GetString().ToMessageRole();
+                continue;
+            }
+            if (property.NameEquals("content"u8))
+            {
+                List<MessageContent> array = new List<MessageContent>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(MessageContent.DeserializeMessageContent(item, options));
+                }
+                content = array;
+                continue;
+            }
+            if (property.NameEquals("assistant_id"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    assistantId = null;
+                    continue;
+                }
+                assistantId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("run_id"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    runId = null;
+                    continue;
+                }
+                runId = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("attachments"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    attachments = new ChangeTrackingList<MessageCreationAttachment>();
+                    continue;
+                }
+                List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
+                }
+                attachments = array;
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    metadata = new ChangeTrackingDictionary<string, string>();
+                    continue;
+                }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new ThreadMessage(
+            id,
+            @object,
+            createdAt,
+            threadId,
+            status,
+            incompleteDetails,
+            completedAt,
+            incompleteAt,
+            role,
+            content,
+            assistantId,
+            runId,
+            attachments,
+            metadata,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<ThreadMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<ThreadMessage>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static ThreadMessage FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeThreadMessage(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(ThreadMessage)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    ThreadMessage IPersistableModel<ThreadMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeThreadMessage(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(ThreadMessage)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<ThreadMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static ThreadMessage FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeThreadMessage(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

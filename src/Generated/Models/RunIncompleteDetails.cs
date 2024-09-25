@@ -5,21 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class RunIncompleteDetails
 {
-    public partial class RunIncompleteDetails
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal RunIncompleteDetails()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal RunIncompleteDetails()
-        {
-        }
-
-        internal RunIncompleteDetails(RunIncompleteReason? reason, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Reason = reason;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public RunIncompleteReason? Reason { get; }
     }
+
+    internal RunIncompleteDetails(RunIncompleteReason? reason, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Reason = reason;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public RunIncompleteReason? Reason { get; }
 }

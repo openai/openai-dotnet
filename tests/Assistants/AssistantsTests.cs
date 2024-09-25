@@ -21,7 +21,7 @@ namespace OpenAI.Tests.Assistants;
 [TestFixture(true)]
 [TestFixture(false)]
 [Category("Assistants")]
-public class AssistantsTests : SyncAsyncTestBase
+public class AssistantsTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private readonly List<Assistant> _assistantsToDelete = [];
     private readonly List<AssistantThread> _threadsToDelete = [];
@@ -30,15 +30,9 @@ public class AssistantsTests : SyncAsyncTestBase
     private readonly List<string> _vectorStoreIdsToDelete = [];
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
-    private static readonly string s_testAssistantName = $".NET SDK Test Assistant - Please Delete Me";
-    private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
+    private static readonly string s_cleanupMetadataKey = "test_metadata_cleanup_eligible";
 
     private static AssistantClient GetTestClient() => GetTestClient<AssistantClient>(TestScenario.Assistants);
-
-    public AssistantsTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     [OneTimeTearDown]
     protected void Cleanup()

@@ -5,18 +5,11 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-internal partial class GenericActionPipelinePolicy : PipelinePolicy
+internal partial class GenericActionPipelinePolicy(Action<PipelineMessage> processMessageAction) : PipelinePolicy
 {
-    private Action<PipelineMessage> _processMessageAction;
-
-    public GenericActionPipelinePolicy(Action<PipelineMessage> processMessageAction)
-    {
-        _processMessageAction = processMessageAction;
-    }
-
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
+        processMessageAction(message);
         if (currentIndex < pipeline.Count - 1)
         {
             pipeline[currentIndex + 1].Process(message, pipeline, currentIndex + 1);
@@ -25,7 +18,7 @@ internal partial class GenericActionPipelinePolicy : PipelinePolicy
 
     public override async ValueTask ProcessAsync(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
+        processMessageAction(message);
         if (currentIndex < pipeline.Count - 1)
         {
             await pipeline[currentIndex + 1].ProcessAsync(message, pipeline, currentIndex + 1);

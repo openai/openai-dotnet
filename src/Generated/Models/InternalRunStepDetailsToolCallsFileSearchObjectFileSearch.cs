@@ -5,22 +5,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalRunStepDetailsToolCallsFileSearchObjectFileSearch
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch()
-        {
-            Results = new ChangeTrackingList<RunStepFileSearchResult>();
-        }
+namespace OpenAI.Assistants;
 
-        internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(FileSearchRankingOptions rankingOptions, IReadOnlyList<RunStepFileSearchResult> results, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            RankingOptions = rankingOptions;
-            Results = results;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-        public IReadOnlyList<RunStepFileSearchResult> Results { get; }
+internal partial class InternalRunStepDetailsToolCallsFileSearchObjectFileSearch
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch()
+    {
+        Results = new ChangeTrackingList<RunStepFileSearchResult>();
     }
+
+    internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(FileSearchRankingOptions rankingOptions, IReadOnlyList<RunStepFileSearchResult> results, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        RankingOptions = rankingOptions;
+        Results = results;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+    public IReadOnlyList<RunStepFileSearchResult> Results { get; }
 }

@@ -5,26 +5,25 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public partial class MessageFailureDetails
 {
-    public partial class MessageFailureDetails
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal MessageFailureDetails(MessageFailureReason reason)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal MessageFailureDetails(MessageFailureReason reason)
-        {
-            Reason = reason;
-        }
-
-        internal MessageFailureDetails(MessageFailureReason reason, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Reason = reason;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal MessageFailureDetails()
-        {
-        }
-
-        public MessageFailureReason Reason { get; }
+        Reason = reason;
     }
+
+    internal MessageFailureDetails(MessageFailureReason reason, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Reason = reason;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal MessageFailureDetails()
+    {
+    }
+
+    public MessageFailureReason Reason { get; }
 }

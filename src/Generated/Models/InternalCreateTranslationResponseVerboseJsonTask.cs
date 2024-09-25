@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Audio
+namespace OpenAI.Audio;
+
+internal readonly partial struct InternalCreateTranslationResponseVerboseJsonTask : IEquatable<InternalCreateTranslationResponseVerboseJsonTask>
 {
-    internal readonly partial struct InternalCreateTranslationResponseVerboseJsonTask : IEquatable<InternalCreateTranslationResponseVerboseJsonTask>
+    private readonly string _value;
+
+    public InternalCreateTranslationResponseVerboseJsonTask(string value)
     {
-        private readonly string _value;
-
-        public InternalCreateTranslationResponseVerboseJsonTask(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string TranslateValue = "translate";
-
-        public static InternalCreateTranslationResponseVerboseJsonTask Translate { get; } = new InternalCreateTranslationResponseVerboseJsonTask(TranslateValue);
-        public static bool operator ==(InternalCreateTranslationResponseVerboseJsonTask left, InternalCreateTranslationResponseVerboseJsonTask right) => left.Equals(right);
-        public static bool operator !=(InternalCreateTranslationResponseVerboseJsonTask left, InternalCreateTranslationResponseVerboseJsonTask right) => !left.Equals(right);
-        public static implicit operator InternalCreateTranslationResponseVerboseJsonTask(string value) => new InternalCreateTranslationResponseVerboseJsonTask(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalCreateTranslationResponseVerboseJsonTask other && Equals(other);
-        public bool Equals(InternalCreateTranslationResponseVerboseJsonTask other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string TranslateValue = "translate";
+
+    public static InternalCreateTranslationResponseVerboseJsonTask Translate { get; } = new InternalCreateTranslationResponseVerboseJsonTask(TranslateValue);
+    public static bool operator ==(InternalCreateTranslationResponseVerboseJsonTask left, InternalCreateTranslationResponseVerboseJsonTask right) => left.Equals(right);
+    public static bool operator !=(InternalCreateTranslationResponseVerboseJsonTask left, InternalCreateTranslationResponseVerboseJsonTask right) => !left.Equals(right);
+    public static implicit operator InternalCreateTranslationResponseVerboseJsonTask(string value) => new InternalCreateTranslationResponseVerboseJsonTask(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalCreateTranslationResponseVerboseJsonTask other && Equals(other);
+    public bool Equals(InternalCreateTranslationResponseVerboseJsonTask other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

@@ -4,9 +4,8 @@
 
 using System.ClientModel.Primitives;
 
-namespace OpenAI
+namespace OpenAI;
+
+public partial class OpenAIClientOptions : ClientPipelineOptions
 {
-    public partial class OpenAIClientOptions : ClientPipelineOptions
-    {
-    }
 }

@@ -5,32 +5,31 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+public readonly partial struct RunIncompleteReason : IEquatable<RunIncompleteReason>
 {
-    public readonly partial struct RunIncompleteReason : IEquatable<RunIncompleteReason>
+    private readonly string _value;
+
+    public RunIncompleteReason(string value)
     {
-        private readonly string _value;
-
-        public RunIncompleteReason(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string MaxCompletionTokensValue = "max_completion_tokens";
-        private const string MaxPromptTokensValue = "max_prompt_tokens";
-
-        public static RunIncompleteReason MaxCompletionTokens { get; } = new RunIncompleteReason(MaxCompletionTokensValue);
-        public static RunIncompleteReason MaxPromptTokens { get; } = new RunIncompleteReason(MaxPromptTokensValue);
-        public static bool operator ==(RunIncompleteReason left, RunIncompleteReason right) => left.Equals(right);
-        public static bool operator !=(RunIncompleteReason left, RunIncompleteReason right) => !left.Equals(right);
-        public static implicit operator RunIncompleteReason(string value) => new RunIncompleteReason(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is RunIncompleteReason other && Equals(other);
-        public bool Equals(RunIncompleteReason other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string MaxCompletionTokensValue = "max_completion_tokens";
+    private const string MaxPromptTokensValue = "max_prompt_tokens";
+
+    public static RunIncompleteReason MaxCompletionTokens { get; } = new RunIncompleteReason(MaxCompletionTokensValue);
+    public static RunIncompleteReason MaxPromptTokens { get; } = new RunIncompleteReason(MaxPromptTokensValue);
+    public static bool operator ==(RunIncompleteReason left, RunIncompleteReason right) => left.Equals(right);
+    public static bool operator !=(RunIncompleteReason left, RunIncompleteReason right) => !left.Equals(right);
+    public static implicit operator RunIncompleteReason(string value) => new RunIncompleteReason(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is RunIncompleteReason other && Equals(other);
+    public bool Equals(RunIncompleteReason other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

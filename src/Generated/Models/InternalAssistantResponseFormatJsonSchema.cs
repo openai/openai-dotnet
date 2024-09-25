@@ -6,27 +6,26 @@ using System;
 using System.Collections.Generic;
 using OpenAI.Internal;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalAssistantResponseFormatJsonSchema : AssistantResponseFormat
 {
-    internal partial class InternalAssistantResponseFormatJsonSchema : AssistantResponseFormat
+    public InternalAssistantResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
     {
-        public InternalAssistantResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
-        {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
+        Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
-            Type = "json_schema";
-            JsonSchema = jsonSchema;
-        }
-
-        internal InternalAssistantResponseFormatJsonSchema(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(type, serializedAdditionalRawData)
-        {
-            JsonSchema = jsonSchema;
-        }
-
-        internal InternalAssistantResponseFormatJsonSchema()
-        {
-        }
-
-        public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; }
+        Type = "json_schema";
+        JsonSchema = jsonSchema;
     }
+
+    internal InternalAssistantResponseFormatJsonSchema(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(type, serializedAdditionalRawData)
+    {
+        JsonSchema = jsonSchema;
+    }
+
+    internal InternalAssistantResponseFormatJsonSchema()
+    {
+    }
+
+    public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; }
 }

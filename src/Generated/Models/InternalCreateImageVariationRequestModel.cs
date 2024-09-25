@@ -5,30 +5,29 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Images
+namespace OpenAI.Images;
+
+internal readonly partial struct InternalCreateImageVariationRequestModel : IEquatable<InternalCreateImageVariationRequestModel>
 {
-    internal readonly partial struct InternalCreateImageVariationRequestModel : IEquatable<InternalCreateImageVariationRequestModel>
+    private readonly string _value;
+
+    public InternalCreateImageVariationRequestModel(string value)
     {
-        private readonly string _value;
-
-        public InternalCreateImageVariationRequestModel(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
-        private const string DallE2Value = "dall-e-2";
-
-        public static InternalCreateImageVariationRequestModel DallE2 { get; } = new InternalCreateImageVariationRequestModel(DallE2Value);
-        public static bool operator ==(InternalCreateImageVariationRequestModel left, InternalCreateImageVariationRequestModel right) => left.Equals(right);
-        public static bool operator !=(InternalCreateImageVariationRequestModel left, InternalCreateImageVariationRequestModel right) => !left.Equals(right);
-        public static implicit operator InternalCreateImageVariationRequestModel(string value) => new InternalCreateImageVariationRequestModel(value);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalCreateImageVariationRequestModel other && Equals(other);
-        public bool Equals(InternalCreateImageVariationRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-        public override string ToString() => _value;
+        _value = value ?? throw new ArgumentNullException(nameof(value));
     }
+
+    private const string DallE2Value = "dall-e-2";
+
+    public static InternalCreateImageVariationRequestModel DallE2 { get; } = new InternalCreateImageVariationRequestModel(DallE2Value);
+    public static bool operator ==(InternalCreateImageVariationRequestModel left, InternalCreateImageVariationRequestModel right) => left.Equals(right);
+    public static bool operator !=(InternalCreateImageVariationRequestModel left, InternalCreateImageVariationRequestModel right) => !left.Equals(right);
+    public static implicit operator InternalCreateImageVariationRequestModel(string value) => new InternalCreateImageVariationRequestModel(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is InternalCreateImageVariationRequestModel other && Equals(other);
+    public bool Equals(InternalCreateImageVariationRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

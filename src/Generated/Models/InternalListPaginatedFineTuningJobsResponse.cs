@@ -6,33 +6,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.FineTuning
+namespace OpenAI.FineTuning;
+
+internal partial class InternalListPaginatedFineTuningJobsResponse
 {
-    internal partial class InternalListPaginatedFineTuningJobsResponse
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalListPaginatedFineTuningJobsResponse(IEnumerable<FineTuningJob> data, bool hasMore)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListPaginatedFineTuningJobsResponse(IEnumerable<FineTuningJob> data, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
+        Argument.AssertNotNull(data, nameof(data));
 
-            Data = data.ToList();
-            HasMore = hasMore;
-        }
-
-        internal InternalListPaginatedFineTuningJobsResponse(IReadOnlyList<FineTuningJob> data, bool hasMore, InternalListPaginatedFineTuningJobsResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Data = data;
-            HasMore = hasMore;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalListPaginatedFineTuningJobsResponse()
-        {
-        }
-
-        public IReadOnlyList<FineTuningJob> Data { get; }
-        public bool HasMore { get; }
-        public InternalListPaginatedFineTuningJobsResponseObject Object { get; } = InternalListPaginatedFineTuningJobsResponseObject.List;
+        Data = data.ToList();
+        HasMore = hasMore;
     }
+
+    internal InternalListPaginatedFineTuningJobsResponse(IReadOnlyList<FineTuningJob> data, bool hasMore, InternalListPaginatedFineTuningJobsResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Data = data;
+        HasMore = hasMore;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalListPaginatedFineTuningJobsResponse()
+    {
+    }
+
+    public IReadOnlyList<FineTuningJob> Data { get; }
+    public bool HasMore { get; }
+    public InternalListPaginatedFineTuningJobsResponseObject Object { get; } = InternalListPaginatedFineTuningJobsResponseObject.List;
 }

@@ -5,27 +5,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageDeltaContentTextObject : InternalMessageDeltaContent
 {
-    internal partial class InternalMessageDeltaContentTextObject : InternalMessageDeltaContent
+    internal InternalMessageDeltaContentTextObject(int index)
     {
-        internal InternalMessageDeltaContentTextObject(int index)
-        {
-            Type = "text";
-            Index = index;
-        }
-
-        internal InternalMessageDeltaContentTextObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalMessageDeltaContentTextObjectText text) : base(type, serializedAdditionalRawData)
-        {
-            Index = index;
-            Text = text;
-        }
-
-        internal InternalMessageDeltaContentTextObject()
-        {
-        }
-
-        public int Index { get; }
-        public InternalMessageDeltaContentTextObjectText Text { get; }
+        Type = "text";
+        Index = index;
     }
+
+    internal InternalMessageDeltaContentTextObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, InternalMessageDeltaContentTextObjectText text) : base(type, serializedAdditionalRawData)
+    {
+        Index = index;
+        Text = text;
+    }
+
+    internal InternalMessageDeltaContentTextObject()
+    {
+    }
+
+    public int Index { get; }
+    public InternalMessageDeltaContentTextObjectText Text { get; }
 }

@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    public partial class SystemChatMessage : ChatMessage
-    {
-        internal SystemChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData, string participantName) : base(role, content, serializedAdditionalRawData)
-        {
-            ParticipantName = participantName;
-        }
+namespace OpenAI.Chat;
 
-        internal SystemChatMessage()
-        {
-        }
+public partial class SystemChatMessage : ChatMessage
+{
+    internal SystemChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData, string participantName) : base(role, content, serializedAdditionalRawData)
+    {
+        ParticipantName = participantName;
+    }
+
+    internal SystemChatMessage()
+    {
     }
 }

@@ -5,37 +5,36 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Files
+namespace OpenAI.Files;
+
+internal partial class InternalUploadPart
 {
-    internal partial class InternalUploadPart
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(uploadId, nameof(uploadId));
 
-            Id = id;
-            CreatedAt = createdAt;
-            UploadId = uploadId;
-        }
-
-        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId, InternalUploadPartObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Id = id;
-            CreatedAt = createdAt;
-            UploadId = uploadId;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalUploadPart()
-        {
-        }
-
-        public string Id { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public string UploadId { get; }
-        public InternalUploadPartObject Object { get; } = InternalUploadPartObject.UploadPart;
+        Id = id;
+        CreatedAt = createdAt;
+        UploadId = uploadId;
     }
+
+    internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId, InternalUploadPartObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Id = id;
+        CreatedAt = createdAt;
+        UploadId = uploadId;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalUploadPart()
+    {
+    }
+
+    public string Id { get; }
+    public DateTimeOffset CreatedAt { get; }
+    public string UploadId { get; }
+    public InternalUploadPartObject Object { get; } = InternalUploadPartObject.UploadPart;
 }

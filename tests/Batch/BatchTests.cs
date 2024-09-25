@@ -16,13 +16,9 @@ namespace OpenAI.Tests.Batch;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Batch")]
-public class BatchTests : SyncAsyncTestBase
+public class BatchTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
-
-    public BatchTests(bool isAsync) : base(isAsync)
-    {
-    }
 
     [Test]
     public void ListBatchesProtocol()

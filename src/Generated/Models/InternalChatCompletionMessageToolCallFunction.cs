@@ -5,32 +5,31 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+internal partial class InternalChatCompletionMessageToolCallFunction
 {
-    internal partial class InternalChatCompletionMessageToolCallFunction
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalChatCompletionMessageToolCallFunction(string name, string arguments)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalChatCompletionMessageToolCallFunction(string name, string arguments)
-        {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(arguments, nameof(arguments));
+        Argument.AssertNotNull(name, nameof(name));
+        Argument.AssertNotNull(arguments, nameof(arguments));
 
-            Name = name;
-            Arguments = arguments;
-        }
-
-        internal InternalChatCompletionMessageToolCallFunction(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Name = name;
-            Arguments = arguments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalChatCompletionMessageToolCallFunction()
-        {
-        }
-
-        public string Name { get; set; }
-        public string Arguments { get; set; }
+        Name = name;
+        Arguments = arguments;
     }
+
+    internal InternalChatCompletionMessageToolCallFunction(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        Name = name;
+        Arguments = arguments;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal InternalChatCompletionMessageToolCallFunction()
+    {
+    }
+
+    public string Name { get; set; }
+    public string Arguments { get; set; }
 }

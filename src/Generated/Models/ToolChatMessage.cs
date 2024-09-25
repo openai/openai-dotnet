@@ -5,19 +5,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
+namespace OpenAI.Chat;
+
+public partial class ToolChatMessage : ChatMessage
 {
-    public partial class ToolChatMessage : ChatMessage
+    internal ToolChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData, string toolCallId) : base(role, content, serializedAdditionalRawData)
     {
-        internal ToolChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData, string toolCallId) : base(role, content, serializedAdditionalRawData)
-        {
-            ToolCallId = toolCallId;
-        }
-
-        internal ToolChatMessage()
-        {
-        }
-
-        public string ToolCallId { get; }
+        ToolCallId = toolCallId;
     }
+
+    internal ToolChatMessage()
+    {
+    }
+
+    public string ToolCallId { get; }
 }

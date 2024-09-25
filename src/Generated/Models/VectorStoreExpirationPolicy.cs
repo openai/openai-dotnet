@@ -5,9 +5,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreExpirationPolicy
 {
-    public partial class VectorStoreExpirationPolicy
-    {
-    }
 }

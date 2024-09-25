@@ -5,29 +5,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class FileFromStoreRemovalResult
 {
-    public partial class FileFromStoreRemovalResult
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal FileFromStoreRemovalResult(string fileId, bool removed)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal FileFromStoreRemovalResult(string fileId, bool removed)
-        {
-            Argument.AssertNotNull(fileId, nameof(fileId));
+        Argument.AssertNotNull(fileId, nameof(fileId));
 
-            FileId = fileId;
-            Removed = removed;
-        }
+        FileId = fileId;
+        Removed = removed;
+    }
 
-        internal FileFromStoreRemovalResult(string fileId, bool removed, InternalDeleteVectorStoreFileResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileId = fileId;
-            Removed = removed;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+    internal FileFromStoreRemovalResult(string fileId, bool removed, InternalDeleteVectorStoreFileResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileId = fileId;
+        Removed = removed;
+        Object = @object;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
 
-        internal FileFromStoreRemovalResult()
-        {
-        }
+    internal FileFromStoreRemovalResult()
+    {
     }
 }

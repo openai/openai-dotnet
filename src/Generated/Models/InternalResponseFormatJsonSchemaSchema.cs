@@ -5,20 +5,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Internal
+namespace OpenAI.Internal;
+
+internal partial class InternalResponseFormatJsonSchemaSchema
 {
-    internal partial class InternalResponseFormatJsonSchemaSchema
+    public InternalResponseFormatJsonSchemaSchema()
     {
-        public InternalResponseFormatJsonSchemaSchema()
-        {
-            AdditionalProperties = new ChangeTrackingDictionary<string, BinaryData>();
-        }
-
-        internal InternalResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties)
-        {
-            AdditionalProperties = additionalProperties;
-        }
-
-        public IDictionary<string, BinaryData> AdditionalProperties { get; }
+        AdditionalProperties = new ChangeTrackingDictionary<string, BinaryData>();
     }
+
+    internal InternalResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties)
+    {
+        AdditionalProperties = additionalProperties;
+    }
+
+    public IDictionary<string, BinaryData> AdditionalProperties { get; }
 }

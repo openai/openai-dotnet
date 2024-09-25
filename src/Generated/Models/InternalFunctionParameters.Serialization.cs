@@ -8,104 +8,103 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Chat
-{
-    internal partial class InternalFunctionParameters : IJsonModel<InternalFunctionParameters>
-    {
-        void IJsonModel<InternalFunctionParameters>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Chat;
 
-            writer.WriteStartObject();
-            foreach (var item in AdditionalProperties)
-            {
-                writer.WritePropertyName(item.Key);
+internal partial class InternalFunctionParameters : IJsonModel<InternalFunctionParameters>
+{
+    void IJsonModel<InternalFunctionParameters>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        foreach (var item in AdditionalProperties)
+        {
+            writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+            using (JsonDocument document = JsonDocument.Parse(item.Value))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
 #endif
-            }
-            writer.WriteEndObject();
         }
+        writer.WriteEndObject();
+    }
 
-        InternalFunctionParameters IJsonModel<InternalFunctionParameters>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    InternalFunctionParameters IJsonModel<InternalFunctionParameters>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support reading '{format}' format.");
-            }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalFunctionParameters(document.RootElement, options);
+            throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support reading '{format}' format.");
         }
 
-        internal static InternalFunctionParameters DeserializeInternalFunctionParameters(JsonElement element, ModelReaderWriterOptions options = null)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeInternalFunctionParameters(document.RootElement, options);
+    }
+
+    internal static InternalFunctionParameters DeserializeInternalFunctionParameters(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            IDictionary<string, BinaryData> additionalProperties = default;
-            Dictionary<string, BinaryData> additionalPropertiesDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
-            {
-                additionalPropertiesDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-            }
-            additionalProperties = additionalPropertiesDictionary;
-            return new InternalFunctionParameters(additionalProperties);
+            return null;
         }
-
-        BinaryData IPersistableModel<InternalFunctionParameters>.Write(ModelReaderWriterOptions options)
+        IDictionary<string, BinaryData> additionalProperties = default;
+        Dictionary<string, BinaryData> additionalPropertiesDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support writing '{options.Format}' format.");
-            }
+            additionalPropertiesDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
         }
+        additionalProperties = additionalPropertiesDictionary;
+        return new InternalFunctionParameters(additionalProperties);
+    }
 
-        InternalFunctionParameters IPersistableModel<InternalFunctionParameters>.Create(BinaryData data, ModelReaderWriterOptions options)
+    BinaryData IPersistableModel<InternalFunctionParameters>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
-            {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalFunctionParameters(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support reading '{options.Format}' format.");
-            }
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        string IPersistableModel<InternalFunctionParameters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    InternalFunctionParameters IPersistableModel<InternalFunctionParameters>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<InternalFunctionParameters>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static InternalFunctionParameters FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalFunctionParameters(document.RootElement);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeInternalFunctionParameters(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(InternalFunctionParameters)} does not support reading '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+    string IPersistableModel<InternalFunctionParameters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static InternalFunctionParameters FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeInternalFunctionParameters(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

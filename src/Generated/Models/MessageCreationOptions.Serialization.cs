@@ -8,207 +8,206 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    public partial class MessageCreationOptions : IJsonModel<MessageCreationOptions>
-    {
-        void IJsonModel<MessageCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("role") != true)
+public partial class MessageCreationOptions : IJsonModel<MessageCreationOptions>
+{
+    void IJsonModel<MessageCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("role") != true)
+        {
+            writer.WritePropertyName("role"u8);
+            writer.WriteStringValue(Role.ToSerialString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("content") != true)
+        {
+            writer.WritePropertyName("content"u8);
+            SerializeContent(writer, options);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("attachments") != true && Optional.IsCollectionDefined(Attachments))
+        {
+            if (Attachments != null)
             {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
-            {
-                writer.WritePropertyName("content"u8);
-                SerializeContent(writer, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("attachments") != true && Optional.IsCollectionDefined(Attachments))
-            {
-                if (Attachments != null)
+                writer.WritePropertyName("attachments"u8);
+                writer.WriteStartArray();
+                foreach (var item in Attachments)
                 {
-                    writer.WritePropertyName("attachments"u8);
-                    writer.WriteStartArray();
-                    foreach (var item in Attachments)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("attachments");
-                }
+                writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+            else
             {
-                if (Metadata != null)
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
+                writer.WriteNull("attachments");
             }
-            if (SerializedAdditionalRawData != null)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+        {
+            if (Metadata != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    MessageCreationOptions IJsonModel<MessageCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support reading '{format}' format.");
         }
 
-        MessageCreationOptions IJsonModel<MessageCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support reading '{format}' format.");
-            }
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeMessageCreationOptions(document.RootElement, options);
+    }
 
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMessageCreationOptions(document.RootElement, options);
+    internal static MessageCreationOptions DeserializeMessageCreationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
         }
-
-        internal static MessageCreationOptions DeserializeMessageCreationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        MessageRole role = default;
+        IList<MessageContent> content = default;
+        IList<MessageCreationAttachment> attachments = default;
+        IDictionary<string, string> metadata = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("role"u8))
             {
-                return null;
+                role = property.Value.GetString().ToMessageRole();
+                continue;
             }
-            MessageRole role = default;
-            IList<MessageContent> content = default;
-            IList<MessageCreationAttachment> attachments = default;
-            IDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("content"u8))
             {
-                if (property.NameEquals("role"u8))
+                List<MessageContent> array = new List<MessageContent>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    role = property.Value.GetString().ToMessageRole();
+                    array.Add(MessageContent.DeserializeMessageContent(item, options));
+                }
+                content = array;
+                continue;
+            }
+            if (property.NameEquals("attachments"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
                     continue;
                 }
-                if (property.NameEquals("content"u8))
+                List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
+                foreach (var item in property.Value.EnumerateArray())
                 {
-                    List<MessageContent> array = new List<MessageContent>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(MessageContent.DeserializeMessageContent(item, options));
-                    }
-                    content = array;
-                    continue;
+                    array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
                 }
-                if (property.NameEquals("attachments"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
-                    }
-                    attachments = array;
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                attachments = array;
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<MessageCreationOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("metadata"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    continue;
+                }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
             }
-        }
-
-        MessageCreationOptions IPersistableModel<MessageCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (true)
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeMessageCreationOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support reading '{options.Format}' format.");
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<MessageCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<MessageCreationOptions>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static MessageCreationOptions FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeMessageCreationOptions(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    MessageCreationOptions IPersistableModel<MessageCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeMessageCreationOptions(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<MessageCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static MessageCreationOptions FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeMessageCreationOptions(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

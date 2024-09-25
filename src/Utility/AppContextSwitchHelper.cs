@@ -7,16 +7,16 @@ internal static class AppContextSwitchHelper
     /// <summary>
     /// Determines if either an AppContext switch or its corresponding Environment Variable is set
     /// </summary>
-    /// <param name="appContexSwitchName">Name of the AppContext switch.</param>
+    /// <param name="appContextSwitchName">Name of the AppContext switch.</param>
     /// <param name="environmentVariableName">Name of the Environment variable.</param>
     /// <returns>If the AppContext switch has been set, returns the value of the switch.
     /// If the AppContext switch has not been set, returns the value of the environment variable.
     /// False if neither is set.
     /// </returns>
-    public static bool GetConfigValue(string appContexSwitchName, string environmentVariableName)
+    public static bool GetConfigValue(string appContextSwitchName, string environmentVariableName)
     {
         // First check for the AppContext switch, giving it priority over the environment variable.
-        if (AppContext.TryGetSwitch(appContexSwitchName, out bool value))
+        if (AppContext.TryGetSwitch(appContextSwitchName, out bool value))
         {
             return value;
         }

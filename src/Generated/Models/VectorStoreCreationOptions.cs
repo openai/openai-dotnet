@@ -5,29 +5,28 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreCreationOptions
 {
-    public partial class VectorStoreCreationOptions
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public VectorStoreCreationOptions()
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public VectorStoreCreationOptions()
-        {
-            FileIds = new ChangeTrackingList<string>();
-            Metadata = new ChangeTrackingDictionary<string, string>();
-        }
-
-        internal VectorStoreCreationOptions(IList<string> fileIds, string name, VectorStoreExpirationPolicy expirationPolicy, FileChunkingStrategy chunkingStrategy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            FileIds = fileIds;
-            Name = name;
-            ExpirationPolicy = expirationPolicy;
-            ChunkingStrategy = chunkingStrategy;
-            Metadata = metadata;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        public IList<string> FileIds { get; }
-        public string Name { get; set; }
-        public IDictionary<string, string> Metadata { get; set; }
+        FileIds = new ChangeTrackingList<string>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
     }
+
+    internal VectorStoreCreationOptions(IList<string> fileIds, string name, VectorStoreExpirationPolicy expirationPolicy, FileChunkingStrategy chunkingStrategy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        FileIds = fileIds;
+        Name = name;
+        ExpirationPolicy = expirationPolicy;
+        ChunkingStrategy = chunkingStrategy;
+        Metadata = metadata;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    public IList<string> FileIds { get; }
+    public string Name { get; set; }
+    public IDictionary<string, string> Metadata { get; set; }
 }

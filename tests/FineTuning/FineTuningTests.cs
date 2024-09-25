@@ -14,13 +14,8 @@ namespace OpenAI.Tests.FineTuning;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("FineTuning")]
-internal class FineTuningTests : SyncAsyncTestBase
+internal class FineTuningTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
-    public FineTuningTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
-
     [Test]
     public void CreateJobCanParseServiceError()
     {

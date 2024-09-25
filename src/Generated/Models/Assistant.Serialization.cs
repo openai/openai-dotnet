@@ -8,389 +8,388 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace OpenAI.Assistants
-{
-    public partial class Assistant : IJsonModel<Assistant>
-    {
-        void IJsonModel<Assistant>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(Assistant)} does not support writing '{format}' format.");
-            }
+namespace OpenAI.Assistants;
 
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+public partial class Assistant : IJsonModel<Assistant>
+{
+    void IJsonModel<Assistant>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(Assistant)} does not support writing '{format}' format.");
+        }
+
+        writer.WriteStartObject();
+        if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+        {
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+        {
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object.ToString());
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        {
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+        {
+            if (Name != null)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteNull("name");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("description") != true)
+        {
+            if (Description != null)
             {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("description"u8);
+                writer.WriteStringValue(Description);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+            else
             {
-                if (Name != null)
-                {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name");
-                }
+                writer.WriteNull("description");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("description") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+        {
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model);
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("instructions") != true)
+        {
+            if (Instructions != null)
             {
-                if (Description != null)
-                {
-                    writer.WritePropertyName("description"u8);
-                    writer.WriteStringValue(Description);
-                }
-                else
-                {
-                    writer.WriteNull("description");
-                }
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            else
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
+                writer.WriteNull("instructions");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("instructions") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tools") != true)
+        {
+            writer.WritePropertyName("tools"u8);
+            writer.WriteStartArray();
+            foreach (var item in Tools)
             {
-                if (Instructions != null)
-                {
-                    writer.WritePropertyName("instructions"u8);
-                    writer.WriteStringValue(Instructions);
-                }
-                else
-                {
-                    writer.WriteNull("instructions");
-                }
+                writer.WriteObjectValue(item, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tools") != true)
+            writer.WriteEndArray();
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("tool_resources") != true && Optional.IsDefined(ToolResources))
+        {
+            if (ToolResources != null)
             {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (var item in Tools)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tool_resources") != true && Optional.IsDefined(ToolResources))
+            else
             {
-                if (ToolResources != null)
-                {
-                    writer.WritePropertyName("tool_resources"u8);
-                    writer.WriteObjectValue(ToolResources, options);
-                }
-                else
-                {
-                    writer.WriteNull("tool_resources");
-                }
+                writer.WriteNull("tool_resources");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+        {
+            if (Metadata != null && Optional.IsCollectionDefined(Metadata))
             {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
-            {
-                if (Temperature != null)
-                {
-                    writer.WritePropertyName("temperature"u8);
-                    writer.WriteNumberValue(Temperature.Value);
-                }
-                else
-                {
-                    writer.WriteNull("temperature");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(NucleusSamplingFactor))
-            {
-                if (NucleusSamplingFactor != null)
-                {
-                    writer.WritePropertyName("top_p"u8);
-                    writer.WriteNumberValue(NucleusSamplingFactor.Value);
-                }
-                else
-                {
-                    writer.WriteNull("top_p");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
-            {
-                if (ResponseFormat != null)
-                {
-                    writer.WritePropertyName("response_format"u8);
-                    writer.WriteObjectValue<AssistantResponseFormat>(ResponseFormat, options);
-                }
-                else
-                {
-                    writer.WriteNull("response_format");
-                }
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
                     writer.WritePropertyName(item.Key);
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("metadata");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+        {
+            if (Temperature != null)
+            {
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature.Value);
+            }
+            else
+            {
+                writer.WriteNull("temperature");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(NucleusSamplingFactor))
+        {
+            if (NucleusSamplingFactor != null)
+            {
+                writer.WritePropertyName("top_p"u8);
+                writer.WriteNumberValue(NucleusSamplingFactor.Value);
+            }
+            else
+            {
+                writer.WriteNull("top_p");
+            }
+        }
+        if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
+        {
+            if (ResponseFormat != null)
+            {
+                writer.WritePropertyName("response_format"u8);
+                writer.WriteObjectValue<AssistantResponseFormat>(ResponseFormat, options);
+            }
+            else
+            {
+                writer.WriteNull("response_format");
+            }
+        }
+        if (SerializedAdditionalRawData != null)
+        {
+            foreach (var item in SerializedAdditionalRawData)
+            {
+                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                {
+                    continue;
+                }
+                writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(item.Value))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
             }
-            writer.WriteEndObject();
+        }
+        writer.WriteEndObject();
+    }
+
+    Assistant IJsonModel<Assistant>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(Assistant)} does not support reading '{format}' format.");
         }
 
-        Assistant IJsonModel<Assistant>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        using JsonDocument document = JsonDocument.ParseValue(ref reader);
+        return DeserializeAssistant(document.RootElement, options);
+    }
+
+    internal static Assistant DeserializeAssistant(JsonElement element, ModelReaderWriterOptions options = null)
+    {
+        options ??= ModelSerializationExtensions.WireOptions;
+
+        if (element.ValueKind == JsonValueKind.Null)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            return null;
+        }
+        string id = default;
+        InternalAssistantObjectObject @object = default;
+        DateTimeOffset createdAt = default;
+        string name = default;
+        string description = default;
+        string model = default;
+        string instructions = default;
+        IReadOnlyList<ToolDefinition> tools = default;
+        ToolResources toolResources = default;
+        IReadOnlyDictionary<string, string> metadata = default;
+        float? temperature = default;
+        float? topP = default;
+        AssistantResponseFormat responseFormat = default;
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
+        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("id"u8))
             {
-                throw new FormatException($"The model {nameof(Assistant)} does not support reading '{format}' format.");
+                id = property.Value.GetString();
+                continue;
             }
-
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeAssistant(document.RootElement, options);
-        }
-
-        internal static Assistant DeserializeAssistant(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
+            if (property.NameEquals("object"u8))
             {
-                return null;
+                @object = new InternalAssistantObjectObject(property.Value.GetString());
+                continue;
             }
-            string id = default;
-            InternalAssistantObjectObject @object = default;
-            DateTimeOffset createdAt = default;
-            string name = default;
-            string description = default;
-            string model = default;
-            string instructions = default;
-            IReadOnlyList<ToolDefinition> tools = default;
-            ToolResources toolResources = default;
-            IReadOnlyDictionary<string, string> metadata = default;
-            float? temperature = default;
-            float? topP = default;
-            AssistantResponseFormat responseFormat = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (property.NameEquals("created_at"u8))
             {
-                if (property.NameEquals("id"u8))
-                {
-                    id = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalAssistantObjectObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("name"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        name = null;
-                        continue;
-                    }
-                    name = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("description"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        description = null;
-                        continue;
-                    }
-                    description = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("model"u8))
-                {
-                    model = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("instructions"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        instructions = null;
-                        continue;
-                    }
-                    instructions = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("tools"u8))
-                {
-                    List<ToolDefinition> array = new List<ToolDefinition>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(ToolDefinition.DeserializeToolDefinition(item, options));
-                    }
-                    tools = array;
-                    continue;
-                }
-                if (property.NameEquals("tool_resources"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = ToolResources.DeserializeToolResources(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        metadata = new ChangeTrackingDictionary<string, string>();
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (property.NameEquals("temperature"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        temperature = null;
-                        continue;
-                    }
-                    temperature = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("top_p"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        topP = null;
-                        continue;
-                    }
-                    topP = property.Value.GetSingle();
-                    continue;
-                }
-                if (property.NameEquals("response_format"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        responseFormat = null;
-                        continue;
-                    }
-                    responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(property.Value, options);
-                    continue;
-                }
-                if (true)
-                {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-                }
+                createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                continue;
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new Assistant(
-                id,
-                @object,
-                createdAt,
-                name,
-                description,
-                model,
-                instructions,
-                tools,
-                toolResources,
-                metadata,
-                temperature,
-                topP,
-                responseFormat,
-                serializedAdditionalRawData);
-        }
-
-        BinaryData IPersistableModel<Assistant>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("name"u8))
             {
-                case "J":
-                    return ModelReaderWriter.Write(this, options);
-                default:
-                    throw new FormatException($"The model {nameof(Assistant)} does not support writing '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    name = null;
+                    continue;
+                }
+                name = property.Value.GetString();
+                continue;
             }
-        }
-
-        Assistant IPersistableModel<Assistant>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
-
-            switch (format)
+            if (property.NameEquals("description"u8))
             {
-                case "J":
-                    {
-                        using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeAssistant(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(Assistant)} does not support reading '{options.Format}' format.");
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    description = null;
+                    continue;
+                }
+                description = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("model"u8))
+            {
+                model = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("instructions"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    instructions = null;
+                    continue;
+                }
+                instructions = property.Value.GetString();
+                continue;
+            }
+            if (property.NameEquals("tools"u8))
+            {
+                List<ToolDefinition> array = new List<ToolDefinition>();
+                foreach (var item in property.Value.EnumerateArray())
+                {
+                    array.Add(ToolDefinition.DeserializeToolDefinition(item, options));
+                }
+                tools = array;
+                continue;
+            }
+            if (property.NameEquals("tool_resources"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    toolResources = null;
+                    continue;
+                }
+                toolResources = ToolResources.DeserializeToolResources(property.Value, options);
+                continue;
+            }
+            if (property.NameEquals("metadata"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    metadata = new ChangeTrackingDictionary<string, string>();
+                    continue;
+                }
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                foreach (var property0 in property.Value.EnumerateObject())
+                {
+                    dictionary.Add(property0.Name, property0.Value.GetString());
+                }
+                metadata = dictionary;
+                continue;
+            }
+            if (property.NameEquals("temperature"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    temperature = null;
+                    continue;
+                }
+                temperature = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("top_p"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    topP = null;
+                    continue;
+                }
+                topP = property.Value.GetSingle();
+                continue;
+            }
+            if (property.NameEquals("response_format"u8))
+            {
+                if (property.Value.ValueKind == JsonValueKind.Null)
+                {
+                    responseFormat = null;
+                    continue;
+                }
+                responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(property.Value, options);
+                continue;
+            }
+            if (true)
+            {
+                rawDataDictionary ??= new Dictionary<string, BinaryData>();
+                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
+        serializedAdditionalRawData = rawDataDictionary;
+        return new Assistant(
+            id,
+            @object,
+            createdAt,
+            name,
+            description,
+            model,
+            instructions,
+            tools,
+            toolResources,
+            metadata,
+            temperature,
+            topP,
+            responseFormat,
+            serializedAdditionalRawData);
+    }
 
-        string IPersistableModel<Assistant>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+    BinaryData IPersistableModel<Assistant>.Write(ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
 
-        internal static Assistant FromResponse(PipelineResponse response)
+        switch (format)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistant(document.RootElement);
+            case "J":
+                return ModelReaderWriter.Write(this, options);
+            default:
+                throw new FormatException($"The model {nameof(Assistant)} does not support writing '{options.Format}' format.");
         }
+    }
 
-        internal virtual BinaryContent ToBinaryContent()
+    Assistant IPersistableModel<Assistant>.Create(BinaryData data, ModelReaderWriterOptions options)
+    {
+        var format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
+
+        switch (format)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            case "J":
+                {
+                    using JsonDocument document = JsonDocument.Parse(data);
+                    return DeserializeAssistant(document.RootElement, options);
+                }
+            default:
+                throw new FormatException($"The model {nameof(Assistant)} does not support reading '{options.Format}' format.");
         }
+    }
+
+    string IPersistableModel<Assistant>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+    internal static Assistant FromResponse(PipelineResponse response)
+    {
+        using var document = JsonDocument.Parse(response.Content);
+        return DeserializeAssistant(document.RootElement);
+    }
+
+    internal virtual BinaryContent ToBinaryContent()
+    {
+        return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
     }
 }

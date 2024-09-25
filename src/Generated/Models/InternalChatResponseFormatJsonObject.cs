@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Chat
-{
-    internal partial class InternalChatResponseFormatJsonObject : ChatResponseFormat
-    {
-        public InternalChatResponseFormatJsonObject()
-        {
-            Type = "json_object";
-        }
+namespace OpenAI.Chat;
 
-        internal InternalChatResponseFormatJsonObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
+internal partial class InternalChatResponseFormatJsonObject : ChatResponseFormat
+{
+    public InternalChatResponseFormatJsonObject()
+    {
+        Type = "json_object";
+    }
+
+    internal InternalChatResponseFormatJsonObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+    {
     }
 }

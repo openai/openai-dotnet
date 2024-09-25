@@ -5,18 +5,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
-{
-    internal partial class InternalCreateThreadRequestToolResourcesFileSearchBase
-    {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        public InternalCreateThreadRequestToolResourcesFileSearchBase()
-        {
-        }
+namespace OpenAI.Assistants;
 
-        internal InternalCreateThreadRequestToolResourcesFileSearchBase(IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+internal partial class InternalCreateThreadRequestToolResourcesFileSearchBase
+{
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    public InternalCreateThreadRequestToolResourcesFileSearchBase()
+    {
+    }
+
+    internal InternalCreateThreadRequestToolResourcesFileSearchBase(IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 }

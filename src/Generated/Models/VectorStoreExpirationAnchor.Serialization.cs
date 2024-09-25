@@ -4,20 +4,19 @@
 
 using System;
 
-namespace OpenAI.VectorStores
-{
-    internal static partial class VectorStoreExpirationAnchorExtensions
-    {
-        public static string ToSerialString(this VectorStoreExpirationAnchor value) => value switch
-        {
-            VectorStoreExpirationAnchor.LastActiveAt => "last_active_at",
-            _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.")
-        };
+namespace OpenAI.VectorStores;
 
-        public static VectorStoreExpirationAnchor ToVectorStoreExpirationAnchor(this string value)
-        {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "last_active_at")) return VectorStoreExpirationAnchor.LastActiveAt;
-            throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.");
-        }
+internal static partial class VectorStoreExpirationAnchorExtensions
+{
+    public static string ToSerialString(this VectorStoreExpirationAnchor value) => value switch
+    {
+        VectorStoreExpirationAnchor.LastActiveAt => "last_active_at",
+        _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.")
+    };
+
+    public static VectorStoreExpirationAnchor ToVectorStoreExpirationAnchor(this string value)
+    {
+        if (StringComparer.OrdinalIgnoreCase.Equals(value, "last_active_at")) return VectorStoreExpirationAnchor.LastActiveAt;
+        throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.");
     }
 }

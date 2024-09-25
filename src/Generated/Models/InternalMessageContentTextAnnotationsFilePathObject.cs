@@ -5,37 +5,36 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalMessageContentTextAnnotationsFilePathObject : InternalMessageContentTextObjectAnnotation
 {
-    internal partial class InternalMessageContentTextAnnotationsFilePathObject : InternalMessageContentTextObjectAnnotation
+    public InternalMessageContentTextAnnotationsFilePathObject(string text, InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath, int startIndex, int endIndex)
     {
-        public InternalMessageContentTextAnnotationsFilePathObject(string text, InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath, int startIndex, int endIndex)
-        {
-            Argument.AssertNotNull(text, nameof(text));
-            Argument.AssertNotNull(filePath, nameof(filePath));
+        Argument.AssertNotNull(text, nameof(text));
+        Argument.AssertNotNull(filePath, nameof(filePath));
 
-            Type = "file_path";
-            Text = text;
-            FilePath = filePath;
-            StartIndex = startIndex;
-            EndIndex = endIndex;
-        }
-
-        internal InternalMessageContentTextAnnotationsFilePathObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text, InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath, int startIndex, int endIndex) : base(type, serializedAdditionalRawData)
-        {
-            Text = text;
-            FilePath = filePath;
-            StartIndex = startIndex;
-            EndIndex = endIndex;
-        }
-
-        internal InternalMessageContentTextAnnotationsFilePathObject()
-        {
-        }
-
-        public string Text { get; set; }
-        public InternalMessageContentTextAnnotationsFilePathObjectFilePath FilePath { get; set; }
-        public int StartIndex { get; set; }
-        public int EndIndex { get; set; }
+        Type = "file_path";
+        Text = text;
+        FilePath = filePath;
+        StartIndex = startIndex;
+        EndIndex = endIndex;
     }
+
+    internal InternalMessageContentTextAnnotationsFilePathObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text, InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath, int startIndex, int endIndex) : base(type, serializedAdditionalRawData)
+    {
+        Text = text;
+        FilePath = filePath;
+        StartIndex = startIndex;
+        EndIndex = endIndex;
+    }
+
+    internal InternalMessageContentTextAnnotationsFilePathObject()
+    {
+    }
+
+    public string Text { get; set; }
+    public InternalMessageContentTextAnnotationsFilePathObjectFilePath FilePath { get; set; }
+    public int StartIndex { get; set; }
+    public int EndIndex { get; set; }
 }

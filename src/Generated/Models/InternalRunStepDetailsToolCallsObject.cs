@@ -6,25 +6,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenAI.Assistants
+namespace OpenAI.Assistants;
+
+internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
 {
-    internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
+    internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls)
     {
-        internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls)
-        {
-            Argument.AssertNotNull(internalToolCalls, nameof(internalToolCalls));
+        Argument.AssertNotNull(internalToolCalls, nameof(internalToolCalls));
 
-            Type = "tool_calls";
-            InternalToolCalls = internalToolCalls.ToList();
-        }
+        Type = "tool_calls";
+        InternalToolCalls = internalToolCalls.ToList();
+    }
 
-        internal InternalRunStepDetailsToolCallsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(type, serializedAdditionalRawData)
-        {
-            InternalToolCalls = internalToolCalls;
-        }
+    internal InternalRunStepDetailsToolCallsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(type, serializedAdditionalRawData)
+    {
+        InternalToolCalls = internalToolCalls;
+    }
 
-        internal InternalRunStepDetailsToolCallsObject()
-        {
-        }
+    internal InternalRunStepDetailsToolCallsObject()
+    {
     }
 }

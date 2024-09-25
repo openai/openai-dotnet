@@ -15,14 +15,9 @@ namespace OpenAI.Tests.Files;
 [Parallelizable(ParallelScope.All)]
 [Category("Files")]
 [Category("Smoke")]
-public class FilesMockTests : SyncAsyncTestBase
+public class FilesMockTests(bool isAsync) : SyncAsyncTestBase(isAsync)
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
-
-    public FilesMockTests(bool isAsync)
-        : base(isAsync)
-    {
-    }
 
     public enum FileSourceKind
     {

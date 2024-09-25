@@ -5,38 +5,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.VectorStores
+namespace OpenAI.VectorStores;
+
+public partial class VectorStoreFileCounts
 {
-    public partial class VectorStoreFileCounts
+    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+    internal VectorStoreFileCounts(int inProgress, int completed, int failed, int cancelled, int total)
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal VectorStoreFileCounts(int inProgress, int completed, int failed, int cancelled, int total)
-        {
-            InProgress = inProgress;
-            Completed = completed;
-            Failed = failed;
-            Cancelled = cancelled;
-            Total = total;
-        }
-
-        internal VectorStoreFileCounts(int inProgress, int completed, int failed, int cancelled, int total, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            InProgress = inProgress;
-            Completed = completed;
-            Failed = failed;
-            Cancelled = cancelled;
-            Total = total;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal VectorStoreFileCounts()
-        {
-        }
-
-        public int InProgress { get; }
-        public int Completed { get; }
-        public int Failed { get; }
-        public int Cancelled { get; }
-        public int Total { get; }
+        InProgress = inProgress;
+        Completed = completed;
+        Failed = failed;
+        Cancelled = cancelled;
+        Total = total;
     }
+
+    internal VectorStoreFileCounts(int inProgress, int completed, int failed, int cancelled, int total, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    {
+        InProgress = inProgress;
+        Completed = completed;
+        Failed = failed;
+        Cancelled = cancelled;
+        Total = total;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
+    }
+
+    internal VectorStoreFileCounts()
+    {
+    }
+
+    public int InProgress { get; }
+    public int Completed { get; }
+    public int Failed { get; }
+    public int Cancelled { get; }
+    public int Total { get; }
 }
