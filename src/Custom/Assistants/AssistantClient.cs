@@ -30,6 +30,12 @@ public partial class AssistantClient
     private readonly InternalAssistantRunClient _runSubClient;
     private readonly InternalAssistantThreadClient _threadSubClient;
 
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="AssistantClient">. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
@@ -1263,8 +1269,8 @@ public partial class AssistantClient
             runOptions.Temperature,
             runOptions.NucleusSamplingFactor,
             runOptions.Stream,
-            runOptions.MaxPromptTokens,
-            runOptions.MaxCompletionTokens,
+            runOptions.MaxInputTokenCount,
+            runOptions.MaxOutputTokenCount,
             runOptions.TruncationStrategy,
             runOptions.ToolConstraint,
             runOptions.AllowParallelToolCalls,

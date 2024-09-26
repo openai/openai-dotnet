@@ -326,7 +326,7 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void ChatCompletionWithUsageWorks()
     {
-        ChatTokenUsage usage = OpenAIChatModelFactory.ChatTokenUsage(outputTokens: 20);
+        ChatTokenUsage usage = OpenAIChatModelFactory.ChatTokenUsage(outputTokenCount: 20);
         ChatCompletion chatCompletion = OpenAIChatModelFactory.ChatCompletion(usage: usage);
 
         Assert.That(chatCompletion.Id, Is.Null);
@@ -465,7 +465,7 @@ public partial class OpenAIChatModelFactoryTests
     public void ChatTokenUsageWithOutputTokensWorks()
     {
         int outputTokens = 271828;
-        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(outputTokens: outputTokens);
+        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(outputTokenCount: outputTokens);
 
         Assert.That(chatTokenUsage.OutputTokenCount, Is.EqualTo(outputTokens));
         Assert.That(chatTokenUsage.InputTokenCount, Is.EqualTo(0));
@@ -476,7 +476,7 @@ public partial class OpenAIChatModelFactoryTests
     public void ChatTokenUsageWithInputTokensWorks()
     {
         int inputTokens = 271828;
-        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(inputTokens: inputTokens);
+        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(inputTokenCount: inputTokens);
 
         Assert.That(chatTokenUsage.OutputTokenCount, Is.EqualTo(0));
         Assert.That(chatTokenUsage.InputTokenCount, Is.EqualTo(inputTokens));
@@ -487,7 +487,7 @@ public partial class OpenAIChatModelFactoryTests
     public void ChatTokenUsageWithTotalTokensWorks()
     {
         int totalTokens = 271828;
-        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(totalTokens: totalTokens);
+        ChatTokenUsage chatTokenUsage = OpenAIChatModelFactory.ChatTokenUsage(totalTokenCount: totalTokens);
 
         Assert.That(chatTokenUsage.OutputTokenCount, Is.EqualTo(0));
         Assert.That(chatTokenUsage.InputTokenCount, Is.EqualTo(0));
@@ -809,7 +809,7 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void StreamingChatCompletionUpdateWithUsageWorks()
     {
-        ChatTokenUsage usage = OpenAIChatModelFactory.ChatTokenUsage(outputTokens: 20);
+        ChatTokenUsage usage = OpenAIChatModelFactory.ChatTokenUsage(outputTokenCount: 20);
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(usage: usage);
 
         Assert.That(streamingChatCompletionUpdate.Id, Is.Null);

@@ -77,7 +77,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     [Test]
     public void EmbeddingCollectionWithUsageWorks()
     {
-        EmbeddingTokenUsage usage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokens: 10);
+        EmbeddingTokenUsage usage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokenCount: 10);
         OpenAIEmbeddingCollection embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection(usage: usage);
 
         Assert.That(embeddingCollection.Count, Is.EqualTo(0));
@@ -98,7 +98,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingTokenUsageWithInputTokensWorks()
     {
         int inputTokens = 10;
-        EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokens: inputTokens);
+        EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(inputTokenCount: inputTokens);
 
         Assert.That(embeddingTokenUsage.InputTokenCount, Is.EqualTo(10));
         Assert.That(embeddingTokenUsage.TotalTokenCount, Is.EqualTo(default(int)));
@@ -108,7 +108,7 @@ public class OpenAIEmbeddingsModelFactoryTests
     public void EmbeddingTokenUsageWithTotalTokensWorks()
     {
         int totalTokens = 10;
-        EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(totalTokens: totalTokens);
+        EmbeddingTokenUsage embeddingTokenUsage = OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(totalTokenCount: totalTokens);
 
         Assert.That(embeddingTokenUsage.InputTokenCount, Is.EqualTo(default(int)));
         Assert.That(embeddingTokenUsage.TotalTokenCount, Is.EqualTo(totalTokens));

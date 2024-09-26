@@ -150,24 +150,24 @@ namespace OpenAI.Assistants
                     writer.WriteNull("stream");
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_prompt_tokens") != true && Optional.IsDefined(MaxPromptTokens))
+            if (SerializedAdditionalRawData?.ContainsKey("max_prompt_tokens") != true && Optional.IsDefined(MaxInputTokenCount))
             {
-                if (MaxPromptTokens != null)
+                if (MaxInputTokenCount != null)
                 {
                     writer.WritePropertyName("max_prompt_tokens"u8);
-                    writer.WriteNumberValue(MaxPromptTokens.Value);
+                    writer.WriteNumberValue(MaxInputTokenCount.Value);
                 }
                 else
                 {
                     writer.WriteNull("max_prompt_tokens");
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_completion_tokens") != true && Optional.IsDefined(MaxCompletionTokens))
+            if (SerializedAdditionalRawData?.ContainsKey("max_completion_tokens") != true && Optional.IsDefined(MaxOutputTokenCount))
             {
-                if (MaxCompletionTokens != null)
+                if (MaxOutputTokenCount != null)
                 {
                     writer.WritePropertyName("max_completion_tokens"u8);
-                    writer.WriteNumberValue(MaxCompletionTokens.Value);
+                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
                 }
                 else
                 {

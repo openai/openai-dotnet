@@ -6,7 +6,7 @@ namespace OpenAI {
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual AssistantClient GetAssistantClient();
         public virtual AudioClient GetAudioClient(string model);
         public virtual BatchClient GetBatchClient();
@@ -53,7 +53,7 @@ namespace OpenAI.Assistants {
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ThreadRun> CancelRun(ThreadRun run);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options);
@@ -600,8 +600,8 @@ namespace OpenAI.Assistants {
         public IList<ThreadInitializationMessage> AdditionalMessages { get; }
         public bool? AllowParallelToolCalls { get; set; }
         public string InstructionsOverride { get; set; }
-        public int? MaxCompletionTokens { get; set; }
-        public int? MaxPromptTokens { get; set; }
+        public int? MaxInputTokenCount { get; set; }
+        public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
         public string ModelOverride { get; set; }
         public float? NucleusSamplingFactor { get; set; }
@@ -654,8 +654,8 @@ namespace OpenAI.Assistants {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
         public RunIncompleteReason(string value);
-        public static RunIncompleteReason MaxCompletionTokens { get; }
-        public static RunIncompleteReason MaxPromptTokens { get; }
+        public static RunIncompleteReason MaxInputTokenCount { get; }
+        public static RunIncompleteReason MaxOutputTokenCount { get; }
         public readonly bool Equals(RunIncompleteReason other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -826,9 +826,9 @@ namespace OpenAI.Assistants {
         public override readonly string ToString();
     }
     public class RunStepTokenUsage : IJsonModel<RunStepTokenUsage>, IPersistableModel<RunStepTokenUsage> {
-        public int CompletionTokens { get; }
-        public int PromptTokens { get; }
-        public int TotalTokens { get; }
+        public int InputTokenCount { get; }
+        public int OutputTokenCount { get; }
+        public int TotalTokenCount { get; }
         RunStepTokenUsage IJsonModel<RunStepTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         void IJsonModel<RunStepTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         RunStepTokenUsage IPersistableModel<RunStepTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
@@ -1022,8 +1022,8 @@ namespace OpenAI.Assistants {
         public RunIncompleteDetails IncompleteDetails { get; }
         public string Instructions { get; }
         public RunError LastError { get; }
-        public int? MaxCompletionTokens { get; }
-        public int? MaxPromptTokens { get; }
+        public int? MaxInputTokenCount { get; }
+        public int? MaxOutputTokenCount { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string Model { get; }
         public float? NucleusSamplingFactor { get; }
@@ -1114,7 +1114,7 @@ namespace OpenAI.Audio {
         public AudioClient(string model, ApiKeyCredential credential);
         public AudioClient(string model, string apiKey, OpenAIClientOptions options);
         public AudioClient(string model, string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -1306,7 +1306,7 @@ namespace OpenAI.Batch {
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey, OpenAIClientOptions options);
         public BatchClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> CancelBatchAsync(string batchId, RequestOptions options);
         public virtual ClientResult CreateBatch(BinaryContent content, RequestOptions options = null);
@@ -1343,7 +1343,7 @@ namespace OpenAI.Chat {
         public ChatClient(string model, ApiKeyCredential credential);
         public ChatClient(string model, string apiKey, OpenAIClientOptions options);
         public ChatClient(string model, string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null);
@@ -1660,10 +1660,10 @@ namespace OpenAI.Chat {
     }
     public static class OpenAIChatModelFactory {
         public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, IEnumerable<ChatMessageContentPart> content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null);
-        public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokens = 0);
+        public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = 0);
         public static ChatTokenLogProbabilityDetails ChatTokenLogProbabilityDetails(string token = null, float logProbability = 0, ReadOnlyMemory<byte>? utf8Bytes = null, IEnumerable<ChatTokenTopLogProbabilityDetails> topLogProbabilities = null);
         public static ChatTokenTopLogProbabilityDetails ChatTokenTopLogProbabilityDetails(string token = null, float logProbability = 0, ReadOnlyMemory<byte>? utf8Bytes = null);
-        public static ChatTokenUsage ChatTokenUsage(int outputTokens = 0, int inputTokens = 0, int totalTokens = 0, ChatOutputTokenUsageDetails outputTokenDetails = null);
+        public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = 0, int inputTokenCount = 0, int totalTokenCount = 0, ChatOutputTokenUsageDetails outputTokenDetails = null);
         public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(string id = null, IEnumerable<ChatMessageContentPart> contentUpdate = null, StreamingChatFunctionCallUpdate functionCallUpdate = null, IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates = null, ChatMessageRole? role = null, string refusalUpdate = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, ChatFinishReason? finishReason = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null);
         [Obsolete("This class is obsolete. Please use StreamingChatToolCallUpdate instead.")]
         public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionArgumentsUpdate = null, string functionName = null);
@@ -1754,7 +1754,7 @@ namespace OpenAI.Embeddings {
         public EmbeddingClient(string model, ApiKeyCredential credential);
         public EmbeddingClient(string model, string apiKey, OpenAIClientOptions options);
         public EmbeddingClient(string model, string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1803,7 +1803,7 @@ namespace OpenAI.Embeddings {
         BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options);
     }
     public static class OpenAIEmbeddingsModelFactory {
-        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokens = 0, int totalTokens = 0);
+        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = 0, int totalTokenCount = 0);
         public static OpenAIEmbedding OpenAIEmbedding(int index = 0, IEnumerable<float> vector = null);
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = null, string model = null, EmbeddingTokenUsage usage = null);
     }
@@ -1816,7 +1816,7 @@ namespace OpenAI.Files {
         protected internal FileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public FileClient(string apiKey, OpenAIClientOptions options);
         public FileClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult CancelUpload(string uploadId, RequestOptions options = null);
@@ -1965,7 +1965,7 @@ namespace OpenAI.FineTuning {
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public FineTuningClient(string apiKey, OpenAIClientOptions options);
         public FineTuningClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelJob(string jobId, RequestOptions options);
         public virtual Task<ClientResult> CancelJobAsync(string jobId, RequestOptions options);
         public virtual ClientResult CreateJob(BinaryContent content, RequestOptions options = null);
@@ -2036,7 +2036,7 @@ namespace OpenAI.Images {
         public ImageClient(string model, ApiKeyCredential credential);
         public ImageClient(string model, string apiKey, OpenAIClientOptions options);
         public ImageClient(string model, string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default);
@@ -2123,7 +2123,7 @@ namespace OpenAI.Models {
         protected internal ModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public ModelClient(string apiKey, OpenAIClientOptions options);
         public ModelClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteModel(string model, RequestOptions options);
         public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default);
@@ -2187,7 +2187,7 @@ namespace OpenAI.Moderations {
         public ModerationClient(string model, ApiKeyCredential credential);
         public ModerationClient(string model, string apiKey, OpenAIClientOptions options);
         public ModerationClient(string model, string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
@@ -2315,7 +2315,7 @@ namespace OpenAI.VectorStores {
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(VectorStore vectorStore, OpenAIFile file);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);

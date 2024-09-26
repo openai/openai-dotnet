@@ -30,8 +30,6 @@ namespace OpenAI
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        public virtual ClientPipeline Pipeline => _pipeline;
-
         protected OpenAIClient()
         {
         }
