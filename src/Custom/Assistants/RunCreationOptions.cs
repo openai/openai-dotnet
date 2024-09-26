@@ -115,10 +115,12 @@ public partial class RunCreationOptions
     public float? NucleusSamplingFactor { get; set; }
 
     /// <summary> The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. </summary>
-    public int? MaxPromptTokens { get; set; }
+    [CodeGenMember("MaxPromptTokens")]
+    public int? MaxInputTokenCount { get; set; }
 
     /// <summary> The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info. </summary>
-    public int? MaxCompletionTokens { get; set; }
+    [CodeGenMember("MaxCompletionTokens")]
+    public int? MaxOutputTokenCount { get; set; }
 
     /// <summary> Gets or sets the truncation strategy. </summary>
     public RunTruncationStrategy TruncationStrategy { get; set; }

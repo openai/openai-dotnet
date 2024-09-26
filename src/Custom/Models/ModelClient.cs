@@ -22,6 +22,12 @@ namespace OpenAI.Models;
 
 public partial class ModelClient
 {
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ModelClient">. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>

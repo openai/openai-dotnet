@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal ThreadRun(string id, InternalRunObjectObject @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ThreadRun(string id, InternalRunObjectObject @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Object = @object;
@@ -35,8 +35,8 @@ namespace OpenAI.Assistants
             Usage = usage;
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
-            MaxPromptTokens = maxPromptTokens;
-            MaxCompletionTokens = maxCompletionTokens;
+            MaxInputTokenCount = maxInputTokenCount;
+            MaxOutputTokenCount = maxOutputTokenCount;
             TruncationStrategy = truncationStrategy;
             ToolConstraint = toolConstraint;
             AllowParallelToolCalls = allowParallelToolCalls;
@@ -67,8 +67,6 @@ namespace OpenAI.Assistants
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public RunTokenUsage Usage { get; }
         public float? Temperature { get; }
-        public int? MaxPromptTokens { get; }
-        public int? MaxCompletionTokens { get; }
         public RunTruncationStrategy TruncationStrategy { get; }
     }
 }

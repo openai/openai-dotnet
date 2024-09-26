@@ -16,11 +16,8 @@ namespace OpenAI.Assistants
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        private const string MaxCompletionTokensValue = "max_completion_tokens";
-        private const string MaxPromptTokensValue = "max_prompt_tokens";
-
-        public static RunIncompleteReason MaxCompletionTokens { get; } = new RunIncompleteReason(MaxCompletionTokensValue);
-        public static RunIncompleteReason MaxPromptTokens { get; } = new RunIncompleteReason(MaxPromptTokensValue);
+        private const string MaxOutputTokenCountValue = "max_completion_tokens";
+        private const string MaxInputTokenCountValue = "max_prompt_tokens";
         public static bool operator ==(RunIncompleteReason left, RunIncompleteReason right) => left.Equals(right);
         public static bool operator !=(RunIncompleteReason left, RunIncompleteReason right) => !left.Equals(right);
         public static implicit operator RunIncompleteReason(string value) => new RunIncompleteReason(value);

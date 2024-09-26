@@ -21,6 +21,12 @@ public partial class EmbeddingClient
 {
     private readonly string _model;
 
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>

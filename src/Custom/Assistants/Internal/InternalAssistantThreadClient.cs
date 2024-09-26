@@ -16,6 +16,12 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("DeleteThread", typeof(string))]
 internal partial class InternalAssistantThreadClient
 {
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.

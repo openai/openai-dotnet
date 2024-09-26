@@ -6,14 +6,16 @@
 
 ### Breaking Changes
 
-- Refactored `ModerationResult` by merging `ModerationCategories` and `ModerationCategoryScores` into individual `ModerationCategory` properties, each with `Flagged` and `Score` properties. (commit_hash)
+- Refactored `ModerationResult` by merging `ModerationCategories` and `ModerationCategoryScores` into individual `ModerationCategory` properties, each with `Flagged` and `Score` properties. (commit_id)
 - Renamed type `OpenAIFileInfo` to `OpenAIFile` and `OpenAIFileInfoCollection` to `OpenAIFileCollection`. (commit_id)
 - Renamed type `OpenAIModelInfo` to `OpenAIModel` and `OpenAIModelInfoCollection` to `OpenAIModelCollection`. (commit_id)
 - Renamed type `Embedding` to `OpenAIEmbedding` and `EmbeddingCollection` to `OpenAIEmbeddingCollection`. (commit_id)
-- Renamed property `ImageUrl` to `ImageUri` and method `FromImageUrl` to `FromImageUri` in `MessageContent`. (commit_id)
-- Renamed property `ParallelToolCallsEnabled` to `AllowParallelToolCalls` in `RunCreationOptions`, `ThreadRun`, and `ChatCompletionOptions` types. (commit_id)
-- Renamed property `PromptTokens` to `InputTokenCount`, `CompletionTokens` to `OutputTokenCount`, and `TotalTokens` to `TotalTokenCount` in `RunTokenUsage`. (commit_id)
-- Renamed property `InputTokens` to `InputTokenCount` and `TotalTokens` to `TotalTokenCount` in `EmbeddingTokenUsage`. (commit_id)
+- Renamed property `ImageUrl` to `ImageUri` and method `FromImageUrl` to `FromImageUri` in the `MessageContent` type. (commit_id)
+- Renamed property `ParallelToolCallsEnabled` to `AllowParallelToolCalls` in the `RunCreationOptions`, `ThreadRun`, and `ChatCompletionOptions` types. (commit_id)
+- Renamed properties `PromptTokens` to `InputTokenCount`, `CompletionTokens` to `OutputTokenCount`, and `TotalTokens` to `TotalTokenCount` in the `RunTokenUsage` and `RunStepTokenUsage` types. (commit_id)
+- Renamed properties `InputTokens` to `InputTokenCount` and `TotalTokens` to `TotalTokenCount` in the `EmbeddingTokenUsage` type. (commit_id)
+- Renamed properties `MaxPromptTokens` to `MaxInputTokenCount` and `MaxCompletionTokens` to `MaxOutputTokenCount` in the `ThreadRun`, `RunCreationOptions`, and `RunIncompleteReason` types. (commit_id)
+- Removed the `virtual` keyword from the `Pipeline` property across all clients. (commit_id)
 
 ### Bugs Fixed
 

@@ -24,6 +24,12 @@ namespace OpenAI.Batch;
 [CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?))]
 public partial class BatchClient
 {
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="BatchClient">. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>

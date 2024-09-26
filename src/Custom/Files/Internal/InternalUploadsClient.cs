@@ -8,6 +8,12 @@ namespace OpenAI.Files;
 [CodeGenSuppress("InternalUploadsClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 internal partial class InternalUploadsClient
 {
+    // CUSTOM: Remove virtual keyword.
+    /// <summary>
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
+    /// </summary>
+    public ClientPipeline Pipeline => _pipeline;
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.

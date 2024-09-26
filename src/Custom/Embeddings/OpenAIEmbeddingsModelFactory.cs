@@ -33,11 +33,11 @@ public static partial class OpenAIEmbeddingsModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Embeddings.EmbeddingTokenUsage"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Embeddings.EmbeddingTokenUsage"/> instance for mocking. </returns>
-    public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokens = default, int totalTokens = default)
+    public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
     {
         return new EmbeddingTokenUsage(
-            inputTokens,
-            totalTokens,
+            inputTokenCount,
+            totalTokenCount,
             serializedAdditionalRawData: null);
     }
 }
