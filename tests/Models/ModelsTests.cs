@@ -94,7 +94,8 @@ public class ModelsTests : SyncAsyncTestBase
 
         // If the model exists but the user doesn't own it, the service returns 403.
         // If the model doesn't exist at all, the service returns 404.
-        Assert.That(ex.Status, Is.EqualTo(404));
+        // The service has changed the behavior in the past.
+        Assert.That((ex.Status == 403 || ex.Status == 404), Is.True);
     }
 
     [Test]

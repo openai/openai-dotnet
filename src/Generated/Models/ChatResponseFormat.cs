@@ -7,12 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    public abstract partial class ChatResponseFormat
+    public partial class ChatResponseFormat
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected ChatResponseFormat()
-        {
-        }
 
         internal ChatResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {

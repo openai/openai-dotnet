@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    public abstract partial class ChatMessage
+    public partial class ChatMessage
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 

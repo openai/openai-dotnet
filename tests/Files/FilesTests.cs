@@ -44,8 +44,8 @@ public class FilesTests : SyncAsyncTestBase
             uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
 
             fileInfoCollection = IsAsync
-                ? await client.GetFilesAsync(OpenAIFilePurpose.Assistants)
-                : client.GetFiles(OpenAIFilePurpose.Assistants);
+                ? await client.GetFilesAsync(FilePurpose.Assistants)
+                : client.GetFiles(FilePurpose.Assistants);
         }
         finally
         {
@@ -106,25 +106,6 @@ public class FilesTests : SyncAsyncTestBase
 #pragma warning restore CS0618
 
         Assert.That(visionFileInfo, Is.Null);
-    }
-
-    [Test]
-    public void ListFilesCanParseServiceError()
-    {
-        FileClient client = GetTestClient();
-        OpenAIFilePurpose fakePurpose = new OpenAIFilePurpose("world_domination");
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFilesAsync(fakePurpose));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.GetFiles(fakePurpose));
-        }
-
-        Assert.That(ex.Status, Is.EqualTo(400));
     }
 
     public enum FileSourceKind
@@ -192,9 +173,9 @@ public class FilesTests : SyncAsyncTestBase
         Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
         Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
         Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
-        Assert.That(fileInfo.Purpose, Is.EqualTo(OpenAIFilePurpose.Vision));
+        Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
-        Assert.That(fileInfo.Status, Is.Not.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
 #pragma warning restore CS0618
     }
 

@@ -3,9 +3,7 @@ using System;
 namespace OpenAI.Images;
 
 // CUSTOM: Added custom struct in favor of the generated extensible enum.
-/// <summary>
-/// Represents the available output dimensions for generated images.
-/// </summary>
+/// <summary> The size of the image that will be generated. </summary>
 [CodeGenModel("CreateImageRequestSize")]
 [CodeGenSuppress("GeneratedImageSize", typeof(string))]
 [CodeGenSuppress("op_Implicit", typeof(string))]

@@ -43,17 +43,6 @@ public partial class FileClient
     {
     }
 
-    // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="apiKey"> The API key to authenticate with the service. </param>
-    /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public FileClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
-    {
-    }
-
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -246,18 +235,18 @@ public partial class FileClient
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
     /// <param name="purpose"> Only return files with the given purpose. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(OpenAIFilePurpose purpose, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
-        ClientResult result = await GetFilesAsync(purpose.ToString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await GetFilesAsync(purpose.ToSerialString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(OpenAIFileCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
     /// <param name="purpose"> Only return files with the given purpose. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
-    public virtual ClientResult<OpenAIFileCollection> GetFiles(OpenAIFilePurpose purpose, CancellationToken cancellationToken = default)
+    public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
-        ClientResult result = GetFiles(purpose.ToString(), cancellationToken.ToRequestOptions());
+        ClientResult result = GetFiles(purpose.ToSerialString(), cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(OpenAIFileCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 

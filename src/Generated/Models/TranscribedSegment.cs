@@ -4,30 +4,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Audio
 {
     public readonly partial struct TranscribedSegment
     {
-        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, IEnumerable<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability)
+        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, ReadOnlyMemory<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability)
         {
             Argument.AssertNotNull(text, nameof(text));
-            Argument.AssertNotNull(tokenIds, nameof(tokenIds));
 
             Id = id;
             SeekOffset = seekOffset;
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
-            TokenIds = tokenIds.ToList();
+            TokenIds = tokenIds;
             Temperature = temperature;
             AverageLogProbability = averageLogProbability;
             CompressionRatio = compressionRatio;
             NoSpeechProbability = noSpeechProbability;
         }
 
-        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, IReadOnlyList<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal TranscribedSegment(int id, int seekOffset, TimeSpan startTime, TimeSpan endTime, string text, ReadOnlyMemory<int> tokenIds, float temperature, float averageLogProbability, float compressionRatio, float noSpeechProbability, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             SeekOffset = seekOffset;

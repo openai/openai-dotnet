@@ -29,7 +29,7 @@ namespace OpenAI.Chat
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("function") != true)
             {
@@ -92,7 +92,7 @@ namespace OpenAI.Chat
                 }
                 if (property.NameEquals("type"u8))
                 {
-                    type = new ChatToolCallKind(property.Value.GetString());
+                    type = property.Value.GetString().ToChatToolCallKind();
                     continue;
                 }
                 if (property.NameEquals("function"u8))

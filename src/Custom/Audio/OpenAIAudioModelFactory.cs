@@ -41,17 +41,15 @@ public static partial class OpenAIAudioModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.TranscribedSegment"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Audio.TranscribedSegment"/> instance for mocking. </returns>
-    public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = null, IEnumerable<int> tokenIds = null, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
+    public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = null, ReadOnlyMemory<int> tokenIds = default, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
     {
-        tokenIds ??= new List<int>();
-
         return new TranscribedSegment(
             id,
             seekOffset,
             startTime,
             endTime,
             text,
-            tokenIds.ToList(),
+            tokenIds,
             temperature,
             averageLogProbability,
             compressionRatio,

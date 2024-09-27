@@ -50,7 +50,7 @@ namespace OpenAI.Audio
             {
                 writer.WritePropertyName("tokens"u8);
                 writer.WriteStartArray();
-                foreach (var item in TokenIds)
+                foreach (var item in TokenIds.Span)
                 {
                     writer.WriteNumberValue(item);
                 }
@@ -123,7 +123,7 @@ namespace OpenAI.Audio
             TimeSpan start = default;
             TimeSpan end = default;
             string text = default;
-            IReadOnlyList<int> tokens = default;
+            ReadOnlyMemory<int> tokens = default;
             float temperature = default;
             float avgLogprob = default;
             float compressionRatio = default;
@@ -159,12 +159,18 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("tokens"u8))
                 {
-                    List<int> array = new List<int>();
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    int index = 0;
+                    int[] array = new int[property.Value.GetArrayLength()];
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(item.GetInt32());
+                        array[index] = item.GetInt32();
+                        index++;
                     }
-                    tokens = array;
+                    tokens = new ReadOnlyMemory<int>(array);
                     continue;
                 }
                 if (property.NameEquals("temperature"u8))

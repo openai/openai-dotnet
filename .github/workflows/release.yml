@@ -45,11 +45,11 @@ jobs:
           --filter="TestCategory=Smoke&TestCategory!=Manual"
           --logger "trx;LogFileName=${{ github.workspace }}/artifacts/test-results/smoke.trx"
           ${{ env.version_suffix_args }}
-          
+
       - name: Run Live Tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=Manual"
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}

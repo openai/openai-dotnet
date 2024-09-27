@@ -7,6 +7,11 @@ namespace OpenAI.Files;
     + $" after it has been uploaded. While the file is processing, you can still create a fine-tuning job but it"
     + $" will not start until the file processing has completed.")]
 [CodeGenModel("OpenAIFileStatus")]
-public readonly partial struct OpenAIFileStatus
+public enum FileStatus
 {
+    Uploaded,
+
+    Processed,
+
+    Error,
 }

@@ -82,7 +82,7 @@ public partial class AssistantExamples
         #region Step 2 - Create a thread and add messages
         AssistantThread thread = await client.CreateThreadAsync();
         ThreadMessage message = await client.CreateMessageAsync(
-            thread,
+            thread.Id,
             MessageRole.User,
             [
                 "What's the weather in San Francisco today and the likelihood it'll rain?"
@@ -91,7 +91,7 @@ public partial class AssistantExamples
 
         #region Step 3 - Initiate a streaming run
         AsyncCollectionResult<StreamingUpdate> asyncUpdates
-            = client.CreateRunStreamingAsync(thread, assistant);
+            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         ThreadRun currentRun = null;
         do
@@ -100,11 +100,7 @@ public partial class AssistantExamples
             List<ToolOutput> outputsToSubmit = [];
             await foreach (StreamingUpdate update in asyncUpdates)
             {
-                if (update is RunUpdate runUpdate)
-                {
-                    currentRun = runUpdate;
-                }
-                else if (update is RequiredActionUpdate requiredActionUpdate)
+                if (update is RequiredActionUpdate requiredActionUpdate)
                 {
                     if (requiredActionUpdate.FunctionName == getTemperatureTool.FunctionName)
                     {
@@ -115,6 +111,10 @@ public partial class AssistantExamples
                         outputsToSubmit.Add(new ToolOutput(requiredActionUpdate.ToolCallId, "25%"));
                     }
                 }
+                else if (update is RunUpdate runUpdate)
+                {
+                    currentRun = runUpdate;
+                }
                 else if (update is MessageContentUpdate contentUpdate)
                 {
                     Console.Write(contentUpdate.Text);
@@ -122,7 +122,7 @@ public partial class AssistantExamples
             }
             if (outputsToSubmit.Count > 0)
             {
-                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun, outputsToSubmit);
+                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun.ThreadId, currentRun.Id, outputsToSubmit);
             }
         }
         while (currentRun?.Status.IsTerminal == false);

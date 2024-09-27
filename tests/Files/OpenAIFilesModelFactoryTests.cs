@@ -50,8 +50,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFileInfo.Filename, Is.Null);
-        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -67,8 +67,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFileInfo.Filename, Is.Null);
-        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -84,8 +84,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFile.SizeInBytes, Is.EqualTo(sizeInBytes));
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
-        Assert.That(openAIFile.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFile.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFile.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFile.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -101,8 +101,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(createdAt));
         Assert.That(openAIFileInfo.Filename, Is.Null);
-        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFileInfo.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFileInfo.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -118,8 +118,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFile.SizeInBytes, Is.Null);
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.EqualTo(filename));
-        Assert.That(openAIFile.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFile.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFile.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFile.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -128,7 +128,7 @@ public class OpenAIFilesModelFactoryTests
     [Test]
     public void OpenAIFileInfoWithPurposeWorks()
     {
-        OpenAIFilePurpose purpose = OpenAIFilePurpose.Vision;
+        FilePurpose purpose = FilePurpose.Vision;
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(purpose: purpose);
 
         Assert.That(openAIFile.Id, Is.Null);
@@ -136,7 +136,7 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
         Assert.That(openAIFile.Purpose, Is.EqualTo(purpose));
-        Assert.That(openAIFile.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFile.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFile.StatusDetails, Is.Null);
     }
 #pragma warning restore CS0618
@@ -145,14 +145,14 @@ public class OpenAIFilesModelFactoryTests
     [Test]
     public void OpenAIFileInfoWithStatusWorks()
     {
-        OpenAIFileStatus status = OpenAIFileStatus.Uploaded;
+        FileStatus status = FileStatus.Uploaded;
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(status: status);
 
         Assert.That(openAIFile.Id, Is.Null);
         Assert.That(openAIFile.SizeInBytes, Is.Null);
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
-        Assert.That(openAIFile.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
+        Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
         Assert.That(openAIFile.Status, Is.EqualTo(status));
         Assert.That(openAIFile.StatusDetails, Is.Null);
     }
@@ -169,8 +169,8 @@ public class OpenAIFilesModelFactoryTests
         Assert.That(openAIFile.SizeInBytes, Is.Null);
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
-        Assert.That(openAIFile.Purpose, Is.EqualTo(default(OpenAIFilePurpose)));
-        Assert.That(openAIFile.Status, Is.EqualTo(default(OpenAIFileStatus)));
+        Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
+        Assert.That(openAIFile.Status, Is.EqualTo(default(FileStatus)));
         Assert.That(openAIFile.StatusDetails, Is.EqualTo(statusDetails));
     }
 #pragma warning restore CS0618

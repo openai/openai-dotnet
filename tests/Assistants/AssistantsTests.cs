@@ -194,8 +194,8 @@ public class AssistantsTests : SyncAsyncTestBase
             },
         };
         thread = IsAsync
-            ? await client.ModifyThreadAsync(thread, modificationOptions)
-            : client.ModifyThread(thread, modificationOptions);
+            ? await client.ModifyThreadAsync(thread.Id, modificationOptions)
+            : client.ModifyThread(thread.Id, modificationOptions);
         Assert.That(thread.Metadata.TryGetValue("threadMetadata", out threadMetadataValue) && threadMetadataValue == "newThreadMetadataValue");
     }
 
@@ -206,16 +206,16 @@ public class AssistantsTests : SyncAsyncTestBase
         AssistantThread thread = client.CreateThread();
         Validate(thread);
         ThreadMessage message = IsAsync
-            ? await client.CreateMessageAsync(thread, MessageRole.User, ["Hello, world!"])
-            : client.CreateMessage(thread, MessageRole.User, ["Hello, world!"]);
+            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, world!"])
+            : client.CreateMessage(thread.Id, MessageRole.User, ["Hello, world!"]);
         Validate(message);
         Assert.That(message.CreatedAt, Is.GreaterThan(s_2024));
         Assert.That(message.Content?.Count, Is.EqualTo(1));
         Assert.That(message.Content[0], Is.Not.Null);
         Assert.That(message.Content[0].Text, Is.EqualTo("Hello, world!"));
         MessageDeletionResult deletionResult = IsAsync
-            ? await client.DeleteMessageAsync(message)
-            : client.DeleteMessage(message);
+            ? await client.DeleteMessageAsync(message.ThreadId, message.Id)
+            : client.DeleteMessage(message.ThreadId, message.Id);
         Assert.That(deletionResult.MessageId, Is.EqualTo(message.Id));
         Assert.That(deletionResult.Deleted, Is.True);
         _messagesToDelete.Remove(message);
@@ -228,14 +228,14 @@ public class AssistantsTests : SyncAsyncTestBase
             },
         };
         message = IsAsync
-            ? await client.CreateMessageAsync(thread, MessageRole.User, ["Goodbye, world!"], creationOptions)
-            : client.CreateMessage(thread, MessageRole.User, ["Goodbye, world!"], creationOptions);
+            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Goodbye, world!"], creationOptions)
+            : client.CreateMessage(thread.Id, MessageRole.User, ["Goodbye, world!"], creationOptions);
         Validate(message);
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out string metadataValue) && metadataValue == "messageMetadataValue");
 
         ThreadMessage retrievedMessage = IsAsync
-            ? await client.GetMessageAsync(thread.Id, message.Id)
-            : client.GetMessage(thread.Id, message.Id);
+            ? await client.GetMessageAsync(message.ThreadId, message.Id)
+            : client.GetMessage(message.ThreadId, message.Id);
         Assert.That(retrievedMessage.Id, Is.EqualTo(message.Id));
 
         MessageModificationOptions modificationOptions = new MessageModificationOptions()
@@ -246,13 +246,13 @@ public class AssistantsTests : SyncAsyncTestBase
             }
         };
         message = IsAsync
-            ? await client.ModifyMessageAsync(message, modificationOptions)
-            : client.ModifyMessage(message, modificationOptions);
+            ? await client.ModifyMessageAsync(message.ThreadId, message.Id, modificationOptions)
+            : client.ModifyMessage(message.ThreadId, message.Id, modificationOptions);
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
         List<ThreadMessage> messages = IsAsync
-            ? await client.GetMessagesAsync(thread).ToListAsync()
-            : [.. client.GetMessages(thread)];
+            ? await client.GetMessagesAsync(thread.Id).ToListAsync()
+            : [.. client.GetMessages(thread.Id)];
 
         Assert.That(messages.Count, Is.EqualTo(1));
         Assert.That(messages[0].Id, Is.EqualTo(message.Id));
@@ -288,8 +288,8 @@ public class AssistantsTests : SyncAsyncTestBase
         Validate(thread);
         MessageCollectionOptions collectionOptions = new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending };
         List<ThreadMessage> messages = IsAsync
-            ? await client.GetMessagesAsync(thread, collectionOptions).ToListAsync()
-            : client.GetMessages(thread, collectionOptions).ToList();
+            ? await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync()
+            : client.GetMessages(thread.Id, collectionOptions).ToList();
         Assert.That(messages.Count, Is.EqualTo(2));
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.User));
         Assert.That(messages[0].Content?.Count, Is.EqualTo(1));
@@ -310,8 +310,8 @@ public class AssistantsTests : SyncAsyncTestBase
         AssistantThread thread = client.CreateThread();
         Validate(thread);
         List<ThreadRun> runs = IsAsync
-            ? await client.GetRunsAsync(thread).ToListAsync()
-            : client.GetRuns(thread).ToList();
+            ? await client.GetRunsAsync(thread.Id).ToListAsync()
+            : client.GetRuns(thread.Id).ToList();
         Assert.That(runs.Count, Is.EqualTo(0));
         ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
@@ -322,25 +322,25 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
         ThreadRun retrievedRun = IsAsync
-            ? await client.GetRunAsync(thread.Id, run.Id)
-            : client.GetRun(thread.Id, run.Id);
+            ? await client.GetRunAsync(run.ThreadId, run.Id)
+            : client.GetRun(run.ThreadId, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
         runs = IsAsync
-                    ? await client.GetRunsAsync(thread).ToListAsync()
-                    : client.GetRuns(thread).ToList();
+                    ? await client.GetRunsAsync(thread.Id).ToListAsync()
+                    : client.GetRuns(thread.Id).ToList();
         Assert.That(runs.Count, Is.EqualTo(1));
         Assert.That(runs[0].Id, Is.EqualTo(run.Id));
 
         List<ThreadMessage> messages = IsAsync ?
-            await client.GetMessagesAsync(thread).ToListAsync() :
-            client.GetMessages(thread).ToList();
+            await client.GetMessagesAsync(thread.Id).ToListAsync() :
+            client.GetMessages(thread.Id).ToList();
         Assert.That(messages.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
             Thread.Sleep(1000);
             run = IsAsync
-                ? await client.GetRunAsync(run)
-                : client.GetRun(run);
+                ? await client.GetRunAsync(run.ThreadId, run.Id)
+                : client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
@@ -350,8 +350,8 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(run.IncompleteDetails, Is.Null);
 
         messages = IsAsync ?
-            await client.GetMessagesAsync(thread).ToListAsync() :
-            client.GetMessages(thread).ToList();
+            await client.GetMessagesAsync(thread.Id).ToListAsync() :
+            client.GetMessages(thread.Id).ToList();
         Assert.That(messages.Count, Is.EqualTo(2));
 
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.Assistant));
@@ -400,20 +400,20 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
+        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
         Validate(run);
 
         while (!run.Status.IsTerminal)
         {
             Thread.Sleep(1000);
-            run = client.GetRun(run);
+            run = client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
 
         List<RunStep> runSteps = IsAsync
-            ? await client.GetRunStepsAsync(run).ToListAsync()
-            : client.GetRunSteps(run).ToList();
+            ? await client.GetRunStepsAsync(run.ThreadId, run.Id).ToListAsync()
+            : client.GetRunSteps(run.ThreadId, run.Id).ToList();
         RunStep firstStep = runSteps[0];
         RunStep secondStep = runSteps[1];
 
@@ -459,20 +459,20 @@ public class AssistantsTests : SyncAsyncTestBase
             ResponseFormat = AssistantResponseFormat.CreateTextFormat(),
         };
         assistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant, modificationOptions)
-            : client.ModifyAssistant(assistant, modificationOptions);
+            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
+            : client.ModifyAssistant(assistant.Id, modificationOptions);
         Assert.That(assistant.ResponseFormat == AssistantResponseFormat.CreateTextFormat());
         AssistantThread thread = client.CreateThread();
         Validate(thread);
-        ThreadMessage message = client.CreateMessage(thread, MessageRole.User, ["Write some JSON for me!"]);
+        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Write some JSON for me!"]);
         Validate(message);
         RunCreationOptions runCreationOptions = new RunCreationOptions()
         {
             ResponseFormat = AssistantResponseFormat.CreateJsonObjectFormat(),
         };
         ThreadRun run = IsAsync
-            ? await client.CreateRunAsync(thread, assistant, runCreationOptions)
-            : client.CreateRun(thread, assistant, runCreationOptions);
+            ? await client.CreateRunAsync(thread.Id, assistant.Id, runCreationOptions)
+            : client.CreateRun(thread.Id, assistant.Id, runCreationOptions);
         Assert.That(run.ResponseFormat == AssistantResponseFormat.CreateJsonObjectFormat());
     }
 
@@ -522,16 +522,16 @@ public class AssistantsTests : SyncAsyncTestBase
             AdditionalInstructions = "Call provided tools when appropriate.",
         };
         ThreadRun run = IsAsync
-            ? await client.CreateThreadAndRunAsync(assistant, threadCreationOptions, runCreationOptions)
-            : client.CreateThreadAndRun(assistant, threadCreationOptions, runCreationOptions);
+            ? await client.CreateThreadAndRunAsync(assistant.Id, threadCreationOptions, runCreationOptions)
+            : client.CreateThreadAndRun(assistant.Id, threadCreationOptions, runCreationOptions);
         Validate(run);
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
             Thread.Sleep(1000);
             run = IsAsync
-                ? await client.GetRunAsync(run)
-                : client.GetRun(run);
+                ? await client.GetRunAsync(run.ThreadId, run.Id)
+                : client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
         Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
@@ -540,16 +540,16 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
         run = IsAsync
-            ? await client.SubmitToolOutputsToRunAsync(run, [new(run.RequiredActions[0].ToolCallId, "tacos")])
-            : client.SubmitToolOutputsToRun(run, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
+            ? await client.SubmitToolOutputsToRunAsync(run.ThreadId, run.Id, [new(run.RequiredActions[0].ToolCallId, "tacos")])
+            : client.SubmitToolOutputsToRun(run.ThreadId, run.Id, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
         Assert.That(run.Status.IsTerminal, Is.False);
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
             Thread.Sleep(1000);
             run = IsAsync
-                ? await client.GetRunAsync(run)
-                : client.GetRun(run);
+                ? await client.GetRunAsync(run.ThreadId, run.Id)
+                : client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
@@ -682,7 +682,7 @@ public class AssistantsTests : SyncAsyncTestBase
 
         Print(" >>> Beginning call ... ");
         AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
-            assistant,
+            assistant.Id,
             new()
             {
                 InitialMessages = { "What should I wear outside right now?", },
@@ -719,7 +719,7 @@ public class AssistantsTests : SyncAsyncTestBase
             }
             if (toolOutputs.Count > 0)
             {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run, toolOutputs);
+                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
             }
         } while (run?.Status.IsTerminal == false);
     }
@@ -746,7 +746,7 @@ public class AssistantsTests : SyncAsyncTestBase
 
         Print(" >>> Beginning call ... ");
         CollectionResult<StreamingUpdate> results = client.CreateThreadAndRunStreaming(
-            assistant,
+            assistant.Id,
             new()
             {
                 InitialMessages = { "What should I wear outside right now?", },
@@ -783,7 +783,7 @@ public class AssistantsTests : SyncAsyncTestBase
             }
             if (toolOutputs.Count > 0)
             {
-                results = client.SubmitToolOutputsToRunStreaming(run, toolOutputs);
+                results = client.SubmitToolOutputsToRunStreaming(run.ThreadId, run.Id, toolOutputs);
             }
         } while (run?.Status.IsTerminal == false);
     }
@@ -855,8 +855,8 @@ public class AssistantsTests : SyncAsyncTestBase
             },
         };
         assistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant, modificationOptions)
-            : client.ModifyAssistant(assistant, modificationOptions);
+            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
+            : client.ModifyAssistant(assistant.Id, modificationOptions);
         Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(assistant.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
@@ -892,25 +892,25 @@ public class AssistantsTests : SyncAsyncTestBase
             }
         };
         thread = IsAsync
-            ? await client.ModifyThreadAsync(thread, threadModificationOptions)
-            : client.ModifyThread(thread, threadModificationOptions);
+            ? await client.ModifyThreadAsync(thread.Id, threadModificationOptions)
+            : client.ModifyThread(thread.Id, threadModificationOptions);
         Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
         ThreadRun run = IsAsync
-            ? await client.CreateRunAsync(thread, assistant)
-            : client.CreateRun(thread, assistant);
+            ? await client.CreateRunAsync(thread.Id, assistant.Id)
+            : client.CreateRun(thread.Id, assistant.Id);
         Validate(run);
         do
         {
             Thread.Sleep(1000);
             run = IsAsync
-                ? await client.GetRunAsync(run)
-                : client.GetRun(run);
+                ? await client.GetRunAsync(run.ThreadId, run.Id)
+                : client.GetRun(run.ThreadId, run.Id);
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        CollectionResult<ThreadMessage> messages = client.GetMessages(thread, new() { Order = MessageCollectionOrder.Descending });
+        CollectionResult<ThreadMessage> messages = client.GetMessages(thread.Id, new() { Order = MessageCollectionOrder.Descending });
         int messageCount = 0;
         bool hasCake = false;
         foreach (ThreadMessage message in messages)
@@ -1686,13 +1686,13 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
+        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
         Validate(run);
 
         while (!run.Status.IsTerminal)
         {
             Thread.Sleep(1000);
-            run = client.GetRun(run);
+            run = client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
@@ -1701,7 +1701,7 @@ public class AssistantsTests : SyncAsyncTestBase
         IReadOnlyList<string> rehydratedRunSteps;
         {
             const int numPerPage = 2;
-            AsyncCollectionResult<RunStep> results = client.GetRunStepsAsync(run, new() { PageSizeLimit = numPerPage });
+            AsyncCollectionResult<RunStep> results = client.GetRunStepsAsync(run.ThreadId, run.Id, new() { PageSizeLimit = numPerPage });
             runSteps = await results
                 .Skip(numPerPage)
                 .Select(r => r.Id)
@@ -1761,13 +1761,13 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread, assistant);
+        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
         Validate(run);
 
         while (!run.Status.IsTerminal)
         {
             Thread.Sleep(1000);
-            run = client.GetRun(run);
+            run = client.GetRun(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
@@ -1776,7 +1776,7 @@ public class AssistantsTests : SyncAsyncTestBase
         IReadOnlyList<string> rehydratedRunSteps;
         {
             const int numPerPage = 2;
-            CollectionResult<RunStep> results = client.GetRunSteps(run, new() { PageSizeLimit = numPerPage });
+            CollectionResult<RunStep> results = client.GetRunSteps(run.ThreadId, run.Id, new() { PageSizeLimit = numPerPage });
             runSteps = results
                 .Skip(numPerPage)
                 .Select(r => r.Id)
@@ -1816,14 +1816,14 @@ public class AssistantsTests : SyncAsyncTestBase
             messages.Clear();
             if (IsAsync)
             {
-                await foreach (ThreadMessage message in client.GetMessagesAsync(thread))
+                await foreach (ThreadMessage message in client.GetMessagesAsync(thread.Id))
                 {
                     messages.Add(message);
                 }
             }
             else
             {
-                foreach (ThreadMessage message in client.GetMessages(thread))
+                foreach (ThreadMessage message in client.GetMessages(thread.Id))
                 {
                     messages.Add(message);
                 }
@@ -1840,11 +1840,11 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(messages[0].Content[0].Text, Is.EqualTo(assistantMessageText));
         Assert.That(messages[0].Content[0].Text, Is.EqualTo(assistantMessageText));
         ThreadMessage userMessage = IsAsync
-            ? await client.CreateMessageAsync(thread, MessageRole.User, [MessageContent.FromText(userMessageText)])
-            : client.CreateMessage(thread, MessageRole.User, [MessageContent.FromText(userMessageText)]);
+            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, [MessageContent.FromText(userMessageText)])
+            : client.CreateMessage(thread.Id, MessageRole.User, [MessageContent.FromText(userMessageText)]);
         ThreadMessage assistantMessage = IsAsync
-            ? await client.CreateMessageAsync(thread, MessageRole.Assistant, [assistantMessageText])
-            : client.CreateMessage(thread, MessageRole.Assistant, [assistantMessageText]);
+            ? await client.CreateMessageAsync(thread.Id, MessageRole.Assistant, [assistantMessageText])
+            : client.CreateMessage(thread.Id, MessageRole.Assistant, [assistantMessageText]);
         await RefreshMessageListAsync();
         Assert.That(messages.Count, Is.EqualTo(4));
         Assert.That(messages[3].Role, Is.EqualTo(MessageRole.User));

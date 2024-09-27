@@ -166,7 +166,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -184,7 +184,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -202,7 +202,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -220,7 +220,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(startTime));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -238,7 +238,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(endTime));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -256,7 +256,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.EqualTo(text));
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -266,7 +266,7 @@ public partial class OpenAIAudioModelFactoryTests
     [Test]
     public void TranscribedSegmentWithTokenIdsWorks()
     {
-        IEnumerable<int> tokenIds = [900000000, 900000001];
+        ReadOnlyMemory<int> tokenIds = new[] { 900000000, 900000001 };
         TranscribedSegment transcribedSegment = OpenAIAudioModelFactory.TranscribedSegment(tokenIds: tokenIds);
 
         Assert.That(transcribedSegment.Id, Is.EqualTo(default(int)));
@@ -274,7 +274,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds.SequenceEqual(tokenIds), Is.True);
+        Assert.That(transcribedSegment.TokenIds.Span.SequenceEqual(tokenIds.Span), Is.True);
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -292,7 +292,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(temperature));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -310,7 +310,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(averageLogProbability));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));
@@ -328,7 +328,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(compressionRatio));
@@ -346,7 +346,7 @@ public partial class OpenAIAudioModelFactoryTests
         Assert.That(transcribedSegment.StartTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.EndTime, Is.EqualTo(default(TimeSpan)));
         Assert.That(transcribedSegment.Text, Is.Null);
-        Assert.That(transcribedSegment.TokenIds, Is.Not.Null.And.Empty);
+        Assert.That(transcribedSegment.TokenIds.Span.Length, Is.GreaterThanOrEqualTo(0));
         Assert.That(transcribedSegment.Temperature, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.AverageLogProbability, Is.EqualTo(default(float)));
         Assert.That(transcribedSegment.CompressionRatio, Is.EqualTo(default(float)));

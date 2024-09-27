@@ -1,5 +1,6 @@
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Audio;
@@ -13,13 +14,13 @@ public partial class AudioTranscription
             contentType.StartsWith("text/plain", StringComparison.Ordinal))
         {
             return new AudioTranscription(
-                InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
+                task: default,
                 language: null,
                 duration: null,
                 text: response.Content?.ToString(),
-                words: [],
-                segments: [],
-                serializedAdditionalRawData: new ChangeTrackingDictionary<string, BinaryData>());
+                words: new ChangeTrackingList<TranscribedWord>(),
+                segments: new ChangeTrackingList<TranscribedSegment>(),
+                serializedAdditionalRawData: new Dictionary<string, BinaryData>());
         }
 
         using var document = JsonDocument.Parse(response.Content);

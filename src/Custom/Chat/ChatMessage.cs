@@ -54,16 +54,15 @@ namespace OpenAI.Chat;
 /// </remarks>
 [CodeGenModel("ChatCompletionRequestMessage")]
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
-public abstract partial class ChatMessage
-{
+public partial class ChatMessage
+{    
     // CUSTOM: Changed type from string to ChatMessageRole.
     [CodeGenMember("Role")]
     internal ChatMessageRole Role { get; set; }
 
     // CUSTOM: Made internal.
     internal ChatMessage()
-    {
-    }
+    { }
 
     internal ChatMessage(ChatMessageRole role, IEnumerable<ChatMessageContentPart> contentParts)
     {

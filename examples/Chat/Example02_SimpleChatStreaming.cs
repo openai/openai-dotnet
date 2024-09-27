@@ -20,7 +20,7 @@ public partial class ChatExamples
         {
             foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
             {
-                Console.Write(updatePart);
+                Console.Write(updatePart.Text);
             }
         }
     }

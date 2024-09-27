@@ -1,3 +1,4 @@
+using OpenAI.Files;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
     {
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);
-        writer.WriteStringValue(instance._kind.ToString());
+        writer.WriteStringValue(instance._kind.ToSerialString());
 
         if (instance._kind == ChatMessageContentPartKind.Text)
         {
@@ -44,7 +45,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         }
 
         writer.WritePropertyName("content"u8);
-        if (instances.Count == 1 && !string.IsNullOrEmpty(instances[0].Text))
+        if (instances.Count == 1 && instances[0].Text != null)
         {
             writer.WriteStringValue(instances[0].Text);
         }
@@ -68,7 +69,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             return null;
         }
 
-        string kind = default;
+        ChatMessageContentPartKind kind = default;
         string text = default;
         string refusal = default;
         InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default;
@@ -78,7 +79,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         {
             if (property.NameEquals("type"u8))
             {
-                kind = property.Value.GetString();
+                kind = property.Value.GetString().ToChatMessageContentPartKind();
                 continue;
             }
             if (property.NameEquals("text"u8))

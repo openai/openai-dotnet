@@ -52,18 +52,18 @@ namespace OpenAI.Audio
             if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("timestamp_granularities") != true && Optional.IsCollectionDefined(TimestampGranularities))
+            if (SerializedAdditionalRawData?.ContainsKey("timestamp_granularities") != true && Optional.IsCollectionDefined(InternalTimestampGranularities))
             {
                 writer.WritePropertyName("timestamp_granularities"u8);
                 writer.WriteStartArray();
-                foreach (var item in TimestampGranularities)
+                foreach (var item in InternalTimestampGranularities)
                 {
                     if (item == null)
                     {
@@ -160,7 +160,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToAudioTranscriptionFormat();
+                    responseFormat = new AudioTranscriptionFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("temperature"u8))
@@ -241,15 +241,15 @@ namespace OpenAI.Audio
             }
             if (Optional.IsDefined(ResponseFormat))
             {
-                content.Add(ResponseFormat.Value.ToSerialString(), "response_format");
+                content.Add(ResponseFormat.Value.ToString(), "response_format");
             }
             if (Optional.IsDefined(Temperature))
             {
                 content.Add(Temperature.Value, "temperature");
             }
-            if (Optional.IsCollectionDefined(TimestampGranularities))
+            if (Optional.IsCollectionDefined(InternalTimestampGranularities))
             {
-                foreach (BinaryData item in TimestampGranularities)
+                foreach (BinaryData item in InternalTimestampGranularities)
                 {
                     content.Add(item, "timestamp_granularities", "timestamp_granularities");
                 }

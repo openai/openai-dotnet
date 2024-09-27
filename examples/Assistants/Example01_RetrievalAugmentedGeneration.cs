@@ -3,7 +3,6 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -15,6 +14,7 @@ public partial class AssistantExamples
     public void Example01_RetrievalAugmentedGeneration()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -142,7 +142,7 @@ public partial class AssistantExamples
 
         // Optionally, delete any persistent resources you no longer need.
         _ = assistantClient.DeleteThread(threadRun.ThreadId);
-        _ = assistantClient.DeleteAssistant(assistant);
+        _ = assistantClient.DeleteAssistant(assistant.Id);
         _ = fileClient.DeleteFile(salesFile.Id);
     }
 }

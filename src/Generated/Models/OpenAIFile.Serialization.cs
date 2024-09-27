@@ -56,12 +56,12 @@ namespace OpenAI.Files
             if (SerializedAdditionalRawData?.ContainsKey("purpose") != true)
             {
                 writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose.ToString());
+                writer.WriteStringValue(Purpose.ToSerialString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteStringValue(Status.ToSerialString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("status_details") != true && Optional.IsDefined(StatusDetails))
             {
@@ -115,8 +115,8 @@ namespace OpenAI.Files
             DateTimeOffset createdAt = default;
             string filename = default;
             InternalOpenAIFileObject @object = default;
-            OpenAIFilePurpose purpose = default;
-            OpenAIFileStatus status = default;
+            FilePurpose purpose = default;
+            FileStatus status = default;
             string statusDetails = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -154,12 +154,12 @@ namespace OpenAI.Files
                 }
                 if (property.NameEquals("purpose"u8))
                 {
-                    purpose = new OpenAIFilePurpose(property.Value.GetString());
+                    purpose = property.Value.GetString().ToFilePurpose();
                     continue;
                 }
                 if (property.NameEquals("status"u8))
                 {
-                    status = new OpenAIFileStatus(property.Value.GetString());
+                    status = property.Value.GetString().ToFileStatus();
                     continue;
                 }
                 if (property.NameEquals("status_details"u8))
