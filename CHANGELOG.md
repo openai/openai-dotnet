@@ -1,42 +1,36 @@
 # Release History
 
-## 2.0.0-beta.13 (Unreleased)
-
-### Features Added
+## 2.0.0-beta.13 (2024-09-27)
 
 ### Breaking Changes
 
-- Refactored `ModerationResult` by merging `ModerationCategories` and `ModerationCategoryScores` into individual `ModerationCategory` properties, each with `Flagged` and `Score` properties. (commit_hash)
-- Renamed type `OpenAIFileInfo` to `OpenAIFile` and `OpenAIFileInfoCollection` to `OpenAIFileCollection`. (commit_hash)
-- Renamed type `OpenAIModelInfo` to `OpenAIModel` and `OpenAIModelInfoCollection` to `OpenAIModelCollection`. (commit_hash)
-- Renamed type `Embedding` to `OpenAIEmbedding` and `EmbeddingCollection` to `OpenAIEmbeddingCollection`. (commit_hash)
-- Renamed property `ImageUrl` to `ImageUri` and method `FromImageUrl` to `FromImageUri` in the `MessageContent` type. (commit_hash)
-- Renamed property `ParallelToolCallsEnabled` to `AllowParallelToolCalls` in the `RunCreationOptions`, `ThreadRun`, and `ChatCompletionOptions` types. (commit_hash)
-- Renamed properties `PromptTokens` to `InputTokenCount`, `CompletionTokens` to `OutputTokenCount`, and `TotalTokens` to `TotalTokenCount` in the `RunTokenUsage` and `RunStepTokenUsage` types. (commit_hash)
-- Renamed properties `InputTokens` to `InputTokenCount` and `TotalTokens` to `TotalTokenCount` in the `EmbeddingTokenUsage` type. (commit_hash)
-- Renamed properties `MaxPromptTokens` to `MaxInputTokenCount` and `MaxCompletionTokens` to `MaxOutputTokenCount` in the `ThreadRun`, `RunCreationOptions`, and `RunIncompleteReason` types. (commit_hash)
-- Removed the `virtual` keyword from the `Pipeline` property across all clients. (commit_hash)
-- Renamed the `Granularities` property of `AudioTranscriptionOptions` to `TimestampGranularities`. (commit_hash)
-- Changed `AudioTranscriptionFormat` from an enum to an "extensible enum". (commit_hash)
-- Changed `AudioTranslationFormat` from an enum to an "extensible enum". (commit_hash)
-- Changed `GenerateImageFormat` from an enum to an "extensible enum". (commit_hash)
-- Changed `GeneratedImageQuality` from an enum to an "extensible enum". (commit_hash)
-- Changed `GeneratedImageStyle` from an enum to an "extensible enum". (commit_hash)
-- Removed method overloads in `AssistantClient` and `VectorStoreClient` that take complex parameters in favor of methods that take simple string IDs. (commit_hash)
-- Updated the `TokenIds` property type in the `TranscribedSegment` type from `IReadOnlyList<int>` to `ReadOnlyMemory<int>`. (commit_hash)
-- Updated the `inputs` parameter type in the `GenerateEmbeddings` and `GenerateEmbeddingsAsync` methods of `EmbeddingClient` from `IEnumerable<IEnumerable<int>>` to `IEnumerable<ReadOnlyMemory<int>>`. (commit_hash)
-- Changed `ChatMessageContentPartKind` from an extensible enum to an enum. (commit_hash)
-- Changed `ChatToolCallKind` from an extensible enum to an enum. (commit_hash)
-- Changed `ChatToolKind` from an extensible enum to an enum. (commit_hash)
-- Changed `OpenAIFilePurpose` from an extensible enum to an enum. (commit_hash)
-- Changed `OpenAIFileStatus` from an extensible enum to an enum. (commit_hash)
-- Renamed `OpenAIFilePurpose` to `FilePurpose`. (commit_hash)
-- Renamed `OpenAIFileStatus` to `FileStatus`. (commit_hash)
-- Removed constructors that take string API key and options. (commit_hash)
-
-### Bugs Fixed
-
-### Other Changes
+- Refactored `ModerationResult` by merging `ModerationCategories` and `ModerationCategoryScores` into individual `ModerationCategory` properties, each with `Flagged` and `Score` properties. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed type `OpenAIFileInfo` to `OpenAIFile` and `OpenAIFileInfoCollection` to `OpenAIFileCollection`. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed type `OpenAIModelInfo` to `OpenAIModel` and `OpenAIModelInfoCollection` to `OpenAIModelCollection`. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed type `Embedding` to `OpenAIEmbedding` and `EmbeddingCollection` to `OpenAIEmbeddingCollection`. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed property `ImageUrl` to `ImageUri` and method `FromImageUrl` to `FromImageUri` in the `MessageContent` type. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed property `ParallelToolCallsEnabled` to `AllowParallelToolCalls` in the `RunCreationOptions`, `ThreadRun`, and `ChatCompletionOptions` types. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed properties `PromptTokens` to `InputTokenCount`, `CompletionTokens` to `OutputTokenCount`, and `TotalTokens` to `TotalTokenCount` in the `RunTokenUsage` and `RunStepTokenUsage` types. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed properties `InputTokens` to `InputTokenCount` and `TotalTokens` to `TotalTokenCount` in the `EmbeddingTokenUsage` type. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Renamed properties `MaxPromptTokens` to `MaxInputTokenCount` and `MaxCompletionTokens` to `MaxOutputTokenCount` in the `ThreadRun`, `RunCreationOptions`, and `RunIncompleteReason` types. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
+- Removed the `virtual` keyword from the `Pipeline` property across all clients. ([75eded5](https://github.com/openai/openai-dotnet/commit/75eded51db8c8bcec41cd894f3575374e40a4103))
+- Renamed the `Granularities` property of `AudioTranscriptionOptions` to `TimestampGranularities`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `AudioTranscriptionFormat` from an enum to an "extensible enum". ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `AudioTranslationFormat` from an enum to an "extensible enum". ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `GenerateImageFormat` from an enum to an "extensible enum". ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `GeneratedImageQuality` from an enum to an "extensible enum". ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `GeneratedImageStyle` from an enum to an "extensible enum". ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Removed method overloads in `AssistantClient` and `VectorStoreClient` that take complex parameters in favor of methods that take simple string IDs. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Updated the `TokenIds` property type in the `TranscribedSegment` type from `IReadOnlyList<int>` to `ReadOnlyMemory<int>`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Updated the `inputs` parameter type in the `GenerateEmbeddings` and `GenerateEmbeddingsAsync` methods of `EmbeddingClient` from `IEnumerable<IEnumerable<int>>` to `IEnumerable<ReadOnlyMemory<int>>`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `ChatMessageContentPartKind` from an extensible enum to an enum. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `ChatToolCallKind` from an extensible enum to an enum. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `ChatToolKind` from an extensible enum to an enum. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `OpenAIFilePurpose` from an extensible enum to an enum. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Changed `OpenAIFileStatus` from an extensible enum to an enum. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Renamed `OpenAIFilePurpose` to `FilePurpose`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Renamed `OpenAIFileStatus` to `FileStatus`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
+- Removed constructors that take string API key and options. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
 
 ## 2.0.0-beta.12 (2024-09-20)
 
