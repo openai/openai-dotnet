@@ -670,7 +670,7 @@ For this example, we will use both image data from a local file as well as an im
 OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
     Path.Combine("Assets", "picture-of-apple.png"),
     FileUploadPurpose.Vision);
-Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
+Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/picture-of-orange.png");
 ```
 
 Next, create a new assistant with a vision-capable model like `gpt-4o` and a thread with the image information referenced:
@@ -731,7 +731,7 @@ This will yield streamed output from the run like the following:
 
 ```text
 --- Run started! ---
-The first image shows a red apple with a smooth skin and a single leaf, while the second image depicts an orange with a rough, textured skin and a leaf with droplets of water. Comparing them might seem impossible - it's like apples and oranges!
+The first image depicts a multicolored apple with a blend of red and green hues, while the second image shows an orange with a bright, textured orange peel; one might say it’s comparing apples to oranges!
 ```
 
 ## How to work with Azure OpenAI
