@@ -37,17 +37,6 @@ public partial class EmbeddingClient
     {
     }
 
-    // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="apiKey"> The API key to authenticate with the service. </param>
-    /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public EmbeddingClient(string model, string apiKey, OpenAIClientOptions options) : this(model, new ApiKeyCredential(apiKey), options)
-    {
-    }
-
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
@@ -181,14 +170,14 @@ public partial class EmbeddingClient
         return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    // CUSTOM: Added to simplify passing the input as a collection of a collection of tokens instead of BinaryData.
+    // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory tokens instead of BinaryData.
     /// <summary> Generates embeddings representing the text inputs. </summary>
     /// <param name="inputs"> The text inputs to generate embeddings for. </param>
     /// <param name="options"> The options to configure the embedding generation. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -200,14 +189,14 @@ public partial class EmbeddingClient
         return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    // CUSTOM: Added to simplify passing the input as a collection of a collection of tokens instead of BinaryData.
+    // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory of tokens instead of BinaryData.
     /// <summary> Generates embeddings representing the text inputs. </summary>
     /// <param name="inputs"> The text inputs to generate embeddings for. </param>
     /// <param name="options"> The options to configure the embedding generation. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 

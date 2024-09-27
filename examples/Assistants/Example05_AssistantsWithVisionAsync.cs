@@ -3,6 +3,7 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -13,12 +14,13 @@ public partial class AssistantExamples
     public async Task Example05_AssistantsWithVisionAsync()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         OpenAIFile pictureOfAppleFile = await fileClient.UploadFileAsync(
-            "picture-of-apple.jpg",
+            Path.Combine("Assets", "picture-of-apple.png"),
             FileUploadPurpose.Vision);
         Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
 
@@ -45,8 +47,8 @@ public partial class AssistantExamples
         });
 
         AsyncCollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreamingAsync(
-            thread,
-            assistant,
+            thread.Id,
+            assistant.Id,
             new RunCreationOptions()
             {
                 AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
@@ -65,7 +67,7 @@ public partial class AssistantExamples
         }
 
         _ = await fileClient.DeleteFileAsync(pictureOfAppleFile.Id);
-        _ = await assistantClient.DeleteThreadAsync(thread);
-        _ = await assistantClient.DeleteAssistantAsync(assistant);
+        _ = await assistantClient.DeleteThreadAsync(thread.Id);
+        _ = await assistantClient.DeleteAssistantAsync(assistant.Id);
     }
 }

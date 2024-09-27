@@ -3,6 +3,7 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
+using System.IO;
 
 namespace OpenAI.Examples;
 
@@ -12,12 +13,13 @@ public partial class AssistantExamples
     public void Example05_AssistantsWithVision()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         FileClient fileClient = openAIClient.GetFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
-            "picture-of-apple.jpg",
+            Path.Combine("Assets", "picture-of-apple.png"),
             FileUploadPurpose.Vision);
         Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
 
@@ -44,8 +46,8 @@ public partial class AssistantExamples
         });
 
         CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
-            thread,
-            assistant,
+            thread.Id,
+            assistant.Id,
             new RunCreationOptions()
             {
                 AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
@@ -65,7 +67,7 @@ public partial class AssistantExamples
 
         // Delete temporary resources, if desired
         _ = fileClient.DeleteFile(pictureOfAppleFile.Id);
-        _ = assistantClient.DeleteThread(thread);
-        _ = assistantClient.DeleteAssistant(assistant);
+        _ = assistantClient.DeleteThread(thread.Id);
+        _ = assistantClient.DeleteAssistant(assistant.Id);
     }
 }

@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 [CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Chat.ChatMessage>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
-public abstract partial class ChatMessage : IJsonModel<ChatMessage>
+public partial class ChatMessage : IJsonModel<ChatMessage>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void SerializeContentValue(Utf8JsonWriter writer, ModelReaderWriterOptions options = null)
@@ -43,5 +43,6 @@ public abstract partial class ChatMessage : IJsonModel<ChatMessage>
     internal static void WriteCore(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => instance.WriteCore(writer, options);
 
-    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+    internal virtual void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => throw new InvalidOperationException($"The {nameof(WriteCore)} method should be invoked on an overriding type derived from {nameof(ChatMessage)}.");
 }

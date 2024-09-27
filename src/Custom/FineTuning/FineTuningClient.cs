@@ -41,15 +41,6 @@ public partial class FineTuningClient
     {
     }
 
-    // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="FineTuningClient">. </summary>
-    /// <param name="apiKey"> The API key to authenticate with the service. </param>
-    /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public FineTuningClient(string apiKey, OpenAIClientOptions options) : this(new ApiKeyCredential(apiKey), options)
-    {
-    }
-
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -60,13 +51,12 @@ public partial class FineTuningClient
     {
     }
 
-    // CUSTOM:
-    // - Used a custom pipeline.
-    // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="FineTuningClient">. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
-    /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    /// <summary>
+    /// Initializes a new instance of <see cref="FineTuningClient"/> that will use an API key when authenticating.
+    /// </summary>
+    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
+    /// <param name="options"> Additional options to customize the client. </param>
+    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
     public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options)
     {
         Argument.AssertNotNull(credential, nameof(credential));
@@ -91,5 +81,10 @@ public partial class FineTuningClient
 
         _pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
+    internal virtual FineTuningJobOperation CreateCreateJobOperation(string jobId, string status, PipelineResponse response)
+    {
+        return new FineTuningJobOperation(_pipeline, _endpoint, jobId, status, response);
     }
 }

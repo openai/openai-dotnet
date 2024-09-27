@@ -92,7 +92,7 @@ namespace OpenAI.Images
                 if (ResponseFormat != null)
                 {
                     writer.WritePropertyName("response_format"u8);
-                    writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                    writer.WriteStringValue(ResponseFormat.Value.ToString());
                 }
                 else
                 {
@@ -214,7 +214,7 @@ namespace OpenAI.Images
                         responseFormat = null;
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToGeneratedImageFormat();
+                    responseFormat = new GeneratedImageFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("user"u8))
@@ -290,7 +290,7 @@ namespace OpenAI.Images
             {
                 if (ResponseFormat != null)
                 {
-                    content.Add(ResponseFormat.Value.ToSerialString(), "response_format");
+                    content.Add(ResponseFormat.Value.ToString(), "response_format");
                 }
             }
             if (Optional.IsDefined(EndUserId))

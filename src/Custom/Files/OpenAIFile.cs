@@ -18,7 +18,7 @@ public partial class OpenAIFile
     [Obsolete($"This property is obsolete. If this is a fine-tuning training file, it may take some time to process"
         + $" after it has been uploaded. While the file is processing, you can still create a fine-tuning job but it"
         + $" will not start until the file processing has completed.")]
-    public OpenAIFileStatus Status { get; }
+    public FileStatus Status { get; }
 
     // CUSTOM: Added the Obsolete attribute.
     [Obsolete($"This property is obsolete. For details on why a fine-tuning training file failed validation, see the"

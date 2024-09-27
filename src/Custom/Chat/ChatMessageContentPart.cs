@@ -36,9 +36,9 @@ public partial class ChatMessageContentPart
     }
 
     // CUSTOM: Added to support deserialization.
-    internal ChatMessageContentPart(string kind, string text, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal ChatMessageContentPart(ChatMessageContentPartKind kind, string text, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        _kind = new ChatMessageContentPartKind(kind);
+        _kind = kind;
         _text = text;
         _imageUri = imageUri;
         _refusal = refusal;
@@ -89,7 +89,7 @@ public partial class ChatMessageContentPart
         Argument.AssertNotNull(text, nameof(text));
 
         return new ChatMessageContentPart(
-            kind: ChatMessageContentPartKind.Text.ToString(),
+            kind: ChatMessageContentPartKind.Text,
             text: text,
             imageUri: null,
             refusal: null,
@@ -108,7 +108,7 @@ public partial class ChatMessageContentPart
         Argument.AssertNotNull(imageUri, nameof(imageUri));
 
         return new ChatMessageContentPart(
-            kind: ChatMessageContentPartKind.Image.ToString(),
+            kind: ChatMessageContentPartKind.Image,
             text: null,
             imageUri: new(imageUri) { Detail = imageDetailLevel },
             refusal: null,
@@ -130,7 +130,7 @@ public partial class ChatMessageContentPart
         Argument.AssertNotNullOrEmpty(imageBytesMediaType, nameof(imageBytesMediaType));
 
         return new ChatMessageContentPart(
-            kind: ChatMessageContentPartKind.Image.ToString(),
+            kind: ChatMessageContentPartKind.Image,
             text: null,
             imageUri: new(imageBytes, imageBytesMediaType) { Detail = imageDetailLevel },
             refusal: null,
@@ -145,7 +145,7 @@ public partial class ChatMessageContentPart
         Argument.AssertNotNull(refusal, nameof(refusal));
 
         return new ChatMessageContentPart(
-            kind: ChatMessageContentPartKind.Refusal.ToString(),
+            kind: ChatMessageContentPartKind.Refusal,
             text: null,
             imageUri: null,
             refusal: refusal,

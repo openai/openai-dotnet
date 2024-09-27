@@ -78,14 +78,7 @@ public partial class ImageVariationOptions
 
         if (ResponseFormat is not null)
         {
-            string format = ResponseFormat switch
-            {
-                GeneratedImageFormat.Uri => "url",
-                GeneratedImageFormat.Bytes => "b64_json",
-                _ => throw new ArgumentException(nameof(ResponseFormat)),
-            };
-
-            content.Add(format, "response_format");
+            content.Add(ResponseFormat.ToString(), "response_format");
         }
 
         if (Size is not null)

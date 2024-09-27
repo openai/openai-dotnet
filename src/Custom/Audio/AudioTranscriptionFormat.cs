@@ -2,30 +2,40 @@ using System.ComponentModel;
 
 namespace OpenAI.Audio;
 
-/// <summary>
-/// Specifies the format of the audio transcription.
-/// </summary>
+// CUSTOM: Renamed.
+/// <summary> The format of the transcription. </summary>
 [CodeGenModel("CreateTranscriptionRequestResponseFormat1")]
-public enum AudioTranscriptionFormat
+public readonly partial struct AudioTranscriptionFormat
 {
-    /// <summary> Text. </summary>
-    [CodeGenMember("Text")]
+    // CUSTOM:
+    // - Applied the EditorBrowsable attribute.
+    // - Added custom doc comments.
+    /// <summary> Plain text only. </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    Text,
+    [CodeGenMember("Text")]
+    public static AudioTranscriptionFormat Text { get; } = new AudioTranscriptionFormat(TextValue);
 
-    /// <summary> Simple. </summary>
+    // CUSTOM:
+    // - Renamed.
+    // - Added custom doc comments.
+    /// <summary> Plain text only. </summary>
     [CodeGenMember("Json")]
-    Simple,
+    public static AudioTranscriptionFormat Simple { get; } = new AudioTranscriptionFormat(SimpleValue);
 
-    /// <summary> Verbose. </summary>
+    // CUSTOM:
+    // - Renamed.
+    // - Added custom doc comments.
+    /// <summary> Plain text provided with additional metadata, such as duration and timestamps. </summary>
     [CodeGenMember("VerboseJson")]
-    Verbose,
+    public static AudioTranscriptionFormat Verbose { get; } = new AudioTranscriptionFormat(VerboseValue);
 
-    /// <summary> SRT. </summary>
+    // CUSTOM: Added custom doc comments.
+    /// <summary> Text formatted as SubRip (.srt) file. </summary>
     [CodeGenMember("Srt")]
-    Srt,
+    public static AudioTranscriptionFormat Srt { get; } = new AudioTranscriptionFormat(SrtValue);
 
-    /// <summary> VTT. </summary>
+    // CUSTOM: Added custom doc comments.
+    /// <summary> Text formatted as a Web Video Text Tracks, a.k.a. WebVTT, (.vtt) file. </summary>
     [CodeGenMember("Vtt")]
-    Vtt,
+    public static AudioTranscriptionFormat Vtt { get; } = new AudioTranscriptionFormat(VttValue);
 }

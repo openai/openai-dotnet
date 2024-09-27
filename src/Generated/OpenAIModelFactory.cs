@@ -133,17 +133,15 @@ namespace OpenAI
             return new TranscribedWord(word, startTime, endTime, serializedAdditionalRawData: null);
         }
 
-        public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = null, IEnumerable<int> tokenIds = null, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
+        public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = null, ReadOnlyMemory<int> tokenIds = default, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
         {
-            tokenIds ??= new List<int>();
-
             return new TranscribedSegment(
                 id,
                 seekOffset,
                 startTime,
                 endTime,
                 text,
-                tokenIds?.ToList(),
+                tokenIds,
                 temperature,
                 averageLogProbability,
                 compressionRatio,

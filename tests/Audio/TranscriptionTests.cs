@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Transactions;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
@@ -71,7 +72,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
         {
             ResponseFormat = AudioTranscriptionFormat.Verbose,
             Temperature = 0.4f,
-            Granularities = granularityFlags,
+            TimestampGranularities = granularityFlags,
         };
 
         ClientResult<AudioTranscription> transcriptionResult = IsAsync
@@ -117,8 +118,8 @@ public partial class TranscriptionTests : SyncAsyncTestBase
             }
             Assert.That(segments[i].EndTime, Is.GreaterThan(segments[i].StartTime));
             Assert.That(string.IsNullOrEmpty(segments[i].Text), Is.False);
-            Assert.That(segments[i].TokenIds, Is.Not.Null.And.Not.Empty);
-            foreach (int tokenId in segments[i].TokenIds)
+            Assert.That(segments[i].TokenIds.Span.Length, Is.GreaterThan(0));
+            foreach (int tokenId in segments[i].TokenIds.ToArray())
             {
                 Assert.That(tokenId, Is.GreaterThanOrEqualTo(0));
             }
@@ -130,26 +131,68 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     }
 
     [Test]
-    [TestCase(AudioTranscriptionFormat.Simple)]
-    [TestCase(AudioTranscriptionFormat.Verbose)]
-    [TestCase(AudioTranscriptionFormat.Srt)]
-    [TestCase(AudioTranscriptionFormat.Vtt)]
-    public async Task TranscriptionFormatsWork(AudioTranscriptionFormat formatToTest)
+    [TestCase("text")]
+    [TestCase("json")]
+    [TestCase("verbose_json")]
+    [TestCase("srt")]
+    [TestCase("vtt")]
+    [TestCase(null)]
+    public async Task TranscriptionFormatsWork(string responseFormat)
     {
         AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = formatToTest,
+            ResponseFormat = responseFormat switch
+            {
+                "text" => AudioTranscriptionFormat.Text,
+                "json" => AudioTranscriptionFormat.Simple,
+                "verbose_json" => AudioTranscriptionFormat.Verbose,
+                "srt" => AudioTranscriptionFormat.Srt,
+                "vtt" => AudioTranscriptionFormat.Vtt,
+                _ => (AudioTranscriptionFormat?)null
+            }
         };
 
         AudioTranscription transcription = IsAsync
             ? await client.TranscribeAudioAsync(path, options)
             : client.TranscribeAudio(path, options);
-        Assert.That(transcription, Is.Not.Null);
-        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
-        Assert.That(transcription.Text.ToLowerInvariant(), Does.Contain("hello"));
+
+        Assert.That(transcription?.Text?.ToLowerInvariant(), Does.Contain("hello"));
+
+
+        if (options.ResponseFormat == AudioTranscriptionFormat.Verbose)
+        {
+            Assert.That(transcription.Language, Is.EqualTo("english"));
+            Assert.That(transcription.Duration, Is.GreaterThan(TimeSpan.Zero));
+            Assert.That(transcription.Segments, Is.Not.Empty);
+
+            for (int i = 0; i < transcription.Segments.Count; i++)
+            {
+                TranscribedSegment segment = transcription.Segments[i];
+
+                if (i > 0)
+                {
+                    Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(transcription.Segments[i - 1].EndTime));
+                }
+
+                Assert.That(segment.Id, Is.EqualTo(i));
+                Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+                Assert.That(segment.TokenIds, Is.Not.Null.And.Not.Empty);
+
+                Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+            }
+        }
+        else
+        {
+            Assert.That(transcription.Duration, Is.Null);
+            Assert.That(transcription.Language, Is.Null);
+            Assert.That(transcription.Segments, Is.Not.Null.And.Empty);
+            Assert.That(transcription.Words, Is.Not.Null.And.Empty);
+        }
     }
 
     [Test]

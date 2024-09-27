@@ -11,6 +11,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenAI.Tests.Chat;
 
@@ -521,13 +522,198 @@ public class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(reserialized, Does.Contain("from a content part"));
         Assert.That(reserialized, Does.Contain("from the message refusal"));
 
-        AssistantChatMessage manufacturedMessage = new(toolCalls: []);
+        AssistantChatMessage manufacturedMessage = new([
+            ChatToolCall.CreateFunctionToolCall("fake_tool_call_id", "fake_function_name", "{}")
+        ]);
         manufacturedMessage.Refusal = "No!";
         string serialized = ModelReaderWriter.Write(manufacturedMessage).ToString();
         Assert.That(serialized, Does.Contain("refusal"));
         Assert.That(serialized, Does.Contain("No!"));
-        Assert.That(serialized, Does.Not.Contain("tool"));
+        Assert.That(serialized, Does.Contain("tool_calls"));
         Assert.That(serialized, Does.Not.Contain("content"));
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeChatMessageWithSingleStringContent(bool fromRawJson)
+    {
+        const string text = "Hello, world!";
+        AssistantChatMessage message;
+
+        if (fromRawJson)
+        {
+            BinaryData data = BinaryData.FromString($$"""
+                {
+                    "role": "assistant",
+                    "content": "{{text}}",
+                    "additional_property": true
+                }
+                """);
+
+            // We deserialize the raw JSON. Later, we serialize it back and confirm nothing was lost in the process.
+            message = ModelReaderWriter.Read<AssistantChatMessage>(data);
+        }
+        else
+        {
+            // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+            message = new AssistantChatMessage([
+                ChatMessageContentPart.CreateTextPart(text),
+            ]);
+        }
+
+        BinaryData serializedMessage = ModelReaderWriter.Write(message);
+        using JsonDocument messageAsJson = JsonDocument.Parse(serializedMessage);
+        Assert.That(messageAsJson.RootElement, Is.Not.Null);
+        Assert.That(messageAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(messageAsJson.RootElement.TryGetProperty("content", out JsonElement contentProperty), Is.True);
+        Assert.That(contentProperty, Is.Not.Null);
+        Assert.That(contentProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(contentProperty.ToString(), Is.EqualTo(text));
+
+        if (fromRawJson)
+        {
+            // Confirm that we also have the additional data.
+            Assert.That(messageAsJson.RootElement.TryGetProperty("additional_property", out JsonElement additionalPropertyProperty), Is.True);
+            Assert.That(additionalPropertyProperty, Is.Not.Null);
+            Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
+        }
+    }
+
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeChatMessageWithEmptyStringContent(bool fromRawJson)
+    {
+        const string text = "";
+        AssistantChatMessage message;
+
+        if (fromRawJson)
+        {
+            BinaryData data = BinaryData.FromString($$"""
+                {
+                    "role": "assistant",
+                    "content": "{{text}}",
+                    "additional_property": true
+                }
+                """);
+
+            // We deserialize the raw JSON. Later, we serialize it back and confirm nothing was lost in the process.
+            message = ModelReaderWriter.Read<AssistantChatMessage>(data);
+        }
+        else
+        {
+            // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+            message = new AssistantChatMessage([
+                ChatMessageContentPart.CreateTextPart(text),
+            ]);
+        }
+
+        BinaryData serializedMessage = ModelReaderWriter.Write(message);
+        using JsonDocument messageAsJson = JsonDocument.Parse(serializedMessage);
+        Assert.That(messageAsJson.RootElement, Is.Not.Null);
+        Assert.That(messageAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(messageAsJson.RootElement.TryGetProperty("content", out JsonElement contentProperty), Is.True);
+        Assert.That(contentProperty, Is.Not.Null);
+        Assert.That(contentProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(contentProperty.ToString(), Is.EqualTo(text));
+
+        if (fromRawJson)
+        {
+            // Confirm that we also have the additional data.
+            Assert.That(messageAsJson.RootElement.TryGetProperty("additional_property", out JsonElement additionalPropertyProperty), Is.True);
+            Assert.That(additionalPropertyProperty, Is.Not.Null);
+            Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
+        }
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeChatMessageWithNoContent(bool fromRawJson)
+    {
+        string toolCallId = "fake_tool_call_id";
+        string toolCallType = "function";
+        string toolCallFunctionName = "fake_function_name";
+        string toolCallFunctionArguments = "{}";
+        AssistantChatMessage message;
+
+        if (fromRawJson)
+        {
+            BinaryData data = BinaryData.FromString($$"""
+                {
+                    "role": "assistant",
+                    "tool_calls": [{
+                        "id": "{{toolCallId}}",
+                        "type": "{{toolCallType}}",
+                        "function": {
+                            "name": "{{toolCallFunctionName}}",
+                            "arguments": "{{toolCallFunctionArguments}}"
+                        }
+                    }],
+                    "additional_property": true
+                }
+                """);
+
+            // We deserialize the raw JSON. Later, we serialize it back and confirm nothing was lost in the process.
+            message = ModelReaderWriter.Read<AssistantChatMessage>(data);
+        }
+        else
+        {
+            // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+            message = new AssistantChatMessage([
+                ChatToolCall.CreateFunctionToolCall(toolCallId, toolCallFunctionName, "{}")
+            ]);
+        }
+
+        BinaryData serializedMessage = ModelReaderWriter.Write(message);
+        using JsonDocument messageAsJson = JsonDocument.Parse(serializedMessage);
+        Assert.That(messageAsJson.RootElement, Is.Not.Null);
+        Assert.That(messageAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(messageAsJson.RootElement.TryGetProperty("content", out JsonElement contentProperty), Is.False);
+
+        Assert.That(messageAsJson.RootElement.TryGetProperty("tool_calls", out JsonElement toolCallsProperty), Is.True);
+        Assert.That(toolCallsProperty, Is.Not.Null);
+        Assert.That(toolCallsProperty.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        
+        foreach (JsonElement toolCall in toolCallsProperty.EnumerateArray())
+        {
+            Assert.That(toolCall.TryGetProperty("id", out JsonElement toolCallIdProperty), Is.True);
+            Assert.That(toolCallIdProperty, Is.Not.Null);
+            Assert.That(toolCallIdProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+            Assert.That(toolCallIdProperty.ToString(), Is.EqualTo(toolCallId));
+
+            Assert.That(toolCall.TryGetProperty("type", out JsonElement toolCallTypeProperty), Is.True);
+            Assert.That(toolCallTypeProperty, Is.Not.Null);
+            Assert.That(toolCallTypeProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+            Assert.That(toolCallTypeProperty.ToString(), Is.EqualTo(toolCallType));
+
+            Assert.That(toolCall.TryGetProperty("function", out JsonElement toolCallFunctionProperty), Is.True);
+            Assert.That(toolCallFunctionProperty, Is.Not.Null);
+            Assert.That(toolCallFunctionProperty.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+            Assert.That(toolCallFunctionProperty.TryGetProperty("name", out JsonElement toolCallFunctionNameProperty), Is.True);
+            Assert.That(toolCallFunctionNameProperty, Is.Not.Null);
+            Assert.That(toolCallFunctionNameProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+            Assert.That(toolCallFunctionNameProperty.ToString(), Is.EqualTo(toolCallFunctionName));
+
+            Assert.That(toolCallFunctionProperty.TryGetProperty("arguments", out JsonElement toolCallFunctionArgumentsProperty), Is.True);
+            Assert.That(toolCallFunctionArgumentsProperty, Is.Not.Null);
+            Assert.That(toolCallFunctionArgumentsProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+            Assert.That(toolCallFunctionArgumentsProperty.ToString(), Is.EqualTo(toolCallFunctionArguments));
+        }
+
+        if (fromRawJson)
+        {
+            // Confirm that we also have the additional data.
+            Assert.That(messageAsJson.RootElement.TryGetProperty("additional_property", out JsonElement additionalPropertyProperty), Is.True);
+            Assert.That(additionalPropertyProperty, Is.Not.Null);
+            Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
+        }
     }
 
 #pragma warning disable CS0618

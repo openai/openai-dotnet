@@ -11,24 +11,21 @@ namespace OpenAI.FineTuning;
 
 internal class AsyncFineTuningJobCheckpointCollectionResult : AsyncCollectionResult
 {
-    private readonly FineTuningClient _fineTuningClient;
-    private readonly ClientPipeline _pipeline;
+    private readonly FineTuningJobOperation _operation;
     private readonly RequestOptions? _options;
 
     // Initial values
-    private readonly string _jobId;
     private readonly int? _limit;
-    private readonly string _after;
+    private readonly string? _after;
 
-    public AsyncFineTuningJobCheckpointCollectionResult(FineTuningClient fineTuningClient,
-        ClientPipeline pipeline, RequestOptions? options,
-        string jobId, int? limit, string after)
+    public AsyncFineTuningJobCheckpointCollectionResult(
+        FineTuningJobOperation fineTuningJobOperation,
+        RequestOptions? options,
+        int? limit, string? after)
     {
-        _fineTuningClient = fineTuningClient;
-        _pipeline = pipeline;
+        _operation = fineTuningJobOperation;
         _options = options;
 
-        _jobId = jobId;
         _limit = limit;
         _after = after;
     }
@@ -49,11 +46,11 @@ internal class AsyncFineTuningJobCheckpointCollectionResult : AsyncCollectionRes
     {
         Argument.AssertNotNull(page, nameof(page));
 
-        return FineTuningJobEventCollectionPageToken.FromResponse(page, _jobId, _limit); 
+        return FineTuningJobEventCollectionPageToken.FromResponse(page, _operation.JobId, _limit); 
     }
 
     public async Task<ClientResult> GetFirstPageAsync()
-        => await GetJobCheckpointsAsync(_jobId, _after, _limit, _options).ConfigureAwait(false);
+        => await _operation.GetJobCheckpointsPageAsync(_after, _limit, _options).ConfigureAwait(false);
 
     public async Task<ClientResult> GetNextPageAsync(ClientResult result)
     {
@@ -68,17 +65,9 @@ internal class AsyncFineTuningJobCheckpointCollectionResult : AsyncCollectionRes
         string? lastId = lastItem.TryGetProperty("id", out JsonElement idElement) ?
             idElement.GetString() : null;
 
-        return await GetJobCheckpointsAsync(_jobId, lastId, _limit, _options).ConfigureAwait(false);
+        return await _operation.GetJobCheckpointsPageAsync(lastId, _limit, _options).ConfigureAwait(false);
     }
 
     public static bool HasNextPage(ClientResult result)
         => FineTuningJobCheckpointCollectionResult.HasNextPage(result);
-
-    internal virtual async Task<ClientResult> GetJobCheckpointsAsync(string jobId, string? after, int? limit, RequestOptions? options)
-    {
-        Argument.AssertNotNullOrEmpty(jobId, nameof(jobId));
-
-        using PipelineMessage message = _fineTuningClient.CreateGetFineTuningJobCheckpointsRequest(jobId, after, limit, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-    }
 }

@@ -2,6 +2,7 @@
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
 using System;
+using System.ClientModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,27 +56,37 @@ public partial class TranslationTests : SyncAsyncTestBase
     }
 
     [Test]
-    [TestCase(AudioTranslationFormat.Simple)]
-    [TestCase(AudioTranslationFormat.Verbose)]
-    [TestCase(AudioTranslationFormat.Srt)]
-    [TestCase(AudioTranslationFormat.Vtt)]
-    public async Task TranslationFormatsWork(AudioTranslationFormat formatToTest)
+    [TestCase("text")]
+    [TestCase("json")]
+    [TestCase("verbose_json")]
+    [TestCase("srt")]
+    [TestCase("vtt")]
+    [TestCase(null)]
+    public async Task TranslationFormatsWork(string responseFormat)
     {
         AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_french.wav");
 
         AudioTranslationOptions options = new()
         {
-            ResponseFormat = formatToTest
+            ResponseFormat = responseFormat switch
+            {
+                "text" => AudioTranslationFormat.Text,
+                "json" => AudioTranslationFormat.Simple,
+                "verbose_json" => AudioTranslationFormat.Verbose,
+                "srt" => AudioTranslationFormat.Srt,
+                "vtt" => AudioTranslationFormat.Vtt,
+                _ => (AudioTranslationFormat?)null
+            }
         };
 
         AudioTranslation translation = IsAsync
             ? await client.TranslateAudioAsync(path, options)
             : client.TranslateAudio(path, options);
-
+            
         Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
 
-        if (formatToTest == AudioTranslationFormat.Verbose)
+        if (options.ResponseFormat == AudioTranslationFormat.Verbose)
         {
             Assert.That(translation.Language, Is.EqualTo("english"));
             Assert.That(translation.Duration, Is.GreaterThan(TimeSpan.Zero));
@@ -92,12 +103,18 @@ public partial class TranslationTests : SyncAsyncTestBase
 
                 Assert.That(segment.Id, Is.EqualTo(i));
                 Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
-                Assert.That(segment.TokenIds, Is.Not.Null.And.Not.Empty);
+                Assert.That(segment.TokenIds.Span.Length, Is.GreaterThan(0));
 
                 Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
                 Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
                 Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
             }
+        }
+        else
+        {
+            Assert.That(translation.Duration, Is.Null);
+            Assert.That(translation.Language, Is.Null);
+            Assert.That(translation.Segments, Is.Not.Null.And.Empty);
         }
     }
 }

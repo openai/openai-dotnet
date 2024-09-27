@@ -18,7 +18,7 @@ public partial class AudioExamples
         AudioTranscriptionOptions options = new()
         {
             ResponseFormat = AudioTranscriptionFormat.Verbose,
-            Granularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
+            TimestampGranularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
         };
 
         AudioTranscription transcription = await client.TranscribeAudioAsync(audioFilePath, options);

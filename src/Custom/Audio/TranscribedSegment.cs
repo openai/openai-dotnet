@@ -30,7 +30,7 @@ public readonly partial struct TranscribedSegment
     // CUSTOM: Renamed.
     /// <summary> The token IDs corresponding to the text content of the segment. </summary>
     [CodeGenMember("Tokens")]
-    public IReadOnlyList<int> TokenIds { get; }
+    public ReadOnlyMemory<int> TokenIds { get; }
 
     // CUSTOM: Renamed.
     /// <summary> The average log probability of the segment. </summary>

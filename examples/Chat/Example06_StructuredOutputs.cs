@@ -13,10 +13,6 @@ public partial class ChatExamples
     {
         ChatClient client = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        List<ChatMessage> messages = [
-            new UserChatMessage("How can I solve 8x + 7 = -23?"),
-        ];
-
         ChatCompletionOptions options = new()
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
@@ -46,7 +42,9 @@ public partial class ChatExamples
                 jsonSchemaIsStrict: true)
         };
 
-        ChatCompletion chatCompletion = client.CompleteChat(messages, options);
+        ChatCompletion chatCompletion = client.CompleteChat(
+            ["How can I solve 8x + 7 = -23?"],
+            options);
 
         using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
 

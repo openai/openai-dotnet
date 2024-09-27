@@ -26,6 +26,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
+  - [Mock a client for testing](#mock-a-client-for-testing)
   - [Automatically retrying errors](#automatically-retrying-errors)
   - [Observability](#observability)
 
@@ -129,7 +130,7 @@ foreach (StreamingChatCompletionUpdate update in updates)
 {
     foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
     {
-        Console.Write(updatePart);
+        Console.Write(updatePart.Text);
     }
 }
 ```
@@ -309,7 +310,7 @@ To use structured outputs to constrain chat completion content, set an appropria
 ChatCompletionOptions options = new()
 {
     ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
-        name: "math_reasoning",
+        jsonSchemaFormatName: "math_reasoning",
         jsonSchema: BinaryData.FromString("""
             {
                 "type": "object",
@@ -332,7 +333,7 @@ ChatCompletionOptions options = new()
                 "additionalProperties": false
             }
             """),
-    strictSchemaEnabled: true)
+        jsonSchemaIsStrict: true)
 };
 
 ChatCompletion chatCompletion = await client.CompleteChatAsync(
@@ -340,7 +341,7 @@ ChatCompletion chatCompletion = await client.CompleteChatAsync(
     options);
 
 using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
-        
+
 Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer").GetString()}");
 Console.WriteLine("Reasoning steps:");
 
@@ -360,14 +361,14 @@ To generate a text embedding, use `EmbeddingClient` from the `OpenAI.Embeddings`
 ```csharp
 using OpenAI.Embeddings;
 
-EmbeddingClient client = new(model: "text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 string description = "Best hotel in town if you like luxury hotels. They have an amazing infinity pool, a spa,"
     + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
     + " attractions. We highly recommend this hotel.";
 
-Embedding embedding = client.GenerateEmbedding(description);
-ReadOnlyMemory<float> vector = embedding.Vector;
+OpenAIEmbedding embedding = client.GenerateEmbedding(description);
+ReadOnlyMemory<float> vector = embedding.ToFloats();
 ```
 
 Notice that the resulting embedding is a list (also called a vector) of floating point numbers represented as an instance of `ReadOnlyMemory<float>`. By default, the length of the embedding vector will be 1536 when using the `text-embedding-3-small` model or 3072 when using the `text-embedding-3-large` model. Generally, larger embeddings perform better, but using them also tends to cost more in terms of compute, memory, and storage. You can reduce the dimensions of the embedding by creating an instance of the `EmbeddingGenerationOptions` class, setting the `Dimensions` property, and passing it as an argument in your call to the `GenerateEmbedding` method:
@@ -375,7 +376,7 @@ Notice that the resulting embedding is a list (also called a vector) of floating
 ```csharp
 EmbeddingGenerationOptions options = new() { Dimensions = 512 };
 
-Embedding embedding = client.GenerateEmbedding(description, options);
+OpenAIEmbedding embedding = client.GenerateEmbedding(description, options);
 ```
 
 ## How to generate images
@@ -387,7 +388,7 @@ To generate an image, use `ImageClient` from the `OpenAI.Images` namespace:
 ```csharp
 using OpenAI.Images;
 
-ImageClient client = new(model: "dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ImageClient client = new("dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 ```
 
 Generating an image always requires a `prompt` that describes what should be generated. To further tailor the image generation to your specific needs, you can create an instance of the `ImageGenerationOptions` class and set the `Quality`, `Size`, and `Style` properties accordingly. Note that you can also set the `ResponseFormat` property of `ImageGenerationOptions` to `GeneratedImageFormat.Bytes` in order to receive the resulting PNG as `BinaryData` (instead of the default remote `Uri`) if this is convenient for your use case.
@@ -431,14 +432,14 @@ In this example, an audio file is transcribed using the Whisper speech-to-text m
 ```csharp
 using OpenAI.Audio;
 
-AudioClient client = new(model: "whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 string audioFilePath = Path.Combine("Assets", "audio_houseplant_care.mp3");
 
 AudioTranscriptionOptions options = new()
 {
     ResponseFormat = AudioTranscriptionFormat.Verbose,
-    Granularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
+    TimestampGranularities = AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment,
 };
 
 AudioTranscription transcription = client.TranscribeAudio(audioFilePath, options);
@@ -450,14 +451,14 @@ Console.WriteLine();
 Console.WriteLine($"Words:");
 foreach (TranscribedWord word in transcription.Words)
 {
-    Console.WriteLine($"  {word.Word,15} : {word.Start.TotalMilliseconds,5:0} - {word.End.TotalMilliseconds,5:0}");
+    Console.WriteLine($"  {word.Word,15} : {word.StartTime.TotalMilliseconds,5:0} - {word.EndTime.TotalMilliseconds,5:0}");
 }
 
 Console.WriteLine();
 Console.WriteLine($"Segments:");
 foreach (TranscribedSegment segment in transcription.Segments)
 {
-    Console.WriteLine($"  {segment.Text,90} : {segment.Start.TotalMilliseconds,5:0} - {segment.End.TotalMilliseconds,5:0}");
+    Console.WriteLine($"  {segment.Text,90} : {segment.StartTime.TotalMilliseconds,5:0} - {segment.EndTime.TotalMilliseconds,5:0}");
 }
 ```
 
@@ -516,7 +517,7 @@ using Stream document = BinaryData.FromString("""
 Upload this document to OpenAI using the `FileClient`'s `UploadFile` method, ensuring that you use `FileUploadPurpose.Assistants` to allow your assistant to access it later:
 
 ```csharp
-OpenAIFileInfo salesFile = fileClient.UploadFile(
+OpenAIFile salesFile = fileClient.UploadFile(
     document,
     "monthly_sales.json",
     FileUploadPurpose.Assistants);
@@ -584,8 +585,8 @@ Finally, you can use the `AssistantClient`'s `GetMessages` method to retrieve th
 For illustrative purposes, you could print the messages to the console and also save any images produced by the assistant to local storage:
 
 ```csharp
-PageCollection<ThreadMessage> messagePages = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = ListOrder.OldestFirst });
-IEnumerable<ThreadMessage> messages = messagePages.GetAllValues();
+CollectionResult<ThreadMessage> messages
+    = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
 
 foreach (ThreadMessage message in messages)
 {
@@ -616,7 +617,7 @@ foreach (ThreadMessage message in messages)
         }
         if (!string.IsNullOrEmpty(contentItem.ImageFileId))
         {
-            OpenAIFileInfo imageInfo = fileClient.GetFile(contentItem.ImageFileId);
+            OpenAIFile imageInfo = fileClient.GetFile(contentItem.ImageFileId);
             BinaryData imageBytes = fileClient.DownloadFile(contentItem.ImageFileId);
             using FileStream stream = File.OpenWrite($"{imageInfo.Filename}.png");
             imageBytes.ToStream().CopyTo(stream);
@@ -666,8 +667,8 @@ AssistantClient assistantClient = openAIClient.GetAssistantClient();
 For this example, we will use both image data from a local file as well as an image located at a URL. For the local data, we upload the file with the `Vision` upload purpose, which would also allow it to be downloaded and retrieved later.
 
 ```csharp
-OpenAIFileInfo pictureOfAppleFile = fileClient.UploadFile(
-    "picture-of-apple.jpg",
+OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
+    Path.Combine("Assets", "picture-of-apple.png"),
     FileUploadPurpose.Vision);
 Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
 ```
@@ -676,7 +677,7 @@ Next, create a new assistant with a vision-capable model like `gpt-4o` and a thr
 
 ```csharp
 Assistant assistant = assistantClient.CreateAssistant(
-    model: "gpt-4o",
+    "gpt-4o",
     new AssistantCreationOptions()
     {
         Instructions = "When asked a question, attempt to answer very concisely. "
@@ -686,14 +687,15 @@ Assistant assistant = assistantClient.CreateAssistant(
 AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions()
 {
     InitialMessages =
-    {
-        new ThreadInitializationMessage(
-        [
-            "Hello, assistant! Please compare these two images for me:",
-            MessageContent.FromImageFileId(pictureOfAppleFile.Id),
-            MessageContent.FromImageUrl(linkToPictureOfOrange),
-        ]),
-    }
+        {
+            new ThreadInitializationMessage(
+                MessageRole.User,
+                [
+                    "Hello, assistant! Please compare these two images for me:",
+                    MessageContent.FromImageFileId(pictureOfAppleFile.Id),
+                    MessageContent.FromImageUri(linkToPictureOfOrange),
+                ]),
+        }
 });
 ```
 
@@ -701,8 +703,8 @@ With the assistant and thread prepared, use the `CreateRunStreaming` method to g
 
 ```csharp
 CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
-    thread,
-    assistant,
+    thread.Id,
+    assistant.Id,
     new RunCreationOptions()
     {
         AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
@@ -794,6 +796,52 @@ string message = outputAsJson.RootElement
 ```
 
 Notice how you can then call the resulting `ClientResult`'s `GetRawResponse` method and retrieve the response body as `BinaryData` via the `PipelineResponse`'s `Content` property.
+
+### Mock a client for testing
+
+The OpenAI .NET library has been designed to support mocking, providing key features such as:
+- Client methods made virtual to allow overriding.
+- Model factories to assist in instantiating API output models that lack public constructors.
+
+To illustrate how mocking works, suppose you want to validate the behavior of the following method using the [Moq](https://github.com/devlooped/moq) library. Given the path to an audio file, it determines whether it contains a specified secret word:
+
+```csharp
+public bool ContainsSecretWord(AudioClient client, string audioFilePath, string secretWord)
+{
+    AudioTranscription transcription = client.TranscribeAudio(audioFilePath);
+    return transcription.Text.Contains(secretWord);
+}
+```
+
+Create mocks of `AudioClient` and `ClientResult<AudioTranscription>`, set up methods and properties that will be invoked, then test the behavior of the `ContainsSecretWord` method. Since the `AudioTranscription` class does not provide public constructors, it must be instantiated by the `OpenAIAudioModelFactory` static class:
+
+```csharp
+// Instantiate mocks and the AudioTranscription object.
+
+Mock<AudioClient> mockClient = new();
+Mock<ClientResult<AudioTranscription>> mockResult = new(null, Mock.Of<PipelineResponse>());
+AudioTranscription transcription = OpenAIAudioModelFactory.AudioTranscription(text: "I swear I saw an apple flying yesterday!");
+
+// Set up mocks' properties and methods.
+
+mockResult
+    .SetupGet(result => result.Value)
+    .Returns(transcription);
+
+mockClient.Setup(client => client.TranscribeAudio(
+        It.IsAny<string>(),
+        It.IsAny<AudioTranscriptionOptions>()))
+    .Returns(mockResult.Object);
+
+// Perform validation.
+
+AudioClient client = mockClient.Object;
+bool containsSecretWord = ContainsSecretWord(client, "<audioFilePath>", "apple");
+
+Assert.That(containsSecretWord, Is.True);
+```
+
+All namespaces have their corresponding model factory to support mocking with the exception of the `OpenAI.Assistants` and `OpenAI.VectorStores` namespaces, for which model factories are coming soon.
 
 ### Automatically retrying errors
 
