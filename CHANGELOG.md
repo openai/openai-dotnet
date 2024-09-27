@@ -2,8 +2,6 @@
 
 ## 2.0.0-beta.13 (2024-09-27)
 
-### Features Added
-
 ### Breaking Changes
 
 - Refactored `ModerationResult` by merging `ModerationCategories` and `ModerationCategoryScores` into individual `ModerationCategory` properties, each with `Flagged` and `Score` properties. ([19ceae4](https://github.com/openai/openai-dotnet/commit/19ceae44172fdc17af1f47aa30edf4a3bddcb9d6))
@@ -33,10 +31,6 @@
 - Renamed `OpenAIFilePurpose` to `FilePurpose`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
 - Renamed `OpenAIFileStatus` to `FileStatus`. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
 - Removed constructors that take string API key and options. ([a330c2e](https://github.com/openai/openai-dotnet/commit/a330c2e703e48179991905e991b0f4186a017198))
-
-### Bugs Fixed
-
-### Other Changes
 
 ## 2.0.0-beta.12 (2024-09-20)
 

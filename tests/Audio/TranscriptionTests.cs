@@ -179,7 +179,8 @@ public partial class TranscriptionTests : SyncAsyncTestBase
 
                 Assert.That(segment.Id, Is.EqualTo(i));
                 Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
-                Assert.That(segment.TokenIds, Is.Not.Null.And.Not.Empty);
+                Assert.That(segment.TokenIds, Is.Not.Null);
+                Assert.That(segment.TokenIds.Length, Is.GreaterThan(0));
 
                 Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
                 Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
