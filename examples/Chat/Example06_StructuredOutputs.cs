@@ -22,7 +22,7 @@ public partial class ChatExamples
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
                 jsonSchemaFormatName: "math_reasoning",
-                jsonSchema: BinaryData.FromString("""
+                jsonSchema: BinaryData.FromBytes("""
                     {
                         "type": "object",
                         "properties": {
@@ -43,7 +43,7 @@ public partial class ChatExamples
                         "required": ["steps", "final_answer"],
                         "additionalProperties": false
                     }
-                    """),
+                    """u8.ToArray()),
                 jsonSchemaIsStrict: true)
         };
 
