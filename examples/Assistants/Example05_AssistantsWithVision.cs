@@ -19,9 +19,10 @@ public partial class AssistantExamples
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
-            Path.Combine("Assets", "picture-of-apple.png"),
+            Path.Combine("Assets", "images_apple.png"),
             FileUploadPurpose.Vision);
-        Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/picture-of-orange.png");
+
+        Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/images_orange.png");
 
         Assistant assistant = assistantClient.CreateAssistant(
             "gpt-4o",

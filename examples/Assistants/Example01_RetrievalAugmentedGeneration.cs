@@ -20,7 +20,7 @@ public partial class AssistantExamples
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         // First, let's contrive a document we'll use retrieval with and upload it.
-        using Stream document = BinaryData.FromString("""
+        using Stream document = BinaryData.FromBytes("""
             {
                 "description": "This document contains the sale history data for Contoso products.",
                 "sales": [
@@ -47,7 +47,7 @@ public partial class AssistantExamples
                     }
                 ]
             }
-            """).ToStream();
+            """u8.ToArray()).ToStream();
 
         OpenAIFile salesFile = fileClient.UploadFile(
             document,

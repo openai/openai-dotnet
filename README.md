@@ -17,12 +17,12 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
   - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
 - [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
 - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
-- [How to use chat completions with structured outputs](#how-to-use-structured-outputs)
+- [How to use chat completions with structured outputs](#how-to-use-chat-completions-with-structured-outputs)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
 - [How to use assistants with retrieval augmented generation (RAG)](#how-to-use-assistants-with-retrieval-augmented-generation-rag)
-- [How to use streaming and GPT-4o vision with assistants](#how-to-use-streaming-and-gpt-4o-vision-with-assistants)
+- [How to use assistants with streaming and vision](#how-to-use-assistants-with-streaming-and-vision)
 - [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
 - [Advanced scenarios](#advanced-scenarios)
   - [Using protocol methods](#using-protocol-methods)
@@ -44,27 +44,27 @@ Add the client library to your .NET project with [NuGet](https://www.nuget.org/)
 dotnet add package OpenAI --prerelease
 ```
 
-Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications but some code examples in this document may depend on newer language features.
+Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
 
 ## Using the client library
 
-The full API of this library can be found in the [api.md](https://github.com/openai/openai-dotnet/blob/main/api/api.md) file, and there are many [code examples](https://github.com/openai/openai-dotnet/tree/main/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
+The full API of this library can be found in the [OpenAI.netstandard2.0.cs](https://github.com/openai/openai-dotnet/blob/main/api/OpenAI.netstandard2.0.cs) file, and there are many [code examples](https://github.com/openai/openai-dotnet/tree/main/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
 
 ```csharp
 using OpenAI.Chat;
 
-ChatClient client = new(model: "gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
 
-Console.WriteLine($"[ASSISTANT]: {completion}");
+Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 ```
 
-While you can pass your API key directly as a string, it is highly recommended to keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
+While you can pass your API key directly as a string, it is highly recommended that you keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
 
 ### Namespace organization
 
-The library is organized into several namespaces corresponding to OpenAI feature areas. Each namespace contains a corresponding client class.
+The library is organized into namespaces by feature areas in the OpenAI REST API. Each namespace contains a corresponding client class.
 
 | Namespace                     | Client class                 | Notes                                                             |
 | ------------------------------|------------------------------|-------------------------------------------------------------------|
@@ -118,19 +118,18 @@ When you request a chat completion, the default behavior is for the server to ge
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```csharp
-CollectionResult<StreamingChatCompletionUpdate> updates
-    = client.CompleteChatStreaming("Say 'this is a test.'");
+CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
 ```
 
 Notice that the returned value is a `CollectionResult<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
 ```csharp
-Console.WriteLine($"[ASSISTANT]:");
-foreach (StreamingChatCompletionUpdate update in updates)
+Console.Write($"[ASSISTANT]: ");
+foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
 {
-    foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
+    if (completionUpdate.ContentUpdate.Count > 0)
     {
-        Console.Write(updatePart.Text);
+        Console.Write(completionUpdate.ContentUpdate[0].Text);
     }
 }
 ```
@@ -138,22 +137,21 @@ foreach (StreamingChatCompletionUpdate update in updates)
 Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncCollectionResult<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
 
 ```csharp
-AsyncCollectionResult<StreamingChatCompletionUpdate> updates
-    = client.CompleteChatStreamingAsync("Say 'this is a test.'");
+AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
-Console.WriteLine($"[ASSISTANT]:");
-await foreach (StreamingChatCompletionUpdate update in updates)
+Console.Write($"[ASSISTANT]: ");
+await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
 {
-    foreach (ChatMessageContentPart updatePart in update.ContentUpdate)
+    if (completionUpdate.ContentUpdate.Count > 0)
     {
-        Console.Write(updatePart.Text);
+        Console.Write(completionUpdate.ContentUpdate[0].Text);
     }
 }
 ```
 
 ## How to use chat completions with tools and function calling
 
-In this example, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want chat completions to be able to call these functions if the model deems it necessary to have this information in order to respond to a user request. For illustrative purposes, consider the following:
+In this example, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want the model to be able to call these functions if it deems it necessary to have this information in order to respond to a user request as part of generating a chat completion. For illustrative purposes, consider the following:
 
 ```csharp
 private static string GetCurrentLocation()
@@ -180,7 +178,7 @@ private static readonly ChatTool getCurrentLocationTool = ChatTool.CreateFunctio
 private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
     functionName: nameof(GetCurrentWeather),
     functionDescription: "Get the current weather in a given location",
-    functionParameters: BinaryData.FromString("""
+    functionParameters: BinaryData.FromBytes("""
         {
             "type": "object",
             "properties": {
@@ -196,14 +194,15 @@ private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunction
             },
             "required": [ "location" ]
         }
-        """)
+        """u8.ToArray())
 );
 ```
 
 Next, create a `ChatCompletionOptions` instance and add both to its `Tools` property. You will pass the `ChatCompletionOptions` as an argument in your calls to the `ChatClient`'s `CompleteChat` method.
 
 ```csharp
-List<ChatMessage> messages = [
+List<ChatMessage> messages = 
+[
     new UserChatMessage("What's the weather like today?"),
 ];
 
@@ -221,24 +220,24 @@ bool requiresAction;
 do
 {
     requiresAction = false;
-    ChatCompletion chatCompletion = client.CompleteChat(messages, options);
+    ChatCompletion completion = client.CompleteChat(messages, options);
 
-    switch (chatCompletion.FinishReason)
+    switch (completion.FinishReason)
     {
         case ChatFinishReason.Stop:
             {
                 // Add the assistant message to the conversation history.
-                messages.Add(new AssistantChatMessage(chatCompletion));
+                messages.Add(new AssistantChatMessage(completion));
                 break;
             }
 
         case ChatFinishReason.ToolCalls:
             {
                 // First, add the assistant message with tool calls to the conversation history.
-                messages.Add(new AssistantChatMessage(chatCompletion));
+                messages.Add(new AssistantChatMessage(completion));
 
                 // Then, add a new tool message for each tool call that is resolved.
-                foreach (ChatToolCall toolCall in chatCompletion.ToolCalls)
+                foreach (ChatToolCall toolCall in completion.ToolCalls)
                 {
                     switch (toolCall.FunctionName)
                     {
@@ -293,25 +292,28 @@ do
             throw new NotImplementedException("Deprecated in favor of tool calls.");
 
         default:
-            throw new NotImplementedException(chatCompletion.FinishReason.ToString());
+            throw new NotImplementedException(completion.FinishReason.ToString());
     }
 } while (requiresAction);
 ```
 
 ## How to use chat completions with structured outputs
 
-Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs.
-
-For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
+Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
 
 To use structured outputs to constrain chat completion content, set an appropriate `ChatResponseFormat` as in the following example:
 
 ```csharp
+List<ChatMessage> messages =
+[
+    new UserChatMessage("How can I solve 8x + 7 = -23?"),
+];
+
 ChatCompletionOptions options = new()
 {
     ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
         jsonSchemaFormatName: "math_reasoning",
-        jsonSchema: BinaryData.FromString("""
+        jsonSchema: BinaryData.FromBytes("""
             {
                 "type": "object",
                 "properties": {
@@ -332,15 +334,13 @@ ChatCompletionOptions options = new()
                 "required": ["steps", "final_answer"],
                 "additionalProperties": false
             }
-            """),
+            """u8.ToArray()),
         jsonSchemaIsStrict: true)
 };
 
-ChatCompletion chatCompletion = await client.CompleteChatAsync(
-    ["How can I solve 8x + 7 = -23?"],
-    options);
+ChatCompletion completion = client.CompleteChat(messages, options);
 
-using JsonDocument structuredJson = JsonDocument.Parse(chatCompletion.ToString());
+using JsonDocument structuredJson = JsonDocument.Parse(completion.Content[0].Text);
 
 Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer").GetString()}");
 Console.WriteLine("Reasoning steps:");
@@ -468,14 +468,12 @@ In this example, you have a JSON document with the monthly sales information of 
 
 To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
-Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, suppress the `OPENAI001` warning at either the project level or, as below, in the code itself.
+Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, you must suppress the `OPENAI001` warning first.
 
 ```csharp
 using OpenAI.Assistants;
 using OpenAI.Files;
 
-// Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -484,7 +482,7 @@ AssistantClient assistantClient = openAIClient.GetAssistantClient();
 Here is an example of what the JSON document might look like:
 
 ```csharp
-using Stream document = BinaryData.FromString("""
+using Stream document = BinaryData.FromBytes("""
     {
         "description": "This document contains the sale history data for Contoso products.",
         "sales": [
@@ -511,7 +509,7 @@ using Stream document = BinaryData.FromString("""
             }
         ]
     }
-    """).ToStream();
+    """u8.ToArray()).ToStream();
 ```
 
 Upload this document to OpenAI using the `OpenAIFileClient`'s `UploadFile` method, ensuring that you use `FileUploadPurpose.Assistants` to allow your assistant to access it later:
@@ -650,15 +648,13 @@ The sales trend for Product 113045 over the past three months shows that:
 The graph above visualizes this trend, showing a peak in sales during February.
 ```
 
-## How to use streaming and GPT-4o vision with assistants
+## How to use assistants with streaming and vision
 
 This example shows how to use the v2 Assistants API to provide image data to an assistant and then stream the run's response.
 
 As before, you will use a `OpenAIFileClient` and an `AssistantClient`:
 
 ```csharp
-// Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -668,9 +664,10 @@ For this example, we will use both image data from a local file as well as an im
 
 ```csharp
 OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
-    Path.Combine("Assets", "picture-of-apple.png"),
+    Path.Combine("Assets", "images_apple.png"),
     FileUploadPurpose.Vision);
-Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/picture-of-orange.png");
+
+Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/images_orange.png");
 ```
 
 Next, create a new assistant with a vision-capable model like `gpt-4o` and a thread with the image information referenced:
@@ -772,27 +769,29 @@ For example, to use the protocol method variant of the `ChatClient`'s `CompleteC
 ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 BinaryData input = BinaryData.FromBytes("""
-{
-    "model": "gpt-4o",
-    "messages": [
-       {
-           "role": "user",
-           "content": "How does AI work? Explain it in simple terms."
-       }
-    ]
-}
-"""u8.ToArray());
+    {
+       "model": "gpt-4o",
+       "messages": [
+           {
+               "role": "user",
+               "content": "Say 'this is a test.'"
+           }
+       ]
+    }
+    """u8.ToArray());
 
 using BinaryContent content = BinaryContent.Create(input);
 ClientResult result = client.CompleteChat(content);
 BinaryData output = result.GetRawResponse().Content;
 
-using JsonDocument outputAsJson = JsonDocument.Parse(output);
+using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
 string message = outputAsJson.RootElement
     .GetProperty("choices"u8)[0]
     .GetProperty("message"u8)
     .GetProperty("content"u8)
     .GetString();
+
+Console.WriteLine($"[ASSISTANT]: {message}");
 ```
 
 Notice how you can then call the resulting `ClientResult`'s `GetRawResponse` method and retrieve the response body as `BinaryData` via the `PipelineResponse`'s `Content` property.
@@ -800,6 +799,7 @@ Notice how you can then call the resulting `ClientResult`'s `GetRawResponse` met
 ### Mock a client for testing
 
 The OpenAI .NET library has been designed to support mocking, providing key features such as:
+
 - Client methods made virtual to allow overriding.
 - Model factories to assist in instantiating API output models that lack public constructors.
 
