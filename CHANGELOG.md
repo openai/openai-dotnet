@@ -2,7 +2,22 @@
 
 ## 2.0.0 (2024-09-30)
 
+> First stable version of the official OpenAI library for .NET.
+
+### Features Added
+
+- Support for OpenAI's latest flagship models, including GPT-4o, GPT-4o mini, o1-preview, and o1-mini
+- Support for the entire OpenAI REST API, including:
+  - Structured outputs
+  - Reasoning tokens
+  - Experimental support for Assistants beta v2
+- Support for sync and async APIs
+- Convenient APIs to facilitate working with streaming chat completions and assistants
+- Tons of other quality-of-life features for ease of use and productivity
+
 ### Breaking Changes
+
+> Note: The following breaking changes only apply when upgrading from the previous 2.0.0-beta.* versions.
 
 - Implemented `ChatMessageContent` to encapsulate the representation of content parts in `ChatMessage`, `ChatCompletion`, and `StreamingChatCompletionUpdate`. ([31c2ba6](https://github.com/openai/openai-dotnet/commit/31c2ba63c625b1b4fc2640ddf378a97e89b89167))
 - Changed the representation of function arguments to `BinaryData` in `ChatToolCall`, `StreamingChatToolCallUpdate`, `ChatFunctionCall`, and `StreamingChatFunctionCallUpdate`. ([31c2ba6](https://github.com/openai/openai-dotnet/commit/31c2ba63c625b1b4fc2640ddf378a97e89b89167))
