@@ -2,6 +2,7 @@
 
 ## 2.0.0 (2024-09-30)
 
+> [!NOTE]
 > First stable version of the official OpenAI library for .NET.
 
 ### Features Added
@@ -17,7 +18,8 @@
 
 ### Breaking Changes
 
-> Note: The following breaking changes only apply when upgrading from the previous 2.0.0-beta.* versions.
+> [!NOTE]
+> The following breaking changes only apply when upgrading from the previous 2.0.0-beta.* versions.
 
 - Implemented `ChatMessageContent` to encapsulate the representation of content parts in `ChatMessage`, `ChatCompletion`, and `StreamingChatCompletionUpdate`. ([31c2ba6](https://github.com/openai/openai-dotnet/commit/31c2ba63c625b1b4fc2640ddf378a97e89b89167))
 - Changed the representation of function arguments to `BinaryData` in `ChatToolCall`, `StreamingChatToolCallUpdate`, `ChatFunctionCall`, and `StreamingChatFunctionCallUpdate`. ([31c2ba6](https://github.com/openai/openai-dotnet/commit/31c2ba63c625b1b4fc2640ddf378a97e89b89167))
