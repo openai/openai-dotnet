@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Models
 {
     // Data plane generated sub-client.
-    public partial class ModelClient
+    public partial class OpenAIModelClient
     {
         private const string AuthorizationHeader = "Authorization";
         private readonly ApiKeyCredential _keyCredential;
@@ -18,7 +18,7 @@ namespace OpenAI.Models
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        protected ModelClient()
+        protected OpenAIModelClient()
         {
         }
 

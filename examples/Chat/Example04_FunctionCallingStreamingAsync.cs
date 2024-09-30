@@ -19,7 +19,8 @@ public partial class ChatExamples
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region
-        List<ChatMessage> messages = [
+        List<ChatMessage> messages =
+        [
             new UserChatMessage("What's the weather like today?"),
         ];
 
@@ -35,50 +36,26 @@ public partial class ChatExamples
         do
         {
             requiresAction = false;
-            Dictionary<int, string> indexToToolCallId = [];
-            Dictionary<int, string> indexToFunctionName = [];
-            Dictionary<int, StringBuilder> indexToFunctionArguments = [];
             StringBuilder contentBuilder = new();
-            AsyncCollectionResult<StreamingChatCompletionUpdate> chatUpdates
-                = client.CompleteChatStreamingAsync(messages, options);
+            StreamingChatToolCallsBuilder toolCallsBuilder = new();
 
-            await foreach (StreamingChatCompletionUpdate chatUpdate in chatUpdates)
+            AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync(messages, options);
+
+            await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
             {
                 // Accumulate the text content as new updates arrive.
-                foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
+                foreach (ChatMessageContentPart contentPart in completionUpdate.ContentUpdate)
                 {
                     contentBuilder.Append(contentPart.Text);
                 }
 
                 // Build the tool calls as new updates arrive.
-                foreach (StreamingChatToolCallUpdate toolCallUpdate in chatUpdate.ToolCallUpdates)
+                foreach (StreamingChatToolCallUpdate toolCallUpdate in completionUpdate.ToolCallUpdates)
                 {
-                    // Keep track of which tool call ID belongs to this update index.
-                    if (toolCallUpdate.Id is not null)
-                    {
-                        indexToToolCallId[toolCallUpdate.Index] = toolCallUpdate.Id;
-                    }
-
-                    // Keep track of which function name belongs to this update index.
-                    if (toolCallUpdate.FunctionName is not null)
-                    {
-                        indexToFunctionName[toolCallUpdate.Index] = toolCallUpdate.FunctionName;
-                    }
-
-                    // Keep track of which function arguments belong to this update index,
-                    // and accumulate the arguments string as new updates arrive.
-                    if (toolCallUpdate.FunctionArgumentsUpdate is not null)
-                    {
-                        StringBuilder argumentsBuilder
-                            = indexToFunctionArguments.TryGetValue(toolCallUpdate.Index, out StringBuilder existingBuilder)
-                                ? existingBuilder
-                                : new StringBuilder();
-                        argumentsBuilder.Append(toolCallUpdate.FunctionArgumentsUpdate);
-                        indexToFunctionArguments[toolCallUpdate.Index] = argumentsBuilder;
-                    }
+                    toolCallsBuilder.Append(toolCallUpdate);
                 }
 
-                switch (chatUpdate.FinishReason)
+                switch (completionUpdate.FinishReason)
                 {
                     case ChatFinishReason.Stop:
                         {
@@ -90,25 +67,17 @@ public partial class ChatExamples
                     case ChatFinishReason.ToolCalls:
                         {
                             // First, collect the accumulated function arguments into complete tool calls to be processed
-                            List<ChatToolCall> toolCalls = [];
-                            foreach ((int index, string toolCallId) in indexToToolCallId)
-                            {
-                                ChatToolCall toolCall = ChatToolCall.CreateFunctionToolCall(
-                                    toolCallId,
-                                    indexToFunctionName[index],
-                                    indexToFunctionArguments[index].ToString());
-
-                                toolCalls.Add(toolCall);
-                            }
+                            IReadOnlyList<ChatToolCall> toolCalls = toolCallsBuilder.Build();
 
                             // Next, add the assistant message with tool calls to the conversation history.
-                            var assistantChatMessage = new AssistantChatMessage(toolCalls);
-                            string content = contentBuilder.Length > 0 ? contentBuilder.ToString() : null;
-                            if (content != null)
+                            AssistantChatMessage assistantMessage = new(toolCalls);
+
+                            if (contentBuilder.Length > 0)
                             {
-                                assistantChatMessage.Content.Add(ChatMessageContentPart.CreateTextPart(content));
+                                assistantMessage.Content.Add(ChatMessageContentPart.CreateTextPart(contentBuilder.ToString()));
                             }
-                            messages.Add(assistantChatMessage);
+
+                            messages.Add(assistantMessage);
 
                             // Then, add a new tool message for each tool call to be resolved.
                             foreach (ChatToolCall toolCall in toolCalls)
@@ -177,12 +146,6 @@ public partial class ChatExamples
         {
             switch (message)
             {
-                case SystemChatMessage systemMessage:
-                    Console.WriteLine($"[SYSTEM]:");
-                    Console.WriteLine($"{systemMessage.Content[0].Text}");
-                    Console.WriteLine();
-                    break;
-
                 case UserChatMessage userMessage:
                     Console.WriteLine($"[USER]:");
                     Console.WriteLine($"{userMessage.Content[0].Text}");

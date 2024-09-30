@@ -26,10 +26,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true && Optional.IsDefined(Id))
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true && Optional.IsDefined(ToolCallId))
             {
                 writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteStringValue(ToolCallId);
             }
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {

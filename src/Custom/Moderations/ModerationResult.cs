@@ -51,8 +51,6 @@ public partial class ModerationResult
     {
     }
 
-    public bool Flagged { get; }
-
     public ModerationCategory Hate { get; }
 
     public ModerationCategory HateThreatening { get; }

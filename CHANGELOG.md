@@ -1,5 +1,19 @@
 # Release History
 
+## 2.0.0-beta.14 (Unreleased)
+
+### Breaking Changes
+
+- Implemented `ChatMessageContent` to encapsulate the representation of content parts in `ChatMessage`, `ChatCompletion`, and `StreamingChatCompletionUpdate`. (commit_hash)
+- Changed the representation of function arguments to `BinaryData` in `ChatToolCall`, `StreamingChatToolCallUpdate`, `ChatFunctionCall`, and `StreamingChatFunctionCallUpdate`. (commit_hash)
+- Renamed `OpenAIClientOptions`'s `ApplicationId` to `UserAgentApplicationId` (commit_hash)
+- Renamed `StreamingChatToolCallUpdate`'s `Id` to `ToolCallId` (commit_hash)
+- Renamed `StreamingChatCompletionUpdate`'s `Id` to `CompletionId` (commit_hash)
+- Replaced `Auto` and `None` in the deprecated `ChatFunctionChoice` with `CreateAutoChoice()` and `CreateNoneChoice()` (commit_hash)
+- Replaced the deprecated `ChatFunctionChoice(ChatFunction)` constructor with `CreateNamedChoice(string functionName)` (commit_hash)
+- Renamed `FileClient` to `OpenAIFileClient` and the corresponding `GetFileClient()` method in `OpenAIClient` to `GetOpenAIFileClient()`. (commit_hash)
+- Renamed `ModelClient` to `OpenAIModelClient` and the corresponding `GetModelClient()` method in `OpenAIClient` to `GetOpenAIModelClient()`. (commit_hash)
+
 ## 2.0.0-beta.13 (2024-09-27)
 
 ### Breaking Changes

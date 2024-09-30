@@ -9,7 +9,7 @@ namespace OpenAI.Chat;
 /// in either direct <c>assistant</c> message responses or in calls to supplied <c>tools</c> or <c>functions</c>.
 /// </summary>
 [CodeGenModel("ChatCompletionRequestUserMessage")]
-[CodeGenSuppress("UserChatMessage", typeof(ReadOnlyMemory<ChatMessageContentPart>))]
+[CodeGenSuppress("UserChatMessage", typeof(ChatMessageContent))]
 public partial class UserChatMessage : ChatMessage
 {
     /// <summary>
@@ -17,13 +17,13 @@ public partial class UserChatMessage : ChatMessage
     /// include text and image information. This content format is currently only applicable to the
     /// <c>gpt-4o</c> and later models and will not be accepted by older models.
     /// </summary>
-    /// <param name="content">
+    /// <param name="contentParts">
     ///     The collection of text and image content items associated with the message.
     /// </param>
-    public UserChatMessage(IEnumerable<ChatMessageContentPart> content)
-        : base(ChatMessageRole.User, content)
+    public UserChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
+        : base(ChatMessageRole.User, contentParts)
     {
-        Argument.AssertNotNullOrEmpty(content, nameof(content));
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
 
     /// <summary>
@@ -31,12 +31,13 @@ public partial class UserChatMessage : ChatMessage
     /// include text and image information. This content format is currently only applicable to the
     /// <c>gpt-4o</c> and later models and will not be accepted by older models.
     /// </summary>
-    /// <param name="content">
+    /// <param name="contentParts">
     ///     The collection of text and image content items associated with the message.
     /// </param>
-    public UserChatMessage(params ChatMessageContentPart[] content)
-        : base(ChatMessageRole.User, content)
-    { }
+    public UserChatMessage(params ChatMessageContentPart[] contentParts)
+        : base(ChatMessageRole.User, contentParts)
+    {
+    }
 
     /// <summary>
     /// Creates a new instance of <see cref="UserChatMessage"/> with ordinary text <c>content</c>.

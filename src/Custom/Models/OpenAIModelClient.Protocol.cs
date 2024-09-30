@@ -12,7 +12,7 @@ namespace OpenAI.Models;
 [CodeGenSuppress("RetrieveModel", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DeleteModelAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DeleteModel", typeof(string), typeof(RequestOptions))]
-public partial class ModelClient
+public partial class OpenAIModelClient
 {
     /// <summary>
     /// [Protocol Method] Lists the currently available models, and provides basic information about each one such as the

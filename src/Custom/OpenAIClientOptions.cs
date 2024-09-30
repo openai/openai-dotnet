@@ -10,7 +10,7 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
     private Uri _endpoint;
     private string _organizationId;
     private string _projectId;
-    private string _applicationId;
+    private string _userAgentApplicationId;
 
     /// <summary>
     /// The service endpoint that the client will send requests to. If not set, the default endpoint will be used.
@@ -61,13 +61,13 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
     /// <summary>
     /// An optional application ID to use as part of the request User-Agent header.
     /// </summary>
-    public string ApplicationId
+    public string UserAgentApplicationId
     {
-        get => _applicationId;
+        get => _userAgentApplicationId;
         set
         {
             AssertNotFrozen();
-            _applicationId = value;
+            _userAgentApplicationId = value;
         }
     }
 }

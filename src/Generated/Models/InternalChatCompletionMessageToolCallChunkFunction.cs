@@ -14,7 +14,7 @@ namespace OpenAI.Chat
         {
         }
 
-        internal InternalChatCompletionMessageToolCallChunkFunction(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalChatCompletionMessageToolCallChunkFunction(string name, BinaryData arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Name = name;
             Arguments = arguments;
@@ -22,6 +22,5 @@ namespace OpenAI.Chat
         }
 
         public string Name { get; }
-        public string Arguments { get; }
     }
 }

@@ -29,7 +29,7 @@ namespace OpenAI.Chat
             Choices = choices;
             CreatedAt = createdAt;
             Model = model;
-            _serviceTier = serviceTier;
+            ServiceTier = serviceTier;
             SystemFingerprint = systemFingerprint;
             Object = @object;
             Usage = usage;

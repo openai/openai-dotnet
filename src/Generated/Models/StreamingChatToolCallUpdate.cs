@@ -11,10 +11,10 @@ namespace OpenAI.Chat
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal StreamingChatToolCallUpdate(int index, string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal StreamingChatToolCallUpdate(int index, string toolCallId, ChatToolCallKind kind, InternalChatCompletionMessageToolCallChunkFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Index = index;
-            Id = id;
+            ToolCallId = toolCallId;
             Kind = kind;
             Function = function;
             SerializedAdditionalRawData = serializedAdditionalRawData;
@@ -25,6 +25,5 @@ namespace OpenAI.Chat
         }
 
         public int Index { get; }
-        public string Id { get; }
     }
 }

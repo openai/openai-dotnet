@@ -66,7 +66,8 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("content") != true && Optional.IsCollectionDefined(Content))
+            // CUSTOM: Check inner collection is defined.
+            if (SerializedAdditionalRawData?.ContainsKey("content") != true && true && Optional.IsDefined(Content) && Content.IsInnerCollectionDefined())
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
@@ -118,7 +119,7 @@ namespace OpenAI.FineTuning
             IList<ChatToolCall> toolCalls = default;
             ChatFunctionCall functionCall = default;
             ChatMessageRole role = default;
-            IList<ChatMessageContentPart> content = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -179,9 +180,10 @@ namespace OpenAI.FineTuning
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
+            // CUSTOM: Initialize Content collection property.
             return new InternalFineTuneChatCompletionRequestAssistantMessage(
                 role,
-                content ?? new ChangeTrackingList<ChatMessageContentPart>(),
+                content ?? new ChatMessageContent(),
                 serializedAdditionalRawData,
                 refusal,
                 name,

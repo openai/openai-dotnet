@@ -37,29 +37,6 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         writer.WriteEndObject();
     }
 
-    internal static void WriteCoreContentPartList(IList<ChatMessageContentPart> instances, Utf8JsonWriter writer, ModelReaderWriterOptions options)
-    {
-        if (!Optional.IsCollectionDefined(instances))
-        {
-            return;
-        }
-
-        writer.WritePropertyName("content"u8);
-        if (instances.Count == 1 && instances[0].Text != null)
-        {
-            writer.WriteStringValue(instances[0].Text);
-        }
-        else
-        {
-            writer.WriteStartArray();
-            foreach (var item in instances)
-            {
-                writer.WriteObjectValue(item, options);
-            }
-            writer.WriteEndArray();
-        }
-    }
-
     internal static ChatMessageContentPart DeserializeChatMessageContentPart(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;

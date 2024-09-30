@@ -108,7 +108,7 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
                 }
 
                 using JsonDocument doc = JsonDocument.Parse(_events.Current.Data);
-                var updates = StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdates(doc.RootElement);
+                List<StreamingChatCompletionUpdate> updates = [StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate(doc.RootElement)];
                 _updates = updates.GetEnumerator();
 
                 if (_updates.MoveNext())

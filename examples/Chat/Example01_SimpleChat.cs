@@ -13,6 +13,6 @@ public partial class ChatExamples
 
         ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
 
-        Console.WriteLine($"[ASSISTANT]: {completion}");
+        Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
     }
 }

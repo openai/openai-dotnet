@@ -17,7 +17,7 @@ namespace OpenAI.Files;
 [CodeGenSuppress("DeleteFile", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DownloadFileAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DownloadFile", typeof(string), typeof(RequestOptions))]
-public partial class FileClient
+public partial class OpenAIFileClient
 {
     /// <summary>
     /// [Protocol Method] Upload a file that can be used across various endpoints. The size of all the files uploaded by

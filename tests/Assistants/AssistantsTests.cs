@@ -50,7 +50,7 @@ public class AssistantsTests : SyncAsyncTestBase
         }
 
         AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
         RequestOptions requestOptions = new()
         {
@@ -370,7 +370,7 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(assistant);
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
@@ -792,7 +792,7 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task FileSearchWorks()
     {
         // First, we need to upload a simple test file.
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile testFile = fileClient.UploadFile(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
@@ -968,7 +968,7 @@ public class AssistantsTests : SyncAsyncTestBase
 
         const string fileName = "favorite_foods.txt";
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
 
         // First, upload a simple test file.
@@ -1656,7 +1656,7 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(assistant);
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y
@@ -1731,7 +1731,7 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(assistant);
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile equationFile = fileClient.UploadFile(
             BinaryData.FromString("""
             x,y

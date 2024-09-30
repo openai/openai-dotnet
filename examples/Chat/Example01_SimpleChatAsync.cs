@@ -14,6 +14,6 @@ public partial class ChatExamples
 
         ChatCompletion completion = await client.CompleteChatAsync("Say 'this is a test.'");
 
-        Console.WriteLine($"[ASSISTANT]: {completion}");
+        Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
     }
 }

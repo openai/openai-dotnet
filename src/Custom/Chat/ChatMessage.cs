@@ -62,12 +62,16 @@ public partial class ChatMessage
 
     // CUSTOM: Made internal.
     internal ChatMessage()
-    { }
+    {
+    }
 
-    internal ChatMessage(ChatMessageRole role, IEnumerable<ChatMessageContentPart> contentParts)
+    internal ChatMessage(ChatMessageRole role)
     {
         Role = role;
+    }
 
+    internal ChatMessage(ChatMessageRole role, IEnumerable<ChatMessageContentPart> contentParts) : this(role)
+    {
         if (contentParts != null)
         {
             foreach (ChatMessageContentPart contentPart in contentParts)
@@ -77,10 +81,8 @@ public partial class ChatMessage
         }
     }
 
-    internal ChatMessage(ChatMessageRole role, string content = null)
+    internal ChatMessage(ChatMessageRole role, string content = null) : this(role)
     {
-        Role = role;
-
         if (content != null)
         {
             Content.Add(ChatMessageContentPart.CreateTextPart(content));
@@ -90,7 +92,7 @@ public partial class ChatMessage
     /// <summary>
     /// The content associated with the message. The interpretation of this content will vary depending on the message type.
     /// </summary>
-    public IList<ChatMessageContentPart> Content { get; } = new ChangeTrackingList<ChatMessageContentPart>();
+    public ChatMessageContent Content { get; } = new ChatMessageContent();
 
     #region SystemChatMessage
     /// <inheritdoc cref="SystemChatMessage(string)"/>
@@ -151,9 +153,7 @@ public partial class ChatMessage
     public static FunctionChatMessage CreateFunctionMessage(string functionName, string content) => new(functionName, content);
     #endregion
 
-    /// <summary>
-    /// Creates UserChatMessage.
-    /// </summary>
-    /// <param name="userMessage"></param>
-    public static implicit operator ChatMessage(string userMessage) => new UserChatMessage(userMessage);
+    /// <summary> Creates a new instance of <see cref="UserChatMessage"/>. </summary>
+    /// <param name="content"> The text content of the <see cref="UserChatMessage"/>. </param>
+    public static implicit operator ChatMessage(string content) => new UserChatMessage(content);
 }

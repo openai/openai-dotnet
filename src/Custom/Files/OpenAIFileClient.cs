@@ -12,7 +12,7 @@ namespace OpenAI.Files;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 /// <summary> The service client for OpenAI file operations. </summary>
 [CodeGenClient("Files")]
-[CodeGenSuppress("FileClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenSuppress("OpenAIFileClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateFileAsync", typeof(InternalFileUploadOptions))]
 [CodeGenSuppress("CreateFile", typeof(InternalFileUploadOptions))]
 [CodeGenSuppress("GetFilesAsync", typeof(string))]
@@ -23,7 +23,7 @@ namespace OpenAI.Files;
 [CodeGenSuppress("DeleteFile", typeof(string))]
 [CodeGenSuppress("DownloadFileAsync", typeof(string))]
 [CodeGenSuppress("DownloadFile", typeof(string))]
-public partial class FileClient
+public partial class OpenAIFileClient
 {
     private InternalUploadsClient _internalUploadsClient;
 
@@ -34,33 +34,33 @@ public partial class FileClient
     public ClientPipeline Pipeline => _pipeline;
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient">. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public FileClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public OpenAIFileClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
     {
     }
 
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient">. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public FileClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public OpenAIFileClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
     }
 
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient">. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public FileClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options)
     {
         Argument.AssertNotNull(credential, nameof(credential));
         options ??= new OpenAIClientOptions();
@@ -74,11 +74,11 @@ public partial class FileClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Made protected.
-    /// <summary> Initializes a new instance of <see cref="FileClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient">. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal FileClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         options ??= new OpenAIClientOptions();

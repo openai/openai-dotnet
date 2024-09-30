@@ -473,7 +473,7 @@ public partial class VectorStoreClient
     /// store.
     /// </summary>
     /// <remarks>
-    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(string)"/>.
+    /// This does not delete the file. To delete the file, use <see cref="OpenAIFileClient.DeleteFile(string)"/>.
     /// </remarks>
     /// <param name="vectorStoreId"> The ID of the vector store that the file should be removed from. </param>
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>
@@ -492,7 +492,7 @@ public partial class VectorStoreClient
     /// store.
     /// </summary>
     /// <remarks>
-    /// This does not delete the file. To delete the file, use <see cref="FileClient.DeleteFile(string)"/>.
+    /// This does not delete the file. To delete the file, use <see cref="OpenAIFileClient.DeleteFile(string)"/>.
     /// </remarks>
     /// <param name="vectorStoreId"> The ID of the vector store that the file should be removed from. </param>
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>

@@ -21,11 +21,21 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
         writer.WriteStringValue(Role.ToSerialString());
         writer.WritePropertyName("name"u8);
         writer.WriteStringValue(FunctionName);
-        if (Optional.IsCollectionDefined(Content))
+
+        // Content is required, can be a single string or null.
+        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined())
         {
             writer.WritePropertyName("content"u8);
-            writer.WriteStringValue(Content?[0]?.Text);
+            if (Content.Count > 0 && Content[0].Text != null)
+            {
+                writer.WriteStringValue(Content[0].Text);
+            }
+            else
+            {
+                writer.WriteNullValue();
+            }
         }
+
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }

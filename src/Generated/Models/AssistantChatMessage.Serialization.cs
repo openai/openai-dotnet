@@ -37,7 +37,7 @@ namespace OpenAI.Chat
             IList<ChatToolCall> toolCalls = default;
             ChatFunctionCall functionCall = default;
             ChatMessageRole role = default;
-            IList<ChatMessageContentPart> content = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -98,9 +98,10 @@ namespace OpenAI.Chat
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
+            // CUSTOM: Initialize Content collection property.
             return new AssistantChatMessage(
                 role,
-                content ?? new ChangeTrackingList<ChatMessageContentPart>(),
+                content ?? new ChatMessageContent(),
                 serializedAdditionalRawData,
                 refusal,
                 name,

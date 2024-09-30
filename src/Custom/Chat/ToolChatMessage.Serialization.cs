@@ -19,7 +19,26 @@ public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
         writer.WriteStringValue(Role.ToSerialString());
         writer.WritePropertyName("tool_call_id"u8);
         writer.WriteStringValue(ToolCallId);
-        ChatMessageContentPart.WriteCoreContentPartList(Content, writer, options);
+
+        // Content is required, can be a single string or a collection of ChatMessageContentPart.
+        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined())
+        {
+            writer.WritePropertyName("content"u8);
+            if (Content.Count == 1 && Content[0].Text != null)
+            {
+                writer.WriteStringValue(Content[0].Text);
+            }
+            else
+            {
+                writer.WriteStartArray();
+                foreach (ChatMessageContentPart part in Content)
+                {
+                    writer.WriteObjectValue(part, options);
+                }
+                writer.WriteEndArray();
+            }
+        }
+
         writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
     }

@@ -34,7 +34,7 @@ namespace OpenAI.Chat
             }
             string name = default;
             ChatMessageRole role = default;
-            IList<ChatMessageContentPart> content = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -61,7 +61,8 @@ namespace OpenAI.Chat
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new SystemChatMessage(role, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData, name);
+            // CUSTOM: Initialize Content collection property.
+            return new SystemChatMessage(role, content ?? new ChatMessageContent(), serializedAdditionalRawData, name);
         }
 
         BinaryData IPersistableModel<SystemChatMessage>.Write(ModelReaderWriterOptions options)

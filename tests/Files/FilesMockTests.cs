@@ -61,7 +61,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "id": "returned_file_id"
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
@@ -78,7 +78,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "created_at": 1704096000
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
@@ -96,7 +96,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "purpose": "{{purpose.stringValue}}"
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
@@ -116,7 +116,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "status": "{{status.stringValue}}"
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
@@ -135,7 +135,7 @@ public class FilesMockTests : SyncAsyncTestBase
             "status_details": "This is definitely an error."
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFile fileInfo = IsAsync
             ? await client.GetFileAsync("file_id")
@@ -148,7 +148,7 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void GetFileRespectsTheCancellationToken()
     {
-        FileClient client = new FileClient(s_fakeCredential);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -243,7 +243,7 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void UploadFileRespectsTheCancellationToken()
     {
-        FileClient client = new FileClient(s_fakeCredential);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
         using var stream = new MemoryStream(Array.Empty<byte>());
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
@@ -272,7 +272,7 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -294,7 +294,7 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -317,7 +317,7 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -341,7 +341,7 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -365,7 +365,7 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
 
         OpenAIFileCollection fileInfoCollection = IsAsync
             ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -379,7 +379,7 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void GetFilesRespectsTheCancellationToken()
     {
-        FileClient client = new FileClient(s_fakeCredential);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -398,7 +398,7 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void DownloadFileRespectsTheCancellationToken()
     {
-        FileClient client = new FileClient(s_fakeCredential);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -417,7 +417,7 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void DeleteFileRespectsTheCancellationToken()
     {
-        FileClient client = new FileClient(s_fakeCredential);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -446,7 +446,7 @@ public class FilesMockTests : SyncAsyncTestBase
 
     private async ValueTask<OpenAIFile> InvokeUploadFileSyncOrAsync(OpenAIClientOptions clientOptions, FileSourceKind fileSourceKind)
     {
-        FileClient client = new FileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
         string filename = "images_dog_and_cat.png";
         string path = Path.Combine("Assets", filename);
 

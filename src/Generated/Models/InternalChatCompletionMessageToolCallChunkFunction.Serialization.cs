@@ -29,7 +29,7 @@ namespace OpenAI.Chat
             if (SerializedAdditionalRawData?.ContainsKey("arguments") != true && Optional.IsDefined(Arguments))
             {
                 writer.WritePropertyName("arguments"u8);
-                writer.WriteStringValue(Arguments);
+                SerializeArgumentsValue(writer, options);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -74,7 +74,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string name = default;
-            string arguments = default;
+            BinaryData arguments = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -86,7 +86,7 @@ namespace OpenAI.Chat
                 }
                 if (property.NameEquals("arguments"u8))
                 {
-                    arguments = property.Value.GetString();
+                    DeserializeArgumentsValue(property, ref arguments);
                     continue;
                 }
                 if (true)

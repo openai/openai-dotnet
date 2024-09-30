@@ -24,7 +24,7 @@ namespace OpenAI.Chat
             if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteStringValue(CompletionId);
             }
             if (SerializedAdditionalRawData?.ContainsKey("choices") != true)
             {

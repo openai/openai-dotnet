@@ -74,9 +74,9 @@ The library is organized into several namespaces corresponding to OpenAI feature
 | `OpenAI.Chat`                 | `ChatClient`                 |                                                                   |
 | `OpenAI.Embeddings`           | `EmbeddingClient`            |                                                                   |
 | `OpenAI.FineTuning`           | `FineTuningClient`           | ![Experimental](https://img.shields.io/badge/experimental-purple) |
-| `OpenAI.Files`                | `FileClient`                 |                                                                   |
+| `OpenAI.Files`                | `OpenAIFileClient`           |                                                                   |
 | `OpenAI.Images`               | `ImageClient`                |                                                                   |
-| `OpenAI.Models`               | `ModelClient`                |                                                                   |
+| `OpenAI.Models`               | `OpenAIModelClient`          |                                                                   |
 | `OpenAI.Moderations`          | `ModerationClient`           |                                                                   |
 | `OpenAI.VectorStores`         | `VectorStoreClient`          | ![Experimental](https://img.shields.io/badge/experimental-purple) |
 
@@ -466,7 +466,7 @@ foreach (TranscribedSegment segment in transcription.Segments)
 
 In this example, you have a JSON document with the monthly sales information of different products, and you want to build an assistant capable of analyzing it and answering questions about it.
 
-To achieve this, use both `FileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
+To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
 Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, suppress the `OPENAI001` warning at either the project level or, as below, in the code itself.
 
@@ -477,7 +477,7 @@ using OpenAI.Files;
 // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
 #pragma warning disable OPENAI001
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-FileClient fileClient = openAIClient.GetFileClient();
+OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
 ```
 
@@ -514,7 +514,7 @@ using Stream document = BinaryData.FromString("""
     """).ToStream();
 ```
 
-Upload this document to OpenAI using the `FileClient`'s `UploadFile` method, ensuring that you use `FileUploadPurpose.Assistants` to allow your assistant to access it later:
+Upload this document to OpenAI using the `OpenAIFileClient`'s `UploadFile` method, ensuring that you use `FileUploadPurpose.Assistants` to allow your assistant to access it later:
 
 ```csharp
 OpenAIFile salesFile = fileClient.UploadFile(
@@ -654,13 +654,13 @@ The graph above visualizes this trend, showing a peak in sales during February.
 
 This example shows how to use the v2 Assistants API to provide image data to an assistant and then stream the run's response.
 
-As before, you will use a `FileClient` and an `AssistantClient`:
+As before, you will use a `OpenAIFileClient` and an `AssistantClient`:
 
 ```csharp
 // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
 #pragma warning disable OPENAI001
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-FileClient fileClient = openAIClient.GetFileClient();
+OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
 ```
 
