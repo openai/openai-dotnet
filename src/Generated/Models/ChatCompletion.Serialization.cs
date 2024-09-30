@@ -46,12 +46,12 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(_serviceTier))
+            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(ServiceTier))
             {
-                if (_serviceTier != null)
+                if (ServiceTier != null)
                 {
                     writer.WritePropertyName("service_tier"u8);
-                    writer.WriteStringValue(_serviceTier.Value.ToString());
+                    writer.WriteStringValue(ServiceTier.Value.ToString());
                 }
                 else
                 {

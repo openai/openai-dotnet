@@ -21,15 +21,15 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("arguments") != true)
-            {
-                writer.WritePropertyName("arguments"u8);
-                writer.WriteStringValue(FunctionArguments);
-            }
             if (SerializedAdditionalRawData?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("arguments") != true)
+            {
+                writer.WritePropertyName("arguments"u8);
+                SerializeFunctionArgumentsValue(writer, options);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -73,20 +73,20 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string arguments = default;
             string name = default;
+            BinaryData arguments = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
-                if (property.NameEquals("arguments"u8))
-                {
-                    arguments = property.Value.GetString();
-                    continue;
-                }
                 if (property.NameEquals("name"u8))
                 {
                     name = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("arguments"u8))
+                {
+                    DeserializeFunctionArgumentsValue(property, ref arguments);
                     continue;
                 }
                 if (true)
@@ -96,7 +96,7 @@ namespace OpenAI.Chat
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new ChatFunctionCall(arguments, name, serializedAdditionalRawData);
+            return new ChatFunctionCall(name, arguments, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<ChatFunctionCall>.Write(ModelReaderWriterOptions options)

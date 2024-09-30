@@ -1,5 +1,6 @@
 ﻿namespace OpenAI.Chat;
 
+[CodeGenModel("CreateChatCompletionStreamResponseChoice")]
 internal partial class InternalCreateChatCompletionStreamResponseChoice
 {
     // CUSTOM: Changed type from string.

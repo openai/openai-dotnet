@@ -22,7 +22,7 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public async Task ListModels()
     {
-        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
 
         OpenAIModelCollection allModels = IsAsync
             ? await client.GetModelsAsync()
@@ -44,7 +44,7 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public async Task GetModelInfo()
     {
-        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
         string modelId = "gpt-4o-mini";
 
         OpenAIModel model = IsAsync
@@ -62,7 +62,7 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public void GetModelCanParseServiceError()
     {
-        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
         if (IsAsync)
@@ -80,7 +80,7 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public void DeleteModelCanParseServiceError()
     {
-        ModelClient client = GetTestClient<ModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
         if (IsAsync)

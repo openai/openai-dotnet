@@ -98,7 +98,7 @@ public class BatchTests : SyncAsyncTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
@@ -163,7 +163,7 @@ public class BatchTests : SyncAsyncTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 

@@ -20,7 +20,7 @@ public partial class ChatExamples
                "messages": [
                    {
                        "role": "user",
-                       "content": "How does AI work? Explain it in simple terms."
+                       "content": "Say 'this is a test.'"
                    }
                ]
             }
@@ -37,7 +37,6 @@ public partial class ChatExamples
             .GetProperty("content"u8)
             .GetString();
 
-        Console.WriteLine($"[ASSISTANT]:");
-        Console.WriteLine($"{message}");
+        Console.WriteLine($"[ASSISTANT]: {message}");
     }
 }

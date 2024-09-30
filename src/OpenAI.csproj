@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>This is the OpenAI client library for developing .NET applications with rich experience.</Description>
+    <Description>
+    The official .NET library for the OpenAI service API.
+    </Description>
     <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 

@@ -10,19 +10,19 @@ namespace OpenAI.Chat
     internal partial class InternalChatCompletionResponseMessageFunctionCall
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalChatCompletionResponseMessageFunctionCall(string arguments, string name)
+        internal InternalChatCompletionResponseMessageFunctionCall(string name, string arguments)
         {
-            Argument.AssertNotNull(arguments, nameof(arguments));
             Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(arguments, nameof(arguments));
 
-            Arguments = arguments;
             Name = name;
+            Arguments = arguments;
         }
 
-        internal InternalChatCompletionResponseMessageFunctionCall(string arguments, string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalChatCompletionResponseMessageFunctionCall(string name, string arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            Arguments = arguments;
             Name = name;
+            Arguments = arguments;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
@@ -30,7 +30,7 @@ namespace OpenAI.Chat
         {
         }
 
-        public string Arguments { get; }
         public string Name { get; }
+        public string Arguments { get; }
     }
 }

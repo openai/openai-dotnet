@@ -43,18 +43,19 @@ public partial class ChatExamples
             {
                 case UserChatMessage userMessage:
                     Console.WriteLine($"[USER]:");
+                    Console.WriteLine($"{message.Content[0].Text}");
+                    Console.WriteLine();
                     break;
 
                 case AssistantChatMessage assistantMessage when assistantMessage.Content.Count > 0:
                     Console.WriteLine($"[ASSISTANT]:");
+                    Console.WriteLine($"{assistantMessage.Content[0].Text}");
+                    Console.WriteLine();
                     break;
 
                 default:
                     break;
             }
-
-            Console.WriteLine($"{message.Content[0].Text}");
-            Console.WriteLine();
         }
 
         serializedData = SerializeMessages(messages);

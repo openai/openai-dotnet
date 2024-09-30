@@ -621,7 +621,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     {
         List<OpenAIFile> files = [];
 
-        FileClient client = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient client = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         for (int i = 0; i < count; i++)
         {
             OpenAIFile file = client.UploadFile(
@@ -638,7 +638,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     [TearDown]
     protected void Cleanup()
     {
-        FileClient fileClient = GetTestClient<FileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
         VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
         RequestOptions requestOptions = new()
         {

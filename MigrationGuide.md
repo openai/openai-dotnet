@@ -48,8 +48,8 @@ Old library's endpoint|New library's client
 |Translations | AudioClient
 |Moderation | ModerationClient
 |Embeddings | EmbeddingClient
-|Files | FileClient
-|Models | ModelClient
+|Files | OpenAIFileClient
+|Models | OpenAIModelClient
 |Completions | Not supported
 
 ## Authentication

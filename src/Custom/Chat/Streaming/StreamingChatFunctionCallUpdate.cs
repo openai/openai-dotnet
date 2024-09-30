@@ -4,6 +4,7 @@ namespace OpenAI.Chat;
 
 [Obsolete($"This class is obsolete. Please use {nameof(StreamingChatToolCallUpdate)} instead.")]
 [CodeGenModel("ChatCompletionStreamResponseDeltaFunctionCall")]
+[CodeGenSerialization(nameof(FunctionArgumentsUpdate), SerializationValueHook = nameof(SerializeFunctionArgumentsUpdateValue), DeserializationValueHook = nameof(DeserializeFunctionArgumentsUpdateValue))]
 public partial class StreamingChatFunctionCallUpdate
 {
     // CUSTOM: Renamed.
@@ -11,7 +12,9 @@ public partial class StreamingChatFunctionCallUpdate
     [CodeGenMember("Name")]
     public string FunctionName { get; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM:
+    // - Renamed.
+    // - Changed type from string to BinaryData.
     /// <summary>
     /// Gets a function arguments fragment associated with this update.
     /// </summary>
@@ -27,5 +30,5 @@ public partial class StreamingChatFunctionCallUpdate
     ///     </para>
     /// </remarks>
     [CodeGenMember("Arguments")]
-    public string FunctionArgumentsUpdate { get; }
+    public BinaryData FunctionArgumentsUpdate { get; }
 }

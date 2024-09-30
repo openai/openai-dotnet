@@ -18,15 +18,15 @@ public partial class ChatExamples
         using Stream imageStream = File.OpenRead(imageFilePath);
         BinaryData imageBytes = BinaryData.FromStream(imageStream);
 
-        List<ChatMessage> messages = [
+        List<ChatMessage> messages =
+        [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart("Please describe the following image."),
-                ChatMessageContentPart.CreateImagePart(imageBytes, "image/png"))
+                ChatMessageContentPart.CreateImagePart(imageBytes, "image/png")),
         ];
 
-        ChatCompletion chatCompletion = await client.CompleteChatAsync(messages);
+        ChatCompletion completion = await client.CompleteChatAsync(messages);
 
-        Console.WriteLine($"[ASSISTANT]:");
-        Console.WriteLine($"{chatCompletion.Content[0].Text}");
+        Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
     }
 }

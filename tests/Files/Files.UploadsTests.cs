@@ -15,7 +15,7 @@ namespace OpenAI.Tests.Files;
 [Category("Uploads")]
 public class UploadsTests : SyncAsyncTestBase
 {
-    private static FileClient GetTestClient() => GetTestClient<FileClient>(TestScenario.Files);
+    private static OpenAIFileClient GetTestClient() => GetTestClient<OpenAIFileClient>(TestScenario.Files);
 
     public UploadsTests(bool isAsync) : base(isAsync)
     {
@@ -29,8 +29,8 @@ public class UploadsTests : SyncAsyncTestBase
         // Test with the top-level client as well to validate that both FileClient constructors
         // are setting the internal Uploads client correctly.
 
-        FileClient fileClient = useTopLevelClient
-            ? TestHelpers.GetTestTopLevelClient().GetFileClient()
+        OpenAIFileClient fileClient = useTopLevelClient
+            ? TestHelpers.GetTestTopLevelClient().GetOpenAIFileClient()
             : GetTestClient();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
@@ -63,7 +63,7 @@ public class UploadsTests : SyncAsyncTestBase
     [Test]
     public async Task AddUploadPartWorks()
     {
-        FileClient fileClient = GetTestClient();
+        OpenAIFileClient fileClient = GetTestClient();
         UploadDetails uploadDetails = await CreateTestUploadAsync(fileClient);
         using MultipartFormDataBinaryContent content = new();
 
@@ -86,7 +86,7 @@ public class UploadsTests : SyncAsyncTestBase
     [Test]
     public async Task CompleteUploadWorks()
     {
-        FileClient fileClient = GetTestClient();
+        OpenAIFileClient fileClient = GetTestClient();
         UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
         using MultipartFormDataBinaryContent firstPartContent = new();
         using MultipartFormDataBinaryContent secondPartContent = new();
@@ -144,7 +144,7 @@ public class UploadsTests : SyncAsyncTestBase
     [Test]
     public async Task CancelUploadWorks()
     {
-        FileClient fileClient = GetTestClient();
+        OpenAIFileClient fileClient = GetTestClient();
         UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
 
         ClientResult result = IsAsync
@@ -165,7 +165,7 @@ public class UploadsTests : SyncAsyncTestBase
         Assert.That(canceledUploadDetails.ExpiresAt, Is.EqualTo(createdUploadDetails.ExpiresAt));
     }
 
-    private async Task<UploadDetails> CreateTestUploadAsync(FileClient fileClient)
+    private async Task<UploadDetails> CreateTestUploadAsync(OpenAIFileClient fileClient)
     {
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
@@ -182,7 +182,7 @@ public class UploadsTests : SyncAsyncTestBase
         return GetUploadDetails(jsonDocument);
     }
 
-    private async Task<UploadPartDetails> AddTestUploadPartAsync(FileClient fileClient, string uploadId, MultipartFormDataBinaryContent content)
+    private async Task<UploadPartDetails> AddTestUploadPartAsync(OpenAIFileClient fileClient, string uploadId, MultipartFormDataBinaryContent content)
     {
         ClientResult result = await fileClient.AddUploadPartAsync(uploadId, content, content.ContentType);
         BinaryData response = result.GetRawResponse().Content;

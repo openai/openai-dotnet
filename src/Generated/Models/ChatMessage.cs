@@ -11,7 +11,7 @@ namespace OpenAI.Chat
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal ChatMessage(ChatMessageRole role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Role = role;
             Content = content;

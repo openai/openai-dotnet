@@ -16,24 +16,26 @@ public partial class ChatMessage : IJsonModel<ChatMessage>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void DeserializeContentValue(JsonProperty property, ref IList<ChatMessageContentPart> content, ModelReaderWriterOptions options = null)
+    internal static void DeserializeContentValue(JsonProperty property, ref ChatMessageContent content, ModelReaderWriterOptions options = null)
     {
-        content ??= new ChangeTrackingList<ChatMessageContentPart>();
-
         if (property.Value.ValueKind == JsonValueKind.Null)
         {
             return;
         }
         else if (property.Value.ValueKind == JsonValueKind.String)
         {
-            content.Add(ChatMessageContentPart.CreateTextPart(property.Value.GetString()));
+            content = new ChatMessageContent(property.Value.GetString());
         }
         else if (property.Value.ValueKind == JsonValueKind.Array)
         {
+            IList<ChatMessageContentPart> parts = [];
+
             foreach (var item in property.Value.EnumerateArray())
             {
-                content.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+                parts.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
             }
+
+            content = new ChatMessageContent(parts);
         }
     }
 

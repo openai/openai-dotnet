@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Files
 {
     // Data plane generated sub-client.
-    public partial class FileClient
+    public partial class OpenAIFileClient
     {
         private const string AuthorizationHeader = "Authorization";
         private readonly ApiKeyCredential _keyCredential;
@@ -18,7 +18,7 @@ namespace OpenAI.Files
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        protected FileClient()
+        protected OpenAIFileClient()
         {
         }
 

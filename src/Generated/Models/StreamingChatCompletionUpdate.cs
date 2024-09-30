@@ -11,21 +11,21 @@ namespace OpenAI.Chat
     public partial class StreamingChatCompletionUpdate
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal StreamingChatCompletionUpdate(string id, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model)
+        internal StreamingChatCompletionUpdate(string completionId, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model)
         {
-            Argument.AssertNotNull(id, nameof(id));
+            Argument.AssertNotNull(completionId, nameof(completionId));
             Argument.AssertNotNull(choices, nameof(choices));
             Argument.AssertNotNull(model, nameof(model));
 
-            Id = id;
+            CompletionId = completionId;
             Choices = choices.ToList();
             CreatedAt = createdAt;
             Model = model;
         }
 
-        internal StreamingChatCompletionUpdate(string id, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model, InternalCreateChatCompletionStreamResponseServiceTier? serviceTier, string systemFingerprint, InternalCreateChatCompletionStreamResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal StreamingChatCompletionUpdate(string completionId, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model, InternalCreateChatCompletionStreamResponseServiceTier? serviceTier, string systemFingerprint, InternalCreateChatCompletionStreamResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            Id = id;
+            CompletionId = completionId;
             Choices = choices;
             CreatedAt = createdAt;
             Model = model;
@@ -39,8 +39,6 @@ namespace OpenAI.Chat
         internal StreamingChatCompletionUpdate()
         {
         }
-
-        public string Id { get; }
         public string Model { get; }
         public string SystemFingerprint { get; }
     }

@@ -29,7 +29,7 @@ public class ModelsMockTests : SyncAsyncTestBase
             "created": 1704096000
         }
         """);
-        ModelClient client = new ModelClient(s_fakeCredential, clientOptions);
+        OpenAIModelClient client = new OpenAIModelClient(s_fakeCredential, clientOptions);
 
         OpenAIModel modelInfo = IsAsync
             ? await client.GetModelAsync("model_name")
@@ -50,7 +50,7 @@ public class ModelsMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ModelClient client = new ModelClient(s_fakeCredential, clientOptions);
+        OpenAIModelClient client = new OpenAIModelClient(s_fakeCredential, clientOptions);
 
         OpenAIModelCollection modelInfoCollection = IsAsync
             ? await client.GetModelsAsync()

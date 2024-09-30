@@ -32,7 +32,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedBatchClient")]
 [CodeGenSuppress("_cachedChatClient")]
 [CodeGenSuppress("_cachedEmbeddingClient")]
-[CodeGenSuppress("_cachedFileClient")]
+[CodeGenSuppress("_cachedOpenAIFileClient")]
 [CodeGenSuppress("_cachedFineTuningClient")]
 [CodeGenSuppress("_cachedImageClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
@@ -40,7 +40,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedInternalAssistantThreadClient")]
 [CodeGenSuppress("_cachedInternalUploadsClient")]
 [CodeGenSuppress("_cachedLegacyCompletionClient")]
-[CodeGenSuppress("_cachedModelClient")]
+[CodeGenSuppress("_cachedOpenAIModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("GetAssistantClient")]
@@ -188,15 +188,15 @@ public partial class OpenAIClient
     public virtual EmbeddingClient GetEmbeddingClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="FileClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="OpenAIFileClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method is functionally equivalent to using the <see cref="FileClient"/> constructor directly with
+    /// This method is functionally equivalent to using the <see cref="OpenAIFileClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="FileClient"/>. </returns>
-    public virtual FileClient GetFileClient() => new(_pipeline, _options);
+    /// <returns> A new <see cref="OpenAIFileClient"/>. </returns>
+    public virtual OpenAIFileClient GetOpenAIFileClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="FineTuningClient"/> that reuses the client configuration details provided to
@@ -222,15 +222,15 @@ public partial class OpenAIClient
     public virtual ImageClient GetImageClient(string model) => new(_pipeline, model, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="ModelClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="OpenAIModelClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method is functionally equivalent to using the <see cref="ModelClient"/> constructor directly with
+    /// This method is functionally equivalent to using the <see cref="OpenAIModelClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="ModelClient"/>. </returns>
-    public virtual ModelClient GetModelClient() => new(_pipeline, _options);
+    /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
+    public virtual OpenAIModelClient GetOpenAIModelClient() => new(_pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ModerationClient"/> that reuses the client configuration details provided to
@@ -251,7 +251,7 @@ public partial class OpenAIClient
     /// This method is functionally equivalent to using the <see cref="VectorStoreClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="ModelClient"/>. </returns>
+    /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(_pipeline, _options);
 
@@ -288,7 +288,7 @@ public partial class OpenAIClient
 
     private static PipelinePolicy CreateAddCustomHeadersPolicy(OpenAIClientOptions options = null)
     {
-        TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.ApplicationId);
+        TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.UserAgentApplicationId);
         return new GenericActionPipelinePolicy((message) =>
         {
             if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)

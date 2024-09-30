@@ -46,25 +46,30 @@ public partial class ChatFunctionChoice
         SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
-    // CUSTOM: Added custom public constructor to handle the object representation.
     /// <summary>
-    /// Creates a new instance of <see cref="ChatFunctionChoice"/>.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model must call a specific function,
+    /// referred to via its name.
     /// </summary>
-    public ChatFunctionChoice(ChatFunction chatFunction)
+    /// <param name="functionName"> The name of the function the model must call. </param>
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateNamedChoice(string functionName)
     {
-        Argument.AssertNotNull(chatFunction, nameof(chatFunction));
+        Argument.AssertNotNull(functionName, nameof(functionName));
 
-        _function = new(chatFunction.FunctionName);
-        _isPlainString = false;
+        return new(functionName, serializedAdditionalRawData: null);
     }
 
     /// <summary>
-    /// Specifies that the model must freely pick between generating a message or calling one or more tools.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model may freely pick between
+    /// generating a message or calling a function.
     /// </summary>
-    public static ChatFunctionChoice Auto { get; } = new ChatFunctionChoice(AutoValue);
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateAutoChoice() => new ChatFunctionChoice(AutoValue);
+
     /// <summary>
-    /// Specifies that the model must not invoke any tools, and instead it must generate an ordinary message. Note
-    /// that the tools that were provided may still influence the model's behavior even if they are not called.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model should not call any function
+    /// and instead only generate a message.
     /// </summary>
-    public static ChatFunctionChoice None { get; } = new ChatFunctionChoice(NoneValue);
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateNoneChoice() => new ChatFunctionChoice(NoneValue);
 }

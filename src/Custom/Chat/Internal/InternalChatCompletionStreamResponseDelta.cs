@@ -15,5 +15,5 @@ internal partial class InternalChatCompletionStreamResponseDelta
     // CUSTOM: Changed type from string.
     /// <summary> The contents of the message. </summary>
     [CodeGenMember("Content")]
-    public IReadOnlyList<ChatMessageContentPart> Content { get; }
+    public ChatMessageContent Content { get; }
 }

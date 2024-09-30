@@ -9,5 +9,6 @@ namespace OpenAI.Moderations
 {
     public partial class ModerationResult
     {
+        public bool Flagged { get; }
     }
 }

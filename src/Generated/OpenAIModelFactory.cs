@@ -97,18 +97,43 @@ namespace OpenAI
             return new ChatOutputTokenUsageDetails(reasoningTokenCount, serializedAdditionalRawData: null);
         }
 
-        public static ToolChatMessage ToolChatMessage(IEnumerable<ChatMessageContentPart> content = null, string toolCallId = null)
+        public static ChatMessage ChatMessage(ChatMessageContent content = null)
         {
-            content ??= new List<ChatMessageContentPart>();
-
-            return new ToolChatMessage(ChatMessageRole.Tool, content?.ToList(), serializedAdditionalRawData: null, toolCallId);
+            return new InternalUnknownChatMessage(default, content, serializedAdditionalRawData: null);
         }
 
-        public static FunctionChatMessage FunctionChatMessage(IEnumerable<ChatMessageContentPart> content = null, string functionName = null)
+        public static SystemChatMessage SystemChatMessage(ChatMessageContent content = null, string participantName = null)
         {
-            content ??= new List<ChatMessageContentPart>();
+            return new SystemChatMessage(ChatMessageRole.System, content, serializedAdditionalRawData: null, participantName);
+        }
 
-            return new FunctionChatMessage(ChatMessageRole.Function, content?.ToList(), serializedAdditionalRawData: null, functionName);
+        public static UserChatMessage UserChatMessage(ChatMessageContent content = null, string participantName = null)
+        {
+            return new UserChatMessage(ChatMessageRole.User, content, serializedAdditionalRawData: null, participantName);
+        }
+
+        public static AssistantChatMessage AssistantChatMessage(ChatMessageContent content = null, string refusal = null, string participantName = null, IEnumerable<ChatToolCall> toolCalls = null, ChatFunctionCall functionCall = null)
+        {
+            toolCalls ??= new List<ChatToolCall>();
+
+            return new AssistantChatMessage(
+                ChatMessageRole.Assistant,
+                content,
+                serializedAdditionalRawData: null,
+                refusal,
+                participantName,
+                toolCalls?.ToList(),
+                functionCall);
+        }
+
+        public static ToolChatMessage ToolChatMessage(ChatMessageContent content = null, string toolCallId = null)
+        {
+            return new ToolChatMessage(ChatMessageRole.Tool, content, serializedAdditionalRawData: null, toolCallId);
+        }
+
+        public static FunctionChatMessage FunctionChatMessage(ChatMessageContent content = null, string functionName = null)
+        {
+            return new FunctionChatMessage(ChatMessageRole.Function, content, serializedAdditionalRawData: null, functionName);
         }
 
         public static ChatFunction ChatFunction(string functionDescription = null, string functionName = null, BinaryData functionParameters = null)
@@ -149,9 +174,9 @@ namespace OpenAI
                 serializedAdditionalRawData: null);
         }
 
-        public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionArgumentsUpdate = null, string functionName = null)
+        public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionName = null, BinaryData functionArgumentsUpdate = null)
         {
-            return new StreamingChatFunctionCallUpdate(functionArgumentsUpdate, functionName, serializedAdditionalRawData: null);
+            return new StreamingChatFunctionCallUpdate(functionName, functionArgumentsUpdate, serializedAdditionalRawData: null);
         }
     }
 }

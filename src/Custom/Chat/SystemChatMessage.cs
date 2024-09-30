@@ -9,6 +9,7 @@ namespace OpenAI.Chat;
 /// restrictions for a model-based assistant.
 /// </summary>
 [CodeGenModel("ChatCompletionRequestSystemMessage")]
+[CodeGenSuppress("SystemChatMessage", typeof(ChatMessageContent))]
 public partial class SystemChatMessage : ChatMessage
 {
     /// <summary>

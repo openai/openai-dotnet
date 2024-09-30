@@ -82,7 +82,7 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void ChatCompletionWithContentWorks()
     {
-        IEnumerable<ChatMessageContentPart> content = [
+        ChatMessageContent content = [
             ChatMessageContentPart.CreateTextPart("first part"),
             ChatMessageContentPart.CreateTextPart("second part")
         ];
@@ -132,8 +132,8 @@ public partial class OpenAIChatModelFactoryTests
     public void ChatCompletionWithToolCallsWorks()
     {
         IEnumerable<ChatToolCall> toolCalls = [
-            ChatToolCall.CreateFunctionToolCall("id1", "get_recipe", "{}"),
-            ChatToolCall.CreateFunctionToolCall("id2", "get_location", "{}")
+            ChatToolCall.CreateFunctionToolCall("id1", "get_recipe", BinaryData.FromBytes("{}"u8.ToArray())),
+            ChatToolCall.CreateFunctionToolCall("id2", "get_location", BinaryData.FromBytes("{}"u8.ToArray()))
         ];
         ChatCompletion chatCompletion = OpenAIChatModelFactory.ChatCompletion(toolCalls: toolCalls);
 
@@ -181,7 +181,7 @@ public partial class OpenAIChatModelFactoryTests
     public void ChatCompletionWithFunctionCallWorks()
     {
 #pragma warning disable CS0618
-        ChatFunctionCall functionCall = new ChatFunctionCall("get_recipe", string.Empty);
+        ChatFunctionCall functionCall = new ChatFunctionCall("get_recipe", BinaryData.FromBytes("{}"u8.ToArray()));
 #pragma warning restore CS0618
         ChatCompletion chatCompletion = OpenAIChatModelFactory.ChatCompletion(functionCall: functionCall);
 
@@ -499,7 +499,7 @@ public partial class OpenAIChatModelFactoryTests
     {
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate();
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -520,9 +520,9 @@ public partial class OpenAIChatModelFactoryTests
     public void StreamingChatCompletionUpdateWithIdWorks()
     {
         string id = "chat_completion_id";
-        StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(id: id);
+        StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(completionId: id);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.EqualTo(id));
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.EqualTo(id));
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -542,13 +542,13 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void StreamingChatCompletionUpdateWithContentUpdateWorks()
     {
-        IEnumerable<ChatMessageContentPart> contentUpdate = [
+        ChatMessageContent contentUpdate = [
             ChatMessageContentPart.CreateTextPart("first part"),
             ChatMessageContentPart.CreateTextPart("second part")
         ];
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(contentUpdate: contentUpdate);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate.SequenceEqual(contentUpdate), Is.True);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -573,7 +573,7 @@ public partial class OpenAIChatModelFactoryTests
 #pragma warning restore CS0618
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(functionCallUpdate: functionCallUpdate);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.EqualTo(functionCallUpdate));
@@ -594,12 +594,12 @@ public partial class OpenAIChatModelFactoryTests
     public void StreamingChatCompletionUpdateWithToolCallUpdatesWorks()
     {
         IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates = [
-            OpenAIChatModelFactory.StreamingChatToolCallUpdate(id: "id1"),
-            OpenAIChatModelFactory.StreamingChatToolCallUpdate(id: "id2")
+            OpenAIChatModelFactory.StreamingChatToolCallUpdate(toolCallId: "id1"),
+            OpenAIChatModelFactory.StreamingChatToolCallUpdate(toolCallId: "id2")
         ];
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(toolCallUpdates: toolCallUpdates);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -622,7 +622,7 @@ public partial class OpenAIChatModelFactoryTests
         ChatMessageRole role = ChatMessageRole.Tool;
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(role: role);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -645,7 +645,7 @@ public partial class OpenAIChatModelFactoryTests
         string refusalUpdate = "This is a refusal update.";
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(refusalUpdate: refusalUpdate);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -671,7 +671,7 @@ public partial class OpenAIChatModelFactoryTests
         ];
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(contentTokenLogProbabilities: contentTokenLogProbabilities);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -697,7 +697,7 @@ public partial class OpenAIChatModelFactoryTests
         ];
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(refusalTokenLogProbabilities: refusalTokenLogProbabilities);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -720,7 +720,7 @@ public partial class OpenAIChatModelFactoryTests
         ChatFinishReason finishReason = ChatFinishReason.ToolCalls;
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(finishReason: finishReason);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -743,7 +743,7 @@ public partial class OpenAIChatModelFactoryTests
         DateTimeOffset createdAt = DateTimeOffset.UtcNow;
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(createdAt: createdAt);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -766,7 +766,7 @@ public partial class OpenAIChatModelFactoryTests
         string model = "topmodel";
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(model: model);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -789,7 +789,7 @@ public partial class OpenAIChatModelFactoryTests
         string systemFingerprint = "footprint";
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(systemFingerprint: systemFingerprint);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -812,7 +812,7 @@ public partial class OpenAIChatModelFactoryTests
         ChatTokenUsage usage = OpenAIChatModelFactory.ChatTokenUsage(outputTokenCount: 20);
         StreamingChatCompletionUpdate streamingChatCompletionUpdate = OpenAIChatModelFactory.StreamingChatCompletionUpdate(usage: usage);
 
-        Assert.That(streamingChatCompletionUpdate.Id, Is.Null);
+        Assert.That(streamingChatCompletionUpdate.CompletionId, Is.Null);
         Assert.That(streamingChatCompletionUpdate.ContentUpdate, Is.Not.Null.And.Empty);
 #pragma warning disable CS0618
         Assert.That(streamingChatCompletionUpdate.FunctionCallUpdate, Is.Null);
@@ -855,7 +855,7 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void StreamingChatFunctionCallUpdateWithFunctionArgumentsUpdateWorks()
     {
-        string functionArgumentsUpdate = "arguments_update";
+        BinaryData functionArgumentsUpdate = BinaryData.FromBytes("arguments_update"u8.ToArray());
 #pragma warning disable CS0618
         StreamingChatFunctionCallUpdate streamingChatFunctionCallUpdate = OpenAIChatModelFactory.StreamingChatFunctionCallUpdate(functionArgumentsUpdate: functionArgumentsUpdate);
 #pragma warning restore CS0618
@@ -870,7 +870,7 @@ public partial class OpenAIChatModelFactoryTests
         StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate();
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(0));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.Null);
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.Null);
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(default(ChatToolCallKind)));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.Null);
@@ -883,7 +883,7 @@ public partial class OpenAIChatModelFactoryTests
         StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(index: index);
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(index));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.Null);
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.Null);
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(default(ChatToolCallKind)));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.Null);
@@ -893,10 +893,10 @@ public partial class OpenAIChatModelFactoryTests
     public void StreamingChatToolCallUpdateWithIdWorks()
     {
         string id = "tool_call_id";
-        StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(id: id);
+        StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(toolCallId: id);
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(0));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.EqualTo(id));
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.EqualTo(id));
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(default(ChatToolCallKind)));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.Null);
@@ -909,7 +909,7 @@ public partial class OpenAIChatModelFactoryTests
         StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(kind: kind);
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(0));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.Null);
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.Null);
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(kind));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.Null);
@@ -922,7 +922,7 @@ public partial class OpenAIChatModelFactoryTests
         StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(functionName: functionName);
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(0));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.Null);
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.Null);
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(default(ChatToolCallKind)));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.EqualTo(functionName));
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.Null);
@@ -931,11 +931,11 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void StreamingChatToolCallUpdateWithFunctionArgumentsUpdateWorks()
     {
-        string functionArgumentsUpdate = "arguments_update";
+        BinaryData functionArgumentsUpdate = BinaryData.FromBytes("arguments_update"u8.ToArray());
         StreamingChatToolCallUpdate streamingChatToolCallUpdate = OpenAIChatModelFactory.StreamingChatToolCallUpdate(functionArgumentsUpdate: functionArgumentsUpdate);
 
         Assert.That(streamingChatToolCallUpdate.Index, Is.EqualTo(0));
-        Assert.That(streamingChatToolCallUpdate.Id, Is.Null);
+        Assert.That(streamingChatToolCallUpdate.ToolCallId, Is.Null);
         Assert.That(streamingChatToolCallUpdate.Kind, Is.EqualTo(default(ChatToolCallKind)));
         Assert.That(streamingChatToolCallUpdate.FunctionName, Is.Null);
         Assert.That(streamingChatToolCallUpdate.FunctionArgumentsUpdate, Is.EqualTo(functionArgumentsUpdate));
