@@ -51,12 +51,12 @@ public partial class ChatExamples
 
         using JsonDocument structuredJson = JsonDocument.Parse(completion.Content[0].Text);
 
-        Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer").GetString()}");
+        Console.WriteLine($"Final answer: {structuredJson.RootElement.GetProperty("final_answer")}");
         Console.WriteLine("Reasoning steps:");
 
         foreach (JsonElement stepElement in structuredJson.RootElement.GetProperty("steps").EnumerateArray())
         {
-            Console.WriteLine($"  - Explanation: {stepElement.GetProperty("explanation").GetString()}");
+            Console.WriteLine($"  - Explanation: {stepElement.GetProperty("explanation")}");
             Console.WriteLine($"    Output: {stepElement.GetProperty("output")}");
         }
     }
