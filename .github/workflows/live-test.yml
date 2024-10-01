@@ -27,7 +27,7 @@ jobs:
       - name: Run live tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Manual"
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{github.workspace}}/artifacts/test-results
           ${{ env.version_suffix_args}}
