@@ -41,7 +41,7 @@ To call the OpenAI REST API, you will need an API key. To obtain one, first [cre
 Add the client library to your .NET project with [NuGet](https://www.nuget.org/) using your IDE or the dotnet CLI:
 
 ```cli
-dotnet add package OpenAI --prerelease
+dotnet add package OpenAI
 ```
 
 Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
