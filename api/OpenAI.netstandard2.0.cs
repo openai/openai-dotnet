@@ -16,6 +16,7 @@ namespace OpenAI {
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
         public virtual OpenAIModelClient GetOpenAIModelClient();
+        public virtual RealtimeConversation.RealtimeConversationClient GetRealtimeConversationClient(string model);
         public virtual VectorStoreClient GetVectorStoreClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
@@ -2206,6 +2207,708 @@ namespace OpenAI.Moderations {
         public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
         public static ModerationResult ModerationResult(bool flagged = false, ModerationCategory hate = null, ModerationCategory hateThreatening = null, ModerationCategory harassment = null, ModerationCategory harassmentThreatening = null, ModerationCategory selfHarm = null, ModerationCategory selfHarmIntent = null, ModerationCategory selfHarmInstructions = null, ModerationCategory sexual = null, ModerationCategory sexualMinors = null, ModerationCategory violence = null, ModerationCategory violenceGraphic = null);
         public static ModerationResultCollection ModerationResultCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
+    }
+}
+namespace OpenAI.RealtimeConversation {
+    public class ConversationAudioDeltaUpdate : ConversationUpdate, IJsonModel<ConversationAudioDeltaUpdate>, IPersistableModel<ConversationAudioDeltaUpdate> {
+        public int ContentIndex { get; }
+        public BinaryData Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationAudioDeltaUpdate IJsonModel<ConversationAudioDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationAudioDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationAudioDeltaUpdate IPersistableModel<ConversationAudioDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationAudioDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationAudioDeltaUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationAudioDoneUpdate : ConversationUpdate, IJsonModel<ConversationAudioDoneUpdate>, IPersistableModel<ConversationAudioDoneUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationAudioDoneUpdate IJsonModel<ConversationAudioDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationAudioDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationAudioDoneUpdate IPersistableModel<ConversationAudioDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationAudioDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationAudioDoneUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ConversationAudioFormat : IEquatable<ConversationAudioFormat> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationAudioFormat(string value);
+        public static ConversationAudioFormat G711Alaw { get; }
+        public static ConversationAudioFormat G711Ulaw { get; }
+        public static ConversationAudioFormat Pcm16 { get; }
+        public readonly bool Equals(ConversationAudioFormat other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationAudioFormat left, ConversationAudioFormat right);
+        public static implicit operator ConversationAudioFormat(string value);
+        public static bool operator !=(ConversationAudioFormat left, ConversationAudioFormat right);
+        public override readonly string ToString();
+    }
+    [Flags]
+    public enum ConversationContentModalities {
+        Text = 1,
+        Audio = 2
+    }
+    public abstract class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
+        public string AudioTranscriptValue { get; }
+        public ConversationContentPartKind Kind { get; }
+        public string TextValue { get; }
+        public static ConversationContentPart FromInputAudioTranscript(string transcript = null);
+        public static ConversationContentPart FromInputText(string text);
+        public static ConversationContentPart FromOutputAudioTranscript(string transcript = null);
+        public static ConversationContentPart FromOutputText(string text);
+        public static implicit operator ConversationContentPart(string text);
+        ConversationContentPart IJsonModel<ConversationContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationContentPart IPersistableModel<ConversationContentPart>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationContentPart>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationContentPartFinishedUpdate : ConversationUpdate, IJsonModel<ConversationContentPartFinishedUpdate>, IPersistableModel<ConversationContentPartFinishedUpdate> {
+        public string AudioTranscript { get; }
+        public int ContentIndex { get; }
+        public ConversationContentPartKind ContentKind { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Text { get; }
+        ConversationContentPartFinishedUpdate IJsonModel<ConversationContentPartFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationContentPartFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationContentPartFinishedUpdate IPersistableModel<ConversationContentPartFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationContentPartFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationContentPartFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ConversationContentPartKind : IEquatable<ConversationContentPartKind> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationContentPartKind(string value);
+        public static ConversationContentPartKind Audio { get; }
+        public static ConversationContentPartKind InputAudio { get; }
+        public static ConversationContentPartKind InputText { get; }
+        public static ConversationContentPartKind Text { get; }
+        public readonly bool Equals(ConversationContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationContentPartKind left, ConversationContentPartKind right);
+        public static implicit operator ConversationContentPartKind(string value);
+        public static bool operator !=(ConversationContentPartKind left, ConversationContentPartKind right);
+        public override readonly string ToString();
+    }
+    public class ConversationContentPartStartedUpdate : ConversationUpdate, IJsonModel<ConversationContentPartStartedUpdate>, IPersistableModel<ConversationContentPartStartedUpdate> {
+        public string AudioTranscript { get; }
+        public int ContentIndex { get; }
+        public ConversationContentPartKind ContentKind { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Text { get; }
+        ConversationContentPartStartedUpdate IJsonModel<ConversationContentPartStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationContentPartStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationContentPartStartedUpdate IPersistableModel<ConversationContentPartStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationContentPartStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationContentPartStartedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationErrorUpdate : ConversationUpdate, IJsonModel<ConversationErrorUpdate>, IPersistableModel<ConversationErrorUpdate> {
+        public string ErrorCode { get; }
+        public string ErrorEventId { get; }
+        public string ErrorMessage { get; }
+        public string ErrorParameterName { get; }
+        ConversationErrorUpdate IJsonModel<ConversationErrorUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationErrorUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationErrorUpdate IPersistableModel<ConversationErrorUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationErrorUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationErrorUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationFunctionCallArgumentsDeltaUpdate : ConversationUpdate, IJsonModel<ConversationFunctionCallArgumentsDeltaUpdate>, IPersistableModel<ConversationFunctionCallArgumentsDeltaUpdate> {
+        public string CallId { get; }
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationFunctionCallArgumentsDeltaUpdate IJsonModel<ConversationFunctionCallArgumentsDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationFunctionCallArgumentsDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationFunctionCallArgumentsDeltaUpdate IPersistableModel<ConversationFunctionCallArgumentsDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationFunctionCallArgumentsDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationFunctionCallArgumentsDeltaUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationFunctionCallArgumentsDoneUpdate : ConversationUpdate, IJsonModel<ConversationFunctionCallArgumentsDoneUpdate>, IPersistableModel<ConversationFunctionCallArgumentsDoneUpdate> {
+        public string Arguments { get; }
+        public string CallId { get; }
+        public string ItemId { get; }
+        public string Name { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationFunctionCallArgumentsDoneUpdate IJsonModel<ConversationFunctionCallArgumentsDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationFunctionCallArgumentsDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationFunctionCallArgumentsDoneUpdate IPersistableModel<ConversationFunctionCallArgumentsDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationFunctionCallArgumentsDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationFunctionCallArgumentsDoneUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>, IPersistableModel<ConversationFunctionTool> {
+        public ConversationFunctionTool();
+        public ConversationFunctionTool(string name);
+        public string Description { get; set; }
+        public required string Name { get; set; }
+        public BinaryData Parameters { get; set; }
+        ConversationFunctionTool IJsonModel<ConversationFunctionTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationFunctionTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationFunctionTool IPersistableModel<ConversationFunctionTool>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationFunctionTool>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationFunctionTool>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputAudioBufferClearedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioBufferClearedUpdate>, IPersistableModel<ConversationInputAudioBufferClearedUpdate> {
+        ConversationInputAudioBufferClearedUpdate IJsonModel<ConversationInputAudioBufferClearedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputAudioBufferClearedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputAudioBufferClearedUpdate IPersistableModel<ConversationInputAudioBufferClearedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputAudioBufferClearedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputAudioBufferClearedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputAudioBufferCommittedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioBufferCommittedUpdate>, IPersistableModel<ConversationInputAudioBufferCommittedUpdate> {
+        public string ItemId { get; }
+        public string PreviousItemId { get; }
+        ConversationInputAudioBufferCommittedUpdate IJsonModel<ConversationInputAudioBufferCommittedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputAudioBufferCommittedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputAudioBufferCommittedUpdate IPersistableModel<ConversationInputAudioBufferCommittedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputAudioBufferCommittedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputAudioBufferCommittedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputSpeechFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechFinishedUpdate>, IPersistableModel<ConversationInputSpeechFinishedUpdate> {
+        public int AudioEndMs { get; }
+        public string ItemId { get; }
+        ConversationInputSpeechFinishedUpdate IJsonModel<ConversationInputSpeechFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputSpeechFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputSpeechFinishedUpdate IPersistableModel<ConversationInputSpeechFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputSpeechFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputSpeechFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputSpeechStartedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechStartedUpdate>, IPersistableModel<ConversationInputSpeechStartedUpdate> {
+        public int AudioStartMs { get; }
+        public string ItemId { get; }
+        ConversationInputSpeechStartedUpdate IJsonModel<ConversationInputSpeechStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputSpeechStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputSpeechStartedUpdate IPersistableModel<ConversationInputSpeechStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputSpeechStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputSpeechStartedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputTokenUsageDetails : IJsonModel<ConversationInputTokenUsageDetails>, IPersistableModel<ConversationInputTokenUsageDetails> {
+        public int AudioTokens { get; }
+        public int CachedTokens { get; }
+        public int TextTokens { get; }
+        ConversationInputTokenUsageDetails IJsonModel<ConversationInputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputTokenUsageDetails IPersistableModel<ConversationInputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputTranscriptionFailedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFailedUpdate>, IPersistableModel<ConversationInputTranscriptionFailedUpdate> {
+        public int ContentIndex { get; }
+        public string ErrorCode { get; }
+        public string ErrorMessage { get; }
+        public string ErrorParameterName { get; }
+        public string ItemId { get; }
+        ConversationInputTranscriptionFailedUpdate IJsonModel<ConversationInputTranscriptionFailedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputTranscriptionFailedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputTranscriptionFailedUpdate IPersistableModel<ConversationInputTranscriptionFailedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputTranscriptionFailedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputTranscriptionFailedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFinishedUpdate>, IPersistableModel<ConversationInputTranscriptionFinishedUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public string Transcript { get; }
+        ConversationInputTranscriptionFinishedUpdate IJsonModel<ConversationInputTranscriptionFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputTranscriptionFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputTranscriptionFinishedUpdate IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationInputTranscriptionOptions : IJsonModel<ConversationInputTranscriptionOptions>, IPersistableModel<ConversationInputTranscriptionOptions> {
+        public ConversationTranscriptionModel? Model { get; set; }
+        ConversationInputTranscriptionOptions IJsonModel<ConversationInputTranscriptionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationInputTranscriptionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationInputTranscriptionOptions IPersistableModel<ConversationInputTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationInputTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationInputTranscriptionOptions>.Write(ModelReaderWriterOptions options);
+    }
+    public abstract class ConversationItem : IJsonModel<ConversationItem>, IPersistableModel<ConversationItem> {
+        public string FunctionArguments { get; }
+        public string FunctionCallId { get; }
+        public string FunctionName { get; }
+        public string Id { get; set; }
+        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
+        public ConversationMessageRole? MessageRole { get; }
+        public static ConversationItem CreateAssistantMessage(IEnumerable<ConversationContentPart> contentItems);
+        public static ConversationItem CreateFunctionCall(string name, string callId, string arguments);
+        public static ConversationItem CreateFunctionCallOutput(string callId, string output);
+        public static ConversationItem CreateSystemMessage(string toolCallId, IEnumerable<ConversationContentPart> contentItems);
+        public static ConversationItem CreateUserMessage(IEnumerable<ConversationContentPart> contentItems);
+        ConversationItem IJsonModel<ConversationItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItem IPersistableModel<ConversationItem>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItem>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItem>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationItemAcknowledgedUpdate : ConversationUpdate, IJsonModel<ConversationItemAcknowledgedUpdate>, IPersistableModel<ConversationItemAcknowledgedUpdate> {
+        public ConversationItem Item { get; }
+        ConversationItemAcknowledgedUpdate IJsonModel<ConversationItemAcknowledgedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItemAcknowledgedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItemAcknowledgedUpdate IPersistableModel<ConversationItemAcknowledgedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItemAcknowledgedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItemAcknowledgedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationItemDeletedUpdate : ConversationUpdate, IJsonModel<ConversationItemDeletedUpdate>, IPersistableModel<ConversationItemDeletedUpdate> {
+        public string ItemId { get; }
+        ConversationItemDeletedUpdate IJsonModel<ConversationItemDeletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItemDeletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItemDeletedUpdate IPersistableModel<ConversationItemDeletedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItemDeletedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItemDeletedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationItemFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemFinishedUpdate>, IPersistableModel<ConversationItemFinishedUpdate> {
+        public string FunctionCallArguments { get; }
+        public string FunctionCallId { get; }
+        public string FunctionCallOutput { get; }
+        public string FunctionName { get; }
+        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
+        public ConversationMessageRole? MessageRole { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationItemFinishedUpdate IJsonModel<ConversationItemFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItemFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItemFinishedUpdate IPersistableModel<ConversationItemFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItemFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItemFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationItemStartedUpdate : ConversationUpdate, IJsonModel<ConversationItemStartedUpdate>, IPersistableModel<ConversationItemStartedUpdate> {
+        public string FunctionCallArguments { get; }
+        public string FunctionCallId { get; }
+        public string FunctionCallOutput { get; }
+        public string FunctionName { get; }
+        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
+        public ConversationMessageRole? MessageRole { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationItemStartedUpdate IJsonModel<ConversationItemStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItemStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItemStartedUpdate IPersistableModel<ConversationItemStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItemStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItemStartedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ConversationItemStatus : IEquatable<ConversationItemStatus> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationItemStatus(string value);
+        public static ConversationItemStatus Completed { get; }
+        public static ConversationItemStatus Incomplete { get; }
+        public static ConversationItemStatus InProgress { get; }
+        public readonly bool Equals(ConversationItemStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationItemStatus left, ConversationItemStatus right);
+        public static implicit operator ConversationItemStatus(string value);
+        public static bool operator !=(ConversationItemStatus left, ConversationItemStatus right);
+        public override readonly string ToString();
+    }
+    public class ConversationItemTruncatedUpdate : ConversationUpdate, IJsonModel<ConversationItemTruncatedUpdate>, IPersistableModel<ConversationItemTruncatedUpdate> {
+        public int AudioEndMs { get; }
+        public int Index { get; }
+        public string ItemId { get; }
+        ConversationItemTruncatedUpdate IJsonModel<ConversationItemTruncatedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationItemTruncatedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationItemTruncatedUpdate IPersistableModel<ConversationItemTruncatedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationItemTruncatedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationItemTruncatedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationMaxTokensChoice : IJsonModel<ConversationMaxTokensChoice>, IPersistableModel<ConversationMaxTokensChoice> {
+        public ConversationMaxTokensChoice(int numberValue);
+        public int? NumericValue { get; }
+        public static ConversationMaxTokensChoice CreateDefaultMaxTokensChoice();
+        public static ConversationMaxTokensChoice CreateInfiniteMaxTokensChoice();
+        public static ConversationMaxTokensChoice CreateNumericMaxTokensChoice(int maxTokens);
+        public static implicit operator ConversationMaxTokensChoice(int maxTokens);
+        ConversationMaxTokensChoice IJsonModel<ConversationMaxTokensChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationMaxTokensChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationMaxTokensChoice IPersistableModel<ConversationMaxTokensChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationMaxTokensChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationMaxTokensChoice>.Write(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationMessageRole(string value);
+        public static ConversationMessageRole Assistant { get; }
+        public static ConversationMessageRole System { get; }
+        public static ConversationMessageRole User { get; }
+        public readonly bool Equals(ConversationMessageRole other);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationMessageRole left, ConversationMessageRole right);
+        public static implicit operator ConversationMessageRole(string value);
+        public static bool operator !=(ConversationMessageRole left, ConversationMessageRole right);
+        public override readonly string ToString();
+    }
+    public class ConversationOutputTokenUsageDetails : IJsonModel<ConversationOutputTokenUsageDetails>, IPersistableModel<ConversationOutputTokenUsageDetails> {
+        public int AudioTokens { get; }
+        public int TextTokens { get; }
+        ConversationOutputTokenUsageDetails IJsonModel<ConversationOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationOutputTokenUsageDetails IPersistableModel<ConversationOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationOutputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationOutputTranscriptionDeltaUpdate : ConversationUpdate, IJsonModel<ConversationOutputTranscriptionDeltaUpdate>, IPersistableModel<ConversationOutputTranscriptionDeltaUpdate> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationOutputTranscriptionDeltaUpdate IJsonModel<ConversationOutputTranscriptionDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationOutputTranscriptionDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationOutputTranscriptionDeltaUpdate IPersistableModel<ConversationOutputTranscriptionDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationOutputTranscriptionDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationOutputTranscriptionDeltaUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationOutputTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationOutputTranscriptionFinishedUpdate>, IPersistableModel<ConversationOutputTranscriptionFinishedUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationOutputTranscriptionFinishedUpdate IJsonModel<ConversationOutputTranscriptionFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationOutputTranscriptionFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationOutputTranscriptionFinishedUpdate IPersistableModel<ConversationOutputTranscriptionFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationOutputTranscriptionFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationOutputTranscriptionFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>, IPersistableModel<ConversationRateLimitDetailsItem> {
+        public int Limit { get; }
+        public string Name { get; }
+        public int Remaining { get; }
+        public float ResetSeconds { get; }
+        ConversationRateLimitDetailsItem IJsonModel<ConversationRateLimitDetailsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationRateLimitDetailsItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationRateLimitDetailsItem IPersistableModel<ConversationRateLimitDetailsItem>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationRateLimitDetailsItem>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationRateLimitDetailsItem>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationRateLimitsUpdatedUpdate : ConversationUpdate, IJsonModel<ConversationRateLimitsUpdatedUpdate>, IPersistableModel<ConversationRateLimitsUpdatedUpdate> {
+        public IReadOnlyList<ConversationRateLimitDetailsItem> RateLimits { get; }
+        ConversationRateLimitsUpdatedUpdate IJsonModel<ConversationRateLimitsUpdatedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationRateLimitsUpdatedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationRateLimitsUpdatedUpdate IPersistableModel<ConversationRateLimitsUpdatedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationRateLimitsUpdatedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationRateLimitsUpdatedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationResponseFinishedUpdate : ConversationUpdate, IJsonModel<ConversationResponseFinishedUpdate>, IPersistableModel<ConversationResponseFinishedUpdate> {
+        public IReadOnlyList<ConversationItem> CreatedItems { get; }
+        public string Id { get; }
+        public ConversationStatus? Status { get; }
+        ConversationResponseFinishedUpdate IJsonModel<ConversationResponseFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationResponseFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationResponseFinishedUpdate IPersistableModel<ConversationResponseFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationResponseFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationResponseFinishedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationResponseStartedUpdate : ConversationUpdate, IJsonModel<ConversationResponseStartedUpdate>, IPersistableModel<ConversationResponseStartedUpdate> {
+        ConversationResponseStartedUpdate IJsonModel<ConversationResponseStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationResponseStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationResponseStartedUpdate IPersistableModel<ConversationResponseStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationResponseStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationResponseStartedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationSessionConfiguredUpdate : ConversationUpdate, IJsonModel<ConversationSessionConfiguredUpdate>, IPersistableModel<ConversationSessionConfiguredUpdate> {
+        public ConversationContentModalities ContentModalities { get; }
+        public ConversationAudioFormat InputAudioFormat { get; }
+        public string Instructions { get; }
+        public ConversationMaxTokensChoice MaxOutputTokens { get; }
+        public string Model { get; }
+        public ConversationAudioFormat OutputAudioFormat { get; }
+        public string SessionId { get; }
+        public float Temperature { get; }
+        public ConversationToolChoice ToolChoice { get; }
+        public IReadOnlyList<ConversationTool> Tools { get; }
+        public ConversationInputTranscriptionOptions TranscriptionSettings { get; }
+        public ConversationTurnDetectionOptions TurnDetectionSettings { get; }
+        public ConversationVoice Voice { get; }
+        ConversationSessionConfiguredUpdate IJsonModel<ConversationSessionConfiguredUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationSessionConfiguredUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationSessionConfiguredUpdate IPersistableModel<ConversationSessionConfiguredUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationSessionConfiguredUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationSessionConfiguredUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationSessionOptions : IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
+        public ConversationContentModalities ContentModalities { get; set; }
+        public ConversationAudioFormat? InputAudioFormat { get; set; }
+        public ConversationInputTranscriptionOptions InputTranscriptionOptions { get; set; }
+        public string Instructions { get; set; }
+        public ConversationMaxTokensChoice MaxResponseOutputTokens { get; set; }
+        public string Model { get; set; }
+        public ConversationAudioFormat? OutputAudioFormat { get; set; }
+        public float? Temperature { get; set; }
+        public ConversationToolChoice ToolChoice { get; set; }
+        public IList<ConversationTool> Tools { get; }
+        public ConversationTurnDetectionOptions TurnDetectionOptions { get; set; }
+        public ConversationVoice? Voice { get; set; }
+        ConversationSessionOptions IJsonModel<ConversationSessionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationSessionOptions IPersistableModel<ConversationSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationSessionOptions>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationSessionStartedUpdate : ConversationUpdate, IJsonModel<ConversationSessionStartedUpdate>, IPersistableModel<ConversationSessionStartedUpdate> {
+        public ConversationContentModalities ContentModalities { get; }
+        public ConversationAudioFormat InputAudioFormat { get; }
+        public string Instructions { get; }
+        public ConversationMaxTokensChoice MaxOutputTokens { get; }
+        public string Model { get; }
+        public ConversationAudioFormat OutputAudioFormat { get; }
+        public string SessionId { get; }
+        public float Temperature { get; }
+        public ConversationToolChoice ToolChoice { get; }
+        public IReadOnlyList<ConversationTool> Tools { get; }
+        public ConversationInputTranscriptionOptions TranscriptionSettings { get; }
+        public ConversationTurnDetectionOptions TurnDetectionSettings { get; }
+        public ConversationVoice Voice { get; }
+        ConversationSessionStartedUpdate IJsonModel<ConversationSessionStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationSessionStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationSessionStartedUpdate IPersistableModel<ConversationSessionStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationSessionStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationSessionStartedUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ConversationStatus : IEquatable<ConversationStatus> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationStatus(string value);
+        public static ConversationStatus Cancelled { get; }
+        public static ConversationStatus Completed { get; }
+        public static ConversationStatus Failed { get; }
+        public static ConversationStatus Incomplete { get; }
+        public static ConversationStatus InProgress { get; }
+        public readonly bool Equals(ConversationStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationStatus left, ConversationStatus right);
+        public static implicit operator ConversationStatus(string value);
+        public static bool operator !=(ConversationStatus left, ConversationStatus right);
+        public override readonly string ToString();
+    }
+    public class ConversationTextDeltaUpdate : ConversationUpdate, IJsonModel<ConversationTextDeltaUpdate>, IPersistableModel<ConversationTextDeltaUpdate> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        ConversationTextDeltaUpdate IJsonModel<ConversationTextDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationTextDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationTextDeltaUpdate IPersistableModel<ConversationTextDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationTextDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationTextDeltaUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationTextDoneUpdate : ConversationUpdate, IJsonModel<ConversationTextDoneUpdate>, IPersistableModel<ConversationTextDoneUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Value { get; }
+        ConversationTextDoneUpdate IJsonModel<ConversationTextDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationTextDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationTextDoneUpdate IPersistableModel<ConversationTextDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationTextDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationTextDoneUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationTokenUsage : IJsonModel<ConversationTokenUsage>, IPersistableModel<ConversationTokenUsage> {
+        public ConversationInputTokenUsageDetails InputTokenDetails { get; }
+        public int InputTokens { get; }
+        public ConversationOutputTokenUsageDetails OutputTokenDetails { get; }
+        public int OutputTokens { get; }
+        public int TotalTokens { get; }
+        ConversationTokenUsage IJsonModel<ConversationTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationTokenUsage IPersistableModel<ConversationTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationTokenUsage>.Write(ModelReaderWriterOptions options);
+    }
+    public abstract class ConversationTool : IJsonModel<ConversationTool>, IPersistableModel<ConversationTool> {
+        public ConversationToolKind Kind { get; }
+        public static ConversationTool CreateFunctionTool(string name, string description = null, BinaryData parameters = null);
+        ConversationTool IJsonModel<ConversationTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationTool IPersistableModel<ConversationTool>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationTool>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationTool>.Write(ModelReaderWriterOptions options);
+    }
+    public class ConversationToolChoice : IJsonModel<ConversationToolChoice>, IPersistableModel<ConversationToolChoice> {
+        public string FunctionName { get; }
+        public ConversationToolChoiceKind Kind { get; }
+        public static ConversationToolChoice CreateAutoToolChoice();
+        public static ConversationToolChoice CreateFunctionToolChoice(string functionName);
+        public static ConversationToolChoice CreateNoneToolChoice();
+        public static ConversationToolChoice CreateRequiredToolChoice();
+        ConversationToolChoice IJsonModel<ConversationToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationToolChoice IPersistableModel<ConversationToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationToolChoice>.Write(ModelReaderWriterOptions options);
+    }
+    public enum ConversationToolChoiceKind {
+        Auto = 0,
+        None = 1,
+        Required = 2,
+        Function = 3
+    }
+    public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationToolKind(string value);
+        public static ConversationToolKind Function { get; }
+        public readonly bool Equals(ConversationToolKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationToolKind left, ConversationToolKind right);
+        public static implicit operator ConversationToolKind(string value);
+        public static bool operator !=(ConversationToolKind left, ConversationToolKind right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct ConversationTranscriptionModel : IEquatable<ConversationTranscriptionModel> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationTranscriptionModel(string value);
+        public static ConversationTranscriptionModel Whisper1 { get; }
+        public readonly bool Equals(ConversationTranscriptionModel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationTranscriptionModel left, ConversationTranscriptionModel right);
+        public static implicit operator ConversationTranscriptionModel(string value);
+        public static bool operator !=(ConversationTranscriptionModel left, ConversationTranscriptionModel right);
+        public override readonly string ToString();
+    }
+    public enum ConversationTurnDetectionKind {
+        ServerVoiceActivityDetection = 0,
+        Disabled = 1
+    }
+    public abstract class ConversationTurnDetectionOptions : IJsonModel<ConversationTurnDetectionOptions>, IPersistableModel<ConversationTurnDetectionOptions> {
+        public ConversationTurnDetectionKind Kind { get; protected internal set; }
+        public static ConversationTurnDetectionOptions CreateDisabledTurnDetectionOptions();
+        public static ConversationTurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null);
+        ConversationTurnDetectionOptions IJsonModel<ConversationTurnDetectionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationTurnDetectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationTurnDetectionOptions IPersistableModel<ConversationTurnDetectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationTurnDetectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationTurnDetectionOptions>.Write(ModelReaderWriterOptions options);
+    }
+    public abstract class ConversationUpdate : IJsonModel<ConversationUpdate>, IPersistableModel<ConversationUpdate> {
+        protected ConversationUpdate(string eventId);
+        public string EventId { get; }
+        public ConversationUpdateKind Kind { get; protected internal set; }
+        public BinaryData GetRawContent();
+        ConversationUpdate IJsonModel<ConversationUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        void IJsonModel<ConversationUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        ConversationUpdate IPersistableModel<ConversationUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
+        string IPersistableModel<ConversationUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
+        BinaryData IPersistableModel<ConversationUpdate>.Write(ModelReaderWriterOptions options);
+    }
+    public enum ConversationUpdateKind {
+        SessionStarted = 0,
+        SessionConfigured = 1,
+        ItemAcknowledged = 2,
+        ItemDeleted = 3,
+        ItemTruncated = 4,
+        ResponseStarted = 5,
+        ResponseFinished = 6,
+        RateLimitsUpdated = 7,
+        ItemStarted = 8,
+        ItemFinished = 9,
+        ContentPartStarted = 10,
+        ContentPartFinished = 11,
+        ResponseAudioDelta = 12,
+        ResponseAudioDone = 13,
+        ResponseAudioTranscriptDelta = 14,
+        ResponseAudioTranscriptDone = 15,
+        ResponseTextDelta = 16,
+        ResponseTextDone = 17,
+        ResponseFunctionCallArgumentsDelta = 18,
+        ResponseFunctionCallArgumentsDone = 19,
+        InputAudioBufferSpeechStarted = 20,
+        InputAudioBufferSpeechStopped = 21,
+        ItemInputAudioTranscriptionCompleted = 22,
+        ItemInputAudioTranscriptionFailed = 23,
+        InputAudioBufferCommitted = 24,
+        InputAudioBufferCleared = 25,
+        Error = 26
+    }
+    public readonly partial struct ConversationVoice : IEquatable<ConversationVoice> {
+        private readonly object _dummy;
+        private readonly int _dummyPrimitive;
+        public ConversationVoice(string value);
+        public static ConversationVoice Alloy { get; }
+        public static ConversationVoice Echo { get; }
+        public static ConversationVoice Shimmer { get; }
+        public readonly bool Equals(ConversationVoice other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ConversationVoice left, ConversationVoice right);
+        public static implicit operator ConversationVoice(string value);
+        public static bool operator !=(ConversationVoice left, ConversationVoice right);
+        public override readonly string ToString();
+    }
+    public class RealtimeConversationClient {
+        protected RealtimeConversationClient();
+        protected internal RealtimeConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public RealtimeConversationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
+        public RealtimeConversationClient(string model, ApiKeyCredential credential);
+        public virtual ClientPipeline Pipeline { get; }
+        public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
+        public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
+        public RealtimeConversationSession StartConversationSession(CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeConversationSession> StartConversationSessionAsync(RequestOptions options);
+        public virtual Task<RealtimeConversationSession> StartConversationSessionAsync(CancellationToken cancellationToken = default);
+    }
+    public class RealtimeConversationSession : IDisposable {
+        protected Net.WebSockets.ClientWebSocket _clientWebSocket;
+        protected internal RealtimeConversationSession(RealtimeConversationClient parentClient, Uri endpoint, ApiKeyCredential credential);
+        public Task AddItemAsync(ConversationItem item, string previousItemId, CancellationToken cancellationToken = default);
+        public Task AddItemAsync(ConversationItem item, CancellationToken cancellationToken = default);
+        public Task CancelResponseTurnAsync(CancellationToken cancellationToken = default);
+        public Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
+        public Task ConfigureSessionAsync(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual void Connect(RequestOptions options);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        protected internal virtual Task ConnectAsync(RequestOptions options);
+        public Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
+        public void Dispose();
+        public Task InterruptTurnAsync(CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
+        public IAsyncEnumerable<ConversationUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
+        public Task SendAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
+        public Task SendAudioAsync(Stream audio, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual void SendCommand(BinaryData data, RequestOptions options);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
+        public Task StartResponseTurnAsync(CancellationToken cancellationToken = default);
     }
 }
 namespace OpenAI.VectorStores {

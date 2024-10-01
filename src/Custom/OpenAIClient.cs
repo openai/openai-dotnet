@@ -8,6 +8,7 @@ using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
+using OpenAI.RealtimeConversation;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -42,6 +43,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedLegacyCompletionClient")]
 [CodeGenSuppress("_cachedOpenAIModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
+[CodeGenSuppress("_cachedRealtimeConversationClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("GetAssistantClient")]
 [CodeGenSuppress("GetAudioClient")]
@@ -58,6 +60,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetLegacyCompletionClient")]
 [CodeGenSuppress("GetModelClient")]
 [CodeGenSuppress("GetModerationClient")]
+[CodeGenSuppress("GetRealtimeConversationClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
 public partial class OpenAIClient
 {
@@ -110,6 +113,7 @@ public partial class OpenAIClient
         Argument.AssertNotNull(credential, nameof(credential));
         options ??= new OpenAIClientOptions();
 
+        _keyCredential = credential;
         _pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
@@ -254,6 +258,9 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(_pipeline, _options);
+
+    [Experimental("OPENAI002")]
+    public virtual RealtimeConversationClient GetRealtimeConversationClient(string model) => new(model, _keyCredential, _options);
 
     internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
     {
