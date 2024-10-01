@@ -1,5 +1,19 @@
 # Release History
 
+## 2.1.0-beta.1 (2024-10-01)
+
+With this updated preview library release, we're excited to bring early support for the newly-announced `/realtime` beta API. You can read more about `/realtime` here: https://openai.com/index/introducing-the-realtime-api/
+
+Given the scope and recency of the feature area, the new `RealtimeConversationClient` is subject to substantial refinement and change over the coming weeks -- this release is purely intended to empower early development against `gpt-4o-realtime-preview` as quickly and efficiently as possible.
+
+### Features Added
+
+- Added a new `RealtimeConversationClient` in a corresponding scenario namespace. ([ff75da4](https://github.com/openai/openai-dotnet/commit/ff75da4167bc83fa85eb69ac142cab88a963ed06))
+  - This maps to the new `/realtime` beta endpoint and is thus marked with a new `[Experimental("OPENAI002")]` diagnostic tag. 
+  - This is a very early version of the convenience surface and thus subject to significant change
+  - Documentation and samples will arrive soon; in the interim, see [the scenario test files](/tests/RealtimeConversation) for basic usage
+  - You can also find an external sample employing this client, together with Azure OpenAI support, at https://github.com/Azure-Samples/aoai-realtime-audio-sdk/tree/main/dotnet/samples/console
+
 ## 2.0.0 (2024-09-30)
 
 > [!NOTE]
