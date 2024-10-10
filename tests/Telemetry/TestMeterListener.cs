@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Linq;
 
 namespace OpenAI.Tests.Telemetry;
 
@@ -11,7 +12,7 @@ internal class TestMeterListener : IDisposable
 {
     public record TestMeasurement(object value, Dictionary<string, object> tags);
 
-    private readonly ConcurrentDictionary<string, List<TestMeasurement>> _measurements = new();
+    private readonly ConcurrentDictionary<string, ConcurrentQueue<TestMeasurement>> _measurements = new();
     private readonly ConcurrentDictionary<string, Instrument> _instruments = new();
     private readonly MeterListener _listener;
     public TestMeterListener(string meterName)
@@ -31,8 +32,8 @@ internal class TestMeterListener : IDisposable
 
     public List<TestMeasurement> GetMeasurements(string instrumentName)
     {
-        _measurements.TryGetValue(instrumentName, out var list);
-        return list;
+        _measurements.TryGetValue(instrumentName, out var queue);
+        return queue?.ToList();
     }
 
     public Instrument GetInstrument(string instrumentName)
@@ -46,11 +47,11 @@ internal class TestMeterListener : IDisposable
         _instruments.TryAdd(instrument.Name, instrument);
 
         var testMeasurement = new TestMeasurement(measurement, new Dictionary<string, object>(tags.ToArray()));
-        _measurements.AddOrUpdate(instrument.Name,
-            k => new() { testMeasurement },
+        _measurements.AddOrUpdate(instrument.Name, 
+            k => new ConcurrentQueue<TestMeasurement>([ testMeasurement ]), 
             (k, l) =>
             {
-                l.Add(testMeasurement);
+                l.Enqueue(testMeasurement);
                 return l;
             });
     }
