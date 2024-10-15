@@ -10,48 +10,61 @@ OpenAI .NET instrumentation follows [OpenTelemetry Semantic Conventions for Gene
 
 ### How to enable
 
-The instrumentation is **experimental** - volume and semantics of the telemetry items may change.
+> [!NOTE]
+> The instrumentation is **experimental** - semantics of telemetry items
+> (such as metric or attribute names, types, value range or other properties) may change.
 
-To enable the instrumentation:
+The following code snippet shows how to enable OpenAI traces and metrics:
 
-1. Set instrumentation feature-flag using one of the following options:
-
-   - set the `OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY` environment variable to `"true"`
-   - set the `OpenAI.Experimental.EnableOpenTelemetry` context switch to true in your application code when application
-     is starting and before initializing any OpenAI clients. For example:
-
-     ```csharp
-     AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", true);
-     ```
-
-2. Enable OpenAI telemetry:
-
-   ```csharp
-   builder.Services.AddOpenTelemetry()
-       .WithTracing(b =>
-       {
-           b.AddSource("OpenAI.*")
-             ...
-            .AddOtlpExporter();
-       })
-       .WithMetrics(b =>
-       {
-           b.AddMeter("OpenAI.*")
+```csharp
+builder.Services.AddOpenTelemetry()
+    .WithTracing(b =>
+    {
+        b.AddSource("Experimental.OpenAI.*", "OpenAI.*")
             ...
-            .AddOtlpExporter();
-       });
-   ```
+        .AddOtlpExporter();
+    })
+    .WithMetrics(b =>
+    {
+        b.AddMeter("Experimental.OpenAI.*", "OpenAI.*")
+        ...
+        .AddOtlpExporter();
+    });
+```
 
-   Distributed tracing is enabled with `AddSource("OpenAI.*")` which tells OpenTelemetry to listen to all [ActivitySources](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitysource) with names starting with `OpenAI.*`.
+Distributed tracing is enabled with `AddSource("Experimental.OpenAI.*", "OpenAI.*")` which tells OpenTelemetry to listen to all [ActivitySources](https://learn.microsoft.com/dotnet/api/system.diagnostics.activitysource) with names starting with `Experimental.OpenAI.` (experimental ones) or sources which names start with `"OpenAI.*"` (stable ones).
 
-   Similarly, metrics are configured with `AddMeter("OpenAI.*")` which enables all OpenAI-related [Meters](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meter).
+Similarly, metrics are configured with `AddMeter("Experimental.OpenAI.*", "OpenAI.*")` which enables all OpenAI-related [Meters](https://learn.microsoft.com/dotnet/api/system.diagnostics.metrics.meter).
+
+Once experimental telemetry stabilizes, experimental sources and meters will be renamed (for example, `Experimental.OpenAI.ChatClient` will become `OpenAI.ChatClient`), so it's
+recommended to enable both to avoid changing the source code later.
 
 Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/OpenTelemetry.Instrumentation.Http) to see all HTTP client
 calls made by your application including those done by the OpenAI SDK.
-Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
+
+Check out [full example](../examples/OpenTelemetryExamples.cs) and [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
+
+### How to view telemetry
+
+You can view traces and metrics in any [telemetry system](https://opentelemetry.io/ecosystem/vendors/) compatible with OpenTelemetry.
+
+You may use [Aspire dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone) to test things out locally.
+You can run it as a docker container with the following command:
+
+```bash
+docker run --rm -it \
+    -p 18888:18888 \
+    -p 4317:18889 -d \
+    --name aspire-dashboard \
+    mcr.microsoft.com/dotnet/aspire-dashboard:latest
+```
+
+Here's a trace produced by [OpenTelemetry sample](../examples/OpenTelemetryExamples.cs):
+
+![](./images/openai-tracing-with-opentelemetry.png)
 
 ### Available sources and meters
 
 The following sources and meters are available:
 
-- `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
+- `Experimental.OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)

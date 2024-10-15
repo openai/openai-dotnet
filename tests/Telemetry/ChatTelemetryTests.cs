@@ -42,23 +42,11 @@ public class ChatTelemetryTests
     }
 
     [Test]
-    public void SwitchOffAllTelemetryOn()
-    {
-        using var activityListener = new TestActivityListener("OpenAI.ChatClient");
-        using var meterListener = new TestMeterListener("OpenAI.ChatClient");
-        var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        Assert.IsNull(telemetry.StartChatScope(new ChatCompletionOptions()));
-        Assert.IsNull(Activity.Current);
-    }
-
-    [Test]
     public void MetricsOnTracingOff()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
 
-        using var meterListener = new TestMeterListener("OpenAI.ChatClient");
+        using var meterListener = new TestMeterListener("Experimental.OpenAI.ChatClient");
 
         var elapsedMax = Stopwatch.StartNew();
         using var scope = telemetry.StartChatScope(new ChatCompletionOptions());
@@ -83,10 +71,8 @@ public class ChatTelemetryTests
     [Test]
     public void MetricsOnTracingOffException()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        using var meterListener = new TestMeterListener("OpenAI.ChatClient");
+        using var meterListener = new TestMeterListener("Experimental.OpenAI.ChatClient");
 
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
@@ -100,10 +86,8 @@ public class ChatTelemetryTests
     [Test]
     public void TracingOnMetricsOff()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        using var listener = new TestActivityListener("OpenAI.ChatClient");
+        using var listener = new TestActivityListener("Experimental.OpenAI.ChatClient");
 
         var chatCompletion = CreateChatCompletion();
 
@@ -129,9 +113,8 @@ public class ChatTelemetryTests
     [Test]
     public void ChatTracingAllAttributes()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        using var listener = new TestActivityListener("OpenAI.ChatClient");
+        using var listener = new TestActivityListener("Experimental.OpenAI.ChatClient");
         var options = new ChatCompletionOptions()
         {
             Temperature = 0.42f,
@@ -157,10 +140,8 @@ public class ChatTelemetryTests
     [Test]
     public void ChatTracingException()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        using var listener = new TestActivityListener("OpenAI.ChatClient");
+        using var listener = new TestActivityListener("Experimental.OpenAI.ChatClient");
 
         var error = new SocketException(42, "test error");
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
@@ -176,11 +157,10 @@ public class ChatTelemetryTests
     [Test]
     public async Task ChatTracingAndMetricsMultiple()
     {
-        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
         var source = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
 
-        using var activityListener = new TestActivityListener("OpenAI.ChatClient");
-        using var meterListener = new TestMeterListener("OpenAI.ChatClient");
+        using var activityListener = new TestActivityListener("Experimental.OpenAI.ChatClient");
+        using var meterListener = new TestMeterListener("Experimental.OpenAI.ChatClient");
 
         var options = new ChatCompletionOptions();
 
