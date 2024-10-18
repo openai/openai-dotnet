@@ -7,7 +7,7 @@
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
     <VersionPrefix>2.1.0</VersionPrefix>
-    <VersionSuffix>beta.1</VersionSuffix>
+    <VersionSuffix>beta.2</VersionSuffix>
 
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
