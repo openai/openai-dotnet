@@ -102,7 +102,7 @@ public partial class BatchClient
     /// <exception cref="ArgumentException"> <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    internal virtual async Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options)
+    public virtual async Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
@@ -119,7 +119,7 @@ public partial class BatchClient
     /// <exception cref="ArgumentException"> <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    internal virtual ClientResult GetBatch(string batchId, RequestOptions options)
+    public virtual ClientResult GetBatch(string batchId, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
