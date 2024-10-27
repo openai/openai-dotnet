@@ -102,10 +102,20 @@ public partial class RealtimeConversationSession : IDisposable
             }
             _isSendingAudio = true;
         }
-        // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
-        InternalRealtimeRequestInputAudioBufferAppendCommand internalCommand = new(audio);
-        BinaryData requestData = ModelReaderWriter.Write(internalCommand);
-        await SendCommandAsync(requestData, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        try
+        {
+            // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
+            InternalRealtimeRequestInputAudioBufferAppendCommand internalCommand = new(audio);
+            BinaryData requestData = ModelReaderWriter.Write(internalCommand);
+            await SendCommandAsync(requestData, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        }
+        finally
+        {
+            lock (_sendingAudioLock)
+            {
+                _isSendingAudio = false;
+            }
+        }
     }
 
     public async Task ConfigureSessionAsync(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
