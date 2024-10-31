@@ -14,13 +14,13 @@ namespace OpenAI.RealtimeConversation
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            Type = InternalRealtimeRequestItemType.Message;
+            Type = InternalRealtimeItemType.Message;
             Role = role;
             Content = content.ToList();
             Status = status;
         }
 
-        internal InternalRealtimeResponseMessageItem(InternalRealtimeResponseItemObject @object, InternalRealtimeRequestItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status) : base(@object, type, id, serializedAdditionalRawData)
+        internal InternalRealtimeResponseMessageItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status) : base(@object, type, id, serializedAdditionalRawData)
         {
             Role = role;
             Content = content;

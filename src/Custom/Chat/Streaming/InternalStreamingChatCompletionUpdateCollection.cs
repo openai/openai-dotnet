@@ -20,7 +20,7 @@ internal class InternalStreamingChatCompletionUpdateCollection : CollectionResul
     private readonly CancellationToken _cancellationToken;
 
     public InternalStreamingChatCompletionUpdateCollection(
-        Func< ClientResult> sendRequest,
+        Func<ClientResult> sendRequest,
         CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(sendRequest, nameof(sendRequest));

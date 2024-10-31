@@ -8,9 +8,9 @@ public static partial class OpenAIModerationsModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Moderations.ModerationCategory"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Moderations.ModerationCategory"/> instance for mocking. </returns>
-    public static ModerationCategory ModerationCategory(bool flagged = default, float score = default)
+    public static ModerationCategory ModerationCategory(bool flagged = default, float score = default, ModerationApplicableInputKinds applicableInputKinds = 0)
     {
-        return new ModerationCategory(flagged, score);
+        return new ModerationCategory(flagged, score, applicableInputKinds);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Moderations.ModerationResultCollection"/>. </summary>
@@ -28,7 +28,7 @@ public static partial class OpenAIModerationsModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Moderations.ModerationResult"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Moderations.ModerationResult"/> instance for mocking. </returns>
-    public static ModerationResult ModerationResult(bool flagged = default, ModerationCategory hate = default, ModerationCategory hateThreatening = default, ModerationCategory harassment = default, ModerationCategory harassmentThreatening = default, ModerationCategory selfHarm = default, ModerationCategory selfHarmIntent = default, ModerationCategory selfHarmInstructions = default, ModerationCategory sexual = default, ModerationCategory sexualMinors = default, ModerationCategory violence = default, ModerationCategory violenceGraphic = default)
+    public static ModerationResult ModerationResult(bool flagged = default, ModerationCategory hate = default, ModerationCategory hateThreatening = default, ModerationCategory harassment = default, ModerationCategory harassmentThreatening = default, ModerationCategory selfHarm = default, ModerationCategory selfHarmIntent = default, ModerationCategory selfHarmInstructions = default, ModerationCategory sexual = default, ModerationCategory sexualMinors = default, ModerationCategory violence = default, ModerationCategory violenceGraphic = default, ModerationCategory illicit = default, ModerationCategory illicitViolent = default)
     {
         return new ModerationResult(
             flagged,
@@ -36,6 +36,8 @@ public static partial class OpenAIModerationsModelFactory
             hateThreatening,
             harassment,
             harassmentThreatening,
+            illicit,
+            illicitViolent,
             selfHarm,
             selfHarmIntent,
             selfHarmInstructions,

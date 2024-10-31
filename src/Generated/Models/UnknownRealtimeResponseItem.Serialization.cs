@@ -86,7 +86,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             InternalRealtimeResponseItemObject @object = default;
-            InternalRealtimeRequestItemType type = "Unknown";
+            InternalRealtimeItemType type = "Unknown";
             string id = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -99,7 +99,7 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("type"u8))
                 {
-                    type = new InternalRealtimeRequestItemType(property.Value.GetString());
+                    type = new InternalRealtimeItemType(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("id"u8))

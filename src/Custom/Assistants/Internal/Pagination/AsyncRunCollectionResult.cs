@@ -24,7 +24,7 @@ internal class AsyncRunCollectionResult : AsyncCollectionResult<ThreadRun>
 
     public AsyncRunCollectionResult(InternalAssistantRunClient runClient,
         RequestOptions? options,
-        string threadId, 
+        string threadId,
         int? limit, string? order, string? after, string? before)
     {
         _runClient = runClient;

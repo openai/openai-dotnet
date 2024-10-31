@@ -73,7 +73,7 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
             ]
         }
         """);
-        BinaryData mockResponse = BinaryData.FromString($$"""
+        BinaryData mockResponse = BinaryData.FromString("""
         {
             "results": [
                 {   
@@ -92,6 +92,21 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
                     },
                     "category_scores": {
                         "violence": 0.5
+                    },
+                    "category_applied_input_types": {
+                        "violence": ["text"]
+                    }
+                },
+                {
+                    "flagged": true,
+                    "categories": {
+                        "illicit": true
+                    },
+                    "category_scores": {
+                        "illicit": 0.42
+                    },
+                    "category_applied_input_types": {
+                        "illicit": ["image","potato"]
                     }
                 }
             ]
@@ -111,15 +126,27 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
             : client.ClassifyText(new List<string> { "Mock me 1!", "Mock me 2!" });
 
         Assert.That(moderations, Is.Not.Null);
-        Assert.That(moderations.Count, Is.EqualTo(2));
+        Assert.That(moderations.Count, Is.EqualTo(3));
 
         Assert.That(moderations[0], Is.Not.Null);
         Assert.That(moderations[0].Flagged, Is.False);
+        Assert.That(moderations[0].Violence.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Text), Is.False);
 
         Assert.That(moderations[1], Is.Not.Null);
         Assert.That(moderations[1].Flagged, Is.True);
         Assert.That(moderations[1].Violence.Flagged, Is.True);
         Assert.That(moderations[1].Violence.Score, Is.EqualTo(0.5f));
+        Assert.That(moderations[1].Violence.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Text), Is.True);
+        Assert.That(moderations[1].Violence.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Image), Is.False);
+        Assert.That(moderations[1].Violence.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Other), Is.False);
+
+        Assert.That(moderations[2], Is.Not.Null);
+        Assert.That(moderations[2].Flagged, Is.True);
+        Assert.That(moderations[2].Illicit.Flagged, Is.True);
+        Assert.That(moderations[2].Illicit.Score, Is.EqualTo(0.42f));
+        Assert.That(moderations[2].Illicit.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Text), Is.False);
+        Assert.That(moderations[2].Illicit.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Image), Is.True);
+        Assert.That(moderations[2].Illicit.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Other), Is.True);
     }
 
     [Test]

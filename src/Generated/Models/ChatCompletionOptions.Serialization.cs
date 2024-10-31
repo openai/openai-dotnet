@@ -31,6 +31,36 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.ToString());
             }
+            if (SerializedAdditionalRawData?.ContainsKey("store") != true && Optional.IsDefined(StoredOutputEnabled))
+            {
+                if (StoredOutputEnabled != null)
+                {
+                    writer.WritePropertyName("store"u8);
+                    writer.WriteBooleanValue(StoredOutputEnabled.Value);
+                }
+                else
+                {
+                    writer.WriteNull("store");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
+            {
+                if (Metadata != null)
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata");
+                }
+            }
             if (SerializedAdditionalRawData?.ContainsKey("frequency_penalty") != true && Optional.IsDefined(FrequencyPenalty))
             {
                 if (FrequencyPenalty != null)
@@ -300,6 +330,8 @@ namespace OpenAI.Chat
             }
             IList<ChatMessage> messages = default;
             InternalCreateChatCompletionRequestModel model = default;
+            bool? store = default;
+            IDictionary<string, string> metadata = default;
             float? frequencyPenalty = default;
             IDictionary<int, int> logitBias = default;
             bool? logprobs = default;
@@ -339,6 +371,30 @@ namespace OpenAI.Chat
                 if (property.NameEquals("model"u8))
                 {
                     model = new InternalCreateChatCompletionRequestModel(property.Value.GetString());
+                    continue;
+                }
+                if (property.NameEquals("store"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        store = null;
+                        continue;
+                    }
+                    store = property.Value.GetBoolean();
+                    continue;
+                }
+                if (property.NameEquals("metadata"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var property0 in property.Value.EnumerateObject())
+                    {
+                        dictionary.Add(property0.Name, property0.Value.GetString());
+                    }
+                    metadata = dictionary;
                     continue;
                 }
                 if (property.NameEquals("frequency_penalty"u8))
@@ -560,6 +616,8 @@ namespace OpenAI.Chat
             return new ChatCompletionOptions(
                 messages,
                 model,
+                store,
+                metadata ?? new ChangeTrackingDictionary<string, string>(),
                 frequencyPenalty,
                 logitBias ?? new ChangeTrackingDictionary<int, int>(),
                 logprobs,

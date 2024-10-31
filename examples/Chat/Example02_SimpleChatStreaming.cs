@@ -12,7 +12,8 @@ public partial class ChatExamples
     {
         ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+        CollectionResult<StreamingChatCompletionUpdate> completionUpdates
+            = client.CompleteChatStreaming("Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
         foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)

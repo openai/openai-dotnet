@@ -21,15 +21,20 @@ namespace OpenAI.RealtimeConversation
             }
 
             writer.WriteStartObject();
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type);
+            }
             if (SerializedAdditionalRawData?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
+                writer.WriteStringValue(InternalTextValue);
             }
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind.ToString());
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -73,12 +78,18 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
+            string type = default;
             string text = default;
-            ConversationContentPartKind type = default;
+            ConversationContentPartKind type0 = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
+                if (property.NameEquals("type"u8))
+                {
+                    type = property.Value.GetString();
+                    continue;
+                }
                 if (property.NameEquals("text"u8))
                 {
                     text = property.Value.GetString();
@@ -86,7 +97,7 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("type"u8))
                 {
-                    type = new ConversationContentPartKind(property.Value.GetString());
+                    type0 = new ConversationContentPartKind(property.Value.GetString());
                     continue;
                 }
                 if (true)
@@ -96,7 +107,7 @@ namespace OpenAI.RealtimeConversation
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRealtimeResponseTextContentPart(type, serializedAdditionalRawData, text);
+            return new InternalRealtimeResponseTextContentPart(type0, serializedAdditionalRawData, type, text);
         }
 
         BinaryData IPersistableModel<InternalRealtimeResponseTextContentPart>.Write(ModelReaderWriterOptions options)

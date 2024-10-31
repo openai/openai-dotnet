@@ -11,24 +11,23 @@ namespace OpenAI.RealtimeConversation
     {
         internal ConversationInputSpeechStartedUpdate(string eventId, int audioStartMs, string itemId) : base(eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
             Argument.AssertNotNull(itemId, nameof(itemId));
 
-            Kind = ConversationUpdateKind.InputAudioBufferSpeechStarted;
-            AudioStartMs = audioStartMs;
+            Kind = ConversationUpdateKind.InputSpeechStarted;
+            _audioStartMs = audioStartMs;
             ItemId = itemId;
         }
 
         internal ConversationInputSpeechStartedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, int audioStartMs, string itemId) : base(kind, eventId, serializedAdditionalRawData)
         {
-            AudioStartMs = audioStartMs;
+            _audioStartMs = audioStartMs;
             ItemId = itemId;
         }
 
         internal ConversationInputSpeechStartedUpdate()
         {
         }
-
-        public int AudioStartMs { get; }
         public string ItemId { get; }
     }
 }

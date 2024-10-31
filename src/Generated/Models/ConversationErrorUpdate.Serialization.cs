@@ -24,7 +24,7 @@ namespace OpenAI.RealtimeConversation
             if (SerializedAdditionalRawData?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue<InternalRealtimeResponseError>(_error, options);
+                writer.WriteObjectValue<InternalRealtimeServerEventErrorError>(_error, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
@@ -33,15 +33,8 @@ namespace OpenAI.RealtimeConversation
             }
             if (SerializedAdditionalRawData?.ContainsKey("event_id") != true)
             {
-                if (EventId != null)
-                {
-                    writer.WritePropertyName("event_id"u8);
-                    writer.WriteStringValue(EventId);
-                }
-                else
-                {
-                    writer.WriteNull("event_id");
-                }
+                writer.WritePropertyName("event_id"u8);
+                writer.WriteStringValue(EventId);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -85,7 +78,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeResponseError error = default;
+            InternalRealtimeServerEventErrorError error = default;
             ConversationUpdateKind type = default;
             string eventId = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -94,7 +87,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (property.NameEquals("error"u8))
                 {
-                    error = InternalRealtimeResponseError.DeserializeInternalRealtimeResponseError(property.Value, options);
+                    error = InternalRealtimeServerEventErrorError.DeserializeInternalRealtimeServerEventErrorError(property.Value, options);
                     continue;
                 }
                 if (property.NameEquals("type"u8))
@@ -104,11 +97,6 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("event_id"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        eventId = null;
-                        continue;
-                    }
                     eventId = property.Value.GetString();
                     continue;
                 }

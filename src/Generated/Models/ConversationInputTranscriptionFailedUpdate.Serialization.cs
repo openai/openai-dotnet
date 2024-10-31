@@ -34,7 +34,7 @@ namespace OpenAI.RealtimeConversation
             if (SerializedAdditionalRawData?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue<InternalRealtimeResponseApiError>(_error, options);
+                writer.WriteObjectValue<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>(_error, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
@@ -43,15 +43,8 @@ namespace OpenAI.RealtimeConversation
             }
             if (SerializedAdditionalRawData?.ContainsKey("event_id") != true)
             {
-                if (EventId != null)
-                {
-                    writer.WritePropertyName("event_id"u8);
-                    writer.WriteStringValue(EventId);
-                }
-                else
-                {
-                    writer.WriteNull("event_id");
-                }
+                writer.WritePropertyName("event_id"u8);
+                writer.WriteStringValue(EventId);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -97,7 +90,7 @@ namespace OpenAI.RealtimeConversation
             }
             string itemId = default;
             int contentIndex = default;
-            InternalRealtimeResponseApiError error = default;
+            InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError error = default;
             ConversationUpdateKind type = default;
             string eventId = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -116,7 +109,7 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("error"u8))
                 {
-                    error = InternalRealtimeResponseApiError.DeserializeInternalRealtimeResponseApiError(property.Value, options);
+                    error = InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError.DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(property.Value, options);
                     continue;
                 }
                 if (property.NameEquals("type"u8))
@@ -126,11 +119,6 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("event_id"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        eventId = null;
-                        continue;
-                    }
                     eventId = property.Value.GetString();
                     continue;
                 }

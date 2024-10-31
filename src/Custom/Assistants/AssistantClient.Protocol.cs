@@ -488,7 +488,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        return new AsyncRunStepCollectionResult(_runSubClient, options,threadId, runId, limit, order, after, before);
+        return new AsyncRunStepCollectionResult(_runSubClient, options, threadId, runId, limit, order, after, before);
     }
 
     /// <summary>

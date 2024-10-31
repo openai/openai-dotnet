@@ -18,13 +18,11 @@ namespace OpenAI.RealtimeConversation
 
         private const string InputTextValue = "input_text";
         private const string InputAudioValue = "input_audio";
-        private const string TextValue = "text";
-        private const string AudioValue = "audio";
+        private const string OutputTextValue = "text";
+        private const string OutputAudioValue = "audio";
 
         public static ConversationContentPartKind InputText { get; } = new ConversationContentPartKind(InputTextValue);
         public static ConversationContentPartKind InputAudio { get; } = new ConversationContentPartKind(InputAudioValue);
-        public static ConversationContentPartKind Text { get; } = new ConversationContentPartKind(TextValue);
-        public static ConversationContentPartKind Audio { get; } = new ConversationContentPartKind(AudioValue);
         public static bool operator ==(ConversationContentPartKind left, ConversationContentPartKind right) => left.Equals(right);
         public static bool operator !=(ConversationContentPartKind left, ConversationContentPartKind right) => !left.Equals(right);
         public static implicit operator ConversationContentPartKind(string value) => new ConversationContentPartKind(value);

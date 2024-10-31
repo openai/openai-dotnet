@@ -90,21 +90,35 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenUsage"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatTokenUsage"/> instance for mocking. </returns>
-    public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default, ChatOutputTokenUsageDetails outputTokenDetails = null)
+    public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default, ChatOutputTokenUsageDetails outputTokenDetails = null, ChatInputTokenUsageDetails inputTokenDetails = null)
     {
         return new ChatTokenUsage(
             outputTokenCount,
             inputTokenCount,
             totalTokenCount,
             outputTokenDetails,
+            inputTokenDetails,
+            serializedAdditionalRawData: null);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatInputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatInputTokenUsageDetails"/> instance for mocking. </returns>
+    public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int? audioTokenCount = null, int? cachedTokenCount = null)
+    {
+        return new ChatInputTokenUsageDetails(
+            audioTokenCount: audioTokenCount,
+            cachedTokenCount: cachedTokenCount,
             serializedAdditionalRawData: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
-    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default)
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int? audioTokenCount = null)
     {
-        return new ChatOutputTokenUsageDetails(reasoningTokenCount, serializedAdditionalRawData: null);
+        return new ChatOutputTokenUsageDetails(
+            audioTokenCount: audioTokenCount,
+            reasoningTokenCount: reasoningTokenCount,
+            serializedAdditionalRawData: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
@@ -169,8 +183,8 @@ public static partial class OpenAIChatModelFactory
     public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionName = null, BinaryData functionArgumentsUpdate = null)
     {
         return new StreamingChatFunctionCallUpdate(
-            functionName,
-            functionArgumentsUpdate,
+            functionName: functionName,
+            functionArgumentsUpdate: functionArgumentsUpdate,
             serializedAdditionalRawData: null);
     }
 

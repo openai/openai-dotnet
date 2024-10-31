@@ -31,7 +31,7 @@ public partial class ChatExamples
     private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
         functionName: nameof(GetCurrentWeather),
         functionDescription: "Get the current weather in a given location",
-        functionParameters: BinaryData.FromBytes("""
+        functionParameters: BinaryData.FromString("""
             {
                 "type": "object",
                 "properties": {
@@ -47,7 +47,7 @@ public partial class ChatExamples
                 },
                 "required": [ "location" ]
             }
-            """u8.ToArray())
+            """)
     );
     #endregion
 
@@ -57,7 +57,7 @@ public partial class ChatExamples
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region
-        List<ChatMessage> messages = 
+        List<ChatMessage> messages =
         [
             new UserChatMessage("What's the weather like today?"),
         ];

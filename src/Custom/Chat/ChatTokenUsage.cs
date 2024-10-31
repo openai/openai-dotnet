@@ -38,4 +38,12 @@ public partial class ChatTokenUsage
     /// </summary>
     [CodeGenMember("CompletionTokensDetails")]
     public ChatOutputTokenUsageDetails OutputTokenDetails { get; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    /// Additional information about the tokens represented by <see cref="InputTokenCount"/>, including the count of
+    /// audio tokens, if applicable to the model.
+    /// </summary>
+    [CodeGenMember("PromptTokensDetails")]
+    public ChatInputTokenUsageDetails InputTokenDetails { get; }
 }

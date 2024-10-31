@@ -83,7 +83,7 @@ public partial class TranslationTests : SyncAsyncTestBase
         AudioTranslation translation = IsAsync
             ? await client.TranslateAudioAsync(path, options)
             : client.TranslateAudio(path, options);
-            
+
         Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
 
         if (options.ResponseFormat == AudioTranslationFormat.Verbose)

@@ -14,10 +14,12 @@ namespace OpenAI.RealtimeConversation
         {
         }
 
-        internal ConversationContentPart(ConversationContentPartKind type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ConversationContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            Type = type;
+            Kind = kind;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
+
+        internal ConversationContentPartKind Kind { get; set; }
     }
 }

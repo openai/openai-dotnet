@@ -1540,7 +1540,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(createdAssistants[0].Id, Is.EqualTo(rehydratedAssistants[0].Id));
 
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount/TestPageSizeLimit));
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
     [Test]
@@ -1577,7 +1577,7 @@ public class AssistantsTests : SyncAsyncTestBase
         createdAssistants.Reverse();
 
         int count = 0;
-        
+
         // Validate that the protocol return type cast to the convenience return type
         // functions correctly as the convenience return type.
         await foreach (Assistant assistant in assistants)

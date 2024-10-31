@@ -17,12 +17,13 @@ namespace OpenAI.Chat
             TotalTokenCount = totalTokenCount;
         }
 
-        internal ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, ChatOutputTokenUsageDetails outputTokenDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, ChatOutputTokenUsageDetails outputTokenDetails, ChatInputTokenUsageDetails inputTokenDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             OutputTokenCount = outputTokenCount;
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
             OutputTokenDetails = outputTokenDetails;
+            InputTokenDetails = inputTokenDetails;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 

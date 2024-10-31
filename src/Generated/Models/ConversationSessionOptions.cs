@@ -12,16 +12,15 @@ namespace OpenAI.RealtimeConversation
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public ConversationSessionOptions()
         {
-            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionUpdateCommandSessionModality>();
+            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             Tools = new ChangeTrackingList<ConversationTool>();
         }
 
-        internal ConversationSessionOptions(string model, IList<InternalRealtimeRequestSessionUpdateCommandSessionModality> internalModalities, ConversationVoice? voice, string instructions, ConversationAudioFormat? inputAudioFormat, ConversationAudioFormat? outputAudioFormat, ConversationInputTranscriptionOptions inputTranscriptionOptions, ConversationTurnDetectionOptions turnDetectionOptions, IList<ConversationTool> tools, BinaryData internalToolChoice, float? temperature, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ConversationSessionOptions(IList<InternalRealtimeRequestSessionModality> internalModalities, string instructions, ConversationVoice? voice, ConversationAudioFormat? inputAudioFormat, ConversationAudioFormat? outputAudioFormat, ConversationInputTranscriptionOptions inputTranscriptionOptions, ConversationTurnDetectionOptions turnDetectionOptions, IList<ConversationTool> tools, BinaryData internalToolChoice, float? temperature, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            Model = model;
             _internalModalities = internalModalities;
-            Voice = voice;
             Instructions = instructions;
+            Voice = voice;
             InputAudioFormat = inputAudioFormat;
             OutputAudioFormat = outputAudioFormat;
             InputTranscriptionOptions = inputTranscriptionOptions;
@@ -32,8 +31,8 @@ namespace OpenAI.RealtimeConversation
             _maxResponseOutputTokens = maxResponseOutputTokens;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public ConversationVoice? Voice { get; set; }
         public string Instructions { get; set; }
+        public ConversationVoice? Voice { get; set; }
         public ConversationAudioFormat? InputAudioFormat { get; set; }
         public ConversationAudioFormat? OutputAudioFormat { get; set; }
         public IList<ConversationTool> Tools { get; }

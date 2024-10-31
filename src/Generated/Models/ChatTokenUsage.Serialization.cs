@@ -41,6 +41,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("completion_tokens_details"u8);
                 writer.WriteObjectValue<ChatOutputTokenUsageDetails>(OutputTokenDetails, options);
             }
+            if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens_details") != true && Optional.IsDefined(InputTokenDetails))
+            {
+                writer.WritePropertyName("prompt_tokens_details"u8);
+                writer.WriteObjectValue<ChatInputTokenUsageDetails>(InputTokenDetails, options);
+            }
             if (SerializedAdditionalRawData != null)
             {
                 foreach (var item in SerializedAdditionalRawData)
@@ -87,6 +92,7 @@ namespace OpenAI.Chat
             int promptTokens = default;
             int totalTokens = default;
             ChatOutputTokenUsageDetails completionTokensDetails = default;
+            ChatInputTokenUsageDetails promptTokensDetails = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -115,6 +121,15 @@ namespace OpenAI.Chat
                     completionTokensDetails = ChatOutputTokenUsageDetails.DeserializeChatOutputTokenUsageDetails(property.Value, options);
                     continue;
                 }
+                if (property.NameEquals("prompt_tokens_details"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    promptTokensDetails = ChatInputTokenUsageDetails.DeserializeChatInputTokenUsageDetails(property.Value, options);
+                    continue;
+                }
                 if (true)
                 {
                     rawDataDictionary ??= new Dictionary<string, BinaryData>();
@@ -122,7 +137,13 @@ namespace OpenAI.Chat
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new ChatTokenUsage(completionTokens, promptTokens, totalTokens, completionTokensDetails, serializedAdditionalRawData);
+            return new ChatTokenUsage(
+                completionTokens,
+                promptTokens,
+                totalTokens,
+                completionTokensDetails,
+                promptTokensDetails,
+                serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<ChatTokenUsage>.Write(ModelReaderWriterOptions options)

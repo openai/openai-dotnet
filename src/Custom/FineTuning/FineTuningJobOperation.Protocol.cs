@@ -288,7 +288,7 @@ public class FineTuningJobOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual CollectionResult GetJobEvents( string? after, int? limit, RequestOptions options)
+    public virtual CollectionResult GetJobEvents(string? after, int? limit, RequestOptions options)
     {
         return new FineTuningJobEventCollectionResult(this, options, limit, after);
     }
@@ -369,9 +369,9 @@ public class FineTuningJobOperation : OperationResult
 
     internal virtual ClientResult GetJobEventsPage(string? after, int? limit, RequestOptions? options)
     {
-            using PipelineMessage message = CreateGetFineTuningEventsRequest(_jobId, after, limit, options);
-            return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-        
+        using PipelineMessage message = CreateGetFineTuningEventsRequest(_jobId, after, limit, options);
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+
     }
 
     internal virtual PipelineMessage CreateRetrieveFineTuningJobRequest(string fineTuningJobId, RequestOptions? options)
