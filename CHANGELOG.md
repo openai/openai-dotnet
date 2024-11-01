@@ -18,7 +18,7 @@
 
 ### Other Changes
 
-- Updated the `System.ClientModel` dependency to version `1.21.0`. (commit_hash)
+- Updated the `System.ClientModel` dependency to version `1.2.1`. (commit_hash)
   - This updates the `System.Text.Json` transitive dependency to version `6.0.10`, which includes a security compliance fix for [CVE-2024-43485](https://github.com/advisories/GHSA-8g4q-xg66-9fp4). Please note that the OpenAI library was not impacted by this vulnerability since it does not use the `[JsonExtensionData]` feature.
 
 ## 2.1.0-beta.1 (2024-10-01)
