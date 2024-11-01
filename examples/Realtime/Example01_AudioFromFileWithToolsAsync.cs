@@ -47,7 +47,7 @@ public partial class RealtimeExamples
         await session.AddItemAsync(
             ConversationItem.CreateUserMessage(["I'm trying to decide what to wear on my trip."]));
 
-        string inputAudioPath = FindFile("Assets\\whats_the_weather_pcm16_24khz_mono.wav");
+        string inputAudioPath = FindFile("Assets\\realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using Stream inputAudioStream = File.OpenRead(inputAudioPath);
         _ = session.SendInputAudioAsync(inputAudioStream);
 

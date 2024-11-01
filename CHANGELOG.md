@@ -4,26 +4,22 @@
 
 ### Features added
 
-- `ChatCompletionOptions` now has an `StoredOutputEnabled` property (reflecting [the REST `store` property](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)) as well as a `Metadata` property ([`metadata` in REST](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata))
-- `ChatTokenUsage` (`Usage` on `ChatCompletion`) has been expanded:
-  - A new `InputTokenDetails` property (of new type `ChatInputTokenUsageDetails`) has been added, containing breakdowns of `AudioTokenCount` and `CachedTokenCount` for usage with supported models
-  - The existing `OutputTokenDetails` has been expanded to include `AudioTokenCount` for supported models
-- `ModerationResult` now includes `Illicit` and `IllictViolent` categories
-- `ModerationCategory` now includes a (bitmasked flag enum) `ApplicableInputKinds` property, representing applied input types for the category
-
-**Realtime**
-
-***Note**: the `/realtime` area is under rapid development and not all changes may be reflected here.*
-
-- `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload
-- Several types have been renamed for consistency and clarity
-
-## 2.0.1 (Unreleased)
+- Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). (commit_hash)
+  - Use this property to indicate whether or not to store the output of the chat completion for use in model distillation or evals.
+- Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). (commit_hash)
+  - Use this property to add custom tags and values to the chat completions for filtering in the OpenAI dashboard.
+- Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). (commit_hash)
+  - The property is of a new type called `ChatInputTokenUsageDetails`, which contains properties for `AudioTokenCount` and `CachedTokenCount` for usage with supported models.
+- Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. (commit_hash)
+- Added `Illicit` and `IllictViolent` properties `ModerationResult` to represent these two new moderation categories. (commit_hash)
+- Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. (commit_hash)
+  - Several types have been renamed for consistency and clarity.
+  - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
 
 ### Other Changes
 
-- Updated the referenced version of `System.ClientModel` to the latest `1.21.0`
-  - This transitively updates an inherited `System.Text.Json` dependency from `6.0.9` to `6.0.10`, resolving security compliance with [CVE-2024-43485](https://github.com/advisories/GHSA-8g4q-xg66-9fp4). Please note that the described vulnerability was not directly applicable to this library as `[ExtensionData]` is not used.
+- Updated the `System.ClientModel` dependency to version `1.21.0`. (commit_hash)
+  - This updates the `System.Text.Json` transitive dependency to version `6.0.10`, which includes a security compliance fix for [CVE-2024-43485](https://github.com/advisories/GHSA-8g4q-xg66-9fp4). Please note that the OpenAI library was not impacted by this vulnerability since it does not use the `[JsonExtensionData]` feature.
 
 ## 2.1.0-beta.1 (2024-10-01)
 

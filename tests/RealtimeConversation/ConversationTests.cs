@@ -285,7 +285,7 @@ public class ConversationTests : ConversationTestFixtureBase
 
         await session.ConfigureSessionAsync(options, CancellationToken);
 
-        using Stream audioStream = File.OpenRead(Path.Join("Assets", "whats_the_weather_pcm16_24khz_mono.wav"));
+        using Stream audioStream = File.OpenRead(Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav"));
         _ = session.SendInputAudioAsync(audioStream, CancellationToken);
 
         string userTranscript = null;
@@ -348,7 +348,7 @@ public class ConversationTests : ConversationTestFixtureBase
             CancellationToken);
 
         const string folderName = "Assets";
-        const string fileName = "whats_the_weather_pcm16_24khz_mono.wav";
+        const string fileName = "realtime_whats_the_weather_pcm16_24khz_mono.wav";
 #if NET6_0_OR_GREATER
         using Stream audioStream = File.OpenRead(Path.Join(folderName, fileName));
 #else

@@ -31,7 +31,7 @@ public partial class ChatExamples
     private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
         functionName: nameof(GetCurrentWeather),
         functionDescription: "Get the current weather in a given location",
-        functionParameters: BinaryData.FromString("""
+        functionParameters: BinaryData.FromBytes("""
             {
                 "type": "object",
                 "properties": {
@@ -47,7 +47,7 @@ public partial class ChatExamples
                 },
                 "required": [ "location" ]
             }
-            """)
+            """u8.ToArray())
     );
     #endregion
 

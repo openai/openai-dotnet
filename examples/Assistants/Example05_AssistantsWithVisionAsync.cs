@@ -14,15 +14,16 @@ public partial class AssistantExamples
     public async Task Example05_AssistantsWithVisionAsync()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         OpenAIFile pictureOfAppleFile = await fileClient.UploadFileAsync(
-            Path.Combine("Assets", "picture-of-apple.png"),
+            Path.Combine("Assets", "images_apple.png"),
             FileUploadPurpose.Vision);
-        Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/picture-of-orange.png");
+
+        Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/images_orange.png");
 
         Assistant assistant = await assistantClient.CreateAssistantAsync(
             "gpt-4o",
