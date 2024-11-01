@@ -7,6 +7,11 @@ namespace OpenAI.RealtimeConversation;
 [CodeGenModel("RealtimeResponseItem")]
 internal partial class InternalRealtimeResponseItem
 {
+    public string ResponseId
+        => (this as InternalRealtimeResponseMessageItem)?.ResponseId
+        ?? (this as InternalRealtimeResponseFunctionCallItem)?.ResponseId
+        ?? (this as InternalRealtimeResponseFunctionCallOutputItem)?.ResponseId;
+
     public ConversationMessageRole? MessageRole =>
         (this as InternalRealtimeResponseMessageItem)?.Role;
 

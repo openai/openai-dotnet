@@ -41,6 +41,16 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("harassment/threatening"u8);
                 writer.WriteNumberValue(HarassmentThreatening);
             }
+            if (SerializedAdditionalRawData?.ContainsKey("illicit") != true)
+            {
+                writer.WritePropertyName("illicit"u8);
+                writer.WriteNumberValue(Illicit);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("illicit/violent") != true)
+            {
+                writer.WritePropertyName("illicit/violent"u8);
+                writer.WriteNumberValue(IllicitViolent);
+            }
             if (SerializedAdditionalRawData?.ContainsKey("self-harm") != true)
             {
                 writer.WritePropertyName("self-harm"u8);
@@ -122,6 +132,8 @@ namespace OpenAI.Moderations
             float hateThreatening = default;
             float harassment = default;
             float harassmentThreatening = default;
+            float illicit = default;
+            float illicitViolent = default;
             float selfHarm = default;
             float selfHarmIntent = default;
             float selfHarmInstructions = default;
@@ -151,6 +163,16 @@ namespace OpenAI.Moderations
                 if (property.NameEquals("harassment/threatening"u8))
                 {
                     harassmentThreatening = property.Value.GetSingle();
+                    continue;
+                }
+                if (property.NameEquals("illicit"u8))
+                {
+                    illicit = property.Value.GetSingle();
+                    continue;
+                }
+                if (property.NameEquals("illicit/violent"u8))
+                {
+                    illicitViolent = property.Value.GetSingle();
                     continue;
                 }
                 if (property.NameEquals("self-harm"u8))
@@ -200,6 +222,8 @@ namespace OpenAI.Moderations
                 hateThreatening,
                 harassment,
                 harassmentThreatening,
+                illicit,
+                illicitViolent,
                 selfHarm,
                 selfHarmIntent,
                 selfHarmInstructions,

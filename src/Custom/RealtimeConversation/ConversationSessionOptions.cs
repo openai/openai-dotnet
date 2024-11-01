@@ -6,20 +6,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeRequestSessionUpdateCommandSession")]
+[CodeGenModel("RealtimeRequestSession")]
 public partial class ConversationSessionOptions
 {
-    [CodeGenMember("Model")]
-    public string Model { get; set; }
-
     [CodeGenMember("Modalities")]
-    private readonly IList<InternalRealtimeRequestSessionUpdateCommandSessionModality> _internalModalities
-        = new ChangeTrackingList<InternalRealtimeRequestSessionUpdateCommandSessionModality>();
+    private IList<InternalRealtimeRequestSessionModality> _internalModalities;
 
     public ConversationContentModalities ContentModalities
     {
         get => ConversationContentModalitiesExtensions.FromInternalModalities(_internalModalities);
-        set => value.ToInternalModalities(_internalModalities);
+        set => _internalModalities = value.ToInternalModalities();
     }
 
     [CodeGenMember("ToolChoice")]
@@ -37,7 +33,7 @@ public partial class ConversationSessionOptions
     [CodeGenMember("MaxResponseOutputTokens")]
     private BinaryData _maxResponseOutputTokens;
 
-    public ConversationMaxTokensChoice MaxResponseOutputTokens
+    public ConversationMaxTokensChoice MaxOutputTokens
     {
         get => ConversationMaxTokensChoice.FromBinaryData(_maxResponseOutputTokens);
         set

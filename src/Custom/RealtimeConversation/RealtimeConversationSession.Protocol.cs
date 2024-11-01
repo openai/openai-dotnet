@@ -11,17 +11,30 @@ namespace OpenAI.RealtimeConversation;
 
 public partial class RealtimeConversationSession
 {
-    protected ClientWebSocket _clientWebSocket;
     private readonly SemaphoreSlim _clientSendSemaphore = new(initialCount: 1, maxCount: 1);
     private readonly object _singleReceiveLock = new();
     private AsyncWebsocketMessageCollectionResult _receiveCollectionResult;
 
+    /// <summary>
+    /// Initializes an underlying <see cref="WebSocket"/> instance for communication with the /realtime edpoint and
+    /// then connects to the service using this socket.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal virtual async Task ConnectAsync(RequestOptions options)
     {
-        _clientWebSocket.Options.AddSubProtocol("realtime");
-        await _clientWebSocket.ConnectAsync(_endpoint, options?.CancellationToken ?? default)
+        WebSocket?.Dispose();
+        _credential.Deconstruct(out string dangerousCredential);
+        ClientWebSocket clientWebSocket = new();
+        clientWebSocket.Options.AddSubProtocol("realtime");
+        clientWebSocket.Options.SetRequestHeader("openai-beta", $"realtime=v1");
+        clientWebSocket.Options.SetRequestHeader("Authorization", $"Bearer {dangerousCredential}");
+
+        await clientWebSocket.ConnectAsync(_endpoint, options?.CancellationToken ?? default)
             .ConfigureAwait(false);
+
+        WebSocket = clientWebSocket;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -44,7 +57,7 @@ public partial class RealtimeConversationSession
         await _clientSendSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            await _clientWebSocket.SendAsync(
+            await WebSocket.SendAsync(
                 messageBytes,
                 WebSocketMessageType.Text, // TODO: extensibility for binary messages -- via "content"?
                 endOfMessage: true,
@@ -61,7 +74,7 @@ public partial class RealtimeConversationSession
     public virtual void SendCommand(BinaryData data, RequestOptions options)
     {
         // ClientWebSocket does **not** include a synchronous Send()
-        SendCommandAsync(data, options).Wait();
+        SendCommandAsync(data, options).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -69,7 +82,7 @@ public partial class RealtimeConversationSession
     {
         lock (_singleReceiveLock)
         {
-            _receiveCollectionResult ??= new(_clientWebSocket, options?.CancellationToken ?? default);
+            _receiveCollectionResult ??= new(WebSocket, options?.CancellationToken ?? default);
         }
         await foreach (ClientResult result in _receiveCollectionResult)
         {

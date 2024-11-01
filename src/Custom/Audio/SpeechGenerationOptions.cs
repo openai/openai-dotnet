@@ -8,14 +8,14 @@ public partial class SpeechGenerationOptions
     // CUSTOM:
     // - Made internal. The model is specified by the client.
     // - Added setter.
-    [CodeGenMember("Model")] 
+    [CodeGenMember("Model")]
     internal InternalCreateSpeechRequestModel Model { get; set; }
 
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
     /// <summary> The text to generate audio for. The maximum length is 4096 characters. </summary>
-    [CodeGenMember("Input")] 
+    [CodeGenMember("Input")]
     internal string Input { get; set; }
 
     // CUSTOM:

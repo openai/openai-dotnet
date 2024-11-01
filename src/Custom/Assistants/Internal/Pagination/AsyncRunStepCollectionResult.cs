@@ -25,7 +25,7 @@ internal class AsyncRunStepCollectionResult : AsyncCollectionResult<RunStep>
 
     public AsyncRunStepCollectionResult(InternalAssistantRunClient runClient,
         RequestOptions? options,
-        string threadId, string runId, 
+        string threadId, string runId,
         int? limit, string? order, string? after, string? before)
     {
         _runClient = runClient;

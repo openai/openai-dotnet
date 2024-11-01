@@ -1155,7 +1155,7 @@ public partial class AssistantClient
 
         RunStepCollectionPageToken pageToken = RunStepCollectionPageToken.FromToken(firstPageToken);
         AsyncCollectionResult result = GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
-        
+
         if (result is not AsyncCollectionResult<RunStep> collection)
         {
             throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<RunStep>'.");

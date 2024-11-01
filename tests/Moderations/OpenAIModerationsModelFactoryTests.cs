@@ -155,7 +155,7 @@ public partial class OpenAIModerationsModelFactoryTests
         float selfHarmScore = 0.85f;
         ModerationCategory category = OpenAIModerationsModelFactory.ModerationCategory(true, selfHarmScore);
         ModerationResult moderationResult = OpenAIModerationsModelFactory.ModerationResult(selfHarm: category);
-        
+
         Assert.That(moderationResult.SelfHarm.Flagged, Is.True);
         Assert.That(moderationResult.SelfHarm.Score, Is.EqualTo(selfHarmScore));
 

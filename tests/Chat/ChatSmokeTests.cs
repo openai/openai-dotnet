@@ -62,8 +62,8 @@ public class ChatSmokeTests : SyncAsyncTestBase
         ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
 
         ClientResult<ChatCompletion> completionResult = IsAsync
-            ? await client.CompleteChatAsync([ new UserChatMessage("Mock me!") ])
-            : client.CompleteChat([ new UserChatMessage("Mock me!") ]);
+            ? await client.CompleteChatAsync([new UserChatMessage("Mock me!")])
+            : client.CompleteChat([new UserChatMessage("Mock me!")]);
         Assert.That(completionResult?.GetRawResponse(), Is.Not.Null);
         Assert.That(completionResult.GetRawResponse().Content?.ToString(), Does.Contain("additional world"));
 
@@ -679,7 +679,7 @@ public class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(messageAsJson.RootElement.TryGetProperty("tool_calls", out JsonElement toolCallsProperty), Is.True);
         Assert.That(toolCallsProperty, Is.Not.Null);
         Assert.That(toolCallsProperty.ValueKind, Is.EqualTo(JsonValueKind.Array));
-        
+
         foreach (JsonElement toolCall in toolCallsProperty.EnumerateArray())
         {
             Assert.That(toolCall.TryGetProperty("id", out JsonElement toolCallIdProperty), Is.True);

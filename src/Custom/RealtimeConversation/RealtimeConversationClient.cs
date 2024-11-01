@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace OpenAI.RealtimeConversation;
 
 [CodeGenClient("Realtime")]
-[CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeRequestCommand>))]
+[CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>))]
 [CodeGenSuppress("StartRealtimeSessionAsync", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeRequestCommand>))]
+[CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeClientEvent>))]
 [CodeGenSuppress("StartRealtimeSession", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateStartRealtimeSessionRequest", typeof(BinaryContent), typeof(RequestOptions))]
 [Experimental("OPENAI002")]

@@ -11,6 +11,7 @@ namespace OpenAI.RealtimeConversation
     {
         internal ConversationItemDeletedUpdate(string eventId, string itemId) : base(eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
             Argument.AssertNotNull(itemId, nameof(itemId));
 
             Kind = ConversationUpdateKind.ItemDeleted;

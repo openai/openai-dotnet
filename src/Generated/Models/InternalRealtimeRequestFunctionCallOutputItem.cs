@@ -14,12 +14,12 @@ namespace OpenAI.RealtimeConversation
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(output, nameof(output));
 
-            Type = InternalRealtimeRequestItemType.FunctionCallOutput;
+            Type = InternalRealtimeItemType.FunctionCallOutput;
             CallId = callId;
             Output = output;
         }
 
-        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeRequestItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, string callId, string output) : base(type, id, serializedAdditionalRawData)
+        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, string callId, string output) : base(type, id, serializedAdditionalRawData)
         {
             CallId = callId;
             Output = output;

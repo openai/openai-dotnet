@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace OpenAI.Chat;
 public partial class ChatMessageContent : Collection<ChatMessageContentPart>
 {
     public ChatMessageContent()
-        : this([])
+        : this(Array.Empty<ChatMessageContentPart>())
     {
     }
 

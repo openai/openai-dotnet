@@ -26,7 +26,7 @@ internal class AsyncVectorStoreFileCollectionResult : AsyncCollectionResult<Vect
 
     public AsyncVectorStoreFileCollectionResult(VectorStoreClient vectorStoreClient,
         ClientPipeline pipeline, RequestOptions? options,
-        string vectorStoreId, 
+        string vectorStoreId,
         int? limit, string? order, string? after, string? before, string? filter)
     {
         _vectorStoreClient = vectorStoreClient;

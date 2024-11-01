@@ -25,3 +25,6 @@ internal partial class InternalCreateTranslationResponseJson { }
 
 [CodeGenModel("CreateTranslationResponseVerboseJsonTask")]
 internal readonly partial struct InternalCreateTranslationResponseVerboseJsonTask { }
+
+[CodeGenModel("AudioResponseFormat")]
+internal readonly partial struct InternalAudioResponseFormat { }

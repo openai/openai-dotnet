@@ -19,8 +19,8 @@ internal class AsyncStreamingUpdateCollection : AsyncCollectionResult<StreamingU
     private readonly Func<Task<ClientResult>> _sendRequestAsync;
     private readonly CancellationToken _cancellationToken;
 
-    public AsyncStreamingUpdateCollection(Func<Task<ClientResult>> sendRequestAsync, 
-        CancellationToken cancellationToken) 
+    public AsyncStreamingUpdateCollection(Func<Task<ClientResult>> sendRequestAsync,
+        CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(sendRequestAsync, nameof(sendRequestAsync));
 

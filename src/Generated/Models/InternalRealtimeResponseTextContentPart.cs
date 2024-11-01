@@ -9,23 +9,24 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeResponseTextContentPart : ConversationContentPart
     {
-        internal InternalRealtimeResponseTextContentPart(string text)
+        internal InternalRealtimeResponseTextContentPart(string internalTextValue)
         {
-            Argument.AssertNotNull(text, nameof(text));
+            Argument.AssertNotNull(internalTextValue, nameof(internalTextValue));
 
-            Type = ConversationContentPartKind.Text;
-            Text = text;
+            Kind = ConversationContentPartKind.OutputText;
+            InternalTextValue = internalTextValue;
         }
 
-        internal InternalRealtimeResponseTextContentPart(ConversationContentPartKind type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text) : base(type, serializedAdditionalRawData)
+        internal InternalRealtimeResponseTextContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData, string type, string internalTextValue) : base(kind, serializedAdditionalRawData)
         {
-            Text = text;
+            Type = type;
+            InternalTextValue = internalTextValue;
         }
 
         internal InternalRealtimeResponseTextContentPart()
         {
         }
 
-        public string Text { get; }
+        internal string Type { get; set; } = "text";
     }
 }

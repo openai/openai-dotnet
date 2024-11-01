@@ -1,11 +1,6 @@
-using OpenAI.Chat;
-using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Net.ServerSentEvents;
 using System.Net.WebSockets;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,16 +8,16 @@ namespace OpenAI.RealtimeConversation;
 
 internal partial class AsyncWebsocketMessageCollectionResult : AsyncCollectionResult<ClientResult>
 {
-    private readonly ClientWebSocket _clientWebSocket;
+    private readonly WebSocket _webSocket;
     private readonly CancellationToken _cancellationToken;
 
     public AsyncWebsocketMessageCollectionResult(
-        ClientWebSocket clientWebSocket,
+        WebSocket webSocket,
         CancellationToken cancellationToken)
     {
-        Argument.AssertNotNull(clientWebSocket, nameof(clientWebSocket));
+        Argument.AssertNotNull(webSocket, nameof(webSocket));
 
-        _clientWebSocket = clientWebSocket;
+        _webSocket = webSocket;
         _cancellationToken = cancellationToken;
     }
 
@@ -33,7 +28,7 @@ internal partial class AsyncWebsocketMessageCollectionResult : AsyncCollectionRe
 
     public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
     {
-        await using IAsyncEnumerator<ClientResult> enumerator = new AsyncWebsocketMessageResultEnumerator(_clientWebSocket, _cancellationToken);
+        await using IAsyncEnumerator<ClientResult> enumerator = new AsyncWebsocketMessageResultEnumerator(_webSocket, _cancellationToken);
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             yield return enumerator.Current;

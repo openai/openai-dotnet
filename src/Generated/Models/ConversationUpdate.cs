@@ -12,6 +12,8 @@ namespace OpenAI.RealtimeConversation
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected ConversationUpdate(string eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
+
             EventId = eventId;
         }
 

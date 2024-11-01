@@ -76,7 +76,7 @@ public class ChatTests : SyncAsyncTestBase
         AssertSyncOnly();
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
-        IEnumerable<ChatMessage> messages = [ new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.") ];
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
         ChatTokenUsage usage = null;
@@ -113,7 +113,7 @@ public class ChatTests : SyncAsyncTestBase
         AssertAsyncOnly();
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
-        IEnumerable<ChatMessage> messages = [ new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.") ];
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
         ChatTokenUsage usage = null;
@@ -254,7 +254,7 @@ public class ChatTests : SyncAsyncTestBase
         };
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
-        IEnumerable<ChatMessage> messages = [ new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.") ];
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
         TimeSpan? firstTokenReceiptTime = null;
@@ -299,7 +299,7 @@ public class ChatTests : SyncAsyncTestBase
         };
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
-        IEnumerable<ChatMessage> messages = [ new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.") ];
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
         TimeSpan? firstTokenReceiptTime = null;

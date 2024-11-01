@@ -10,21 +10,21 @@ using System.Text.Json;
 
 namespace OpenAI.RealtimeConversation
 {
-    internal partial class UnknownRealtimeResponseStatusDetails : IJsonModel<InternalRealtimeResponseStatusDetails>
+    internal partial class UnknownRealtimeResponseStatusDetails : IJsonModel<ConversationStatusDetails>
     {
-        void IJsonModel<InternalRealtimeResponseStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ConversationStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetails)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{format}' format.");
             }
 
             writer.WriteStartObject();
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(StatusKind.ToString());
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -48,16 +48,16 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
-        InternalRealtimeResponseStatusDetails IJsonModel<InternalRealtimeResponseStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ConversationStatusDetails IJsonModel<ConversationStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetails)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support reading '{format}' format.");
             }
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalRealtimeResponseStatusDetails(document.RootElement, options);
+            return DeserializeConversationStatusDetails(document.RootElement, options);
         }
 
         internal static UnknownRealtimeResponseStatusDetails DeserializeUnknownRealtimeResponseStatusDetails(JsonElement element, ModelReaderWriterOptions options = null)
@@ -88,36 +88,36 @@ namespace OpenAI.RealtimeConversation
             return new UnknownRealtimeResponseStatusDetails(type, serializedAdditionalRawData);
         }
 
-        BinaryData IPersistableModel<InternalRealtimeResponseStatusDetails>.Write(ModelReaderWriterOptions options)
+        BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
 
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options);
                 default:
-                    throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetails)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalRealtimeResponseStatusDetails IPersistableModel<InternalRealtimeResponseStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
+        ConversationStatusDetails IPersistableModel<ConversationStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
 
             switch (format)
             {
                 case "J":
                     {
                         using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeInternalRealtimeResponseStatusDetails(document.RootElement, options);
+                        return DeserializeConversationStatusDetails(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetails)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalRealtimeResponseStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ConversationStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
         internal static new UnknownRealtimeResponseStatusDetails FromResponse(PipelineResponse response)
         {
@@ -127,7 +127,7 @@ namespace OpenAI.RealtimeConversation
 
         internal override BinaryContent ToBinaryContent()
         {
-            return BinaryContent.Create<InternalRealtimeResponseStatusDetails>(this, ModelSerializationExtensions.WireOptions);
+            return BinaryContent.Create<ConversationStatusDetails>(this, ModelSerializationExtensions.WireOptions);
         }
     }
 }

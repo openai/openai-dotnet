@@ -14,14 +14,14 @@ namespace OpenAI.RealtimeConversation
         {
         }
 
-        internal ConversationItem(InternalRealtimeRequestItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ConversationItem(InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Type = type;
             Id = id;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal InternalRealtimeRequestItemType Type { get; set; }
+        internal InternalRealtimeItemType Type { get; set; }
         public string Id { get; set; }
     }
 }

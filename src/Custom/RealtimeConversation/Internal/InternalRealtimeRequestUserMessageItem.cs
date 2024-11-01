@@ -15,7 +15,7 @@ internal partial class InternalRealtimeRequestUserMessageItem
     {
         Argument.AssertNotNull(content, nameof(content));
 
-        Type = InternalRealtimeRequestItemType.Message;
+        Type = InternalRealtimeItemType.Message;
         Role = ConversationMessageRole.User;
         Content = content.ToList();
     }

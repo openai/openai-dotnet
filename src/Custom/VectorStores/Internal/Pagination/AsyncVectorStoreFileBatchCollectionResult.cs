@@ -27,7 +27,7 @@ internal class AsyncVectorStoreFileBatchCollectionResult : AsyncCollectionResult
 
     public AsyncVectorStoreFileBatchCollectionResult(VectorStoreClient messageClient,
         ClientPipeline pipeline, RequestOptions options,
-        string vectorStoreId, string batchId, 
+        string vectorStoreId, string batchId,
         int? limit, string? order, string? after, string? before, string? filter)
     {
         _vectorStoreClient = messageClient;

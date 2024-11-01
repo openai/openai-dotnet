@@ -169,8 +169,8 @@ public partial class AssistantExamples
 
             #region List run steps for details about tool calls
             CollectionResult<RunStep> runSteps = client.GetRunSteps(
-                run.ThreadId, 
-                run.Id, 
+                run.ThreadId,
+                run.Id,
                 new RunStepCollectionOptions()
                 {
                     Order = RunStepCollectionOrder.Ascending

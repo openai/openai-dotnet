@@ -18,7 +18,7 @@ namespace OpenAI.RealtimeConversation
             Content = content.ToList();
         }
 
-        internal InternalRealtimeRequestSystemMessageItem(InternalRealtimeRequestItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, ConversationMessageRole role, ConversationItemStatus? status, IList<ConversationContentPart> content) : base(type, id, serializedAdditionalRawData, role, status)
+        internal InternalRealtimeRequestSystemMessageItem(InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, ConversationMessageRole role, ConversationItemStatus? status, IList<ConversationContentPart> content) : base(type, id, serializedAdditionalRawData, role, status)
         {
             Content = content;
         }

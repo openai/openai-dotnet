@@ -9,21 +9,22 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationItemTruncatedUpdate : ConversationUpdate
     {
-        internal ConversationItemTruncatedUpdate(string eventId, string itemId, int audioEndMs, int index) : base(eventId)
+        internal ConversationItemTruncatedUpdate(string eventId, string itemId, int contentIndex, int audioEndMs) : base(eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
             Argument.AssertNotNull(itemId, nameof(itemId));
 
             Kind = ConversationUpdateKind.ItemTruncated;
             ItemId = itemId;
+            ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;
-            Index = index;
         }
 
-        internal ConversationItemTruncatedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string itemId, int audioEndMs, int index) : base(kind, eventId, serializedAdditionalRawData)
+        internal ConversationItemTruncatedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string itemId, int contentIndex, int audioEndMs) : base(kind, eventId, serializedAdditionalRawData)
         {
             ItemId = itemId;
+            ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;
-            Index = index;
         }
 
         internal ConversationItemTruncatedUpdate()
@@ -31,7 +32,7 @@ namespace OpenAI.RealtimeConversation
         }
 
         public string ItemId { get; }
+        public int ContentIndex { get; }
         public int AudioEndMs { get; }
-        public int Index { get; }
     }
 }
