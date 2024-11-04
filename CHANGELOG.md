@@ -1,25 +1,28 @@
 # Release History
 
-## 2.1.0-beta.2 (Unreleased)
+## 2.1.0-beta.2 (2024-11-04)
 
 ### Features added
 
-- Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). (commit_hash)
+- Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
   - Use this property to indicate whether or not to store the output of the chat completion for use in model distillation or evals.
-- Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). (commit_hash)
+- Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
   - Use this property to add custom tags and values to the chat completions for filtering in the OpenAI dashboard.
-- Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). (commit_hash)
+- Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
   - The property is of a new type called `ChatInputTokenUsageDetails`, which contains properties for `AudioTokenCount` and `CachedTokenCount` for usage with supported models.
-- Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. (commit_hash)
-- Added `Illicit` and `IllictViolent` properties `ModerationResult` to represent these two new moderation categories. (commit_hash)
-- Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. (commit_hash)
+- Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+- Added `Illicit` and `IllicitViolent` properties `ModerationResult` to represent these two new moderation categories. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+- Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
   - Several types have been renamed for consistency and clarity.
   - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
-  - Serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`) is fixed
+
+### Bugs Fixed
+
+- Fixed serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`). ([9de3709](https://github.com/openai/openai-dotnet/commit/9de37095eaad6f1e2e87c201fd693ac1d9757142))
 
 ### Other Changes
 
-- Updated the `System.ClientModel` dependency to version `1.2.1`. (commit_hash)
+- Updated the `System.ClientModel` dependency to version `1.2.1`. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
   - This updates the `System.Text.Json` transitive dependency to version `6.0.10`, which includes a security compliance fix for [CVE-2024-43485](https://github.com/advisories/GHSA-8g4q-xg66-9fp4). Please note that the OpenAI library was not impacted by this vulnerability since it does not use the `[JsonExtensionData]` feature.
 
 ## 2.1.0-beta.1 (2024-10-01)
