@@ -8,11 +8,13 @@ namespace OpenAI.RealtimeConversation;
 [CodeGenModel("RealtimeToolChoiceLiteral")]
 public enum ConversationToolChoiceKind
 {
+    Unknown,
     [CodeGenMember("Auto")]
     Auto,
     [CodeGenMember("None")]
     None,
     [CodeGenMember("Required")]
     Required,
+    [CodeGenMember("Function")]
     Function,
 }

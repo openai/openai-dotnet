@@ -15,6 +15,7 @@
 - Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. (commit_hash)
   - Several types have been renamed for consistency and clarity.
   - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
+  - Serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`) is fixed
 
 ### Other Changes
 
