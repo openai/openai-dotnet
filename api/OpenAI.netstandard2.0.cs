@@ -2755,10 +2755,11 @@ namespace OpenAI.RealtimeConversation {
         BinaryData IPersistableModel<ConversationToolChoice>.Write(ModelReaderWriterOptions options);
     }
     public enum ConversationToolChoiceKind {
-        Auto = 0,
-        None = 1,
-        Required = 2,
-        Function = 3
+        Unknown = 0,
+        Auto = 1,
+        None = 2,
+        Required = 3,
+        Function = 4
     }
     public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
         private readonly object _dummy;

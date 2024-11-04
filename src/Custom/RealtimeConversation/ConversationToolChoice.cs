@@ -26,4 +26,8 @@ public partial class ConversationToolChoice
         Kind = choiceKind;
         _objectToolChoice = objectToolChoice;
     }
+
+    internal ConversationToolChoice() : this(ConversationToolChoiceKind.Unknown, null)
+    {
+    }
 }

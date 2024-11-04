@@ -26,7 +26,9 @@ public partial class ConversationSessionOptions
         get => ConversationToolChoice.FromBinaryData(_internalToolChoice);
         set
         {
-            _internalToolChoice = ModelReaderWriter.Write(value);
+            _internalToolChoice = value is not null
+                ? ModelReaderWriter.Write(value)
+                : null;
         }
     }
 

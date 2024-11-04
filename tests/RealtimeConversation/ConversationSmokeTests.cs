@@ -19,6 +19,35 @@ public class ConversationSmokeTests : ConversationTestFixtureBase
     { }
 
     [Test]
+    public void ToolChoiceSerializationInSessionOptionsWorks()
+    {
+        foreach((ConversationToolChoice toolChoice, string expected) in new (ConversationToolChoice, string)[]
+        {
+            (null, "{}"),
+            (ConversationToolChoice.CreateNoneToolChoice(), @"{""tool_choice"":""none""}"),
+            (ConversationToolChoice.CreateAutoToolChoice(), @"{""tool_choice"":""auto""}"),
+            (ConversationToolChoice.CreateRequiredToolChoice(), @"{""tool_choice"":""required""}"),
+            (ConversationToolChoice.CreateFunctionToolChoice("foo"), @"{""function"":{""name"":""foo""}")
+        })
+        {
+            ConversationSessionOptions options = new()
+            {
+                ToolChoice = toolChoice,
+            };
+            Assert.That(ModelReaderWriter.Write(options).ToString(), Does.Contain(expected));
+        }
+
+        ConversationToolChoice mrwToolChoice = ModelReaderWriter.Read<ConversationToolChoice>(
+            BinaryData.FromString("""
+                {
+                  "type":"some_manual_type"
+                }
+                """));
+        Assert.That(mrwToolChoice.Kind, Is.EqualTo(ConversationToolChoiceKind.Unknown));
+        Assert.That(ModelReaderWriter.Write(mrwToolChoice).ToString(), Does.Contain(@"""type"":""some_manual_type"""));
+    }
+    
+    [Test]
     public void ItemCreation()
     {
         ConversationItem messageItem = ConversationItem.CreateUserMessage(["Hello, world!"]);
