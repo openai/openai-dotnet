@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace OpenAI.Assistants;
 
@@ -18,7 +19,7 @@ public enum StreamingUpdateReason
     /// Indicates that an update was generated as part of a <c>thread.created</c> event.
     /// </summary>
     /// <remarks> This reason is typically only associated with calls to
-    /// <see cref="AssistantClient.CreateThreadAndRunStreaming(Assistant, ThreadCreationOptions, RunCreationOptions)"/>,
+    /// <see cref="AssistantClient.CreateThreadAndRunStreaming(string, ThreadCreationOptions, RunCreationOptions, CancellationToken)"/>,
     /// as other run-related methods operate on a thread that has previously been created.
     /// </remarks>
     ThreadCreated,
