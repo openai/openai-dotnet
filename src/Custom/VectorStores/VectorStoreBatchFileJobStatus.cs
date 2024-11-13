@@ -1,6 +1,9 @@
-﻿namespace OpenAI.VectorStores;
+using System.Diagnostics.CodeAnalysis;
 
-[CodeGenModel("VectorStoreBatchFileJobStatus")]
+namespace OpenAI.VectorStores;
+
+[Experimental("OPENAI001")]
+[CodeGenModel("VectorStoreFileBatchObjectStatus")]
 public readonly partial struct VectorStoreBatchFileJobStatus
 {
 }

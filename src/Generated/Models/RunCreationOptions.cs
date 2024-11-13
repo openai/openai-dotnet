@@ -9,9 +9,9 @@ namespace OpenAI.Assistants
 {
     public partial class RunCreationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal RunCreationOptions(string assistantId, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunCreationOptions(string assistantId, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, bool? stream, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             AssistantId = assistantId;
             ModelOverride = modelOverride;
@@ -23,12 +23,13 @@ namespace OpenAI.Assistants
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             Stream = stream;
-            MaxPromptTokens = maxPromptTokens;
-            MaxCompletionTokens = maxCompletionTokens;
+            MaxInputTokenCount = maxInputTokenCount;
+            MaxOutputTokenCount = maxOutputTokenCount;
             TruncationStrategy = truncationStrategy;
             ToolConstraint = toolConstraint;
+            AllowParallelToolCalls = allowParallelToolCalls;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
     }
 }

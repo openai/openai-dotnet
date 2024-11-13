@@ -1,6 +1,9 @@
-﻿namespace OpenAI.VectorStores;
+using System.Diagnostics.CodeAnalysis;
 
+namespace OpenAI.VectorStores;
+
+[Experimental("OPENAI001")]
 [CodeGenModel("VectorStoreObjectFileCounts")]
-public readonly partial struct VectorStoreFileCounts
+public partial class VectorStoreFileCounts
 {
 }

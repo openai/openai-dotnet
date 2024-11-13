@@ -1,0 +1,64 @@
+name: Bug report
+description: Report an issue or bug with this library
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: dropdown
+    id: service-kind
+    attributes:
+      label: Service
+      description: Select whether you are using OpenAI or Azure OpenAI
+      options:
+        - OpenAI
+        - Azure OpenAI
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is, and any additional context.
+      placeholder: Tell us what you see.
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Fetch a '...'
+        2. Update the '....'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: code-snippets
+    attributes:
+      label: Code snippets
+      description: If applicable, add code snippets to help explain your problem.
+      render: C#
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: winOS
+    validations:
+      required: true
+  - type: input
+    id: language-version
+    attributes:
+      label: .NET version
+    validations:
+      required: true
+  - type: input
+    id: lib-version
+    attributes:
+      label: Library version
+    validations:
+      required: true

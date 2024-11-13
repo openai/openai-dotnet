@@ -36,7 +36,7 @@ namespace OpenAI.Assistants
         public bool Equals(RunStepStatus other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value?.GetHashCode() ?? 0;
+        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
         public override string ToString() => _value;
     }
 }

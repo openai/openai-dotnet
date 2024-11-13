@@ -1,11 +1,13 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
 /// <summary>
 /// Represents the possible states for a vector store.
 /// </summary>
-[CodeGenModel("VectorStoreStatus")]
+[Experimental("OPENAI001")]
+[CodeGenModel("VectorStoreObjectStatus")]
 public enum VectorStoreStatus
 {
     /// <summary>

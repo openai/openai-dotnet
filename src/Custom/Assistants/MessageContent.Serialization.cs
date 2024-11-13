@@ -2,8 +2,18 @@ using System.ClientModel.Primitives;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
-public partial class MessageContent : IJsonModel<MessageContent>
+
+[CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Assistants.MessageContent>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
+public abstract partial class MessageContent : IJsonModel<MessageContent>
 {
+    void IJsonModel<MessageContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => CustomSerializationHelpers.SerializeInstance(this, WriteCore, writer, options);
+
+    internal static void WriteCore(MessageContent instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => instance.WriteCore(writer, options);
+
+    internal abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+
     internal static MessageContent DeserializeMessageContent(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;

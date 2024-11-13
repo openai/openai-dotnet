@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
 /// <summary>
 /// Represents additional options available when creating a new <see cref="Assistant"/>.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("CreateAssistantRequest")]
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
@@ -23,11 +25,11 @@ public partial class AssistantCreationOptions
 
     /// <inheritdoc cref="ToolResources"/>
     [CodeGenMember("ToolResources")]
-    public ToolResources ToolResources { get; init; }
+    public ToolResources ToolResources { get; set; }
 
     /// <inheritdoc cref="AssistantResponseFormat"/>
     [CodeGenMember("ResponseFormat")]
-    public AssistantResponseFormat ResponseFormat { get; init; }
+    public AssistantResponseFormat ResponseFormat { get; set; }
 
     /// <summary>
     /// An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
@@ -35,8 +37,8 @@ public partial class AssistantCreationOptions
     /// We generally recommend altering this or temperature but not both.
     /// </summary>
     [CodeGenMember("TopP")]
-    public float? NucleusSamplingFactor { get; init; }
-    
+    public float? NucleusSamplingFactor { get; set; }
+
     internal AssistantCreationOptions(InternalCreateAssistantRequestModel model)
         : this()
     {
@@ -50,6 +52,5 @@ public partial class AssistantCreationOptions
     {
         Metadata = new ChangeTrackingDictionary<string, string>();
         Tools = new ChangeTrackingList<ToolDefinition>();
-        ToolResources = new();
     }
 }

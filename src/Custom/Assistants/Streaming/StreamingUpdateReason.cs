@@ -1,10 +1,13 @@
-﻿namespace OpenAI.Assistants;
+using System.Diagnostics.CodeAnalysis;
+
+namespace OpenAI.Assistants;
 
 /// <summary>
 /// The collection of values associated with the event names of streaming update payloads. These correspond to the
 /// expected downcast data type of the <see cref="StreamingUpdate"/> as well as to the expected data present in the
 /// payload.
 /// </summary>
+[Experimental("OPENAI001")]
 public enum StreamingUpdateReason
 {
     /// <summary>

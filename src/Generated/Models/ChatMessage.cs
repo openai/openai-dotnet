@@ -7,22 +7,15 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    public abstract partial class ChatMessage
+    public partial class ChatMessage
     {
-        private protected IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        protected ChatMessage()
-        {
-            Content = new ChangeTrackingList<ChatMessageContentPart>();
-        }
-
-        internal ChatMessage(string role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Role = role;
             Content = content;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-
-        internal string Role { get; init; }
     }
 }

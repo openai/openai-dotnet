@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("MessageContent")]
 public abstract partial class MessageContent
 {
@@ -24,7 +26,7 @@ public abstract partial class MessageContent
     /// <param name="imageUri"></param>
     /// <param name="detail"></param>
     /// <returns></returns>
-    public static MessageContent FromImageUrl(Uri imageUri, MessageImageDetail? detail = null)
+    public static MessageContent FromImageUri(Uri imageUri, MessageImageDetail? detail = null)
         => new InternalMessageImageUrlContent(imageUri, detail);
 
     /// <summary>
@@ -36,7 +38,7 @@ public abstract partial class MessageContent
         => new InternalRequestMessageTextContent(text);
 
     /// <inheritdoc cref="InternalMessageImageUrlContent.InternalUrl"/>
-    public Uri ImageUrl => AsInternalImageUrl?.InternalUrl;
+    public Uri ImageUri => AsInternalImageUrl?.InternalUrl;
     /// <inheritdoc cref="InternalMessageImageFileContent.InternalFileId"/>
     public string ImageFileId => AsInternalImageFile?.InternalFileId;
     /// <inheritdoc cref="InternalMessageImageFileContent.InternalDetail"/>
@@ -45,11 +47,13 @@ public abstract partial class MessageContent
     public string Text => AsInternalRequestText?.InternalText ?? AsInternalResponseText?.InternalText;
     /// <inheritdoc cref="InternalResponseMessageTextContent.InternalAnnotations"/>
     public IReadOnlyList<TextAnnotation> TextAnnotations => AsInternalResponseText?.InternalAnnotations ?? [];
+    public string Refusal => AsRefusal?.InternalRefusal;
 
     private InternalMessageImageFileContent AsInternalImageFile => this as InternalMessageImageFileContent;
     private InternalMessageImageUrlContent AsInternalImageUrl => this as InternalMessageImageUrlContent;
     private InternalResponseMessageTextContent AsInternalResponseText => this as InternalResponseMessageTextContent;
     private InternalRequestMessageTextContent AsInternalRequestText => this as InternalRequestMessageTextContent;
+    private InternalMessageRefusalContent AsRefusal => this as InternalMessageRefusalContent;
 
     /// <summary>
     /// The implicit conversion operator that infers an equivalent <see cref="MessageContent"/> 

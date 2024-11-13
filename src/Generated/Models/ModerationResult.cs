@@ -9,32 +9,6 @@ namespace OpenAI.Moderations
 {
     public partial class ModerationResult
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal ModerationResult(bool flagged, ModerationCategories categories, ModerationCategoryScores categoryScores)
-        {
-            Argument.AssertNotNull(categories, nameof(categories));
-            Argument.AssertNotNull(categoryScores, nameof(categoryScores));
-
-            Flagged = flagged;
-            Categories = categories;
-            CategoryScores = categoryScores;
-        }
-
-        internal ModerationResult(bool flagged, ModerationCategories categories, ModerationCategoryScores categoryScores, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Flagged = flagged;
-            Categories = categories;
-            CategoryScores = categoryScores;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal ModerationResult()
-        {
-        }
-
         public bool Flagged { get; }
-        public ModerationCategories Categories { get; }
-        public ModerationCategoryScores CategoryScores { get; }
     }
 }

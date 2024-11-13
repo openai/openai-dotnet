@@ -9,9 +9,8 @@ namespace OpenAI.Batch
 {
     internal partial class InternalCreateBatchRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        public InternalCreateBatchRequest(string inputFileId, InternalBatchOperationEndpoint endpoint)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint)
         {
             Argument.AssertNotNull(inputFileId, nameof(inputFileId));
 
@@ -20,13 +19,13 @@ namespace OpenAI.Batch
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateBatchRequest(string inputFileId, InternalBatchOperationEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             InputFileId = inputFileId;
             Endpoint = endpoint;
             CompletionWindow = completionWindow;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateBatchRequest()
@@ -34,9 +33,9 @@ namespace OpenAI.Batch
         }
 
         public string InputFileId { get; }
-        public InternalBatchOperationEndpoint Endpoint { get; }
+        public InternalCreateBatchRequestEndpoint Endpoint { get; }
         public InternalBatchCompletionTimeframe CompletionWindow { get; } = InternalBatchCompletionTimeframe._24h;
 
-        public IDictionary<string, string> Metadata { get; set; }
+        public IReadOnlyDictionary<string, string> Metadata { get; }
     }
 }

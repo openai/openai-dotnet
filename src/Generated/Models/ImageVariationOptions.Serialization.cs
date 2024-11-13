@@ -22,16 +22,19 @@ namespace OpenAI.Images
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("image"u8);
+            if (SerializedAdditionalRawData?.ContainsKey("image") != true)
+            {
+                writer.WritePropertyName("image"u8);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(Image);
 #else
-            using (JsonDocument document = JsonDocument.Parse(Image))
-            {
-                JsonSerializer.Serialize(writer, document.RootElement);
-            }
+                using (JsonDocument document = JsonDocument.Parse(Image))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-            if (Optional.IsDefined(Model))
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true && Optional.IsDefined(Model))
             {
                 if (Model != null)
                 {
@@ -43,7 +46,7 @@ namespace OpenAI.Images
                     writer.WriteNull("model");
                 }
             }
-            if (Optional.IsDefined(N))
+            if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
             {
                 if (N != null)
                 {
@@ -55,25 +58,43 @@ namespace OpenAI.Images
                     writer.WriteNull("n");
                 }
             }
-            if (Optional.IsDefined(ResponseFormat))
+            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteStringValue(ResponseFormat.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("response_format");
+                }
             }
-            if (Optional.IsDefined(Size))
+            if (SerializedAdditionalRawData?.ContainsKey("size") != true && Optional.IsDefined(Size))
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size");
+                }
             }
-            if (Optional.IsDefined(User))
+            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
             {
                 writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WriteStringValue(EndUserId);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -147,15 +168,17 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        responseFormat = null;
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToGeneratedImageFormat();
+                    responseFormat = new GeneratedImageFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("size"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        size = null;
                         continue;
                     }
                     size = new GeneratedImageSize(property.Value.GetString());
@@ -168,6 +191,7 @@ namespace OpenAI.Images
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
@@ -217,15 +241,21 @@ namespace OpenAI.Images
             }
             if (Optional.IsDefined(ResponseFormat))
             {
-                content.Add(ResponseFormat.Value.ToSerialString(), "response_format");
+                if (ResponseFormat != null)
+                {
+                    content.Add(ResponseFormat.Value.ToString(), "response_format");
+                }
             }
             if (Optional.IsDefined(Size))
             {
-                content.Add(Size.Value.ToString(), "size");
+                if (Size != null)
+                {
+                    content.Add(Size.Value.ToString(), "size");
+                }
             }
-            if (Optional.IsDefined(User))
+            if (Optional.IsDefined(EndUserId))
             {
-                content.Add(User, "user");
+                content.Add(EndUserId, "user");
             }
             return content;
         }

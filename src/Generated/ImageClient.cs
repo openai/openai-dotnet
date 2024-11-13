@@ -18,8 +18,6 @@ namespace OpenAI.Images
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        public virtual ClientPipeline Pipeline => _pipeline;
-
         protected ImageClient()
         {
         }
@@ -52,7 +50,7 @@ namespace OpenAI.Images
             uri.AppendPath("/images/edits", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("content-type", contentType);
+            request.Headers.Set("Content-Type", contentType);
             request.Content = content;
             message.Apply(options);
             return message;
@@ -69,7 +67,7 @@ namespace OpenAI.Images
             uri.AppendPath("/images/variations", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("content-type", contentType);
+            request.Headers.Set("Content-Type", contentType);
             request.Content = content;
             message.Apply(options);
             return message;

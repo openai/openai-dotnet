@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,13 +7,14 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// Represents the the configuration that controls when a vector store will be automatically deleted.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("VectorStoreExpirationAfter")]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(VectorStoreExpirationAnchor), typeof(int), typeof(IDictionary<string, BinaryData>))]
 public partial class VectorStoreExpirationPolicy
 {
-    private IDictionary<string, BinaryData> _serializedAdditionalRawData;
+    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     [CodeGenMember("Anchor")]
     private VectorStoreExpirationAnchor _anchor;
@@ -22,16 +23,16 @@ public partial class VectorStoreExpirationPolicy
 
     /// <summary> Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`. </summary>
     public required VectorStoreExpirationAnchor Anchor
-    { 
+    {
         get => _anchor;
-        init => _anchor = value;
+        set => _anchor = value;
     }
 
     /// <summary> The number of days after the anchor time that the vector store will expire. </summary>
     public required int Days
-    { 
+    {
         get => _days;
-        init => _days = value;
+        set => _days = value;
     }
 
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
@@ -46,7 +47,7 @@ public partial class VectorStoreExpirationPolicy
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
     public VectorStoreExpirationPolicy()
     {
-        _serializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
     }
 
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
@@ -58,6 +59,6 @@ public partial class VectorStoreExpirationPolicy
     {
         Anchor = anchor;
         Days = days;
-        _serializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 }

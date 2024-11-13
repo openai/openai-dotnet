@@ -79,11 +79,19 @@ public partial class EmbeddingGenerationOptions
     /// The format to return the embeddings in. Can be either `float` or
     /// [`base64`](https://pypi.org/project/pybase64/).
     /// </summary>
-    internal InternalEmbeddingGenerationOptionsEncodingFormat? EncodingFormat { get; set; }
+    internal InternalCreateEmbeddingRequestEncodingFormat? EncodingFormat { get; set; }
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="EmbeddingGenerationOptions"/>. </summary>
     public EmbeddingGenerationOptions()
     {
     }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+    ///     <see href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</see>.
+    /// </summary>
+    [CodeGenMember("User")]
+    public string EndUserId { get; set; }
 }

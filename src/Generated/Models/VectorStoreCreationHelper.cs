@@ -4,24 +4,25 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Assistants
 {
     public partial class VectorStoreCreationHelper
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public VectorStoreCreationHelper()
         {
             FileIds = new ChangeTrackingList<string>();
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStoreCreationHelper(IList<string> fileIds, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreCreationHelper(IList<string> fileIds, FileChunkingStrategy chunkingStrategy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileIds = fileIds;
+            ChunkingStrategy = chunkingStrategy;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public IList<string> FileIds { get; }

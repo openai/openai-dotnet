@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -7,6 +9,7 @@ namespace OpenAI.Chat;
 /// </summary>
 [CodeGenModel("CreateChatCompletionRequest")]
 [CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel))]
+[CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
 public partial class ChatCompletionOptions
@@ -59,12 +62,12 @@ public partial class ChatCompletionOptions
     // CUSTOM: Renamed.
     /// <summary> Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the message content. </summary>
     [CodeGenMember("Logprobs")]
-    public bool? IncludeLogProbabilities { get; init; }
+    public bool? IncludeLogProbabilities { get; set; }
 
     // CUSTOM: Renamed.
     /// <summary> An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. <see cref="IncludeLogProbabilities"/> must be set to <see langword="true"/> if this property is used. </summary>
     [CodeGenMember("TopLogprobs")]
-    public int? TopLogProbabilityCount { get; init; }
+    public int? TopLogProbabilityCount { get; set; }
 
     // CUSTOM:
     // - Renamed.
@@ -91,14 +94,77 @@ public partial class ChatCompletionOptions
     /// </remarks>
     /// </summary>
     [CodeGenMember("ToolChoice")]
-    public ChatToolChoice ToolChoice { get; init; }
+    public ChatToolChoice ToolChoice { get; set; }
 
     // CUSTOM:
     // - Renamed.
     // - Changed type to avoid BinaryData.
-    /// <summary>
-    /// Deprecated in favor of <see cref="ToolChoice"/>.
-    /// </summary>
+    [Obsolete($"This property is obsolete. Please use {nameof(ToolChoice)} instead.")]
     [CodeGenMember("FunctionCall")]
-    public ChatFunctionChoice FunctionChoice { get; init; }
+    public ChatFunctionChoice FunctionChoice { get; set; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    /// Whether to enable parallel function calling during tool use. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? AllowParallelToolCalls { get; set; }
+
+    /// <summary>
+    /// An object specifying the format that the model must output.
+    /// </summary>
+    /// <remarks>
+    /// <p>
+    /// Compatible with GPT-4o, GPT-4o mini, GPT-4 Turbo and all GPT-3.5 Turbo models newer than gpt-3.5-turbo-1106.
+    /// </p>
+    /// <p>
+    /// Learn more in the Structured Outputs guide.
+    /// </p>
+    /// </remarks>
+    //[CodeGenMember("ResponseFormat")]
+    //public ChatResponseFormat ResponseFormat { get; set; }
+
+    [CodeGenMember("ServiceTier")]
+    internal InternalCreateChatCompletionRequestServiceTier? _serviceTier;
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+    ///     <see href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</see>.
+    /// </summary>
+    [CodeGenMember("User")]
+    public string EndUserId { get; set; }
+
+    // CUSTOM: Added the Experimental attribute.
+    /// <summary>
+    /// If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public long? Seed { get; set; }
+
+    // CUSTOM: Hide deprecated max_tokens and reroute to newer max_completion_tokens.
+    [CodeGenMember("MaxTokens")]
+    internal int? _deprecatedMaxTokens { get; set; }
+
+    // CUSTOM: Add legacy `max_tokens` routing.
+    /// <summary>
+    /// An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and, on applicable models, reasoning tokens.
+    /// </summary>
+    [CodeGenMember("MaxCompletionTokens")]
+    public int? MaxOutputTokenCount { get; set; }
+
+    // CUSTOM: Added the Obsolete attribute.
+    [Obsolete($"This property is obsolete. Please use {nameof(Tools)} instead.")]
+    public IList<ChatFunction> Functions { get; }
+
+    // CUSTOM: Removed public setter.
+    [CodeGenMember("Metadata")]
+    public IDictionary<string, string> Metadata { get; } = new ChangeTrackingDictionary<string, string>();
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("Store")]
+    public bool? StoredOutputEnabled { get; set; }
 }

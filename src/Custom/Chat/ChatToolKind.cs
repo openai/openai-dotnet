@@ -1,6 +1,7 @@
 ﻿namespace OpenAI.Chat;
 
 [CodeGenModel("ChatCompletionToolType")]
-public readonly partial struct ChatToolKind
+public enum ChatToolKind
 {
+    Function,
 }

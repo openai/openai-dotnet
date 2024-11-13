@@ -10,12 +10,9 @@ namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt)
         {
-            Argument.AssertNotNull(prompt, nameof(prompt));
-
             Model = model;
             Prompt = prompt;
             LogitBias = new ChangeTrackingDictionary<string, int>();
@@ -41,7 +38,7 @@ namespace OpenAI.LegacyCompletions
             Temperature = temperature;
             TopP = topP;
             User = user;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateCompletionRequest()

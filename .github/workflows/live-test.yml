@@ -1,0 +1,42 @@
+# This workflow is triggered by the user and runs live tests on the codebase.
+name: Live Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  test:
+    name: Live Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'live test')
+    environment: Live Testing
+    env:
+      version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run live tests
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --filter="TestCategory!=Smoke&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=live"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: test-artifacts
+          path: ${{github.workspace}}/artifacts

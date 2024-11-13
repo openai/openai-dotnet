@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
 /// <summary>
@@ -11,6 +13,7 @@ namespace OpenAI.Assistants;
 /// <item> <see cref="InternalRequiredFunctionToolCall"/> </item> 
 /// </list>
 /// </remarks>
+[Experimental("OPENAI001")]
 public abstract partial class RequiredAction
 {
     /// <inheritdoc cref="InternalRequiredFunctionToolCall.InternalName"/>

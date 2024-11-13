@@ -18,33 +18,24 @@ namespace OpenAI.LegacyCompletions
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        public virtual ClientPipeline Pipeline => _pipeline;
-
         protected LegacyCompletionClient()
         {
         }
 
-        internal LegacyCompletionClient(ClientPipeline pipeline, ApiKeyCredential keyCredential, Uri endpoint)
+        public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest requestBody)
         {
-            _pipeline = pipeline;
-            _keyCredential = keyCredential;
-            _endpoint = endpoint;
-        }
+            Argument.AssertNotNull(requestBody, nameof(requestBody));
 
-        public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest internalCreateCompletionRequest)
-        {
-            Argument.AssertNotNull(internalCreateCompletionRequest, nameof(internalCreateCompletionRequest));
-
-            using BinaryContent content = internalCreateCompletionRequest.ToBinaryContent();
+            using BinaryContent content = requestBody.ToBinaryContent();
             ClientResult result = await CreateCompletionAsync(content, null).ConfigureAwait(false);
             return ClientResult.FromValue(InternalCreateCompletionResponse.FromResponse(result.GetRawResponse()), result.GetRawResponse());
         }
 
-        public virtual ClientResult<InternalCreateCompletionResponse> CreateCompletion(InternalCreateCompletionRequest internalCreateCompletionRequest)
+        public virtual ClientResult<InternalCreateCompletionResponse> CreateCompletion(InternalCreateCompletionRequest requestBody)
         {
-            Argument.AssertNotNull(internalCreateCompletionRequest, nameof(internalCreateCompletionRequest));
+            Argument.AssertNotNull(requestBody, nameof(requestBody));
 
-            using BinaryContent content = internalCreateCompletionRequest.ToBinaryContent();
+            using BinaryContent content = requestBody.ToBinaryContent();
             ClientResult result = CreateCompletion(content, null);
             return ClientResult.FromValue(InternalCreateCompletionResponse.FromResponse(result.GetRawResponse()), result.GetRawResponse());
         }

@@ -42,7 +42,7 @@ public partial class ToolConstraint : IJsonModel<ToolConstraint>
                 writer.WriteStringValue(instance._objectFunctionName);
                 writer.WriteEndObject();
             }
-            writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+            writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
             writer.WriteEndObject();
         }
     }

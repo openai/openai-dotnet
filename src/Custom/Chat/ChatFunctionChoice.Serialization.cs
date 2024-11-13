@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -22,7 +22,7 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
             writer.WriteStartObject();
             writer.WritePropertyName("name"u8);
             writer.WriteStringValue(instance._function.Name);
-            writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+            writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
             writer.WriteEndObject();
         }
     }

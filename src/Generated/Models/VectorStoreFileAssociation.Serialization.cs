@@ -21,31 +21,61 @@ namespace OpenAI.VectorStores
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(FileId);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            writer.WritePropertyName("usage_bytes"u8);
-            writer.WriteNumberValue(Size);
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("vector_store_id"u8);
-            writer.WriteStringValue(VectorStoreId);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToSerialString());
-            if (LastError != null)
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                writer.WritePropertyName("last_error"u8);
-                writer.WriteObjectValue(LastError, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(FileId);
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
             {
-                writer.WriteNull("last_error");
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("usage_bytes") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(Size);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("vector_store_id") != true)
+            {
+                writer.WritePropertyName("vector_store_id"u8);
+                writer.WriteStringValue(VectorStoreId);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToSerialString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("last_error") != true)
+            {
+                if (LastError != null)
                 {
+                    writer.WritePropertyName("last_error"u8);
+                    writer.WriteObjectValue(LastError, options);
+                }
+                else
+                {
+                    writer.WriteNull("last_error");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
+            {
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -86,7 +116,8 @@ namespace OpenAI.VectorStores
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreFileAssociationStatus status = default;
-            VectorStoreFileAssociationError? lastError = default;
+            VectorStoreFileAssociationError lastError = default;
+            FileChunkingStrategy chunkingStrategy = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -131,8 +162,18 @@ namespace OpenAI.VectorStores
                     lastError = VectorStoreFileAssociationError.DeserializeVectorStoreFileAssociationError(property.Value, options);
                     continue;
                 }
+                if (property.NameEquals("chunking_strategy"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
+                    continue;
+                }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
@@ -145,6 +186,7 @@ namespace OpenAI.VectorStores
                 vectorStoreId,
                 status,
                 lastError,
+                chunkingStrategy,
                 serializedAdditionalRawData);
         }
 

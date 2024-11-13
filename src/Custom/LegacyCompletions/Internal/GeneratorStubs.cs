@@ -1,4 +1,4 @@
-﻿namespace OpenAI.LegacyCompletions;
+namespace OpenAI.LegacyCompletions;
 
 // CUSTOM: Made internal.
 
@@ -14,11 +14,11 @@ internal partial class InternalCreateCompletionResponse { }
 [CodeGenModel("CreateCompletionResponseChoice")]
 internal partial class InternalCreateCompletionResponseChoice { }
 
-[CodeGenModel("InternalCreateCompletionResponseChoiceFinishReason")]
+[CodeGenModel("CreateCompletionResponseChoiceFinishReason")]
 internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason { }
 
 [CodeGenModel("CreateCompletionResponseChoiceLogprobs")]
-internal partial class InternalCreateCompletionResponseChoiceLogprobs {  }
+internal partial class InternalCreateCompletionResponseChoiceLogprobs { }
 
 [CodeGenModel("CreateCompletionResponseObject")]
 internal readonly partial struct InternalCreateCompletionResponseObject { }

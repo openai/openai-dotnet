@@ -21,9 +21,12 @@ namespace OpenAI.Images
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("prompt"u8);
-            writer.WriteStringValue(Prompt);
-            if (Optional.IsDefined(Model))
+            if (SerializedAdditionalRawData?.ContainsKey("prompt") != true)
+            {
+                writer.WritePropertyName("prompt"u8);
+                writer.WriteStringValue(Prompt);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true && Optional.IsDefined(Model))
             {
                 if (Model != null)
                 {
@@ -35,7 +38,7 @@ namespace OpenAI.Images
                     writer.WriteNull("model");
                 }
             }
-            if (Optional.IsDefined(N))
+            if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
             {
                 if (N != null)
                 {
@@ -47,35 +50,60 @@ namespace OpenAI.Images
                     writer.WriteNull("n");
                 }
             }
-            if (Optional.IsDefined(Quality))
+            if (SerializedAdditionalRawData?.ContainsKey("quality") != true && Optional.IsDefined(Quality))
             {
                 writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.Value.ToSerialString());
+                writer.WriteStringValue(Quality.Value.ToString());
             }
-            if (Optional.IsDefined(ResponseFormat))
+            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteStringValue(ResponseFormat.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("response_format");
+                }
             }
-            if (Optional.IsDefined(Size))
+            if (SerializedAdditionalRawData?.ContainsKey("size") != true && Optional.IsDefined(Size))
             {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
+                if (Size != null)
+                {
+                    writer.WritePropertyName("size"u8);
+                    writer.WriteStringValue(Size.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("size");
+                }
             }
-            if (Optional.IsDefined(Style))
+            if (SerializedAdditionalRawData?.ContainsKey("style") != true && Optional.IsDefined(Style))
             {
-                writer.WritePropertyName("style"u8);
-                writer.WriteStringValue(Style.Value.ToSerialString());
+                if (Style != null)
+                {
+                    writer.WritePropertyName("style"u8);
+                    writer.WriteStringValue(Style.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("style");
+                }
             }
-            if (Optional.IsDefined(User))
+            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
             {
                 writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WriteStringValue(EndUserId);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -153,22 +181,24 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    quality = property.Value.GetString().ToGeneratedImageQuality();
+                    quality = new GeneratedImageQuality(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("response_format"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        responseFormat = null;
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToGeneratedImageFormat();
+                    responseFormat = new GeneratedImageFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("size"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        size = null;
                         continue;
                     }
                     size = new GeneratedImageSize(property.Value.GetString());
@@ -178,9 +208,10 @@ namespace OpenAI.Images
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        style = null;
                         continue;
                     }
-                    style = property.Value.GetString().ToGeneratedImageStyle();
+                    style = new GeneratedImageStyle(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("user"u8))
@@ -190,6 +221,7 @@ namespace OpenAI.Images
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

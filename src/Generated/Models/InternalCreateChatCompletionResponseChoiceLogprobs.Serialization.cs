@@ -21,24 +21,48 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            if (Content != null && Optional.IsCollectionDefined(Content))
+            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
             {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStartArray();
-                foreach (var item in Content)
+                if (Content != null && Optional.IsCollectionDefined(Content))
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WritePropertyName("content"u8);
+                    writer.WriteStartArray();
+                    foreach (var item in Content)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
                 }
-                writer.WriteEndArray();
-            }
-            else
-            {
-                writer.WriteNull("content");
-            }
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                else
                 {
+                    writer.WriteNull("content");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("refusal") != true)
+            {
+                if (Refusal != null && Optional.IsCollectionDefined(Refusal))
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteStartArray();
+                    foreach (var item in Refusal)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
+                }
+                else
+                {
+                    writer.WriteNull("refusal");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -73,7 +97,8 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            IReadOnlyList<ChatTokenLogProbabilityInfo> content = default;
+            IReadOnlyList<ChatTokenLogProbabilityDetails> content = default;
+            IReadOnlyList<ChatTokenLogProbabilityDetails> refusal = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -82,24 +107,40 @@ namespace OpenAI.Chat
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
-                        content = new ChangeTrackingList<ChatTokenLogProbabilityInfo>();
+                        content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
                         continue;
                     }
-                    List<ChatTokenLogProbabilityInfo> array = new List<ChatTokenLogProbabilityInfo>();
+                    List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(ChatTokenLogProbabilityInfo.DeserializeChatTokenLogProbabilityInfo(item, options));
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
                     }
                     content = array;
                     continue;
                 }
+                if (property.NameEquals("refusal"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
+                        continue;
+                    }
+                    List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
+                    foreach (var item in property.Value.EnumerateArray())
+                    {
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
+                    }
+                    refusal = array;
+                    continue;
+                }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateChatCompletionResponseChoiceLogprobs(content, serializedAdditionalRawData);
+            return new InternalCreateChatCompletionResponseChoiceLogprobs(content, refusal, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Write(ModelReaderWriterOptions options)

@@ -3,10 +3,15 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Images;
 
+// CUSTOM:
+// - Renamed.
+// - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
+// - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI image operations. </summary>
 [CodeGenClient("Images")]
 [CodeGenSuppress("ImageClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
@@ -20,71 +25,87 @@ public partial class ImageClient
 {
     private readonly string _model;
 
-    // CUSTOM:
-    // - Added `model` parameter.
-    // - Added support for retrieving credential and endpoint from environment variables.
-
+    // CUSTOM: Remove virtual keyword.
     /// <summary>
-    /// Initializes a new instance of <see cref="ImageClient"/> that will use an API key when authenticating.
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
     /// </summary>
-    /// <param name="model"> The model name to use for image operations. </param>
-    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(credential, requireExplicitCredential: true), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
+    public ClientPipeline Pipeline => _pipeline;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ImageClient"/> that will use an API key from the OPENAI_API_KEY
-    /// environment variable when authenticating.
-    /// </summary>
-    /// <remarks>
-    /// To provide an explicit credential instead of using the environment variable, use an alternate constructor like
-    /// <see cref="ImageClient(string,ApiKeyCredential,OpenAIClientOptions)"/>.
-    /// </remarks>
-    /// <param name="model"> The model name to use for image operations. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="InvalidOperationException"> The OPENAI_API_KEY environment variable was not found. </exception>
-    public ImageClient(string model, OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    { }
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ImageClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ImageClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
 
     // CUSTOM:
     // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="ImageClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ImageClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    {
+    }
 
-    /// <summary> Initializes a new instance of EmbeddingClient. </summary>
-    /// <param name="pipeline"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
-    /// <param name="model"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
-    /// <param name="endpoint"> OpenAI Endpoint. </param>
-    protected internal ImageClient(ClientPipeline pipeline, string model, Uri endpoint, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="ImageClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
 
-        _pipeline = pipeline;
         _model = model;
-        _endpoint = endpoint;
+        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="ImageClient">. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        options ??= new OpenAIClientOptions();
+
+        _model = model;
+        _pipeline = pipeline;
+        _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
     #region GenerateImages
 
-    /// <summary>
-    /// Generates an image based on a given prompt.
-    /// </summary>
+    /// <summary> Generates an image based on a prompt. </summary>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="options"> The options to configure the image generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -92,19 +113,17 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary>
-    /// Generates an image based on a given prompt.
-    /// </summary>
+    /// <summary> Generates an image based on a prompt. </summary>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="options"> The options to configure the image generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -112,20 +131,18 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, (RequestOptions)null);
+        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary>
-    /// Generates images based on a given prompt.
-    /// </summary>
+    /// <summary> Generates images based on a prompt. </summary>
     /// <param name="prompt"> A text description of the desired images. </param>
     /// <param name="imageCount"> The number of images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="options"> The options to configure the image generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -133,20 +150,18 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, (RequestOptions)null).ConfigureAwait(false);
+        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    /// <summary>
-    /// Generates images based on a given prompt.
-    /// </summary>
+    /// <summary> Generates images based on a prompt. </summary>
     /// <param name="prompt"> A text description of the desired images. </param>
     /// <param name="imageCount"> The number of images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image generation request. </param>
+    /// <param name="options"> The options to configure the image generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
@@ -154,7 +169,7 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, (RequestOptions)null);
+        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
@@ -162,22 +177,22 @@ public partial class ImageClient
 
     #region GenerateImageEdits
 
-    /// <summary> Generates an edited or extended image given an original image and a prompt. </summary>
+    /// <summary> Generates an edited or extended image based on an original image and a prompt. </summary>
     /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
-    /// will be used as the mask.
+    ///     The image stream to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
+    ///     will be used as the mask.
     /// </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -187,26 +202,26 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary> Generates an edited or extended image given an original image and a prompt. </summary>
+    /// <summary> Generates an edited or extended image based on an original image and a prompt. </summary>
     /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
-    /// will be used as the mask.
+    ///     The image stream to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
+    ///     will be used as the mask.
     /// </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -216,22 +231,21 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary> Generates an edited or extended image given an original image and a prompt. </summary>
+    /// <summary> Generates an edited or extended image based on an original image and a prompt. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must have
-    /// transparency, which will be used as the mask. The provided file path's extension (for example: .png) will be
-    /// used to validate the format of the input image. The request may fail if the file extension and input image
-    /// format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must
+    ///     have transparency, which will be used as the mask. The provided file path's extension (for example: .png)
+    ///     will be used to validate the format of the input image. The request may fail if the file path's extension
+    ///     and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
     public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -241,51 +255,48 @@ public partial class ImageClient
         return await GenerateImageEditAsync(imageStream, imageFilePath, prompt, options).ConfigureAwait(false);
     }
 
-    /// <summary> Generates an edited or extended image given an original image and a prompt. </summary>
+    /// <summary> Generates an edited or extended image based on an original image and a prompt. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must have
-    /// transparency, which will be used as the mask. The provided file path's extension (for example: .png) will be
-    /// used to validate the format of the input image. The request may fail if the file extension and input image
-    /// format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must
+    ///     have transparency, which will be used as the mask. The provided file path's extension (for example: .png)
+    ///     will be used to validate the format of the input image. The request may fail if the file path's extension
+    ///     and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, string prompt, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         using FileStream imageStream = File.OpenRead(imageFilePath);
-        return GenerateImageEdit(imageStream, imageFilePath, prompt,options);
+        return GenerateImageEdit(imageStream, imageFilePath, prompt, options);
     }
 
-    /// <summary> Generates an edited or extended image given an original image, a prompt, and a mask. </summary>
-    /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
+    /// <param name="image"> The image stream to edit. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="mask">
-    /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where the original image
-    /// should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+    ///     An additional image whose fully transparent areas (i.e., where alpha is zero) indicate where the original image
+    ///     should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
     /// </param>
     /// <param name="maskFilename">
-    /// The filename associated with the mask image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the mask image. The request may fail if the file extension and mask image format
-    /// do not match.
+    ///     The filename associated with the mask image stream. The filename's extension (for example: .png) will be
+    ///     used to validate the format of the mask image. The request may fail if the filename's extension and the
+    ///     actual format of the mask image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -297,34 +308,32 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary> Generates an edited or extended image given an original image, a prompt, and a mask. </summary>
-    /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
+    /// <param name="image"> The image stream to edit. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="mask">
-    /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where the original image
-    /// should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+    ///     An additional image whose fully transparent areas (i.e., where alpha is zero) indicate where the original image
+    ///     should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
     /// </param>
     /// <param name="maskFilename">
-    /// The filename associated with the mask image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the mask image. The request may fail if the file extension and mask image format
-    /// do not match.
+    ///     The filename associated with the mask image stream. The filename's extension (for example: .png) will be
+    ///     used to validate the format of the mask image. The request may fail if the filename's extension and the
+    ///     actual format of the mask image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -336,27 +345,27 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
-    /// <summary> Generates an edited or extended image given an original image, a prompt, and a mask. </summary>
+    /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
-    /// path's extension (for example: .png) will be used to validate the format of the input image. The request may
-    /// fail if the file extension and input image format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
+    ///     path's extension (for example: .png) will be used to validate the format of the input image. The request
+    ///     may fail if the file path's extension and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="maskFilePath">
-    /// The path of the mask image file whose fully transparent areas (e.g. where alpha is zero) indicate where the
-    /// original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as the
-    /// original image. The provided file path's extension (for example: .png) will be used to validate the format of
-    /// the input image. The request may fail if the file extension and mask image format do not match.
+    ///     The path of the mask image file whose fully transparent areas (i.e., where alpha is zero) indicate where
+    ///     the original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions
+    ///     as the original image. The provided file path's extension (for example: .png) will be used to validate the
+    ///     format of the mask image. The request may fail if the file path's extension and the actual format of the
+    ///     mask image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/> or <paramref name="maskFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/>, or <paramref name="maskFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
     public virtual async Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -368,23 +377,23 @@ public partial class ImageClient
         return await GenerateImageEditAsync(imageStream, imageFilePath, prompt, maskStream, maskFilePath, options).ConfigureAwait(false);
     }
 
-    /// <summary> Generates an edited or extended image given an original image, a prompt, and a mask. </summary>
+    /// <summary> Generates an edited or extended image based on an original image, a prompt, and a mask. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
-    /// path's extension (for example: .png) will be used to validate the format of the input image. The request may
-    /// fail if the file extension and input image format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
+    ///     path's extension (for example: .png) will be used to validate the format of the input image. The request
+    ///     may fail if the file path's extension and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="maskFilePath">
-    /// The path of the mask image file whose fully transparent areas (e.g. where alpha is zero) indicate where the
-    /// original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as the
-    /// original image. The provided file path's extension (for example: .png) will be used to validate the format of
-    /// the input image. The request may fail if the file extension and mask image format do not match.
+    ///     The path of the mask image file whose fully transparent areas (i.e., where alpha is zero) indicate where
+    ///     the original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions
+    ///     as the original image. The provided file path's extension (for example: .png) will be used to validate the
+    ///     format of the mask image. The request may fail if the file path's extension and the actual format of the
+    ///     mask image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/> or <paramref name="maskFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/>, or <paramref name="maskFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended image. </returns>
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -396,23 +405,23 @@ public partial class ImageClient
         return GenerateImageEdit(imageStream, imageFilePath, prompt, maskStream, maskFilePath, options);
     }
 
-    /// <summary> Generates edited or extended images given an original image and a prompt. </summary>
+    /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
     /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
-    /// will be used as the mask.
+    ///     The image stream to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
+    ///     will be used as the mask.
     /// </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -422,27 +431,27 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    /// <summary> Generates edited or extended images given an original image and a prompt. </summary>
+    /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
     /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
-    /// will be used as the mask.
+    ///     The image stream to edit. Must be a valid PNG file, less than 4MB, and square. The image must have transparency, which
+    ///     will be used as the mask.
     /// </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -452,23 +461,22 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    /// <summary> Generates edited or extended images given an original image and a prompt. </summary>
+    /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must have
-    /// transparency, which will be used as the mask. The provided file path's extension (for example: .png) will be
-    /// used to validate the format of the input image. The request may fail if the file extension and input image
-    /// format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must
+    ///     have transparency, which will be used as the mask. The provided file path's extension (for example: .png)
+    ///     will be used to validate the format of the input image. The request may fail if the file path's extension
+    ///     and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
     public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -478,19 +486,18 @@ public partial class ImageClient
         return await GenerateImageEditsAsync(imageStream, imageFilePath, prompt, imageCount, options).ConfigureAwait(false);
     }
 
-    /// <summary> Generates edited or extended images given an original image and a prompt. </summary>
+    /// <summary> Generates edited or extended images based on an original image and a prompt. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must have
-    /// transparency, which will be used as the mask. The provided file path's extension (for example: .png) will be
-    /// used to validate the format of the input image. The request may fail if the file extension and input image
-    /// format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The image must
+    ///     have transparency, which will be used as the mask. The provided file path's extension (for example: .png)
+    ///     will be used to validate the format of the input image. The request may fail if the file path's extension
+    ///     and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> or <paramref name="prompt"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -500,31 +507,29 @@ public partial class ImageClient
         return GenerateImageEdits(imageStream, imageFilePath, prompt, imageCount, options);
     }
 
-    /// <summary> Generates edited or extended images given an original image, a prompt, and a mask. </summary>
-    /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
+    /// <param name="image"> The image stream to edit. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="mask">
-    /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where the original image
-    /// should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+    ///     An additional image whose fully transparent areas (i.e., where alpha is zero) indicate where the original image
+    ///     should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
     /// </param>
     /// <param name="maskFilename">
-    /// The filename associated with the mask image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the mask image. The request may fail if the file extension and mask image format
-    /// do not match.
+    ///     The filename associated with the mask image stream. The filename's extension (for example: .png) will be
+    ///     used to validate the format of the mask image. The request may fail if the filename's extension and the
+    ///     actual format of the mask image do not match.
     /// </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -536,35 +541,33 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    /// <summary> Generates edited or extended images given an original image, a prompt, and a mask. </summary>
-    /// <param name="image">
-    /// The image to edit. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
+    /// <param name="image"> The image stream to edit. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="mask">
-    /// An additional image whose fully transparent areas (e.g. where alpha is zero) indicate where the original image
-    /// should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
+    ///     An additional image whose fully transparent areas (i.e., where alpha is zero) indicate where the original image
+    ///     should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as image.
     /// </param>
     /// <param name="maskFilename">
-    /// The filename associated with the mask image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the mask image. The request may fail if the file extension and mask image format
-    /// do not match.
+    ///     The filename associated with the mask image stream. The filename's extension (for example: .png) will be
+    ///     used to validate the format of the mask image. The request may fail if the filename's extension and the
+    ///     actual format of the mask image do not match.
     /// </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/>, <paramref name="imageFilename"/>, <paramref name="prompt"/>, <paramref name="mask"/>, or <paramref name="maskFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/>, <paramref name="prompt"/>, or <paramref name="maskFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -576,28 +579,28 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType);
+        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    /// <summary> Generates edited or extended images given an original image, a prompt, and a mask. </summary>
+    /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
-    /// path's extension (for example: .png) will be used to validate the format of the input image. The request may
-    /// fail if the file extension and input image format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
+    ///     path's extension (for example: .png) will be used to validate the format of the input image. The request
+    ///     may fail if the file path's extension and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="maskFilePath">
-    /// The path of the mask image file whose fully transparent areas (e.g. where alpha is zero) indicate where the
-    /// original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as the
-    /// original image. The provided file path's extension (for example: .png) will be used to validate the format of
-    /// the input image. The request may fail if the file extension and mask image format do not match.
+    ///     The path of the mask image file whose fully transparent areas (i.e., where alpha is zero) indicate where
+    ///     the original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions
+    ///     as the original image. The provided file path's extension (for example: .png) will be used to validate the
+    ///     format of the mask image. The request may fail if the file path's extension and the actual format of the
+    ///     mask image do not match.
     /// </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/> or <paramref name="maskFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/>, or <paramref name="maskFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
     public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -609,24 +612,24 @@ public partial class ImageClient
         return await GenerateImageEditsAsync(imageStream, imageFilePath, prompt, maskStream, maskFilePath, imageCount, options).ConfigureAwait(false);
     }
 
-    /// <summary> Generates edited or extended images given an original image, a prompt, and a mask. </summary>
+    /// <summary> Generates edited or extended images based on an original image, a prompt, and a mask. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
-    /// path's extension (for example: .png) will be used to validate the format of the input image. The request may
-    /// fail if the file extension and input image format do not match.
+    ///     The path of the image file to edit. Must be a valid PNG file, less than 4MB, and square. The provided file
+    ///     path's extension (for example: .png) will be used to validate the format of the input image. The request
+    ///     may fail if the file path's extension and the actual format of the input image do not match.
     /// </param>
     /// <param name="prompt"> A text description of the desired image. </param>
     /// <param name="maskFilePath">
-    /// The path of the mask image file whose fully transparent areas (e.g. where alpha is zero) indicate where the
-    /// original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions as the
-    /// original image. The provided file path's extension (for example: .png) will be used to validate the format of
-    /// the input image. The request may fail if the file extension and mask image format do not match.
+    ///     The path of the mask image file whose fully transparent areas (i.e., where alpha is zero) indicate where
+    ///     the original image should be edited. Must be a valid PNG file, less than 4MB, and have the same dimensions
+    ///     as the original image. The provided file path's extension (for example: .png) will be used to validate the
+    ///     format of the mask image. The request may fail if the file path's extension and the actual format of the
+    ///     mask image do not match.
     /// </param>
-    /// <param name="imageCount"> The number of edit or extended images to generate. </param>
-    /// <param name="options"> Additional options to tailor the image edit request. </param>
+    /// <param name="imageCount"> The number of edited or extended images to generate. </param>
+    /// <param name="options"> The options to configure the image edit. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/> or <paramref name="maskFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/>, <paramref name="prompt"/>, or <paramref name="maskFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The edited or extended images. </returns>
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -643,19 +646,17 @@ public partial class ImageClient
     #region GenerateImageVariations
 
     /// <summary> Generates a variation of a given image. </summary>
-    /// <param name="image">
-    /// The image to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <param name="image"> The image stream to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variation. </returns>
-    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -664,24 +665,22 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
     /// <summary> Generates a variation of a given image. </summary>
-    /// <param name="image">
-    /// The image to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <param name="image"> The image stream to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variation. </returns>
-    public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null)
+    public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -690,20 +689,20 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = GenerateImageVariations(content, content.ContentType);
+        ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
     /// <summary> Generates a variation of a given image. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and
-    /// square. The provided file path's extension (for example: .png) will be used to validate the format of the input
-    /// image. The request may fail if the file extension and input image format do not match.
+    ///     The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB,
+    ///     and square. The provided file path's extension (for example: .png) will be used to validate the format of
+    ///     the input image. The request may fail if the file path's extension and the actual format of the input image
+    ///     do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variation. </returns>
     public virtual async Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -714,14 +713,14 @@ public partial class ImageClient
 
     /// <summary> Generates a variation of a given image. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and
-    /// square. The provided file path's extension (for example: .png) will be used to validate the format of the input
-    /// image. The request may fail if the file extension and input image format do not match.
+    ///     The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB,
+    ///     and square. The provided file path's extension (for example: .png) will be used to validate the format of
+    ///     the input image. The request may fail if the file path's extension and the actual format of the input image
+    ///     do not match.
     /// </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variation. </returns>
     public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -731,20 +730,18 @@ public partial class ImageClient
     }
 
     /// <summary> Generates variations of a given image. </summary>
-    /// <param name="image">
-    /// The image to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <param name="image"> The image stream to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variations. </returns>
-    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null)
+    public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -753,25 +750,23 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType).ConfigureAwait(false);
+        ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Generates variations of a given image. </summary>
-    /// <param name="image">
-    /// The image to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square.
-    /// </param>
+    /// <param name="image"> The image stream to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and square. </param>
     /// <param name="imageFilename">
-    /// The filename associated with the image stream. The filename's extension (for example: .png) will be used to
-    /// validate the format of the input image. The request may fail if the file extension and input image format do
-    /// not match.
+    ///     The filename associated with the image stream. The filename's extension (for example: .png) will be used to
+    ///     validate the format of the input image. The request may fail if the filename's extension and the actual
+    ///     format of the input image do not match.
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="image"/> or <paramref name="imageFilename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilename"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variations. </returns>
-    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null)
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(image, nameof(image));
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
@@ -780,21 +775,21 @@ public partial class ImageClient
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
         using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
-        ClientResult result = GenerateImageVariations(content, content.ContentType);
+        ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(GeneratedImageCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     /// <summary> Generates variations of a given image. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and
-    /// square. The provided file path's extension (for example: .png) will be used to validate the format of the input
-    /// image. The request may fail if the file extension and input image format do not match.
+    ///     The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB,
+    ///     and square. The provided file path's extension (for example: .png) will be used to validate the format of
+    ///     the input image. The request may fail if the file path's extension and the actual format of the input image
+    ///     do not match.
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variations. </returns>
     public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));
@@ -805,15 +800,15 @@ public partial class ImageClient
 
     /// <summary> Generates variations of a given image. </summary>
     /// <param name="imageFilePath">
-    /// The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB, and
-    /// square. The provided file path's extension (for example: .png) will be used to validate the format of the input
-    /// image. The request may fail if the file extension and input image format do not match.
+    ///     The path of the image file to use as the basis for the variation. Must be a valid PNG file, less than 4MB,
+    ///     and square. The provided file path's extension (for example: .png) will be used to validate the format of
+    ///     the input image. The request may fail if the file path's extension and the actual format of the input image
+    ///     do not match.
     /// </param>
     /// <param name="imageCount"> The number of image variations to generate. </param>
-    /// <param name="options"> Additional options to tailor the image variation request. </param>
+    /// <param name="options"> The options to configure the image variation. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="imageFilePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="imageFilePath"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <returns> The generated image variations. </returns>
     public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, int imageCount, ImageVariationOptions options = null)
     {
         Argument.AssertNotNullOrEmpty(imageFilePath, nameof(imageFilePath));

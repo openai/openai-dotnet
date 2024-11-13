@@ -10,43 +10,9 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadRun
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, AssistantResponseFormat responseFormat)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(threadId, nameof(threadId));
-            Argument.AssertNotNull(assistantId, nameof(assistantId));
-            Argument.AssertNotNull(model, nameof(model));
-            Argument.AssertNotNull(instructions, nameof(instructions));
-            Argument.AssertNotNull(tools, nameof(tools));
-
-            Id = id;
-            CreatedAt = createdAt;
-            ThreadId = threadId;
-            AssistantId = assistantId;
-            Status = status;
-            _internalRequiredAction = internalRequiredAction;
-            LastError = lastError;
-            ExpiresAt = expiresAt;
-            StartedAt = startedAt;
-            CancelledAt = cancelledAt;
-            FailedAt = failedAt;
-            CompletedAt = completedAt;
-            IncompleteDetails = incompleteDetails;
-            Model = model;
-            Instructions = instructions;
-            Tools = tools.ToList();
-            Metadata = metadata;
-            Usage = usage;
-            MaxPromptTokens = maxPromptTokens;
-            MaxCompletionTokens = maxCompletionTokens;
-            TruncationStrategy = truncationStrategy;
-            ToolConstraint = toolConstraint;
-            ResponseFormat = responseFormat;
-        }
-
-        internal ThreadRun(string id, InternalRunObjectObject @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ThreadRun(string id, InternalRunObjectObject @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Object = @object;
@@ -69,12 +35,13 @@ namespace OpenAI.Assistants
             Usage = usage;
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
-            MaxPromptTokens = maxPromptTokens;
-            MaxCompletionTokens = maxCompletionTokens;
+            MaxInputTokenCount = maxInputTokenCount;
+            MaxOutputTokenCount = maxOutputTokenCount;
             TruncationStrategy = truncationStrategy;
             ToolConstraint = toolConstraint;
+            AllowParallelToolCalls = allowParallelToolCalls;
             ResponseFormat = responseFormat;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal ThreadRun()
@@ -100,8 +67,6 @@ namespace OpenAI.Assistants
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public RunTokenUsage Usage { get; }
         public float? Temperature { get; }
-        public int? MaxPromptTokens { get; }
-        public int? MaxCompletionTokens { get; }
         public RunTruncationStrategy TruncationStrategy { get; }
     }
 }

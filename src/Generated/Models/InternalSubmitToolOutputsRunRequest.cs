@@ -10,8 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalSubmitToolOutputsRunRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalSubmitToolOutputsRunRequest(IEnumerable<ToolOutput> toolOutputs)
         {
             Argument.AssertNotNull(toolOutputs, nameof(toolOutputs));
@@ -23,7 +22,7 @@ namespace OpenAI.Assistants
         {
             ToolOutputs = toolOutputs;
             Stream = stream;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalSubmitToolOutputsRunRequest()

@@ -1,6 +1,9 @@
-﻿namespace OpenAI.VectorStores;
+using System.Diagnostics.CodeAnalysis;
 
-[CodeGenModel("VectorStoreFileAssociationErrorCode")]
+namespace OpenAI.VectorStores;
+
+[Experimental("OPENAI001")]
+[CodeGenModel("VectorStoreFileObjectLastErrorCode")]
 public readonly partial struct VectorStoreFileAssociationErrorCode
 {
 }

@@ -16,7 +16,7 @@ public partial class AssistantExamples
         // This example parallels the content at the following location:
         // https://platform.openai.com/docs/assistants/tools/function-calling/function-calling-beta
         #region Step 1 - Define Functions
-        
+
         // First, define the functions that the assistant will use in its defined tools.
 
         FunctionToolDefinition getTemperatureTool = new()
@@ -63,7 +63,6 @@ public partial class AssistantExamples
         #endregion
 
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region Create a new assistant with function tools
@@ -83,16 +82,16 @@ public partial class AssistantExamples
         #region Step 2 - Create a thread and add messages
         AssistantThread thread = await client.CreateThreadAsync();
         ThreadMessage message = await client.CreateMessageAsync(
-            thread,
+            thread.Id,
+            MessageRole.User,
             [
                 "What's the weather in San Francisco today and the likelihood it'll rain?"
             ]);
         #endregion
 
         #region Step 3 - Initiate a streaming run
-        // TODO: replace this with finalized enumerable result pattern
-        AsyncResultCollection<StreamingUpdate> asyncUpdates
-            = client.CreateRunStreamingAsync(thread, assistant);
+        AsyncCollectionResult<StreamingUpdate> asyncUpdates
+            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         ThreadRun currentRun = null;
         do
@@ -101,11 +100,7 @@ public partial class AssistantExamples
             List<ToolOutput> outputsToSubmit = [];
             await foreach (StreamingUpdate update in asyncUpdates)
             {
-                if (update is RunUpdate runUpdate)
-                {
-                    currentRun = runUpdate;
-                }
-                else if (update is RequiredActionUpdate requiredActionUpdate)
+                if (update is RequiredActionUpdate requiredActionUpdate)
                 {
                     if (requiredActionUpdate.FunctionName == getTemperatureTool.FunctionName)
                     {
@@ -116,6 +111,10 @@ public partial class AssistantExamples
                         outputsToSubmit.Add(new ToolOutput(requiredActionUpdate.ToolCallId, "25%"));
                     }
                 }
+                else if (update is RunUpdate runUpdate)
+                {
+                    currentRun = runUpdate;
+                }
                 else if (update is MessageContentUpdate contentUpdate)
                 {
                     Console.Write(contentUpdate.Text);
@@ -123,7 +122,7 @@ public partial class AssistantExamples
             }
             if (outputsToSubmit.Count > 0)
             {
-                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun, outputsToSubmit);
+                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun.ThreadId, currentRun.Id, outputsToSubmit);
             }
         }
         while (currentRun?.Status.IsTerminal == false);

@@ -1,22 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>This is the OpenAI client library for developing .NET applications with rich experience.</Description>
+    <Description>
+    The official .NET library for the OpenAI service API.
+    </Description>
     <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
-    <PackageTags>OpenAI</PackageTags>
+    <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
-    <VersionPrefix>2.0.0</VersionPrefix>
-    <VersionSuffix>beta.3</VersionSuffix>
+    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionSuffix>beta.2</VersionSuffix>
 
-    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-
-    <!-- Sign the assembly with the specified key file. -->
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>OpenAI.snk</AssemblyOriginatorKeyFile>
 
     <!-- Generate an XML documentation file for the project. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    
+
     <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageIcon>OpenAI.png</PackageIcon>
@@ -25,27 +23,60 @@
     <!-- Create a .snupkg file in addition to the .nupkg file. -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-   
+
     <!-- Embed source files that are not tracked by the source control manager in the PDB -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-</PropertyGroup>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Disable missing XML documentation warnings -->
+    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
+
+    <!-- Disable obsolete warnings -->
+    <NoWarn>$(NoWarn),0618</NoWarn>
+
+    <!-- Disable unused fields warnings -->
+    <NoWarn>$(NoWarn),0169</NoWarn>
+
+    <!-- Disable warnings for experimental APIs -->
+    <NoWarn>$(NoWarn),OPENAI001;OPENAI002</NoWarn>
+
+    <Configurations>Debug;Release;Unsigned</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <!-- Sign the assembly with the specified key file. -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' != 'Unsigned'">
+      <PublicKey>0024000004800000940000000602000000240000525341310004000001000100097ad52abbeaa2e1a1982747cc0106534f65cfea6707eaed696a3a63daea80de2512746801a7e47f88e7781e71af960d89ba2e25561f70b0e2dbc93319e0af1961a719ccf5a4d28709b2b57a5d29b7c09dc8d269a490ebe2651c4b6e6738c27c5fb2c02469fe9757f0a3479ac310d6588a50a28d7dd431b907fd325e18b9e8ed</PublicKey>
+    </InternalsVisibleTo>
+    <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' == 'Unsigned'" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <!-- Allow use of unsafe code, for System.Net.ServerSentEvents polyfill on netstandard2.0
+         TODO https://github.com/openai/openai-dotnet/issues/41: Remove once polyfill for
+         System.Net.ServerSentEvents is removed in favor of referencing the package -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-
-    <!-- Disable missing XML documentation warnings -->
-    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
   </PropertyGroup>
-  
   <ItemGroup>
     <None Include="OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.1.0-beta.4" />
-    <PackageReference Include="System.Memory.Data" Version="8.0.0" />
+    <PackageReference Include="System.ClientModel" Version="1.2.1" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
   </ItemGroup>
 </Project>

@@ -10,8 +10,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalCreateVectorStoreFileBatchRequest
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
         {
             Argument.AssertNotNull(fileIds, nameof(fileIds));
@@ -19,10 +18,11 @@ namespace OpenAI.VectorStores
             FileIds = fileIds.ToList();
         }
 
-        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileIds = fileIds;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            ChunkingStrategy = chunkingStrategy;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateVectorStoreFileBatchRequest()
@@ -30,5 +30,6 @@ namespace OpenAI.VectorStores
         }
 
         public IList<string> FileIds { get; }
+        public BinaryData ChunkingStrategy { get; set; }
     }
 }

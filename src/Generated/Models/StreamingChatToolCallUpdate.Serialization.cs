@@ -21,24 +21,34 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("index"u8);
-            writer.WriteNumberValue(Index);
-            if (Optional.IsDefined(Id))
+            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            {
+                writer.WritePropertyName("index"u8);
+                writer.WriteNumberValue(Index);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true && Optional.IsDefined(ToolCallId))
             {
                 writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteStringValue(ToolCallId);
             }
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Kind.ToString());
-            if (Optional.IsDefined(Function))
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("function") != true && Optional.IsDefined(Function))
             {
                 writer.WritePropertyName("function"u8);
                 writer.WriteObjectValue<InternalChatCompletionMessageToolCallChunkFunction>(Function, options);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -97,7 +107,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    type = new ChatToolCallKind(property.Value.GetString());
+                    type = property.Value.GetString().ToChatToolCallKind();
                     continue;
                 }
                 if (property.NameEquals("function"u8))
@@ -111,6 +121,7 @@ namespace OpenAI.Chat
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

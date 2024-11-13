@@ -21,46 +21,24 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("project"u8);
-            writer.WriteStringValue(Project);
-            if (Optional.IsDefined(Name))
+            if (SerializedAdditionalRawData?.ContainsKey("wandb") != true)
             {
-                if (Name != null)
-                {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name");
-                }
+                writer.WritePropertyName("wandb"u8);
+                writer.WriteObjectValue(Wandb, options);
             }
-            if (Optional.IsDefined(Entity))
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
-                if (Entity != null)
-                {
-                    writer.WritePropertyName("entity"u8);
-                    writer.WriteStringValue(Entity);
-                }
-                else
-                {
-                    writer.WriteNull("entity");
-                }
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type);
             }
-            if (Optional.IsCollectionDefined(Tags))
+            if (SerializedAdditionalRawData != null)
             {
-                writer.WritePropertyName("tags"u8);
-                writer.WriteStartArray();
-                foreach (var item in Tags)
+                foreach (var item in SerializedAdditionalRawData)
                 {
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
-            }
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
-                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -95,60 +73,30 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            string project = default;
-            string name = default;
-            string entity = default;
-            IReadOnlyList<string> tags = default;
+            FineTuningIntegrationWandbWandb wandb = default;
+            string type = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
-                if (property.NameEquals("project"u8))
+                if (property.NameEquals("wandb"u8))
                 {
-                    project = property.Value.GetString();
+                    wandb = FineTuningIntegrationWandbWandb.DeserializeFineTuningIntegrationWandbWandb(property.Value, options);
                     continue;
                 }
-                if (property.NameEquals("name"u8))
+                if (property.NameEquals("type"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        name = null;
-                        continue;
-                    }
-                    name = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("entity"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        entity = null;
-                        continue;
-                    }
-                    entity = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("tags"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(item.GetString());
-                    }
-                    tags = array;
+                    type = property.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalFineTuningIntegrationWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), serializedAdditionalRawData);
+            return new InternalFineTuningIntegrationWandb(type, serializedAdditionalRawData, wandb);
         }
 
         BinaryData IPersistableModel<InternalFineTuningIntegrationWandb>.Write(ModelReaderWriterOptions options)
@@ -182,13 +130,13 @@ namespace OpenAI.FineTuning
 
         string IPersistableModel<InternalFineTuningIntegrationWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalFineTuningIntegrationWandb FromResponse(PipelineResponse response)
+        internal static new InternalFineTuningIntegrationWandb FromResponse(PipelineResponse response)
         {
             using var document = JsonDocument.Parse(response.Content);
             return DeserializeInternalFineTuningIntegrationWandb(document.RootElement);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        internal override BinaryContent ToBinaryContent()
         {
             return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
         }

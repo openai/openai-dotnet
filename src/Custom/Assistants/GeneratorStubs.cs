@@ -1,54 +1,55 @@
-﻿namespace OpenAI.Assistants;
+using System.Diagnostics.CodeAnalysis;
+
+namespace OpenAI.Assistants;
 
 /*
  * This file stubs and performs minimal customization to generated public types for the OpenAI.Assistants namespace
  * that are not otherwise attributed elsewhere.
  */
-
+[Experimental("OPENAI001")]
 [CodeGenModel("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition : ToolDefinition { }
 
-[CodeGenModel("AssistantToolsFileSearch")]
-public partial class FileSearchToolDefinition : ToolDefinition { }
-
-[CodeGenModel("ThreadMessageStatus")]
+[Experimental("OPENAI001")]
+[CodeGenModel("MessageObjectStatus")]
 public readonly partial struct MessageStatus { }
 
+[Experimental("OPENAI001")]
 [CodeGenModel("MessageObjectIncompleteDetails")]
 public partial class MessageFailureDetails { }
 
-[CodeGenModel("MessageFailureDetailsReason")]
+[Experimental("OPENAI001")]
+[CodeGenModel("MessageObjectIncompleteDetailsReason")]
 public readonly partial struct MessageFailureReason { }
 
-[CodeGenModel("RunCompletionUsage")]
-public partial class RunTokenUsage { }
-
+[Experimental("OPENAI001")]
 [CodeGenModel("RunObjectLastError")]
 public partial class RunError { }
 
-[CodeGenModel("RunErrorCode")]
+[Experimental("OPENAI001")]
+[CodeGenModel("RunObjectLastErrorCode")]
 public readonly partial struct RunErrorCode { }
 
+[Experimental("OPENAI001")]
 [CodeGenModel("RunObjectIncompleteDetails")]
 public partial class RunIncompleteDetails { }
 
-[CodeGenModel("RunIncompleteDetailsReason")]
-public readonly partial struct RunIncompleteReason { }
-
-[CodeGenModel("RunStepType")]
+[Experimental("OPENAI001")]
+[CodeGenModel("RunStepObjectType")]
 public readonly partial struct RunStepType { }
 
-[CodeGenModel("RunStepStatus")]
+[Experimental("OPENAI001")]
+[CodeGenModel("RunStepObjectStatus")]
 public readonly partial struct RunStepStatus { }
 
+[Experimental("OPENAI001")]
 [CodeGenModel("RunStepObjectLastError")]
 public partial class RunStepError { }
 
-[CodeGenModel("RunStepErrorCode")]
+[Experimental("OPENAI001")]
+[CodeGenModel("RunStepObjectLastErrorCode")]
 public readonly partial struct RunStepErrorCode { }
 
-[CodeGenModel("RunStepCompletionUsage")]
-public partial class RunStepTokenUsage { }
-
+[Experimental("OPENAI001")]
 [CodeGenModel("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepCodeInterpreterOutput { }

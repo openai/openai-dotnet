@@ -9,11 +9,9 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionFunctionResponseChoice
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal InternalCreateChatCompletionFunctionResponseChoice(string finishReason, int index, InternalChatCompletionResponseMessage message)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        internal InternalCreateChatCompletionFunctionResponseChoice(InternalCreateChatCompletionFunctionResponseChoiceFinishReason finishReason, int index, InternalChatCompletionResponseMessage message)
         {
-            Argument.AssertNotNull(finishReason, nameof(finishReason));
             Argument.AssertNotNull(message, nameof(message));
 
             FinishReason = finishReason;
@@ -21,19 +19,19 @@ namespace OpenAI.Chat
             Message = message;
         }
 
-        internal InternalCreateChatCompletionFunctionResponseChoice(string finishReason, int index, InternalChatCompletionResponseMessage message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateChatCompletionFunctionResponseChoice(InternalCreateChatCompletionFunctionResponseChoiceFinishReason finishReason, int index, InternalChatCompletionResponseMessage message, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FinishReason = finishReason;
             Index = index;
             Message = message;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateChatCompletionFunctionResponseChoice()
         {
         }
 
-        public string FinishReason { get; }
+        public InternalCreateChatCompletionFunctionResponseChoiceFinishReason FinishReason { get; }
         public int Index { get; }
         public InternalChatCompletionResponseMessage Message { get; }
     }

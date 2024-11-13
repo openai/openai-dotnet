@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
-[CodeGenModel("ThreadRunStatus")]
+[Experimental("OPENAI001")]
+[CodeGenModel("RunObjectStatus")]
 public readonly partial struct RunStatus
 {
     /// <summary>

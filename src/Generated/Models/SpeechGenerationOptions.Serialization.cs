@@ -21,26 +21,39 @@ namespace OpenAI.Audio
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model.ToString());
-            writer.WritePropertyName("input"u8);
-            writer.WriteStringValue(Input);
-            writer.WritePropertyName("voice"u8);
-            writer.WriteStringValue(Voice.ToSerialString());
-            if (Optional.IsDefined(ResponseFormat))
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
+                writer.WriteStringValue(Input);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("voice") != true)
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToSerialString());
+                writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Speed))
+            if (SerializedAdditionalRawData?.ContainsKey("speed") != true && Optional.IsDefined(SpeedRatio))
             {
                 writer.WritePropertyName("speed"u8);
-                writer.WriteNumberValue(Speed.Value);
+                writer.WriteNumberValue(SpeedRatio.Value);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -96,7 +109,7 @@ namespace OpenAI.Audio
                 }
                 if (property.NameEquals("voice"u8))
                 {
-                    voice = property.Value.GetString().ToGeneratedSpeechVoice();
+                    voice = new GeneratedSpeechVoice(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("response_format"u8))
@@ -105,7 +118,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    responseFormat = property.Value.GetString().ToGeneratedSpeechFormat();
+                    responseFormat = new GeneratedSpeechFormat(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("speed"u8))
@@ -119,6 +132,7 @@ namespace OpenAI.Audio
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

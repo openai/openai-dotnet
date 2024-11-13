@@ -21,19 +21,34 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (var item in Data)
+            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
             {
-                writer.WriteObjectValue(item, options);
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("data") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (var item in Data)
                 {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -68,18 +83,24 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IReadOnlyList<InternalFineTuningJobEvent> data = default;
+            bool hasMore = default;
+            IReadOnlyList<FineTuningJobEvent> data = default;
             InternalListFineTuningJobEventsResponseObject @object = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
+                if (property.NameEquals("has_more"u8))
+                {
+                    hasMore = property.Value.GetBoolean();
+                    continue;
+                }
                 if (property.NameEquals("data"u8))
                 {
-                    List<InternalFineTuningJobEvent> array = new List<InternalFineTuningJobEvent>();
+                    List<FineTuningJobEvent> array = new List<FineTuningJobEvent>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(InternalFineTuningJobEvent.DeserializeInternalFineTuningJobEvent(item, options));
+                        array.Add(FineTuningJobEvent.DeserializeFineTuningJobEvent(item, options));
                     }
                     data = array;
                     continue;
@@ -91,11 +112,12 @@ namespace OpenAI.FineTuning
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalListFineTuningJobEventsResponse(data, @object, serializedAdditionalRawData);
+            return new InternalListFineTuningJobEventsResponse(hasMore, data, @object, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalListFineTuningJobEventsResponse>.Write(ModelReaderWriterOptions options)

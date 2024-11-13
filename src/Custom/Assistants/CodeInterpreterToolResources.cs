@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
 /// <summary> The AssistantObjectToolResourcesCodeInterpreter. </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("AssistantObjectToolResourcesCodeInterpreter")]
 public partial class CodeInterpreterToolResources
 {
@@ -12,7 +14,7 @@ public partial class CodeInterpreterToolResources
     public IList<string> FileIds
     {
         get => _fileIds;
-        init
+        internal set
         {
             _fileIds = new ChangeTrackingList<string>();
             foreach (string fileId in value)

@@ -21,13 +21,22 @@ namespace OpenAI.Batch
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("input_file_id"u8);
-            writer.WriteStringValue(InputFileId);
-            writer.WritePropertyName("endpoint"u8);
-            writer.WriteStringValue(Endpoint.ToString());
-            writer.WritePropertyName("completion_window"u8);
-            writer.WriteStringValue(CompletionWindow.ToString());
-            if (Optional.IsCollectionDefined(Metadata))
+            if (SerializedAdditionalRawData?.ContainsKey("input_file_id") != true)
+            {
+                writer.WritePropertyName("input_file_id"u8);
+                writer.WriteStringValue(InputFileId);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("endpoint") != true)
+            {
+                writer.WritePropertyName("endpoint"u8);
+                writer.WriteStringValue(Endpoint.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("completion_window") != true)
+            {
+                writer.WritePropertyName("completion_window"u8);
+                writer.WriteStringValue(CompletionWindow.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
             {
                 if (Metadata != null)
                 {
@@ -45,10 +54,14 @@ namespace OpenAI.Batch
                     writer.WriteNull("metadata");
                 }
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -84,9 +97,9 @@ namespace OpenAI.Batch
                 return null;
             }
             string inputFileId = default;
-            InternalBatchOperationEndpoint endpoint = default;
+            InternalCreateBatchRequestEndpoint endpoint = default;
             InternalBatchCompletionTimeframe completionWindow = default;
-            IDictionary<string, string> metadata = default;
+            IReadOnlyDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -98,7 +111,7 @@ namespace OpenAI.Batch
                 }
                 if (property.NameEquals("endpoint"u8))
                 {
-                    endpoint = new InternalBatchOperationEndpoint(property.Value.GetString());
+                    endpoint = new InternalCreateBatchRequestEndpoint(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("completion_window"u8))
@@ -122,6 +135,7 @@ namespace OpenAI.Batch
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

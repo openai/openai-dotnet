@@ -2,6 +2,7 @@
 using OpenAI.Assistants;
 using System;
 using System.ClientModel;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -12,12 +13,11 @@ public partial class AssistantExamples
     public async Task Example03_ListAssistantsWithPaginationAsync()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         int count = 0;
 
-        AsyncPageableCollection<Assistant> assistants = client.GetAssistantsAsync();
+        AsyncCollectionResult<Assistant> assistants = client.GetAssistantsAsync();
         await foreach (Assistant assistant in assistants)
         {
             Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");

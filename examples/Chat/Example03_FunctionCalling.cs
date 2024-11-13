@@ -31,7 +31,7 @@ public partial class ChatExamples
     private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
         functionName: nameof(GetCurrentWeather),
         functionDescription: "Get the current weather in a given location",
-        functionParameters: BinaryData.FromString("""
+        functionParameters: BinaryData.FromBytes("""
             {
                 "type": "object",
                 "properties": {
@@ -47,7 +47,7 @@ public partial class ChatExamples
                 },
                 "required": [ "location" ]
             }
-            """)
+            """u8.ToArray())
     );
     #endregion
 
@@ -57,7 +57,8 @@ public partial class ChatExamples
         ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region
-        List<ChatMessage> messages = [
+        List<ChatMessage> messages =
+        [
             new UserChatMessage("What's the weather like today?"),
         ];
 
@@ -73,24 +74,24 @@ public partial class ChatExamples
         do
         {
             requiresAction = false;
-            ChatCompletion chatCompletion = client.CompleteChat(messages, options);
+            ChatCompletion completion = client.CompleteChat(messages, options);
 
-            switch (chatCompletion.FinishReason)
+            switch (completion.FinishReason)
             {
                 case ChatFinishReason.Stop:
                     {
                         // Add the assistant message to the conversation history.
-                        messages.Add(new AssistantChatMessage(chatCompletion));
+                        messages.Add(new AssistantChatMessage(completion));
                         break;
                     }
 
                 case ChatFinishReason.ToolCalls:
                     {
                         // First, add the assistant message with tool calls to the conversation history.
-                        messages.Add(new AssistantChatMessage(chatCompletion));
+                        messages.Add(new AssistantChatMessage(completion));
 
                         // Then, add a new tool message for each tool call that is resolved.
-                        foreach (ChatToolCall toolCall in chatCompletion.ToolCalls)
+                        foreach (ChatToolCall toolCall in completion.ToolCalls)
                         {
                             switch (toolCall.FunctionName)
                             {
@@ -145,22 +146,16 @@ public partial class ChatExamples
                     throw new NotImplementedException("Deprecated in favor of tool calls.");
 
                 default:
-                    throw new NotImplementedException(chatCompletion.FinishReason.ToString());
+                    throw new NotImplementedException(completion.FinishReason.ToString());
             }
         } while (requiresAction);
         #endregion
 
         #region
-        foreach (ChatMessage requestMessage in messages)
+        foreach (ChatMessage message in messages)
         {
-            switch (requestMessage)
+            switch (message)
             {
-                case SystemChatMessage systemMessage:
-                    Console.WriteLine($"[SYSTEM]:");
-                    Console.WriteLine($"{systemMessage.Content[0].Text}");
-                    Console.WriteLine();
-                    break;
-
                 case UserChatMessage userMessage:
                     Console.WriteLine($"[USER]:");
                     Console.WriteLine($"{userMessage.Content[0].Text}");

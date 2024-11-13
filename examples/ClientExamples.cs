@@ -14,7 +14,7 @@ public partial class ClientExamples
     [Test]
     public void CreateChatClient()
     {
-        ChatClient client = new("gpt-3.5-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
     }
 
     [Test]
@@ -41,9 +41,7 @@ public partial class ClientExamples
     public void CreateAssistantAndFileClients()
     {
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        FileClient fileClient = openAIClient.GetFileClient();
-#pragma warning disable OPENAI001
+        OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
-#pragma warning restore OPENAI001
     }
 }

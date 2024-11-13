@@ -9,11 +9,11 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
         internal InternalChatCompletionRequestMessageContentPartImageImageUrl()
         {
         }
-        public ImageChatMessageContentPartDetail? Detail { get; set; }
+        public ChatImageDetailLevel? Detail { get; set; }
     }
 }

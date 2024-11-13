@@ -10,23 +10,30 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageContentTextObjectAnnotation : IJsonModel<MessageContentTextObjectAnnotation>
+    internal partial class UnknownMessageContentTextObjectAnnotation : IJsonModel<InternalMessageContentTextObjectAnnotation>
     {
-        void IJsonModel<MessageContentTextObjectAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalMessageContentTextObjectAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(MessageContentTextObjectAnnotation)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalMessageContentTextObjectAnnotation)} does not support writing '{format}' format.");
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Type);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -41,16 +48,16 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
-        MessageContentTextObjectAnnotation IJsonModel<MessageContentTextObjectAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalMessageContentTextObjectAnnotation IJsonModel<InternalMessageContentTextObjectAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(MessageContentTextObjectAnnotation)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalMessageContentTextObjectAnnotation)} does not support reading '{format}' format.");
             }
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMessageContentTextObjectAnnotation(document.RootElement, options);
+            return DeserializeInternalMessageContentTextObjectAnnotation(document.RootElement, options);
         }
 
         internal static UnknownMessageContentTextObjectAnnotation DeserializeUnknownMessageContentTextObjectAnnotation(JsonElement element, ModelReaderWriterOptions options = null)
@@ -73,6 +80,7 @@ namespace OpenAI.Assistants
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
@@ -80,36 +88,36 @@ namespace OpenAI.Assistants
             return new UnknownMessageContentTextObjectAnnotation(type, serializedAdditionalRawData);
         }
 
-        BinaryData IPersistableModel<MessageContentTextObjectAnnotation>.Write(ModelReaderWriterOptions options)
+        BinaryData IPersistableModel<InternalMessageContentTextObjectAnnotation>.Write(ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
 
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options);
                 default:
-                    throw new FormatException($"The model {nameof(MessageContentTextObjectAnnotation)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalMessageContentTextObjectAnnotation)} does not support writing '{options.Format}' format.");
             }
         }
 
-        MessageContentTextObjectAnnotation IPersistableModel<MessageContentTextObjectAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options)
+        InternalMessageContentTextObjectAnnotation IPersistableModel<InternalMessageContentTextObjectAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<MessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextObjectAnnotation>)this).GetFormatFromOptions(options) : options.Format;
 
             switch (format)
             {
                 case "J":
                     {
                         using JsonDocument document = JsonDocument.Parse(data);
-                        return DeserializeMessageContentTextObjectAnnotation(document.RootElement, options);
+                        return DeserializeInternalMessageContentTextObjectAnnotation(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(MessageContentTextObjectAnnotation)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalMessageContentTextObjectAnnotation)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<MessageContentTextObjectAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalMessageContentTextObjectAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
         internal static new UnknownMessageContentTextObjectAnnotation FromResponse(PipelineResponse response)
         {
@@ -119,7 +127,7 @@ namespace OpenAI.Assistants
 
         internal override BinaryContent ToBinaryContent()
         {
-            return BinaryContent.Create<MessageContentTextObjectAnnotation>(this, ModelSerializationExtensions.WireOptions);
+            return BinaryContent.Create<InternalMessageContentTextObjectAnnotation>(this, ModelSerializationExtensions.WireOptions);
         }
     }
 }

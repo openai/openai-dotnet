@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Audio;
+namespace OpenAI.Audio;
 
 // CUSTOM: Made internal.
 
@@ -7,6 +7,9 @@ internal readonly partial struct InternalCreateSpeechRequestModel { }
 
 [CodeGenModel("CreateTranscriptionRequestModel")]
 internal readonly partial struct InternalCreateTranscriptionRequestModel { }
+
+[CodeGenModel("CreateTranscriptionRequestTimestampGranularity")]
+internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularity { }
 
 [CodeGenModel("CreateTranscriptionResponseJson")]
 internal partial class InternalCreateTranscriptionResponseJson { }
@@ -22,3 +25,6 @@ internal partial class InternalCreateTranslationResponseJson { }
 
 [CodeGenModel("CreateTranslationResponseVerboseJsonTask")]
 internal readonly partial struct InternalCreateTranslationResponseVerboseJsonTask { }
+
+[CodeGenModel("AudioResponseFormat")]
+internal readonly partial struct InternalAudioResponseFormat { }

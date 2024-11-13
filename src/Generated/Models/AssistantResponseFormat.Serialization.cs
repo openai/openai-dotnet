@@ -9,19 +9,8 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants
 {
+    [PersistableModelProxy(typeof(InternalUnknownAssistantResponseFormat))]
     public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
     {
-        string IPersistableModel<AssistantResponseFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static AssistantResponseFormat FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistantResponseFormat(document.RootElement);
-        }
-
-        internal virtual BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

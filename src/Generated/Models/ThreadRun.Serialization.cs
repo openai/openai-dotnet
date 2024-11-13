@@ -21,126 +21,183 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("thread_id"u8);
-            writer.WriteStringValue(ThreadId);
-            writer.WritePropertyName("assistant_id"u8);
-            writer.WriteStringValue(AssistantId);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToString());
-            if (_internalRequiredAction != null)
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                writer.WritePropertyName("required_action"u8);
-                writer.WriteObjectValue<InternalRunRequiredAction>(_internalRequiredAction, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
             {
-                writer.WriteNull("required_action");
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
             }
-            if (LastError != null)
+            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
             {
-                writer.WritePropertyName("last_error"u8);
-                writer.WriteObjectValue(LastError, options);
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
             {
-                writer.WriteNull("last_error");
+                writer.WritePropertyName("thread_id"u8);
+                writer.WriteStringValue(ThreadId);
             }
-            if (ExpiresAt != null)
+            if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
             {
-                writer.WritePropertyName("expires_at"u8);
-                writer.WriteStringValue(ExpiresAt.Value, "O");
+                writer.WritePropertyName("assistant_id"u8);
+                writer.WriteStringValue(AssistantId);
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
             {
-                writer.WriteNull("expires_at");
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
             }
-            if (StartedAt != null)
+            if (SerializedAdditionalRawData?.ContainsKey("required_action") != true)
             {
-                writer.WritePropertyName("started_at"u8);
-                writer.WriteStringValue(StartedAt.Value, "O");
-            }
-            else
-            {
-                writer.WriteNull("started_at");
-            }
-            if (CancelledAt != null)
-            {
-                writer.WritePropertyName("cancelled_at"u8);
-                writer.WriteStringValue(CancelledAt.Value, "O");
-            }
-            else
-            {
-                writer.WriteNull("cancelled_at");
-            }
-            if (FailedAt != null)
-            {
-                writer.WritePropertyName("failed_at"u8);
-                writer.WriteStringValue(FailedAt.Value, "O");
-            }
-            else
-            {
-                writer.WriteNull("failed_at");
-            }
-            if (CompletedAt != null)
-            {
-                writer.WritePropertyName("completed_at"u8);
-                writer.WriteStringValue(CompletedAt.Value, "O");
-            }
-            else
-            {
-                writer.WriteNull("completed_at");
-            }
-            if (IncompleteDetails != null)
-            {
-                writer.WritePropertyName("incomplete_details"u8);
-                writer.WriteObjectValue(IncompleteDetails, options);
-            }
-            else
-            {
-                writer.WriteNull("incomplete_details");
-            }
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            writer.WritePropertyName("instructions"u8);
-            writer.WriteStringValue(Instructions);
-            writer.WritePropertyName("tools"u8);
-            writer.WriteStartArray();
-            foreach (var item in Tools)
-            {
-                writer.WriteObjectValue(item, options);
-            }
-            writer.WriteEndArray();
-            if (Metadata != null && Optional.IsCollectionDefined(Metadata))
-            {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                if (_internalRequiredAction != null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    writer.WriteStringValue(item.Value);
+                    writer.WritePropertyName("required_action"u8);
+                    writer.WriteObjectValue<InternalRunRequiredAction>(_internalRequiredAction, options);
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("required_action");
+                }
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("last_error") != true)
             {
-                writer.WriteNull("metadata");
+                if (LastError != null)
+                {
+                    writer.WritePropertyName("last_error"u8);
+                    writer.WriteObjectValue(LastError, options);
+                }
+                else
+                {
+                    writer.WriteNull("last_error");
+                }
             }
-            if (Usage != null)
+            if (SerializedAdditionalRawData?.ContainsKey("expires_at") != true)
             {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
+                if (ExpiresAt != null)
+                {
+                    writer.WritePropertyName("expires_at"u8);
+                    writer.WriteNumberValue(ExpiresAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("expires_at");
+                }
             }
-            else
+            if (SerializedAdditionalRawData?.ContainsKey("started_at") != true)
             {
-                writer.WriteNull("usage");
+                if (StartedAt != null)
+                {
+                    writer.WritePropertyName("started_at"u8);
+                    writer.WriteNumberValue(StartedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("started_at");
+                }
             }
-            if (Optional.IsDefined(Temperature))
+            if (SerializedAdditionalRawData?.ContainsKey("cancelled_at") != true)
+            {
+                if (CancelledAt != null)
+                {
+                    writer.WritePropertyName("cancelled_at"u8);
+                    writer.WriteNumberValue(CancelledAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("cancelled_at");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("failed_at") != true)
+            {
+                if (FailedAt != null)
+                {
+                    writer.WritePropertyName("failed_at"u8);
+                    writer.WriteNumberValue(FailedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("failed_at");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
+            {
+                if (CompletedAt != null)
+                {
+                    writer.WritePropertyName("completed_at"u8);
+                    writer.WriteNumberValue(CompletedAt.Value, "U");
+                }
+                else
+                {
+                    writer.WriteNull("completed_at");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("incomplete_details") != true)
+            {
+                if (IncompleteDetails != null)
+                {
+                    writer.WritePropertyName("incomplete_details"u8);
+                    writer.WriteObjectValue(IncompleteDetails, options);
+                }
+                else
+                {
+                    writer.WriteNull("incomplete_details");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("tools") != true)
+            {
+                writer.WritePropertyName("tools"u8);
+                writer.WriteStartArray();
+                foreach (var item in Tools)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+            {
+                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("usage") != true)
+            {
+                if (Usage != null)
+                {
+                    writer.WritePropertyName("usage"u8);
+                    writer.WriteObjectValue(Usage, options);
+                }
+                else
+                {
+                    writer.WriteNull("usage");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
             {
                 if (Temperature != null)
                 {
@@ -152,7 +209,7 @@ namespace OpenAI.Assistants
                     writer.WriteNull("temperature");
                 }
             }
-            if (Optional.IsDefined(NucleusSamplingFactor))
+            if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(NucleusSamplingFactor))
             {
                 if (NucleusSamplingFactor != null)
                 {
@@ -164,55 +221,79 @@ namespace OpenAI.Assistants
                     writer.WriteNull("top_p");
                 }
             }
-            if (MaxPromptTokens != null)
+            if (SerializedAdditionalRawData?.ContainsKey("max_prompt_tokens") != true)
             {
-                writer.WritePropertyName("max_prompt_tokens"u8);
-                writer.WriteNumberValue(MaxPromptTokens.Value);
-            }
-            else
-            {
-                writer.WriteNull("max_prompt_tokens");
-            }
-            if (MaxCompletionTokens != null)
-            {
-                writer.WritePropertyName("max_completion_tokens"u8);
-                writer.WriteNumberValue(MaxCompletionTokens.Value);
-            }
-            else
-            {
-                writer.WriteNull("max_completion_tokens");
-            }
-            if (TruncationStrategy != null)
-            {
-                writer.WritePropertyName("truncation_strategy"u8);
-                writer.WriteObjectValue(TruncationStrategy, options);
-            }
-            else
-            {
-                writer.WriteNull("truncation_strategy");
-            }
-            if (ToolConstraint != null)
-            {
-                writer.WritePropertyName("tool_choice"u8);
-                writer.WriteObjectValue<ToolConstraint>(ToolConstraint, options);
-            }
-            else
-            {
-                writer.WriteNull("tool_choice");
-            }
-            if (ResponseFormat != null)
-            {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteObjectValue<AssistantResponseFormat>(ResponseFormat, options);
-            }
-            else
-            {
-                writer.WriteNull("response_format");
-            }
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                if (MaxInputTokenCount != null)
                 {
+                    writer.WritePropertyName("max_prompt_tokens"u8);
+                    writer.WriteNumberValue(MaxInputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_prompt_tokens");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("max_completion_tokens") != true)
+            {
+                if (MaxOutputTokenCount != null)
+                {
+                    writer.WritePropertyName("max_completion_tokens"u8);
+                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("max_completion_tokens");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("truncation_strategy") != true)
+            {
+                if (TruncationStrategy != null)
+                {
+                    writer.WritePropertyName("truncation_strategy"u8);
+                    writer.WriteObjectValue(TruncationStrategy, options);
+                }
+                else
+                {
+                    writer.WriteNull("truncation_strategy");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("tool_choice") != true)
+            {
+                if (ToolConstraint != null)
+                {
+                    writer.WritePropertyName("tool_choice"u8);
+                    writer.WriteObjectValue<ToolConstraint>(ToolConstraint, options);
+                }
+                else
+                {
+                    writer.WriteNull("tool_choice");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("parallel_tool_calls") != true)
+            {
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true)
+            {
+                if (ResponseFormat != null)
+                {
+                    writer.WritePropertyName("response_format"u8);
+                    writer.WriteObjectValue<AssistantResponseFormat>(ResponseFormat, options);
+                }
+                else
+                {
+                    writer.WriteNull("response_format");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -272,6 +353,7 @@ namespace OpenAI.Assistants
             int? maxCompletionTokens = default;
             RunTruncationStrategy truncationStrategy = default;
             ToolConstraint toolChoice = default;
+            bool? parallelToolCalls = default;
             AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -334,8 +416,6 @@ namespace OpenAI.Assistants
                         expiresAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // expiresAt = property.Value.GetDateTimeOffset("O");
                     expiresAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -346,8 +426,6 @@ namespace OpenAI.Assistants
                         startedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // startedAt = property.Value.GetDateTimeOffset("O");
                     startedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -358,8 +436,6 @@ namespace OpenAI.Assistants
                         cancelledAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // cancelledAt = property.Value.GetDateTimeOffset("O");
                     cancelledAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -370,8 +446,6 @@ namespace OpenAI.Assistants
                         failedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // failedAt = property.Value.GetDateTimeOffset("O");
                     failedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -382,8 +456,6 @@ namespace OpenAI.Assistants
                         completedAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // completedAt = property.Value.GetDateTimeOffset("O");
                     completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -502,6 +574,11 @@ namespace OpenAI.Assistants
                     toolChoice = Assistants.ToolConstraint.DeserializeToolConstraint(property.Value, options);
                     continue;
                 }
+                if (property.NameEquals("parallel_tool_calls"u8))
+                {
+                    parallelToolCalls = property.Value.GetBoolean();
+                    continue;
+                }
                 if (property.NameEquals("response_format"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
@@ -514,6 +591,7 @@ namespace OpenAI.Assistants
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
@@ -544,6 +622,7 @@ namespace OpenAI.Assistants
                 maxCompletionTokens,
                 truncationStrategy,
                 toolChoice,
+                parallelToolCalls,
                 responseFormat,
                 serializedAdditionalRawData);
         }

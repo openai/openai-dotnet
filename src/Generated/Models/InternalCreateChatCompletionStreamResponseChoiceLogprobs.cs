@@ -10,23 +10,25 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityInfo> content)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityDetails> content, IEnumerable<ChatTokenLogProbabilityDetails> refusal)
         {
             Content = content?.ToList();
+            Refusal = refusal?.ToList();
         }
 
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityInfo> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Content = content;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            Refusal = refusal;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalCreateChatCompletionStreamResponseChoiceLogprobs()
         {
         }
 
-        public IReadOnlyList<ChatTokenLogProbabilityInfo> Content { get; }
+        public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
+        public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
     }
 }

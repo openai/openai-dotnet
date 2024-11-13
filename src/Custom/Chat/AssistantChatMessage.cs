@@ -12,15 +12,35 @@ namespace OpenAI.Chat;
 public partial class AssistantChatMessage : ChatMessage
 {
     // CUSTOM: Made internal.
-    /// <summary> Initializes a new instance of <see cref="AssistantChatMessage"/>. </summary>
     internal AssistantChatMessage()
     {
     }
 
-    // Assistant messages may present ONE OF:
-    //	- Ordinary text content without tools or a function, in which case the content is required.
-    //	- A list of tool calls, together with optional text content
-    //	- A function call, together with optional text content
+    /// <summary>
+    /// Creates a new instance of <see cref="AssistantChatMessage"/> using a collection of content items.
+    /// For <c>assistant</c> messages, this can be one or more of type <c>text</c> or exactly one of type <c>refusal</c>.
+    /// </summary>
+    /// <param name="contentParts">
+    ///     The collection of content items associated with the message.
+    /// </param>
+    public AssistantChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
+        : base(ChatMessageRole.Assistant, contentParts)
+    {
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="AssistantChatMessage"/> using a collection of content items.
+    /// For <c>assistant</c> messages, this can be one or more of type <c>text</c> or exactly one of type <c>refusal</c>.
+    /// </summary>
+    /// <param name="contentParts">
+    ///     The collection of text and image content items associated with the message.
+    /// </param>
+    public AssistantChatMessage(params ChatMessageContentPart[] contentParts)
+        : base(ChatMessageRole.Assistant, contentParts)
+    {
+        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
+    }
 
     /// <summary>
     /// Creates a new instance of <see cref="AssistantChatMessage"/> that represents ordinary text content and
@@ -28,12 +48,9 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public AssistantChatMessage(string content)
+        : base(ChatMessageRole.Assistant, content)
     {
         Argument.AssertNotNull(content, nameof(content));
-
-        Role = "assistant";
-        Content = [ChatMessageContentPart.CreateTextMessageContentPart(content)];
-        ToolCalls = new ChangeTrackingList<ChatToolCall>();
     }
 
     /// <summary>
@@ -41,16 +58,15 @@ public partial class AssistantChatMessage : ChatMessage
     /// were provided by the model.
     /// </summary>
     /// <param name="toolCalls"> The <c>tool_calls</c> made by the model. </param>
-    /// <param name="content"> Optional text content associated with the message. </param>
-    public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls, string content = null)
+    public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls)
+        : base(ChatMessageRole.Assistant)
     {
-        Argument.AssertNotNull(toolCalls, nameof(toolCalls));
+        Argument.AssertNotNullOrEmpty(toolCalls, nameof(toolCalls));
 
-        Role = "assistant";
-        Content = (content == null)
-            ? new ChangeTrackingList<ChatMessageContentPart>()
-            : [ChatMessageContentPart.CreateTextMessageContentPart(content)];
-        ToolCalls = new List<ChatToolCall>(toolCalls);
+        foreach (ChatToolCall toolCall in toolCalls)
+        {
+            ToolCalls.Add(toolCall);
+        }
     }
 
     /// <summary>
@@ -58,16 +74,12 @@ public partial class AssistantChatMessage : ChatMessage
     /// (deprecated in favor of <c>tool_calls</c>) that was made by the model.
     /// </summary>
     /// <param name="functionCall"> The <c>function_call</c> made by the model. </param>
-    /// <param name="content"> Optional text content associated with the message. </param>
-    public AssistantChatMessage(ChatFunctionCall functionCall, string content = null)
+    [Obsolete($"This constructor is obsolete. Please use the constructor that takes an IEnumerable<ChatToolCall> parameter instead.")]
+    public AssistantChatMessage(ChatFunctionCall functionCall)
+        : base(ChatMessageRole.Assistant)
     {
         Argument.AssertNotNull(functionCall, nameof(functionCall));
 
-        Role = "assistant";
-        Content = (content == null)
-            ? new ChangeTrackingList<ChatMessageContentPart>()
-            : [ChatMessageContentPart.CreateTextMessageContentPart(content)];
-        ToolCalls = new ChangeTrackingList<ChatToolCall>();
         FunctionCall = functionCall;
     }
 
@@ -86,6 +98,7 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The <c>role</c> of the provided chat completion response was not <see cref="ChatMessageRole.Assistant"/>.
     /// </exception>
     public AssistantChatMessage(ChatCompletion chatCompletion)
+        : base(ChatMessageRole.Assistant, chatCompletion?.Content)
     {
         Argument.AssertNotNull(chatCompletion, nameof(chatCompletion));
 
@@ -94,10 +107,12 @@ public partial class AssistantChatMessage : ChatMessage
             throw new NotSupportedException($"Cannot instantiate an {nameof(AssistantChatMessage)} from a {nameof(ChatCompletion)} with role: {chatCompletion.Role}.");
         }
 
-        Role = "assistant";
-        Content = (IList<ChatMessageContentPart>)chatCompletion.Content;
-        ToolCalls = (IList<ChatToolCall>)chatCompletion.ToolCalls;
+        Refusal = chatCompletion.Refusal;
         FunctionCall = chatCompletion.FunctionCall;
+        foreach (ChatToolCall toolCall in chatCompletion.ToolCalls ?? [])
+        {
+            ToolCalls.Add(toolCall);
+        }
     }
 
     // CUSTOM: Renamed.
@@ -106,5 +121,12 @@ public partial class AssistantChatMessage : ChatMessage
     /// message and is used to differentiate between multiple participants of the same role.
     /// </summary>
     [CodeGenMember("Name")]
-    public string ParticipantName { get; init; }
+    public string ParticipantName { get; set; }
+
+    // CUSTOM: Common initialization for input model collection property.
+    [CodeGenMember("ToolCalls")]
+    public IList<ChatToolCall> ToolCalls { get; } = new ChangeTrackingList<ChatToolCall>();
+
+    [Obsolete($"This property is obsolete. Please use {nameof(ToolCalls)} instead.")]
+    public ChatFunctionCall FunctionCall { get; set; }
 }

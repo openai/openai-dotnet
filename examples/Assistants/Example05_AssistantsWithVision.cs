@@ -3,6 +3,7 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
+using System.IO;
 
 namespace OpenAI.Examples;
 
@@ -12,15 +13,16 @@ public partial class AssistantExamples
     public void Example05_AssistantsWithVision()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        FileClient fileClient = openAIClient.GetFileClient();
+        OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
-        OpenAIFileInfo pictureOfAppleFile = fileClient.UploadFile(
-            "picture-of-apple.jpg",
+        OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
+            Path.Combine("Assets", "images_apple.png"),
             FileUploadPurpose.Vision);
-        Uri linkToPictureOfOrange = new("https://platform.openai.com/fictitious-files/picture-of-orange.png");
+
+        Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai-dotnet/refs/heads/main/examples/Assets/images_orange.png");
 
         Assistant assistant = assistantClient.CreateAssistant(
             "gpt-4o",
@@ -35,17 +37,18 @@ public partial class AssistantExamples
             InitialMessages =
                 {
                     new ThreadInitializationMessage(
+                        MessageRole.User,
                         [
                             "Hello, assistant! Please compare these two images for me:",
                             MessageContent.FromImageFileId(pictureOfAppleFile.Id),
-                            MessageContent.FromImageUrl(linkToPictureOfOrange),
+                            MessageContent.FromImageUri(linkToPictureOfOrange),
                         ]),
                 }
         });
 
-        ResultCollection<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
-            thread,
-            assistant,
+        CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+            thread.Id,
+            assistant.Id,
             new RunCreationOptions()
             {
                 AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
@@ -64,8 +67,8 @@ public partial class AssistantExamples
         }
 
         // Delete temporary resources, if desired
-        _ = fileClient.DeleteFile(pictureOfAppleFile);
-        _ = assistantClient.DeleteThread(thread);
-        _ = assistantClient.DeleteAssistant(assistant);
+        _ = fileClient.DeleteFile(pictureOfAppleFile.Id);
+        _ = assistantClient.DeleteThread(thread.Id);
+        _ = assistantClient.DeleteAssistant(assistant.Id);
     }
 }

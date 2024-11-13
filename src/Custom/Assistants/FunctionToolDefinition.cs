@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("AssistantToolsFunction")]
 [CodeGenSuppress(nameof(FunctionToolDefinition), typeof(InternalFunctionDefinition))]
 public partial class FunctionToolDefinition : ToolDefinition
@@ -17,36 +18,45 @@ public partial class FunctionToolDefinition : ToolDefinition
     public required string FunctionName
     {
         get => _internalFunction.Name;
-        init => _internalFunction.Name = value;
+        set => _internalFunction.Name = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Description"/>
     public string Description
     {
         get => _internalFunction.Description;
-        init => _internalFunction.Description = value;
+        set => _internalFunction.Description = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Parameters"/>
     public BinaryData Parameters
     {
         get => _internalFunction.Parameters;
-        init => _internalFunction.Parameters = value;
+        set => _internalFunction.Parameters = value;
+    }
+
+    public bool? StrictParameterSchemaEnabled
+    {
+        get => _internalFunction.Strict;
+        set => _internalFunction.Strict = value;
     }
 
     /// <summary>
     /// Creates a new instance of <see cref="FunctionToolDefinition"/>. 
     /// </summary>
     [SetsRequiredMembers]
-    public FunctionToolDefinition(string name, string description = null, BinaryData parameters = null)
-        : this("function", null, new InternalFunctionDefinition(description, name, parameters, null))
-    {}
+    public FunctionToolDefinition(string name)
+        : base("function")
+    {
+        Argument.AssertNotNullOrEmpty(name, nameof(name));
+        _internalFunction = new(null, name, null, null, null);
+    }
 
     /// <summary>
     /// Creates a new instance of <see cref="FunctionToolDefinition"/>. 
     /// </summary>
     public FunctionToolDefinition()
-        : base("function", null)
+        : base("function")
     {
         _internalFunction = new InternalFunctionDefinition();
     }

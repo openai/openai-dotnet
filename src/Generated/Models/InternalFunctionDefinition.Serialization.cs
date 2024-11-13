@@ -21,14 +21,17 @@ namespace OpenAI
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(Description))
+            if (SerializedAdditionalRawData?.ContainsKey("description") != true && Optional.IsDefined(Description))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            if (Optional.IsDefined(Parameters))
+            if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("parameters") != true && Optional.IsDefined(Parameters))
             {
                 writer.WritePropertyName("parameters"u8);
 #if NET6_0_OR_GREATER
@@ -40,10 +43,26 @@ namespace OpenAI
                 }
 #endif
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("strict") != true && Optional.IsDefined(Strict))
             {
-                foreach (var item in _serializedAdditionalRawData)
+                if (Strict != null)
                 {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -81,6 +100,7 @@ namespace OpenAI
             string description = default;
             string name = default;
             BinaryData parameters = default;
+            bool? strict = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -104,13 +124,24 @@ namespace OpenAI
                     parameters = BinaryData.FromString(property.Value.GetRawText());
                     continue;
                 }
+                if (property.NameEquals("strict"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        strict = null;
+                        continue;
+                    }
+                    strict = property.Value.GetBoolean();
+                    continue;
+                }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new InternalFunctionDefinition(description, name, parameters, serializedAdditionalRawData);
+            return new InternalFunctionDefinition(description, name, parameters, strict, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<InternalFunctionDefinition>.Write(ModelReaderWriterOptions options)

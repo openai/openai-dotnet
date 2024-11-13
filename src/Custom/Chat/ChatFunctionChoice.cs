@@ -6,6 +6,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Represents a desired manner in which the model should use the functions defined in a chat completion request.
 /// </summary>
+[Obsolete($"This class is obsolete. Please use {nameof(ChatToolChoice)} instead.")]
 [CodeGenModel("ChatCompletionFunctionChoice")]
 [CodeGenSuppress("ChatFunctionChoice", typeof(IDictionary<string, BinaryData>))]
 public partial class ChatFunctionChoice
@@ -16,6 +17,11 @@ public partial class ChatFunctionChoice
 
     private const string AutoValue = "auto";
     private const string NoneValue = "none";
+
+    // CUSTOM: Made internal.
+    internal ChatFunctionChoice()
+    {
+    }
 
     // CUSTOM: Added custom internal constructor to handle the plain string representation (e.g. "auto", "none", etc.).
     internal ChatFunctionChoice(string predefinedFunctionChoice)
@@ -37,28 +43,33 @@ public partial class ChatFunctionChoice
         _function = new(functionName);
         _isPlainString = false;
 
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
-    // CUSTOM: Added custom public constructor to handle the object representation.
     /// <summary>
-    /// Creates a new instance of <see cref="ChatFunctionChoice"/>.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model must call a specific function,
+    /// referred to via its name.
     /// </summary>
-    public ChatFunctionChoice(ChatFunction chatFunction)
+    /// <param name="functionName"> The name of the function the model must call. </param>
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateNamedChoice(string functionName)
     {
-        Argument.AssertNotNull(chatFunction, nameof(chatFunction));
+        Argument.AssertNotNull(functionName, nameof(functionName));
 
-        _function = new(chatFunction.FunctionName);
-        _isPlainString = false;
+        return new(functionName, serializedAdditionalRawData: null);
     }
 
     /// <summary>
-    /// Specifies that the model must freely pick between generating a message or calling one or more tools.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model may freely pick between
+    /// generating a message or calling a function.
     /// </summary>
-    public static ChatFunctionChoice Auto { get; } = new ChatFunctionChoice(AutoValue);
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateAutoChoice() => new ChatFunctionChoice(AutoValue);
+
     /// <summary>
-    /// Specifies that the model must not invoke any tools, and instead it must generate an ordinary message. Note
-    /// that the tools that were provided may still influence the model's behavior even if they are not called.
+    /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model should not call any function
+    /// and instead only generate a message.
     /// </summary>
-    public static ChatFunctionChoice None { get; } = new ChatFunctionChoice(NoneValue);
+    /// <returns> A new instance of <see cref="ChatFunctionChoice"/>. </returns>
+    public static ChatFunctionChoice CreateNoneChoice() => new ChatFunctionChoice(NoneValue);
 }

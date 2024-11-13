@@ -9,23 +9,25 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreCreationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public VectorStoreCreationOptions()
         {
             FileIds = new ChangeTrackingList<string>();
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStoreCreationOptions(IList<string> fileIds, string name, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreCreationOptions(IList<string> fileIds, string name, VectorStoreExpirationPolicy expirationPolicy, FileChunkingStrategy chunkingStrategy, IDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileIds = fileIds;
             Name = name;
             ExpirationPolicy = expirationPolicy;
+            ChunkingStrategy = chunkingStrategy;
             Metadata = metadata;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public string Name { get; init; }
-        public IDictionary<string, string> Metadata { get; }
+
+        public IList<string> FileIds { get; }
+        public string Name { get; set; }
+        public IDictionary<string, string> Metadata { get; set; }
     }
 }

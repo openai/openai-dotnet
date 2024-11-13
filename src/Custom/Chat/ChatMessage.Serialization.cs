@@ -7,51 +7,44 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 [CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Chat.ChatMessage>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
-public abstract partial class ChatMessage : IJsonModel<ChatMessage>
+public partial class ChatMessage : IJsonModel<ChatMessage>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void SerializeContentValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    internal void SerializeContentValue(Utf8JsonWriter writer, ModelReaderWriterOptions options = null)
     {
         throw new NotImplementedException();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void DeserializeContentValue(JsonProperty property, ref IList<ChatMessageContentPart> content, ModelReaderWriterOptions options = null)
+    internal static void DeserializeContentValue(JsonProperty property, ref ChatMessageContent content, ModelReaderWriterOptions options = null)
     {
-        throw new NotImplementedException();
+        if (property.Value.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+        else if (property.Value.ValueKind == JsonValueKind.String)
+        {
+            content = new ChatMessageContent(property.Value.GetString());
+        }
+        else if (property.Value.ValueKind == JsonValueKind.Array)
+        {
+            IList<ChatMessageContentPart> parts = [];
+
+            foreach (var item in property.Value.EnumerateArray())
+            {
+                parts.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+            }
+
+            content = new ChatMessageContent(parts);
+        }
     }
 
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance(this, SerializeChatMessage, writer, options);
+        => CustomSerializationHelpers.SerializeInstance(this, WriteCore, writer, options);
 
-    internal static void SerializeChatMessage(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
-    {
-        writer.WriteStartObject();
-        writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(instance.Role);
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
-        writer.WriteEndObject();
-    }
+    internal static void WriteCore(ChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => instance.WriteCore(writer, options);
 
-    internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
-    {
-        options ??= ModelSerializationExtensions.WireOptions;
-
-        if (element.ValueKind == JsonValueKind.Null)
-        {
-            return null;
-        }
-        if (element.TryGetProperty("role", out JsonElement discriminator))
-        {
-            switch (discriminator.GetString())
-            {
-                case "assistant": return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
-                case "function": return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
-                case "system": return SystemChatMessage.DeserializeSystemChatMessage(element, options);
-                case "tool": return ToolChatMessage.DeserializeToolChatMessage(element, options);
-                case "user": return UserChatMessage.DeserializeUserChatMessage(element, options);
-            }
-        }
-        return UnknownChatMessage.DeserializeUnknownChatMessage(element, options);
-    }
+    internal virtual void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => throw new InvalidOperationException($"The {nameof(WriteCore)} method should be invoked on an overriding type derived from {nameof(ChatMessage)}.");
 }

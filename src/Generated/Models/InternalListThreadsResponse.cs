@@ -10,8 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalListThreadsResponse
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         internal InternalListThreadsResponse(IEnumerable<AssistantThread> data, string firstId, string lastId, bool hasMore)
         {
             Argument.AssertNotNull(data, nameof(data));
@@ -24,21 +23,21 @@ namespace OpenAI.Assistants
             HasMore = hasMore;
         }
 
-        internal InternalListThreadsResponse(string @object, IReadOnlyList<AssistantThread> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListThreadsResponse(InternalListThreadsResponseObject @object, IReadOnlyList<AssistantThread> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Object = @object;
             Data = data;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalListThreadsResponse()
         {
         }
 
-        public string Object { get; } = "list";
+        public InternalListThreadsResponseObject Object { get; } = InternalListThreadsResponseObject.List;
 
         public IReadOnlyList<AssistantThread> Data { get; }
         public string FirstId { get; }

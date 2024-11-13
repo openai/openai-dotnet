@@ -3,11 +3,16 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Embeddings;
 
-/// <summary> The service client for the OpenAI Embeddings endpoint. </summary>
+// CUSTOM:
+// - Renamed.
+// - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
+// - Suppressed methods that only take the options parameter.
+/// <summary> The service client for OpenAI embedding operations. </summary>
 [CodeGenClient("Embeddings")]
 [CodeGenSuppress("EmbeddingClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateEmbeddingAsync", typeof(EmbeddingGenerationOptions))]
@@ -16,67 +21,86 @@ public partial class EmbeddingClient
 {
     private readonly string _model;
 
-    // CUSTOM:
-    // - Added `model` parameter.
-    // - Added support for retrieving credential and endpoint from environment variables.
-
+    // CUSTOM: Remove virtual keyword.
     /// <summary>
-    /// Initializes a new instance of <see cref="EmbeddingClient"/> that will use an API key when authenticating.
+    /// The HTTP pipeline for sending and receiving REST requests and responses.
     /// </summary>
-    /// <param name="model"> The model name to use for audio operations. </param>
-    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(credential, requireExplicitCredential: true), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    {}
+    public ClientPipeline Pipeline => _pipeline;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="EmbeddingClient"/> that will use an API key from the OPENAI_API_KEY
-    /// environment variable when authenticating.
-    /// </summary>
-    /// <remarks>
-    /// To provide an explicit credential instead of using the environment variable, use an alternate constructor like
-    /// <see cref="EmbeddingClient(string,ApiKeyCredential,OpenAIClientOptions)"/>.
-    /// </remarks>
-    /// <param name="model"> The model name to use for audio operations. </param>
-    /// <param name="options"> Additional options to customize the client. </param>
-    /// <exception cref="InvalidOperationException"> The OPENAI_API_KEY environment variable was not found. </exception>
-    public EmbeddingClient(string model, OpenAIClientOptions options = default)
-        : this(
-              OpenAIClient.CreatePipeline(OpenAIClient.GetApiKey(), options),
-              model,
-              OpenAIClient.GetEndpoint(options),
-              options)
-    {}
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public EmbeddingClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
 
     // CUSTOM:
     // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public EmbeddingClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    {
+    }
 
-    /// <summary> Initializes a new instance of EmbeddingClient. </summary>
-    /// <param name="pipeline"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
-    /// <param name="model"> The HTTP pipeline for sending and receiving REST requests and responses. </param>
-    /// <param name="endpoint"> OpenAI Endpoint. </param>
-    protected internal EmbeddingClient(ClientPipeline pipeline, string model, Uri endpoint, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
 
-        _pipeline = pipeline;
         _model = model;
-        _endpoint = endpoint;
+        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
+    // CUSTOM:
+    // - Added `model` parameter.
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient">. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        options ??= new OpenAIClientOptions();
+
+        _model = model;
+        _pipeline = pipeline;
+        _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
     // CUSTOM: Added to simplify generating a single embedding from a string input.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="input"> The string that will be turned into an embedding. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <summary> Generates an embedding representing the text input. </summary>
+    /// <param name="input"> The text input to generate an embedding for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<Embedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<OpenAIEmbedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -84,17 +108,18 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify generating a single embedding from a string input.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="input"> The string that will be turned into an embedding. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <summary> Generates an embedding representing the text input. </summary>
+    /// <param name="input"> The text input to generate an embedding for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="input"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="input"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<Embedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
@@ -102,17 +127,18 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of strings instead of BinaryData.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="inputs"> The strings that will be turned into embeddings. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <summary> Generates embeddings representing the text inputs. </summary>
+    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -120,18 +146,19 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
 
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of strings instead of BinaryData.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="inputs"> The strings that will be turned into embeddings. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    /// <summary> Generates embeddings representing the text inputs. </summary>
+    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -139,17 +166,18 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    // CUSTOM: Added to simplify passing the input as a collection of a collection of tokens instead of BinaryData.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="inputs"> The strings that will be turned into embeddings. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory tokens instead of BinaryData.
+    /// <summary> Generates embeddings representing the text inputs. </summary>
+    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<EmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null)
+    public virtual async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -157,17 +185,18 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableIEnumerableInt32), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, (RequestOptions)null).ConfigureAwait(false);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
-    // CUSTOM: Added to simplify passing the input as a collection of a collection of tokens instead of BinaryData.
-    /// <summary> Creates an embedding vector representing the input text. </summary>
-    /// <param name="inputs"> The strings that will be turned into embeddings. </param>
-    /// <param name="options"> The <see cref="EmbeddingGenerationOptions"/> to use. </param>
+    // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory of tokens instead of BinaryData.
+    /// <summary> Generates embeddings representing the text inputs. </summary>
+    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <param name="options"> The options to configure the embedding generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual ClientResult<EmbeddingCollection> GenerateEmbeddings(IEnumerable<IEnumerable<int>> inputs, EmbeddingGenerationOptions options = null)
+    public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -175,14 +204,14 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableIEnumerableInt32), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateEmbeddings(content, (RequestOptions)null);
-        return ClientResult.FromValue(EmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
 
     private void CreateEmbeddingGenerationOptions(BinaryData input, ref EmbeddingGenerationOptions options)
     {
         options.Input = input;
         options.Model = _model;
-        options.EncodingFormat = InternalEmbeddingGenerationOptionsEncodingFormat.Base64;
+        options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
 }

@@ -9,8 +9,7 @@ namespace OpenAI
 {
     internal partial class InternalFunctionDefinition
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalFunctionDefinition(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
@@ -18,12 +17,13 @@ namespace OpenAI
             Name = name;
         }
 
-        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Description = description;
             Name = name;
             Parameters = parameters;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            Strict = strict;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalFunctionDefinition()
@@ -32,5 +32,6 @@ namespace OpenAI
 
         public string Description { get; set; }
         public string Name { get; set; }
+        public bool? Strict { get; set; }
     }
 }

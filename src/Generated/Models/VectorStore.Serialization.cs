@@ -21,72 +21,96 @@ namespace OpenAI.VectorStores
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            writer.WritePropertyName("created_at"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("name"u8);
-            writer.WriteStringValue(Name);
-            writer.WritePropertyName("usage_bytes"u8);
-            writer.WriteNumberValue(UsageBytes);
-            writer.WritePropertyName("file_counts"u8);
-            writer.WriteObjectValue(FileCounts, options);
-            writer.WritePropertyName("status"u8);
-            writer.WriteStringValue(Status.ToSerialString());
-            if (Optional.IsDefined(ExpirationPolicy))
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                if (ExpirationPolicy != null)
-                {
-                    writer.WritePropertyName("expires_after"u8);
-                    writer.WriteObjectValue<VectorStoreExpirationPolicy>(ExpirationPolicy, options);
-                }
-                else
-                {
-                    writer.WriteNull("expires_after");
-                }
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            if (Optional.IsDefined(ExpiresAt))
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("usage_bytes") != true)
+            {
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(UsageBytes);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("file_counts") != true)
+            {
+                writer.WritePropertyName("file_counts"u8);
+                writer.WriteObjectValue(FileCounts, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToSerialString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("expires_after") != true && Optional.IsDefined(ExpirationPolicy))
+            {
+                writer.WritePropertyName("expires_after"u8);
+                writer.WriteObjectValue<VectorStoreExpirationPolicy>(ExpirationPolicy, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("expires_at") != true && Optional.IsDefined(ExpiresAt))
             {
                 if (ExpiresAt != null)
                 {
                     writer.WritePropertyName("expires_at"u8);
-                    writer.WriteStringValue(ExpiresAt.Value, "O");
+                    writer.WriteNumberValue(ExpiresAt.Value, "U");
                 }
                 else
                 {
                     writer.WriteNull("expires_at");
                 }
             }
-            if (LastActiveAt != null)
+            if (SerializedAdditionalRawData?.ContainsKey("last_active_at") != true)
             {
-                writer.WritePropertyName("last_active_at"u8);
-                writer.WriteStringValue(LastActiveAt.Value, "O");
-            }
-            else
-            {
-                writer.WriteNull("last_active_at");
-            }
-            if (Metadata != null && Optional.IsCollectionDefined(Metadata))
-            {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                if (LastActiveAt != null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    writer.WriteStringValue(item.Value);
+                    writer.WritePropertyName("last_active_at"u8);
+                    writer.WriteNumberValue(LastActiveAt.Value, "U");
                 }
-                writer.WriteEndObject();
-            }
-            else
-            {
-                writer.WriteNull("metadata");
-            }
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                else
                 {
+                    writer.WriteNull("last_active_at");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+            {
+                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata");
+                }
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -175,7 +199,6 @@ namespace OpenAI.VectorStores
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
-                        expiresAfter = null;
                         continue;
                     }
                     expiresAfter = VectorStoreExpirationPolicy.DeserializeVectorStoreExpirationPolicy(property.Value, options);
@@ -188,8 +211,6 @@ namespace OpenAI.VectorStores
                         expiresAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // expiresAt = property.Value.GetDateTimeOffset("O");
                     expiresAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -200,8 +221,6 @@ namespace OpenAI.VectorStores
                         lastActiveAt = null;
                         continue;
                     }
-                    // BUG: https://github.com/Azure/autorest.csharp/issues/4296
-                    // lastActiveAt = property.Value.GetDateTimeOffset("O");
                     lastActiveAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
                     continue;
                 }
@@ -222,6 +241,7 @@ namespace OpenAI.VectorStores
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

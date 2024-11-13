@@ -1,10 +1,12 @@
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[CodeGenModel("AssistantObjectToolResourcesFileSearch")]
+[Experimental("OPENAI001")]
+[CodeGenModel("ToolResourcesFileSearch")]
 [CodeGenSerialization(nameof(NewVectorStores), "vector_stores", SerializationValueHook = nameof(SerializeNewVectorStores))]
 public partial class FileSearchToolResources
 {
@@ -14,7 +16,7 @@ public partial class FileSearchToolResources
     public IList<string> VectorStoreIds
     {
         get => _vectorStoreIds;
-        init
+        internal set
         {
             _vectorStoreIds = new ChangeTrackingList<string>();
             foreach (string item in value)
@@ -24,13 +26,13 @@ public partial class FileSearchToolResources
         }
     }
 
-    [CodeGenMember("vector_stores")]
+    [CodeGenMember("VectorStores")]
     public IList<VectorStoreCreationHelper> NewVectorStores { get; } = new ChangeTrackingList<VectorStoreCreationHelper>();
 
     public FileSearchToolResources()
     { }
 
-    private void SerializeNewVectorStores(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(NewVectorStores, new ModelReaderWriterOptions("J"));
+    private void SerializeNewVectorStores(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(NewVectorStores, options);
 }
 

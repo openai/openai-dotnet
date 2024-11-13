@@ -18,10 +18,42 @@ namespace OpenAI.Assistants
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        public virtual ClientPipeline Pipeline => _pipeline;
-
         protected InternalAssistantRunClient()
         {
+        }
+
+        public virtual async Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
+            return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
+            return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
+            return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, options);
+            return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
         }
 
         internal PipelineMessage CreateCreateThreadAndRunRequest(BinaryContent content, RequestOptions options)

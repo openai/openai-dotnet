@@ -14,8 +14,8 @@ internal class MultipartFormDataBinaryContent : BinaryContent
 {
     private readonly MultipartFormDataContent _multipartContent;
 
-    private static Random _random = new();
-    private static readonly char[] _boundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".ToCharArray();
+    private const int BoundaryLength = 70;
+    private const string BoundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz";
 
     public MultipartFormDataBinaryContent()
     {
@@ -34,18 +34,17 @@ internal class MultipartFormDataBinaryContent : BinaryContent
 
     internal HttpContent HttpContent => _multipartContent;
 
-    public void Add(Stream content, string name, string fileName = default, string contentType = null)
+    public void Add(Stream stream, string name, string fileName = default, string contentType = null)
     {
-        Argument.AssertNotNull(content, nameof(content));
-        Argument.AssertNotNullOrEmpty(name, nameof(name));
+        Argument.AssertNotNull(stream, nameof(stream));
 
-        Add(new StreamContent(content), name, fileName, contentType);
+        StreamContent content = new(stream);
+        if (contentType is not null)
+        {
+            content.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
+        }
+        Add(content, name, fileName);
     }
-
-    //public void Add(Stream stream, string name, string fileName = default)
-    //{
-    //    Add(new StreamContent(stream), name, fileName);
-    //}
 
     public void Add(string content, string name, string fileName = default)
     {
@@ -76,71 +75,59 @@ internal class MultipartFormDataBinaryContent : BinaryContent
         Add(new ByteArrayContent(content.ToArray()), name, fileName);
     }
 
-    private void Add(HttpContent content, string name, string filename, string contentType)
-    {
-        if (filename != null)
-        {
-            Argument.AssertNotNullOrEmpty(filename, nameof(filename));
-            AddFileNameHeader(content, name, filename);
-        }
-        if (contentType != null)
-        {
-            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
-            AddContentTypeHeader(content, contentType);
-        }
-        _multipartContent.Add(content, name);
-    }
-
     private void Add(HttpContent content, string name, string fileName)
     {
+        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNull(name, nameof(name));
+
         if (fileName is not null)
         {
-            AddFileNameHeader(content, name, fileName);
+            _multipartContent.Add(content, name, fileName);
         }
-
-        _multipartContent.Add(content, name);
-    }
-
-    private static void AddFileNameHeader(HttpContent content, string name, string filename)
-    {
-        // Add the content header manually because the default implementation
-        // adds a `filename*` parameter to the header, which RFC 7578 says not
-        // to do.  We are following up with the BCL team per correctness.
-        ContentDispositionHeaderValue header = new("form-data")
+        else
         {
-            Name = name,
-            FileName = filename
-        };
-        content.Headers.ContentDisposition = header;
+            _multipartContent.Add(content, name);
+        }
     }
 
-    public static void AddContentTypeHeader(HttpContent content, string contentType)
-    {
-        MediaTypeHeaderValue header = new MediaTypeHeaderValue(contentType);
-        content.Headers.ContentType = header;
-    }
+#if NET6_0_OR_GREATER
+    private static string CreateBoundary() =>
+        string.Create(BoundaryLength, 0, (chars, _) =>
+        {
+            Span<byte> random = stackalloc byte[BoundaryLength];
+            Random.Shared.NextBytes(random);
+
+            for (int i = 0; i < chars.Length; i++)
+            {
+                chars[i] = BoundaryValues[random[i] % BoundaryValues.Length];
+            }
+        });
+#else
+    private static readonly Random _random = new();
 
     private static string CreateBoundary()
     {
-        Span<char> chars = new char[70];
+        Span<char> chars = stackalloc char[BoundaryLength];
 
-        byte[] random = new byte[70];
-        _random.NextBytes(random);
-
-        // The following will sample evenly from the possible values.
-        // This is important to ensuring that the odds of creating a boundary
-        // that occurs in any content part are astronomically small.
-        int mask = 255 >> 2;
-
-        Debug.Assert(_boundaryValues.Length - 1 == mask);
-
-        for (int i = 0; i < 70; i++)
+        byte[] random = new byte[BoundaryLength];
+        lock (_random)
         {
-            chars[i] = _boundaryValues[random[i] & mask];
+            _random.NextBytes(random);
+        }
+
+        // Instead of `% BoundaryValues.Length` as is used above, use a mask to achieve the same result.
+        // `% BoundaryValues.Length` is optimized to the equivalent on .NET Core but not on .NET Framework.
+        const int Mask = 255 >> 2;
+        Debug.Assert(BoundaryValues.Length - 1 == Mask);
+
+        for (int i = 0; i < chars.Length; i++)
+        {
+            chars[i] = BoundaryValues[random[i] & Mask];
         }
 
         return chars.ToString();
     }
+#endif
 
     public override bool TryComputeLength(out long length)
     {
@@ -158,22 +145,21 @@ internal class MultipartFormDataBinaryContent : BinaryContent
 
     public override void WriteTo(Stream stream, CancellationToken cancellationToken = default)
     {
-        // TODO: polyfill sync-over-async for netstandard2.0 for Azure clients.
-        // Tracked by https://github.com/Azure/azure-sdk-for-net/issues/42674
-
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
         _multipartContent.CopyTo(stream, default, cancellationToken);
 #else
-    _multipartContent.CopyToAsync(stream).GetAwaiter().GetResult();
+        // TODO: polyfill sync-over-async for netstandard2.0 for Azure clients.
+        // Tracked by https://github.com/Azure/azure-sdk-for-net/issues/42674
+        _multipartContent.CopyToAsync(stream).GetAwaiter().GetResult();
 #endif
     }
 
     public override async Task WriteToAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-#if NET6_0_OR_GREATER
+#if NET5_0_OR_GREATER
         await _multipartContent.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
 #else
-    await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
+        await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
 #endif
     }
 

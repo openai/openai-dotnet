@@ -21,16 +21,29 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("finish_reason"u8);
-            writer.WriteStringValue(FinishReason);
-            writer.WritePropertyName("index"u8);
-            writer.WriteNumberValue(Index);
-            writer.WritePropertyName("message"u8);
-            writer.WriteObjectValue(Message, options);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("finish_reason") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("finish_reason"u8);
+                writer.WriteStringValue(FinishReason.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            {
+                writer.WritePropertyName("index"u8);
+                writer.WriteNumberValue(Index);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("message") != true)
+            {
+                writer.WritePropertyName("message"u8);
+                writer.WriteObjectValue(Message, options);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -65,7 +78,7 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string finishReason = default;
+            InternalCreateChatCompletionFunctionResponseChoiceFinishReason finishReason = default;
             int index = default;
             InternalChatCompletionResponseMessage message = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -74,7 +87,7 @@ namespace OpenAI.Chat
             {
                 if (property.NameEquals("finish_reason"u8))
                 {
-                    finishReason = property.Value.GetString();
+                    finishReason = new InternalCreateChatCompletionFunctionResponseChoiceFinishReason(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("index"u8))
@@ -89,6 +102,7 @@ namespace OpenAI.Chat
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

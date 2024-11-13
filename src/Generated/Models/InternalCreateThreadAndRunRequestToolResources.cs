@@ -9,20 +9,19 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequestToolResources
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         public InternalCreateThreadAndRunRequestToolResources()
         {
         }
 
-        internal InternalCreateThreadAndRunRequestToolResources(InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter codeInterpreter, InternalCreateThreadAndRunRequestToolResourcesFileSearch fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateThreadAndRunRequestToolResources(InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter codeInterpreter, InternalToolResourcesFileSearchIdsOnly fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         public InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
-        public InternalCreateThreadAndRunRequestToolResourcesFileSearch FileSearch { get; set; }
+        public InternalToolResourcesFileSearchIdsOnly FileSearch { get; set; }
     }
 }

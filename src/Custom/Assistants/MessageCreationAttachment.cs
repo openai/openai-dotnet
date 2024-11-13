@@ -1,8 +1,11 @@
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
+[Experimental("OPENAI001")]
 [CodeGenModel("CreateMessageRequestAttachment")]
 [CodeGenSerialization(nameof(Tools), "tools", SerializationValueHook = nameof(SerializeTools), DeserializationValueHook = nameof(DeserializeTools))]
 public partial class MessageCreationAttachment
@@ -22,8 +25,8 @@ public partial class MessageCreationAttachment
     [CodeGenMember("Tools")]
     public IReadOnlyList<ToolDefinition> Tools { get; } = new ChangeTrackingList<ToolDefinition>();
 
-    private void SerializeTools(Utf8JsonWriter writer)
-        => writer.WriteObjectValue(Tools);
+    private void SerializeTools(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        => writer.WriteObjectValue(Tools, options);
 
     private static void DeserializeTools(JsonProperty property, ref IReadOnlyList<ToolDefinition> tools)
     {

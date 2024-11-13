@@ -9,9 +9,9 @@ namespace OpenAI.Images
 {
     public partial class ImageGenerationOptions
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
 
-        internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageStyle? style, string user, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Prompt = prompt;
             Model = model;
@@ -20,13 +20,12 @@ namespace OpenAI.Images
             ResponseFormat = responseFormat;
             Size = size;
             Style = style;
-            User = user;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            EndUserId = endUserId;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-        public GeneratedImageQuality? Quality { get; init; }
-        public GeneratedImageFormat? ResponseFormat { get; init; }
-        public GeneratedImageSize? Size { get; init; }
-        public GeneratedImageStyle? Style { get; init; }
-        public string User { get; init; }
+        public GeneratedImageQuality? Quality { get; set; }
+        public GeneratedImageFormat? ResponseFormat { get; set; }
+        public GeneratedImageSize? Size { get; set; }
+        public GeneratedImageStyle? Style { get; set; }
     }
 }

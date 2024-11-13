@@ -7,10 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    [Obsolete("This field is marked as deprecated.")]
     public partial class FunctionChatMessage : ChatMessage
     {
-        internal FunctionChatMessage(string role, IList<ChatMessageContentPart> content, IDictionary<string, BinaryData> serializedAdditionalRawData, string functionName) : base(role, content, serializedAdditionalRawData)
+        internal FunctionChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> serializedAdditionalRawData, string functionName) : base(role, content, serializedAdditionalRawData)
         {
             FunctionName = functionName;
         }

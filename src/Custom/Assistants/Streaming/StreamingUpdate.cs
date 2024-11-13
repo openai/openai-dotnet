@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -20,6 +22,7 @@ namespace OpenAI.Assistants;
 /// For threads: <see cref="ThreadUpdate"/>
 /// </para>
 /// </remarks>
+[Experimental("OPENAI001")]
 public abstract partial class StreamingUpdate
 {
     /// <summary>
@@ -38,7 +41,7 @@ public abstract partial class StreamingUpdate
         UpdateKind = updateKind;
     }
 
-    internal static IEnumerable<StreamingUpdate> FromEvent(ServerSentEvent sseItem)
+    internal static IEnumerable<StreamingUpdate> FromEvent(SseItem<byte[]> sseItem)
     {
         StreamingUpdateReason updateKind = StreamingUpdateReasonExtensions.FromSseEventLabel(sseItem.EventType);
         using JsonDocument dataDocument = JsonDocument.Parse(sseItem.Data);
@@ -78,6 +81,7 @@ public abstract partial class StreamingUpdate
 /// Represents a single item of streamed data that encapsulates an underlying response value type.
 /// </summary>
 /// <typeparam name="T"> The response value type of the "delta" payload. </typeparam>
+[Experimental("OPENAI001")]
 public partial class StreamingUpdate<T> : StreamingUpdate
     where T : class
 {

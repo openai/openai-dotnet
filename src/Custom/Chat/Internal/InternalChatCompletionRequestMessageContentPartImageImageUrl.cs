@@ -8,9 +8,17 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("InternalChatCompletionRequestMessageContentPartImageImageUrl", typeof(string))]
 internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
 {
-    private readonly Uri _imageUri = default;
-    private readonly BinaryData _imageBytes = default;
-    private readonly string _imageBytesMediaType = default;
+#if NET8_0_OR_GREATER
+    [GeneratedRegex(@"^data:(?<type>.+?);base64,(?<data>.+)$")]
+    private static partial Regex ParseDataUriRegex();
+#else
+    private static Regex ParseDataUriRegex() => s_parseDataUriRegex;
+    private static readonly Regex s_parseDataUriRegex = new(@"^data:(?<type>.+?);base64,(?<data>.+)$", RegexOptions.Compiled);
+#endif
+
+    private readonly Uri _imageUri;
+    private readonly BinaryData _imageBytes;
+    private readonly string _imageBytesMediaType;
 
     // CUSTOM: Changed type from Uri to string to be able to support data URIs properly.
     /// <summary> Either a URL of the image or the base64 encoded image data. </summary>
@@ -45,10 +53,10 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     /// <param name="url"> Either a URL of the image or the base64 encoded image data. </param>
     /// <param name="detail"> Specifies the detail level of the image. Learn more in the [Vision guide](/docs/guides/vision/low-or-high-fidelity-image-understanding). </param>
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal InternalChatCompletionRequestMessageContentPartImageImageUrl(string url, ImageChatMessageContentPartDetail? detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal InternalChatCompletionRequestMessageContentPartImageImageUrl(string url, ChatImageDetailLevel? detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
-        Match parsedDataUri = Regex.Match(url, @"^data:(?<type>.+?);base64,(?<data>.+)$");
-        
+        Match parsedDataUri = ParseDataUriRegex().Match(url);
+
         if (parsedDataUri.Success)
         {
             _imageBytes = BinaryData.FromBytes(Convert.FromBase64String(parsedDataUri.Groups["data"].Value));
@@ -61,7 +69,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
 
         Url = url;
         Detail = detail;
-        _serializedAdditionalRawData = serializedAdditionalRawData;
+        SerializedAdditionalRawData = serializedAdditionalRawData;
     }
 
     public Uri ImageUri => _imageUri;

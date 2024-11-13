@@ -61,7 +61,6 @@ public partial class AssistantExamples
         #endregion
 
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region
@@ -82,7 +81,7 @@ public partial class AssistantExamples
         // Create a thread with an initial user message and run it.
         ThreadCreationOptions threadOptions = new()
         {
-            InitialMessages = { new ThreadInitializationMessage(["What's the weather like today?"]), },
+            InitialMessages = { "What's the weather like today?" }
         };
 
         ThreadRun run = client.CreateThreadAndRun(assistant.Id, threadOptions);
@@ -151,8 +150,8 @@ public partial class AssistantExamples
         // With the run complete, list the messages and display their content
         if (run.Status == RunStatus.Completed)
         {
-            PageableCollection<ThreadMessage> messages
-                = client.GetMessages(run.ThreadId, resultOrder: ListOrder.OldestFirst);
+            CollectionResult<ThreadMessage> messages
+                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
 
             foreach (ThreadMessage message in messages)
             {
@@ -173,7 +172,6 @@ public partial class AssistantExamples
                         foreach (TextAnnotation annotation in contentItem.TextAnnotations)
                         {
                             Console.WriteLine($"* File ID used by file_search: {annotation.InputFileId}");
-                            Console.WriteLine($"* file_search quote from file: {annotation.InputQuote}");
                             Console.WriteLine($"* File ID created by code_interpreter: {annotation.OutputFileId}");
                             Console.WriteLine($"* Text to replace: {annotation.TextToReplace}");
                             Console.WriteLine($"* Message content index range: {annotation.StartIndex}-{annotation.EndIndex}");

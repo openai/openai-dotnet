@@ -1,8 +1,5 @@
-﻿
-namespace OpenAI.Models;
 
-[CodeGenModel("DeleteModelResponse")]
-internal partial class InternalDeleteModelResponse { }
+namespace OpenAI.Models;
 
 [CodeGenModel("DeleteModelResponseObject")]
 internal readonly partial struct InternalDeleteModelResponseObject { }

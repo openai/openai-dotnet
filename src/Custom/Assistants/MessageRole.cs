@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Assistants;
 
-[CodeGenModel("MessageCreationOptionsRole")]
+[Experimental("OPENAI001")]
+[CodeGenModel("CreateMessageRequestRole")]
 public enum MessageRole
 {
     /// <summary>

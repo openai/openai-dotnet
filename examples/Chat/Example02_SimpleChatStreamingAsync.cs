@@ -11,20 +11,16 @@ public partial class ChatExamples
     [Test]
     public async Task Example02_SimpleChatStreamingAsync()
     {
-        ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        AsyncResultCollection<StreamingChatCompletionUpdate> asyncChatUpdates
-            = client.CompleteChatStreamingAsync(
-                [
-                    new UserChatMessage("Say 'this is a test.'"),
-                ]);
+        AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
-        Console.WriteLine($"[ASSISTANT]:");
-        await foreach (StreamingChatCompletionUpdate chatUpdate in asyncChatUpdates)
+        Console.Write($"[ASSISTANT]: ");
+        await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
         {
-            foreach (ChatMessageContentPart contentPart in chatUpdate.ContentUpdate)
+            if (completionUpdate.ContentUpdate.Count > 0)
             {
-                Console.Write(contentPart.Text);
+                Console.Write(completionUpdate.ContentUpdate[0].Text);
             }
         }
     }

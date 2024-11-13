@@ -3,7 +3,6 @@ using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
@@ -15,13 +14,13 @@ public partial class AssistantExamples
     public void Example01_RetrievalAugmentedGeneration()
     {
         // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-#pragma warning disable OPENAI001
+        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        FileClient fileClient = openAIClient.GetFileClient();
+        OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
         // First, let's contrive a document we'll use retrieval with and upload it.
-        using Stream document = BinaryData.FromString("""
+        using Stream document = BinaryData.FromBytes("""
             {
                 "description": "This document contains the sale history data for Contoso products.",
                 "sales": [
@@ -48,9 +47,9 @@ public partial class AssistantExamples
                     }
                 ]
             }
-            """).ToStream();
+            """u8.ToArray()).ToStream();
 
-        OpenAIFileInfo salesFile = fileClient.UploadFile(
+        OpenAIFile salesFile = fileClient.UploadFile(
             document,
             "monthly_sales.json",
             FileUploadPurpose.Assistants);
@@ -85,13 +84,7 @@ public partial class AssistantExamples
         // Now we'll create a thread with a user query about the data already associated with the assistant, then run it
         ThreadCreationOptions threadOptions = new()
         {
-            InitialMessages =
-            {
-                new ThreadInitializationMessage(new List<MessageContent>()
-                {
-                    MessageContent.FromText("How well did product 113045 sell in February? Graph its trend over time."),
-                }),
-            },
+            InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
         };
 
         ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOptions);
@@ -104,8 +97,8 @@ public partial class AssistantExamples
         } while (!threadRun.Status.IsTerminal);
 
         // Finally, we'll print out the full history for the thread that includes the augmented generation
-        PageableCollection<ThreadMessage> messages
-            = assistantClient.GetMessages(threadRun.ThreadId, ListOrder.OldestFirst);
+        CollectionResult<ThreadMessage> messages
+            = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
 
         foreach (ThreadMessage message in messages)
         {
@@ -136,7 +129,7 @@ public partial class AssistantExamples
                 }
                 if (!string.IsNullOrEmpty(contentItem.ImageFileId))
                 {
-                    OpenAIFileInfo imageInfo = fileClient.GetFile(contentItem.ImageFileId);
+                    OpenAIFile imageInfo = fileClient.GetFile(contentItem.ImageFileId);
                     BinaryData imageBytes = fileClient.DownloadFile(contentItem.ImageFileId);
                     using FileStream stream = File.OpenWrite($"{imageInfo.Filename}.png");
                     imageBytes.ToStream().CopyTo(stream);
@@ -149,7 +142,7 @@ public partial class AssistantExamples
 
         // Optionally, delete any persistent resources you no longer need.
         _ = assistantClient.DeleteThread(threadRun.ThreadId);
-        _ = assistantClient.DeleteAssistant(assistant);
-        _ = fileClient.DeleteFile(salesFile);
+        _ = assistantClient.DeleteAssistant(assistant.Id);
+        _ = fileClient.DeleteFile(salesFile.Id);
     }
 }

@@ -4,26 +4,33 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage
     {
-        internal IDictionary<string, BinaryData> _serializedAdditionalRawData;
-
-        internal InternalChatCompletionResponseMessage(IReadOnlyList<ChatMessageContentPart> content, IReadOnlyList<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
         {
             Content = content;
+            Refusal = refusal;
+            ToolCalls = new ChangeTrackingList<ChatToolCall>();
+        }
+
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        {
+            Content = content;
+            Refusal = refusal;
             ToolCalls = toolCalls;
             Role = role;
             FunctionCall = functionCall;
-            _serializedAdditionalRawData = serializedAdditionalRawData;
+            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
         internal InternalChatCompletionResponseMessage()
         {
         }
+        public string Refusal { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
     }
 }

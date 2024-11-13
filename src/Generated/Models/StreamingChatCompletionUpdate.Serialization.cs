@@ -21,35 +21,66 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("choices"u8);
-            writer.WriteStartArray();
-            foreach (var item in Choices)
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                writer.WriteObjectValue<InternalCreateChatCompletionStreamResponseChoice>(item, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(CompletionId);
             }
-            writer.WriteEndArray();
-            writer.WritePropertyName("created"u8);
-            writer.WriteNumberValue(CreatedAt, "U");
-            writer.WritePropertyName("model"u8);
-            writer.WriteStringValue(Model);
-            if (Optional.IsDefined(SystemFingerprint))
+            if (SerializedAdditionalRawData?.ContainsKey("choices") != true)
+            {
+                writer.WritePropertyName("choices"u8);
+                writer.WriteStartArray();
+                foreach (var item in Choices)
+                {
+                    writer.WriteObjectValue<InternalCreateChatCompletionStreamResponseChoice>(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("created") != true)
+            {
+                writer.WritePropertyName("created"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(ServiceTier))
+            {
+                if (ServiceTier != null)
+                {
+                    writer.WritePropertyName("service_tier"u8);
+                    writer.WriteStringValue(ServiceTier.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("service_tier");
+                }
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("system_fingerprint") != true && Optional.IsDefined(SystemFingerprint))
             {
                 writer.WritePropertyName("system_fingerprint"u8);
                 writer.WriteStringValue(SystemFingerprint);
             }
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            if (Optional.IsDefined(Usage))
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("usage") != true && Optional.IsDefined(Usage))
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue<ChatTokenUsage>(Usage, options);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -88,6 +119,7 @@ namespace OpenAI.Chat
             IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = default;
             DateTimeOffset created = default;
             string model = default;
+            InternalCreateChatCompletionStreamResponseServiceTier? serviceTier = default;
             string systemFingerprint = default;
             InternalCreateChatCompletionStreamResponseObject @object = default;
             ChatTokenUsage usage = default;
@@ -120,6 +152,16 @@ namespace OpenAI.Chat
                     model = property.Value.GetString();
                     continue;
                 }
+                if (property.NameEquals("service_tier"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        serviceTier = null;
+                        continue;
+                    }
+                    serviceTier = new InternalCreateChatCompletionStreamResponseServiceTier(property.Value.GetString());
+                    continue;
+                }
                 if (property.NameEquals("system_fingerprint"u8))
                 {
                     systemFingerprint = property.Value.GetString();
@@ -141,6 +183,7 @@ namespace OpenAI.Chat
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }
@@ -150,6 +193,7 @@ namespace OpenAI.Chat
                 choices,
                 created,
                 model,
+                serviceTier,
                 systemFingerprint,
                 @object,
                 usage,

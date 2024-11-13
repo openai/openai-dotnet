@@ -18,17 +18,8 @@ namespace OpenAI.Chat
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
 
-        public virtual ClientPipeline Pipeline => _pipeline;
-
         protected ChatClient()
         {
-        }
-
-        internal ChatClient(ClientPipeline pipeline, ApiKeyCredential keyCredential, Uri endpoint)
-        {
-            _pipeline = pipeline;
-            _keyCredential = keyCredential;
-            _endpoint = endpoint;
         }
 
         internal PipelineMessage CreateCreateChatCompletionRequest(BinaryContent content, RequestOptions options)

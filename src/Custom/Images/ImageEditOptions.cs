@@ -1,7 +1,4 @@
-﻿using OpenAI.Embeddings;
-using OpenAI.Internal;
 using System;
-using System.ClientModel.Primitives;
 using System.IO;
 
 namespace OpenAI.Images;
@@ -37,7 +34,7 @@ public partial class ImageEditOptions
     /// </list>
     /// </para>
     /// </summary>
-    internal BinaryData Image { get; set;  }
+    internal BinaryData Image { get; set; }
 
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
@@ -78,11 +75,21 @@ public partial class ImageEditOptions
 
     // CUSTOM: Changed property type.
     /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>
-    public GeneratedImageSize? Size { get; init; }
+    [CodeGenMember("Size")]
+    public GeneratedImageSize? Size { get; set; }
 
     // CUSTOM: Changed property type.
     /// <summary> The format in which the generated images are returned. Must be one of `url` or `b64_json`. </summary>
-    public GeneratedImageFormat? ResponseFormat { get; init; }
+    [CodeGenMember("ResponseFormat")]
+    public GeneratedImageFormat? ResponseFormat { get; set; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
+    ///     <see href="https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids">Learn more</see>.
+    /// </summary>
+    [CodeGenMember("User")]
+    public string EndUserId { get; set; }
 
     internal MultipartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
     {
@@ -104,14 +111,7 @@ public partial class ImageEditOptions
 
         if (ResponseFormat is not null)
         {
-            string format = ResponseFormat switch
-            {
-                GeneratedImageFormat.Uri => "url",
-                GeneratedImageFormat.Bytes => "b64_json",
-                _ => throw new ArgumentException(nameof(ResponseFormat)),
-            };
-
-            content.Add(format, "response_format");
+            content.Add(ResponseFormat.ToString(), "response_format");
         }
 
         if (Size is not null)
@@ -119,9 +119,9 @@ public partial class ImageEditOptions
             content.Add(Size.ToString(), "size");
         }
 
-        if (User is not null)
+        if (EndUserId is not null)
         {
-            content.Add(User, "user");
+            content.Add(EndUserId, "user");
         }
 
         return content;

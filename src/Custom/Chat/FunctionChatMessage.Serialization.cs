@@ -1,6 +1,4 @@
-﻿using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -13,69 +11,32 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
 
     internal static void SerializeFunctionChatMessage(FunctionChatMessage instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+        instance.WriteCore(writer, options);
+    }
+
+    internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
         writer.WriteStartObject();
-        writer.WritePropertyName("name"u8);
-        writer.WriteStringValue(instance.FunctionName);
         writer.WritePropertyName("role"u8);
-        writer.WriteStringValue(instance.Role);
-        if (Optional.IsCollectionDefined(instance.Content))
+        writer.WriteStringValue(Role.ToSerialString());
+        writer.WritePropertyName("name"u8);
+        writer.WriteStringValue(FunctionName);
+
+        // Content is required, can be a single string or null.
+        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined())
         {
-            if (instance.Content[0] != null)
+            writer.WritePropertyName("content"u8);
+            if (Content.Count > 0 && Content[0].Text != null)
             {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStringValue(instance.Content[0].Text);
+                writer.WriteStringValue(Content[0].Text);
             }
             else
             {
-                writer.WriteNull("content");
+                writer.WriteNullValue();
             }
         }
-        writer.WriteSerializedAdditionalRawData(instance._serializedAdditionalRawData, options);
+
+        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
         writer.WriteEndObject();
-    }
-
-    internal static FunctionChatMessage DeserializeFunctionChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
-    {
-        options ??= ModelSerializationExtensions.WireOptions;
-
-        if (element.ValueKind == JsonValueKind.Null)
-        {
-            return null;
-        }
-        string name = default;
-        string role = default;
-        IList<ChatMessageContentPart> content = default;
-        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-        foreach (var property in element.EnumerateObject())
-        {
-            if (property.NameEquals("name"u8))
-            {
-                name = property.Value.GetString();
-                continue;
-            }
-            if (property.NameEquals("role"u8))
-            {
-                role = property.Value.GetString();
-                continue;
-            }
-            if (property.NameEquals("content"u8))
-            {
-                if (property.Value.ValueKind == JsonValueKind.Null)
-                {
-                    continue;
-                }
-                List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
-                array.Add(ChatMessageContentPart.CreateTextMessageContentPart(property.Value.GetString()));
-                content = array;
-                continue;
-            }
-            if (true)
-            {
-                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
-            }
-        }
-        serializedAdditionalRawData = rawDataDictionary;
-        return new FunctionChatMessage(role, content ?? new ChangeTrackingList<ChatMessageContentPart>(), serializedAdditionalRawData, name);
     }
 }

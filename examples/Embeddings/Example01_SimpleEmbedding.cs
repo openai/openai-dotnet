@@ -15,8 +15,8 @@ public partial class EmbeddingExamples
             + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
             + " attractions. We highly recommend this hotel.";
 
-        Embedding embedding = client.GenerateEmbedding(description);
-        ReadOnlyMemory<float> vector = embedding.Vector;
+        OpenAIEmbedding embedding = client.GenerateEmbedding(description);
+        ReadOnlyMemory<float> vector = embedding.ToFloats();
 
         Console.WriteLine($"Dimension: {vector.Length}");
         Console.WriteLine($"Floats: ");

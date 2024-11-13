@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Assistants;
@@ -6,6 +7,7 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// Represents additional options available when creating a new <see cref="Assistant"/>.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenModel("CreateThreadRequest")]
 public partial class ThreadCreationOptions
 {
@@ -13,7 +15,7 @@ public partial class ThreadCreationOptions
 
     /// <inheritdoc cref="ToolResources"/>
     [CodeGenMember("ToolResources")]
-    public ToolResources ToolResources { get; init; }
+    public ToolResources ToolResources { get; set; }
 
     // CUSTOM: the wire-oriented messages type list is hidden so that we can propagate top-level required semantics
     //          of message creation into the collection.

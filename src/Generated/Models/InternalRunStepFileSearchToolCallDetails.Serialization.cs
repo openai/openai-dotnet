@@ -21,22 +21,29 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("id"u8);
-            writer.WriteStringValue(Id);
-            writer.WritePropertyName("file_search"u8);
-            writer.WriteStartObject();
-            foreach (var item in FileSearch)
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
             {
-                writer.WritePropertyName(item.Key);
-                writer.WriteStringValue(item.Value);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
-            writer.WriteEndObject();
-            writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(Type);
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData?.ContainsKey("file_search") != true)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("file_search"u8);
+                writer.WriteObjectValue(FileSearch, options);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type);
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -72,7 +79,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
-            IReadOnlyDictionary<string, string> fileSearch = default;
+            InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch = default;
             string type = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -85,12 +92,7 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("file_search"u8))
                 {
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    fileSearch = dictionary;
+                    fileSearch = InternalRunStepDetailsToolCallsFileSearchObjectFileSearch.DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(property.Value, options);
                     continue;
                 }
                 if (property.NameEquals("type"u8))
@@ -100,6 +102,7 @@ namespace OpenAI.Assistants
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

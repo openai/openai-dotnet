@@ -21,21 +21,34 @@ namespace OpenAI.FineTuning
             }
 
             writer.WriteStartObject();
-            writer.WritePropertyName("data"u8);
-            writer.WriteStartArray();
-            foreach (var item in Data)
+            if (SerializedAdditionalRawData?.ContainsKey("data") != true)
             {
-                writer.WriteObjectValue(item, options);
-            }
-            writer.WriteEndArray();
-            writer.WritePropertyName("has_more"u8);
-            writer.WriteBooleanValue(HasMore);
-            writer.WritePropertyName("object"u8);
-            writer.WriteStringValue(Object.ToString());
-            if (true && _serializedAdditionalRawData != null)
-            {
-                foreach (var item in _serializedAdditionalRawData)
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (var item in Data)
                 {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
+            if (SerializedAdditionalRawData != null)
+            {
+                foreach (var item in SerializedAdditionalRawData)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -70,7 +83,7 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IReadOnlyList<InternalFineTuningJob> data = default;
+            IReadOnlyList<FineTuningJob> data = default;
             bool hasMore = default;
             InternalListPaginatedFineTuningJobsResponseObject @object = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -79,10 +92,10 @@ namespace OpenAI.FineTuning
             {
                 if (property.NameEquals("data"u8))
                 {
-                    List<InternalFineTuningJob> array = new List<InternalFineTuningJob>();
+                    List<FineTuningJob> array = new List<FineTuningJob>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(InternalFineTuningJob.DeserializeInternalFineTuningJob(item, options));
+                        array.Add(FineTuningJob.DeserializeFineTuningJob(item, options));
                     }
                     data = array;
                     continue;
@@ -99,6 +112,7 @@ namespace OpenAI.FineTuning
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

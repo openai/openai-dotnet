@@ -5,6 +5,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Represents the definition of a function that the model may call, as supplied in a chat completion request.
 /// </summary>
+[Obsolete($"This class is obsolete. Please use {nameof(ChatTool)} instead.")]
 [CodeGenModel("ChatCompletionFunctions")]
 [CodeGenSuppress("ChatFunction", typeof(string))]
 public partial class ChatFunction
@@ -14,15 +15,11 @@ public partial class ChatFunction
     /// Creates a new instance of <see cref="ChatFunction"/>.
     /// </summary>
     /// <param name="functionName"> The <c>name</c> of the function. </param>
-    /// <param name="functionDescription"> The <c>description</c> of the function. </param>
-    /// <param name="functionParameters"> The <c>parameters</c> into the function, in JSON Schema format. </param>
-    public ChatFunction(string functionName, string functionDescription = null, BinaryData functionParameters = null)
+    public ChatFunction(string functionName)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
         FunctionName = functionName;
-        FunctionDescription = functionDescription;
-        FunctionParameters = functionParameters;
     }
 
     // CUSTOM: Renamed.
@@ -33,10 +30,10 @@ public partial class ChatFunction
     // CUSTOM: Renamed
     /// <summary> A description of what the function does, used by the model to choose when and how to call the function. </summary>
     [CodeGenMember("Description")]
-    public string FunctionDescription { get; init; }
+    public string FunctionDescription { get; set; }
 
     // CUSTOM: Changed type to BinarayData.
     /// <summary> Gets or sets the parameters. </summary>
     [CodeGenMember("Parameters")]
-    public BinaryData FunctionParameters { get; init; }
+    public BinaryData FunctionParameters { get; set; }
 }

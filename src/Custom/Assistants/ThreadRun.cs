@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace OpenAI.Assistants;
 
@@ -6,6 +9,7 @@ namespace OpenAI.Assistants;
 //  - Required actions are abstracted into a forward-compatible, strongly-typed conceptual
 //    hierarchy and formatted into a more intuitive collection for the consumer.
 
+[Experimental("OPENAI001")]
 [CodeGenModel("RunObject")]
 public partial class ThreadRun
 {
@@ -17,6 +21,43 @@ public partial class ThreadRun
 
     [CodeGenMember("RequiredAction")]
     internal readonly InternalRunRequiredAction _internalRequiredAction;
+
+    // CUSTOM: Removed null check for `toolConstraint` and `responseFormat`.
+    internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat)
+    {
+        Argument.AssertNotNull(id, nameof(id));
+        Argument.AssertNotNull(threadId, nameof(threadId));
+        Argument.AssertNotNull(assistantId, nameof(assistantId));
+        Argument.AssertNotNull(model, nameof(model));
+        Argument.AssertNotNull(instructions, nameof(instructions));
+        Argument.AssertNotNull(tools, nameof(tools));
+
+        Id = id;
+        CreatedAt = createdAt;
+        ThreadId = threadId;
+        AssistantId = assistantId;
+        Status = status;
+        _internalRequiredAction = internalRequiredAction;
+        LastError = lastError;
+        ExpiresAt = expiresAt;
+        StartedAt = startedAt;
+        CancelledAt = cancelledAt;
+        FailedAt = failedAt;
+        CompletedAt = completedAt;
+        IncompleteDetails = incompleteDetails;
+        Model = model;
+        Instructions = instructions;
+        Tools = tools.ToList();
+        Metadata = metadata;
+        Usage = usage;
+        MaxInputTokenCount = maxInputTokenCount;
+        MaxOutputTokenCount = maxOutputTokenCount;
+        TruncationStrategy = truncationStrategy;
+        ToolConstraint = toolConstraint;
+        AllowParallelToolCalls = allowParallelToolCalls;
+        ResponseFormat = responseFormat;
+    }
+
 
     /// <summary>
     /// The list of required actions that must have their results submitted for the run to continue.
@@ -44,4 +85,21 @@ public partial class ThreadRun
     /// </summary>
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; }
+
+    /// <summary>
+    /// Whether parallel function calling is enabled during tool use for the thread. 
+    /// </summary>
+    /// <remarks>
+    /// Assumed <c>true</c> if not otherwise specified.
+    /// </remarks>
+    [CodeGenMember("ParallelToolCalls")]
+    public bool? AllowParallelToolCalls { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("MaxPromptTokens")]
+    public int? MaxInputTokenCount { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("MaxCompletionTokens")]
+    public int? MaxOutputTokenCount { get; }
 }

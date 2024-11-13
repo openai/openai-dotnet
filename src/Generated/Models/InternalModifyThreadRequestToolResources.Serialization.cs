@@ -21,20 +21,24 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            if (Optional.IsDefined(CodeInterpreter))
+            if (SerializedAdditionalRawData?.ContainsKey("code_interpreter") != true && Optional.IsDefined(CodeInterpreter))
             {
                 writer.WritePropertyName("code_interpreter"u8);
                 writer.WriteObjectValue(CodeInterpreter, options);
             }
-            if (Optional.IsDefined(FileSearch))
+            if (SerializedAdditionalRawData?.ContainsKey("file_search") != true && Optional.IsDefined(FileSearch))
             {
                 writer.WritePropertyName("file_search"u8);
                 writer.WriteObjectValue(FileSearch, options);
             }
-            if (true && _serializedAdditionalRawData != null)
+            if (SerializedAdditionalRawData != null)
             {
-                foreach (var item in _serializedAdditionalRawData)
+                foreach (var item in SerializedAdditionalRawData)
                 {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
 				writer.WriteRawValue(item.Value);
@@ -70,7 +74,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             InternalModifyThreadRequestToolResourcesCodeInterpreter codeInterpreter = default;
-            InternalModifyThreadRequestToolResourcesFileSearch fileSearch = default;
+            InternalToolResourcesFileSearchIdsOnly fileSearch = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -90,11 +94,12 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    fileSearch = InternalModifyThreadRequestToolResourcesFileSearch.DeserializeInternalModifyThreadRequestToolResourcesFileSearch(property.Value, options);
+                    fileSearch = InternalToolResourcesFileSearchIdsOnly.DeserializeInternalToolResourcesFileSearchIdsOnly(property.Value, options);
                     continue;
                 }
                 if (true)
                 {
+                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
                     rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
                 }
             }

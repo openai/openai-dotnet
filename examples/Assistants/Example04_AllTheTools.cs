@@ -14,8 +14,6 @@ public partial class AssistantExamples
     [Test]
     public void Example04_AllTheTools()
     {
-#pragma warning disable OPENAI001
-
         #region Define a function tool
         static string GetNameOfFamilyMember(string relation)
             => relation switch
@@ -45,8 +43,8 @@ public partial class AssistantExamples
         };
 
         #region Upload a mock file for use with file search
-        FileClient fileClient = new();
-        OpenAIFileInfo favoriteNumberFile = fileClient.UploadFile(
+        OpenAIFileClient fileClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        OpenAIFile favoriteNumberFile = fileClient.UploadFile(
             BinaryData.FromString("""
                 This file contains the favorite numbers for individuals.
 
@@ -59,7 +57,7 @@ public partial class AssistantExamples
         #endregion
 
         #region Create an assistant with functions, file search, and code interpreter all enabled
-        AssistantClient client = new();
+        AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         Assistant assistant = client.CreateAssistant("gpt-4-turbo", new AssistantCreationOptions()
         {
             Instructions = "Use functions to resolve family relations into the names of people. Use file search to "
@@ -83,16 +81,13 @@ public partial class AssistantExamples
         {
             InitialMessages =
             {
-                new ThreadInitializationMessage(
-                    [
-                        "Create a graph of a line with a slope that's my father's favorite number "
-                        + "and an offset that's my mother's favorite number.",
-                        "Include people's names in your response and cite where you found them."
-                    ]),
-            },
+                "Create a graph of a line with a slope that's my father's favorite number "
+                + "and an offset that's my mother's favorite number.",
+                "Include people's names in your response and cite where you found them."
+            }
         });
 
-        ThreadRun run = client.CreateRun(thread, assistant);
+        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
         #endregion
 
         #region Complete the run, calling functions as needed
@@ -140,9 +135,8 @@ public partial class AssistantExamples
         // With the run complete, list the messages and display their content
         if (run.Status == RunStatus.Completed)
         {
-            PageableCollection<ThreadMessage> messages
-                = client.GetMessages(run.ThreadId, resultOrder: ListOrder.OldestFirst);
-
+            CollectionResult<ThreadMessage> messages
+                = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
             foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");
@@ -162,7 +156,6 @@ public partial class AssistantExamples
                         foreach (TextAnnotation annotation in contentItem.TextAnnotations)
                         {
                             Console.WriteLine($"* File ID used by file_search: {annotation.InputFileId}");
-                            Console.WriteLine($"* file_search quote from file: {annotation.InputQuote}");
                             Console.WriteLine($"* File ID created by code_interpreter: {annotation.OutputFileId}");
                             Console.WriteLine($"* Text to replace: {annotation.TextToReplace}");
                             Console.WriteLine($"* Message content index range: {annotation.StartIndex}-{annotation.EndIndex}");
@@ -175,7 +168,13 @@ public partial class AssistantExamples
             #endregion
 
             #region List run steps for details about tool calls
-            PageableCollection<RunStep> runSteps = client.GetRunSteps(run, resultOrder: ListOrder.OldestFirst);
+            CollectionResult<RunStep> runSteps = client.GetRunSteps(
+                run.ThreadId,
+                run.Id,
+                new RunStepCollectionOptions()
+                {
+                    Order = RunStepCollectionOrder.Ascending
+                });
             foreach (RunStep step in runSteps)
             {
                 Console.WriteLine($"Run step: {step.Status}");
@@ -197,8 +196,8 @@ public partial class AssistantExamples
         #endregion
 
         #region Clean up any temporary resources that are no longer needed
-        _ = client.DeleteThread(thread);
-        _ = client.DeleteAssistant(assistant);
+        _ = client.DeleteThread(thread.Id);
+        _ = client.DeleteAssistant(assistant.Id);
         _ = fileClient.DeleteFile(favoriteNumberFile.Id);
         #endregion
     }
