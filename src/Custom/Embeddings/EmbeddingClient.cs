@@ -182,7 +182,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableIEnumerableInt32), ref options);
+        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableReadOnlyMemoryInt32), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -201,7 +201,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableIEnumerableInt32), ref options);
+        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableReadOnlyMemoryInt32), ref options);
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());

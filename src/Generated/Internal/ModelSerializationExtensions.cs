@@ -15,7 +15,7 @@ namespace OpenAI
     internal static class ModelSerializationExtensions
     {
         internal static readonly ModelReaderWriterOptions WireOptions = new ModelReaderWriterOptions("W");
-        internal static readonly BinaryData SentinelValue = BinaryData.FromObjectAsJson("__EMPTY__");
+        internal static readonly BinaryData SentinelValue = BinaryData.FromObjectAsJson("__EMPTY__", SourceGenerationContext.Default.String);
 
         public static object GetObject(this JsonElement element)
         {

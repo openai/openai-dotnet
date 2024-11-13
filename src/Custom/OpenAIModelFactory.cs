@@ -30,7 +30,7 @@ internal static partial class OpenAIModelFactory
     public static OpenAIEmbedding OpenAIEmbedding(ReadOnlyMemory<float> vector = default, int index = default)
     {
         // TODO: Vector must be converted to base64-encoded string.
-        return new OpenAIEmbedding(index, BinaryData.FromObjectAsJson(vector), InternalEmbeddingObject.Embedding, serializedAdditionalRawData: null);
+        return new OpenAIEmbedding(index, BinaryData.FromObjectAsJson(vector, SourceGenerationContext.Default.ReadOnlyMemorySingle), InternalEmbeddingObject.Embedding, serializedAdditionalRawData: null);
     }
 
 }
