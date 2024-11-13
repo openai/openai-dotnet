@@ -80,4 +80,12 @@
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.1" />
     <PackageReference Include="System.Memory.Data" Version="9.0.0" />
   </ItemGroup>
+
+  <PropertyGroup Label="Trimmable" Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+    <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+  </PropertyGroup>
 </Project>
