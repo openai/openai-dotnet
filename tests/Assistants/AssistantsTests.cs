@@ -1015,6 +1015,12 @@ public class AssistantsTests : SyncAsyncTestBase
                 {
                     message += $"{contentUpdate.Text}";
                 }
+                else if (update is RunStepDetailsUpdate detailUpdate)
+                {
+                    string? functionName = "none"; // expect null assignment on next line
+                    Assert.DoesNotThrow(() => functionName = detailUpdate.FunctionName);
+                    Assert.Null(functionName);
+                }
             }
         }
         else
