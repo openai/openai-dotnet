@@ -45,7 +45,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
         => _asCodeCall?.CodeInterpreter?.Outputs;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.Name"/>
-    public string FunctionName => _asFunctionCall.Function?.Name;
+    public string FunctionName => _asFunctionCall?.Function?.Name;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.Arguments"/>
     public string FunctionArguments => _asFunctionCall?.Function?.Arguments;
