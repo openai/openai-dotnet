@@ -16,20 +16,20 @@ public partial class ConversationContentPart
         (this as InternalRealtimeRequestAudioContentPart)?.InternalTranscriptValue
         ?? (this as InternalRealtimeResponseAudioContentPart)?.InternalTranscriptValue;
 
-    public static ConversationContentPart FromInputText(string text)
+    public static ConversationContentPart CreateInputTextPart(string text)
         => new InternalRealtimeRequestTextContentPart(text);
 
-    public static ConversationContentPart FromInputAudioTranscript(string transcript = null)
+    public static ConversationContentPart CreateInputAudioTranscriptPart(string transcript = null)
         => new InternalRealtimeRequestAudioContentPart()
         {
             InternalTranscriptValue = transcript,
         };
 
-    public static ConversationContentPart FromOutputText(string text)
+    public static ConversationContentPart CreateOutputTextPart(string text)
         => new InternalRealtimeResponseTextContentPart(text);
 
-    public static ConversationContentPart FromOutputAudioTranscript(string transcript = null)
+    public static ConversationContentPart CreateOutputAudioTranscriptPart(string transcript = null)
         => new InternalRealtimeResponseAudioContentPart(transcript);
 
-    public static implicit operator ConversationContentPart(string text) => FromInputText(text);
+    public static implicit operator ConversationContentPart(string text) => CreateInputTextPart(text);
 }

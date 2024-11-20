@@ -11,6 +11,10 @@ public partial class RunStep
     [CodeGenMember("Object")]
     internal InternalRunStepObjectObject Object { get; } = InternalRunStepObjectObject.ThreadRunStep;
 
+    // CUSTOM: Renamed.
+    [CodeGenMember("Type")]
+    public RunStepKind Kind { get; }
+
     /// <summary>
     /// The <c>step_details</c> associated with this run step.
     /// </summary>

@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
     public partial class RunStep
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepType type, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage)
+        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage)
         {
             Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(assistantId, nameof(assistantId));
@@ -23,7 +23,7 @@ namespace OpenAI.Assistants
             AssistantId = assistantId;
             ThreadId = threadId;
             RunId = runId;
-            Type = type;
+            Kind = kind;
             Status = status;
             Details = details;
             LastError = lastError;
@@ -35,7 +35,7 @@ namespace OpenAI.Assistants
             Usage = usage;
         }
 
-        internal RunStep(string id, InternalRunStepObjectObject @object, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepType type, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunStep(string id, InternalRunStepObjectObject @object, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Id = id;
             Object = @object;
@@ -43,7 +43,7 @@ namespace OpenAI.Assistants
             AssistantId = assistantId;
             ThreadId = threadId;
             RunId = runId;
-            Type = type;
+            Kind = kind;
             Status = status;
             Details = details;
             LastError = lastError;
@@ -66,7 +66,6 @@ namespace OpenAI.Assistants
         public string AssistantId { get; }
         public string ThreadId { get; }
         public string RunId { get; }
-        public RunStepType Type { get; }
         public RunStepStatus Status { get; }
         public RunStepError LastError { get; }
         public DateTimeOffset? ExpiredAt { get; }

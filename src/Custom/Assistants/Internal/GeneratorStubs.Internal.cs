@@ -171,8 +171,14 @@ internal partial class InternalListRunStepsResponse : IInternalListResponse<RunS
 [CodeGenModel("ListRunStepsResponseObject")]
 internal readonly partial struct InternalListRunStepsResponseObject { }
 
+[CodeGenModel("RunStepDetailsToolCallsCodeObject")]
+internal partial class InternalRunStepDetailsToolCallsCodeObject { }
+
 [CodeGenModel("RunStepDetailsToolCallsFileSearchObject")]
-internal partial class InternalRunStepFileSearchToolCallDetails { }
+internal partial class InternalRunStepDetailsToolCallsFileSearchObject { }
+
+[CodeGenModel("RunStepDetailsToolCallsFunctionObject")]
+internal partial class InternalRunStepDetailsToolCallsFunctionObject { }
 
 [CodeGenModel("TruncationObjectType")]
 internal readonly partial struct InternalTruncationObjectType { }
@@ -370,8 +376,5 @@ internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsOb
 [CodeGenModel("RunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker")]
 internal readonly partial struct InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker { }
 
-[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContent")]
-internal partial class InternalRunStepDetailsToolCallsFileSearchResultObjectContent { }
-
-[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContentType")]
-internal readonly partial struct InternalRunStepDetailsToolCallsFileSearchResultObjectContentType { }
+[CodeGenModel("IncludedRunStepProperty")]
+internal readonly partial struct InternalIncludedRunStepProperty { }

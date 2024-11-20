@@ -412,4 +412,57 @@ public class ConversationTests : ConversationTestFixtureBase
 
         Assert.That(gotErrorUpdate, Is.True);
     }
+
+    [Test]
+    public async Task CanAddItems()
+    {
+        RealtimeConversationClient client = GetTestClient();
+
+        ConversationSessionOptions sessionOptions = new()
+        {
+            ContentModalities = ConversationContentModalities.Text,
+        };
+        using RealtimeConversationSession session = await client.StartConversationSessionAsync(CancellationToken);
+        await session.ConfigureSessionAsync(sessionOptions, CancellationToken);
+
+        List<ConversationItem> items =
+            [
+                ConversationItem.CreateSystemMessage(["You are a robot. Beep boop."]),
+                ConversationItem.CreateUserMessage(["How can I pay for a joke?"]),
+                ConversationItem.CreateAssistantMessage(["I ONLY ACCEPT CACHE"]),
+                ConversationItem.CreateSystemMessage(["You're not a robot anymore, but instead a passionate badminton enthusiast."]),
+                ConversationItem.CreateUserMessage(["What's a good gift to buy?"]),
+                ConversationItem.CreateFunctionCall("product_lookup", "call-id-123", "{}"),
+                ConversationItem.CreateFunctionCallOutput("call-id-123", "A new racquet!"),
+            ];
+
+        foreach (ConversationItem item in items)
+        {
+            await session.AddItemAsync(item, CancellationToken);
+        }
+
+        await session.StartResponseAsync(CancellationToken);
+
+        int itemCreatedCount = 0;
+
+        await foreach (ConversationUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
+        {
+            if (update is ConversationErrorUpdate errorUpdate)
+            {
+                Assert.Fail($"Unexpected error: {errorUpdate.Message}");
+            }
+
+            if (update is ConversationItemCreatedUpdate)
+            {
+                itemCreatedCount++;
+            }
+
+            if (update is ConversationResponseFinishedUpdate)
+            {
+                break;
+            }
+        }
+
+        Assert.That(itemCreatedCount, Is.EqualTo(items.Count + 1));
+    }
 }

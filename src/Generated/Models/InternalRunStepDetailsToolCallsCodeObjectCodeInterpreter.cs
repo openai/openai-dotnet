@@ -4,20 +4,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IEnumerable<RunStepCodeInterpreterOutput> outputs)
+        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input)
         {
             Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(outputs, nameof(outputs));
 
             Input = input;
-            Outputs = outputs.ToList();
+            Outputs = new ChangeTrackingList<RunStepCodeInterpreterOutput>();
         }
 
         internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> serializedAdditionalRawData)

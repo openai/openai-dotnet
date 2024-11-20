@@ -10,15 +10,21 @@ namespace OpenAI.Chat
     public partial class ChatOutputTokenUsageDetails
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ChatOutputTokenUsageDetails()
+        internal ChatOutputTokenUsageDetails(int audioTokenCount, int reasoningTokenCount)
         {
+            AudioTokenCount = audioTokenCount;
+            ReasoningTokenCount = reasoningTokenCount;
         }
 
-        internal ChatOutputTokenUsageDetails(int? audioTokenCount, int reasoningTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatOutputTokenUsageDetails(int audioTokenCount, int reasoningTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             AudioTokenCount = audioTokenCount;
             ReasoningTokenCount = reasoningTokenCount;
             SerializedAdditionalRawData = serializedAdditionalRawData;
+        }
+
+        internal ChatOutputTokenUsageDetails()
+        {
         }
     }
 }

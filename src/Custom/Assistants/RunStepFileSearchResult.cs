@@ -7,7 +7,4 @@ namespace OpenAI.Assistants;
 [CodeGenModel("RunStepDetailsToolCallsFileSearchResultObject")]
 public partial class RunStepFileSearchResult
 {
-    // CUSTOM: made internal pending design support for include[] query string parameter
-    [CodeGenMember("Content")]
-    internal IReadOnlyList<InternalRunStepDetailsToolCallsFileSearchResultObjectContent> Content { get; }
 }

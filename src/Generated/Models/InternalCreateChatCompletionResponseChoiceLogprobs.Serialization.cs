@@ -21,7 +21,7 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
+            if (SerializedAdditionalRawData?.ContainsKey("content") != true && true)
             {
                 if (Content != null && Optional.IsCollectionDefined(Content))
                 {
@@ -38,7 +38,7 @@ namespace OpenAI.Chat
                     writer.WriteNull("content");
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("refusal") != true)
+            if (SerializedAdditionalRawData?.ContainsKey("refusal") != true && true)
             {
                 if (Refusal != null && Optional.IsCollectionDefined(Refusal))
                 {
