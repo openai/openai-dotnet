@@ -4,17 +4,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionResponseChoiceLogprobs
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalCreateChatCompletionResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityDetails> content, IEnumerable<ChatTokenLogProbabilityDetails> refusal)
+        internal InternalCreateChatCompletionResponseChoiceLogprobs()
         {
-            Content = content?.ToList();
-            Refusal = refusal?.ToList();
+            Content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
+            Refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
         }
 
         internal InternalCreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
@@ -22,10 +21,6 @@ namespace OpenAI.Chat
             Content = content;
             Refusal = refusal;
             SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateChatCompletionResponseChoiceLogprobs()
-        {
         }
 
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }

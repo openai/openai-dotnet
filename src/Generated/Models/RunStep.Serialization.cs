@@ -54,7 +54,7 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("status") != true)
             {
@@ -204,7 +204,7 @@ namespace OpenAI.Assistants
             string assistantId = default;
             string threadId = default;
             string runId = default;
-            RunStepType type = default;
+            RunStepKind type = default;
             RunStepStatus status = default;
             RunStepDetails stepDetails = default;
             RunStepError lastError = default;
@@ -250,7 +250,7 @@ namespace OpenAI.Assistants
                 }
                 if (property.NameEquals("type"u8))
                 {
-                    type = new RunStepType(property.Value.GetString());
+                    type = property.Value.GetString().ToRunStepKind();
                     continue;
                 }
                 if (property.NameEquals("status"u8))

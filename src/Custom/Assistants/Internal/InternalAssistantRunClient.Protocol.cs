@@ -1,10 +1,17 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
+[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(BinaryContent), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("CreateRun", typeof(string), typeof(BinaryContent), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("GetRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("GetRunSteps", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
 internal partial class InternalAssistantRunClient
 {
     /// <summary>
@@ -79,7 +86,10 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateCreateRunRequest(threadId, content, options);
+            // Always request the included properties.
+            IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+            message = CreateCreateRunRequest(threadId, content, includedRunStepProperties, options);
             return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
@@ -109,7 +119,10 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateCreateRunRequest(threadId, content, options);
+            // Always request the included properties.
+            IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+            message = CreateCreateRunRequest(threadId, content, includedRunStepProperties, options);
             return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
         }
         finally
@@ -307,6 +320,30 @@ internal partial class InternalAssistantRunClient
         }
     }
 
+    public virtual async Task<ClientResult> GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        // Always request the included properties.
+        IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, includedRunStepProperties, options);
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    }
+
+    public virtual ClientResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+        Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+        // Always request the included properties.
+        IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+        using PipelineMessage message = CreateGetRunStepsRequest(threadId, runId, limit, order, after, before, includedRunStepProperties, options);
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
+
     /// <summary>
     /// [Protocol Method] Retrieves a run step.
     /// </summary>
@@ -324,7 +361,10 @@ internal partial class InternalAssistantRunClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
+        // Always request the included properties.
+        IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, includedRunStepProperties, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -345,7 +385,10 @@ internal partial class InternalAssistantRunClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
         Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, options);
+        // Always request the included properties.
+        IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
+
+        using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, includedRunStepProperties, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

@@ -1,16 +1,16 @@
 namespace OpenAI.Chat;
 
-/// <summary>
-/// A collection of additional information about the value reported in <see cref="ChatTokenUsage.InputTokenCount"/>.
-/// </summary>
+/// <summary> A breakdown of the number of tokens used in the input as reported in <see cref="ChatTokenUsage.InputTokenCount"/>. </summary>
 [CodeGenModel("CompletionUsagePromptTokensDetails")]
 public partial class ChatInputTokenUsageDetails
 {
     // CUSTOM: Renamed.
+    /// <summary> The number of audio tokens in the input. </summary>
     [CodeGenMember("AudioTokens")]
-    public int? AudioTokenCount { get; }
+    public int AudioTokenCount { get; }
 
     // CUSTOM: Renamed.
+    /// <summary> The number of cached tokens in the input. </summary>
     [CodeGenMember("CachedTokens")]
-    public int? CachedTokenCount { get; }
+    public int CachedTokenCount { get; }
 }

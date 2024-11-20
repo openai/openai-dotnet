@@ -180,7 +180,7 @@ public partial class AssistantExamples
                 Console.WriteLine($"Run step: {step.Status}");
                 foreach (RunStepToolCall toolCall in step.Details.ToolCalls)
                 {
-                    Console.WriteLine($" --> Tool call: {toolCall.ToolKind}");
+                    Console.WriteLine($" --> Tool call: {toolCall.Kind}");
                     foreach (RunStepCodeInterpreterOutput output in toolCall.CodeInterpreterOutputs)
                     {
                         Console.WriteLine($"    --> Output: {output.ImageFileId}");

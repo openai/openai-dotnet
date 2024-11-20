@@ -1142,29 +1142,6 @@ public partial class AssistantClient
     }
 
     /// <summary>
-    /// Rehydrates a page collection holding <see cref="RunStep"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="RunStep"/>. </returns>
-    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        RunStepCollectionPageToken pageToken = RunStepCollectionPageToken.FromToken(firstPageToken);
-        AsyncCollectionResult result = GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<RunStep> collection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<RunStep>'.");
-        }
-
-        return collection;
-    }
-
-    /// <summary>
     /// Gets a page collection holding <see cref="RunStep"/> instances associated with a <see cref="ThreadRun"/>.
     /// </summary>
     /// <param name="threadId"> The ID of the thread associated with the run. </param>
@@ -1186,6 +1163,29 @@ public partial class AssistantClient
         if (result is not CollectionResult<RunStep> collection)
         {
             throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<RunStep>'.");
+        }
+
+        return collection;
+    }
+
+    /// <summary>
+    /// Rehydrates a page collection holding <see cref="RunStep"/> instances from a page token.
+    /// </summary>
+    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
+    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
+    /// <returns> A collection of <see cref="RunStep"/>. </returns>
+    public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(
+        ContinuationToken firstPageToken,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
+
+        RunStepCollectionPageToken pageToken = RunStepCollectionPageToken.FromToken(firstPageToken);
+        AsyncCollectionResult result = GetRunStepsAsync(pageToken?.ThreadId, pageToken?.RunId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
+
+        if (result is not AsyncCollectionResult<RunStep> collection)
+        {
+            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<RunStep>'.");
         }
 
         return collection;

@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownRunStepDetailsToolCallsObjectToolCallsObject : RunStepToolCall
     {
-        internal UnknownRunStepDetailsToolCallsObjectToolCallsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal UnknownRunStepDetailsToolCallsObjectToolCallsObject(RunStepToolCallKind kind, string id, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(kind, id, serializedAdditionalRawData)
         {
         }
 

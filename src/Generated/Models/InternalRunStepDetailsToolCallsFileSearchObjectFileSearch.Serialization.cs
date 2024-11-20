@@ -26,7 +26,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("ranking_options"u8);
                 writer.WriteObjectValue<FileSearchRankingOptions>(RankingOptions, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("results") != true && Optional.IsCollectionDefined(Results))
+            if (SerializedAdditionalRawData?.ContainsKey("results") != true && true && Optional.IsCollectionDefined(Results))
             {
                 writer.WritePropertyName("results"u8);
                 writer.WriteStartArray();
