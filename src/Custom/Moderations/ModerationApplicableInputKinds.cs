@@ -5,7 +5,7 @@ namespace OpenAI.Moderations;
 /// <summary> The kinds of inputs that <see cref="ModerationCategory.Score"/> is applicable to. </summary>
 [Flags]
 [CodeGenModel("ModerationAppliedInputType")]
-public enum ModerationApplicableInputKinds : int
+internal enum ModerationApplicableInputKinds : int
 {
     None = 0,
 

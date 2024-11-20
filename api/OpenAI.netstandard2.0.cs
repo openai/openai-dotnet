@@ -2170,15 +2170,7 @@ namespace OpenAI.Models {
     }
 }
 namespace OpenAI.Moderations {
-    [Flags]
-    public enum ModerationApplicableInputKinds {
-        None = 0,
-        Other = 1,
-        Text = 2,
-        Image = 4
-    }
     public class ModerationCategory {
-        public ModerationApplicableInputKinds ApplicableInputKinds { get; }
         public bool Flagged { get; }
         public float Score { get; }
     }
@@ -2229,7 +2221,7 @@ namespace OpenAI.Moderations {
         BinaryData IPersistableModel<ModerationResultCollection>.Write(ModelReaderWriterOptions options);
     }
     public static class OpenAIModerationsModelFactory {
-        public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0, ModerationApplicableInputKinds applicableInputKinds = ModerationApplicableInputKinds.None);
+        public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
         public static ModerationResult ModerationResult(bool flagged = false, ModerationCategory hate = null, ModerationCategory hateThreatening = null, ModerationCategory harassment = null, ModerationCategory harassmentThreatening = null, ModerationCategory selfHarm = null, ModerationCategory selfHarmIntent = null, ModerationCategory selfHarmInstructions = null, ModerationCategory sexual = null, ModerationCategory sexualMinors = null, ModerationCategory violence = null, ModerationCategory violenceGraphic = null, ModerationCategory illicit = null, ModerationCategory illicitViolent = null);
         public static ModerationResultCollection ModerationResultCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
     }
