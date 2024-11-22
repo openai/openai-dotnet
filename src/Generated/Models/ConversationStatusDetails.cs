@@ -9,7 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     public abstract partial class ConversationStatusDetails
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        public IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
         protected ConversationStatusDetails()
         {
         }
