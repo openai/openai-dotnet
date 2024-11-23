@@ -169,8 +169,8 @@ public partial class AssistantExamples
 
             #region List run steps for details about tool calls
             CollectionResult<RunStep> runSteps = client.GetRunSteps(
-                run.ThreadId, 
-                run.Id, 
+                run.ThreadId,
+                run.Id,
                 new RunStepCollectionOptions()
                 {
                     Order = RunStepCollectionOrder.Ascending
@@ -180,7 +180,7 @@ public partial class AssistantExamples
                 Console.WriteLine($"Run step: {step.Status}");
                 foreach (RunStepToolCall toolCall in step.Details.ToolCalls)
                 {
-                    Console.WriteLine($" --> Tool call: {toolCall.ToolKind}");
+                    Console.WriteLine($" --> Tool call: {toolCall.Kind}");
                     foreach (RunStepCodeInterpreterOutput output in toolCall.CodeInterpreterOutputs)
                     {
                         Console.WriteLine($"    --> Output: {output.ImageFileId}");

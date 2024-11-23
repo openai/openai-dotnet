@@ -21,11 +21,6 @@ namespace OpenAI.RealtimeConversation
             }
 
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true && Optional.IsDefined(Model))
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
             if (SerializedAdditionalRawData?.ContainsKey("modalities") != true && Optional.IsCollectionDefined(_internalModalities))
             {
                 writer.WritePropertyName("modalities"u8);
@@ -36,15 +31,15 @@ namespace OpenAI.RealtimeConversation
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("voice") != true && Optional.IsDefined(Voice))
-            {
-                writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.Value.ToString());
-            }
             if (SerializedAdditionalRawData?.ContainsKey("instructions") != true && Optional.IsDefined(Instructions))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("voice") != true && Optional.IsDefined(Voice))
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.Value.ToString());
             }
             if (SerializedAdditionalRawData?.ContainsKey("input_audio_format") != true && Optional.IsDefined(InputAudioFormat))
             {
@@ -58,13 +53,27 @@ namespace OpenAI.RealtimeConversation
             }
             if (SerializedAdditionalRawData?.ContainsKey("input_audio_transcription") != true && Optional.IsDefined(InputTranscriptionOptions))
             {
-                writer.WritePropertyName("input_audio_transcription"u8);
-                writer.WriteObjectValue<ConversationInputTranscriptionOptions>(InputTranscriptionOptions, options);
+                if (InputTranscriptionOptions != null)
+                {
+                    writer.WritePropertyName("input_audio_transcription"u8);
+                    writer.WriteObjectValue<ConversationInputTranscriptionOptions>(InputTranscriptionOptions, options);
+                }
+                else
+                {
+                    writer.WriteNull("input_audio_transcription");
+                }
             }
             if (SerializedAdditionalRawData?.ContainsKey("turn_detection") != true && Optional.IsDefined(TurnDetectionOptions))
             {
-                writer.WritePropertyName("turn_detection"u8);
-                writer.WriteObjectValue<ConversationTurnDetectionOptions>(TurnDetectionOptions, options);
+                if (TurnDetectionOptions != null)
+                {
+                    writer.WritePropertyName("turn_detection"u8);
+                    writer.WriteObjectValue<ConversationTurnDetectionOptions>(TurnDetectionOptions, options);
+                }
+                else
+                {
+                    writer.WriteNull("turn_detection");
+                }
             }
             if (SerializedAdditionalRawData?.ContainsKey("tools") != true && Optional.IsCollectionDefined(Tools))
             {
@@ -147,10 +156,9 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            string model = default;
-            IList<InternalRealtimeRequestSessionUpdateCommandSessionModality> modalities = default;
-            ConversationVoice? voice = default;
+            IList<InternalRealtimeRequestSessionModality> modalities = default;
             string instructions = default;
+            ConversationVoice? voice = default;
             ConversationAudioFormat? inputAudioFormat = default;
             ConversationAudioFormat? outputAudioFormat = default;
             ConversationInputTranscriptionOptions inputAudioTranscription = default;
@@ -163,23 +171,23 @@ namespace OpenAI.RealtimeConversation
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
-                if (property.NameEquals("model"u8))
-                {
-                    model = property.Value.GetString();
-                    continue;
-                }
                 if (property.NameEquals("modalities"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    List<InternalRealtimeRequestSessionUpdateCommandSessionModality> array = new List<InternalRealtimeRequestSessionUpdateCommandSessionModality>();
+                    List<InternalRealtimeRequestSessionModality> array = new List<InternalRealtimeRequestSessionModality>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(new InternalRealtimeRequestSessionUpdateCommandSessionModality(item.GetString()));
+                        array.Add(new InternalRealtimeRequestSessionModality(item.GetString()));
                     }
                     modalities = array;
+                    continue;
+                }
+                if (property.NameEquals("instructions"u8))
+                {
+                    instructions = property.Value.GetString();
                     continue;
                 }
                 if (property.NameEquals("voice"u8))
@@ -189,11 +197,6 @@ namespace OpenAI.RealtimeConversation
                         continue;
                     }
                     voice = new ConversationVoice(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("instructions"u8))
-                {
-                    instructions = property.Value.GetString();
                     continue;
                 }
                 if (property.NameEquals("input_audio_format"u8))
@@ -218,6 +221,7 @@ namespace OpenAI.RealtimeConversation
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        inputAudioTranscription = null;
                         continue;
                     }
                     inputAudioTranscription = ConversationInputTranscriptionOptions.DeserializeConversationInputTranscriptionOptions(property.Value, options);
@@ -227,6 +231,7 @@ namespace OpenAI.RealtimeConversation
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
+                        turnDetection = null;
                         continue;
                     }
                     turnDetection = ConversationTurnDetectionOptions.DeserializeConversationTurnDetectionOptions(property.Value, options);
@@ -281,10 +286,9 @@ namespace OpenAI.RealtimeConversation
             }
             serializedAdditionalRawData = rawDataDictionary;
             return new ConversationSessionOptions(
-                model,
-                modalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionUpdateCommandSessionModality>(),
-                voice,
+                modalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>(),
                 instructions,
+                voice,
                 inputAudioFormat,
                 outputAudioFormat,
                 inputAudioTranscription,

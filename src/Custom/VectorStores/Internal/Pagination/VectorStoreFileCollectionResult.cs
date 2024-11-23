@@ -23,7 +23,7 @@ internal class VectorStoreFileCollectionResult : CollectionResult<VectorStoreFil
 
     public VectorStoreFileCollectionResult(VectorStoreClient messageClient,
         ClientPipeline pipeline, RequestOptions? options,
-        string vectorStoreId, 
+        string vectorStoreId,
         int? limit, string? order, string? after, string? before, string? filter)
     {
         _vectorStoreClient = messageClient;

@@ -27,9 +27,18 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
     public async Task GenerateEmbeddingDeserializesVector()
     {
         string base64Embedding = Convert.ToBase64String([
-            0x00, 0x00, 0x80, 0x3F, // 1.0f
-            0x00, 0x00, 0x00, 0x40, // 2.0f
-            0x00, 0x00, 0x40, 0x40  // 3.0f
+            0x00,
+            0x00,
+            0x80,
+            0x3F, // 1.0f
+            0x00,
+            0x00,
+            0x00,
+            0x40, // 2.0f
+            0x00,
+            0x00,
+            0x40,
+            0x40  // 3.0f
         ]);
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
         {
@@ -95,9 +104,18 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
     public async Task GenerateEmbeddingsWithStringsDeserializesVector()
     {
         string base64Embedding = Convert.ToBase64String([
-            0x00, 0x00, 0x80, 0x3F, // 1.0f
-            0x00, 0x00, 0x00, 0x40, // 2.0f
-            0x00, 0x00, 0x40, 0x40  // 3.0f
+            0x00,
+            0x00,
+            0x80,
+            0x3F, // 1.0f
+            0x00,
+            0x00,
+            0x00,
+            0x40, // 2.0f
+            0x00,
+            0x00,
+            0x40,
+            0x40  // 3.0f
         ]);
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
         {
@@ -164,9 +182,18 @@ public class EmbeddingsMockTests : SyncAsyncTestBase
     public async Task GenerateEmbeddingsWithIntegersDeserializesVector()
     {
         string base64Embedding = Convert.ToBase64String([
-            0x00, 0x00, 0x80, 0x3F, // 1.0f
-            0x00, 0x00, 0x00, 0x40, // 2.0f
-            0x00, 0x00, 0x40, 0x40  // 3.0f
+            0x00,
+            0x00,
+            0x80,
+            0x3F, // 1.0f
+            0x00,
+            0x00,
+            0x00,
+            0x40, // 2.0f
+            0x00,
+            0x00,
+            0x40,
+            0x40  // 3.0f
         ]);
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
         {

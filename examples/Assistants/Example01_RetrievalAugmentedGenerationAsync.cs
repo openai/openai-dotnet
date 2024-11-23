@@ -100,7 +100,7 @@ public partial class AssistantExamples
         // Finally, we'll print out the full history for the thread that includes the augmented generation
         AsyncCollectionResult<ThreadMessage> messages
             = assistantClient.GetMessagesAsync(threadRun.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
-        
+
         await foreach (ThreadMessage message in messages)
         {
             Console.Write($"[{message.Role.ToString().ToUpper()}]: ");

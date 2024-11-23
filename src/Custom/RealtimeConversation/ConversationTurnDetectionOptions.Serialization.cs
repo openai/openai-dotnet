@@ -1,6 +1,4 @@
-﻿using System;
-using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.ClientModel.Primitives;
 using System.Text.Json;
 
 namespace OpenAI.RealtimeConversation;
@@ -20,7 +18,9 @@ public partial class ConversationTurnDetectionOptions
         {
             switch (discriminator.GetString())
             {
+                case "none": return InternalRealtimeNoTurnDetection.DeserializeInternalRealtimeNoTurnDetection(element, options);
                 case "server_vad": return InternalRealtimeServerVadTurnDetection.DeserializeInternalRealtimeServerVadTurnDetection(element, options);
+                default: return null;
             }
         }
         return UnknownRealtimeTurnDetection.DeserializeUnknownRealtimeTurnDetection(element, options);

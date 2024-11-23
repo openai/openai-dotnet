@@ -19,7 +19,7 @@ internal class StreamingUpdateCollection : CollectionResult<StreamingUpdate>
     private readonly CancellationToken _cancellationToken;
 
     public StreamingUpdateCollection(
-        Func< ClientResult> sendRequest,
+        Func<ClientResult> sendRequest,
         CancellationToken cancellationToken)
     {
         Argument.AssertNotNull(sendRequest, nameof(sendRequest));

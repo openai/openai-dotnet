@@ -24,7 +24,7 @@ internal class CreateVectorStoreOperationToken : ContinuationToken
         writer.WriteStartObject();
 
         writer.WriteString("vectorStoreId", VectorStoreId);
-        
+
         writer.WriteEndObject();
 
         writer.Flush();

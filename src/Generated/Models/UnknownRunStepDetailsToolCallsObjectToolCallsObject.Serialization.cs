@@ -24,7 +24,12 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -68,14 +73,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string type = "Unknown";
+            RunStepToolCallKind type = default;
+            string id = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
                 if (property.NameEquals("type"u8))
                 {
-                    type = property.Value.GetString();
+                    type = property.Value.GetString().ToRunStepToolCallKind();
+                    continue;
+                }
+                if (property.NameEquals("id"u8))
+                {
+                    id = property.Value.GetString();
                     continue;
                 }
                 if (true)
@@ -85,7 +96,7 @@ namespace OpenAI.Assistants
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(type, serializedAdditionalRawData);
+            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(type, id, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<RunStepToolCall>.Write(ModelReaderWriterOptions options)

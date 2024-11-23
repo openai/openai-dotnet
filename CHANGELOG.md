@@ -1,5 +1,56 @@
 # Release History
 
+## 2.1.0-beta.3 (Unreleased)
+
+### Features added
+
+- OpenAI.Assistants:
+  - Added a `Content` property to `RunStepFileSearchResult` ([`step_details.tool_calls.file_search.results.content` in the REST API](https://platform.openai.com/docs/api-reference/run-steps/step-object)). (commit_hash)
+    - When using an Assistant with the File Search tool, you can use this property to retrieve the contents of the File Search results that were used by the model.
+  - Added `FileSearchRankingOptions` and `FileSearchResults` properties to `RunStepDetailsUpdate`. (commit_hash)
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.RealtimeConversation:
+  - Renamed the `From*()` factory methods on `ConversationContentPart` to `Create*Part()` for consistency. (commit_hash)
+  - Removed an extraneous `toolCallId` parameter from `ConversationItem.CreateSystemMessage()`. (commit_hash)
+- OpenAI.Assistants:
+  - Renamed `RunStepType` to `RunStepKind`. (commit_hash)
+  - Changed `RunStepKind` from an "extensible enum" to a regular enum. (commit_hash)
+  - Renamed the `ToolCallId` property of `RunStepToolCall` to `Id`. (commit_hash)
+  - Renamed the `ToolKind` property of `RunStepToolCall` to `Kind`. (commit_hash)
+  - Replaced the `FileSearchRanker` and `FileSearchScoreThreshold` properties of `RunStepToolCall` with a new `FileSearchRankingOptions` property that contains both values to make it clearer how they are related. (commit_hash)
+
+### Bugs fixed
+
+- OpenAI.RealtimeConversation:
+  - Fixed serialization issues with `ConversationItem` creation of system and assistant messages. (commit_hash)
+
+## 2.1.0-beta.2 (2024-11-04)
+
+### Features added
+
+- Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+  - Use this property to indicate whether or not to store the output of the chat completion for use in model distillation or evals.
+- Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+  - Use this property to add custom tags and values to the chat completions for filtering in the OpenAI dashboard.
+- Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+  - The property is of a new type called `ChatInputTokenUsageDetails`, which contains properties for `AudioTokenCount` and `CachedTokenCount` for usage with supported models.
+- Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+- Added `Illicit` and `IllicitViolent` properties `ModerationResult` to represent these two new moderation categories. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+- Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+  - Several types have been renamed for consistency and clarity.
+  - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
+
+### Bugs Fixed
+
+- Fixed serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`). ([9de3709](https://github.com/openai/openai-dotnet/commit/9de37095eaad6f1e2e87c201fd693ac1d9757142))
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version `1.2.1`. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+  - This updates the `System.Text.Json` transitive dependency to version `6.0.10`, which includes a security compliance fix for [CVE-2024-43485](https://github.com/advisories/GHSA-8g4q-xg66-9fp4). Please note that the OpenAI library was not impacted by this vulnerability since it does not use the `[JsonExtensionData]` feature.
+
 ## 2.1.0-beta.1 (2024-10-01)
 
 With this updated preview library release, we're excited to bring early support for the newly-announced `/realtime` beta API. You can read more about `/realtime` here: https://openai.com/index/introducing-the-realtime-api/

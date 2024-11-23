@@ -18,10 +18,10 @@ namespace OpenAI.Assistants
             FileId = fileId;
             FileName = fileName;
             Score = score;
-            Content = new ChangeTrackingList<InternalRunStepDetailsToolCallsFileSearchResultObjectContent>();
+            Content = new ChangeTrackingList<RunStepFileSearchResultContent>();
         }
 
-        internal RunStepFileSearchResult(string fileId, string fileName, float score, IReadOnlyList<InternalRunStepDetailsToolCallsFileSearchResultObjectContent> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunStepFileSearchResult(string fileId, string fileName, float score, IReadOnlyList<RunStepFileSearchResultContent> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             FileId = fileId;
             FileName = fileName;
@@ -37,5 +37,6 @@ namespace OpenAI.Assistants
         public string FileId { get; }
         public string FileName { get; }
         public float Score { get; }
+        public IReadOnlyList<RunStepFileSearchResultContent> Content { get; }
     }
 }

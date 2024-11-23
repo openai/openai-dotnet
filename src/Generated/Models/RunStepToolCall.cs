@@ -10,16 +10,13 @@ namespace OpenAI.Assistants
     public abstract partial class RunStepToolCall
     {
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected RunStepToolCall()
-        {
-        }
 
-        internal RunStepToolCall(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunStepToolCall(RunStepToolCallKind kind, string id, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
-            Type = type;
+            Kind = kind;
+            Id = id;
             SerializedAdditionalRawData = serializedAdditionalRawData;
         }
-
-        internal string Type { get; set; }
+        public string Id { get; }
     }
 }

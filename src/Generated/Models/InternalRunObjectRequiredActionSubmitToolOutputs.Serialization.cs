@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
             }
 
             writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("tool_calls") != true)
+            if (SerializedAdditionalRawData?.ContainsKey("tool_calls") != true && true)
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();

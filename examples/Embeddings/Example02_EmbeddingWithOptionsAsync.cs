@@ -19,7 +19,7 @@ public partial class EmbeddingExamples
         EmbeddingGenerationOptions options = new() { Dimensions = 512 };
 
         OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync(description, options);
-        ReadOnlyMemory<float> vector = embedding.ToFloats();    
+        ReadOnlyMemory<float> vector = embedding.ToFloats();
 
         Console.WriteLine($"Dimension: {vector.Length}");
         Console.WriteLine($"Floats: ");

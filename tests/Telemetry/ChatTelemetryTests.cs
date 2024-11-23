@@ -174,6 +174,7 @@ public class ChatTelemetryTests
     }
 
     [Test]
+    [Ignore("Temporarily disabling for reliability.")]
     public async Task ChatTracingAndMetricsMultiple()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();

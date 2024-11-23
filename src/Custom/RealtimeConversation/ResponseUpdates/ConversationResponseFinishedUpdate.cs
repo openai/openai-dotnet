@@ -4,19 +4,25 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.RealtimeConversation;
 
+/// <summary>
+/// The update (response command) of type <c>response.done</c>, which is received when a model response turn has
+/// completed and no further content part or item information will be transmitted.
+/// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeResponseDoneCommand")]
+[CodeGenModel("RealtimeServerEventResponseDone")]
 public partial class ConversationResponseFinishedUpdate
 {
     [CodeGenMember("Response")]
     internal readonly InternalRealtimeResponse _internalResponse;
 
-    public string Id => _internalResponse?.Id;
+    public string ResponseId => _internalResponse?.Id;
+
     public ConversationStatus? Status => _internalResponse?.Status;
 
-    // TODO
-    internal InternalRealtimeResponseStatusDetails StatusDetails { get; }
+    public ConversationStatusDetails StatusDetails => _internalResponse.StatusDetails;
 
     [CodeGenMember("Output")]
     public IReadOnlyList<ConversationItem> CreatedItems => _internalResponse?.Output ?? [];
+
+    public ConversationTokenUsage Usage => _internalResponse.Usage;
 }

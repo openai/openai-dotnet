@@ -12,12 +12,12 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
 {
     public ClientResult Current { get; private set; }
     private readonly CancellationToken _cancellationToken;
-    private readonly ClientWebSocket _clientWebSocket;
+    private readonly WebSocket _webSocket;
     private readonly byte[] _receiveBuffer;
 
-    public AsyncWebsocketMessageResultEnumerator(ClientWebSocket clientWebSocket, CancellationToken cancellationToken)
+    public AsyncWebsocketMessageResultEnumerator(WebSocket webSocket, CancellationToken cancellationToken)
     {
-        _clientWebSocket = clientWebSocket;
+        _webSocket = webSocket;
         // 18K buffer size based on traffic observation; the connection will appropriately negotiate and use
         // fragmented messages if the buffer size is inadequate.
         _receiveBuffer = ArrayPool<byte>.Shared.Rent(1024 * 18);
@@ -26,7 +26,7 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
 
     public ValueTask DisposeAsync()
     {
-        _clientWebSocket?.Dispose();
+        _webSocket?.Dispose();
         return new ValueTask(Task.CompletedTask);
     }
 
@@ -35,7 +35,7 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
         WebsocketPipelineResponse websocketPipelineResponse = new();
         for (int partialMessageCount = 1; !websocketPipelineResponse.IsComplete; partialMessageCount++)
         {
-            WebSocketReceiveResult receiveResult = await _clientWebSocket.ReceiveAsync(new(_receiveBuffer), _cancellationToken);
+            WebSocketReceiveResult receiveResult = await _webSocket.ReceiveAsync(new(_receiveBuffer), _cancellationToken);
             if (receiveResult.CloseStatus.HasValue)
             {
                 Current = null;

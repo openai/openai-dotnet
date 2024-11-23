@@ -11,10 +11,11 @@ namespace OpenAI.RealtimeConversation
     {
         internal ConversationInputTranscriptionFinishedUpdate(string eventId, string itemId, int contentIndex, string transcript) : base(eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
             Argument.AssertNotNull(itemId, nameof(itemId));
             Argument.AssertNotNull(transcript, nameof(transcript));
 
-            Kind = ConversationUpdateKind.ItemInputAudioTranscriptionCompleted;
+            Kind = ConversationUpdateKind.InputTranscriptionFinished;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Transcript = transcript;

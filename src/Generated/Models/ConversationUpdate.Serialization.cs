@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace OpenAI.RealtimeConversation
 {
-    [PersistableModelProxy(typeof(UnknownRealtimeResponseCommand))]
+    [PersistableModelProxy(typeof(UnknownRealtimeServerEvent))]
     public partial class ConversationUpdate : IJsonModel<ConversationUpdate>
     {
         void IJsonModel<ConversationUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -28,15 +28,8 @@ namespace OpenAI.RealtimeConversation
             }
             if (SerializedAdditionalRawData?.ContainsKey("event_id") != true)
             {
-                if (EventId != null)
-                {
-                    writer.WritePropertyName("event_id"u8);
-                    writer.WriteStringValue(EventId);
-                }
-                else
-                {
-                    writer.WriteNull("event_id");
-                }
+                writer.WritePropertyName("event_id"u8);
+                writer.WriteStringValue(EventId);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -70,50 +63,6 @@ namespace OpenAI.RealtimeConversation
 
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeConversationUpdate(document.RootElement, options);
-        }
-
-        internal static ConversationUpdate DeserializeConversationUpdate(JsonElement element, ModelReaderWriterOptions options = null)
-        {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            if (element.TryGetProperty("type", out JsonElement discriminator))
-            {
-                switch (discriminator.GetString())
-                {
-                    case "conversation.item.created": return ConversationItemAcknowledgedUpdate.DeserializeConversationItemAcknowledgedUpdate(element, options);
-                    case "conversation.item.deleted": return ConversationItemDeletedUpdate.DeserializeConversationItemDeletedUpdate(element, options);
-                    case "conversation.item.input_audio_transcription.completed": return ConversationInputTranscriptionFinishedUpdate.DeserializeConversationInputTranscriptionFinishedUpdate(element, options);
-                    case "conversation.item.input_audio_transcription.failed": return ConversationInputTranscriptionFailedUpdate.DeserializeConversationInputTranscriptionFailedUpdate(element, options);
-                    case "conversation.item.truncated": return ConversationItemTruncatedUpdate.DeserializeConversationItemTruncatedUpdate(element, options);
-                    case "error": return ConversationErrorUpdate.DeserializeConversationErrorUpdate(element, options);
-                    case "input_audio_buffer.cleared": return ConversationInputAudioBufferClearedUpdate.DeserializeConversationInputAudioBufferClearedUpdate(element, options);
-                    case "input_audio_buffer.committed": return ConversationInputAudioBufferCommittedUpdate.DeserializeConversationInputAudioBufferCommittedUpdate(element, options);
-                    case "input_audio_buffer.speech_started": return ConversationInputSpeechStartedUpdate.DeserializeConversationInputSpeechStartedUpdate(element, options);
-                    case "input_audio_buffer.speech_stopped": return ConversationInputSpeechFinishedUpdate.DeserializeConversationInputSpeechFinishedUpdate(element, options);
-                    case "rate_limits.updated": return ConversationRateLimitsUpdatedUpdate.DeserializeConversationRateLimitsUpdatedUpdate(element, options);
-                    case "response.audio_transcript.delta": return ConversationOutputTranscriptionDeltaUpdate.DeserializeConversationOutputTranscriptionDeltaUpdate(element, options);
-                    case "response.audio_transcript.done": return ConversationOutputTranscriptionFinishedUpdate.DeserializeConversationOutputTranscriptionFinishedUpdate(element, options);
-                    case "response.audio.delta": return ConversationAudioDeltaUpdate.DeserializeConversationAudioDeltaUpdate(element, options);
-                    case "response.audio.done": return ConversationAudioDoneUpdate.DeserializeConversationAudioDoneUpdate(element, options);
-                    case "response.content_part.added": return ConversationContentPartStartedUpdate.DeserializeConversationContentPartStartedUpdate(element, options);
-                    case "response.content_part.done": return ConversationContentPartFinishedUpdate.DeserializeConversationContentPartFinishedUpdate(element, options);
-                    case "response.created": return ConversationResponseStartedUpdate.DeserializeConversationResponseStartedUpdate(element, options);
-                    case "response.done": return ConversationResponseFinishedUpdate.DeserializeConversationResponseFinishedUpdate(element, options);
-                    case "response.function_call_arguments.delta": return ConversationFunctionCallArgumentsDeltaUpdate.DeserializeConversationFunctionCallArgumentsDeltaUpdate(element, options);
-                    case "response.function_call_arguments.done": return ConversationFunctionCallArgumentsDoneUpdate.DeserializeConversationFunctionCallArgumentsDoneUpdate(element, options);
-                    case "response.output_item.added": return ConversationItemStartedUpdate.DeserializeConversationItemStartedUpdate(element, options);
-                    case "response.output_item.done": return ConversationItemFinishedUpdate.DeserializeConversationItemFinishedUpdate(element, options);
-                    case "response.text.delta": return ConversationTextDeltaUpdate.DeserializeConversationTextDeltaUpdate(element, options);
-                    case "response.text.done": return ConversationTextDoneUpdate.DeserializeConversationTextDoneUpdate(element, options);
-                    case "session.created": return ConversationSessionStartedUpdate.DeserializeConversationSessionStartedUpdate(element, options);
-                    case "session.updated": return ConversationSessionConfiguredUpdate.DeserializeConversationSessionConfiguredUpdate(element, options);
-                }
-            }
-            return UnknownRealtimeResponseCommand.DeserializeUnknownRealtimeResponseCommand(element, options);
         }
 
         BinaryData IPersistableModel<ConversationUpdate>.Write(ModelReaderWriterOptions options)

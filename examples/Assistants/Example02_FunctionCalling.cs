@@ -152,7 +152,7 @@ public partial class AssistantExamples
         {
             CollectionResult<ThreadMessage> messages
                 = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
-            
+
             foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");

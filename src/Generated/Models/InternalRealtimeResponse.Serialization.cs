@@ -108,7 +108,7 @@ namespace OpenAI.RealtimeConversation
             InternalRealtimeResponseObject @object = default;
             string id = default;
             ConversationStatus status = default;
-            InternalRealtimeResponseStatusDetails statusDetails = default;
+            ConversationStatusDetails statusDetails = default;
             IReadOnlyList<ConversationItem> output = default;
             ConversationTokenUsage usage = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
@@ -137,7 +137,7 @@ namespace OpenAI.RealtimeConversation
                         statusDetails = null;
                         continue;
                     }
-                    statusDetails = InternalRealtimeResponseStatusDetails.DeserializeInternalRealtimeResponseStatusDetails(property.Value, options);
+                    statusDetails = ConversationStatusDetails.DeserializeConversationStatusDetails(property.Value, options);
                     continue;
                 }
                 if (property.NameEquals("output"u8))

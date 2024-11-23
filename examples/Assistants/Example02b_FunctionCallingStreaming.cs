@@ -16,7 +16,7 @@ public partial class AssistantExamples
         // This example parallels the content at the following location:
         // https://platform.openai.com/docs/assistants/tools/function-calling/function-calling-beta
         #region Step 1 - Define Functions
-        
+
         // First, define the functions that the assistant will use in its defined tools.
 
         FunctionToolDefinition getTemperatureTool = new()

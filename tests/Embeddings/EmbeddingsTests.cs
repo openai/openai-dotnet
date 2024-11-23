@@ -81,9 +81,9 @@ public class EmbeddingsTests : SyncAsyncTestBase
         {
             List<ReadOnlyMemory<int>> prompts =
             [
-                new[] {104, 101, 108, 108, 111 },
-                new[] {119, 111, 114, 108, 100 },
-                new[] {84, 69, 83, 84 }
+                new[] { 104, 101, 108, 108, 111 },
+                new[] { 119, 111, 114, 108, 100 },
+                new[] { 84, 69, 83, 84 }
             ];
 
             embeddings = IsAsync

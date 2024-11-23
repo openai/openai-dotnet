@@ -59,7 +59,7 @@ internal class MessageCollectionResult : CollectionResult<ThreadMessage>
     {
         Argument.AssertNotNull(page, nameof(page));
 
-        return MessageCollectionPageToken.FromResponse(page, _threadId, _limit, _order, _before); 
+        return MessageCollectionPageToken.FromResponse(page, _threadId, _limit, _order, _before);
     }
 
     public ClientResult GetFirstPage()

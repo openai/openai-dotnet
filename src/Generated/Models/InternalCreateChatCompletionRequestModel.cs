@@ -23,6 +23,8 @@ namespace OpenAI.Chat
         private const string Gpt4oValue = "gpt-4o";
         private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
         private const string Gpt4o20240513Value = "gpt-4o-2024-05-13";
+        private const string Gpt4oRealtimePreviewValue = "gpt-4o-realtime-preview";
+        private const string Gpt4oRealtimePreview20241001Value = "gpt-4o-realtime-preview-2024-10-01";
         private const string Chatgpt4oLatestValue = "chatgpt-4o-latest";
         private const string Gpt4oMiniValue = "gpt-4o-mini";
         private const string Gpt4oMini20240718Value = "gpt-4o-mini-2024-07-18";
@@ -53,6 +55,8 @@ namespace OpenAI.Chat
         public static InternalCreateChatCompletionRequestModel Gpt4o { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oValue);
         public static InternalCreateChatCompletionRequestModel Gpt4o20240806 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240806Value);
         public static InternalCreateChatCompletionRequestModel Gpt4o20240513 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240513Value);
+        public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreviewValue);
+        public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview20241001 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreview20241001Value);
         public static InternalCreateChatCompletionRequestModel Chatgpt4oLatest { get; } = new InternalCreateChatCompletionRequestModel(Chatgpt4oLatestValue);
         public static InternalCreateChatCompletionRequestModel Gpt4oMini { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMiniValue);
         public static InternalCreateChatCompletionRequestModel Gpt4oMini20240718 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMini20240718Value);

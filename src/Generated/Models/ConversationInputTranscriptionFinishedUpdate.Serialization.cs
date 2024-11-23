@@ -43,15 +43,8 @@ namespace OpenAI.RealtimeConversation
             }
             if (SerializedAdditionalRawData?.ContainsKey("event_id") != true)
             {
-                if (EventId != null)
-                {
-                    writer.WritePropertyName("event_id"u8);
-                    writer.WriteStringValue(EventId);
-                }
-                else
-                {
-                    writer.WriteNull("event_id");
-                }
+                writer.WritePropertyName("event_id"u8);
+                writer.WriteStringValue(EventId);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -126,11 +119,6 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("event_id"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        eventId = null;
-                        continue;
-                    }
                     eventId = property.Value.GetString();
                     continue;
                 }

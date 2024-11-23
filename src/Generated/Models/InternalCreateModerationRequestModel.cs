@@ -16,9 +16,13 @@ namespace OpenAI.Moderations
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
+        private const string OmniModerationLatestValue = "omni-moderation-latest";
+        private const string OmniModeration20240926Value = "omni-moderation-2024-09-26";
         private const string TextModerationLatestValue = "text-moderation-latest";
         private const string TextModerationStableValue = "text-moderation-stable";
 
+        public static InternalCreateModerationRequestModel OmniModerationLatest { get; } = new InternalCreateModerationRequestModel(OmniModerationLatestValue);
+        public static InternalCreateModerationRequestModel OmniModeration20240926 { get; } = new InternalCreateModerationRequestModel(OmniModeration20240926Value);
         public static InternalCreateModerationRequestModel TextModerationLatest { get; } = new InternalCreateModerationRequestModel(TextModerationLatestValue);
         public static InternalCreateModerationRequestModel TextModerationStable { get; } = new InternalCreateModerationRequestModel(TextModerationStableValue);
         public static bool operator ==(InternalCreateModerationRequestModel left, InternalCreateModerationRequestModel right) => left.Equals(right);

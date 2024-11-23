@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 
 namespace OpenAI.Assistants;
 
@@ -8,8 +9,8 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("InternalAssistantRunClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateThreadAndRunAsync", typeof(InternalCreateThreadAndRunRequest))]
 [CodeGenSuppress("CreateThreadAndRun", typeof(InternalCreateThreadAndRunRequest))]
-[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(RunCreationOptions))]
-[CodeGenSuppress("CreateRun", typeof(string), typeof(RunCreationOptions))]
+[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
+[CodeGenSuppress("CreateRun", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
 [CodeGenSuppress("GetRunsAsync", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string))]
 [CodeGenSuppress("GetRuns", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string))]
 [CodeGenSuppress("GetRunAsync", typeof(string), typeof(string))]
@@ -20,10 +21,10 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("CancelRun", typeof(string), typeof(string))]
 [CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest))]
 [CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest))]
-[CodeGenSuppress("GetRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetRunSteps", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string))]
-[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string))]
+[CodeGenSuppress("GetRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
+[CodeGenSuppress("GetRunSteps", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
+[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
+[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
 internal partial class InternalAssistantRunClient
 {
     // CUSTOM: Remove virtual keyword.

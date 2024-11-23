@@ -22,7 +22,7 @@ internal class RunStepCollectionResult : CollectionResult<RunStep>
 
     public RunStepCollectionResult(InternalAssistantRunClient runClient,
         RequestOptions? options,
-        string threadId, string runId, 
+        string threadId, string runId,
         int? limit, string? order, string? after, string? before)
     {
         _runClient = runClient;

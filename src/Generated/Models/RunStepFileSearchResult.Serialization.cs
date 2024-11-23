@@ -42,7 +42,7 @@ namespace OpenAI.Assistants
                 writer.WriteStartArray();
                 foreach (var item in Content)
                 {
-                    writer.WriteObjectValue<InternalRunStepDetailsToolCallsFileSearchResultObjectContent>(item, options);
+                    writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
@@ -91,7 +91,7 @@ namespace OpenAI.Assistants
             string fileId = default;
             string fileName = default;
             float score = default;
-            IReadOnlyList<InternalRunStepDetailsToolCallsFileSearchResultObjectContent> content = default;
+            IReadOnlyList<RunStepFileSearchResultContent> content = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
@@ -117,10 +117,10 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    List<InternalRunStepDetailsToolCallsFileSearchResultObjectContent> array = new List<InternalRunStepDetailsToolCallsFileSearchResultObjectContent>();
+                    List<RunStepFileSearchResultContent> array = new List<RunStepFileSearchResultContent>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(InternalRunStepDetailsToolCallsFileSearchResultObjectContent.DeserializeInternalRunStepDetailsToolCallsFileSearchResultObjectContent(item, options));
+                        array.Add(RunStepFileSearchResultContent.DeserializeRunStepFileSearchResultContent(item, options));
                     }
                     content = array;
                     continue;
@@ -132,7 +132,7 @@ namespace OpenAI.Assistants
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new RunStepFileSearchResult(fileId, fileName, score, content ?? new ChangeTrackingList<InternalRunStepDetailsToolCallsFileSearchResultObjectContent>(), serializedAdditionalRawData);
+            return new RunStepFileSearchResult(fileId, fileName, score, content ?? new ChangeTrackingList<RunStepFileSearchResultContent>(), serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<RunStepFileSearchResult>.Write(ModelReaderWriterOptions options)

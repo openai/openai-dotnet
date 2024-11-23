@@ -15,7 +15,7 @@ namespace OpenAI.RealtimeConversation
             Id = id;
         }
 
-        internal InternalRealtimeResponseItem(InternalRealtimeResponseItemObject @object, InternalRealtimeRequestItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRealtimeResponseItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData)
         {
             Object = @object;
             Type = type;
@@ -29,7 +29,7 @@ namespace OpenAI.RealtimeConversation
 
         public InternalRealtimeResponseItemObject Object { get; } = InternalRealtimeResponseItemObject.RealtimeItem;
 
-        internal InternalRealtimeRequestItemType Type { get; set; }
+        internal InternalRealtimeItemType Type { get; set; }
         public string Id { get; }
     }
 }

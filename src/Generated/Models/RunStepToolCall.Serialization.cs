@@ -24,7 +24,12 @@ namespace OpenAI.Assistants
             if (SerializedAdditionalRawData?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
             if (SerializedAdditionalRawData != null)
             {
@@ -72,9 +77,9 @@ namespace OpenAI.Assistants
             {
                 switch (discriminator.GetString())
                 {
-                    case "code_interpreter": return InternalRunStepCodeInterpreterToolCallDetails.DeserializeInternalRunStepCodeInterpreterToolCallDetails(element, options);
-                    case "file_search": return InternalRunStepFileSearchToolCallDetails.DeserializeInternalRunStepFileSearchToolCallDetails(element, options);
-                    case "function": return InternalRunStepFunctionToolCallDetails.DeserializeInternalRunStepFunctionToolCallDetails(element, options);
+                    case "code_interpreter": return InternalRunStepDetailsToolCallsCodeObject.DeserializeInternalRunStepDetailsToolCallsCodeObject(element, options);
+                    case "file_search": return InternalRunStepDetailsToolCallsFileSearchObject.DeserializeInternalRunStepDetailsToolCallsFileSearchObject(element, options);
+                    case "function": return InternalRunStepDetailsToolCallsFunctionObject.DeserializeInternalRunStepDetailsToolCallsFunctionObject(element, options);
                 }
             }
             return UnknownRunStepDetailsToolCallsObjectToolCallsObject.DeserializeUnknownRunStepDetailsToolCallsObjectToolCallsObject(element, options);

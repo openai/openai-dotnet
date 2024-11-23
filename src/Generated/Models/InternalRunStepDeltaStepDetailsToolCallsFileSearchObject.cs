@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, IReadOnlyDictionary<string, BinaryData> fileSearch)
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch fileSearch)
         {
             Argument.AssertNotNull(fileSearch, nameof(fileSearch));
 
@@ -18,7 +18,7 @@ namespace OpenAI.Assistants
             FileSearch = fileSearch;
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string id, IReadOnlyDictionary<string, BinaryData> fileSearch) : base(type, serializedAdditionalRawData)
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string id, InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(type, serializedAdditionalRawData)
         {
             Index = index;
             Id = id;
@@ -31,6 +31,6 @@ namespace OpenAI.Assistants
 
         public int Index { get; }
         public string Id { get; }
-        public IReadOnlyDictionary<string, BinaryData> FileSearch { get; }
+        public InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; }
     }
 }

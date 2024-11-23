@@ -174,7 +174,7 @@ namespace OpenAI.RealtimeConversation
             InternalRealtimeResponseSessionObject @object = default;
             string id = default;
             string model = default;
-            IReadOnlyList<InternalRealtimeRequestSessionUpdateCommandSessionModality> modalities = default;
+            IReadOnlyList<InternalRealtimeRequestSessionModality> modalities = default;
             string instructions = default;
             ConversationVoice voice = default;
             ConversationAudioFormat inputAudioFormat = default;
@@ -206,10 +206,10 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (property.NameEquals("modalities"u8))
                 {
-                    List<InternalRealtimeRequestSessionUpdateCommandSessionModality> array = new List<InternalRealtimeRequestSessionUpdateCommandSessionModality>();
+                    List<InternalRealtimeRequestSessionModality> array = new List<InternalRealtimeRequestSessionModality>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(new InternalRealtimeRequestSessionUpdateCommandSessionModality(item.GetString()));
+                        array.Add(new InternalRealtimeRequestSessionModality(item.GetString()));
                     }
                     modalities = array;
                     continue;

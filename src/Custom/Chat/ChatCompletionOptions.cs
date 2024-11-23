@@ -159,4 +159,21 @@ public partial class ChatCompletionOptions
     // CUSTOM: Added the Obsolete attribute.
     [Obsolete($"This property is obsolete. Please use {nameof(Tools)} instead.")]
     public IList<ChatFunction> Functions { get; }
+
+    // CUSTOM: Removed public setter.
+    /// <summary>
+    ///     Developer-defined tags and values used for filtering completions in the
+    ///     <see href="https://platform.openai.com/chat-completions">OpenAI Platform dashboard</see>.
+    /// </summary>
+    [CodeGenMember("Metadata")]
+    public IDictionary<string, string> Metadata { get; } = new ChangeTrackingDictionary<string, string>();
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    ///     Indicates whether to store the output of this chat completion request for use in
+    ///     <see href="https://platform.openai.com/docs/guides/distillation">model distillation</see>
+    ///     or <see href="https://platform.openai.com/docs/guides/evals">evals</see>.
+    /// </summary>
+    [CodeGenMember("Store")]
+    public bool? StoredOutputEnabled { get; set; }
 }

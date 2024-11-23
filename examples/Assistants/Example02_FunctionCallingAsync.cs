@@ -152,7 +152,7 @@ public partial class AssistantExamples
         {
             AsyncCollectionResult<ThreadMessage> messages
                 = client.GetMessagesAsync(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
-            
+
             await foreach (ThreadMessage message in messages)
             {
                 Console.WriteLine($"[{message.Role.ToString().ToUpper()}]: ");

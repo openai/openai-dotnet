@@ -29,7 +29,7 @@ public partial class ConversationToolChoice : IJsonModel<ConversationToolChoice>
         }
         else
         {
-            writer.WriteStringValue(instance.Kind.ToString());
+            writer.WriteStringValue(instance.Kind.ToSerialString());
         }
     }
 
@@ -50,7 +50,7 @@ public partial class ConversationToolChoice : IJsonModel<ConversationToolChoice>
             return choiceObject switch
             {
                 InternalRealtimeToolChoiceFunctionObject => new(ConversationToolChoiceKind.Function, choiceObject),
-                _ => null,
+                _ => new(ConversationToolChoiceKind.Unknown, choiceObject),
             };
         }
         return null;

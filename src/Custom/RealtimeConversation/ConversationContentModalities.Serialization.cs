@@ -7,29 +7,30 @@ namespace OpenAI.RealtimeConversation;
 [Experimental("OPENAI002")]
 internal static partial class ConversationContentModalitiesExtensions
 {
-    internal static void ToInternalModalities(this ConversationContentModalities modalities, IList<InternalRealtimeRequestSessionUpdateCommandSessionModality> internalModalities)
+    internal static IList<InternalRealtimeRequestSessionModality> ToInternalModalities(this ConversationContentModalities modalities)
     {
-        internalModalities.Clear();
+        List<InternalRealtimeRequestSessionModality> internalModalities = [];
         if (modalities.HasFlag(ConversationContentModalities.Text))
         {
-            internalModalities.Add(InternalRealtimeRequestSessionUpdateCommandSessionModality.Text);
+            internalModalities.Add(InternalRealtimeRequestSessionModality.Text);
         }
         if (modalities.HasFlag(ConversationContentModalities.Audio))
         {
-            internalModalities.Add(InternalRealtimeRequestSessionUpdateCommandSessionModality.Audio);
+            internalModalities.Add(InternalRealtimeRequestSessionModality.Audio);
         }
+        return internalModalities;
     }
 
-    internal static ConversationContentModalities FromInternalModalities(IEnumerable<InternalRealtimeRequestSessionUpdateCommandSessionModality> internalModalities)
+    internal static ConversationContentModalities FromInternalModalities(IEnumerable<InternalRealtimeRequestSessionModality> internalModalities)
     {
         ConversationContentModalities result = 0;
-        foreach (InternalRealtimeRequestSessionUpdateCommandSessionModality internalModality in internalModalities ?? [])
+        foreach (InternalRealtimeRequestSessionModality internalModality in internalModalities ?? [])
         {
-            if (internalModality == InternalRealtimeRequestSessionUpdateCommandSessionModality.Text)
+            if (internalModality == InternalRealtimeRequestSessionModality.Text)
             {
                 result |= ConversationContentModalities.Text;
             }
-            else if (internalModality == InternalRealtimeRequestSessionUpdateCommandSessionModality.Audio)
+            else if (internalModality == InternalRealtimeRequestSessionModality.Audio)
             {
                 result |= ConversationContentModalities.Audio;
             }

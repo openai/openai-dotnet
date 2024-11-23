@@ -349,7 +349,7 @@ public partial class OpenAIChatModelFactoryTests
     [Test]
     public void ChatTokenLogProbabilityDetailsWithNoPropertiesWorks()
     {
-        ChatTokenLogProbabilityDetails chatTokenLogProbabilityDetails  = OpenAIChatModelFactory.ChatTokenLogProbabilityDetails();
+        ChatTokenLogProbabilityDetails chatTokenLogProbabilityDetails = OpenAIChatModelFactory.ChatTokenLogProbabilityDetails();
 
         Assert.That(chatTokenLogProbabilityDetails.Token, Is.Null);
         Assert.That(chatTokenLogProbabilityDetails.LogProbability, Is.EqualTo(0f));

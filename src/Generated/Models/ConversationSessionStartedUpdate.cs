@@ -11,6 +11,7 @@ namespace OpenAI.RealtimeConversation
     {
         internal ConversationSessionStartedUpdate(string eventId, InternalRealtimeResponseSession internalSession) : base(eventId)
         {
+            Argument.AssertNotNull(eventId, nameof(eventId));
             Argument.AssertNotNull(internalSession, nameof(internalSession));
 
             Kind = ConversationUpdateKind.SessionStarted;

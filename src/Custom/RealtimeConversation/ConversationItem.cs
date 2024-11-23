@@ -24,7 +24,7 @@ public partial class ConversationItem
         return new InternalRealtimeRequestUserMessageItem(contentItems);
     }
 
-    public static ConversationItem CreateSystemMessage(string toolCallId, IEnumerable<ConversationContentPart> contentItems)
+    public static ConversationItem CreateSystemMessage(IEnumerable<ConversationContentPart> contentItems)
     {
         return new InternalRealtimeRequestSystemMessageItem(contentItems);
     }

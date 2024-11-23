@@ -21,6 +21,11 @@ namespace OpenAI.Chat
             }
 
             writer.WriteStartObject();
+            if (SerializedAdditionalRawData?.ContainsKey("audio_tokens") != true)
+            {
+                writer.WritePropertyName("audio_tokens"u8);
+                writer.WriteNumberValue(AudioTokenCount);
+            }
             if (SerializedAdditionalRawData?.ContainsKey("reasoning_tokens") != true)
             {
                 writer.WritePropertyName("reasoning_tokens"u8);
@@ -68,17 +73,19 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            int audioTokens = default;
             int reasoningTokens = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
             foreach (var property in element.EnumerateObject())
             {
+                if (property.NameEquals("audio_tokens"u8))
+                {
+                    audioTokens = property.Value.GetInt32();
+                    continue;
+                }
                 if (property.NameEquals("reasoning_tokens"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
                     reasoningTokens = property.Value.GetInt32();
                     continue;
                 }
@@ -89,7 +96,7 @@ namespace OpenAI.Chat
                 }
             }
             serializedAdditionalRawData = rawDataDictionary;
-            return new ChatOutputTokenUsageDetails(reasoningTokens, serializedAdditionalRawData);
+            return new ChatOutputTokenUsageDetails(audioTokens, reasoningTokens, serializedAdditionalRawData);
         }
 
         BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options)

@@ -1,6 +1,6 @@
 # OpenAI .NET API library
 
-[![NuGet version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
+[![NuGet stable version](https://img.shields.io/nuget/v/openai.svg)](https://www.nuget.org/packages/OpenAI) [![NuGet preview version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
 
 The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications.
 
@@ -38,11 +38,13 @@ To call the OpenAI REST API, you will need an API key. To obtain one, first [cre
 
 ### Install the NuGet package
 
-Add the client library to your .NET project with [NuGet](https://www.nuget.org/) using your IDE or the dotnet CLI:
+Add the client library to your .NET project by installing the [NuGet](https://www.nuget.org/) package via your IDE or by running the following command in the .NET CLI:
 
 ```cli
 dotnet add package OpenAI
 ```
+
+If you would like to try the latest preview version, remember to append the `--prerelease` command option.
 
 Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
 

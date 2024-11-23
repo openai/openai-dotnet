@@ -20,10 +20,10 @@ public partial class FileSearchRankingOptions
     private float _scoreThreshold;
 
     public FileSearchRankingOptions()
-    {}
+    { }
 
     [SetsRequiredMembers]
-        public FileSearchRankingOptions(float scoreThreshold)
+    public FileSearchRankingOptions(float scoreThreshold)
     {
         ScoreThreshold = scoreThreshold;
     }

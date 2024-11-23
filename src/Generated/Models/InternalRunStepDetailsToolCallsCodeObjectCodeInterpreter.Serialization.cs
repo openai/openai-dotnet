@@ -26,7 +26,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("input"u8);
                 writer.WriteStringValue(Input);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("outputs") != true)
+            if (SerializedAdditionalRawData?.ContainsKey("outputs") != true && true)
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
