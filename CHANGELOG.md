@@ -25,6 +25,7 @@
 
 - OpenAI.RealtimeConversation:
   - Fixed serialization issues with `ConversationItem` creation of system and assistant messages. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Fixed an issue causing a deadlock when calling the `RealtimeConversationSession`'s `SendInputAudio` method overload that takes a `BinaryData` parameter. ([f491c2d](https://github.com/openai/openai-dotnet/commit/f491c2d5a3894953e0bc112431ea3844a64496da))
 
 ## 2.1.0-beta.2 (2024-11-04)
 
