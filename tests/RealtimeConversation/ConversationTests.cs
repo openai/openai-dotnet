@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.RealtimeConversation;
 using System;
+using System.Buffers;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Conversation;
@@ -239,7 +241,47 @@ public class ConversationTests : ConversationTestFixtureBase
     }
 
     [Test]
-    public async Task AudioWithToolsWorks()
+    public async Task AudioStreamConvenienceBlocksCorrectly()
+    {
+        RealtimeConversationClient client = GetTestClient();
+        using RealtimeConversationSession session = await client.StartConversationSessionAsync(CancellationToken);
+
+        string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        using TestDelayedFileReadStream delayedStream = new(inputAudioFilePath, TimeSpan.FromMilliseconds(200), readsBeforeDelay: 2);
+        _ = session.SendInputAudioAsync(delayedStream, CancellationToken);
+
+        bool gotSpeechStarted = false;
+
+        await foreach (ConversationUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
+        {
+            if (update is ConversationInputSpeechStartedUpdate)
+            {
+                gotSpeechStarted = true;
+                Assert.ThrowsAsync<InvalidOperationException>(
+                    async () =>
+                    {
+                        using MemoryStream dummyStream = new();
+                        await session.SendInputAudioAsync(dummyStream, CancellationToken);
+                    },
+                    "Sending a Stream while another Stream is being sent should throw!");
+                Assert.ThrowsAsync<InvalidOperationException>(
+                    async () =>
+                    {
+                        BinaryData dummyData = BinaryData.FromString("hello, world! this isn't audio.");
+                        await session.SendInputAudioAsync(dummyData, CancellationToken);
+                    },
+                    "Sending BinaryData while a Stream is being sent should throw!");
+                break;
+            }
+        }
+
+        Assert.That(gotSpeechStarted, Is.True);
+    }
+
+    [Test]
+    [TestCase(TestAudioSendType.WithAudioStreamHelper)]
+    [TestCase(TestAudioSendType.WithManualAudioChunks)]
+    public async Task AudioWithToolsWorks(TestAudioSendType audioSendType)
     {
         RealtimeConversationClient client = GetTestClient();
         using RealtimeConversationSession session = await client.StartConversationSessionAsync(CancellationToken);
@@ -285,8 +327,27 @@ public class ConversationTests : ConversationTestFixtureBase
 
         await session.ConfigureSessionAsync(options, CancellationToken);
 
-        using Stream audioStream = File.OpenRead(Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav"));
-        _ = session.SendInputAudioAsync(audioStream, CancellationToken);
+        _ = Task.Run(async () =>
+        {
+            string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+            if (audioSendType == TestAudioSendType.WithAudioStreamHelper)
+            {
+                using Stream audioStream = File.OpenRead(inputAudioFilePath);
+                await session.SendInputAudioAsync(audioStream, CancellationToken);
+            }
+            else if (audioSendType == TestAudioSendType.WithManualAudioChunks)
+            {
+                byte[] allAudioBytes = await File.ReadAllBytesAsync(inputAudioFilePath, CancellationToken);
+                const int audioSendBufferLength = 8 * 1024;
+                byte[] audioSendBuffer = ArrayPool<byte>.Shared.Rent(audioSendBufferLength);
+                for (int readPos = 0; readPos < allAudioBytes.Length; readPos += audioSendBufferLength)
+                {
+                    int nextSegmentLength = Math.Min(audioSendBufferLength, allAudioBytes.Length - readPos);
+                    ArraySegment<byte> nextSegment = new(allAudioBytes, readPos, nextSegmentLength);
+                    await session.SendInputAudioAsync(BinaryData.FromBytes(nextSegment), CancellationToken);
+                }
+            }
+        });
 
         string userTranscript = null;
 
@@ -464,5 +525,47 @@ public class ConversationTests : ConversationTestFixtureBase
         }
 
         Assert.That(itemCreatedCount, Is.EqualTo(items.Count + 1));
+    }
+
+    public enum TestAudioSendType
+    {
+        WithAudioStreamHelper,
+        WithManualAudioChunks
+    }
+
+    private class TestDelayedFileReadStream : FileStream
+    {
+        private readonly TimeSpan _delayBetweenReads;
+        private readonly int _readsBeforeDelay;
+        private int _readsPerformed;
+
+        public TestDelayedFileReadStream(
+            string path,
+            TimeSpan delayBetweenReads,
+            int readsBeforeDelay = 0)
+                : base(path, FileMode.Open, FileAccess.Read)
+        {
+            _delayBetweenReads = delayBetweenReads;
+            _readsBeforeDelay = readsBeforeDelay;
+            _readsPerformed = 0;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            if (++_readsPerformed > _readsBeforeDelay)
+            {
+                System.Threading.Thread.Sleep((int)_delayBetweenReads.TotalMilliseconds);
+            }
+            return base.Read(buffer, offset, count);
+        }
+
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            if (++_readsPerformed > _readsBeforeDelay)
+            {
+                await Task.Delay(_delayBetweenReads);
+            }
+            return await base.ReadAsync(buffer, offset, count, cancellationToken);
+        }
     }
 }
