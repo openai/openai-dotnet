@@ -1,50 +1,58 @@
 # Release History
 
-## 2.1.0-beta.3 (Unreleased)
+## 2.1.0 (2024-12-04)
 
 ### Features added
 
 - OpenAI.Assistants:
-  - Added a `Content` property to `RunStepFileSearchResult` ([`step_details.tool_calls.file_search.results.content` in the REST API](https://platform.openai.com/docs/api-reference/run-steps/step-object)). (commit_hash)
+  - Added a `Content` property to `RunStepFileSearchResult` ([`step_details.tool_calls.file_search.results.content` in the REST API](https://platform.openai.com/docs/api-reference/run-steps/step-object)). ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
     - When using an Assistant with the File Search tool, you can use this property to retrieve the contents of the File Search results that were used by the model.
-  - Added `FileSearchRankingOptions` and `FileSearchResults` properties to `RunStepDetailsUpdate`. (commit_hash)
+  - Added `FileSearchRankingOptions` and `FileSearchResults` properties to `RunStepDetailsUpdate`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
 
 ### Breaking Changes in Preview APIs
 
 - OpenAI.RealtimeConversation:
-  - Renamed the `From*()` factory methods on `ConversationContentPart` to `Create*Part()` for consistency. (commit_hash)
-  - Removed an extraneous `toolCallId` parameter from `ConversationItem.CreateSystemMessage()`. (commit_hash)
+  - Renamed the `From*()` factory methods on `ConversationContentPart` to `Create*Part()` for consistency. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Removed an extraneous `toolCallId` parameter from `ConversationItem.CreateSystemMessage()`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
 - OpenAI.Assistants:
-  - Renamed `RunStepType` to `RunStepKind`. (commit_hash)
-  - Changed `RunStepKind` from an "extensible enum" to a regular enum. (commit_hash)
-  - Renamed the `ToolCallId` property of `RunStepToolCall` to `Id`. (commit_hash)
-  - Renamed the `ToolKind` property of `RunStepToolCall` to `Kind`. (commit_hash)
-  - Replaced the `FileSearchRanker` and `FileSearchScoreThreshold` properties of `RunStepToolCall` with a new `FileSearchRankingOptions` property that contains both values to make it clearer how they are related. (commit_hash)
+  - Renamed `RunStepType` to `RunStepKind`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Changed `RunStepKind` from an "extensible enum" to a regular enum. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Renamed the `ToolCallId` property of `RunStepToolCall` to `Id`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Renamed the `ToolKind` property of `RunStepToolCall` to `Kind`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Replaced the `FileSearchRanker` and `FileSearchScoreThreshold` properties of `RunStepToolCall` with a new `FileSearchRankingOptions` property that contains both values to make it clearer how they are related. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
 
 ### Bugs fixed
 
 - OpenAI.RealtimeConversation:
-  - Fixed serialization issues with `ConversationItem` creation of system and assistant messages. (commit_hash)
+  - Fixed serialization issues with `ConversationItem` creation of system and assistant messages. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
+  - Fixed an issue causing a deadlock when calling the `RealtimeConversationSession`'s `SendInputAudio` method overload that takes a `BinaryData` parameter. ([f491c2d](https://github.com/openai/openai-dotnet/commit/f491c2d5a3894953e0bc112431ea3844a64496da))
 
 ## 2.1.0-beta.2 (2024-11-04)
 
 ### Features added
 
-- Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-  - Use this property to indicate whether or not to store the output of the chat completion for use in model distillation or evals.
-- Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-  - Use this property to add custom tags and values to the chat completions for filtering in the OpenAI dashboard.
-- Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-  - The property is of a new type called `ChatInputTokenUsageDetails`, which contains properties for `AudioTokenCount` and `CachedTokenCount` for usage with supported models.
-- Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-- Added `Illicit` and `IllicitViolent` properties `ModerationResult` to represent these two new moderation categories. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-- Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
-  - Several types have been renamed for consistency and clarity.
-  - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
+- OpenAI.Chat:
+  - Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+    - Use this property to indicate whether or not to store the output of the chat completion for use in model distillation or evals.
+  - Added a `Metadata` property to `ChatCompletionOptions` ([`metadata` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-metadata)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+    - Use this property to add custom tags and values to the chat completions for filtering in the OpenAI dashboard.
+  - Added an `InputTokenDetails` property to `ChatTokenUsage` ([`usage.prompt_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+    - The property is of a new type called `ChatInputTokenUsageDetails`, which contains properties for `AudioTokenCount` and `CachedTokenCount` for usage with supported models.
+  - Added an `AudioTokenCount` property to `ChatOutputTokenUsageDetails` ([`usage.completion_token_details` in the REST API](https://platform.openai.com/docs/api-reference/chat/object#chat/object-usage)). Audio support in chat completions is coming soon. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+- OpenAI.Moderations:
+  - Added `Illicit` and `IllicitViolent` properties `ModerationResult` to represent these two new moderation categories. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.RealtimeConversation:
+  - Made improvements to the experimental Realtime API. Please note this features area is currently under rapid development and not all changes may be reflected here. ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))
+    - Several types have been renamed for consistency and clarity.
+    - `ConversationRateLimitsUpdate` (previously `ConversationRateLimitsUpdatedUpdate`) now includes named `RequestDetails` and `TokenDetails` properties, mapping to the corresponding named items in the underlying `rate_limits` command payload.
 
 ### Bugs Fixed
 
-- Fixed serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`). ([9de3709](https://github.com/openai/openai-dotnet/commit/9de37095eaad6f1e2e87c201fd693ac1d9757142))
+- OpenAI.RealtimeConversation:
+  - Fixed serialization and deserialization of `ConversationToolChoice` literal values (such as `"required"`). ([9de3709](https://github.com/openai/openai-dotnet/commit/9de37095eaad6f1e2e87c201fd693ac1d9757142))
 
 ### Other Changes
 
@@ -53,9 +61,8 @@
 
 ## 2.1.0-beta.1 (2024-10-01)
 
-With this updated preview library release, we're excited to bring early support for the newly-announced `/realtime` beta API. You can read more about `/realtime` here: https://openai.com/index/introducing-the-realtime-api/
-
-Given the scope and recency of the feature area, the new `RealtimeConversationClient` is subject to substantial refinement and change over the coming weeks -- this release is purely intended to empower early development against `gpt-4o-realtime-preview` as quickly and efficiently as possible.
+> [!NOTE]
+> With this updated preview library release, we're excited to bring early support for the newly-announced `/realtime` beta API. You can read more about `/realtime` here: https://openai.com/index/introducing-the-realtime-api/. Given the scope and recency of the feature area, the new `RealtimeConversationClient` is subject to substantial refinement and change over the coming weeks -- this release is purely intended to empower early development against `gpt-4o-realtime-preview` as quickly and efficiently as possible.
 
 ### Features Added
 
