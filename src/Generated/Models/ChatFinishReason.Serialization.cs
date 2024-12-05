@@ -25,6 +25,7 @@ namespace OpenAI.Chat
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "tool_calls")) return ChatFinishReason.ToolCalls;
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "content_filter")) return ChatFinishReason.ContentFilter;
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "function_call")) return ChatFinishReason.FunctionCall;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "eos")) return ChatFinishReason.Stop;
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatFinishReason value.");
         }
     }
