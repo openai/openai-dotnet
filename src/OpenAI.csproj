@@ -9,7 +9,7 @@
     <VersionPrefix>2.1.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
 
     <!-- Generate an XML documentation file for the project. -->
