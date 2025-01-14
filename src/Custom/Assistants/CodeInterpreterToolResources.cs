@@ -14,7 +14,7 @@ public partial class CodeInterpreterToolResources
     public IList<string> FileIds
     {
         get => _fileIds;
-        internal set
+        set
         {
             _fileIds = new ChangeTrackingList<string>();
             foreach (string fileId in value)
