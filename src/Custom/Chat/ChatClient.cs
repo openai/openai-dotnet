@@ -23,6 +23,7 @@ public partial class ChatClient
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
 
+
     // CUSTOM: Remove virtual keyword.
     /// <summary>
     /// The HTTP pipeline for sending and receiving REST requests and responses.
@@ -35,7 +36,7 @@ public partial class ChatClient
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ChatClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public ChatClient(string model, string apiKey, string chatCompletionPath = "/chat/completions") : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions(),chatCompletionPath)
     {
     }
 
@@ -48,7 +49,7 @@ public partial class ChatClient
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ChatClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    public ChatClient(string model, ApiKeyCredential credential, string chatCompletionPath = "/chat/completions") : this(model, credential, new OpenAIClientOptions(), chatCompletionPath)
     {
     }
 
@@ -63,7 +64,7 @@ public partial class ChatClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+    public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options, string chatCompletionPath = "/chat/completions")
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(credential, nameof(credential));
@@ -73,6 +74,7 @@ public partial class ChatClient
         _pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _chatCompletionPath = chatCompletionPath;
     }
 
     // CUSTOM:
@@ -87,7 +89,7 @@ public partial class ChatClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options, string chatCompletionPath = "/chat/completions")
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         Argument.AssertNotNullOrEmpty(model, nameof(model));
@@ -97,6 +99,7 @@ public partial class ChatClient
         _pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
         _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _chatCompletionPath = chatCompletionPath;
     }
 
     /// <summary> Generates a completion for the given chat. </summary>

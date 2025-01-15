@@ -17,12 +17,14 @@ namespace OpenAI.Chat
         private const string AuthorizationApiKeyPrefix = "Bearer";
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
+        private readonly string _chatCompletionPath = "/chat/completions"; // default path
+
 
         protected ChatClient()
         {
         }
 
-        internal PipelineMessage CreateCreateChatCompletionRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateChatCompletionRequest(BinaryContent content, RequestOptions options)
         {
             var message = _pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -30,7 +32,7 @@ namespace OpenAI.Chat
             request.Method = "POST";
             var uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/chat/completions", false);
+            uri.AppendPath(_chatCompletionPath, false);  
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
