@@ -1,6 +1,7 @@
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -39,7 +40,7 @@ public partial class MessageCreationAttachment
             List<ToolDefinition> deserializedTools = [];
             foreach (JsonElement toolElement in property.Value.EnumerateArray())
             {
-                deserializedTools.Add(ToolDefinition.DeserializeToolDefinition(toolElement));
+                deserializedTools.Add(ToolDefinition.DeserializeToolDefinition(toolElement, ModelSerializationExtensions.WireOptions));
             }
             tools = deserializedTools;
         }

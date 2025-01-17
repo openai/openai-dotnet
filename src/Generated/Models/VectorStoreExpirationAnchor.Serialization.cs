@@ -8,15 +8,18 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreExpirationAnchorExtensions
     {
-        public static string ToSerialString(this VectorStoreExpirationAnchor value) => value switch
+        public static string ToSerialString(this VectorStores.VectorStoreExpirationAnchor value) => value switch
         {
-            VectorStoreExpirationAnchor.LastActiveAt => "last_active_at",
+            VectorStores.VectorStoreExpirationAnchor.LastActiveAt => "last_active_at",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.")
         };
 
-        public static VectorStoreExpirationAnchor ToVectorStoreExpirationAnchor(this string value)
+        public static VectorStores.VectorStoreExpirationAnchor ToVectorStoreExpirationAnchor(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "last_active_at")) return VectorStoreExpirationAnchor.LastActiveAt;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "last_active_at"))
+            {
+                return VectorStores.VectorStoreExpirationAnchor.LastActiveAt;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreExpirationAnchor value.");
         }
     }

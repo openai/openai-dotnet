@@ -22,7 +22,7 @@ public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinit
             writer.WritePropertyName("file_search"u8);
             writer.WriteObjectValue(_fileSearch, options);
         }
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

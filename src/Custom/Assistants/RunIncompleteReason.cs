@@ -11,10 +11,10 @@ namespace OpenAI.Assistants
     {
         // CUSTOM: Renamed.
         [CodeGenMember("MaxCompletionTokens")]
-        public static RunIncompleteReason MaxOutputTokenCount { get; } = new RunIncompleteReason(MaxOutputTokenCountValue);
+        public static RunIncompleteReason MaxOutputTokenCount { get; } = new RunIncompleteReason(MaxCompletionTokensValue);
 
         // CUSTOM: Renamed.
         [CodeGenMember("MaxPromptTokens")]
-        public static RunIncompleteReason MaxInputTokenCount { get; } = new RunIncompleteReason(MaxInputTokenCountValue);
+        public static RunIncompleteReason MaxInputTokenCount { get; } = new RunIncompleteReason(MaxPromptTokensValue);
     }
 }

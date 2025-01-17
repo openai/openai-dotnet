@@ -10,21 +10,14 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
     {
-        internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls)
+        internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls) : base("tool_calls")
         {
-            Argument.AssertNotNull(internalToolCalls, nameof(internalToolCalls));
-
-            Type = "tool_calls";
             InternalToolCalls = internalToolCalls.ToList();
         }
 
-        internal InternalRunStepDetailsToolCallsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(type, serializedAdditionalRawData)
+        internal InternalRunStepDetailsToolCallsObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(@type, additionalBinaryDataProperties)
         {
             InternalToolCalls = internalToolCalls;
-        }
-
-        internal InternalRunStepDetailsToolCallsObject()
-        {
         }
     }
 }

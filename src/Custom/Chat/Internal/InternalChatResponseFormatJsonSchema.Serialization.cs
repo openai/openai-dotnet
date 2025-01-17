@@ -15,19 +15,19 @@ internal partial class InternalChatResponseFormatJsonSchema : IJsonModel<Interna
     internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         writer.WriteStartObject();
-        if (SerializedAdditionalRawData?.ContainsKey("json_schema") != true)
+        if (_additionalBinaryDataProperties?.ContainsKey("json_schema") != true)
         {
             writer.WritePropertyName("json_schema"u8);
             writer.WriteObjectValue(JsonSchema, options);
         }
-        if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+        if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
         {
             writer.WritePropertyName("type"u8);
             writer.WriteStringValue(Type);
         }
-        if (SerializedAdditionalRawData != null)
+        if (_additionalBinaryDataProperties != null)
         {
-            foreach (var item in SerializedAdditionalRawData)
+            foreach (var item in _additionalBinaryDataProperties)
             {
                 if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                 {

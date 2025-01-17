@@ -4,23 +4,32 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaObjectDelta
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalMessageDeltaObjectDelta()
         {
             Content = new ChangeTrackingList<InternalMessageDeltaContent>();
         }
 
-        internal InternalMessageDeltaObjectDelta(MessageRole role, IReadOnlyList<InternalMessageDeltaContent> content, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageDeltaObjectDelta(IList<InternalMessageDeltaContent> content, Assistants.MessageRole? role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Role = role;
             Content = content;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Role = role;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-        public IReadOnlyList<InternalMessageDeltaContent> Content { get; }
+
+        public IList<InternalMessageDeltaContent> Content { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

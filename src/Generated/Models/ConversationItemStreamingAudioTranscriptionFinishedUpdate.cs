@@ -9,22 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationItemStreamingAudioTranscriptionFinishedUpdate : ConversationUpdate
     {
-        internal ConversationItemStreamingAudioTranscriptionFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(responseId, nameof(responseId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-            Argument.AssertNotNull(transcript, nameof(transcript));
-
-            Kind = ConversationUpdateKind.ItemStreamingPartAudioTranscriptionFinished;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            ContentIndex = contentIndex;
-            Transcript = transcript;
-        }
-
-        internal ConversationItemStreamingAudioTranscriptionFinishedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(kind, eventId, serializedAdditionalRawData)
+        internal ConversationItemStreamingAudioTranscriptionFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingPartAudioTranscriptionFinished)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -33,14 +18,23 @@ namespace OpenAI.RealtimeConversation
             Transcript = transcript;
         }
 
-        internal ConversationItemStreamingAudioTranscriptionFinishedUpdate()
+        internal ConversationItemStreamingAudioTranscriptionFinishedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            ContentIndex = contentIndex;
+            Transcript = transcript;
         }
 
         public string ResponseId { get; }
+
         public string ItemId { get; }
+
         public int OutputIndex { get; }
+
         public int ContentIndex { get; }
+
         public string Transcript { get; }
     }
 }

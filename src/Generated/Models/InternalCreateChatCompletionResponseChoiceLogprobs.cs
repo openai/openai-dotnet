@@ -4,26 +4,35 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionResponseChoiceLogprobs
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateChatCompletionResponseChoiceLogprobs()
         {
             Content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
             Refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
         }
 
-        internal InternalCreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Content = content;
             Refusal = refusal;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
+
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

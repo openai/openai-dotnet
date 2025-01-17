@@ -4,44 +4,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     internal partial class InternalListVectorStoresResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListVectorStoresResponse(IEnumerable<VectorStore> data, string firstId, string lastId, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(firstId, nameof(firstId));
-            Argument.AssertNotNull(lastId, nameof(lastId));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Data = data.ToList();
+        internal InternalListVectorStoresResponse(string firstId, string lastId, bool hasMore)
+        {
+            Data = new ChangeTrackingList<VectorStore>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
         }
 
-        internal InternalListVectorStoresResponse(InternalListVectorStoresResponseObject @object, IReadOnlyList<VectorStore> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListVectorStoresResponse(InternalListVectorStoresResponseObject @object, IReadOnlyList<VectorStore> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Data = data;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalListVectorStoresResponse()
-        {
-        }
-
-        public InternalListVectorStoresResponseObject Object { get; } = InternalListVectorStoresResponseObject.List;
+        public InternalListVectorStoresResponseObject Object { get; } = "list";
 
         public IReadOnlyList<VectorStore> Data { get; }
+
         public string FirstId { get; }
+
         public string LastId { get; }
+
         public bool HasMore { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

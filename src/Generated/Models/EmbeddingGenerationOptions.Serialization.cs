@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Embeddings
 {
@@ -14,18 +15,28 @@ namespace OpenAI.Embeddings
     {
         void IJsonModel<EmbeddingGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
+            if (Optional.IsDefined(Dimensions) && _additionalBinaryDataProperties?.ContainsKey("dimensions") != true)
+            {
+                writer.WritePropertyName("dimensions"u8);
+                writer.WriteNumberValue(Dimensions.Value);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
                 writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(Input);
+                writer.WriteRawValue(Input);
 #else
                 using (JsonDocument document = JsonDocument.Parse(Input))
                 {
@@ -33,29 +44,24 @@ namespace OpenAI.Embeddings
                 }
 #endif
             }
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("encoding_format") != true && Optional.IsDefined(EncodingFormat))
+            if (Optional.IsDefined(EncodingFormat) && _additionalBinaryDataProperties?.ContainsKey("encoding_format") != true)
             {
                 writer.WritePropertyName("encoding_format"u8);
                 writer.WriteStringValue(EncodingFormat.Value.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("dimensions") != true && Optional.IsDefined(Dimensions))
-            {
-                writer.WritePropertyName("dimensions"u8);
-                writer.WriteNumberValue(Dimensions.Value);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
+            if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -63,7 +69,7 @@ namespace OpenAI.Embeddings
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -72,91 +78,87 @@ namespace OpenAI.Embeddings
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual EmbeddingGenerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(EmbeddingGenerationOptions)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
         }
 
-        internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static EmbeddingGenerationOptions DeserializeEmbeddingGenerationOptions(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            int? dimensions = default;
             BinaryData input = default;
             InternalCreateEmbeddingRequestModel model = default;
             InternalCreateEmbeddingRequestEncodingFormat? encodingFormat = default;
-            int? dimensions = default;
-            string user = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            string endUserId = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("input"u8))
+                if (prop.NameEquals("dimensions"u8))
                 {
-                    input = BinaryData.FromString(property.Value.GetRawText());
-                    continue;
-                }
-                if (property.NameEquals("model"u8))
-                {
-                    model = new InternalCreateEmbeddingRequestModel(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("encoding_format"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    encodingFormat = new InternalCreateEmbeddingRequestEncodingFormat(property.Value.GetString());
+                    dimensions = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("dimensions"u8))
+                if (prop.NameEquals("input"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    input = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = new InternalCreateEmbeddingRequestModel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("encoding_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    dimensions = property.Value.GetInt32();
+                    encodingFormat = new InternalCreateEmbeddingRequestEncodingFormat(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("user"u8))
+                if (prop.NameEquals("user"u8))
                 {
-                    user = property.Value.GetString();
+                    endUserId = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new EmbeddingGenerationOptions(
+                dimensions,
                 input,
                 model,
                 encodingFormat,
-                dimensions,
-                user,
-                serializedAdditionalRawData);
+                endUserId,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<EmbeddingGenerationOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<EmbeddingGenerationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -166,15 +168,16 @@ namespace OpenAI.Embeddings
             }
         }
 
-        EmbeddingGenerationOptions IPersistableModel<EmbeddingGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        EmbeddingGenerationOptions IPersistableModel<EmbeddingGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual EmbeddingGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<EmbeddingGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeEmbeddingGenerationOptions(document.RootElement, options);
                     }
                 default:
@@ -184,15 +187,20 @@ namespace OpenAI.Embeddings
 
         string IPersistableModel<EmbeddingGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static EmbeddingGenerationOptions FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(EmbeddingGenerationOptions embeddingGenerationOptions)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeEmbeddingGenerationOptions(document.RootElement);
+            if (embeddingGenerationOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(embeddingGenerationOptions, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator EmbeddingGenerationOptions(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeEmbeddingGenerationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

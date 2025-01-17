@@ -7,43 +7,53 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>
     {
+        internal ConversationRateLimitDetailsItem()
+        {
+        }
+
         void IJsonModel<ConversationRateLimitDetailsItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ConversationRateLimitDetailsItem)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("name") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("limit") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("limit") != true)
             {
                 writer.WritePropertyName("limit"u8);
                 writer.WriteNumberValue(MaximumCount);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("remaining") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("remaining") != true)
             {
                 writer.WritePropertyName("remaining"u8);
                 writer.WriteNumberValue(RemainingCount);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("reset_seconds") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("reset_seconds") != true)
             {
                 writer.WritePropertyName("reset_seconds"u8);
                 writer.WriteNumberValue(Convert.ToDouble(TimeUntilReset.ToString("s\\.FFF")));
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -51,7 +61,7 @@ namespace OpenAI.RealtimeConversation
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -60,71 +70,67 @@ namespace OpenAI.RealtimeConversation
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        ConversationRateLimitDetailsItem IJsonModel<ConversationRateLimitDetailsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ConversationRateLimitDetailsItem IJsonModel<ConversationRateLimitDetailsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual ConversationRateLimitDetailsItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ConversationRateLimitDetailsItem)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeConversationRateLimitDetailsItem(document.RootElement, options);
         }
 
-        internal static ConversationRateLimitDetailsItem DeserializeConversationRateLimitDetailsItem(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static ConversationRateLimitDetailsItem DeserializeConversationRateLimitDetailsItem(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string name = default;
-            int limit = default;
-            int remaining = default;
-            TimeSpan resetSeconds = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            int maximumCount = default;
+            int remainingCount = default;
+            TimeSpan timeUntilReset = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("name"u8))
+                if (prop.NameEquals("name"u8))
                 {
-                    name = property.Value.GetString();
+                    name = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("limit"u8))
+                if (prop.NameEquals("limit"u8))
                 {
-                    limit = property.Value.GetInt32();
+                    maximumCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("remaining"u8))
+                if (prop.NameEquals("remaining"u8))
                 {
-                    remaining = property.Value.GetInt32();
+                    remainingCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("reset_seconds"u8))
+                if (prop.NameEquals("reset_seconds"u8))
                 {
-                    resetSeconds = TimeSpan.FromSeconds(property.Value.GetDouble());
+                    timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ConversationRateLimitDetailsItem(name, limit, remaining, resetSeconds, serializedAdditionalRawData);
+            return new ConversationRateLimitDetailsItem(name, maximumCount, remainingCount, timeUntilReset, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ConversationRateLimitDetailsItem>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<ConversationRateLimitDetailsItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -134,15 +140,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        ConversationRateLimitDetailsItem IPersistableModel<ConversationRateLimitDetailsItem>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
+        ConversationRateLimitDetailsItem IPersistableModel<ConversationRateLimitDetailsItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual ConversationRateLimitDetailsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeConversationRateLimitDetailsItem(document.RootElement, options);
                     }
                 default:
@@ -152,15 +159,20 @@ namespace OpenAI.RealtimeConversation
 
         string IPersistableModel<ConversationRateLimitDetailsItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ConversationRateLimitDetailsItem FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(ConversationRateLimitDetailsItem conversationRateLimitDetailsItem)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationRateLimitDetailsItem(document.RootElement);
+            if (conversationRateLimitDetailsItem == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(conversationRateLimitDetailsItem, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator ConversationRateLimitDetailsItem(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeConversationRateLimitDetailsItem(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

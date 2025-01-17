@@ -12,10 +12,10 @@ public static partial class OpenAIImagesModelFactory
     public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null)
     {
         return new GeneratedImage(
+            revisedPrompt,
             imageBytes,
             imageUri,
-            revisedPrompt,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Images.GeneratedImageCollection"/>. </summary>

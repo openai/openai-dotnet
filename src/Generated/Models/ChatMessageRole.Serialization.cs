@@ -8,23 +8,38 @@ namespace OpenAI.Chat
 {
     internal static partial class ChatMessageRoleExtensions
     {
-        public static string ToSerialString(this ChatMessageRole value) => value switch
+        public static string ToSerialString(this Chat.ChatMessageRole value) => value switch
         {
-            ChatMessageRole.System => "system",
-            ChatMessageRole.User => "user",
-            ChatMessageRole.Assistant => "assistant",
-            ChatMessageRole.Tool => "tool",
-            ChatMessageRole.Function => "function",
+            Chat.ChatMessageRole.System => "system",
+            Chat.ChatMessageRole.User => "user",
+            Chat.ChatMessageRole.Assistant => "assistant",
+            Chat.ChatMessageRole.Tool => "tool",
+            Chat.ChatMessageRole.Function => "function",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatMessageRole value.")
         };
 
-        public static ChatMessageRole ToChatMessageRole(this string value)
+        public static Chat.ChatMessageRole ToChatMessageRole(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "system")) return ChatMessageRole.System;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "user")) return ChatMessageRole.User;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistant")) return ChatMessageRole.Assistant;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "tool")) return ChatMessageRole.Tool;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "function")) return ChatMessageRole.Function;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "system"))
+            {
+                return Chat.ChatMessageRole.System;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "user"))
+            {
+                return Chat.ChatMessageRole.User;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistant"))
+            {
+                return Chat.ChatMessageRole.Assistant;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "tool"))
+            {
+                return Chat.ChatMessageRole.Tool;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "function"))
+            {
+                return Chat.ChatMessageRole.Function;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatMessageRole value.");
         }
     }

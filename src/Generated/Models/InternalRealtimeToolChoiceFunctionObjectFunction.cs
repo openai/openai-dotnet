@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeToolChoiceFunctionObjectFunction
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalRealtimeToolChoiceFunctionObjectFunction(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
@@ -17,16 +19,18 @@ namespace OpenAI.RealtimeConversation
             Name = name;
         }
 
-        internal InternalRealtimeToolChoiceFunctionObjectFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRealtimeToolChoiceFunctionObjectFunction(string name, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRealtimeToolChoiceFunctionObjectFunction()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Name { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

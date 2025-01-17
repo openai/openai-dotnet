@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
@@ -14,41 +15,46 @@ namespace OpenAI.Audio
     {
         void IJsonModel<SpeechGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
-                writer.WriteStringValue(Input);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("voice") != true)
-            {
-                writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("speed") != true && Optional.IsDefined(SpeedRatio))
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
+            {
+                writer.WritePropertyName("input"u8);
+                writer.WriteStringValue(Input);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("voice") != true)
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.ToString());
+            }
+            if (Optional.IsDefined(SpeedRatio) && _additionalBinaryDataProperties?.ContainsKey("speed") != true)
             {
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -56,7 +62,7 @@ namespace OpenAI.Audio
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -65,91 +71,87 @@ namespace OpenAI.Audio
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual SpeechGenerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeSpeechGenerationOptions(document.RootElement, options);
         }
 
-        internal static SpeechGenerationOptions DeserializeSpeechGenerationOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static SpeechGenerationOptions DeserializeSpeechGenerationOptions(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            GeneratedSpeechFormat? responseFormat = default;
             InternalCreateSpeechRequestModel model = default;
             string input = default;
             GeneratedSpeechVoice voice = default;
-            GeneratedSpeechFormat? responseFormat = default;
-            float? speed = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            float? speedRatio = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("model"u8))
+                if (prop.NameEquals("response_format"u8))
                 {
-                    model = new InternalCreateSpeechRequestModel(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("input"u8))
-                {
-                    input = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("voice"u8))
-                {
-                    voice = new GeneratedSpeechVoice(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("response_format"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    responseFormat = new GeneratedSpeechFormat(property.Value.GetString());
+                    responseFormat = new GeneratedSpeechFormat(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("speed"u8))
+                if (prop.NameEquals("model"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    model = new InternalCreateSpeechRequestModel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("input"u8))
+                {
+                    input = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("voice"u8))
+                {
+                    voice = new GeneratedSpeechVoice(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("speed"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    speed = property.Value.GetSingle();
+                    speedRatio = prop.Value.GetSingle();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new SpeechGenerationOptions(
+                responseFormat,
                 model,
                 input,
                 voice,
-                responseFormat,
-                speed,
-                serializedAdditionalRawData);
+                speedRatio,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<SpeechGenerationOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<SpeechGenerationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -159,15 +161,16 @@ namespace OpenAI.Audio
             }
         }
 
-        SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
+        SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual SpeechGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeSpeechGenerationOptions(document.RootElement, options);
                     }
                 default:
@@ -177,15 +180,20 @@ namespace OpenAI.Audio
 
         string IPersistableModel<SpeechGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static SpeechGenerationOptions FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(SpeechGenerationOptions speechGenerationOptions)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeSpeechGenerationOptions(document.RootElement);
+            if (speechGenerationOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(speechGenerationOptions, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator SpeechGenerationOptions(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeSpeechGenerationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

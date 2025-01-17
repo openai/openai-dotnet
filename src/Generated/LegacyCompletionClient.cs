@@ -5,39 +5,31 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading;
 using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    // Data plane generated sub-client.
     internal partial class LegacyCompletionClient
     {
+        private readonly Uri _endpoint;
         private const string AuthorizationHeader = "Authorization";
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationApiKeyPrefix = "Bearer";
-        private readonly ClientPipeline _pipeline;
-        private readonly Uri _endpoint;
 
         protected LegacyCompletionClient()
         {
         }
 
-        public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest requestBody)
+        public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult CreateCompletion(BinaryContent content, RequestOptions options = null)
         {
-            Argument.AssertNotNull(requestBody, nameof(requestBody));
+            Argument.AssertNotNull(content, nameof(content));
 
-            using BinaryContent content = requestBody.ToBinaryContent();
-            ClientResult result = await CreateCompletionAsync(content, null).ConfigureAwait(false);
-            return ClientResult.FromValue(InternalCreateCompletionResponse.FromResponse(result.GetRawResponse()), result.GetRawResponse());
-        }
-
-        public virtual ClientResult<InternalCreateCompletionResponse> CreateCompletion(InternalCreateCompletionRequest requestBody)
-        {
-            Argument.AssertNotNull(requestBody, nameof(requestBody));
-
-            using BinaryContent content = requestBody.ToBinaryContent();
-            ClientResult result = CreateCompletion(content, null);
-            return ClientResult.FromValue(InternalCreateCompletionResponse.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+            using PipelineMessage message = CreateCreateCompletionRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
         public virtual async Task<ClientResult> CreateCompletionAsync(BinaryContent content, RequestOptions options = null)
@@ -45,35 +37,23 @@ namespace OpenAI.LegacyCompletions
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCreateCompletionRequest(content, options);
-            return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateCompletion(BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult<InternalCreateCompletionResponse> CreateCompletion(InternalCreateCompletionRequest requestBody, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNull(requestBody, nameof(requestBody));
 
-            using PipelineMessage message = CreateCreateCompletionRequest(content, options);
-            return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+            ClientResult result = CreateCompletion(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((InternalCreateCompletionResponse)result, result.GetRawResponse());
         }
 
-        internal PipelineMessage CreateCreateCompletionRequest(BinaryContent content, RequestOptions options)
+        public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest requestBody, CancellationToken cancellationToken = default)
         {
-            var message = _pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            var request = message.Request;
-            request.Method = "POST";
-            var uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/completions", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("Content-Type", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
+            Argument.AssertNotNull(requestBody, nameof(requestBody));
 
-        private static PipelineMessageClassifier _pipelineMessageClassifier200;
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+            ClientResult result = await CreateCompletionAsync(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((InternalCreateCompletionResponse)result, result.GetRawResponse());
+        }
     }
 }

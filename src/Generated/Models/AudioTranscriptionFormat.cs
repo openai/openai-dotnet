@@ -4,33 +4,40 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat>
     {
         private readonly string _value;
+        private const string JsonValue = "json";
+        private const string TextValue = "text";
+        private const string SrtValue = "srt";
+        private const string VerboseJsonValue = "verbose_json";
+        private const string VttValue = "vtt";
 
         public AudioTranscriptionFormat(string value)
         {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
         }
 
-        private const string SimpleValue = "json";
-        private const string TextValue = "text";
-        private const string SrtValue = "srt";
-        private const string VerboseValue = "verbose_json";
-        private const string VttValue = "vtt";
         public static bool operator ==(AudioTranscriptionFormat left, AudioTranscriptionFormat right) => left.Equals(right);
+
         public static bool operator !=(AudioTranscriptionFormat left, AudioTranscriptionFormat right) => !left.Equals(right);
+
         public static implicit operator AudioTranscriptionFormat(string value) => new AudioTranscriptionFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is AudioTranscriptionFormat other && Equals(other);
+
         public bool Equals(AudioTranscriptionFormat other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

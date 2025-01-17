@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentItemFileObjectImageFile
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalMessageContentItemFileObjectImageFile(string fileId)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
@@ -17,17 +19,19 @@ namespace OpenAI.Assistants
             FileId = fileId;
         }
 
-        internal InternalMessageContentItemFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageContentItemFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
             Detail = detail;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentItemFileObjectImageFile()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string FileId { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

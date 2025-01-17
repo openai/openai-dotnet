@@ -49,6 +49,11 @@ public partial class UserChatMessage : ChatMessage
         Argument.AssertNotNull(content, nameof(content));
     }
 
+    // CUSTOM: Hide the default constructor.
+    internal UserChatMessage()
+    {
+    }
+
     // CUSTOM: Rename.
     /// <summary>
     /// An optional <c>name</c> for the participant.

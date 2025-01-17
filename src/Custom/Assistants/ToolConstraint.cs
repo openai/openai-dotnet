@@ -12,7 +12,6 @@ public partial class ToolConstraint
     [CodeGenMember("Type")]
     private readonly string _objectType;
     private readonly string _objectFunctionName;
-    private readonly IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     // CUSTOM: Made internal.
     /// <summary> Gets or sets the function. </summary>

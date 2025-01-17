@@ -19,10 +19,10 @@ public partial class AudioTranslation
                 duration: null,
                 text: response.Content?.ToString(),
                 segments: new ChangeTrackingList<TranscribedSegment>(),
-                serializedAdditionalRawData: new Dictionary<string, BinaryData>());
+                additionalBinaryDataProperties: new Dictionary<string, BinaryData>());
         }
 
         using var document = JsonDocument.Parse(response.Content);
-        return DeserializeAudioTranslation(document.RootElement);
+        return DeserializeAudioTranslation(document.RootElement, null);
     }
 }

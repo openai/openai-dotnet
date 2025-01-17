@@ -9,13 +9,10 @@ namespace OpenAI.Files
 {
     internal partial class InternalUpload
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt)
         {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(filename, nameof(filename));
-            Argument.AssertNotNull(purpose, nameof(purpose));
-
             Id = id;
             CreatedAt = createdAt;
             Filename = filename;
@@ -25,7 +22,7 @@ namespace OpenAI.Files
             ExpiresAt = expiresAt;
         }
 
-        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt, InternalUploadObject? @object, OpenAIFile file, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt, InternalUploadObject? @object, OpenAIFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -35,22 +32,32 @@ namespace OpenAI.Files
             Status = status;
             ExpiresAt = expiresAt;
             Object = @object;
-            File = file;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalUpload()
-        {
+            File = @file;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
+
         public DateTimeOffset CreatedAt { get; }
+
         public string Filename { get; }
+
         public int Bytes { get; }
+
         public string Purpose { get; }
+
         public InternalUploadStatus Status { get; }
+
         public DateTimeOffset ExpiresAt { get; }
+
         public InternalUploadObject? Object { get; }
+
         public OpenAIFile File { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace OpenAI.Chat;
 public partial class ChatOutputTokenUsageDetails
 {
     // CUSTOM: Renamed.
-    /// <summary> The number of tokens consumed internally by the model for the purpose of reasoning. <summary>
+    /// <summary> The number of tokens consumed internally by the model for the purpose of reasoning. </summary>  
     /// <remarks> Only applicable to models with reasoning capabilities, such as the <see href="https://openai.com/o1/">OpenAI o1 series</see>. </remarks>
     [CodeGenMember("ReasoningTokens")]
     public int ReasoningTokenCount { get; }

@@ -4,31 +4,38 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal readonly partial struct InternalRunStepDeltaObjectObject : IEquatable<InternalRunStepDeltaObjectObject>
     {
         private readonly string _value;
+        private const string ThreadRunStepDeltaValue = "thread.run.step.delta";
 
         public InternalRunStepDeltaObjectObject(string value)
         {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
         }
 
-        private const string ThreadRunStepDeltaValue = "thread.run.step.delta";
-
         public static InternalRunStepDeltaObjectObject ThreadRunStepDelta { get; } = new InternalRunStepDeltaObjectObject(ThreadRunStepDeltaValue);
+
         public static bool operator ==(InternalRunStepDeltaObjectObject left, InternalRunStepDeltaObjectObject right) => left.Equals(right);
+
         public static bool operator !=(InternalRunStepDeltaObjectObject left, InternalRunStepDeltaObjectObject right) => !left.Equals(right);
+
         public static implicit operator InternalRunStepDeltaObjectObject(string value) => new InternalRunStepDeltaObjectObject(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRunStepDeltaObjectObject other && Equals(other);
+
         public bool Equals(InternalRunStepDeltaObjectObject other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

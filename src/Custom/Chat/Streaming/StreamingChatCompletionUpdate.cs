@@ -89,7 +89,7 @@ public partial class StreamingChatCompletionUpdate
 
     // CUSTOM: Flattened choice delta property.
     /// <summary> The contents of the message update. </summary>
-    /// <remarks> 
+    /// <remarks>
     ///     Each streaming update contains only a small portion of tokens. To reconstitute the entire chat completion,
     ///     all <see cref="ContentUpdate"/> values across streaming updates must be combined.
     /// </remarks>

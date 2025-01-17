@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -14,31 +15,36 @@ namespace OpenAI.Assistants
     {
         void IJsonModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("ranking_options") != true && Optional.IsDefined(RankingOptions))
-            {
-                writer.WritePropertyName("ranking_options"u8);
-                writer.WriteObjectValue<FileSearchRankingOptions>(RankingOptions, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("results") != true && true && Optional.IsCollectionDefined(Results))
+            if (true && Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
             {
                 writer.WritePropertyName("results"u8);
                 writer.WriteStartArray();
-                foreach (var item in Results)
+                foreach (RunStepFileSearchResult item in Results)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData != null)
+            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("ranking_options"u8);
+                writer.WriteObjectValue<FileSearchRankingOptions>(RankingOptions, options);
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +52,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,72 +61,68 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IJsonModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IJsonModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRunStepDetailsToolCallsFileSearchObjectFileSearch JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement, options);
         }
 
-        internal static InternalRunStepDetailsToolCallsFileSearchObjectFileSearch DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRunStepDetailsToolCallsFileSearchObjectFileSearch DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            FileSearchRankingOptions rankingOptions = default;
             IReadOnlyList<RunStepFileSearchResult> results = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            FileSearchRankingOptions rankingOptions = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("ranking_options"u8))
+                if (prop.NameEquals("results"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("results"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<RunStepFileSearchResult> array = new List<RunStepFileSearchResult>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(RunStepFileSearchResult.DeserializeRunStepFileSearchResult(item, options));
                     }
                     results = array;
                     continue;
                 }
+                if (prop.NameEquals("ranking_options"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(prop.Value, options);
+                    continue;
+                }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(rankingOptions, results ?? new ChangeTrackingList<RunStepFileSearchResult>(), serializedAdditionalRawData);
+            return new InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(results ?? new ChangeTrackingList<RunStepFileSearchResult>(), rankingOptions, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -130,15 +132,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRunStepDetailsToolCallsFileSearchObjectFileSearch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement, options);
                     }
                 default:
@@ -148,15 +151,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch internalRunStepDetailsToolCallsFileSearchObjectFileSearch)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement);
+            if (internalRunStepDetailsToolCallsFileSearchObjectFileSearch == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRunStepDetailsToolCallsFileSearchObjectFileSearch, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

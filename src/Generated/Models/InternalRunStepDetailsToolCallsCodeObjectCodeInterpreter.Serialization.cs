@@ -7,38 +7,48 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter : IJsonModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>
     {
+        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter()
+        {
+        }
+
         void IJsonModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("input") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
                 writer.WritePropertyName("input"u8);
                 writer.WriteStringValue(Input);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("outputs") != true && true)
+            if (true && _additionalBinaryDataProperties?.ContainsKey("outputs") != true)
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
-                foreach (var item in Outputs)
+                foreach (RunStepCodeInterpreterOutput item in Outputs)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +56,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,44 +65,41 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IJsonModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IJsonModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement, options);
         }
 
-        internal static InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string input = default;
             IReadOnlyList<RunStepCodeInterpreterOutput> outputs = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("input"u8))
+                if (prop.NameEquals("input"u8))
                 {
-                    input = property.Value.GetString();
+                    input = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("outputs"u8))
+                if (prop.NameEquals("outputs"u8))
                 {
                     List<RunStepCodeInterpreterOutput> array = new List<RunStepCodeInterpreterOutput>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(RunStepCodeInterpreterOutput.DeserializeRunStepCodeInterpreterOutput(item, options));
                     }
@@ -101,18 +108,17 @@ namespace OpenAI.Assistants
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(input, outputs, serializedAdditionalRawData);
+            return new InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(input, outputs, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -122,15 +128,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement, options);
                     }
                 default:
@@ -140,15 +147,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter internalRunStepDetailsToolCallsCodeObjectCodeInterpreter)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement);
+            if (internalRunStepDetailsToolCallsCodeObjectCodeInterpreter == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRunStepDetailsToolCallsCodeObjectCodeInterpreter, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

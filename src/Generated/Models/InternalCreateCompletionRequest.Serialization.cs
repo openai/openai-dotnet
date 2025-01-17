@@ -7,33 +7,43 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 using OpenAI.Chat;
 
 namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionRequest : IJsonModel<InternalCreateCompletionRequest>
     {
+        internal InternalCreateCompletionRequest()
+        {
+        }
+
         void IJsonModel<InternalCreateCompletionRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("prompt") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
             {
                 if (Prompt != null)
                 {
                     writer.WritePropertyName("prompt"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(Prompt);
+                    writer.WriteRawValue(Prompt);
 #else
                     using (JsonDocument document = JsonDocument.Parse(Prompt))
                     {
@@ -43,10 +53,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("prompt");
+                    writer.WriteNull("prompt"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("best_of") != true && Optional.IsDefined(BestOf))
+            if (Optional.IsDefined(BestOf) && _additionalBinaryDataProperties?.ContainsKey("best_of") != true)
             {
                 if (BestOf != null)
                 {
@@ -55,10 +65,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("best_of");
+                    writer.WriteNull("bestOf"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("echo") != true && Optional.IsDefined(Echo))
+            if (Optional.IsDefined(Echo) && _additionalBinaryDataProperties?.ContainsKey("echo") != true)
             {
                 if (Echo != null)
                 {
@@ -67,10 +77,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("echo");
+                    writer.WriteNull("echo"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("frequency_penalty") != true && Optional.IsDefined(FrequencyPenalty))
+            if (Optional.IsDefined(FrequencyPenalty) && _additionalBinaryDataProperties?.ContainsKey("frequency_penalty") != true)
             {
                 if (FrequencyPenalty != null)
                 {
@@ -79,10 +89,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("frequency_penalty");
+                    writer.WriteNull("frequencyPenalty"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logit_bias") != true && Optional.IsCollectionDefined(LogitBias))
+            if (Optional.IsCollectionDefined(LogitBias) && _additionalBinaryDataProperties?.ContainsKey("logit_bias") != true)
             {
                 if (LogitBias != null)
                 {
@@ -97,10 +107,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("logit_bias");
+                    writer.WriteNull("logitBias"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true && Optional.IsDefined(Logprobs))
+            if (Optional.IsDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 if (Logprobs != null)
                 {
@@ -109,10 +119,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("logprobs");
+                    writer.WriteNull("logprobs"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(MaxTokens))
+            if (Optional.IsDefined(MaxTokens) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
             {
                 if (MaxTokens != null)
                 {
@@ -121,10 +131,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("max_tokens");
+                    writer.WriteNull("maxTokens"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
+            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
                 if (N != null)
                 {
@@ -133,10 +143,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("n");
+                    writer.WriteNull("n"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("presence_penalty") != true && Optional.IsDefined(PresencePenalty))
+            if (Optional.IsDefined(PresencePenalty) && _additionalBinaryDataProperties?.ContainsKey("presence_penalty") != true)
             {
                 if (PresencePenalty != null)
                 {
@@ -145,10 +155,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("presence_penalty");
+                    writer.WriteNull("presencePenalty"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("seed") != true && Optional.IsDefined(Seed))
+            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
                 if (Seed != null)
                 {
@@ -157,16 +167,16 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("seed");
+                    writer.WriteNull("seed"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stop") != true && Optional.IsDefined(Stop))
+            if (Optional.IsDefined(Stop) && _additionalBinaryDataProperties?.ContainsKey("stop") != true)
             {
                 if (Stop != null)
                 {
                     writer.WritePropertyName("stop"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(Stop);
+                    writer.WriteRawValue(Stop);
 #else
                     using (JsonDocument document = JsonDocument.Parse(Stop))
                     {
@@ -176,10 +186,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("stop");
+                    writer.WriteNull("stop"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stream") != true && Optional.IsDefined(Stream))
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
                 if (Stream != null)
                 {
@@ -188,10 +198,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("stream");
+                    writer.WriteNull("stream"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("stream_options") != true && Optional.IsDefined(StreamOptions))
+            if (Optional.IsDefined(StreamOptions) && _additionalBinaryDataProperties?.ContainsKey("stream_options") != true)
             {
                 if (StreamOptions != null)
                 {
@@ -200,10 +210,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("stream_options");
+                    writer.WriteNull("streamOptions"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("suffix") != true && Optional.IsDefined(Suffix))
+            if (Optional.IsDefined(Suffix) && _additionalBinaryDataProperties?.ContainsKey("suffix") != true)
             {
                 if (Suffix != null)
                 {
@@ -212,10 +222,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("suffix");
+                    writer.WriteNull("suffix"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
                 if (Temperature != null)
                 {
@@ -224,10 +234,10 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("temperature");
+                    writer.WriteNull("temperature"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(TopP))
+            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
                 if (TopP != null)
                 {
@@ -236,17 +246,17 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("top_p");
+                    writer.WriteNull("topP"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(User))
+            if (Optional.IsDefined(User) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(User);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -254,7 +264,7 @@ namespace OpenAI.LegacyCompletions
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -263,25 +273,23 @@ namespace OpenAI.LegacyCompletions
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalCreateCompletionRequest IJsonModel<InternalCreateCompletionRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalCreateCompletionRequest IJsonModel<InternalCreateCompletionRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalCreateCompletionRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
         }
 
-        internal static InternalCreateCompletionRequest DeserializeInternalCreateCompletionRequest(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalCreateCompletionRequest DeserializeInternalCreateCompletionRequest(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -304,191 +312,188 @@ namespace OpenAI.LegacyCompletions
             float? temperature = default;
             float? topP = default;
             string user = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("model"u8))
+                if (prop.NameEquals("model"u8))
                 {
-                    model = new InternalCreateCompletionRequestModel(property.Value.GetString());
+                    model = new InternalCreateCompletionRequestModel(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("prompt"u8))
+                if (prop.NameEquals("prompt"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         prompt = null;
                         continue;
                     }
-                    prompt = BinaryData.FromString(property.Value.GetRawText());
+                    prompt = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (property.NameEquals("best_of"u8))
+                if (prop.NameEquals("best_of"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         bestOf = null;
                         continue;
                     }
-                    bestOf = property.Value.GetInt32();
+                    bestOf = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("echo"u8))
+                if (prop.NameEquals("echo"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         echo = null;
                         continue;
                     }
-                    echo = property.Value.GetBoolean();
+                    echo = prop.Value.GetBoolean();
                     continue;
                 }
-                if (property.NameEquals("frequency_penalty"u8))
+                if (prop.NameEquals("frequency_penalty"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         frequencyPenalty = null;
                         continue;
                     }
-                    frequencyPenalty = property.Value.GetSingle();
+                    frequencyPenalty = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("logit_bias"u8))
+                if (prop.NameEquals("logit_bias"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     Dictionary<string, int> dictionary = new Dictionary<string, int>();
-                    foreach (var property0 in property.Value.EnumerateObject())
+                    foreach (var prop0 in prop.Value.EnumerateObject())
                     {
-                        dictionary.Add(property0.Name, property0.Value.GetInt32());
+                        dictionary.Add(prop0.Name, prop0.Value.GetInt32());
                     }
                     logitBias = dictionary;
                     continue;
                 }
-                if (property.NameEquals("logprobs"u8))
+                if (prop.NameEquals("logprobs"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         logprobs = null;
                         continue;
                     }
-                    logprobs = property.Value.GetInt32();
+                    logprobs = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("max_tokens"u8))
+                if (prop.NameEquals("max_tokens"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         maxTokens = null;
                         continue;
                     }
-                    maxTokens = property.Value.GetInt32();
+                    maxTokens = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("n"u8))
+                if (prop.NameEquals("n"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         n = null;
                         continue;
                     }
-                    n = property.Value.GetInt32();
+                    n = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("presence_penalty"u8))
+                if (prop.NameEquals("presence_penalty"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         presencePenalty = null;
                         continue;
                     }
-                    presencePenalty = property.Value.GetSingle();
+                    presencePenalty = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("seed"u8))
+                if (prop.NameEquals("seed"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         seed = null;
                         continue;
                     }
-                    seed = property.Value.GetInt64();
+                    seed = prop.Value.GetInt64();
                     continue;
                 }
-                if (property.NameEquals("stop"u8))
+                if (prop.NameEquals("stop"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stop = null;
                         continue;
                     }
-                    stop = BinaryData.FromString(property.Value.GetRawText());
+                    stop = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (property.NameEquals("stream"u8))
+                if (prop.NameEquals("stream"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         stream = null;
                         continue;
                     }
-                    stream = property.Value.GetBoolean();
+                    stream = prop.Value.GetBoolean();
                     continue;
                 }
-                if (property.NameEquals("stream_options"u8))
+                if (prop.NameEquals("stream_options"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         streamOptions = null;
                         continue;
                     }
-                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(property.Value, options);
+                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("suffix"u8))
+                if (prop.NameEquals("suffix"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         suffix = null;
                         continue;
                     }
-                    suffix = property.Value.GetString();
+                    suffix = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("temperature"u8))
+                if (prop.NameEquals("temperature"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
                         continue;
                     }
-                    temperature = property.Value.GetSingle();
+                    temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("top_p"u8))
+                if (prop.NameEquals("top_p"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
                         continue;
                     }
-                    topP = property.Value.GetSingle();
+                    topP = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("user"u8))
+                if (prop.NameEquals("user"u8))
                 {
-                    user = property.Value.GetString();
+                    user = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalCreateCompletionRequest(
                 model,
                 prompt,
@@ -508,13 +513,14 @@ namespace OpenAI.LegacyCompletions
                 temperature,
                 topP,
                 user,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalCreateCompletionRequest>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalCreateCompletionRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -524,15 +530,16 @@ namespace OpenAI.LegacyCompletions
             }
         }
 
-        InternalCreateCompletionRequest IPersistableModel<InternalCreateCompletionRequest>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
+        InternalCreateCompletionRequest IPersistableModel<InternalCreateCompletionRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalCreateCompletionRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
                     }
                 default:
@@ -542,15 +549,20 @@ namespace OpenAI.LegacyCompletions
 
         string IPersistableModel<InternalCreateCompletionRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalCreateCompletionRequest FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalCreateCompletionRequest internalCreateCompletionRequest)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionRequest(document.RootElement);
+            if (internalCreateCompletionRequest == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalCreateCompletionRequest, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalCreateCompletionRequest(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalCreateCompletionRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

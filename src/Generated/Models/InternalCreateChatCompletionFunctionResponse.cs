@@ -10,20 +10,17 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionFunctionResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateChatCompletionFunctionResponse(string id, IEnumerable<InternalCreateChatCompletionFunctionResponseChoice> choices, DateTimeOffset created, string model)
         {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(choices, nameof(choices));
-            Argument.AssertNotNull(model, nameof(model));
-
             Id = id;
             Choices = choices.ToList();
             Created = created;
             Model = model;
         }
 
-        internal InternalCreateChatCompletionFunctionResponse(string id, IReadOnlyList<InternalCreateChatCompletionFunctionResponseChoice> choices, DateTimeOffset created, string model, string systemFingerprint, InternalCreateChatCompletionFunctionResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateChatCompletionFunctionResponse(string id, IList<InternalCreateChatCompletionFunctionResponseChoice> choices, DateTimeOffset created, string model, string systemFingerprint, InternalCreateChatCompletionFunctionResponseObject @object, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Choices = choices;
@@ -32,20 +29,27 @@ namespace OpenAI.Chat
             SystemFingerprint = systemFingerprint;
             Object = @object;
             Usage = usage;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateChatCompletionFunctionResponse()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
-        public IReadOnlyList<InternalCreateChatCompletionFunctionResponseChoice> Choices { get; }
+
+        public IList<InternalCreateChatCompletionFunctionResponseChoice> Choices { get; }
+
         public DateTimeOffset Created { get; }
+
         public string Model { get; }
+
         public string SystemFingerprint { get; }
-        public InternalCreateChatCompletionFunctionResponseObject Object { get; } = InternalCreateChatCompletionFunctionResponseObject.ChatCompletion;
+
+        public InternalCreateChatCompletionFunctionResponseObject Object { get; } = "chat.completion";
 
         public ChatTokenUsage Usage { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

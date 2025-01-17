@@ -8,17 +8,23 @@ namespace OpenAI.Assistants
 {
     internal static partial class MessageRoleExtensions
     {
-        public static string ToSerialString(this MessageRole value) => value switch
+        public static string ToSerialString(this Assistants.MessageRole value) => value switch
         {
-            MessageRole.User => "user",
-            MessageRole.Assistant => "assistant",
+            Assistants.MessageRole.User => "user",
+            Assistants.MessageRole.Assistant => "assistant",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown MessageRole value.")
         };
 
-        public static MessageRole ToMessageRole(this string value)
+        public static Assistants.MessageRole ToMessageRole(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "user")) return MessageRole.User;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistant")) return MessageRole.Assistant;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "user"))
+            {
+                return Assistants.MessageRole.User;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistant"))
+            {
+                return Assistants.MessageRole.Assistant;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown MessageRole value.");
         }
     }

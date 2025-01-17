@@ -6,34 +6,40 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     [PersistableModelProxy(typeof(UnknownRunStepDetailsToolCallsObjectToolCallsObject))]
-    public partial class RunStepToolCall : IJsonModel<RunStepToolCall>
+    public abstract partial class RunStepToolCall : IJsonModel<RunStepToolCall>
     {
         void IJsonModel<RunStepToolCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(RunStepToolCall)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (SerializedAdditionalRawData != null)
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +47,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,45 +56,47 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        RunStepToolCall IJsonModel<RunStepToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        RunStepToolCall IJsonModel<RunStepToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual RunStepToolCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(RunStepToolCall)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRunStepToolCall(document.RootElement, options);
         }
 
-        internal static RunStepToolCall DeserializeRunStepToolCall(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static RunStepToolCall DeserializeRunStepToolCall(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            if (element.TryGetProperty("type", out JsonElement discriminator))
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
                 switch (discriminator.GetString())
                 {
-                    case "code_interpreter": return InternalRunStepDetailsToolCallsCodeObject.DeserializeInternalRunStepDetailsToolCallsCodeObject(element, options);
-                    case "file_search": return InternalRunStepDetailsToolCallsFileSearchObject.DeserializeInternalRunStepDetailsToolCallsFileSearchObject(element, options);
-                    case "function": return InternalRunStepDetailsToolCallsFunctionObject.DeserializeInternalRunStepDetailsToolCallsFunctionObject(element, options);
+                    case "code_interpreter":
+                        return InternalRunStepDetailsToolCallsCodeObject.DeserializeInternalRunStepDetailsToolCallsCodeObject(element, options);
+                    case "file_search":
+                        return InternalRunStepDetailsToolCallsFileSearchObject.DeserializeInternalRunStepDetailsToolCallsFileSearchObject(element, options);
+                    case "function":
+                        return InternalRunStepDetailsToolCallsFunctionObject.DeserializeInternalRunStepDetailsToolCallsFunctionObject(element, options);
                 }
             }
             return UnknownRunStepDetailsToolCallsObjectToolCallsObject.DeserializeUnknownRunStepDetailsToolCallsObjectToolCallsObject(element, options);
         }
 
-        BinaryData IPersistableModel<RunStepToolCall>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<RunStepToolCall>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -98,15 +106,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        RunStepToolCall IPersistableModel<RunStepToolCall>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
+        RunStepToolCall IPersistableModel<RunStepToolCall>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual RunStepToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepToolCall>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeRunStepToolCall(document.RootElement, options);
                     }
                 default:
@@ -116,15 +125,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<RunStepToolCall>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static RunStepToolCall FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(RunStepToolCall runStepToolCall)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeRunStepToolCall(document.RootElement);
+            if (runStepToolCall == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(runStepToolCall, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator RunStepToolCall(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeRunStepToolCall(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

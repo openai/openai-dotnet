@@ -4,18 +4,13 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal readonly partial struct InternalCreateChatCompletionRequestModel : IEquatable<InternalCreateChatCompletionRequestModel>
     {
         private readonly string _value;
-
-        public InternalCreateChatCompletionRequestModel(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string O1PreviewValue = "o1-preview";
         private const string O1Preview20240912Value = "o1-preview-2024-09-12";
         private const string O1MiniValue = "o1-mini";
@@ -48,47 +43,89 @@ namespace OpenAI.Chat
         private const string Gpt35Turbo0125Value = "gpt-3.5-turbo-0125";
         private const string Gpt35Turbo16k0613Value = "gpt-3.5-turbo-16k-0613";
 
+        public InternalCreateChatCompletionRequestModel(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalCreateChatCompletionRequestModel O1Preview { get; } = new InternalCreateChatCompletionRequestModel(O1PreviewValue);
+
         public static InternalCreateChatCompletionRequestModel O1Preview20240912 { get; } = new InternalCreateChatCompletionRequestModel(O1Preview20240912Value);
+
         public static InternalCreateChatCompletionRequestModel O1Mini { get; } = new InternalCreateChatCompletionRequestModel(O1MiniValue);
+
         public static InternalCreateChatCompletionRequestModel O1Mini20240912 { get; } = new InternalCreateChatCompletionRequestModel(O1Mini20240912Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt4o { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4o20240806 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240806Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt4o20240513 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240513Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreviewValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview20241001 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreview20241001Value);
+
         public static InternalCreateChatCompletionRequestModel Chatgpt4oLatest { get; } = new InternalCreateChatCompletionRequestModel(Chatgpt4oLatestValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4oMini { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMiniValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4oMini20240718 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMini20240718Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt4Turbo { get; } = new InternalCreateChatCompletionRequestModel(Gpt4TurboValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4Turbo20240409 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4Turbo20240409Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt40125Preview { get; } = new InternalCreateChatCompletionRequestModel(Gpt40125PreviewValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4TurboPreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4TurboPreviewValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt41106Preview { get; } = new InternalCreateChatCompletionRequestModel(Gpt41106PreviewValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4VisionPreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4VisionPreviewValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt4 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt40314 { get; } = new InternalCreateChatCompletionRequestModel(Gpt40314Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt40613 { get; } = new InternalCreateChatCompletionRequestModel(Gpt40613Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt432k { get; } = new InternalCreateChatCompletionRequestModel(Gpt432kValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt432k0314 { get; } = new InternalCreateChatCompletionRequestModel(Gpt432k0314Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt432k0613 { get; } = new InternalCreateChatCompletionRequestModel(Gpt432k0613Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo { get; } = new InternalCreateChatCompletionRequestModel(Gpt35TurboValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo16k { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo16kValue);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo0301 { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo0301Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo0613 { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo0613Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo1106 { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo1106Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo0125 { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo0125Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt35Turbo16k0613 { get; } = new InternalCreateChatCompletionRequestModel(Gpt35Turbo16k0613Value);
+
         public static bool operator ==(InternalCreateChatCompletionRequestModel left, InternalCreateChatCompletionRequestModel right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateChatCompletionRequestModel left, InternalCreateChatCompletionRequestModel right) => !left.Equals(right);
+
         public static implicit operator InternalCreateChatCompletionRequestModel(string value) => new InternalCreateChatCompletionRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateChatCompletionRequestModel other && Equals(other);
+
         public bool Equals(InternalCreateChatCompletionRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

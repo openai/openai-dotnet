@@ -9,12 +9,13 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningJobCheckpointMetrics
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalFineTuningJobCheckpointMetrics()
         {
         }
 
-        internal InternalFineTuningJobCheckpointMetrics(float? step, float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFineTuningJobCheckpointMetrics(float? step, float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Step = step;
             TrainLoss = trainLoss;
@@ -23,15 +24,27 @@ namespace OpenAI.FineTuning
             ValidMeanTokenAccuracy = validMeanTokenAccuracy;
             FullValidLoss = fullValidLoss;
             FullValidMeanTokenAccuracy = fullValidMeanTokenAccuracy;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public float? Step { get; }
+
         public float? TrainLoss { get; }
+
         public float? TrainMeanTokenAccuracy { get; }
+
         public float? ValidLoss { get; }
+
         public float? ValidMeanTokenAccuracy { get; }
+
         public float? FullValidLoss { get; }
+
         public float? FullValidMeanTokenAccuracy { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -14,54 +15,19 @@ namespace OpenAI.Chat
     {
         void IJsonModel<ChatCompletionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatCompletionOptions)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("messages") != true)
-            {
-                writer.WritePropertyName("messages"u8);
-                SerializeMessagesValue(writer, options);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("store") != true && Optional.IsDefined(StoredOutputEnabled))
-            {
-                if (StoredOutputEnabled != null)
-                {
-                    writer.WritePropertyName("store"u8);
-                    writer.WriteBooleanValue(StoredOutputEnabled.Value);
-                }
-                else
-                {
-                    writer.WriteNull("store");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true && Optional.IsCollectionDefined(Metadata))
-            {
-                if (Metadata != null)
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("frequency_penalty") != true && Optional.IsDefined(FrequencyPenalty))
+            if (Optional.IsDefined(FrequencyPenalty) && _additionalBinaryDataProperties?.ContainsKey("frequency_penalty") != true)
             {
                 if (FrequencyPenalty != null)
                 {
@@ -70,82 +36,10 @@ namespace OpenAI.Chat
                 }
                 else
                 {
-                    writer.WriteNull("frequency_penalty");
+                    writer.WriteNull("frequencyPenalty"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logit_bias") != true && Optional.IsCollectionDefined(LogitBiases))
-            {
-                if (LogitBiases != null)
-                {
-                    writer.WritePropertyName("logit_bias"u8);
-                    SerializeLogitBiasesValue(writer, options);
-                }
-                else
-                {
-                    writer.WriteNull("logit_bias");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true && Optional.IsDefined(IncludeLogProbabilities))
-            {
-                if (IncludeLogProbabilities != null)
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteBooleanValue(IncludeLogProbabilities.Value);
-                }
-                else
-                {
-                    writer.WriteNull("logprobs");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("top_logprobs") != true && Optional.IsDefined(TopLogProbabilityCount))
-            {
-                if (TopLogProbabilityCount != null)
-                {
-                    writer.WritePropertyName("top_logprobs"u8);
-                    writer.WriteNumberValue(TopLogProbabilityCount.Value);
-                }
-                else
-                {
-                    writer.WriteNull("top_logprobs");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("max_tokens") != true && Optional.IsDefined(_deprecatedMaxTokens))
-            {
-                if (_deprecatedMaxTokens != null)
-                {
-                    writer.WritePropertyName("max_tokens"u8);
-                    writer.WriteNumberValue(_deprecatedMaxTokens.Value);
-                }
-                else
-                {
-                    writer.WriteNull("max_tokens");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("max_completion_tokens") != true && Optional.IsDefined(MaxOutputTokenCount))
-            {
-                if (MaxOutputTokenCount != null)
-                {
-                    writer.WritePropertyName("max_completion_tokens"u8);
-                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
-                }
-                else
-                {
-                    writer.WriteNull("max_completion_tokens");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("n") != true && Optional.IsDefined(N))
-            {
-                if (N != null)
-                {
-                    writer.WritePropertyName("n"u8);
-                    writer.WriteNumberValue(N.Value);
-                }
-                else
-                {
-                    writer.WriteNull("n");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("presence_penalty") != true && Optional.IsDefined(PresencePenalty))
+            if (Optional.IsDefined(PresencePenalty) && _additionalBinaryDataProperties?.ContainsKey("presence_penalty") != true)
             {
                 if (PresencePenalty != null)
                 {
@@ -154,75 +48,15 @@ namespace OpenAI.Chat
                 }
                 else
                 {
-                    writer.WriteNull("presence_penalty");
+                    writer.WriteNull("presencePenalty"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("response_format") != true && Optional.IsDefined(ResponseFormat))
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("seed") != true && Optional.IsDefined(Seed))
-            {
-                if (Seed != null)
-                {
-                    writer.WritePropertyName("seed"u8);
-                    writer.WriteNumberValue(Seed.Value);
-                }
-                else
-                {
-                    writer.WriteNull("seed");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("service_tier") != true && Optional.IsDefined(_serviceTier))
-            {
-                if (_serviceTier != null)
-                {
-                    writer.WritePropertyName("service_tier"u8);
-                    writer.WriteStringValue(_serviceTier.Value.ToString());
-                }
-                else
-                {
-                    writer.WriteNull("service_tier");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("stop") != true && Optional.IsCollectionDefined(StopSequences))
-            {
-                if (StopSequences != null)
-                {
-                    writer.WritePropertyName("stop"u8);
-                    SerializeStopSequencesValue(writer, options);
-                }
-                else
-                {
-                    writer.WriteNull("stop");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("stream") != true && Optional.IsDefined(Stream))
-            {
-                if (Stream != null)
-                {
-                    writer.WritePropertyName("stream"u8);
-                    writer.WriteBooleanValue(Stream.Value);
-                }
-                else
-                {
-                    writer.WriteNull("stream");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("stream_options") != true && Optional.IsDefined(StreamOptions))
-            {
-                if (StreamOptions != null)
-                {
-                    writer.WritePropertyName("stream_options"u8);
-                    writer.WriteObjectValue<InternalChatCompletionStreamOptions>(StreamOptions, options);
-                }
-                else
-                {
-                    writer.WriteNull("stream_options");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
                 if (Temperature != null)
                 {
@@ -231,10 +65,10 @@ namespace OpenAI.Chat
                 }
                 else
                 {
-                    writer.WriteNull("temperature");
+                    writer.WriteNull("temperature"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("top_p") != true && Optional.IsDefined(TopP))
+            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
                 if (TopP != null)
                 {
@@ -243,52 +77,229 @@ namespace OpenAI.Chat
                 }
                 else
                 {
-                    writer.WriteNull("top_p");
+                    writer.WriteNull("topP"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tools") != true && Optional.IsCollectionDefined(Tools))
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (var item in Tools)
+                foreach (ChatTool item in Tools)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tool_choice") != true && Optional.IsDefined(ToolChoice))
+            if (_additionalBinaryDataProperties?.ContainsKey("messages") != true)
+            {
+                writer.WritePropertyName("messages"u8);
+                this.SerializeMessagesValue(writer, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
+            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
+            {
+                if (N != null)
+                {
+                    writer.WritePropertyName("n"u8);
+                    writer.WriteNumberValue(N.Value);
+                }
+                else
+                {
+                    writer.WriteNull("n"u8);
+                }
+            }
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            {
+                if (Stream != null)
+                {
+                    writer.WritePropertyName("stream"u8);
+                    writer.WriteBooleanValue(Stream.Value);
+                }
+                else
+                {
+                    writer.WriteNull("stream"u8);
+                }
+            }
+            if (Optional.IsDefined(StreamOptions) && _additionalBinaryDataProperties?.ContainsKey("stream_options") != true)
+            {
+                if (StreamOptions != null)
+                {
+                    writer.WritePropertyName("stream_options"u8);
+                    writer.WriteObjectValue<InternalChatCompletionStreamOptions>(StreamOptions, options);
+                }
+                else
+                {
+                    writer.WriteNull("streamOptions"u8);
+                }
+            }
+            if (Optional.IsDefined(IncludeLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            {
+                if (IncludeLogProbabilities != null)
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteBooleanValue(IncludeLogProbabilities.Value);
+                }
+                else
+                {
+                    writer.WriteNull("logprobs"u8);
+                }
+            }
+            if (Optional.IsDefined(TopLogProbabilityCount) && _additionalBinaryDataProperties?.ContainsKey("top_logprobs") != true)
+            {
+                if (TopLogProbabilityCount != null)
+                {
+                    writer.WritePropertyName("top_logprobs"u8);
+                    writer.WriteNumberValue(TopLogProbabilityCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("topLogprobs"u8);
+                }
+            }
+            if (Optional.IsCollectionDefined(StopSequences) && _additionalBinaryDataProperties?.ContainsKey("stop") != true)
+            {
+                if (StopSequences != null)
+                {
+                    writer.WritePropertyName("stop"u8);
+                    this.SerializeStopSequencesValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("stop"u8);
+                }
+            }
+            if (Optional.IsCollectionDefined(LogitBiases) && _additionalBinaryDataProperties?.ContainsKey("logit_bias") != true)
+            {
+                if (LogitBiases != null)
+                {
+                    writer.WritePropertyName("logit_bias"u8);
+                    this.SerializeLogitBiasesValue(writer, options);
+                }
+                else
+                {
+                    writer.WriteNull("logitBias"u8);
+                }
+            }
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue<ChatToolChoice>(ToolChoice, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("parallel_tool_calls") != true && Optional.IsDefined(AllowParallelToolCalls))
-            {
-                writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("user") != true && Optional.IsDefined(EndUserId))
-            {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(EndUserId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("function_call") != true && Optional.IsDefined(FunctionChoice))
+            if (Optional.IsDefined(FunctionChoice) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue<ChatFunctionChoice>(FunctionChoice, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("functions") != true && Optional.IsCollectionDefined(Functions))
+            if (Optional.IsDefined(AllowParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            {
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
+            }
+            if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
+            {
+                writer.WritePropertyName("user"u8);
+                writer.WriteStringValue(EndUserId);
+            }
+            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
+            {
+                if (Seed != null)
+                {
+                    writer.WritePropertyName("seed"u8);
+                    writer.WriteNumberValue(Seed.Value);
+                }
+                else
+                {
+                    writer.WriteNull("seed"u8);
+                }
+            }
+            if (Optional.IsDefined(_deprecatedMaxTokens) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
+            {
+                if (_deprecatedMaxTokens != null)
+                {
+                    writer.WritePropertyName("max_tokens"u8);
+                    writer.WriteNumberValue(_deprecatedMaxTokens.Value);
+                }
+                else
+                {
+                    writer.WriteNull("maxTokens"u8);
+                }
+            }
+            if (Optional.IsDefined(MaxOutputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
+            {
+                if (MaxOutputTokenCount != null)
+                {
+                    writer.WritePropertyName("max_completion_tokens"u8);
+                    writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("maxCompletionTokens"u8);
+                }
+            }
+            if (Optional.IsCollectionDefined(Functions) && _additionalBinaryDataProperties?.ContainsKey("functions") != true)
             {
                 writer.WritePropertyName("functions"u8);
                 writer.WriteStartArray();
-                foreach (var item in Functions)
+                foreach (ChatFunction item in Functions)
                 {
-                    writer.WriteObjectValue<ChatFunction>(item, options);
+                    writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData != null)
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                if (Metadata != null)
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
+            }
+            if (Optional.IsDefined(StoredOutputEnabled) && _additionalBinaryDataProperties?.ContainsKey("store") != true)
+            {
+                if (StoredOutputEnabled != null)
+                {
+                    writer.WritePropertyName("store"u8);
+                    writer.WriteBooleanValue(StoredOutputEnabled.Value);
+                }
+                else
+                {
+                    writer.WriteNull("store"u8);
+                }
+            }
+            if (Optional.IsDefined(_serviceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                if (_serviceTier != null)
+                {
+                    writer.WritePropertyName("service_tier"u8);
+                    writer.WriteStringValue(_serviceTier.Value.ToString());
+                }
+                else
+                {
+                    writer.WriteNull("serviceTier"u8);
+                }
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -296,7 +307,7 @@ namespace OpenAI.Chat
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -305,348 +316,351 @@ namespace OpenAI.Chat
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        ChatCompletionOptions IJsonModel<ChatCompletionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ChatCompletionOptions IJsonModel<ChatCompletionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual ChatCompletionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatCompletionOptions)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatCompletionOptions(document.RootElement, options);
         }
 
-        internal static ChatCompletionOptions DeserializeChatCompletionOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static ChatCompletionOptions DeserializeChatCompletionOptions(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            IList<ChatMessage> messages = default;
-            InternalCreateChatCompletionRequestModel model = default;
-            bool? store = default;
-            IDictionary<string, string> metadata = default;
             float? frequencyPenalty = default;
-            IDictionary<int, int> logitBias = default;
-            bool? logprobs = default;
-            int? topLogprobs = default;
-            int? maxTokens = default;
-            int? maxCompletionTokens = default;
-            int? n = default;
             float? presencePenalty = default;
             ChatResponseFormat responseFormat = default;
-            long? seed = default;
-            InternalCreateChatCompletionRequestServiceTier? serviceTier = default;
-            IList<string> stop = default;
-            bool? stream = default;
-            InternalChatCompletionStreamOptions streamOptions = default;
             float? temperature = default;
             float? topP = default;
             IList<ChatTool> tools = default;
+            IList<ChatMessage> messages = default;
+            InternalCreateChatCompletionRequestModel model = default;
+            int? n = default;
+            bool? stream = default;
+            InternalChatCompletionStreamOptions streamOptions = default;
+            bool? includeLogProbabilities = default;
+            int? topLogProbabilityCount = default;
+            IList<string> stopSequences = default;
+            IDictionary<int, int> logitBiases = default;
             ChatToolChoice toolChoice = default;
-            bool? parallelToolCalls = default;
-            string user = default;
-            ChatFunctionChoice functionCall = default;
+            ChatFunctionChoice functionChoice = default;
+            bool? allowParallelToolCalls = default;
+            string endUserId = default;
+            long? seed = default;
+            int? deprecatedMaxTokens = default;
+            int? maxOutputTokenCount = default;
             IList<ChatFunction> functions = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, string> metadata = default;
+            bool? storedOutputEnabled = default;
+            InternalCreateChatCompletionRequestServiceTier? serviceTier = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("messages"u8))
+                if (prop.NameEquals("frequency_penalty"u8))
                 {
-                    List<ChatMessage> array = new List<ChatMessage>();
-                    foreach (var item in property.Value.EnumerateArray())
-                    {
-                        array.Add(ChatMessage.DeserializeChatMessage(item, options));
-                    }
-                    messages = array;
-                    continue;
-                }
-                if (property.NameEquals("model"u8))
-                {
-                    model = new InternalCreateChatCompletionRequestModel(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("store"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        store = null;
-                        continue;
-                    }
-                    store = property.Value.GetBoolean();
-                    continue;
-                }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (property.NameEquals("frequency_penalty"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         frequencyPenalty = null;
                         continue;
                     }
-                    frequencyPenalty = property.Value.GetSingle();
+                    frequencyPenalty = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("logit_bias"u8))
+                if (prop.NameEquals("presence_penalty"u8))
                 {
-                    DeserializeLogitBiasesValue(property, ref logitBias);
-                    continue;
-                }
-                if (property.NameEquals("logprobs"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        logprobs = null;
-                        continue;
-                    }
-                    logprobs = property.Value.GetBoolean();
-                    continue;
-                }
-                if (property.NameEquals("top_logprobs"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        topLogprobs = null;
-                        continue;
-                    }
-                    topLogprobs = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("max_tokens"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        maxTokens = null;
-                        continue;
-                    }
-                    maxTokens = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("max_completion_tokens"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        maxCompletionTokens = null;
-                        continue;
-                    }
-                    maxCompletionTokens = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("n"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        n = null;
-                        continue;
-                    }
-                    n = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("presence_penalty"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         presencePenalty = null;
                         continue;
                     }
-                    presencePenalty = property.Value.GetSingle();
+                    presencePenalty = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("response_format"u8))
+                if (prop.NameEquals("response_format"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    responseFormat = ChatResponseFormat.DeserializeChatResponseFormat(property.Value, options);
+                    responseFormat = ChatResponseFormat.DeserializeChatResponseFormat(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("seed"u8))
+                if (prop.NameEquals("temperature"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        seed = null;
-                        continue;
-                    }
-                    seed = property.Value.GetInt64();
-                    continue;
-                }
-                if (property.NameEquals("service_tier"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        serviceTier = null;
-                        continue;
-                    }
-                    serviceTier = new InternalCreateChatCompletionRequestServiceTier(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("stop"u8))
-                {
-                    DeserializeStopSequencesValue(property, ref stop);
-                    continue;
-                }
-                if (property.NameEquals("stream"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        stream = null;
-                        continue;
-                    }
-                    stream = property.Value.GetBoolean();
-                    continue;
-                }
-                if (property.NameEquals("stream_options"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        streamOptions = null;
-                        continue;
-                    }
-                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(property.Value, options);
-                    continue;
-                }
-                if (property.NameEquals("temperature"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         temperature = null;
                         continue;
                     }
-                    temperature = property.Value.GetSingle();
+                    temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("top_p"u8))
+                if (prop.NameEquals("top_p"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         topP = null;
                         continue;
                     }
-                    topP = property.Value.GetSingle();
+                    topP = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("tools"u8))
+                if (prop.NameEquals("tools"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<ChatTool> array = new List<ChatTool>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(ChatTool.DeserializeChatTool(item, options));
                     }
                     tools = array;
                     continue;
                 }
-                if (property.NameEquals("tool_choice"u8))
+                if (prop.NameEquals("messages"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    List<ChatMessage> array = new List<ChatMessage>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ChatMessage.DeserializeChatMessage(item, options));
+                    }
+                    messages = array;
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = new InternalCreateChatCompletionRequestModel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("n"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        n = null;
+                        continue;
+                    }
+                    n = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("stream"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        stream = null;
+                        continue;
+                    }
+                    stream = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("stream_options"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        streamOptions = null;
+                        continue;
+                    }
+                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        includeLogProbabilities = null;
+                        continue;
+                    }
+                    includeLogProbabilities = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("top_logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        topLogProbabilityCount = null;
+                        continue;
+                    }
+                    topLogProbabilityCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("stop"u8))
+                {
+                    DeserializeStopSequencesValue(prop, ref stopSequences);
+                    continue;
+                }
+                if (prop.NameEquals("logit_bias"u8))
+                {
+                    DeserializeLogitBiasesValue(prop, ref logitBiases);
+                    continue;
+                }
+                if (prop.NameEquals("tool_choice"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    toolChoice = ChatToolChoice.DeserializeChatToolChoice(property.Value, options);
+                    toolChoice = ChatToolChoice.DeserializeChatToolChoice(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("parallel_tool_calls"u8))
+                if (prop.NameEquals("function_call"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    parallelToolCalls = property.Value.GetBoolean();
+                    functionChoice = ChatFunctionChoice.DeserializeChatFunctionChoice(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("user"u8))
+                if (prop.NameEquals("parallel_tool_calls"u8))
                 {
-                    user = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("function_call"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    functionCall = ChatFunctionChoice.DeserializeChatFunctionChoice(property.Value, options);
+                    allowParallelToolCalls = prop.Value.GetBoolean();
                     continue;
                 }
-                if (property.NameEquals("functions"u8))
+                if (prop.NameEquals("user"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    endUserId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("seed"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        seed = null;
+                        continue;
+                    }
+                    seed = prop.Value.GetInt64();
+                    continue;
+                }
+                if (prop.NameEquals("max_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        deprecatedMaxTokens = null;
+                        continue;
+                    }
+                    deprecatedMaxTokens = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("max_completion_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        maxOutputTokenCount = null;
+                        continue;
+                    }
+                    maxOutputTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("functions"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<ChatFunction> array = new List<ChatFunction>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(ChatFunction.DeserializeChatFunction(item, options));
                     }
                     functions = array;
                     continue;
                 }
+                if (prop.NameEquals("metadata"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
+                }
+                if (prop.NameEquals("store"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        storedOutputEnabled = null;
+                        continue;
+                    }
+                    storedOutputEnabled = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        serviceTier = null;
+                        continue;
+                    }
+                    serviceTier = new InternalCreateChatCompletionRequestServiceTier(prop.Value.GetString());
+                    continue;
+                }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new ChatCompletionOptions(
-                messages,
-                model,
-                store,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
                 frequencyPenalty,
-                logitBias ?? new ChangeTrackingDictionary<int, int>(),
-                logprobs,
-                topLogprobs,
-                maxTokens,
-                maxCompletionTokens,
-                n,
                 presencePenalty,
                 responseFormat,
-                seed,
-                serviceTier,
-                stop ?? new ChangeTrackingList<string>(),
-                stream,
-                streamOptions,
                 temperature,
                 topP,
                 tools ?? new ChangeTrackingList<ChatTool>(),
+                messages,
+                model,
+                n,
+                stream,
+                streamOptions,
+                includeLogProbabilities,
+                topLogProbabilityCount,
+                stopSequences ?? new ChangeTrackingList<string>(),
+                logitBiases ?? new ChangeTrackingDictionary<int, int>(),
                 toolChoice,
-                parallelToolCalls,
-                user,
-                functionCall,
+                functionChoice,
+                allowParallelToolCalls,
+                endUserId,
+                seed,
+                deprecatedMaxTokens,
+                maxOutputTokenCount,
                 functions ?? new ChangeTrackingList<ChatFunction>(),
-                serializedAdditionalRawData);
+                metadata ?? new ChangeTrackingDictionary<string, string>(),
+                storedOutputEnabled,
+                serviceTier,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ChatCompletionOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<ChatCompletionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -656,15 +670,16 @@ namespace OpenAI.Chat
             }
         }
 
-        ChatCompletionOptions IPersistableModel<ChatCompletionOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+        ChatCompletionOptions IPersistableModel<ChatCompletionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual ChatCompletionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeChatCompletionOptions(document.RootElement, options);
                     }
                 default:
@@ -674,15 +689,20 @@ namespace OpenAI.Chat
 
         string IPersistableModel<ChatCompletionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ChatCompletionOptions FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(ChatCompletionOptions chatCompletionOptions)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatCompletionOptions(document.RootElement);
+            if (chatCompletionOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(chatCompletionOptions, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator ChatCompletionOptions(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeChatCompletionOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

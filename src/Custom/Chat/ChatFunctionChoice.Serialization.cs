@@ -22,7 +22,7 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
             writer.WriteStartObject();
             writer.WritePropertyName("name"u8);
             writer.WriteStringValue(instance._function.Name);
-            writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
+            writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
             writer.WriteEndObject();
         }
     }

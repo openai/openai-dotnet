@@ -7,55 +7,63 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatResponseFormatJsonObject : IJsonModel<InternalChatResponseFormatJsonObject>
     {
-        InternalChatResponseFormatJsonObject IJsonModel<InternalChatResponseFormatJsonObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(InternalChatResponseFormatJsonObject)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+        }
+
+        InternalChatResponseFormatJsonObject IJsonModel<InternalChatResponseFormatJsonObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalChatResponseFormatJsonObject)JsonModelCreateCore(ref reader, options);
+
+        protected override ChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalChatResponseFormatJsonObject)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalChatResponseFormatJsonObject(document.RootElement, options);
         }
 
-        internal static InternalChatResponseFormatJsonObject DeserializeInternalChatResponseFormatJsonObject(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalChatResponseFormatJsonObject DeserializeInternalChatResponseFormatJsonObject(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            string @type = "json_object";
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    type = property.Value.GetString();
+                    @type = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalChatResponseFormatJsonObject(type, serializedAdditionalRawData);
+            return new InternalChatResponseFormatJsonObject(@type, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalChatResponseFormatJsonObject>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalChatResponseFormatJsonObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -65,15 +73,16 @@ namespace OpenAI.Chat
             }
         }
 
-        InternalChatResponseFormatJsonObject IPersistableModel<InternalChatResponseFormatJsonObject>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+        InternalChatResponseFormatJsonObject IPersistableModel<InternalChatResponseFormatJsonObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalChatResponseFormatJsonObject)PersistableModelCreateCore(data, options);
 
+        protected override ChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalChatResponseFormatJsonObject(document.RootElement, options);
                     }
                 default:
@@ -83,15 +92,20 @@ namespace OpenAI.Chat
 
         string IPersistableModel<InternalChatResponseFormatJsonObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalChatResponseFormatJsonObject FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalChatResponseFormatJsonObject internalChatResponseFormatJsonObject)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatResponseFormatJsonObject(document.RootElement);
+            if (internalChatResponseFormatJsonObject == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalChatResponseFormatJsonObject, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalChatResponseFormatJsonObject(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalChatResponseFormatJsonObject(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

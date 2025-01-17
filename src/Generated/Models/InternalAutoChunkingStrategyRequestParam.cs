@@ -9,12 +9,11 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalAutoChunkingStrategyRequestParam : InternalFileChunkingStrategyRequestParam
     {
-        public InternalAutoChunkingStrategyRequestParam()
+        public InternalAutoChunkingStrategyRequestParam() : base("auto")
         {
-            Type = "auto";
         }
 
-        internal InternalAutoChunkingStrategyRequestParam(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal InternalAutoChunkingStrategyRequestParam(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

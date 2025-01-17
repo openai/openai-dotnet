@@ -2,8 +2,6 @@
 
 #nullable disable
 
-using System;
-
 namespace OpenAI.Moderations
 {
     internal static partial class ModerationApplicableInputKindsExtensions

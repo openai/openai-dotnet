@@ -4,35 +4,44 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal readonly partial struct InternalAssistantsNamedToolChoiceType : IEquatable<InternalAssistantsNamedToolChoiceType>
     {
         private readonly string _value;
-
-        public InternalAssistantsNamedToolChoiceType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string FunctionValue = "function";
         private const string CodeInterpreterValue = "code_interpreter";
         private const string FileSearchValue = "file_search";
 
+        public InternalAssistantsNamedToolChoiceType(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalAssistantsNamedToolChoiceType Function { get; } = new InternalAssistantsNamedToolChoiceType(FunctionValue);
+
         public static InternalAssistantsNamedToolChoiceType CodeInterpreter { get; } = new InternalAssistantsNamedToolChoiceType(CodeInterpreterValue);
+
         public static InternalAssistantsNamedToolChoiceType FileSearch { get; } = new InternalAssistantsNamedToolChoiceType(FileSearchValue);
+
         public static bool operator ==(InternalAssistantsNamedToolChoiceType left, InternalAssistantsNamedToolChoiceType right) => left.Equals(right);
+
         public static bool operator !=(InternalAssistantsNamedToolChoiceType left, InternalAssistantsNamedToolChoiceType right) => !left.Equals(right);
+
         public static implicit operator InternalAssistantsNamedToolChoiceType(string value) => new InternalAssistantsNamedToolChoiceType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAssistantsNamedToolChoiceType other && Equals(other);
+
         public bool Equals(InternalAssistantsNamedToolChoiceType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

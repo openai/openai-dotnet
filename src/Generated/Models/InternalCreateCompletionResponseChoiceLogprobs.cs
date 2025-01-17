@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionResponseChoiceLogprobs
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateCompletionResponseChoiceLogprobs()
         {
             TextOffset = new ChangeTrackingList<int>();
@@ -18,18 +20,27 @@ namespace OpenAI.LegacyCompletions
             TopLogprobs = new ChangeTrackingList<IDictionary<string, float>>();
         }
 
-        internal InternalCreateCompletionResponseChoiceLogprobs(IReadOnlyList<int> textOffset, IReadOnlyList<float> tokenLogprobs, IReadOnlyList<string> tokens, IReadOnlyList<IDictionary<string, float>> topLogprobs, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateCompletionResponseChoiceLogprobs(IList<int> textOffset, IList<float> tokenLogprobs, IList<string> tokens, IList<IDictionary<string, float>> topLogprobs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             TextOffset = textOffset;
             TokenLogprobs = tokenLogprobs;
             Tokens = tokens;
             TopLogprobs = topLogprobs;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IReadOnlyList<int> TextOffset { get; }
-        public IReadOnlyList<float> TokenLogprobs { get; }
-        public IReadOnlyList<string> Tokens { get; }
-        public IReadOnlyList<IDictionary<string, float>> TopLogprobs { get; }
+        public IList<int> TextOffset { get; }
+
+        public IList<float> TokenLogprobs { get; }
+
+        public IList<string> Tokens { get; }
+
+        public IList<IDictionary<string, float>> TopLogprobs { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

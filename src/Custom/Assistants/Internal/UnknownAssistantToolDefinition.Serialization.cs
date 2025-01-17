@@ -17,7 +17,7 @@ internal partial class UnknownAssistantToolDefinition : IJsonModel<ToolDefinitio
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(Type);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

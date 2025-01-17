@@ -7,61 +7,83 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageImageFileContent : IJsonModel<InternalMessageImageFileContent>
     {
-        InternalMessageImageFileContent IJsonModel<InternalMessageImageFileContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        internal InternalMessageImageFileContent()
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(InternalMessageImageFileContent)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(_type);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("image_file") != true)
+            {
+                writer.WritePropertyName("image_file"u8);
+                writer.WriteObjectValue<InternalMessageContentItemFileObjectImageFile>(_imageFile, options);
+            }
+        }
+
+        InternalMessageImageFileContent IJsonModel<InternalMessageImageFileContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageImageFileContent)JsonModelCreateCore(ref reader, options);
+
+        protected override MessageContent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageImageFileContent)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalMessageImageFileContent(document.RootElement, options);
         }
 
-        internal static InternalMessageImageFileContent DeserializeInternalMessageImageFileContent(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageImageFileContent DeserializeInternalMessageImageFileContent(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string type = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string @type = default;
             InternalMessageContentItemFileObjectImageFile imageFile = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    type = property.Value.GetString();
+                    @type = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("image_file"u8))
+                if (prop.NameEquals("image_file"u8))
                 {
-                    imageFile = InternalMessageContentItemFileObjectImageFile.DeserializeInternalMessageContentItemFileObjectImageFile(property.Value, options);
+                    imageFile = InternalMessageContentItemFileObjectImageFile.DeserializeInternalMessageContentItemFileObjectImageFile(prop.Value, options);
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalMessageImageFileContent(serializedAdditionalRawData, type, imageFile);
+            return new InternalMessageImageFileContent(additionalBinaryDataProperties, @type, imageFile);
         }
 
-        BinaryData IPersistableModel<InternalMessageImageFileContent>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalMessageImageFileContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -71,15 +93,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalMessageImageFileContent IPersistableModel<InternalMessageImageFileContent>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
+        InternalMessageImageFileContent IPersistableModel<InternalMessageImageFileContent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageImageFileContent)PersistableModelCreateCore(data, options);
 
+        protected override MessageContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageImageFileContent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalMessageImageFileContent(document.RootElement, options);
                     }
                 default:
@@ -89,15 +112,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageImageFileContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalMessageImageFileContent FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalMessageImageFileContent internalMessageImageFileContent)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageImageFileContent(document.RootElement);
+            if (internalMessageImageFileContent == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalMessageImageFileContent, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalMessageImageFileContent(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalMessageImageFileContent(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

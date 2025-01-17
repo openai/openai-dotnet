@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
@@ -14,24 +15,29 @@ namespace OpenAI.Batch
     {
         void IJsonModel<InternalBatchRequestOutputResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalBatchRequestOutputResponse)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("status_code") != true && Optional.IsDefined(StatusCode))
+            if (Optional.IsDefined(StatusCode) && _additionalBinaryDataProperties?.ContainsKey("status_code") != true)
             {
                 writer.WritePropertyName("status_code"u8);
                 writer.WriteNumberValue(StatusCode.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("request_id") != true && Optional.IsDefined(RequestId))
+            if (Optional.IsDefined(RequestId) && _additionalBinaryDataProperties?.ContainsKey("request_id") != true)
             {
                 writer.WritePropertyName("request_id"u8);
                 writer.WriteStringValue(RequestId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("body") != true && Optional.IsCollectionDefined(Body))
+            if (Optional.IsCollectionDefined(Body) && _additionalBinaryDataProperties?.ContainsKey("body") != true)
             {
                 writer.WritePropertyName("body"u8);
                 writer.WriteStartObject();
@@ -44,7 +50,7 @@ namespace OpenAI.Batch
                         continue;
                     }
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -54,9 +60,9 @@ namespace OpenAI.Batch
                 }
                 writer.WriteEndObject();
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -64,7 +70,7 @@ namespace OpenAI.Batch
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -73,66 +79,63 @@ namespace OpenAI.Batch
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalBatchRequestOutputResponse IJsonModel<InternalBatchRequestOutputResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalBatchRequestOutputResponse IJsonModel<InternalBatchRequestOutputResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalBatchRequestOutputResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalBatchRequestOutputResponse)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalBatchRequestOutputResponse(document.RootElement, options);
         }
 
-        internal static InternalBatchRequestOutputResponse DeserializeInternalBatchRequestOutputResponse(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalBatchRequestOutputResponse DeserializeInternalBatchRequestOutputResponse(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             int? statusCode = default;
             string requestId = default;
-            IReadOnlyDictionary<string, BinaryData> body = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> body = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("status_code"u8))
+                if (prop.NameEquals("status_code"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    statusCode = property.Value.GetInt32();
+                    statusCode = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("request_id"u8))
+                if (prop.NameEquals("request_id"u8))
                 {
-                    requestId = property.Value.GetString();
+                    requestId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("body"u8))
+                if (prop.NameEquals("body"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
-                    foreach (var property0 in property.Value.EnumerateObject())
+                    foreach (var prop0 in prop.Value.EnumerateObject())
                     {
-                        if (property0.Value.ValueKind == JsonValueKind.Null)
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
                         {
-                            dictionary.Add(property0.Name, null);
+                            dictionary.Add(prop0.Name, null);
                         }
                         else
                         {
-                            dictionary.Add(property0.Name, BinaryData.FromString(property0.Value.GetRawText()));
+                            dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
                         }
                     }
                     body = dictionary;
@@ -140,18 +143,17 @@ namespace OpenAI.Batch
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalBatchRequestOutputResponse(statusCode, requestId, body ?? new ChangeTrackingDictionary<string, BinaryData>(), serializedAdditionalRawData);
+            return new InternalBatchRequestOutputResponse(statusCode, requestId, body ?? new ChangeTrackingDictionary<string, BinaryData>(), additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalBatchRequestOutputResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalBatchRequestOutputResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -161,15 +163,16 @@ namespace OpenAI.Batch
             }
         }
 
-        InternalBatchRequestOutputResponse IPersistableModel<InternalBatchRequestOutputResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
+        InternalBatchRequestOutputResponse IPersistableModel<InternalBatchRequestOutputResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalBatchRequestOutputResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutputResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalBatchRequestOutputResponse(document.RootElement, options);
                     }
                 default:
@@ -179,15 +182,20 @@ namespace OpenAI.Batch
 
         string IPersistableModel<InternalBatchRequestOutputResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalBatchRequestOutputResponse FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalBatchRequestOutputResponse internalBatchRequestOutputResponse)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchRequestOutputResponse(document.RootElement);
+            if (internalBatchRequestOutputResponse == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalBatchRequestOutputResponse, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalBatchRequestOutputResponse(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalBatchRequestOutputResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

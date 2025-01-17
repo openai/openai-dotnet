@@ -5,12 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     internal partial class InternalCreateVectorStoreFileBatchRequest
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
         {
             Argument.AssertNotNull(fileIds, nameof(fileIds));
@@ -18,18 +20,21 @@ namespace OpenAI.VectorStores
             FileIds = fileIds.ToList();
         }
 
-        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileIds = fileIds;
             ChunkingStrategy = chunkingStrategy;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateVectorStoreFileBatchRequest()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> FileIds { get; }
+
         public BinaryData ChunkingStrategy { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -15,13 +15,13 @@ public static partial class OpenAIAudioModelFactory
         segments ??= new List<TranscribedSegment>();
 
         return new AudioTranscription(
-            InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
             language,
-            duration,
             text,
             words.ToList(),
             segments.ToList(),
-            serializedAdditionalRawData: null);
+            InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
+            duration,
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.AudioTranslation"/>. </summary>
@@ -31,12 +31,12 @@ public static partial class OpenAIAudioModelFactory
         segments ??= new List<TranscribedSegment>();
 
         return new AudioTranslation(
-            InternalCreateTranslationResponseVerboseJsonTask.Translate,
             language,
-            duration,
             text,
-            segments.ToList(),
-            serializedAdditionalRawData: null);
+            segments: segments.ToList(),
+            task: InternalCreateTranslationResponseVerboseJsonTask.Translate,
+            duration,
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.TranscribedSegment"/>. </summary>
@@ -45,16 +45,16 @@ public static partial class OpenAIAudioModelFactory
     {
         return new TranscribedSegment(
             id,
-            seekOffset,
+            text,
+            temperature,
+            compressionRatio,
             startTime,
             endTime,
-            text,
+            seekOffset,
             tokenIds,
-            temperature,
             averageLogProbability,
-            compressionRatio,
             noSpeechProbability,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.TranscribedWord"/>. </summary>
@@ -65,6 +65,6 @@ public static partial class OpenAIAudioModelFactory
             word,
             startTime,
             endTime,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 }

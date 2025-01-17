@@ -8,15 +8,18 @@ namespace OpenAI.Chat
 {
     internal static partial class ChatToolCallKindExtensions
     {
-        public static string ToSerialString(this ChatToolCallKind value) => value switch
+        public static string ToSerialString(this Chat.ChatToolCallKind value) => value switch
         {
-            ChatToolCallKind.Function => "function",
+            Chat.ChatToolCallKind.Function => "function",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatToolCallKind value.")
         };
 
-        public static ChatToolCallKind ToChatToolCallKind(this string value)
+        public static Chat.ChatToolCallKind ToChatToolCallKind(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "function")) return ChatToolCallKind.Function;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "function"))
+            {
+                return Chat.ChatToolCallKind.Function;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatToolCallKind value.");
         }
     }

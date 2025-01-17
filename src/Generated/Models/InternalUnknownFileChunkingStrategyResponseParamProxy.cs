@@ -9,11 +9,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalUnknownFileChunkingStrategyResponseParamProxy : FileChunkingStrategy
     {
-        internal InternalUnknownFileChunkingStrategyResponseParamProxy(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal InternalUnknownFileChunkingStrategyResponseParamProxy()
+        internal InternalUnknownFileChunkingStrategyResponseParamProxy(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

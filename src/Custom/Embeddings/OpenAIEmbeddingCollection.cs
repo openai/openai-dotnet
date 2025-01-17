@@ -7,46 +7,14 @@ namespace OpenAI.Embeddings;
 [CodeGenModel("CreateEmbeddingResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection))]
-[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(IReadOnlyList<OpenAIEmbedding>), typeof(string), typeof(InternalCreateEmbeddingResponseObject), typeof(EmbeddingTokenUsage))]
+[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage))]
+[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage),  typeof(InternalCreateEmbeddingResponseObject), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     /// <summary> The object type, which is always "list". </summary>
     [CodeGenMember("Object")]
     private InternalCreateEmbeddingResponseObject Object { get; } = InternalCreateEmbeddingResponseObject.List;
-
-    // CUSTOM: Recovered this field. See https://github.com/Azure/autorest.csharp/issues/4636.
-    /// <summary>
-    /// Keeps track of any properties unknown to the library.
-    /// <para>
-    /// To assign an object to the value of this property use <see cref="BinaryData.FromObjectAsJson{T}(T, System.Text.Json.JsonSerializerOptions?)"/>.
-    /// </para>
-    /// <para>
-    /// To assign an already formatted json string to this property use <see cref="BinaryData.FromString(string)"/>.
-    /// </para>
-    /// <para>
-    /// Examples:
-    /// <list type="bullet">
-    /// <item>
-    /// <term>BinaryData.FromObjectAsJson("foo")</term>
-    /// <description>Creates a payload of "foo".</description>
-    /// </item>
-    /// <item>
-    /// <term>BinaryData.FromString("\"foo\"")</term>
-    /// <description>Creates a payload of "foo".</description>
-    /// </item>
-    /// <item>
-    /// <term>BinaryData.FromObjectAsJson(new { key = "value" })</term>
-    /// <description>Creates a payload of { "key": "value" }.</description>
-    /// </item>
-    /// <item>
-    /// <term>BinaryData.FromString("{\"key\": \"value\"}")</term>
-    /// <description>Creates a payload of { "key": "value" }.</description>
-    /// </item>
-    /// </list>
-    /// </para>
-    /// </summary>
-    private IDictionary<string, BinaryData> SerializedAdditionalRawData;
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
     /// <summary> Initializes a new instance of <see cref="OpenAIEmbeddingCollection"/>. </summary>

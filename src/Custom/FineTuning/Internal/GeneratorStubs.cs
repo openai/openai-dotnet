@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OpenAI.FineTuning;
 
@@ -107,9 +108,9 @@ internal enum FineTuningJobEventLevel
 }
 
 [CodeGenModel("FineTuningJobHyperparameters")]
+[StructLayout(LayoutKind.Auto)]
 internal readonly partial struct FineTuningJobHyperparameters
 {
-    internal readonly IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
     public BinaryData NEpochs { get; }
     public BinaryData BatchSize { get; }
     public BinaryData LearningRateMultiplier { get; }

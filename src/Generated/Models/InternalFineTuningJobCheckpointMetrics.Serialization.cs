@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -14,51 +15,56 @@ namespace OpenAI.FineTuning
     {
         void IJsonModel<InternalFineTuningJobCheckpointMetrics>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFineTuningJobCheckpointMetrics)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("step") != true && Optional.IsDefined(Step))
+            if (Optional.IsDefined(Step) && _additionalBinaryDataProperties?.ContainsKey("step") != true)
             {
                 writer.WritePropertyName("step"u8);
                 writer.WriteNumberValue(Step.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("train_loss") != true && Optional.IsDefined(TrainLoss))
+            if (Optional.IsDefined(TrainLoss) && _additionalBinaryDataProperties?.ContainsKey("train_loss") != true)
             {
                 writer.WritePropertyName("train_loss"u8);
                 writer.WriteNumberValue(TrainLoss.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("train_mean_token_accuracy") != true && Optional.IsDefined(TrainMeanTokenAccuracy))
+            if (Optional.IsDefined(TrainMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("train_mean_token_accuracy") != true)
             {
                 writer.WritePropertyName("train_mean_token_accuracy"u8);
                 writer.WriteNumberValue(TrainMeanTokenAccuracy.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("valid_loss") != true && Optional.IsDefined(ValidLoss))
+            if (Optional.IsDefined(ValidLoss) && _additionalBinaryDataProperties?.ContainsKey("valid_loss") != true)
             {
                 writer.WritePropertyName("valid_loss"u8);
                 writer.WriteNumberValue(ValidLoss.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("valid_mean_token_accuracy") != true && Optional.IsDefined(ValidMeanTokenAccuracy))
+            if (Optional.IsDefined(ValidMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("valid_mean_token_accuracy") != true)
             {
                 writer.WritePropertyName("valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(ValidMeanTokenAccuracy.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("full_valid_loss") != true && Optional.IsDefined(FullValidLoss))
+            if (Optional.IsDefined(FullValidLoss) && _additionalBinaryDataProperties?.ContainsKey("full_valid_loss") != true)
             {
                 writer.WritePropertyName("full_valid_loss"u8);
                 writer.WriteNumberValue(FullValidLoss.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("full_valid_mean_token_accuracy") != true && Optional.IsDefined(FullValidMeanTokenAccuracy))
+            if (Optional.IsDefined(FullValidMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("full_valid_mean_token_accuracy") != true)
             {
                 writer.WritePropertyName("full_valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(FullValidMeanTokenAccuracy.Value);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -66,7 +72,7 @@ namespace OpenAI.FineTuning
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -75,25 +81,23 @@ namespace OpenAI.FineTuning
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalFineTuningJobCheckpointMetrics IJsonModel<InternalFineTuningJobCheckpointMetrics>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalFineTuningJobCheckpointMetrics IJsonModel<InternalFineTuningJobCheckpointMetrics>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalFineTuningJobCheckpointMetrics JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFineTuningJobCheckpointMetrics)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalFineTuningJobCheckpointMetrics(document.RootElement, options);
         }
 
-        internal static InternalFineTuningJobCheckpointMetrics DeserializeInternalFineTuningJobCheckpointMetrics(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalFineTuningJobCheckpointMetrics DeserializeInternalFineTuningJobCheckpointMetrics(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -105,80 +109,77 @@ namespace OpenAI.FineTuning
             float? validMeanTokenAccuracy = default;
             float? fullValidLoss = default;
             float? fullValidMeanTokenAccuracy = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("step"u8))
+                if (prop.NameEquals("step"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    step = property.Value.GetSingle();
+                    step = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("train_loss"u8))
+                if (prop.NameEquals("train_loss"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    trainLoss = property.Value.GetSingle();
+                    trainLoss = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("train_mean_token_accuracy"u8))
+                if (prop.NameEquals("train_mean_token_accuracy"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    trainMeanTokenAccuracy = property.Value.GetSingle();
+                    trainMeanTokenAccuracy = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("valid_loss"u8))
+                if (prop.NameEquals("valid_loss"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    validLoss = property.Value.GetSingle();
+                    validLoss = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("valid_mean_token_accuracy"u8))
+                if (prop.NameEquals("valid_mean_token_accuracy"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    validMeanTokenAccuracy = property.Value.GetSingle();
+                    validMeanTokenAccuracy = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("full_valid_loss"u8))
+                if (prop.NameEquals("full_valid_loss"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    fullValidLoss = property.Value.GetSingle();
+                    fullValidLoss = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("full_valid_mean_token_accuracy"u8))
+                if (prop.NameEquals("full_valid_mean_token_accuracy"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    fullValidMeanTokenAccuracy = property.Value.GetSingle();
+                    fullValidMeanTokenAccuracy = prop.Value.GetSingle();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalFineTuningJobCheckpointMetrics(
                 step,
                 trainLoss,
@@ -187,13 +188,14 @@ namespace OpenAI.FineTuning
                 validMeanTokenAccuracy,
                 fullValidLoss,
                 fullValidMeanTokenAccuracy,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalFineTuningJobCheckpointMetrics>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalFineTuningJobCheckpointMetrics>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -203,15 +205,16 @@ namespace OpenAI.FineTuning
             }
         }
 
-        InternalFineTuningJobCheckpointMetrics IPersistableModel<InternalFineTuningJobCheckpointMetrics>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
+        InternalFineTuningJobCheckpointMetrics IPersistableModel<InternalFineTuningJobCheckpointMetrics>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalFineTuningJobCheckpointMetrics PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobCheckpointMetrics>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalFineTuningJobCheckpointMetrics(document.RootElement, options);
                     }
                 default:
@@ -221,15 +224,20 @@ namespace OpenAI.FineTuning
 
         string IPersistableModel<InternalFineTuningJobCheckpointMetrics>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalFineTuningJobCheckpointMetrics FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalFineTuningJobCheckpointMetrics internalFineTuningJobCheckpointMetrics)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalFineTuningJobCheckpointMetrics(document.RootElement);
+            if (internalFineTuningJobCheckpointMetrics == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalFineTuningJobCheckpointMetrics, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalFineTuningJobCheckpointMetrics(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalFineTuningJobCheckpointMetrics(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

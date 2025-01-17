@@ -42,7 +42,7 @@ public partial class ConversationItemStreamingPartFinishedUpdate : ConversationU
 
 
     internal ConversationItemStreamingPartFinishedUpdate(ConversationUpdate baseUpdate)
-        : base(baseUpdate.Kind, baseUpdate.EventId, serializedAdditionalRawData: null)
+        : base(baseUpdate.EventId, baseUpdate.Kind, additionalBinaryDataProperties: null)
     {
         _contentPartDone = baseUpdate as InternalRealtimeServerEventResponseContentPartDone;
         _functionCallArgumentsDone = baseUpdate as InternalRealtimeServerEventResponseFunctionCallArgumentsDone;

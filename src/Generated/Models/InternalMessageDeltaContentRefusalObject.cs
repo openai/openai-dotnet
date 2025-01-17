@@ -9,23 +9,19 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentRefusalObject : InternalMessageDeltaContent
     {
-        internal InternalMessageDeltaContentRefusalObject(int index)
+        internal InternalMessageDeltaContentRefusalObject(int index) : base("refusal")
         {
-            Type = "refusal";
             Index = index;
         }
 
-        internal InternalMessageDeltaContentRefusalObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string refusal) : base(type, serializedAdditionalRawData)
+        internal InternalMessageDeltaContentRefusalObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string refusal) : base(@type, additionalBinaryDataProperties)
         {
             Index = index;
             Refusal = refusal;
         }
 
-        internal InternalMessageDeltaContentRefusalObject()
-        {
-        }
-
         public int Index { get; }
+
         public string Refusal { get; }
     }
 }
