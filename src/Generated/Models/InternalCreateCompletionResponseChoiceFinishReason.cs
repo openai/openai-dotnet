@@ -4,35 +4,44 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
     internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason : IEquatable<InternalCreateCompletionResponseChoiceFinishReason>
     {
         private readonly string _value;
-
-        public InternalCreateCompletionResponseChoiceFinishReason(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string StopValue = "stop";
         private const string LengthValue = "length";
         private const string ContentFilterValue = "content_filter";
 
+        public InternalCreateCompletionResponseChoiceFinishReason(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalCreateCompletionResponseChoiceFinishReason Stop { get; } = new InternalCreateCompletionResponseChoiceFinishReason(StopValue);
+
         public static InternalCreateCompletionResponseChoiceFinishReason Length { get; } = new InternalCreateCompletionResponseChoiceFinishReason(LengthValue);
+
         public static InternalCreateCompletionResponseChoiceFinishReason ContentFilter { get; } = new InternalCreateCompletionResponseChoiceFinishReason(ContentFilterValue);
+
         public static bool operator ==(InternalCreateCompletionResponseChoiceFinishReason left, InternalCreateCompletionResponseChoiceFinishReason right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateCompletionResponseChoiceFinishReason left, InternalCreateCompletionResponseChoiceFinishReason right) => !left.Equals(right);
+
         public static implicit operator InternalCreateCompletionResponseChoiceFinishReason(string value) => new InternalCreateCompletionResponseChoiceFinishReason(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateCompletionResponseChoiceFinishReason other && Equals(other);
+
         public bool Equals(InternalCreateCompletionResponseChoiceFinishReason other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

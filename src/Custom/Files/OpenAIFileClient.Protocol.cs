@@ -9,8 +9,8 @@ namespace OpenAI.Files;
 
 [CodeGenSuppress("CreateFileAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CreateFile", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetFilesAsync", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetFiles", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("ListFilesAsync", typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("ListFiles", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFileAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFile", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DeleteFileAsync", typeof(string), typeof(RequestOptions))]
@@ -44,7 +44,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateFileRequest(content, contentType, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateFileRequest(content, contentType, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ public partial class OpenAIFileClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetFilesRequest(purpose, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = CreateListFilesRequest(purpose, options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -99,8 +99,8 @@ public partial class OpenAIFileClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetFiles(string purpose, RequestOptions options)
     {
-        using PipelineMessage message = CreateGetFilesRequest(purpose, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        using PipelineMessage message = CreateListFilesRequest(purpose, options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateRetrieveFileRequest(fileId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateRetrieveFileRequest(fileId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateDeleteFileRequest(fileId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateDeleteFileRequest(fileId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -190,7 +190,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateDownloadFileRequest(fileId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         using PipelineMessage message = CreateDownloadFileRequest(fileId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -248,7 +248,7 @@ public partial class OpenAIFileClient
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
@@ -265,7 +265,7 @@ public partial class OpenAIFileClient
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
@@ -281,7 +281,7 @@ public partial class OpenAIFileClient
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
@@ -297,7 +297,7 @@ public partial class OpenAIFileClient
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> or <paramref name="content"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="content"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
@@ -312,7 +312,7 @@ public partial class OpenAIFileClient
     /// </summary>
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
@@ -327,7 +327,7 @@ public partial class OpenAIFileClient
     /// </summary>
     /// <param name="uploadId"> The ID of the upload. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>

@@ -9,13 +9,12 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObject : InternalMessageDeltaTextContentAnnotation
     {
-        internal InternalMessageDeltaContentTextAnnotationsFilePathObject(int index)
+        internal InternalMessageDeltaContentTextAnnotationsFilePathObject(int index) : base("file_path")
         {
-            Type = "file_path";
             Index = index;
         }
 
-        internal InternalMessageDeltaContentTextAnnotationsFilePathObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string text, InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath filePath, int? startIndex, int? endIndex) : base(type, serializedAdditionalRawData)
+        internal InternalMessageDeltaContentTextAnnotationsFilePathObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string text, InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath filePath, int? startIndex, int? endIndex) : base(@type, additionalBinaryDataProperties)
         {
             Index = index;
             Text = text;
@@ -24,14 +23,14 @@ namespace OpenAI.Assistants
             EndIndex = endIndex;
         }
 
-        internal InternalMessageDeltaContentTextAnnotationsFilePathObject()
-        {
-        }
-
         public int Index { get; }
+
         public string Text { get; }
+
         public InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath FilePath { get; }
+
         public int? StartIndex { get; }
+
         public int? EndIndex { get; }
     }
 }

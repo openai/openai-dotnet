@@ -39,7 +39,7 @@ public partial class SystemChatMessage : IJsonModel<SystemChatMessage>
         }
 
         writer.WriteOptionalProperty("name"u8, ParticipantName, options);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

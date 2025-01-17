@@ -4,25 +4,34 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageObjectAttachment
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalMessageObjectAttachment()
         {
             Tools = new ChangeTrackingList<BinaryData>();
         }
 
-        internal InternalMessageObjectAttachment(string fileId, IReadOnlyList<BinaryData> tools, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageObjectAttachment(string fileId, IList<BinaryData> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
             Tools = tools;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string FileId { get; }
-        public IReadOnlyList<BinaryData> Tools { get; }
+
+        public IList<BinaryData> Tools { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

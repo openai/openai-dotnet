@@ -9,9 +9,6 @@ namespace OpenAI.Audio;
 [StructLayout(LayoutKind.Auto)]
 public readonly partial struct TranscribedSegment
 {
-    // CUSTOM: Remove setter. Auto-implemented instance properties in readonly structs must be readonly.
-    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
-
     // CUSTOM: Renamed.
     /// <summary> The start time of the segment. </summary>
     [CodeGenMember("Start")]

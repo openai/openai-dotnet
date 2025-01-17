@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 
 namespace OpenAI.Audio;
@@ -11,25 +10,25 @@ public readonly partial struct AudioTranslationFormat
     /// <summary> Plain text only. </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [CodeGenMember("Text")]
-    public static AudioTranslationFormat Text { get; } = new(TextValue);
+    public static AudioTranslationFormat Text { get; } = new AudioTranslationFormat(TextValue);
 
     // CUSTOM: Rename, reflecting convergence with Text
     /// <summary> Plain text only. </summary>
     [CodeGenMember("Json")]
-    public static AudioTranslationFormat Simple { get; } = new(SimpleValue);
+    public static AudioTranslationFormat Simple { get; } = new AudioTranslationFormat(JsonValue);
 
     // CUSTOM: Rename.
     /// <summary> Plain text provided with additional metadata, such as duration and timestamps. </summary>
     [CodeGenMember("VerboseJson")]
-    public static AudioTranslationFormat Verbose { get; } = new(VerboseValue);
+    public static AudioTranslationFormat Verbose { get; } = new AudioTranslationFormat(VerboseJsonValue);
 
     // CUSTOM: Added custom doc comments.
     /// <summary> Text formatted as SubRip (.srt) file. </summary>
     [CodeGenMember("Srt")]
-    public static AudioTranslationFormat Srt { get; } = new(SrtValue);
+    public static AudioTranslationFormat Srt { get; } = new AudioTranslationFormat(SrtValue);
 
     // CUSTOM: Added custom doc comments.
     /// <summary> Text formatted as a Web Video Text Tracks, a.k.a. WebVTT, (.vtt) file. </summary>
     [CodeGenMember("Vtt")]
-    public static AudioTranslationFormat Vtt { get; } = new(VttValue);
+    public static AudioTranslationFormat Vtt { get; } = new AudioTranslationFormat(VttValue);
 }

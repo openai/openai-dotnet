@@ -12,10 +12,10 @@ public static partial class OpenAIModelsModelFactory
     public static ModelDeletionResult ModelDeletionResult(string modelId = null, bool deleted = default)
     {
         return new ModelDeletionResult(
-            modelId,
             deleted,
+            modelId,
             InternalDeleteModelResponseObject.Model,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModel"/>. </summary>
@@ -24,10 +24,10 @@ public static partial class OpenAIModelsModelFactory
     {
         return new OpenAIModel(
             id,
-            createdAt,
-            InternalModelObject.Model,
             ownedBy,
-            serializedAdditionalRawData: null);
+            InternalModelObject.Model,
+            createdAt,
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Models.OpenAIModelCollection"/>. </summary>

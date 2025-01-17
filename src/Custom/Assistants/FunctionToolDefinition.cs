@@ -42,7 +42,7 @@ public partial class FunctionToolDefinition : ToolDefinition
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="FunctionToolDefinition"/>. 
+    /// Creates a new instance of <see cref="FunctionToolDefinition"/>.
     /// </summary>
     [SetsRequiredMembers]
     public FunctionToolDefinition(string name)
@@ -53,7 +53,7 @@ public partial class FunctionToolDefinition : ToolDefinition
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="FunctionToolDefinition"/>. 
+    /// Creates a new instance of <see cref="FunctionToolDefinition"/>.
     /// </summary>
     public FunctionToolDefinition()
         : base("function")

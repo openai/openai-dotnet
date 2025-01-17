@@ -8,19 +8,28 @@ namespace OpenAI.FineTuning
 {
     internal static partial class FineTuningJobEventLevelExtensions
     {
-        public static string ToSerialString(this FineTuningJobEventLevel value) => value switch
+        public static string ToSerialString(this FineTuning.FineTuningJobEventLevel value) => value switch
         {
-            FineTuningJobEventLevel.Info => "info",
-            FineTuningJobEventLevel.Warn => "warn",
-            FineTuningJobEventLevel.Error => "error",
+            FineTuning.FineTuningJobEventLevel.Info => "info",
+            FineTuning.FineTuningJobEventLevel.Warn => "warn",
+            FineTuning.FineTuningJobEventLevel.Error => "error",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FineTuningJobEventLevel value.")
         };
 
-        public static FineTuningJobEventLevel ToFineTuningJobEventLevel(this string value)
+        public static FineTuning.FineTuningJobEventLevel ToFineTuningJobEventLevel(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "info")) return FineTuningJobEventLevel.Info;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "warn")) return FineTuningJobEventLevel.Warn;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "error")) return FineTuningJobEventLevel.Error;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "info"))
+            {
+                return FineTuning.FineTuningJobEventLevel.Info;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "warn"))
+            {
+                return FineTuning.FineTuningJobEventLevel.Warn;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "error"))
+            {
+                return FineTuning.FineTuningJobEventLevel.Error;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FineTuningJobEventLevel value.");
         }
     }

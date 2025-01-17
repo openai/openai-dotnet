@@ -6,7 +6,7 @@ namespace OpenAI.Chat;
 ///     A tool call made by the model.
 ///     <list>
 ///         <item>
-///             Call <see cref="CreateFunctionToolCall(string, string, string)"/> to create a
+///             Call <see cref="CreateFunctionToolCall(string, string, BinaryData)"/> to create a
 ///             <see cref="ChatToolCall"/> representing a function call made by the model.
 ///         </item>
 ///     </list>
@@ -60,6 +60,6 @@ public partial class ChatToolCall
             id: id,
             kind: ChatToolCallKind.Function,
             function: function,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 }

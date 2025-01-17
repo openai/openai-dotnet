@@ -9,37 +9,38 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreBatchFileJob
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal VectorStoreBatchFileJob(string batchId, DateTimeOffset createdAt, string vectorStoreId, VectorStoreBatchFileJobStatus status, VectorStoreFileCounts fileCounts)
-        {
-            Argument.AssertNotNull(batchId, nameof(batchId));
-            Argument.AssertNotNull(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNull(fileCounts, nameof(fileCounts));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            BatchId = batchId;
+        internal VectorStoreBatchFileJob(DateTimeOffset createdAt, string vectorStoreId, VectorStoreBatchFileJobStatus status, string batchId, VectorStoreFileCounts fileCounts)
+        {
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
+            BatchId = batchId;
             FileCounts = fileCounts;
         }
 
-        internal VectorStoreBatchFileJob(string batchId, object @object, DateTimeOffset createdAt, string vectorStoreId, VectorStoreBatchFileJobStatus status, VectorStoreFileCounts fileCounts, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreBatchFileJob(DateTimeOffset createdAt, string vectorStoreId, VectorStoreBatchFileJobStatus status, string batchId, VectorStoreFileCounts fileCounts, object @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            BatchId = batchId;
-            Object = @object;
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
+            BatchId = batchId;
             FileCounts = fileCounts;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal VectorStoreBatchFileJob()
-        {
+            this.Object = @object;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public DateTimeOffset CreatedAt { get; }
+
         public string VectorStoreId { get; }
+
         public VectorStoreBatchFileJobStatus Status { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

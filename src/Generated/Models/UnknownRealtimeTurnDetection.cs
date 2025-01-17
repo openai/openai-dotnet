@@ -9,11 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class UnknownRealtimeTurnDetection : ConversationTurnDetectionOptions
     {
-        internal UnknownRealtimeTurnDetection(ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(kind, serializedAdditionalRawData)
-        {
-        }
-
-        internal UnknownRealtimeTurnDetection()
+        internal UnknownRealtimeTurnDetection(RealtimeConversation.ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
     }

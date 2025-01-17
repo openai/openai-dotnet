@@ -77,14 +77,8 @@ public partial class OpenAIClient
 
     private readonly OpenAIClientOptions _options;
 
-    // CUSTOM: Remove virtual keyword.
-    /// <summary>
-    /// The HTTP pipeline for sending and receiving REST requests and responses.
-    /// </summary>
-    public ClientPipeline Pipeline => _pipeline;
-
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
     public OpenAIClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
@@ -94,7 +88,7 @@ public partial class OpenAIClient
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public OpenAIClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
@@ -104,7 +98,7 @@ public partial class OpenAIClient
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
@@ -114,13 +108,13 @@ public partial class OpenAIClient
         options ??= new OpenAIClientOptions();
 
         _keyCredential = credential;
-        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
 
     // CUSTOM: Added protected internal constructor that takes a ClientPipeline.
-    /// <summary> Initializes a new instance of <see cref="OpenAIClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
@@ -129,7 +123,7 @@ public partial class OpenAIClient
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         options ??= new OpenAIClientOptions();
 
-        _pipeline = pipeline;
+        Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
@@ -144,7 +138,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="AssistantClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual AssistantClient GetAssistantClient() => new(_pipeline, _options);
+    public virtual AssistantClient GetAssistantClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="AudioClient"/> that reuses the client configuration details provided to
@@ -155,7 +149,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="AudioClient"/>. </returns>
-    public virtual AudioClient GetAudioClient(string model) => new(_pipeline, model, _options);
+    public virtual AudioClient GetAudioClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="BatchClient"/> that reuses the client configuration details provided to
@@ -167,7 +161,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="BatchClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual BatchClient GetBatchClient() => new(_pipeline, _options);
+    public virtual BatchClient GetBatchClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ChatClient"/> that reuses the client configuration details provided to
@@ -178,7 +172,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ChatClient"/>. </returns>
-    public virtual ChatClient GetChatClient(string model) => new(_pipeline, model, _options);
+    public virtual ChatClient GetChatClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="EmbeddingClient"/> that reuses the client configuration details provided to
@@ -189,7 +183,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="EmbeddingClient"/>. </returns>
-    public virtual EmbeddingClient GetEmbeddingClient(string model) => new(_pipeline, model, _options);
+    public virtual EmbeddingClient GetEmbeddingClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="OpenAIFileClient"/> that reuses the client configuration details provided to
@@ -200,7 +194,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="OpenAIFileClient"/>. </returns>
-    public virtual OpenAIFileClient GetOpenAIFileClient() => new(_pipeline, _options);
+    public virtual OpenAIFileClient GetOpenAIFileClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="FineTuningClient"/> that reuses the client configuration details provided to
@@ -212,7 +206,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="FineTuningClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual FineTuningClient GetFineTuningClient() => new(_pipeline, _options);
+    public virtual FineTuningClient GetFineTuningClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ImageClient"/> that reuses the client configuration details provided to
@@ -223,7 +217,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ImageClient"/>. </returns>
-    public virtual ImageClient GetImageClient(string model) => new(_pipeline, model, _options);
+    public virtual ImageClient GetImageClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="OpenAIModelClient"/> that reuses the client configuration details provided to
@@ -234,7 +228,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
-    public virtual OpenAIModelClient GetOpenAIModelClient() => new(_pipeline, _options);
+    public virtual OpenAIModelClient GetOpenAIModelClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ModerationClient"/> that reuses the client configuration details provided to
@@ -245,7 +239,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="ModerationClient"/>. </returns>
-    public virtual ModerationClient GetModerationClient(string model) => new(_pipeline, model, _options);
+    public virtual ModerationClient GetModerationClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
@@ -257,7 +251,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual VectorStoreClient GetVectorStoreClient() => new(_pipeline, _options);
+    public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
 
     [Experimental("OPENAI002")]
     public virtual RealtimeConversationClient GetRealtimeConversationClient(string model) => new(model, _keyCredential, _options);

@@ -10,6 +10,7 @@ namespace OpenAI.Chat;
 /// </summary>
 [Obsolete($"This class is obsolete. Please use {nameof(ToolChatMessage)} instead.")]
 [CodeGenModel("ChatCompletionRequestFunctionMessage")]
+[CodeGenSuppress("FunctionChatMessage", typeof(string))]
 [CodeGenSuppress("FunctionChatMessage", typeof(ChatMessageContent), typeof(string))]
 public partial class FunctionChatMessage : ChatMessage
 {

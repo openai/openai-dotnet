@@ -4,38 +4,37 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation
     {
-        public InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex)
+        public InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base("file_citation")
         {
             Argument.AssertNotNull(text, nameof(text));
             Argument.AssertNotNull(fileCitation, nameof(fileCitation));
 
-            Type = "file_citation";
             Text = text;
             FileCitation = fileCitation;
             StartIndex = startIndex;
             EndIndex = endIndex;
         }
 
-        internal InternalMessageContentTextAnnotationsFileCitationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(type, serializedAdditionalRawData)
+        internal InternalMessageContentTextAnnotationsFileCitationObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(@type, additionalBinaryDataProperties)
         {
             Text = text;
             FileCitation = fileCitation;
             StartIndex = startIndex;
             EndIndex = endIndex;
-        }
-
-        internal InternalMessageContentTextAnnotationsFileCitationObject()
-        {
         }
 
         public string Text { get; set; }
+
         public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; set; }
+
         public int StartIndex { get; set; }
+
         public int EndIndex { get; set; }
     }
 }

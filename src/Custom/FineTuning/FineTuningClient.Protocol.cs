@@ -8,16 +8,16 @@ namespace OpenAI.FineTuning;
 
 [CodeGenSuppress("CreateFineTuningJobAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateFineTuningJob", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("GetPaginatedFineTuningJobsAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("GetPaginatedFineTuningJobs", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListPaginatedFineTuningJobsAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListPaginatedFineTuningJobs", typeof(string), typeof(int?), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFineTuningJobAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFineTuningJob", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelFineTuningJobAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelFineTuningJob", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetFineTuningEventsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("GetFineTuningEvents", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("GetFineTuningJobCheckpointsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("GetFineTuningJobCheckpoints", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListFineTuningEventsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListFineTuningEvents", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListFineTuningJobCheckpointsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("ListFineTuningJobCheckpoints", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
 public partial class FineTuningClient
 {
     // CUSTOM:
@@ -49,7 +49,7 @@ public partial class FineTuningClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateFineTuningJobRequest(content, options);
-        PipelineResponse response = await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
@@ -88,7 +88,7 @@ public partial class FineTuningClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateFineTuningJobRequest(content, options);
-        PipelineResponse response = _pipeline.ProcessMessage(message, options);
+        PipelineResponse response = Pipeline.ProcessMessage(message, options);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string jobId = doc.RootElement.GetProperty("id"u8).GetString();
@@ -111,7 +111,7 @@ public partial class FineTuningClient
     /// <returns> The response returned from the service. </returns>
     public virtual AsyncCollectionResult GetJobsAsync(string after, int? limit, RequestOptions options)
     {
-        return new AsyncFineTuningJobCollectionResult(this, _pipeline, options, limit, after);
+        return new AsyncFineTuningJobCollectionResult(this, Pipeline, options, limit, after);
     }
 
     // CUSTOM:
@@ -127,7 +127,7 @@ public partial class FineTuningClient
     /// <returns> The response returned from the service. </returns>
     public virtual CollectionResult GetJobs(string after, int? limit, RequestOptions options)
     {
-        return new FineTuningJobCollectionResult(this, _pipeline, options, limit, after);
+        return new FineTuningJobCollectionResult(this, Pipeline, options, limit, after);
     }
 
     // CUSTOM:
@@ -149,7 +149,7 @@ public partial class FineTuningClient
         Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
 
         using PipelineMessage message = CreateRetrieveFineTuningJobRequest(fineTuningJobId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -171,12 +171,12 @@ public partial class FineTuningClient
         Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
 
         using PipelineMessage message = CreateRetrieveFineTuningJobRequest(fineTuningJobId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     internal virtual PipelineMessage CreateCreateFineTuningJobRequest(BinaryContent content, RequestOptions options)
     {
-        var message = _pipeline.CreateMessage();
+        var message = Pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "POST";
@@ -193,7 +193,7 @@ public partial class FineTuningClient
 
     internal virtual PipelineMessage CreateGetPaginatedFineTuningJobsRequest(string after, int? limit, RequestOptions options)
     {
-        var message = _pipeline.CreateMessage();
+        var message = Pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";
@@ -216,7 +216,7 @@ public partial class FineTuningClient
 
     internal virtual PipelineMessage CreateRetrieveFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
     {
-        var message = _pipeline.CreateMessage();
+        var message = Pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";

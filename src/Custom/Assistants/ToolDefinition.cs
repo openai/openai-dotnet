@@ -28,4 +28,9 @@ public abstract partial class ToolDefinition
     {
         Type = type;
     }
+
+    // Backcompat with the old codegen.
+    protected ToolDefinition()
+    {
+    }
 }

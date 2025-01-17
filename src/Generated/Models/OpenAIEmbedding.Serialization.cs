@@ -7,30 +7,40 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbedding : IJsonModel<OpenAIEmbedding>
     {
+        internal OpenAIEmbedding()
+        {
+        }
+
         void IJsonModel<OpenAIEmbedding>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(OpenAIEmbedding)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("embedding") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("embedding") != true)
             {
                 writer.WritePropertyName("embedding"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(EmbeddingProperty);
+                writer.WriteRawValue(EmbeddingProperty);
 #else
                 using (JsonDocument document = JsonDocument.Parse(EmbeddingProperty))
                 {
@@ -38,14 +48,14 @@ namespace OpenAI.Embeddings
                 }
 #endif
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(this.Object.ToString());
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -53,7 +63,7 @@ namespace OpenAI.Embeddings
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -62,65 +72,61 @@ namespace OpenAI.Embeddings
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        OpenAIEmbedding IJsonModel<OpenAIEmbedding>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        OpenAIEmbedding IJsonModel<OpenAIEmbedding>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual OpenAIEmbedding JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(OpenAIEmbedding)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeOpenAIEmbedding(document.RootElement, options);
         }
 
-        internal static OpenAIEmbedding DeserializeOpenAIEmbedding(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static OpenAIEmbedding DeserializeOpenAIEmbedding(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             int index = default;
-            BinaryData embedding = default;
+            BinaryData embeddingProperty = default;
             InternalEmbeddingObject @object = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("index"u8))
+                if (prop.NameEquals("index"u8))
                 {
-                    index = property.Value.GetInt32();
+                    index = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("embedding"u8))
+                if (prop.NameEquals("embedding"u8))
                 {
-                    embedding = BinaryData.FromString(property.Value.GetRawText());
+                    embeddingProperty = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (property.NameEquals("object"u8))
+                if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalEmbeddingObject(property.Value.GetString());
+                    @object = new InternalEmbeddingObject(prop.Value.GetString());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new OpenAIEmbedding(index, embedding, @object, serializedAdditionalRawData);
+            return new OpenAIEmbedding(index, embeddingProperty, @object, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<OpenAIEmbedding>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<OpenAIEmbedding>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -130,15 +136,16 @@ namespace OpenAI.Embeddings
             }
         }
 
-        OpenAIEmbedding IPersistableModel<OpenAIEmbedding>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
+        OpenAIEmbedding IPersistableModel<OpenAIEmbedding>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual OpenAIEmbedding PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbedding>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeOpenAIEmbedding(document.RootElement, options);
                     }
                 default:
@@ -148,15 +155,20 @@ namespace OpenAI.Embeddings
 
         string IPersistableModel<OpenAIEmbedding>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static OpenAIEmbedding FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(OpenAIEmbedding openAIEmbedding)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeOpenAIEmbedding(document.RootElement);
+            if (openAIEmbedding == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(openAIEmbedding, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator OpenAIEmbedding(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeOpenAIEmbedding(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

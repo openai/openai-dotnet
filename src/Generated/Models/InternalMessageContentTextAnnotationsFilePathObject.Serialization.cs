@@ -7,141 +7,124 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFilePathObject : IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
     {
+        internal InternalMessageContentTextAnnotationsFilePathObject()
+        {
+        }
+
         void IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageContentTextAnnotationsFilePathObject)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("text") != true)
+            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("file_path") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("file_path") != true)
             {
                 writer.WritePropertyName("file_path"u8);
                 writer.WriteObjectValue(FilePath, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("start_index") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("start_index") != true)
             {
                 writer.WritePropertyName("start_index"u8);
                 writer.WriteNumberValue(StartIndex);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("end_index") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("end_index") != true)
             {
                 writer.WritePropertyName("end_index"u8);
                 writer.WriteNumberValue(EndIndex);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
         }
 
-        InternalMessageContentTextAnnotationsFilePathObject IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalMessageContentTextAnnotationsFilePathObject IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFilePathObject)JsonModelCreateCore(ref reader, options);
+
+        protected override InternalMessageContentTextObjectAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageContentTextAnnotationsFilePathObject)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement, options);
         }
 
-        internal static InternalMessageContentTextAnnotationsFilePathObject DeserializeInternalMessageContentTextAnnotationsFilePathObject(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageContentTextAnnotationsFilePathObject DeserializeInternalMessageContentTextAnnotationsFilePathObject(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            string @type = "file_path";
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath = default;
             int startIndex = default;
             int endIndex = default;
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("text"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    text = property.Value.GetString();
+                    @type = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("file_path"u8))
+                if (prop.NameEquals("text"u8))
                 {
-                    filePath = InternalMessageContentTextAnnotationsFilePathObjectFilePath.DeserializeInternalMessageContentTextAnnotationsFilePathObjectFilePath(property.Value, options);
+                    text = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("start_index"u8))
+                if (prop.NameEquals("file_path"u8))
                 {
-                    startIndex = property.Value.GetInt32();
+                    filePath = InternalMessageContentTextAnnotationsFilePathObjectFilePath.DeserializeInternalMessageContentTextAnnotationsFilePathObjectFilePath(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("end_index"u8))
+                if (prop.NameEquals("start_index"u8))
                 {
-                    endIndex = property.Value.GetInt32();
+                    startIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("end_index"u8))
                 {
-                    type = property.Value.GetString();
+                    endIndex = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalMessageContentTextAnnotationsFilePathObject(
-                type,
-                serializedAdditionalRawData,
+                @type,
+                additionalBinaryDataProperties,
                 text,
                 filePath,
                 startIndex,
                 endIndex);
         }
 
-        BinaryData IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -151,15 +134,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalMessageContentTextAnnotationsFilePathObject IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
+        InternalMessageContentTextAnnotationsFilePathObject IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFilePathObject)PersistableModelCreateCore(data, options);
 
+        protected override InternalMessageContentTextObjectAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement, options);
                     }
                 default:
@@ -169,15 +153,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalMessageContentTextAnnotationsFilePathObject FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalMessageContentTextAnnotationsFilePathObject internalMessageContentTextAnnotationsFilePathObject)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement);
+            if (internalMessageContentTextAnnotationsFilePathObject == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalMessageContentTextAnnotationsFilePathObject, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalMessageContentTextAnnotationsFilePathObject(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

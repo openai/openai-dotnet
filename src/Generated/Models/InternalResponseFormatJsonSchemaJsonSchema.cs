@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Internal
 {
     internal partial class InternalResponseFormatJsonSchemaJsonSchema
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalResponseFormatJsonSchemaJsonSchema(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
@@ -17,21 +19,25 @@ namespace OpenAI.Internal
             Name = name;
         }
 
-        internal InternalResponseFormatJsonSchemaJsonSchema(string description, string name, BinaryData schema, bool? strict, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalResponseFormatJsonSchemaJsonSchema(string description, string name, bool? strict, BinaryData schema, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Description = description;
             Name = name;
-            Schema = schema;
             Strict = strict;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalResponseFormatJsonSchemaJsonSchema()
-        {
+            Schema = schema;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Description { get; set; }
+
         public string Name { get; set; }
+
         public bool? Strict { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

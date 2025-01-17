@@ -7,33 +7,43 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class ChatOutputTokenUsageDetails : IJsonModel<ChatOutputTokenUsageDetails>
     {
+        internal ChatOutputTokenUsageDetails()
+        {
+        }
+
         void IJsonModel<ChatOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("audio_tokens") != true)
-            {
-                writer.WritePropertyName("audio_tokens"u8);
-                writer.WriteNumberValue(AudioTokenCount);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("reasoning_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("reasoning_tokens") != true)
             {
                 writer.WritePropertyName("reasoning_tokens"u8);
                 writer.WriteNumberValue(ReasoningTokenCount);
             }
-            if (SerializedAdditionalRawData != null)
+            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("audio_tokens"u8);
+                writer.WriteNumberValue(AudioTokenCount);
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +51,7 @@ namespace OpenAI.Chat
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,59 +60,55 @@ namespace OpenAI.Chat
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        ChatOutputTokenUsageDetails IJsonModel<ChatOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ChatOutputTokenUsageDetails IJsonModel<ChatOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual ChatOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatOutputTokenUsageDetails(document.RootElement, options);
         }
 
-        internal static ChatOutputTokenUsageDetails DeserializeChatOutputTokenUsageDetails(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static ChatOutputTokenUsageDetails DeserializeChatOutputTokenUsageDetails(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            int audioTokens = default;
-            int reasoningTokens = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            int reasoningTokenCount = default;
+            int audioTokenCount = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("audio_tokens"u8))
+                if (prop.NameEquals("reasoning_tokens"u8))
                 {
-                    audioTokens = property.Value.GetInt32();
+                    reasoningTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("reasoning_tokens"u8))
+                if (prop.NameEquals("audio_tokens"u8))
                 {
-                    reasoningTokens = property.Value.GetInt32();
+                    audioTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ChatOutputTokenUsageDetails(audioTokens, reasoningTokens, serializedAdditionalRawData);
+            return new ChatOutputTokenUsageDetails(reasoningTokenCount, audioTokenCount, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -112,15 +118,16 @@ namespace OpenAI.Chat
             }
         }
 
-        ChatOutputTokenUsageDetails IPersistableModel<ChatOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+        ChatOutputTokenUsageDetails IPersistableModel<ChatOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual ChatOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeChatOutputTokenUsageDetails(document.RootElement, options);
                     }
                 default:
@@ -130,15 +137,20 @@ namespace OpenAI.Chat
 
         string IPersistableModel<ChatOutputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ChatOutputTokenUsageDetails FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(ChatOutputTokenUsageDetails chatOutputTokenUsageDetails)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeChatOutputTokenUsageDetails(document.RootElement);
+            if (chatOutputTokenUsageDetails == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(chatOutputTokenUsageDetails, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator ChatOutputTokenUsageDetails(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeChatOutputTokenUsageDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

@@ -4,25 +4,34 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
     internal partial class InternalBatchErrors
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalBatchErrors()
         {
             Data = new ChangeTrackingList<InternalBatchError>();
         }
 
-        internal InternalBatchErrors(InternalBatchErrorsObject? @object, IReadOnlyList<InternalBatchError> data, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalBatchErrors(InternalBatchErrorsObject? @object, IList<InternalBatchError> data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Data = data;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public InternalBatchErrorsObject? Object { get; }
-        public IReadOnlyList<InternalBatchError> Data { get; }
+
+        public IList<InternalBatchError> Data { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

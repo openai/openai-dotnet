@@ -9,19 +9,27 @@ namespace OpenAI.Assistants
 {
     public partial class ToolOutput
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public ToolOutput()
         {
         }
 
-        internal ToolOutput(string toolCallId, string output, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ToolOutput(string toolCallId, string output, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ToolCallId = toolCallId;
             Output = output;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string ToolCallId { get; set; }
+
         public string Output { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

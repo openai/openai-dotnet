@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantsNamedToolChoiceFunction
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalAssistantsNamedToolChoiceFunction(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
@@ -17,16 +19,18 @@ namespace OpenAI.Assistants
             Name = name;
         }
 
-        internal InternalAssistantsNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalAssistantsNamedToolChoiceFunction(string name, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalAssistantsNamedToolChoiceFunction()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Name { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

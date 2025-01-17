@@ -19,7 +19,7 @@ internal partial class OpenAIError
         {
             using JsonDocument errorDocument = JsonDocument.Parse(response.Content);
             OpenAIErrorResponse errorResponse
-                = OpenAIErrorResponse.DeserializeOpenAIErrorResponse(errorDocument.RootElement);
+                = OpenAIErrorResponse.DeserializeOpenAIErrorResponse(errorDocument.RootElement, null);
             return errorResponse.Error;
         }
         catch (InvalidOperationException)

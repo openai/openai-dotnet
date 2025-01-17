@@ -9,31 +9,33 @@ namespace OpenAI.FineTuning
 {
     internal partial class FineTuningJobError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal FineTuningJobError(string code, string message, string param)
-        {
-            Argument.AssertNotNull(code, nameof(code));
-            Argument.AssertNotNull(message, nameof(message));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Code = code;
-            Message = message;
-            Param = param;
-        }
-
-        internal FineTuningJobError(string code, string message, string param, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal FineTuningJobError(string code, string message, string @param)
         {
             Code = code;
             Message = message;
-            Param = param;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Param = @param;
         }
 
-        internal FineTuningJobError()
+        internal FineTuningJobError(string code, string message, string @param, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Code = code;
+            Message = message;
+            Param = @param;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Code { get; }
+
         public string Message { get; }
+
         public string Param { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

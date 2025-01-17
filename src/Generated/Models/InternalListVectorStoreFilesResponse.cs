@@ -4,44 +4,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     internal partial class InternalListVectorStoreFilesResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListVectorStoreFilesResponse(IEnumerable<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(firstId, nameof(firstId));
-            Argument.AssertNotNull(lastId, nameof(lastId));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Data = data.ToList();
+        internal InternalListVectorStoreFilesResponse(string firstId, string lastId, bool hasMore)
+        {
+            Data = new ChangeTrackingList<VectorStoreFileAssociation>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
         }
 
-        internal InternalListVectorStoreFilesResponse(InternalListVectorStoreFilesResponseObject @object, IReadOnlyList<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListVectorStoreFilesResponse(InternalListVectorStoreFilesResponseObject @object, IReadOnlyList<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Data = data;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalListVectorStoreFilesResponse()
-        {
-        }
-
-        public InternalListVectorStoreFilesResponseObject Object { get; } = InternalListVectorStoreFilesResponseObject.List;
+        public InternalListVectorStoreFilesResponseObject Object { get; } = "list";
 
         public IReadOnlyList<VectorStoreFileAssociation> Data { get; }
+
         public string FirstId { get; }
+
         public string LastId { get; }
+
         public bool HasMore { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

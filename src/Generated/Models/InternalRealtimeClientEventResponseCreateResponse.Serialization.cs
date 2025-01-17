@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
@@ -14,70 +15,68 @@ namespace OpenAI.RealtimeConversation
     {
         void IJsonModel<InternalRealtimeClientEventResponseCreateResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventResponseCreateResponse)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("modalities") != true && Optional.IsCollectionDefined(Modalities))
+            if (Optional.IsCollectionDefined(Modalities) && _additionalBinaryDataProperties?.ContainsKey("modalities") != true)
             {
                 writer.WritePropertyName("modalities"u8);
                 writer.WriteStartArray();
-                foreach (var item in Modalities)
+                foreach (string item in Modalities)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("instructions") != true && Optional.IsDefined(Instructions))
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("voice") != true && Optional.IsDefined(Voice))
+            if (Optional.IsDefined(Voice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
             {
                 writer.WritePropertyName("voice"u8);
                 writer.WriteStringValue(Voice);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("output_audio_format") != true && Optional.IsDefined(OutputAudioFormat))
+            if (Optional.IsDefined(OutputAudioFormat) && _additionalBinaryDataProperties?.ContainsKey("output_audio_format") != true)
             {
                 writer.WritePropertyName("output_audio_format"u8);
                 writer.WriteStringValue(OutputAudioFormat);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tools") != true && Optional.IsCollectionDefined(Tools))
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (var item in Tools)
+                foreach (ConversationTool item in Tools)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("tool_choice") != true && Optional.IsDefined(ToolChoice))
-            {
-                writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("temperature") != true && Optional.IsDefined(Temperature))
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("max_output_tokens") != true && Optional.IsDefined(MaxOutputTokens))
+            if (Optional.IsDefined(MaxOutputTokens) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
             {
                 writer.WritePropertyName("max_output_tokens"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(MaxOutputTokens);
+                writer.WriteRawValue(MaxOutputTokens);
 #else
                 using (JsonDocument document = JsonDocument.Parse(MaxOutputTokens))
                 {
@@ -85,9 +84,21 @@ namespace OpenAI.RealtimeConversation
                 }
 #endif
             }
-            if (SerializedAdditionalRawData != null)
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("tool_choice"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(ToolChoice);
+#else
+                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -95,7 +106,7 @@ namespace OpenAI.RealtimeConversation
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -104,25 +115,23 @@ namespace OpenAI.RealtimeConversation
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRealtimeClientEventResponseCreateResponse IJsonModel<InternalRealtimeClientEventResponseCreateResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRealtimeClientEventResponseCreateResponse IJsonModel<InternalRealtimeClientEventResponseCreateResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRealtimeClientEventResponseCreateResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventResponseCreateResponse)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRealtimeClientEventResponseCreateResponse(document.RootElement, options);
         }
 
-        internal static InternalRealtimeClientEventResponseCreateResponse DeserializeInternalRealtimeClientEventResponseCreateResponse(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRealtimeClientEventResponseCreateResponse DeserializeInternalRealtimeClientEventResponseCreateResponse(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -132,106 +141,111 @@ namespace OpenAI.RealtimeConversation
             string voice = default;
             string outputAudioFormat = default;
             IList<ConversationTool> tools = default;
-            BinaryData toolChoice = default;
             float? temperature = default;
             BinaryData maxOutputTokens = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            BinaryData toolChoice = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("modalities"u8))
+                if (prop.NameEquals("modalities"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     modalities = array;
                     continue;
                 }
-                if (property.NameEquals("instructions"u8))
+                if (prop.NameEquals("instructions"u8))
                 {
-                    instructions = property.Value.GetString();
+                    instructions = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("voice"u8))
+                if (prop.NameEquals("voice"u8))
                 {
-                    voice = property.Value.GetString();
+                    voice = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("output_audio_format"u8))
+                if (prop.NameEquals("output_audio_format"u8))
                 {
-                    outputAudioFormat = property.Value.GetString();
+                    outputAudioFormat = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("tools"u8))
+                if (prop.NameEquals("tools"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<ConversationTool> array = new List<ConversationTool>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(ConversationTool.DeserializeConversationTool(item, options));
                     }
                     tools = array;
                     continue;
                 }
-                if (property.NameEquals("tool_choice"u8))
+                if (prop.NameEquals("temperature"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    toolChoice = BinaryData.FromString(property.Value.GetRawText());
+                    temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (property.NameEquals("temperature"u8))
+                if (prop.NameEquals("max_output_tokens"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    temperature = property.Value.GetSingle();
+                    maxOutputTokens = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (property.NameEquals("max_output_tokens"u8))
+                if (prop.NameEquals("tool_choice"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    maxOutputTokens = BinaryData.FromString(property.Value.GetRawText());
+                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalRealtimeClientEventResponseCreateResponse(
                 modalities ?? new ChangeTrackingList<string>(),
                 instructions,
                 voice,
                 outputAudioFormat,
                 tools ?? new ChangeTrackingList<ConversationTool>(),
-                toolChoice,
                 temperature,
                 maxOutputTokens,
-                serializedAdditionalRawData);
+                toolChoice,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -241,15 +255,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        InternalRealtimeClientEventResponseCreateResponse IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRealtimeClientEventResponseCreateResponse IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRealtimeClientEventResponseCreateResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRealtimeClientEventResponseCreateResponse(document.RootElement, options);
                     }
                 default:
@@ -259,15 +274,20 @@ namespace OpenAI.RealtimeConversation
 
         string IPersistableModel<InternalRealtimeClientEventResponseCreateResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRealtimeClientEventResponseCreateResponse FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRealtimeClientEventResponseCreateResponse internalRealtimeClientEventResponseCreateResponse)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeClientEventResponseCreateResponse(document.RootElement);
+            if (internalRealtimeClientEventResponseCreateResponse == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRealtimeClientEventResponseCreateResponse, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRealtimeClientEventResponseCreateResponse(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRealtimeClientEventResponseCreateResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

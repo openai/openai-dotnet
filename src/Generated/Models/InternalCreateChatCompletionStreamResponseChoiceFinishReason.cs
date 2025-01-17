@@ -4,39 +4,50 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason : IEquatable<InternalCreateChatCompletionStreamResponseChoiceFinishReason>
     {
         private readonly string _value;
-
-        public InternalCreateChatCompletionStreamResponseChoiceFinishReason(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string StopValue = "stop";
         private const string LengthValue = "length";
         private const string ToolCallsValue = "tool_calls";
         private const string ContentFilterValue = "content_filter";
         private const string FunctionCallValue = "function_call";
 
+        public InternalCreateChatCompletionStreamResponseChoiceFinishReason(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalCreateChatCompletionStreamResponseChoiceFinishReason Stop { get; } = new InternalCreateChatCompletionStreamResponseChoiceFinishReason(StopValue);
+
         public static InternalCreateChatCompletionStreamResponseChoiceFinishReason Length { get; } = new InternalCreateChatCompletionStreamResponseChoiceFinishReason(LengthValue);
+
         public static InternalCreateChatCompletionStreamResponseChoiceFinishReason ToolCalls { get; } = new InternalCreateChatCompletionStreamResponseChoiceFinishReason(ToolCallsValue);
+
         public static InternalCreateChatCompletionStreamResponseChoiceFinishReason ContentFilter { get; } = new InternalCreateChatCompletionStreamResponseChoiceFinishReason(ContentFilterValue);
+
         public static InternalCreateChatCompletionStreamResponseChoiceFinishReason FunctionCall { get; } = new InternalCreateChatCompletionStreamResponseChoiceFinishReason(FunctionCallValue);
+
         public static bool operator ==(InternalCreateChatCompletionStreamResponseChoiceFinishReason left, InternalCreateChatCompletionStreamResponseChoiceFinishReason right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateChatCompletionStreamResponseChoiceFinishReason left, InternalCreateChatCompletionStreamResponseChoiceFinishReason right) => !left.Equals(right);
+
         public static implicit operator InternalCreateChatCompletionStreamResponseChoiceFinishReason(string value) => new InternalCreateChatCompletionStreamResponseChoiceFinishReason(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateChatCompletionStreamResponseChoiceFinishReason other && Equals(other);
+
         public bool Equals(InternalCreateChatCompletionStreamResponseChoiceFinishReason other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

@@ -9,22 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeServerEventResponseContentPartDone : ConversationUpdate
     {
-        internal InternalRealtimeServerEventResponseContentPartDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, ConversationContentPart internalContentPart) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(responseId, nameof(responseId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-            Argument.AssertNotNull(internalContentPart, nameof(internalContentPart));
-
-            Kind = ConversationUpdateKind.ItemContentPartFinished;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            ContentIndex = contentIndex;
-            _internalContentPart = internalContentPart;
-        }
-
-        internal InternalRealtimeServerEventResponseContentPartDone(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string responseId, string itemId, int outputIndex, int contentIndex, ConversationContentPart internalContentPart) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeServerEventResponseContentPartDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, ConversationContentPart internalContentPart) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemContentPartFinished)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -33,13 +18,21 @@ namespace OpenAI.RealtimeConversation
             _internalContentPart = internalContentPart;
         }
 
-        internal InternalRealtimeServerEventResponseContentPartDone()
+        internal InternalRealtimeServerEventResponseContentPartDone(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, ConversationContentPart internalContentPart) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            ContentIndex = contentIndex;
+            _internalContentPart = internalContentPart;
         }
 
         public string ResponseId { get; }
+
         public string ItemId { get; }
+
         public int OutputIndex { get; }
+
         public int ContentIndex { get; }
     }
 }

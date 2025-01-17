@@ -4,33 +4,41 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal readonly partial struct InternalRealtimeRequestSessionModality : IEquatable<InternalRealtimeRequestSessionModality>
     {
         private readonly string _value;
-
-        public InternalRealtimeRequestSessionModality(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string TextValue = "text";
         private const string AudioValue = "audio";
 
+        public InternalRealtimeRequestSessionModality(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalRealtimeRequestSessionModality Text { get; } = new InternalRealtimeRequestSessionModality(TextValue);
+
         public static InternalRealtimeRequestSessionModality Audio { get; } = new InternalRealtimeRequestSessionModality(AudioValue);
+
         public static bool operator ==(InternalRealtimeRequestSessionModality left, InternalRealtimeRequestSessionModality right) => left.Equals(right);
+
         public static bool operator !=(InternalRealtimeRequestSessionModality left, InternalRealtimeRequestSessionModality right) => !left.Equals(right);
+
         public static implicit operator InternalRealtimeRequestSessionModality(string value) => new InternalRealtimeRequestSessionModality(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeRequestSessionModality other && Equals(other);
+
         public bool Equals(InternalRealtimeRequestSessionModality other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

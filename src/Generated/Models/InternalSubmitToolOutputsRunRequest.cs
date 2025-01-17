@@ -5,12 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalSubmitToolOutputsRunRequest
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalSubmitToolOutputsRunRequest(IEnumerable<ToolOutput> toolOutputs)
         {
             Argument.AssertNotNull(toolOutputs, nameof(toolOutputs));
@@ -18,18 +20,21 @@ namespace OpenAI.Assistants
             ToolOutputs = toolOutputs.ToList();
         }
 
-        internal InternalSubmitToolOutputsRunRequest(IList<ToolOutput> toolOutputs, bool? stream, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalSubmitToolOutputsRunRequest(IList<ToolOutput> toolOutputs, bool? stream, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ToolOutputs = toolOutputs;
             Stream = stream;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalSubmitToolOutputsRunRequest()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<ToolOutput> ToolOutputs { get; }
+
         public bool? Stream { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

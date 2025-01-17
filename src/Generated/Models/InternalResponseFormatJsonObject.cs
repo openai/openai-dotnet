@@ -9,12 +9,11 @@ namespace OpenAI.Internal
 {
     internal partial class InternalResponseFormatJsonObject : InternalOmniTypedResponseFormat
     {
-        public InternalResponseFormatJsonObject()
+        public InternalResponseFormatJsonObject() : base("json_object")
         {
-            Type = "json_object";
         }
 
-        internal InternalResponseFormatJsonObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal InternalResponseFormatJsonObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

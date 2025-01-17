@@ -44,7 +44,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         }
         writer.WritePropertyName("index"u8);
         writer.WriteNumberValue(instance.Index);
-        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 
@@ -100,6 +100,6 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new InternalCreateChatCompletionStreamResponseChoice(delta, logprobs, finishReason, index, serializedAdditionalRawData);
+        return new InternalCreateChatCompletionStreamResponseChoice(delta, logprobs, index, finishReason, serializedAdditionalRawData);
     }
 }

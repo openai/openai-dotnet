@@ -9,8 +9,8 @@ namespace OpenAI.RealtimeConversation;
 public readonly partial struct ConversationContentPartKind
 {
     [CodeGenMember("Audio")]
-    public static ConversationContentPartKind OutputAudio { get; } = new(OutputAudioValue);
+    public static ConversationContentPartKind OutputAudio { get; } = new(AudioValue);
 
     [CodeGenMember("Text")]
-    public static ConversationContentPartKind OutputText { get; } = new(OutputTextValue);
+    public static ConversationContentPartKind OutputText { get; } = new(TextValue);
 }

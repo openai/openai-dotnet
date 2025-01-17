@@ -59,7 +59,7 @@ public partial class ChatTool
     /// <summary>
     ///     <para>
     ///         Whether to enable strict schema adherence when generating the function call. If set to <c>true</c>, the
-    ///         model will follow the exact schema defined in <see cref="FunctionParameters">
+    ///         model will follow the exact schema defined in <see cref="FunctionParameters"/>
     ///     </para>
     ///     <para>
     ///         Only a subset of the JSON schema specification is supported when this is set to <c>true</c>. Learn more
@@ -131,6 +131,6 @@ public partial class ChatTool
         return new(
             kind: ChatToolKind.Function,
             function: function,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 }

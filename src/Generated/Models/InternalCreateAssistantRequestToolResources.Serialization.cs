@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -14,26 +15,31 @@ namespace OpenAI.Assistants
     {
         void IJsonModel<InternalCreateAssistantRequestToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("code_interpreter") != true && Optional.IsDefined(CodeInterpreter))
+            if (Optional.IsDefined(CodeInterpreter) && _additionalBinaryDataProperties?.ContainsKey("code_interpreter") != true)
             {
                 writer.WritePropertyName("code_interpreter"u8);
                 writer.WriteObjectValue(CodeInterpreter, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("file_search") != true && Optional.IsDefined(FileSearch))
+            if (Optional.IsDefined(FileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
             {
                 writer.WritePropertyName("file_search"u8);
                 writer.WriteObjectValue(FileSearch, options);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +47,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,67 +56,63 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalCreateAssistantRequestToolResources IJsonModel<InternalCreateAssistantRequestToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalCreateAssistantRequestToolResources IJsonModel<InternalCreateAssistantRequestToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalCreateAssistantRequestToolResources JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement, options);
         }
 
-        internal static InternalCreateAssistantRequestToolResources DeserializeInternalCreateAssistantRequestToolResources(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalCreateAssistantRequestToolResources DeserializeInternalCreateAssistantRequestToolResources(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalCreateAssistantRequestToolResourcesCodeInterpreter codeInterpreter = default;
             FileSearchToolResources fileSearch = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("code_interpreter"u8))
+                if (prop.NameEquals("code_interpreter"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    codeInterpreter = InternalCreateAssistantRequestToolResourcesCodeInterpreter.DeserializeInternalCreateAssistantRequestToolResourcesCodeInterpreter(property.Value, options);
+                    codeInterpreter = InternalCreateAssistantRequestToolResourcesCodeInterpreter.DeserializeInternalCreateAssistantRequestToolResourcesCodeInterpreter(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("file_search"u8))
+                if (prop.NameEquals("file_search"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    fileSearch = FileSearchToolResources.DeserializeFileSearchToolResources(property.Value, options);
+                    fileSearch = FileSearchToolResources.DeserializeFileSearchToolResources(prop.Value, options);
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateAssistantRequestToolResources(codeInterpreter, fileSearch, serializedAdditionalRawData);
+            return new InternalCreateAssistantRequestToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalCreateAssistantRequestToolResources>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalCreateAssistantRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -120,15 +122,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalCreateAssistantRequestToolResources IPersistableModel<InternalCreateAssistantRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+        InternalCreateAssistantRequestToolResources IPersistableModel<InternalCreateAssistantRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalCreateAssistantRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement, options);
                     }
                 default:
@@ -138,15 +141,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalCreateAssistantRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalCreateAssistantRequestToolResources FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalCreateAssistantRequestToolResources internalCreateAssistantRequestToolResources)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement);
+            if (internalCreateAssistantRequestToolResources == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalCreateAssistantRequestToolResources, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalCreateAssistantRequestToolResources(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

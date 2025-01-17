@@ -5,12 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Files
 {
     internal partial class InternalCompleteUploadRequest
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalCompleteUploadRequest(IEnumerable<string> partIds)
         {
             Argument.AssertNotNull(partIds, nameof(partIds));
@@ -18,18 +20,21 @@ namespace OpenAI.Files
             PartIds = partIds.ToList();
         }
 
-        internal InternalCompleteUploadRequest(IList<string> partIds, string md5, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCompleteUploadRequest(IList<string> partIds, string md5, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             PartIds = partIds;
             Md5 = md5;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCompleteUploadRequest()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> PartIds { get; }
+
         public string Md5 { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

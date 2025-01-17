@@ -7,31 +7,41 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionResponseChoice : IJsonModel<InternalCreateCompletionResponseChoice>
     {
+        internal InternalCreateCompletionResponseChoice()
+        {
+        }
+
         void IJsonModel<InternalCreateCompletionResponseChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("finish_reason") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
             {
                 writer.WritePropertyName("finish_reason"u8);
                 writer.WriteStringValue(FinishReason.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("logprobs") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 if (Logprobs != null)
                 {
@@ -40,17 +50,17 @@ namespace OpenAI.LegacyCompletions
                 }
                 else
                 {
-                    writer.WriteNull("logprobs");
+                    writer.WriteNull("logprobs"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("text") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -58,7 +68,7 @@ namespace OpenAI.LegacyCompletions
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -67,25 +77,23 @@ namespace OpenAI.LegacyCompletions
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalCreateCompletionResponseChoice IJsonModel<InternalCreateCompletionResponseChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalCreateCompletionResponseChoice IJsonModel<InternalCreateCompletionResponseChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalCreateCompletionResponseChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
         }
 
-        internal static InternalCreateCompletionResponseChoice DeserializeInternalCreateCompletionResponseChoice(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalCreateCompletionResponseChoice DeserializeInternalCreateCompletionResponseChoice(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -94,49 +102,47 @@ namespace OpenAI.LegacyCompletions
             int index = default;
             InternalCreateCompletionResponseChoiceLogprobs logprobs = default;
             string text = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("finish_reason"u8))
+                if (prop.NameEquals("finish_reason"u8))
                 {
-                    finishReason = new InternalCreateCompletionResponseChoiceFinishReason(property.Value.GetString());
+                    finishReason = new InternalCreateCompletionResponseChoiceFinishReason(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("index"u8))
+                if (prop.NameEquals("index"u8))
                 {
-                    index = property.Value.GetInt32();
+                    index = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("logprobs"u8))
+                if (prop.NameEquals("logprobs"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         logprobs = null;
                         continue;
                     }
-                    logprobs = InternalCreateCompletionResponseChoiceLogprobs.DeserializeInternalCreateCompletionResponseChoiceLogprobs(property.Value, options);
+                    logprobs = InternalCreateCompletionResponseChoiceLogprobs.DeserializeInternalCreateCompletionResponseChoiceLogprobs(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("text"u8))
+                if (prop.NameEquals("text"u8))
                 {
-                    text = property.Value.GetString();
+                    text = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalCreateCompletionResponseChoice(finishReason, index, logprobs, text, serializedAdditionalRawData);
+            return new InternalCreateCompletionResponseChoice(finishReason, index, logprobs, text, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalCreateCompletionResponseChoice>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalCreateCompletionResponseChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -146,15 +152,16 @@ namespace OpenAI.LegacyCompletions
             }
         }
 
-        InternalCreateCompletionResponseChoice IPersistableModel<InternalCreateCompletionResponseChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
+        InternalCreateCompletionResponseChoice IPersistableModel<InternalCreateCompletionResponseChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalCreateCompletionResponseChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponseChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
                     }
                 default:
@@ -164,15 +171,20 @@ namespace OpenAI.LegacyCompletions
 
         string IPersistableModel<InternalCreateCompletionResponseChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalCreateCompletionResponseChoice FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalCreateCompletionResponseChoice internalCreateCompletionResponseChoice)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionResponseChoice(document.RootElement);
+            if (internalCreateCompletionResponseChoice == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalCreateCompletionResponseChoice, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalCreateCompletionResponseChoice(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

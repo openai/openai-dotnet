@@ -8,19 +8,28 @@ namespace OpenAI.Files
 {
     internal static partial class FileStatusExtensions
     {
-        public static string ToSerialString(this FileStatus value) => value switch
+        public static string ToSerialString(this Files.FileStatus value) => value switch
         {
-            FileStatus.Uploaded => "uploaded",
-            FileStatus.Processed => "processed",
-            FileStatus.Error => "error",
+            Files.FileStatus.Uploaded => "uploaded",
+            Files.FileStatus.Processed => "processed",
+            Files.FileStatus.Error => "error",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileStatus value.")
         };
 
-        public static FileStatus ToFileStatus(this string value)
+        public static Files.FileStatus ToFileStatus(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "uploaded")) return FileStatus.Uploaded;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "processed")) return FileStatus.Processed;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "error")) return FileStatus.Error;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "uploaded"))
+            {
+                return Files.FileStatus.Uploaded;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "processed"))
+            {
+                return Files.FileStatus.Processed;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "error"))
+            {
+                return Files.FileStatus.Error;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FileStatus value.");
         }
     }

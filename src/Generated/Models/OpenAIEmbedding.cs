@@ -9,12 +9,14 @@ namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbedding
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-
-        internal OpenAIEmbedding()
-        {
-        }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public int Index { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

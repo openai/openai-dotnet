@@ -7,33 +7,43 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     internal partial class InternalStaticChunkingStrategyDetails : IJsonModel<InternalStaticChunkingStrategyDetails>
     {
+        internal InternalStaticChunkingStrategyDetails()
+        {
+        }
+
         void IJsonModel<InternalStaticChunkingStrategyDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalStaticChunkingStrategyDetails)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("max_chunk_size_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("max_chunk_size_tokens") != true)
             {
                 writer.WritePropertyName("max_chunk_size_tokens"u8);
                 writer.WriteNumberValue(MaxChunkSizeTokens);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("chunk_overlap_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("chunk_overlap_tokens") != true)
             {
                 writer.WritePropertyName("chunk_overlap_tokens"u8);
                 writer.WriteNumberValue(ChunkOverlapTokens);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +51,7 @@ namespace OpenAI.VectorStores
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,59 +60,55 @@ namespace OpenAI.VectorStores
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalStaticChunkingStrategyDetails IJsonModel<InternalStaticChunkingStrategyDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalStaticChunkingStrategyDetails IJsonModel<InternalStaticChunkingStrategyDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalStaticChunkingStrategyDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalStaticChunkingStrategyDetails)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalStaticChunkingStrategyDetails(document.RootElement, options);
         }
 
-        internal static InternalStaticChunkingStrategyDetails DeserializeInternalStaticChunkingStrategyDetails(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalStaticChunkingStrategyDetails DeserializeInternalStaticChunkingStrategyDetails(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             int maxChunkSizeTokens = default;
             int chunkOverlapTokens = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("max_chunk_size_tokens"u8))
+                if (prop.NameEquals("max_chunk_size_tokens"u8))
                 {
-                    maxChunkSizeTokens = property.Value.GetInt32();
+                    maxChunkSizeTokens = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("chunk_overlap_tokens"u8))
+                if (prop.NameEquals("chunk_overlap_tokens"u8))
                 {
-                    chunkOverlapTokens = property.Value.GetInt32();
+                    chunkOverlapTokens = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalStaticChunkingStrategyDetails(maxChunkSizeTokens, chunkOverlapTokens, serializedAdditionalRawData);
+            return new InternalStaticChunkingStrategyDetails(maxChunkSizeTokens, chunkOverlapTokens, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalStaticChunkingStrategyDetails>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalStaticChunkingStrategyDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -112,15 +118,16 @@ namespace OpenAI.VectorStores
             }
         }
 
-        InternalStaticChunkingStrategyDetails IPersistableModel<InternalStaticChunkingStrategyDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
+        InternalStaticChunkingStrategyDetails IPersistableModel<InternalStaticChunkingStrategyDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalStaticChunkingStrategyDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalStaticChunkingStrategyDetails(document.RootElement, options);
                     }
                 default:
@@ -130,15 +137,20 @@ namespace OpenAI.VectorStores
 
         string IPersistableModel<InternalStaticChunkingStrategyDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalStaticChunkingStrategyDetails FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalStaticChunkingStrategyDetails internalStaticChunkingStrategyDetails)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalStaticChunkingStrategyDetails(document.RootElement);
+            if (internalStaticChunkingStrategyDetails == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalStaticChunkingStrategyDetails, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalStaticChunkingStrategyDetails(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalStaticChunkingStrategyDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

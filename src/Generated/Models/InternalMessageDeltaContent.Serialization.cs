@@ -6,29 +6,39 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     [PersistableModelProxy(typeof(UnknownMessageDeltaContent))]
-    internal partial class InternalMessageDeltaContent : IJsonModel<InternalMessageDeltaContent>
+    internal abstract partial class InternalMessageDeltaContent : IJsonModel<InternalMessageDeltaContent>
     {
+        internal InternalMessageDeltaContent()
+        {
+        }
+
         void IJsonModel<InternalMessageDeltaContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContent)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -36,7 +46,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -45,46 +55,49 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalMessageDeltaContent IJsonModel<InternalMessageDeltaContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalMessageDeltaContent IJsonModel<InternalMessageDeltaContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalMessageDeltaContent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContent)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalMessageDeltaContent(document.RootElement, options);
         }
 
-        internal static InternalMessageDeltaContent DeserializeInternalMessageDeltaContent(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageDeltaContent DeserializeInternalMessageDeltaContent(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            if (element.TryGetProperty("type", out JsonElement discriminator))
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
                 switch (discriminator.GetString())
                 {
-                    case "image_file": return InternalMessageDeltaContentImageFileObject.DeserializeInternalMessageDeltaContentImageFileObject(element, options);
-                    case "image_url": return InternalMessageDeltaContentImageUrlObject.DeserializeInternalMessageDeltaContentImageUrlObject(element, options);
-                    case "refusal": return InternalMessageDeltaContentRefusalObject.DeserializeInternalMessageDeltaContentRefusalObject(element, options);
-                    case "text": return InternalMessageDeltaContentTextObject.DeserializeInternalMessageDeltaContentTextObject(element, options);
+                    case "image_file":
+                        return InternalMessageDeltaContentImageFileObject.DeserializeInternalMessageDeltaContentImageFileObject(element, options);
+                    case "image_url":
+                        return InternalMessageDeltaContentImageUrlObject.DeserializeInternalMessageDeltaContentImageUrlObject(element, options);
+                    case "text":
+                        return InternalMessageDeltaContentTextObject.DeserializeInternalMessageDeltaContentTextObject(element, options);
+                    case "refusal":
+                        return InternalMessageDeltaContentRefusalObject.DeserializeInternalMessageDeltaContentRefusalObject(element, options);
                 }
             }
             return UnknownMessageDeltaContent.DeserializeUnknownMessageDeltaContent(element, options);
         }
 
-        BinaryData IPersistableModel<InternalMessageDeltaContent>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalMessageDeltaContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -94,15 +107,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalMessageDeltaContent IPersistableModel<InternalMessageDeltaContent>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
+        InternalMessageDeltaContent IPersistableModel<InternalMessageDeltaContent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalMessageDeltaContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalMessageDeltaContent(document.RootElement, options);
                     }
                 default:
@@ -112,15 +126,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageDeltaContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalMessageDeltaContent FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalMessageDeltaContent internalMessageDeltaContent)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageDeltaContent(document.RootElement);
+            if (internalMessageDeltaContent == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalMessageDeltaContent, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalMessageDeltaContent(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalMessageDeltaContent(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

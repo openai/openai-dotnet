@@ -66,7 +66,7 @@ public partial class ThreadRun
     /// <see cref="Assistants.RequiredAction"/> is the abstract base type for all required actions. Its
     /// concrete type can be one of:
     /// <list type="bullet">
-    /// <item> <see cref="InternalRequiredFunctionToolCall"/> </item> 
+    /// <item> <see cref="InternalRequiredFunctionToolCall"/> </item>
     /// </list>
     /// </remarks>
     public IReadOnlyList<RequiredAction> RequiredActions => _internalRequiredAction?.SubmitToolOutputs?.ToolCalls ?? [];
@@ -87,7 +87,7 @@ public partial class ThreadRun
     public float? NucleusSamplingFactor { get; }
 
     /// <summary>
-    /// Whether parallel function calling is enabled during tool use for the thread. 
+    /// Whether parallel function calling is enabled during tool use for the thread.
     /// </summary>
     /// <remarks>
     /// Assumed <c>true</c> if not otherwise specified.

@@ -9,12 +9,11 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatResponseFormatText : ChatResponseFormat
     {
-        public InternalChatResponseFormatText()
+        public InternalChatResponseFormatText() : base("text")
         {
-            Type = "text";
         }
 
-        internal InternalChatResponseFormatText(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal InternalChatResponseFormatText(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

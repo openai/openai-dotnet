@@ -4,23 +4,32 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch()
         {
             Results = new ChangeTrackingList<RunStepFileSearchResult>();
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(FileSearchRankingOptions rankingOptions, IReadOnlyList<RunStepFileSearchResult> results, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(IReadOnlyList<RunStepFileSearchResult> results, FileSearchRankingOptions rankingOptions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            RankingOptions = rankingOptions;
             Results = results;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            RankingOptions = rankingOptions;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
         public IReadOnlyList<RunStepFileSearchResult> Results { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -7,154 +7,136 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObject : IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>
     {
+        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject()
+        {
+        }
+
         void IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFileCitationObject)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("index") != true)
+            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("text") != true && Optional.IsDefined(Text))
+            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("file_citation") != true && Optional.IsDefined(FileCitation))
+            if (Optional.IsDefined(FileCitation) && _additionalBinaryDataProperties?.ContainsKey("file_citation") != true)
             {
                 writer.WritePropertyName("file_citation"u8);
                 writer.WriteObjectValue(FileCitation, options);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("start_index") != true && Optional.IsDefined(StartIndex))
+            if (Optional.IsDefined(StartIndex) && _additionalBinaryDataProperties?.ContainsKey("start_index") != true)
             {
                 writer.WritePropertyName("start_index"u8);
                 writer.WriteNumberValue(StartIndex.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("end_index") != true && Optional.IsDefined(EndIndex))
+            if (Optional.IsDefined(EndIndex) && _additionalBinaryDataProperties?.ContainsKey("end_index") != true)
             {
                 writer.WritePropertyName("end_index"u8);
                 writer.WriteNumberValue(EndIndex.Value);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
         }
 
-        InternalMessageDeltaContentTextAnnotationsFileCitationObject IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalMessageDeltaContentTextAnnotationsFileCitationObject IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageDeltaContentTextAnnotationsFileCitationObject)JsonModelCreateCore(ref reader, options);
+
+        protected override InternalMessageDeltaTextContentAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFileCitationObject)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(document.RootElement, options);
         }
 
-        internal static InternalMessageDeltaContentTextAnnotationsFileCitationObject DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalMessageDeltaContentTextAnnotationsFileCitationObject DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            string @type = "file_citation";
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int index = default;
             string text = default;
             InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation fileCitation = default;
             int? startIndex = default;
             int? endIndex = default;
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("index"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    index = property.Value.GetInt32();
+                    @type = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("text"u8))
+                if (prop.NameEquals("index"u8))
                 {
-                    text = property.Value.GetString();
+                    index = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("file_citation"u8))
+                if (prop.NameEquals("text"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    text = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("file_citation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    fileCitation = InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation.DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation(property.Value, options);
+                    fileCitation = InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation.DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("start_index"u8))
+                if (prop.NameEquals("start_index"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    startIndex = property.Value.GetInt32();
+                    startIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("end_index"u8))
+                if (prop.NameEquals("end_index"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    endIndex = property.Value.GetInt32();
-                    continue;
-                }
-                if (property.NameEquals("type"u8))
-                {
-                    type = property.Value.GetString();
+                    endIndex = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalMessageDeltaContentTextAnnotationsFileCitationObject(
-                type,
-                serializedAdditionalRawData,
+                @type,
+                additionalBinaryDataProperties,
                 index,
                 text,
                 fileCitation,
@@ -162,10 +144,11 @@ namespace OpenAI.Assistants
                 endIndex);
         }
 
-        BinaryData IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -175,15 +158,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalMessageDeltaContentTextAnnotationsFileCitationObject IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
+        InternalMessageDeltaContentTextAnnotationsFileCitationObject IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageDeltaContentTextAnnotationsFileCitationObject)PersistableModelCreateCore(data, options);
 
+        protected override InternalMessageDeltaTextContentAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(document.RootElement, options);
                     }
                 default:
@@ -193,15 +177,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalMessageDeltaContentTextAnnotationsFileCitationObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalMessageDeltaContentTextAnnotationsFileCitationObject FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalMessageDeltaContentTextAnnotationsFileCitationObject internalMessageDeltaContentTextAnnotationsFileCitationObject)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(document.RootElement);
+            if (internalMessageDeltaContentTextAnnotationsFileCitationObject == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalMessageDeltaContentTextAnnotationsFileCitationObject, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalMessageDeltaContentTextAnnotationsFileCitationObject(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalMessageDeltaContentTextAnnotationsFileCitationObject(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

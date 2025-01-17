@@ -72,7 +72,7 @@ public partial class ConversationItemStreamingPartDeltaUpdate : ConversationUpda
         => _functionArgumentsDelta?.Delta;
 
     internal ConversationItemStreamingPartDeltaUpdate(ConversationUpdate baseUpdate)
-        : base(baseUpdate.Kind, baseUpdate.EventId, serializedAdditionalRawData: null)
+        : base(baseUpdate.EventId, baseUpdate.Kind, additionalBinaryDataProperties: null)
     {
         _contentPartAdded = baseUpdate as InternalRealtimeServerEventResponseContentPartAdded;
         _audioDelta = baseUpdate as InternalRealtimeServerEventResponseAudioDelta;

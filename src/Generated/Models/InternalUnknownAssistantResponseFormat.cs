@@ -9,11 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalUnknownAssistantResponseFormat : AssistantResponseFormat
     {
-        internal InternalUnknownAssistantResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal InternalUnknownAssistantResponseFormat()
+        internal InternalUnknownAssistantResponseFormat(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

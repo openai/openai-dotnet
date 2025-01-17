@@ -46,6 +46,11 @@ public partial class SystemChatMessage : ChatMessage
         Argument.AssertNotNull(content, nameof(content));
     }
 
+    // CUSTOM: Hide the default constructor.
+    internal SystemChatMessage()
+    {
+    }
+
     /// <summary>
     /// An optional <c>name</c> for the participant.
     /// </summary>

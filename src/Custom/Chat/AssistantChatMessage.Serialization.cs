@@ -44,7 +44,7 @@ public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
         writer.WriteOptionalProperty("name"u8, ParticipantName, options);
         writer.WriteOptionalCollection("tool_calls"u8, ToolCalls, options);
         writer.WriteOptionalProperty("function_call"u8, FunctionCall, options);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

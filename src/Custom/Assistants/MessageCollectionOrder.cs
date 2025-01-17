@@ -9,9 +9,9 @@ public readonly partial struct MessageCollectionOrder
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Asc")]
-    public static MessageCollectionOrder Ascending { get; } = new MessageCollectionOrder(AscendingValue);
+    public static MessageCollectionOrder Ascending { get; } = new MessageCollectionOrder(AscValue);
 
     // CUSTOM: Renamed.
     [CodeGenMember("Desc")]
-    public static MessageCollectionOrder Descending { get; } = new MessageCollectionOrder(DescendingValue);
+    public static MessageCollectionOrder Descending { get; } = new MessageCollectionOrder(DescValue);
 }

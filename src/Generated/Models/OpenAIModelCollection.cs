@@ -2,13 +2,19 @@
 
 #nullable disable
 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace OpenAI.Models
 {
-    public partial class OpenAIModelCollection : ReadOnlyCollection<OpenAIModel>
+    public partial class OpenAIModelCollection
     {
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

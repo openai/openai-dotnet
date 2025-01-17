@@ -4,31 +4,38 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
     internal readonly partial struct InternalBatchCompletionTimeframe : IEquatable<InternalBatchCompletionTimeframe>
     {
         private readonly string _value;
+        private const string _24hValue = "24h";
 
         public InternalBatchCompletionTimeframe(string value)
         {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
         }
 
-        private const string _24hValue = "24h";
-
         public static InternalBatchCompletionTimeframe _24h { get; } = new InternalBatchCompletionTimeframe(_24hValue);
+
         public static bool operator ==(InternalBatchCompletionTimeframe left, InternalBatchCompletionTimeframe right) => left.Equals(right);
+
         public static bool operator !=(InternalBatchCompletionTimeframe left, InternalBatchCompletionTimeframe right) => !left.Equals(right);
+
         public static implicit operator InternalBatchCompletionTimeframe(string value) => new InternalBatchCompletionTimeframe(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalBatchCompletionTimeframe other && Equals(other);
+
         public bool Equals(InternalBatchCompletionTimeframe other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

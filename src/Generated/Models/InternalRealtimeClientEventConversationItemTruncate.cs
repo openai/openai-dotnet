@@ -4,34 +4,32 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeClientEventConversationItemTruncate : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventConversationItemTruncate(string itemId, int contentIndex, int audioEndMs)
+        public InternalRealtimeClientEventConversationItemTruncate(string itemId, int contentIndex, int audioEndMs) : base(InternalRealtimeClientEventType.ConversationItemTruncate)
         {
             Argument.AssertNotNull(itemId, nameof(itemId));
 
-            Kind = InternalRealtimeClientEventType.ConversationItemTruncate;
             ItemId = itemId;
             ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;
         }
 
-        internal InternalRealtimeClientEventConversationItemTruncate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string itemId, int contentIndex, int audioEndMs) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeClientEventConversationItemTruncate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int contentIndex, int audioEndMs) : base(kind, eventId, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;
-        }
-
-        internal InternalRealtimeClientEventConversationItemTruncate()
-        {
         }
 
         public string ItemId { get; }
+
         public int ContentIndex { get; }
+
         public int AudioEndMs { get; }
     }
 }

@@ -4,33 +4,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     public partial class Assistant
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(model, nameof(model));
-            Argument.AssertNotNull(tools, nameof(tools));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions)
+        {
             Id = id;
             CreatedAt = createdAt;
             Name = name;
             Description = description;
             Model = model;
             Instructions = instructions;
-            Tools = tools.ToList();
-            Metadata = metadata;
+            Tools = new ChangeTrackingList<ToolDefinition>();
+            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal Assistant(string id, InternalAssistantObjectObject @object, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, InternalAssistantObjectObject @object, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            Object = @object;
             CreatedAt = createdAt;
             Name = name;
             Description = description;
@@ -40,25 +36,36 @@ namespace OpenAI.Assistants
             ToolResources = toolResources;
             Metadata = metadata;
             Temperature = temperature;
-            NucleusSamplingFactor = nucleusSamplingFactor;
+            this.Object = @object;
             ResponseFormat = responseFormat;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal Assistant()
-        {
+            NucleusSamplingFactor = nucleusSamplingFactor;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
 
         public DateTimeOffset CreatedAt { get; }
+
         public string Name { get; }
+
         public string Description { get; }
+
         public string Model { get; }
+
         public string Instructions { get; }
+
         public IReadOnlyList<ToolDefinition> Tools { get; }
+
         public ToolResources ToolResources { get; }
+
         public IReadOnlyDictionary<string, string> Metadata { get; }
+
         public float? Temperature { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

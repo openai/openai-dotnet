@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Internal
 {
@@ -14,84 +15,62 @@ namespace OpenAI.Internal
     {
         void IJsonModel<InternalResponseFormatText>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalResponseFormatText)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
+            base.JsonModelWriteCore(writer, options);
         }
 
-        InternalResponseFormatText IJsonModel<InternalResponseFormatText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalResponseFormatText IJsonModel<InternalResponseFormatText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseFormatText)JsonModelCreateCore(ref reader, options);
+
+        protected override InternalOmniTypedResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalResponseFormatText)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponseFormatText(document.RootElement, options);
         }
 
-        internal static InternalResponseFormatText DeserializeInternalResponseFormatText(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalResponseFormatText DeserializeInternalResponseFormatText(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string type = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            string @type = "text";
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    type = property.Value.GetString();
+                    @type = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalResponseFormatText(type, serializedAdditionalRawData);
+            return new InternalResponseFormatText(@type, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalResponseFormatText>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalResponseFormatText>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -101,15 +80,16 @@ namespace OpenAI.Internal
             }
         }
 
-        InternalResponseFormatText IPersistableModel<InternalResponseFormatText>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
+        InternalResponseFormatText IPersistableModel<InternalResponseFormatText>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseFormatText)PersistableModelCreateCore(data, options);
 
+        protected override InternalOmniTypedResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalResponseFormatText(document.RootElement, options);
                     }
                 default:
@@ -119,15 +99,20 @@ namespace OpenAI.Internal
 
         string IPersistableModel<InternalResponseFormatText>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalResponseFormatText FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalResponseFormatText internalResponseFormatText)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponseFormatText(document.RootElement);
+            if (internalResponseFormatText == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalResponseFormatText, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalResponseFormatText(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalResponseFormatText(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

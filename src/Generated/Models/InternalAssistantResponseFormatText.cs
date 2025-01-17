@@ -9,12 +9,11 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalAssistantResponseFormatText : AssistantResponseFormat
     {
-        public InternalAssistantResponseFormatText()
+        public InternalAssistantResponseFormatText() : base("text")
         {
-            Type = "text";
         }
 
-        internal InternalAssistantResponseFormatText(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal InternalAssistantResponseFormatText(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

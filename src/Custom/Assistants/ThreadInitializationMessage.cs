@@ -18,7 +18,7 @@ public partial class ThreadInitializationMessage : MessageCreationOptions
     }
 
     internal ThreadInitializationMessage(MessageCreationOptions baseOptions)
-        : base(baseOptions.Role, baseOptions.Content, baseOptions.Attachments, baseOptions.Metadata, null)
+        : base(baseOptions.Attachments, baseOptions.Metadata, baseOptions.Role, baseOptions.Content, null)
     { }
 
     /// <summary>

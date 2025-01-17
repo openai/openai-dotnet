@@ -4,33 +4,41 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
     internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities : IEquatable<InternalCreateTranscriptionRequestTimestampGranularities>
     {
         private readonly string _value;
-
-        public InternalCreateTranscriptionRequestTimestampGranularities(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string WordValue = "word";
         private const string SegmentValue = "segment";
 
+        public InternalCreateTranscriptionRequestTimestampGranularities(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalCreateTranscriptionRequestTimestampGranularities Word { get; } = new InternalCreateTranscriptionRequestTimestampGranularities(WordValue);
+
         public static InternalCreateTranscriptionRequestTimestampGranularities Segment { get; } = new InternalCreateTranscriptionRequestTimestampGranularities(SegmentValue);
+
         public static bool operator ==(InternalCreateTranscriptionRequestTimestampGranularities left, InternalCreateTranscriptionRequestTimestampGranularities right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateTranscriptionRequestTimestampGranularities left, InternalCreateTranscriptionRequestTimestampGranularities right) => !left.Equals(right);
+
         public static implicit operator InternalCreateTranscriptionRequestTimestampGranularities(string value) => new InternalCreateTranscriptionRequestTimestampGranularities(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionRequestTimestampGranularities other && Equals(other);
+
         public bool Equals(InternalCreateTranscriptionRequestTimestampGranularities other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

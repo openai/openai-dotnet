@@ -9,41 +9,43 @@ namespace OpenAI.Files
 {
     public partial class OpenAIFile
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal OpenAIFile(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(filename, nameof(filename));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal OpenAIFile(string id, DateTimeOffset createdAt, string filename, Files.FilePurpose purpose, int? sizeInBytes, Files.FileStatus status)
+        {
             Id = id;
-            SizeInBytes = sizeInBytes;
             CreatedAt = createdAt;
             Filename = filename;
             Purpose = purpose;
+            SizeInBytes = sizeInBytes;
             Status = status;
         }
 
-        internal OpenAIFile(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, InternalOpenAIFileObject @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal OpenAIFile(string id, DateTimeOffset createdAt, string filename, Files.FilePurpose purpose, InternalOpenAIFileObject @object, int? sizeInBytes, Files.FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            SizeInBytes = sizeInBytes;
             CreatedAt = createdAt;
             Filename = filename;
-            Object = @object;
             Purpose = purpose;
+            this.Object = @object;
+            SizeInBytes = sizeInBytes;
             Status = status;
             StatusDetails = statusDetails;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal OpenAIFile()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
+
         public DateTimeOffset CreatedAt { get; }
+
         public string Filename { get; }
 
-        public FilePurpose Purpose { get; }
+        public Files.FilePurpose Purpose { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

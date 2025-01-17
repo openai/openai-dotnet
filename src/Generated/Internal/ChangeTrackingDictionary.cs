@@ -8,7 +8,8 @@ using System.Collections.Generic;
 
 namespace OpenAI
 {
-    internal class ChangeTrackingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
+    internal partial class ChangeTrackingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
+        where TKey : notnull
     {
         private IDictionary<TKey, TValue> _innerDictionary;
 

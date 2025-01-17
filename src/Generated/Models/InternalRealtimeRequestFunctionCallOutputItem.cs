@@ -4,32 +4,29 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeRequestFunctionCallOutputItem : ConversationItem
     {
-        public InternalRealtimeRequestFunctionCallOutputItem(string callId, string output)
+        public InternalRealtimeRequestFunctionCallOutputItem(string callId, string output) : base(InternalRealtimeItemType.FunctionCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(output, nameof(output));
 
-            Type = InternalRealtimeItemType.FunctionCallOutput;
             CallId = callId;
             Output = output;
         }
 
-        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, string callId, string output) : base(type, id, serializedAdditionalRawData)
+        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(@type, id, additionalBinaryDataProperties)
         {
             CallId = callId;
             Output = output;
-        }
-
-        internal InternalRealtimeRequestFunctionCallOutputItem()
-        {
         }
 
         public string CallId { get; }
+
         public string Output { get; }
     }
 }

@@ -50,10 +50,10 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     }
 
     /// <summary> Initializes a new instance of <see cref="InternalChatCompletionRequestMessageContentPartImageImageUrl"/>. </summary>
-    /// <param name="url"> Either a URL of the image or the base64 encoded image data. </param>
     /// <param name="detail"> Specifies the detail level of the image. Learn more in the [Vision guide](/docs/guides/vision/low-or-high-fidelity-image-understanding). </param>
+    /// <param name="url"> Either a URL of the image or the base64 encoded image data. </param>
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal InternalChatCompletionRequestMessageContentPartImageImageUrl(string url, ChatImageDetailLevel? detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal InternalChatCompletionRequestMessageContentPartImageImageUrl(ChatImageDetailLevel? detail, string url, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         Match parsedDataUri = ParseDataUriRegex().Match(url);
 
@@ -69,7 +69,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
 
         Url = url;
         Detail = detail;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
     public Uri ImageUri => _imageUri;

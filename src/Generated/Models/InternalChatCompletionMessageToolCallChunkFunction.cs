@@ -9,18 +9,25 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionMessageToolCallChunkFunction
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalChatCompletionMessageToolCallChunkFunction()
         {
         }
 
-        internal InternalChatCompletionMessageToolCallChunkFunction(string name, BinaryData arguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalChatCompletionMessageToolCallChunkFunction(string name, BinaryData arguments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             Arguments = arguments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Name { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

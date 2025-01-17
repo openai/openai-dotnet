@@ -7,46 +7,51 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     public partial class ThreadMessage : IJsonModel<ThreadMessage>
     {
+        internal ThreadMessage()
+        {
+        }
+
         void IJsonModel<ThreadMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ThreadMessage)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("thread_id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("thread_id") != true)
             {
                 writer.WritePropertyName("thread_id"u8);
                 writer.WriteStringValue(ThreadId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("incomplete_details") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("incomplete_details") != true)
             {
                 if (IncompleteDetails != null)
                 {
@@ -55,10 +60,10 @@ namespace OpenAI.Assistants
                 }
                 else
                 {
-                    writer.WriteNull("incomplete_details");
+                    writer.WriteNull("incompleteDetails"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("completed_at") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
                 if (CompletedAt != null)
                 {
@@ -67,10 +72,10 @@ namespace OpenAI.Assistants
                 }
                 else
                 {
-                    writer.WriteNull("completed_at");
+                    writer.WriteNull("completedAt"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("incomplete_at") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("incomplete_at") != true)
             {
                 if (IncompleteAt != null)
                 {
@@ -79,25 +84,20 @@ namespace OpenAI.Assistants
                 }
                 else
                 {
-                    writer.WriteNull("incomplete_at");
+                    writer.WriteNull("incompleteAt"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("content") != true)
+            if (true && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
-                foreach (var item in Content)
+                foreach (MessageContent item in Content)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("assistant_id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
             {
                 if (AssistantId != null)
                 {
@@ -106,10 +106,10 @@ namespace OpenAI.Assistants
                 }
                 else
                 {
-                    writer.WriteNull("assistant_id");
+                    writer.WriteNull("assistantId"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("run_id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("run_id") != true)
             {
                 if (RunId != null)
                 {
@@ -118,27 +118,10 @@ namespace OpenAI.Assistants
                 }
                 else
                 {
-                    writer.WriteNull("run_id");
+                    writer.WriteNull("runId"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("attachments") != true)
-            {
-                if (Attachments != null && Optional.IsCollectionDefined(Attachments))
-                {
-                    writer.WritePropertyName("attachments"u8);
-                    writer.WriteStartArray();
-                    foreach (var item in Attachments)
-                    {
-                        writer.WriteObjectValue<MessageCreationAttachment>(item, options);
-                    }
-                    writer.WriteEndArray();
-                }
-                else
-                {
-                    writer.WriteNull("attachments");
-                }
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("metadata") != true)
+            if (true && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 if (Metadata != null && Optional.IsCollectionDefined(Metadata))
                 {
@@ -147,18 +130,50 @@ namespace OpenAI.Assistants
                     foreach (var item in Metadata)
                     {
                         writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
                         writer.WriteStringValue(item.Value);
                     }
                     writer.WriteEndObject();
                 }
                 else
                 {
-                    writer.WriteNull("metadata");
+                    writer.WriteNull("metadata"u8);
                 }
             }
-            if (SerializedAdditionalRawData != null)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(this.Object.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("attachments") != true)
+            {
+                if (Attachments != null && Optional.IsCollectionDefined(Attachments))
+                {
+                    writer.WritePropertyName("attachments"u8);
+                    writer.WriteStartArray();
+                    foreach (MessageCreationAttachment item in Attachments)
+                    {
+                        writer.WriteObjectValue(item, options);
+                    }
+                    writer.WriteEndArray();
+                }
+                else
+                {
+                    writer.WriteNull("attachments"u8);
+                }
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -166,7 +181,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -175,196 +190,199 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        ThreadMessage IJsonModel<ThreadMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ThreadMessage IJsonModel<ThreadMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual ThreadMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ThreadMessage)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeThreadMessage(document.RootElement, options);
         }
 
-        internal static ThreadMessage DeserializeThreadMessage(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static ThreadMessage DeserializeThreadMessage(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string id = default;
-            InternalMessageObjectObject @object = default;
             DateTimeOffset createdAt = default;
             string threadId = default;
             MessageStatus status = default;
             MessageFailureDetails incompleteDetails = default;
             DateTimeOffset? completedAt = default;
             DateTimeOffset? incompleteAt = default;
-            MessageRole role = default;
             IReadOnlyList<MessageContent> content = default;
             string assistantId = default;
             string runId = default;
-            IReadOnlyList<MessageCreationAttachment> attachments = default;
             IReadOnlyDictionary<string, string> metadata = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            InternalMessageObjectObject @object = default;
+            Assistants.MessageRole role = default;
+            IReadOnlyList<MessageCreationAttachment> attachments = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("id"u8))
+                if (prop.NameEquals("id"u8))
                 {
-                    id = property.Value.GetString();
+                    id = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("object"u8))
+                if (prop.NameEquals("created_at"u8))
                 {
-                    @object = new InternalMessageObjectObject(property.Value.GetString());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (property.NameEquals("created_at"u8))
+                if (prop.NameEquals("thread_id"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                    threadId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("thread_id"u8))
+                if (prop.NameEquals("status"u8))
                 {
-                    threadId = property.Value.GetString();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("status"u8))
+                if (prop.NameEquals("incomplete_details"u8))
                 {
-                    status = new MessageStatus(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("incomplete_details"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         incompleteDetails = null;
                         continue;
                     }
-                    incompleteDetails = MessageFailureDetails.DeserializeMessageFailureDetails(property.Value, options);
+                    incompleteDetails = MessageFailureDetails.DeserializeMessageFailureDetails(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("completed_at"u8))
+                if (prop.NameEquals("completed_at"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         completedAt = null;
                         continue;
                     }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                    completedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (property.NameEquals("incomplete_at"u8))
+                if (prop.NameEquals("incomplete_at"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         incompleteAt = null;
                         continue;
                     }
-                    incompleteAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                    incompleteAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (property.NameEquals("role"u8))
-                {
-                    role = property.Value.GetString().ToMessageRole();
-                    continue;
-                }
-                if (property.NameEquals("content"u8))
+                if (prop.NameEquals("content"u8))
                 {
                     List<MessageContent> array = new List<MessageContent>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(MessageContent.DeserializeMessageContent(item, options));
                     }
                     content = array;
                     continue;
                 }
-                if (property.NameEquals("assistant_id"u8))
+                if (prop.NameEquals("assistant_id"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         assistantId = null;
                         continue;
                     }
-                    assistantId = property.Value.GetString();
+                    assistantId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("run_id"u8))
+                if (prop.NameEquals("run_id"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         runId = null;
                         continue;
                     }
-                    runId = property.Value.GetString();
+                    runId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("attachments"u8))
+                if (prop.NameEquals("metadata"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        metadata = new ChangeTrackingDictionary<string, string>();
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = new InternalMessageObjectObject(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("role"u8))
+                {
+                    role = prop.Value.GetString().ToMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("attachments"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         attachments = new ChangeTrackingList<MessageCreationAttachment>();
                         continue;
                     }
                     List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
                     }
                     attachments = array;
                     continue;
                 }
-                if (property.NameEquals("metadata"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        metadata = new ChangeTrackingDictionary<string, string>();
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var property0 in property.Value.EnumerateObject())
-                    {
-                        dictionary.Add(property0.Name, property0.Value.GetString());
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new ThreadMessage(
                 id,
-                @object,
                 createdAt,
                 threadId,
                 status,
                 incompleteDetails,
                 completedAt,
                 incompleteAt,
-                role,
                 content,
                 assistantId,
                 runId,
-                attachments,
                 metadata,
-                serializedAdditionalRawData);
+                @object,
+                role,
+                attachments,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ThreadMessage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<ThreadMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -374,15 +392,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        ThreadMessage IPersistableModel<ThreadMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
+        ThreadMessage IPersistableModel<ThreadMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual ThreadMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ThreadMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeThreadMessage(document.RootElement, options);
                     }
                 default:
@@ -392,15 +411,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<ThreadMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static ThreadMessage FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(ThreadMessage threadMessage)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeThreadMessage(document.RootElement);
+            if (threadMessage == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(threadMessage, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator ThreadMessage(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeThreadMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

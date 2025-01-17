@@ -9,15 +9,23 @@ namespace OpenAI.RealtimeConversation
 {
     public abstract partial class ConversationTool
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected ConversationTool()
-        {
-        }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ConversationTool(ConversationToolKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        private protected ConversationTool(ConversationToolKind kind)
         {
             Kind = kind;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+        }
+
+        internal ConversationTool(ConversationToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Kind = kind;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

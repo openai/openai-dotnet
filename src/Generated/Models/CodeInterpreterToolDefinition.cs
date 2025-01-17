@@ -9,12 +9,11 @@ namespace OpenAI.Assistants
 {
     public partial class CodeInterpreterToolDefinition : ToolDefinition
     {
-        public CodeInterpreterToolDefinition()
+        public CodeInterpreterToolDefinition() : base("code_interpreter")
         {
-            Type = "code_interpreter";
         }
 
-        internal CodeInterpreterToolDefinition(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal CodeInterpreterToolDefinition(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

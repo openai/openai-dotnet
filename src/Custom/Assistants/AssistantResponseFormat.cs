@@ -32,8 +32,8 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
         InternalResponseFormatJsonSchemaJsonSchema internalSchema = new(
             description,
             name,
-            jsonSchema,
             strictSchemaEnabled,
+            jsonSchema,
             null);
         return new InternalAssistantResponseFormatJsonSchema(internalSchema);
     }
