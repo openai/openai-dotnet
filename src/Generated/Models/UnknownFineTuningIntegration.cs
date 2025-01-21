@@ -9,11 +9,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class UnknownFineTuningIntegration : InternalFineTuningIntegration
     {
-        internal UnknownFineTuningIntegration(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal UnknownFineTuningIntegration()
+        internal UnknownFineTuningIntegration(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

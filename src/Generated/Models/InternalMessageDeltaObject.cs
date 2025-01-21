@@ -9,31 +9,32 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaObject
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectDelta delta)
         {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(delta, nameof(delta));
-
             Id = id;
             Delta = delta;
         }
 
-        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, InternalMessageDeltaObjectDelta delta, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageDeltaObject(string id, InternalMessageDeltaObjectObject @object, InternalMessageDeltaObjectDelta delta, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Object = @object;
             Delta = delta;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageDeltaObject()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
-        public InternalMessageDeltaObjectObject Object { get; } = InternalMessageDeltaObjectObject.ThreadMessageDelta;
+
+        public InternalMessageDeltaObjectObject Object { get; } = "thread.message.delta";
 
         public InternalMessageDeltaObjectDelta Delta { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

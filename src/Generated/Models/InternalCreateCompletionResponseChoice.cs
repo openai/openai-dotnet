@@ -9,33 +9,37 @@ namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionResponseChoice
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateCompletionResponseChoice(InternalCreateCompletionResponseChoiceFinishReason finishReason, int index, InternalCreateCompletionResponseChoiceLogprobs logprobs, string text)
         {
-            Argument.AssertNotNull(text, nameof(text));
-
             FinishReason = finishReason;
             Index = index;
             Logprobs = logprobs;
             Text = text;
         }
 
-        internal InternalCreateCompletionResponseChoice(InternalCreateCompletionResponseChoiceFinishReason finishReason, int index, InternalCreateCompletionResponseChoiceLogprobs logprobs, string text, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateCompletionResponseChoice(InternalCreateCompletionResponseChoiceFinishReason finishReason, int index, InternalCreateCompletionResponseChoiceLogprobs logprobs, string text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FinishReason = finishReason;
             Index = index;
             Logprobs = logprobs;
             Text = text;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateCompletionResponseChoice()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public InternalCreateCompletionResponseChoiceFinishReason FinishReason { get; }
+
         public int Index { get; }
+
         public InternalCreateCompletionResponseChoiceLogprobs Logprobs { get; }
+
         public string Text { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

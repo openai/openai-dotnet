@@ -7,36 +7,46 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeResponse : IJsonModel<InternalRealtimeResponse>
     {
+        internal InternalRealtimeResponse()
+        {
+        }
+
         void IJsonModel<InternalRealtimeResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeResponse)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status_details") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
                 if (StatusDetails != null)
                 {
@@ -45,27 +55,27 @@ namespace OpenAI.RealtimeConversation
                 }
                 else
                 {
-                    writer.WriteNull("status_details");
+                    writer.WriteNull("statusDetails"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("output") != true)
-            {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStartArray();
-                foreach (var item in Output)
-                {
-                    writer.WriteObjectValue<ConversationItem>(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("usage") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
-            if (SerializedAdditionalRawData != null)
+            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("output"u8);
+                writer.WriteStartArray();
+                foreach (ConversationItem item in Output)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -73,7 +83,7 @@ namespace OpenAI.RealtimeConversation
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -82,25 +92,23 @@ namespace OpenAI.RealtimeConversation
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRealtimeResponse IJsonModel<InternalRealtimeResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRealtimeResponse IJsonModel<InternalRealtimeResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRealtimeResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeResponse)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRealtimeResponse(document.RootElement, options);
         }
 
-        internal static InternalRealtimeResponse DeserializeInternalRealtimeResponse(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRealtimeResponse DeserializeInternalRealtimeResponse(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -109,73 +117,71 @@ namespace OpenAI.RealtimeConversation
             string id = default;
             ConversationStatus status = default;
             ConversationStatusDetails statusDetails = default;
-            IReadOnlyList<ConversationItem> output = default;
             ConversationTokenUsage usage = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IReadOnlyList<ConversationItem> output = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("object"u8))
+                if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalRealtimeResponseObject(property.Value.GetString());
+                    @object = new InternalRealtimeResponseObject(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("id"u8))
+                if (prop.NameEquals("id"u8))
                 {
-                    id = property.Value.GetString();
+                    id = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("status"u8))
+                if (prop.NameEquals("status"u8))
                 {
-                    status = new ConversationStatus(property.Value.GetString());
+                    status = new ConversationStatus(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("status_details"u8))
+                if (prop.NameEquals("status_details"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         statusDetails = null;
                         continue;
                     }
-                    statusDetails = ConversationStatusDetails.DeserializeConversationStatusDetails(property.Value, options);
+                    statusDetails = ConversationStatusDetails.DeserializeConversationStatusDetails(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("output"u8))
+                if (prop.NameEquals("usage"u8))
+                {
+                    usage = ConversationTokenUsage.DeserializeConversationTokenUsage(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("output"u8))
                 {
                     List<ConversationItem> array = new List<ConversationItem>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(ConversationItem.DeserializeConversationItem(item, options));
                     }
                     output = array;
                     continue;
                 }
-                if (property.NameEquals("usage"u8))
-                {
-                    usage = ConversationTokenUsage.DeserializeConversationTokenUsage(property.Value, options);
-                    continue;
-                }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalRealtimeResponse(
                 @object,
                 id,
                 status,
                 statusDetails,
-                output,
                 usage,
-                serializedAdditionalRawData);
+                output,
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRealtimeResponse>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRealtimeResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -185,15 +191,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        InternalRealtimeResponse IPersistableModel<InternalRealtimeResponse>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRealtimeResponse IPersistableModel<InternalRealtimeResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRealtimeResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRealtimeResponse(document.RootElement, options);
                     }
                 default:
@@ -203,15 +210,20 @@ namespace OpenAI.RealtimeConversation
 
         string IPersistableModel<InternalRealtimeResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRealtimeResponse FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRealtimeResponse internalRealtimeResponse)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeResponse(document.RootElement);
+            if (internalRealtimeResponse == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRealtimeResponse, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRealtimeResponse(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRealtimeResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

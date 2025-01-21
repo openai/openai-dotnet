@@ -5,12 +5,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextObjectText
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalMessageContentTextObjectText(string value, IEnumerable<InternalMessageContentTextObjectAnnotation> annotations)
         {
             Argument.AssertNotNull(value, nameof(value));
@@ -20,18 +22,21 @@ namespace OpenAI.Assistants
             Annotations = annotations.ToList();
         }
 
-        internal InternalMessageContentTextObjectText(string value, IList<InternalMessageContentTextObjectAnnotation> annotations, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageContentTextObjectText(string value, IList<InternalMessageContentTextObjectAnnotation> annotations, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Value = value;
             Annotations = annotations;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalMessageContentTextObjectText()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Value { get; set; }
+
         public IList<InternalMessageContentTextObjectAnnotation> Annotations { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

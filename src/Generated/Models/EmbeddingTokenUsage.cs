@@ -9,22 +9,25 @@ namespace OpenAI.Embeddings
 {
     public partial class EmbeddingTokenUsage
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount)
         {
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
         }
 
-        internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal EmbeddingTokenUsage(int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal EmbeddingTokenUsage()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

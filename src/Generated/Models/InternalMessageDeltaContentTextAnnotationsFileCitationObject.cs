@@ -9,13 +9,12 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObject : InternalMessageDeltaTextContentAnnotation
     {
-        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject(int index)
+        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject(int index) : base("file_citation")
         {
-            Type = "file_citation";
             Index = index;
         }
 
-        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, int index, string text, InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int? startIndex, int? endIndex) : base(type, serializedAdditionalRawData)
+        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string text, InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int? startIndex, int? endIndex) : base(@type, additionalBinaryDataProperties)
         {
             Index = index;
             Text = text;
@@ -24,14 +23,14 @@ namespace OpenAI.Assistants
             EndIndex = endIndex;
         }
 
-        internal InternalMessageDeltaContentTextAnnotationsFileCitationObject()
-        {
-        }
-
         public int Index { get; }
+
         public string Text { get; }
+
         public InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; }
+
         public int? StartIndex { get; }
+
         public int? EndIndex { get; }
     }
 }

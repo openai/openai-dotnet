@@ -9,14 +9,10 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningJobCheckpoint
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalFineTuningJobCheckpoint(string id, DateTimeOffset createdAt, string fineTunedModelCheckpoint, int stepNumber, InternalFineTuningJobCheckpointMetrics metrics, string fineTuningJobId)
         {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
-            Argument.AssertNotNull(metrics, nameof(metrics));
-            Argument.AssertNotNull(fineTuningJobId, nameof(fineTuningJobId));
-
             Id = id;
             CreatedAt = createdAt;
             FineTunedModelCheckpoint = fineTunedModelCheckpoint;
@@ -25,7 +21,7 @@ namespace OpenAI.FineTuning
             FineTuningJobId = fineTuningJobId;
         }
 
-        internal InternalFineTuningJobCheckpoint(string id, DateTimeOffset createdAt, string fineTunedModelCheckpoint, int stepNumber, InternalFineTuningJobCheckpointMetrics metrics, string fineTuningJobId, InternalFineTuningJobCheckpointObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFineTuningJobCheckpoint(string id, DateTimeOffset createdAt, string fineTunedModelCheckpoint, int stepNumber, InternalFineTuningJobCheckpointMetrics metrics, string fineTuningJobId, InternalFineTuningJobCheckpointObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -34,19 +30,27 @@ namespace OpenAI.FineTuning
             Metrics = metrics;
             FineTuningJobId = fineTuningJobId;
             Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalFineTuningJobCheckpoint()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
+
         public DateTimeOffset CreatedAt { get; }
+
         public string FineTunedModelCheckpoint { get; }
+
         public int StepNumber { get; }
+
         public InternalFineTuningJobCheckpointMetrics Metrics { get; }
+
         public string FineTuningJobId { get; }
-        public InternalFineTuningJobCheckpointObject Object { get; } = InternalFineTuningJobCheckpointObject.FineTuningJobCheckpoint;
+
+        public InternalFineTuningJobCheckpointObject Object { get; } = "fine_tuning.job.checkpoint";
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

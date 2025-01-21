@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
+[CodeGenSuppress("ListAssistantsAsync", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("ListAssistants", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 public partial class AssistantClient
 {
     /// <summary>
@@ -22,7 +24,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateAssistantRequest(content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -39,7 +41,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateAssistantRequest(content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -69,7 +71,7 @@ public partial class AssistantClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual AsyncCollectionResult GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
     {
-        return new AsyncAssistantCollectionResult(this, _pipeline, options, limit, order, after, before);
+        return new AsyncAssistantCollectionResult(this, Pipeline, options, limit, order, after, before);
     }
 
     /// <summary>
@@ -99,7 +101,7 @@ public partial class AssistantClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual CollectionResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
     {
-        return new AssistantCollectionResult(this, _pipeline, options, limit, order, after, before);
+        return new AssistantCollectionResult(this, Pipeline, options, limit, order, after, before);
     }
 
     /// <summary>
@@ -117,7 +119,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         using PipelineMessage message = CreateGetAssistantRequest(assistantId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -135,7 +137,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         using PipelineMessage message = CreateGetAssistantRequest(assistantId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -155,7 +157,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyAssistantRequest(assistantId, content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -175,7 +177,7 @@ public partial class AssistantClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyAssistantRequest(assistantId, content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -193,7 +195,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         using PipelineMessage message = CreateDeleteAssistantRequest(assistantId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -211,7 +213,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         using PipelineMessage message = CreateDeleteAssistantRequest(assistantId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <inheritdoc cref="InternalAssistantMessageClient.CreateMessageAsync"/>

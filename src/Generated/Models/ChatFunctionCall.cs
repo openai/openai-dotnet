@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class ChatFunctionCall
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public ChatFunctionCall(string functionName, BinaryData functionArguments)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
@@ -19,15 +21,17 @@ namespace OpenAI.Chat
             FunctionArguments = functionArguments;
         }
 
-        internal ChatFunctionCall(string functionName, BinaryData functionArguments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatFunctionCall(string functionName, BinaryData functionArguments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FunctionName = functionName;
             FunctionArguments = functionArguments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal ChatFunctionCall()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Files
 {
     internal partial class InternalCreateUploadRequest
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType)
         {
             Argument.AssertNotNull(filename, nameof(filename));
@@ -21,22 +23,27 @@ namespace OpenAI.Files
             MimeType = mimeType;
         }
 
-        internal InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Filename = filename;
             Purpose = purpose;
             Bytes = bytes;
             MimeType = mimeType;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateUploadRequest()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Filename { get; }
+
         public InternalCreateUploadRequestPurpose Purpose { get; }
+
         public int Bytes { get; }
+
         public string MimeType { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionNamedToolChoice
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceFunction function)
         {
             Argument.AssertNotNull(function, nameof(function));
@@ -17,19 +19,21 @@ namespace OpenAI.Chat
             Function = function;
         }
 
-        internal InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceType type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceType @type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = type;
+            Type = @type;
             Function = function;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalChatCompletionNamedToolChoice()
-        {
-        }
-
-        public InternalChatCompletionNamedToolChoiceType Type { get; } = InternalChatCompletionNamedToolChoiceType.Function;
+        public InternalChatCompletionNamedToolChoiceType Type { get; } = "function";
 
         public InternalChatCompletionNamedToolChoiceFunction Function { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

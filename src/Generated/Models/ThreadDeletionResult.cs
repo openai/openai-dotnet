@@ -9,26 +9,28 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadDeletionResult
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal ThreadDeletionResult(string threadId, bool deleted)
-        {
-            Argument.AssertNotNull(threadId, nameof(threadId));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            ThreadId = threadId;
+        internal ThreadDeletionResult(bool deleted, string threadId)
+        {
             Deleted = deleted;
-        }
-
-        internal ThreadDeletionResult(string threadId, bool deleted, InternalDeleteThreadResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
             ThreadId = threadId;
-            Deleted = deleted;
-            Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal ThreadDeletionResult()
+        internal ThreadDeletionResult(bool deleted, string threadId, InternalDeleteThreadResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Deleted = deleted;
+            ThreadId = threadId;
+            this.Object = @object;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
         public bool Deleted { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

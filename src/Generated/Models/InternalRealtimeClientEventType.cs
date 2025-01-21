@@ -4,18 +4,13 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal readonly partial struct InternalRealtimeClientEventType : IEquatable<InternalRealtimeClientEventType>
     {
         private readonly string _value;
-
-        public InternalRealtimeClientEventType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string SessionUpdateValue = "session.update";
         private const string InputAudioBufferAppendValue = "input_audio_buffer.append";
         private const string InputAudioBufferCommitValue = "input_audio_buffer.commit";
@@ -26,25 +21,45 @@ namespace OpenAI.RealtimeConversation
         private const string ResponseCreateValue = "response.create";
         private const string ResponseCancelValue = "response.cancel";
 
+        public InternalRealtimeClientEventType(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalRealtimeClientEventType SessionUpdate { get; } = new InternalRealtimeClientEventType(SessionUpdateValue);
+
         public static InternalRealtimeClientEventType InputAudioBufferAppend { get; } = new InternalRealtimeClientEventType(InputAudioBufferAppendValue);
+
         public static InternalRealtimeClientEventType InputAudioBufferCommit { get; } = new InternalRealtimeClientEventType(InputAudioBufferCommitValue);
+
         public static InternalRealtimeClientEventType InputAudioBufferClear { get; } = new InternalRealtimeClientEventType(InputAudioBufferClearValue);
+
         public static InternalRealtimeClientEventType ConversationItemCreate { get; } = new InternalRealtimeClientEventType(ConversationItemCreateValue);
+
         public static InternalRealtimeClientEventType ConversationItemDelete { get; } = new InternalRealtimeClientEventType(ConversationItemDeleteValue);
+
         public static InternalRealtimeClientEventType ConversationItemTruncate { get; } = new InternalRealtimeClientEventType(ConversationItemTruncateValue);
+
         public static InternalRealtimeClientEventType ResponseCreate { get; } = new InternalRealtimeClientEventType(ResponseCreateValue);
+
         public static InternalRealtimeClientEventType ResponseCancel { get; } = new InternalRealtimeClientEventType(ResponseCancelValue);
+
         public static bool operator ==(InternalRealtimeClientEventType left, InternalRealtimeClientEventType right) => left.Equals(right);
+
         public static bool operator !=(InternalRealtimeClientEventType left, InternalRealtimeClientEventType right) => !left.Equals(right);
+
         public static implicit operator InternalRealtimeClientEventType(string value) => new InternalRealtimeClientEventType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeClientEventType other && Equals(other);
+
         public bool Equals(InternalRealtimeClientEventType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

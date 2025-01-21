@@ -32,7 +32,7 @@ public partial class AudioClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateSpeechRequest(content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -53,7 +53,7 @@ public partial class AudioClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateSpeechRequest(content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     // CUSTOM:
@@ -78,7 +78,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateTranscriptionRequest(content, contentType, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -103,7 +103,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateTranscriptionRequest(content, contentType, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     // CUSTOM:
@@ -127,7 +127,7 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateTranslationRequest(content, contentType, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -151,6 +151,6 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateTranslationRequest(content, contentType, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 }

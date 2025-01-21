@@ -9,14 +9,13 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeRequestAudioContentPart : ConversationContentPart
     {
-        public InternalRealtimeRequestAudioContentPart()
+        public InternalRealtimeRequestAudioContentPart() : base(ConversationContentPartKind.InputAudio)
         {
-            Kind = ConversationContentPartKind.InputAudio;
         }
 
-        internal InternalRealtimeRequestAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData, string type, string internalTranscriptValue) : base(kind, serializedAdditionalRawData)
+        internal InternalRealtimeRequestAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, string internalTranscriptValue) : base(kind, additionalBinaryDataProperties)
         {
-            Type = type;
+            Type = @type;
             InternalTranscriptValue = internalTranscriptValue;
         }
 

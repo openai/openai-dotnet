@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -14,31 +15,36 @@ namespace OpenAI.Images
     {
         void IJsonModel<GeneratedImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(GeneratedImage)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("b64_json") != true && Optional.IsDefined(ImageBytes))
-            {
-                writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(ImageBytes.ToArray(), "D");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("url") != true && Optional.IsDefined(ImageUri))
-            {
-                writer.WritePropertyName("url"u8);
-                writer.WriteStringValue(ImageUri.AbsoluteUri);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("revised_prompt") != true && Optional.IsDefined(RevisedPrompt))
+            if (Optional.IsDefined(RevisedPrompt) && _additionalBinaryDataProperties?.ContainsKey("revised_prompt") != true)
             {
                 writer.WritePropertyName("revised_prompt"u8);
                 writer.WriteStringValue(RevisedPrompt);
             }
-            if (SerializedAdditionalRawData != null)
+            if (Optional.IsDefined(ImageBytes) && _additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("b64_json"u8);
+                writer.WriteBase64StringValue(ImageBytes.ToArray(), "D");
+            }
+            if (Optional.IsDefined(ImageUri) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
+            {
+                writer.WritePropertyName("url"u8);
+                writer.WriteStringValue(ImageUri.AbsoluteUri);
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +52,7 @@ namespace OpenAI.Images
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,73 +61,69 @@ namespace OpenAI.Images
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        GeneratedImage IJsonModel<GeneratedImage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        GeneratedImage IJsonModel<GeneratedImage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual GeneratedImage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(GeneratedImage)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeGeneratedImage(document.RootElement, options);
         }
 
-        internal static GeneratedImage DeserializeGeneratedImage(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static GeneratedImage DeserializeGeneratedImage(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            BinaryData b64Json = default;
-            Uri url = default;
             string revisedPrompt = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            BinaryData imageBytes = default;
+            Uri imageUri = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("b64_json"u8))
+                if (prop.NameEquals("revised_prompt"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    revisedPrompt = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("b64_json"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    b64Json = BinaryData.FromBytes(property.Value.GetBytesFromBase64("D"));
+                    imageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
-                if (property.NameEquals("url"u8))
+                if (prop.NameEquals("url"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    url = new Uri(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("revised_prompt"u8))
-                {
-                    revisedPrompt = property.Value.GetString();
+                    imageUri = new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new GeneratedImage(b64Json, url, revisedPrompt, serializedAdditionalRawData);
+            return new GeneratedImage(revisedPrompt, imageBytes, imageUri, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<GeneratedImage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<GeneratedImage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -131,15 +133,16 @@ namespace OpenAI.Images
             }
         }
 
-        GeneratedImage IPersistableModel<GeneratedImage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
+        GeneratedImage IPersistableModel<GeneratedImage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual GeneratedImage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeGeneratedImage(document.RootElement, options);
                     }
                 default:
@@ -149,15 +152,20 @@ namespace OpenAI.Images
 
         string IPersistableModel<GeneratedImage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static GeneratedImage FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(GeneratedImage generatedImage)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeGeneratedImage(document.RootElement);
+            if (generatedImage == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(generatedImage, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator GeneratedImage(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeGeneratedImage(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

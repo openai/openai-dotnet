@@ -7,48 +7,58 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>
     {
+        internal VectorStoreFileCounts()
+        {
+        }
+
         void IJsonModel<VectorStoreFileCounts>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileCounts)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("in_progress") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("in_progress") != true)
             {
                 writer.WritePropertyName("in_progress"u8);
                 writer.WriteNumberValue(InProgress);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("completed") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("completed") != true)
             {
                 writer.WritePropertyName("completed"u8);
                 writer.WriteNumberValue(Completed);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("failed") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("failed") != true)
             {
                 writer.WritePropertyName("failed"u8);
                 writer.WriteNumberValue(Failed);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("cancelled") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("cancelled") != true)
             {
                 writer.WritePropertyName("cancelled"u8);
                 writer.WriteNumberValue(Cancelled);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("total") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("total") != true)
             {
                 writer.WritePropertyName("total"u8);
                 writer.WriteNumberValue(Total);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -56,7 +66,7 @@ namespace OpenAI.VectorStores
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -65,25 +75,23 @@ namespace OpenAI.VectorStores
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        VectorStoreFileCounts IJsonModel<VectorStoreFileCounts>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        VectorStoreFileCounts IJsonModel<VectorStoreFileCounts>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual VectorStoreFileCounts JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileCounts)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeVectorStoreFileCounts(document.RootElement, options);
         }
 
-        internal static VectorStoreFileCounts DeserializeVectorStoreFileCounts(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static VectorStoreFileCounts DeserializeVectorStoreFileCounts(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -93,55 +101,53 @@ namespace OpenAI.VectorStores
             int failed = default;
             int cancelled = default;
             int total = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("in_progress"u8))
+                if (prop.NameEquals("in_progress"u8))
                 {
-                    inProgress = property.Value.GetInt32();
+                    inProgress = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("completed"u8))
+                if (prop.NameEquals("completed"u8))
                 {
-                    completed = property.Value.GetInt32();
+                    completed = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("failed"u8))
+                if (prop.NameEquals("failed"u8))
                 {
-                    failed = property.Value.GetInt32();
+                    failed = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("cancelled"u8))
+                if (prop.NameEquals("cancelled"u8))
                 {
-                    cancelled = property.Value.GetInt32();
+                    cancelled = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("total"u8))
+                if (prop.NameEquals("total"u8))
                 {
-                    total = property.Value.GetInt32();
+                    total = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new VectorStoreFileCounts(
                 inProgress,
                 completed,
                 failed,
                 cancelled,
                 total,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<VectorStoreFileCounts>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<VectorStoreFileCounts>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -151,15 +157,16 @@ namespace OpenAI.VectorStores
             }
         }
 
-        VectorStoreFileCounts IPersistableModel<VectorStoreFileCounts>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
+        VectorStoreFileCounts IPersistableModel<VectorStoreFileCounts>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual VectorStoreFileCounts PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeVectorStoreFileCounts(document.RootElement, options);
                     }
                 default:
@@ -169,15 +176,20 @@ namespace OpenAI.VectorStores
 
         string IPersistableModel<VectorStoreFileCounts>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static VectorStoreFileCounts FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(VectorStoreFileCounts vectorStoreFileCounts)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreFileCounts(document.RootElement);
+            if (vectorStoreFileCounts == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(vectorStoreFileCounts, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator VectorStoreFileCounts(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeVectorStoreFileCounts(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

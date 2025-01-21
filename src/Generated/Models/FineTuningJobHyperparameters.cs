@@ -9,27 +9,23 @@ namespace OpenAI.FineTuning
 {
     internal readonly partial struct FineTuningJobHyperparameters
     {
+        private readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier)
         {
-            Argument.AssertNotNull(nEpochs, nameof(nEpochs));
-            Argument.AssertNotNull(batchSize, nameof(batchSize));
-            Argument.AssertNotNull(learningRateMultiplier, nameof(learningRateMultiplier));
-
             NEpochs = nEpochs;
             BatchSize = batchSize;
             LearningRateMultiplier = learningRateMultiplier;
         }
 
-        internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal FineTuningJobHyperparameters(BinaryData nEpochs, BinaryData batchSize, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             NEpochs = nEpochs;
             BatchSize = batchSize;
             LearningRateMultiplier = learningRateMultiplier;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public FineTuningJobHyperparameters()
-        {
-        }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData => _additionalBinaryDataProperties;
     }
 }

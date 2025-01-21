@@ -10,34 +10,38 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalListFineTuningJobCheckpointsResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<InternalFineTuningJobCheckpoint> data, bool hasMore)
         {
-            Argument.AssertNotNull(data, nameof(data));
-
             Data = data.ToList();
             HasMore = hasMore;
         }
 
-        internal InternalListFineTuningJobCheckpointsResponse(IReadOnlyList<InternalFineTuningJobCheckpoint> data, InternalListFineTuningJobCheckpointsResponseObject @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListFineTuningJobCheckpointsResponse(IList<InternalFineTuningJobCheckpoint> data, InternalListFineTuningJobCheckpointsResponseObject @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Data = data;
             Object = @object;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalListFineTuningJobCheckpointsResponse()
-        {
-        }
+        public IList<InternalFineTuningJobCheckpoint> Data { get; }
 
-        public IReadOnlyList<InternalFineTuningJobCheckpoint> Data { get; }
-        public InternalListFineTuningJobCheckpointsResponseObject Object { get; } = InternalListFineTuningJobCheckpointsResponseObject.List;
+        public InternalListFineTuningJobCheckpointsResponseObject Object { get; } = "list";
 
         public string FirstId { get; }
+
         public string LastId { get; }
+
         public bool HasMore { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -4,26 +4,22 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
     internal partial class WeightsAndBiasesIntegration : FineTuningIntegration
     {
-        public WeightsAndBiasesIntegration(InternalCreateFineTuningJobRequestWandbIntegrationWandb wandb)
+        public WeightsAndBiasesIntegration(InternalCreateFineTuningJobRequestWandbIntegrationWandb wandb) : base("wandb")
         {
             Argument.AssertNotNull(wandb, nameof(wandb));
 
-            Type = "wandb";
             Wandb = wandb;
         }
 
-        internal WeightsAndBiasesIntegration(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalCreateFineTuningJobRequestWandbIntegrationWandb wandb) : base(type, serializedAdditionalRawData)
+        internal WeightsAndBiasesIntegration(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalCreateFineTuningJobRequestWandbIntegrationWandb wandb) : base(@type, additionalBinaryDataProperties)
         {
             Wandb = wandb;
-        }
-
-        internal WeightsAndBiasesIntegration()
-        {
         }
 
         public InternalCreateFineTuningJobRequestWandbIntegrationWandb Wandb { get; }

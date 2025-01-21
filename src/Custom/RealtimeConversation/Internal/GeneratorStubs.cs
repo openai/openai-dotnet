@@ -36,6 +36,7 @@ namespace OpenAI.RealtimeConversation;
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeClientEvent")] internal partial class UnknownRealtimeClientEvent { }
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeContentPart")] internal partial class UnknownRealtimeContentPart { }
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeRequestItem")] internal partial class UnknownRealtimeRequestItem { }
+[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeRequestMessageItem")] internal partial class UnknownRealtimeRequestMessageItem { }
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeResponseItem")] internal partial class UnknownRealtimeResponseItem { }
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeResponseStatusDetails")] internal partial class UnknownRealtimeResponseStatusDetails { }
 [Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeServerEvent")] internal partial class UnknownRealtimeServerEvent { }

@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -14,26 +15,31 @@ namespace OpenAI.Assistants
     {
         void IJsonModel<InternalAssistantToolsFileSearchFileSearch>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalAssistantToolsFileSearchFileSearch)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("max_num_results") != true && Optional.IsDefined(InternalMaxNumResults))
-            {
-                writer.WritePropertyName("max_num_results"u8);
-                writer.WriteNumberValue(InternalMaxNumResults.Value);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("ranking_options") != true && Optional.IsDefined(RankingOptions))
+            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
             {
                 writer.WritePropertyName("ranking_options"u8);
                 writer.WriteObjectValue(RankingOptions, options);
             }
-            if (SerializedAdditionalRawData != null)
+            if (Optional.IsDefined(InternalMaxNumResults) && _additionalBinaryDataProperties?.ContainsKey("max_num_results") != true)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                writer.WritePropertyName("max_num_results"u8);
+                writer.WriteNumberValue(InternalMaxNumResults.Value);
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +47,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,67 +56,63 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalAssistantToolsFileSearchFileSearch IJsonModel<InternalAssistantToolsFileSearchFileSearch>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalAssistantToolsFileSearchFileSearch IJsonModel<InternalAssistantToolsFileSearchFileSearch>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalAssistantToolsFileSearchFileSearch JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalAssistantToolsFileSearchFileSearch)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalAssistantToolsFileSearchFileSearch(document.RootElement, options);
         }
 
-        internal static InternalAssistantToolsFileSearchFileSearch DeserializeInternalAssistantToolsFileSearchFileSearch(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalAssistantToolsFileSearchFileSearch DeserializeInternalAssistantToolsFileSearchFileSearch(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            int? maxNumResults = default;
             FileSearchRankingOptions rankingOptions = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            int? internalMaxNumResults = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("max_num_results"u8))
+                if (prop.NameEquals("ranking_options"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    maxNumResults = property.Value.GetInt32();
+                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("ranking_options"u8))
+                if (prop.NameEquals("max_num_results"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(property.Value, options);
+                    internalMaxNumResults = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalAssistantToolsFileSearchFileSearch(maxNumResults, rankingOptions, serializedAdditionalRawData);
+            return new InternalAssistantToolsFileSearchFileSearch(rankingOptions, internalMaxNumResults, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -120,15 +122,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalAssistantToolsFileSearchFileSearch IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+        InternalAssistantToolsFileSearchFileSearch IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalAssistantToolsFileSearchFileSearch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantToolsFileSearchFileSearch>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalAssistantToolsFileSearchFileSearch(document.RootElement, options);
                     }
                 default:
@@ -138,15 +141,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalAssistantToolsFileSearchFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalAssistantToolsFileSearchFileSearch FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalAssistantToolsFileSearchFileSearch internalAssistantToolsFileSearchFileSearch)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalAssistantToolsFileSearchFileSearch(document.RootElement);
+            if (internalAssistantToolsFileSearchFileSearch == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalAssistantToolsFileSearchFileSearch, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalAssistantToolsFileSearchFileSearch(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalAssistantToolsFileSearchFileSearch(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

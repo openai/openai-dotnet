@@ -4,33 +4,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
     {
-        internal InternalRealtimeResponseMessageItem(string id, ConversationMessageRole role, IEnumerable<ConversationContentPart> content, ConversationItemStatus status) : base(id)
+        internal InternalRealtimeResponseMessageItem(string id, ConversationItemStatus status, ConversationMessageRole role) : base(InternalRealtimeItemType.Message, id)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
-            Type = InternalRealtimeItemType.Message;
-            Role = role;
-            Content = content.ToList();
+            Content = new ChangeTrackingList<ConversationContentPart>();
             Status = status;
+            Role = role;
         }
 
-        internal InternalRealtimeResponseMessageItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType type, string id, IDictionary<string, BinaryData> serializedAdditionalRawData, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status) : base(@object, type, id, serializedAdditionalRawData)
+        internal InternalRealtimeResponseMessageItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status, ConversationMessageRole role) : base(@object, @type, id, additionalBinaryDataProperties)
         {
-            Role = role;
             Content = content;
             Status = status;
+            Role = role;
         }
 
-        internal InternalRealtimeResponseMessageItem()
-        {
-        }
         public IReadOnlyList<ConversationContentPart> Content { get; }
+
         public ConversationItemStatus Status { get; }
     }
 }

@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
@@ -14,36 +15,41 @@ namespace OpenAI.RealtimeConversation
     {
         void IJsonModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true && Optional.IsDefined(Type))
+            if (Optional.IsDefined(Type) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("code") != true && Optional.IsDefined(Code))
+            if (Optional.IsDefined(Code) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
                 writer.WritePropertyName("code"u8);
                 writer.WriteStringValue(Code);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("message") != true && Optional.IsDefined(Message))
+            if (Optional.IsDefined(Message) && _additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("param") != true && Optional.IsDefined(Param))
+            if (Optional.IsDefined(Param) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(Param);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -51,7 +57,7 @@ namespace OpenAI.RealtimeConversation
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -60,71 +66,67 @@ namespace OpenAI.RealtimeConversation
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IJsonModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IJsonModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(document.RootElement, options);
         }
 
-        internal static InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string type = default;
+            string @type = default;
             string code = default;
             string message = default;
-            string param = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            string @param = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    type = property.Value.GetString();
+                    @type = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("code"u8))
+                if (prop.NameEquals("code"u8))
                 {
-                    code = property.Value.GetString();
+                    code = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("message"u8))
+                if (prop.NameEquals("message"u8))
                 {
-                    message = property.Value.GetString();
+                    message = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("param"u8))
+                if (prop.NameEquals("param"u8))
                 {
-                    param = property.Value.GetString();
+                    @param = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(type, code, message, param, serializedAdditionalRawData);
+            return new InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(@type, code, message, @param, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -134,15 +136,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(document.RootElement, options);
                     }
                 default:
@@ -152,15 +155,20 @@ namespace OpenAI.RealtimeConversation
 
         string IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(document.RootElement);
+            if (internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

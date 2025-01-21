@@ -9,14 +9,10 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageImageFileContent : MessageContent
     {
-        internal InternalMessageImageFileContent(IDictionary<string, BinaryData> serializedAdditionalRawData, string type, InternalMessageContentItemFileObjectImageFile imageFile) : base(serializedAdditionalRawData)
+        internal InternalMessageImageFileContent(IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, InternalMessageContentItemFileObjectImageFile imageFile) : base(additionalBinaryDataProperties)
         {
-            _type = type;
+            _type = @type;
             _imageFile = imageFile;
-        }
-
-        internal InternalMessageImageFileContent()
-        {
         }
     }
 }

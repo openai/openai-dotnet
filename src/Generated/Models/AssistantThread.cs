@@ -4,39 +4,42 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     public partial class AssistantThread
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal AssistantThread(string id, DateTimeOffset createdAt, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata)
-        {
-            Argument.AssertNotNull(id, nameof(id));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Id = id;
-            CreatedAt = createdAt;
-            ToolResources = toolResources;
-            Metadata = metadata;
-        }
-
-        internal AssistantThread(string id, InternalThreadObjectObject @object, DateTimeOffset createdAt, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal AssistantThread(string id, DateTimeOffset createdAt, ToolResources toolResources)
         {
             Id = id;
-            Object = @object;
             CreatedAt = createdAt;
+            Metadata = new ChangeTrackingDictionary<string, string>();
             ToolResources = toolResources;
-            Metadata = metadata;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal AssistantThread()
+        internal AssistantThread(string id, DateTimeOffset createdAt, IReadOnlyDictionary<string, string> metadata, InternalThreadObjectObject @object, ToolResources toolResources, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Id = id;
+            CreatedAt = createdAt;
+            Metadata = metadata;
+            this.Object = @object;
+            ToolResources = toolResources;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
 
         public DateTimeOffset CreatedAt { get; }
+
         public IReadOnlyDictionary<string, string> Metadata { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

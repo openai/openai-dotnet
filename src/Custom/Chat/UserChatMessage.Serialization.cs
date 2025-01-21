@@ -38,7 +38,7 @@ public partial class UserChatMessage : IJsonModel<UserChatMessage>
         }
 
         writer.WriteOptionalProperty("name"u8, ParticipantName, options);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

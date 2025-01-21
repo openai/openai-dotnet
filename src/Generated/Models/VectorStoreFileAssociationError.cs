@@ -9,27 +9,29 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociationError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message)
         {
-            Argument.AssertNotNull(message, nameof(message));
-
             Code = code;
             Message = message;
         }
 
-        internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code, string message, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal VectorStoreFileAssociationError()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public VectorStoreFileAssociationErrorCode Code { get; }
+
         public string Message { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

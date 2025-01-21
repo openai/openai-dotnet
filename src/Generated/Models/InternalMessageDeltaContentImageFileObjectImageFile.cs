@@ -9,18 +9,25 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentImageFileObjectImageFile
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalMessageDeltaContentImageFileObjectImageFile()
         {
         }
 
-        internal InternalMessageDeltaContentImageFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalMessageDeltaContentImageFileObjectImageFile(string fileId, string detail, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
             Detail = detail;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string FileId { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

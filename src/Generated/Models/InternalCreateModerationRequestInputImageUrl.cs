@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Moderations
 {
     internal partial class InternalCreateModerationRequestInputImageUrl
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalCreateModerationRequestInputImageUrl(string url)
         {
             Argument.AssertNotNull(url, nameof(url));
@@ -17,16 +19,18 @@ namespace OpenAI.Moderations
             Url = url;
         }
 
-        internal InternalCreateModerationRequestInputImageUrl(string url, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateModerationRequestInputImageUrl(string url, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Url = url;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateModerationRequestInputImageUrl()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Url { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

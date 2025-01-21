@@ -9,20 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationItemStreamingAudioFinishedUpdate : ConversationUpdate
     {
-        internal ConversationItemStreamingAudioFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(responseId, nameof(responseId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-
-            Kind = ConversationUpdateKind.ItemStreamingPartAudioFinished;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            ContentIndex = contentIndex;
-        }
-
-        internal ConversationItemStreamingAudioFinishedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string responseId, string itemId, int outputIndex, int contentIndex) : base(kind, eventId, serializedAdditionalRawData)
+        internal ConversationItemStreamingAudioFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingPartAudioFinished)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -30,13 +17,20 @@ namespace OpenAI.RealtimeConversation
             ContentIndex = contentIndex;
         }
 
-        internal ConversationItemStreamingAudioFinishedUpdate()
+        internal ConversationItemStreamingAudioFinishedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            ContentIndex = contentIndex;
         }
 
         public string ResponseId { get; }
+
         public string ItemId { get; }
+
         public int OutputIndex { get; }
+
         public int ContentIndex { get; }
     }
 }

@@ -9,12 +9,11 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeClientEventResponseCancel : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventResponseCancel()
+        public InternalRealtimeClientEventResponseCancel() : base(InternalRealtimeClientEventType.ResponseCancel)
         {
-            Kind = InternalRealtimeClientEventType.ResponseCancel;
         }
 
-        internal InternalRealtimeClientEventResponseCancel(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeClientEventResponseCancel(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, eventId, additionalBinaryDataProperties)
         {
         }
     }

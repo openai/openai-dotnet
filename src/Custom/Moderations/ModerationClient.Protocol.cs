@@ -24,7 +24,7 @@ public partial class ModerationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateModerationRequest(content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -41,6 +41,6 @@ public partial class ModerationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateModerationRequest(content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 }

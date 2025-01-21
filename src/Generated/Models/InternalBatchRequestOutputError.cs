@@ -9,19 +9,27 @@ namespace OpenAI.Batch
 {
     internal partial class InternalBatchRequestOutputError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalBatchRequestOutputError()
         {
         }
 
-        internal InternalBatchRequestOutputError(string code, string message, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalBatchRequestOutputError(string code, string message, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Code { get; }
+
         public string Message { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

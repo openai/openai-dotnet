@@ -4,34 +4,35 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IEnumerable<RunStepCodeInterpreterOutput> outputs)
-        {
-            Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(outputs, nameof(outputs));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input)
+        {
             Input = input;
-            Outputs = outputs.ToList();
+            Outputs = new ChangeTrackingList<RunStepCodeInterpreterOutput>();
         }
 
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Input = input;
             Outputs = outputs;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Input { get; }
+
         public IReadOnlyList<RunStepCodeInterpreterOutput> Outputs { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -19,7 +19,7 @@ internal partial class InternalMessageImageUrlContent : IJsonModel<InternalMessa
         writer.WriteStringValue(_type);
         writer.WritePropertyName("image_url"u8);
         writer.WriteObjectValue<InternalMessageContentImageUrlObjectImageUrl>(_imageUrl, options);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

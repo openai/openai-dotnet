@@ -33,6 +33,6 @@ public partial class FileSearchRankingOptions
     {
         Ranker = ranker;
         ScoreThreshold = scoreThreshold;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 }

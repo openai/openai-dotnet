@@ -35,10 +35,6 @@ public readonly partial struct RunErrorCode { }
 public partial class RunIncompleteDetails { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObjectType")]
-public readonly partial struct RunStepType { }
-
-[Experimental("OPENAI001")]
 [CodeGenModel("RunStepObjectStatus")]
 public readonly partial struct RunStepStatus { }
 
@@ -53,3 +49,4 @@ public readonly partial struct RunStepErrorCode { }
 [Experimental("OPENAI001")]
 [CodeGenModel("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepCodeInterpreterOutput { }
+

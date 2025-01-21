@@ -10,40 +10,42 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalRealtimeResponse(string id, ConversationStatus status, ConversationStatusDetails statusDetails, IEnumerable<ConversationItem> output, ConversationTokenUsage usage)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(output, nameof(output));
-            Argument.AssertNotNull(usage, nameof(usage));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal InternalRealtimeResponse(string id, ConversationStatus status, ConversationStatusDetails statusDetails, ConversationTokenUsage usage, IEnumerable<ConversationItem> output)
+        {
             Id = id;
             Status = status;
             StatusDetails = statusDetails;
-            Output = output.ToList();
             Usage = usage;
+            Output = output.ToList();
         }
 
-        internal InternalRealtimeResponse(InternalRealtimeResponseObject @object, string id, ConversationStatus status, ConversationStatusDetails statusDetails, IReadOnlyList<ConversationItem> output, ConversationTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRealtimeResponse(InternalRealtimeResponseObject @object, string id, ConversationStatus status, ConversationStatusDetails statusDetails, ConversationTokenUsage usage, IReadOnlyList<ConversationItem> output, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Id = id;
             Status = status;
             StatusDetails = statusDetails;
-            Output = output;
             Usage = usage;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Output = output;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalRealtimeResponse()
-        {
-        }
-
-        public InternalRealtimeResponseObject Object { get; } = InternalRealtimeResponseObject.RealtimeResponse;
+        public InternalRealtimeResponseObject Object { get; } = "realtime.response";
 
         public string Id { get; }
+
         public ConversationStatus Status { get; }
+
         public ConversationStatusDetails StatusDetails { get; }
+
         public ConversationTokenUsage Usage { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

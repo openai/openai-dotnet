@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Internal
 {
@@ -14,18 +15,23 @@ namespace OpenAI.Internal
     {
         void IJsonModel<InternalResponseFormatJsonSchemaSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchemaSchema)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
             foreach (var item in AdditionalProperties)
             {
                 writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                writer.WriteRawValue(item.Value);
 #else
                 using (JsonDocument document = JsonDocument.Parse(item.Value))
                 {
@@ -33,43 +39,40 @@ namespace OpenAI.Internal
                 }
 #endif
             }
-            writer.WriteEndObject();
         }
 
-        InternalResponseFormatJsonSchemaSchema IJsonModel<InternalResponseFormatJsonSchemaSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalResponseFormatJsonSchemaSchema IJsonModel<InternalResponseFormatJsonSchemaSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalResponseFormatJsonSchemaSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchemaSchema)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, options);
         }
 
-        internal static InternalResponseFormatJsonSchemaSchema DeserializeInternalResponseFormatJsonSchemaSchema(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalResponseFormatJsonSchemaSchema DeserializeInternalResponseFormatJsonSchemaSchema(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            IDictionary<string, BinaryData> additionalProperties = default;
-            Dictionary<string, BinaryData> additionalPropertiesDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                additionalPropertiesDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                additionalProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            additionalProperties = additionalPropertiesDictionary;
             return new InternalResponseFormatJsonSchemaSchema(additionalProperties);
         }
 
-        BinaryData IPersistableModel<InternalResponseFormatJsonSchemaSchema>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalResponseFormatJsonSchemaSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -79,15 +82,16 @@ namespace OpenAI.Internal
             }
         }
 
-        InternalResponseFormatJsonSchemaSchema IPersistableModel<InternalResponseFormatJsonSchemaSchema>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
+        InternalResponseFormatJsonSchemaSchema IPersistableModel<InternalResponseFormatJsonSchemaSchema>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalResponseFormatJsonSchemaSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaSchema>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, options);
                     }
                 default:
@@ -97,15 +101,20 @@ namespace OpenAI.Internal
 
         string IPersistableModel<InternalResponseFormatJsonSchemaSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalResponseFormatJsonSchemaSchema FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalResponseFormatJsonSchemaSchema internalResponseFormatJsonSchemaSchema)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement);
+            if (internalResponseFormatJsonSchemaSchema == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalResponseFormatJsonSchemaSchema, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalResponseFormatJsonSchemaSchema(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

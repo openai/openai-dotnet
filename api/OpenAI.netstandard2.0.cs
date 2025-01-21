@@ -40,11 +40,8 @@ namespace OpenAI.Assistants {
         public float? Temperature { get; }
         public ToolResources ToolResources { get; }
         public IReadOnlyList<ToolDefinition> Tools { get; }
-        Assistant IJsonModel<Assistant>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<Assistant>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        Assistant IPersistableModel<Assistant>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<Assistant>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<Assistant>.Write(ModelReaderWriterOptions options);
+        public static explicit operator Assistant(ClientResult result);
+        public static implicit operator BinaryContent(Assistant assistant);
     }
     public class AssistantClient {
         protected AssistantClient();
@@ -211,8 +208,6 @@ namespace OpenAI.Assistants {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct AssistantCollectionOrder : IEquatable<AssistantCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public AssistantCollectionOrder(string value);
         public static AssistantCollectionOrder Ascending { get; }
         public static AssistantCollectionOrder Descending { get; }
@@ -236,20 +231,14 @@ namespace OpenAI.Assistants {
         public float? Temperature { get; set; }
         public ToolResources ToolResources { get; set; }
         public IList<ToolDefinition> Tools { get; }
-        AssistantCreationOptions IJsonModel<AssistantCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantCreationOptions IPersistableModel<AssistantCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantCreationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AssistantCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(AssistantCreationOptions assistantCreationOptions);
     }
     public class AssistantDeletionResult : IJsonModel<AssistantDeletionResult>, IPersistableModel<AssistantDeletionResult> {
         public string AssistantId { get; }
         public bool Deleted { get; }
-        AssistantDeletionResult IJsonModel<AssistantDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantDeletionResult IPersistableModel<AssistantDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AssistantDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(AssistantDeletionResult assistantDeletionResult);
     }
     public class AssistantModificationOptions : IJsonModel<AssistantModificationOptions>, IPersistableModel<AssistantModificationOptions> {
         public IList<ToolDefinition> DefaultTools { get; }
@@ -262,11 +251,8 @@ namespace OpenAI.Assistants {
         public AssistantResponseFormat ResponseFormat { get; set; }
         public float? Temperature { get; set; }
         public ToolResources ToolResources { get; set; }
-        AssistantModificationOptions IJsonModel<AssistantModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantModificationOptions IPersistableModel<AssistantModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantModificationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AssistantModificationOptions(ClientResult result);
+        public static implicit operator BinaryContent(AssistantModificationOptions assistantModificationOptions);
     }
     public abstract class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
         public static AssistantResponseFormat Auto { get; }
@@ -282,15 +268,12 @@ namespace OpenAI.Assistants {
         public override int GetHashCode();
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool operator ==(AssistantResponseFormat first, AssistantResponseFormat second);
+        public static explicit operator AssistantResponseFormat(ClientResult result);
+        public static implicit operator BinaryContent(AssistantResponseFormat assistantResponseFormat);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static implicit operator AssistantResponseFormat(string plainTextFormat);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool operator !=(AssistantResponseFormat first, AssistantResponseFormat second);
-        AssistantResponseFormat IJsonModel<AssistantResponseFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantResponseFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantResponseFormat IPersistableModel<AssistantResponseFormat>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantResponseFormat>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantResponseFormat>.Write(ModelReaderWriterOptions options);
         [EditorBrowsable(EditorBrowsableState.Never)]
         bool IEquatable<AssistantResponseFormat>.Equals(AssistantResponseFormat other);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -302,30 +285,23 @@ namespace OpenAI.Assistants {
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }
-        AssistantThread IJsonModel<AssistantThread>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantThread>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantThread IPersistableModel<AssistantThread>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantThread>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantThread>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AssistantThread(ClientResult result);
+        public static implicit operator BinaryContent(AssistantThread assistantThread);
     }
     public class CodeInterpreterToolDefinition : ToolDefinition, IJsonModel<CodeInterpreterToolDefinition>, IPersistableModel<CodeInterpreterToolDefinition> {
-        CodeInterpreterToolDefinition IJsonModel<CodeInterpreterToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<CodeInterpreterToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        CodeInterpreterToolDefinition IPersistableModel<CodeInterpreterToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<CodeInterpreterToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<CodeInterpreterToolDefinition>.Write(ModelReaderWriterOptions options);
+        protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator CodeInterpreterToolDefinition(ClientResult result);
+        public static implicit operator BinaryContent(CodeInterpreterToolDefinition codeInterpreterToolDefinition);
+        protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class CodeInterpreterToolResources : IJsonModel<CodeInterpreterToolResources>, IPersistableModel<CodeInterpreterToolResources> {
         public IList<string> FileIds { get; }
-        CodeInterpreterToolResources IJsonModel<CodeInterpreterToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<CodeInterpreterToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        CodeInterpreterToolResources IPersistableModel<CodeInterpreterToolResources>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<CodeInterpreterToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<CodeInterpreterToolResources>.Write(ModelReaderWriterOptions options);
+        public static explicit operator CodeInterpreterToolResources(ClientResult result);
+        public static implicit operator BinaryContent(CodeInterpreterToolResources codeInterpreterToolResources);
     }
     public readonly partial struct FileSearchRanker : IEquatable<FileSearchRanker> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public FileSearchRanker(string value);
         public static FileSearchRanker Auto { get; }
         public static FileSearchRanker Default20240821 { get; }
@@ -344,29 +320,24 @@ namespace OpenAI.Assistants {
         public FileSearchRankingOptions(float scoreThreshold);
         public FileSearchRanker? Ranker { get; set; }
         public required float ScoreThreshold { get; set; }
-        FileSearchRankingOptions IJsonModel<FileSearchRankingOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileSearchRankingOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileSearchRankingOptions IPersistableModel<FileSearchRankingOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileSearchRankingOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileSearchRankingOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator FileSearchRankingOptions(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchRankingOptions fileSearchRankingOptions);
     }
     public class FileSearchToolDefinition : ToolDefinition, IJsonModel<FileSearchToolDefinition>, IPersistableModel<FileSearchToolDefinition> {
         public int? MaxResults { get; set; }
         public FileSearchRankingOptions RankingOptions { get; set; }
-        FileSearchToolDefinition IJsonModel<FileSearchToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileSearchToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileSearchToolDefinition IPersistableModel<FileSearchToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileSearchToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileSearchToolDefinition>.Write(ModelReaderWriterOptions options);
+        protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator FileSearchToolDefinition(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchToolDefinition fileSearchToolDefinition);
+        protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class FileSearchToolResources : IJsonModel<FileSearchToolResources>, IPersistableModel<FileSearchToolResources> {
         public IList<VectorStoreCreationHelper> NewVectorStores { get; }
         public IList<string> VectorStoreIds { get; }
-        FileSearchToolResources IJsonModel<FileSearchToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileSearchToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileSearchToolResources IPersistableModel<FileSearchToolResources>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileSearchToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileSearchToolResources>.Write(ModelReaderWriterOptions options);
+        public static explicit operator FileSearchToolResources(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchToolResources fileSearchToolResources);
     }
     public class FunctionToolDefinition : ToolDefinition, IJsonModel<FunctionToolDefinition>, IPersistableModel<FunctionToolDefinition> {
         public FunctionToolDefinition();
@@ -375,11 +346,12 @@ namespace OpenAI.Assistants {
         public required string FunctionName { get; set; }
         public BinaryData Parameters { get; set; }
         public bool? StrictParameterSchemaEnabled { get; set; }
-        FunctionToolDefinition IJsonModel<FunctionToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FunctionToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FunctionToolDefinition IPersistableModel<FunctionToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FunctionToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FunctionToolDefinition>.Write(ModelReaderWriterOptions options);
+        protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator FunctionToolDefinition(ClientResult result);
+        public static implicit operator BinaryContent(FunctionToolDefinition functionToolDefinition);
+        protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class MessageCollectionOptions {
         public string AfterId { get; set; }
@@ -388,8 +360,6 @@ namespace OpenAI.Assistants {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct MessageCollectionOrder : IEquatable<MessageCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public MessageCollectionOrder(string value);
         public static MessageCollectionOrder Ascending { get; }
         public static MessageCollectionOrder Descending { get; }
@@ -413,12 +383,9 @@ namespace OpenAI.Assistants {
         public static MessageContent FromImageFileId(string imageFileId, MessageImageDetail? detail = null);
         public static MessageContent FromImageUri(Uri imageUri, MessageImageDetail? detail = null);
         public static MessageContent FromText(string text);
+        public static explicit operator MessageContent(ClientResult result);
+        public static implicit operator BinaryContent(MessageContent messageContent);
         public static implicit operator MessageContent(string value);
-        MessageContent IJsonModel<MessageContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageContent IPersistableModel<MessageContent>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageContent>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageContent>.Write(ModelReaderWriterOptions options);
     }
     public class MessageContentUpdate : StreamingUpdate {
         public MessageImageDetail? ImageDetail { get; }
@@ -434,41 +401,27 @@ namespace OpenAI.Assistants {
         public MessageCreationAttachment(string fileId, IEnumerable<ToolDefinition> tools);
         public string FileId { get; }
         public IReadOnlyList<ToolDefinition> Tools { get; }
-        MessageCreationAttachment IJsonModel<MessageCreationAttachment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageCreationAttachment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageCreationAttachment IPersistableModel<MessageCreationAttachment>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageCreationAttachment>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageCreationAttachment>.Write(ModelReaderWriterOptions options);
+        public static explicit operator MessageCreationAttachment(ClientResult result);
+        public static implicit operator BinaryContent(MessageCreationAttachment messageCreationAttachment);
     }
     public class MessageCreationOptions : IJsonModel<MessageCreationOptions>, IPersistableModel<MessageCreationOptions> {
         public IList<MessageCreationAttachment> Attachments { get; set; }
         public IDictionary<string, string> Metadata { get; set; }
-        MessageCreationOptions IJsonModel<MessageCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageCreationOptions IPersistableModel<MessageCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageCreationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator MessageCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(MessageCreationOptions messageCreationOptions);
     }
     public class MessageDeletionResult : IJsonModel<MessageDeletionResult>, IPersistableModel<MessageDeletionResult> {
         public bool Deleted { get; }
         public string MessageId { get; }
-        MessageDeletionResult IJsonModel<MessageDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageDeletionResult IPersistableModel<MessageDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator MessageDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(MessageDeletionResult messageDeletionResult);
     }
     public class MessageFailureDetails : IJsonModel<MessageFailureDetails>, IPersistableModel<MessageFailureDetails> {
         public MessageFailureReason Reason { get; }
-        MessageFailureDetails IJsonModel<MessageFailureDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageFailureDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageFailureDetails IPersistableModel<MessageFailureDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageFailureDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageFailureDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator MessageFailureDetails(ClientResult result);
+        public static implicit operator BinaryContent(MessageFailureDetails messageFailureDetails);
     }
     public readonly partial struct MessageFailureReason : IEquatable<MessageFailureReason> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public MessageFailureReason(string value);
         public static MessageFailureReason ContentFilter { get; }
         public static MessageFailureReason MaxTokens { get; }
@@ -492,19 +445,14 @@ namespace OpenAI.Assistants {
     }
     public class MessageModificationOptions : IJsonModel<MessageModificationOptions>, IPersistableModel<MessageModificationOptions> {
         public IDictionary<string, string> Metadata { get; set; }
-        MessageModificationOptions IJsonModel<MessageModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<MessageModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        MessageModificationOptions IPersistableModel<MessageModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<MessageModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<MessageModificationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator MessageModificationOptions(ClientResult result);
+        public static implicit operator BinaryContent(MessageModificationOptions messageModificationOptions);
     }
     public enum MessageRole {
         User = 0,
         Assistant = 1
     }
     public readonly partial struct MessageStatus : IEquatable<MessageStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public MessageStatus(string value);
         public static MessageStatus Completed { get; }
         public static MessageStatus Incomplete { get; }
@@ -539,8 +487,6 @@ namespace OpenAI.Assistants {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct RunCollectionOrder : IEquatable<RunCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunCollectionOrder(string value);
         public static RunCollectionOrder Ascending { get; }
         public static RunCollectionOrder Descending { get; }
@@ -569,24 +515,16 @@ namespace OpenAI.Assistants {
         public ToolConstraint ToolConstraint { get; set; }
         public IList<ToolDefinition> ToolsOverride { get; }
         public RunTruncationStrategy TruncationStrategy { get; set; }
-        RunCreationOptions IJsonModel<RunCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunCreationOptions IPersistableModel<RunCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunCreationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(RunCreationOptions runCreationOptions);
     }
     public class RunError : IJsonModel<RunError>, IPersistableModel<RunError> {
         public RunErrorCode Code { get; }
         public string Message { get; }
-        RunError IJsonModel<RunError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunError IPersistableModel<RunError>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunError>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunError>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunError(ClientResult result);
+        public static implicit operator BinaryContent(RunError runError);
     }
     public readonly partial struct RunErrorCode : IEquatable<RunErrorCode> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunErrorCode(string value);
         public static RunErrorCode InvalidPrompt { get; }
         public static RunErrorCode RateLimitExceeded { get; }
@@ -603,15 +541,10 @@ namespace OpenAI.Assistants {
     }
     public class RunIncompleteDetails : IJsonModel<RunIncompleteDetails>, IPersistableModel<RunIncompleteDetails> {
         public RunIncompleteReason? Reason { get; }
-        RunIncompleteDetails IJsonModel<RunIncompleteDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunIncompleteDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunIncompleteDetails IPersistableModel<RunIncompleteDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunIncompleteDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunIncompleteDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunIncompleteDetails(ClientResult result);
+        public static implicit operator BinaryContent(RunIncompleteDetails runIncompleteDetails);
     }
     public readonly partial struct RunIncompleteReason : IEquatable<RunIncompleteReason> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunIncompleteReason(string value);
         public static RunIncompleteReason MaxInputTokenCount { get; }
         public static RunIncompleteReason MaxOutputTokenCount { get; }
@@ -627,15 +560,10 @@ namespace OpenAI.Assistants {
     }
     public class RunModificationOptions : IJsonModel<RunModificationOptions>, IPersistableModel<RunModificationOptions> {
         public IDictionary<string, string> Metadata { get; set; }
-        RunModificationOptions IJsonModel<RunModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunModificationOptions IPersistableModel<RunModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunModificationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunModificationOptions(ClientResult result);
+        public static implicit operator BinaryContent(RunModificationOptions runModificationOptions);
     }
     public readonly partial struct RunStatus : IEquatable<RunStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunStatus(string value);
         public static RunStatus Cancelled { get; }
         public static RunStatus Cancelling { get; }
@@ -666,27 +594,21 @@ namespace OpenAI.Assistants {
         public DateTimeOffset? ExpiredAt { get; }
         public DateTimeOffset? FailedAt { get; }
         public string Id { get; }
+        public RunStepKind Kind { get; }
         public RunStepError LastError { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string RunId { get; }
         public RunStepStatus Status { get; }
         public string ThreadId { get; }
-        public RunStepType Type { get; }
         public RunStepTokenUsage Usage { get; }
-        RunStep IJsonModel<RunStep>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStep>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStep IPersistableModel<RunStep>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStep>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStep>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStep(ClientResult result);
+        public static implicit operator BinaryContent(RunStep runStep);
     }
     public abstract class RunStepCodeInterpreterOutput : IJsonModel<RunStepCodeInterpreterOutput>, IPersistableModel<RunStepCodeInterpreterOutput> {
         public string ImageFileId { get; }
         public string Logs { get; }
-        RunStepCodeInterpreterOutput IJsonModel<RunStepCodeInterpreterOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepCodeInterpreterOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepCodeInterpreterOutput IPersistableModel<RunStepCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepCodeInterpreterOutput>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepCodeInterpreterOutput(ClientResult result);
+        public static implicit operator BinaryContent(RunStepCodeInterpreterOutput runStepCodeInterpreterOutput);
     }
     public class RunStepCollectionOptions {
         public string AfterId { get; set; }
@@ -695,8 +617,6 @@ namespace OpenAI.Assistants {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct RunStepCollectionOrder : IEquatable<RunStepCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunStepCollectionOrder(string value);
         public static RunStepCollectionOrder Ascending { get; }
         public static RunStepCollectionOrder Descending { get; }
@@ -713,16 +633,15 @@ namespace OpenAI.Assistants {
     public abstract class RunStepDetails : IJsonModel<RunStepDetails>, IPersistableModel<RunStepDetails> {
         public string CreatedMessageId { get; }
         public IReadOnlyList<RunStepToolCall> ToolCalls { get; }
-        RunStepDetails IJsonModel<RunStepDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepDetails IPersistableModel<RunStepDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepDetails(ClientResult result);
+        public static implicit operator BinaryContent(RunStepDetails runStepDetails);
     }
     public class RunStepDetailsUpdate : StreamingUpdate {
         public string CodeInterpreterInput { get; }
         public IReadOnlyList<RunStepUpdateCodeInterpreterOutput> CodeInterpreterOutputs { get; }
         public string CreatedMessageId { get; }
+        public FileSearchRankingOptions FileSearchRankingOptions { get; }
+        public IReadOnlyList<RunStepFileSearchResult> FileSearchResults { get; }
         public string FunctionArguments { get; }
         public string FunctionName { get; }
         public string FunctionOutput { get; }
@@ -733,15 +652,10 @@ namespace OpenAI.Assistants {
     public class RunStepError : IJsonModel<RunStepError>, IPersistableModel<RunStepError> {
         public RunStepErrorCode Code { get; }
         public string Message { get; }
-        RunStepError IJsonModel<RunStepError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepError IPersistableModel<RunStepError>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepError>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepError>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepError(ClientResult result);
+        public static implicit operator BinaryContent(RunStepError runStepError);
     }
     public readonly partial struct RunStepErrorCode : IEquatable<RunStepErrorCode> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunStepErrorCode(string value);
         public static RunStepErrorCode RateLimitExceeded { get; }
         public static RunStepErrorCode ServerError { get; }
@@ -756,18 +670,27 @@ namespace OpenAI.Assistants {
         public override readonly string ToString();
     }
     public class RunStepFileSearchResult : IJsonModel<RunStepFileSearchResult>, IPersistableModel<RunStepFileSearchResult> {
+        public IReadOnlyList<RunStepFileSearchResultContent> Content { get; }
         public string FileId { get; }
         public string FileName { get; }
         public float Score { get; }
-        RunStepFileSearchResult IJsonModel<RunStepFileSearchResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepFileSearchResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepFileSearchResult IPersistableModel<RunStepFileSearchResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepFileSearchResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepFileSearchResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepFileSearchResult(ClientResult result);
+        public static implicit operator BinaryContent(RunStepFileSearchResult runStepFileSearchResult);
+    }
+    public class RunStepFileSearchResultContent : IJsonModel<RunStepFileSearchResultContent>, IPersistableModel<RunStepFileSearchResultContent> {
+        public RunStepFileSearchResultContentKind Kind { get; }
+        public string Text { get; }
+        public static explicit operator RunStepFileSearchResultContent(ClientResult result);
+        public static implicit operator BinaryContent(RunStepFileSearchResultContent runStepFileSearchResultContent);
+    }
+    public enum RunStepFileSearchResultContentKind {
+        Text = 0
+    }
+    public enum RunStepKind {
+        CreatedMessage = 0,
+        ToolCall = 1
     }
     public readonly partial struct RunStepStatus : IEquatable<RunStepStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public RunStepStatus(string value);
         public static RunStepStatus Cancelled { get; }
         public static RunStepStatus Completed { get; }
@@ -788,50 +711,26 @@ namespace OpenAI.Assistants {
         public int InputTokenCount { get; }
         public int OutputTokenCount { get; }
         public int TotalTokenCount { get; }
-        RunStepTokenUsage IJsonModel<RunStepTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepTokenUsage IPersistableModel<RunStepTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepTokenUsage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(RunStepTokenUsage runStepTokenUsage);
     }
     public abstract class RunStepToolCall : IJsonModel<RunStepToolCall>, IPersistableModel<RunStepToolCall> {
         public string CodeInterpreterInput { get; }
         public IReadOnlyList<RunStepCodeInterpreterOutput> CodeInterpreterOutputs { get; }
-        public FileSearchRanker? FileSearchRanker { get; }
+        public FileSearchRankingOptions FileSearchRankingOptions { get; }
         public IReadOnlyList<RunStepFileSearchResult> FileSearchResults { get; }
-        public float? FileSearchScoreThreshold { get; }
         public string FunctionArguments { get; }
         public string FunctionName { get; }
         public string FunctionOutput { get; }
-        public string ToolCallId { get; }
-        public RunStepToolCallKind ToolKind { get; }
-        RunStepToolCall IJsonModel<RunStepToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepToolCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepToolCall IPersistableModel<RunStepToolCall>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepToolCall>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepToolCall>.Write(ModelReaderWriterOptions options);
+        public string Id { get; }
+        public RunStepToolCallKind Kind { get; }
+        public static explicit operator RunStepToolCall(ClientResult result);
+        public static implicit operator BinaryContent(RunStepToolCall runStepToolCall);
     }
     public enum RunStepToolCallKind {
-        Unknown = 0,
-        CodeInterpreter = 1,
-        FileSearch = 2,
-        Function = 3
-    }
-    public readonly partial struct RunStepType : IEquatable<RunStepType> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
-        public RunStepType(string value);
-        public static RunStepType MessageCreation { get; }
-        public static RunStepType ToolCalls { get; }
-        public readonly bool Equals(RunStepType other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RunStepType left, RunStepType right);
-        public static implicit operator RunStepType(string value);
-        public static bool operator !=(RunStepType left, RunStepType right);
-        public override readonly string ToString();
+        CodeInterpreter = 0,
+        FileSearch = 1,
+        Function = 2
     }
     public class RunStepUpdate : StreamingUpdate<RunStep> {
     }
@@ -839,31 +738,22 @@ namespace OpenAI.Assistants {
         public string ImageFileId { get; }
         public string Logs { get; }
         public int OutputIndex { get; }
-        RunStepUpdateCodeInterpreterOutput IJsonModel<RunStepUpdateCodeInterpreterOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunStepUpdateCodeInterpreterOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunStepUpdateCodeInterpreterOutput IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunStepUpdateCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunStepUpdateCodeInterpreterOutput(ClientResult result);
+        public static implicit operator BinaryContent(RunStepUpdateCodeInterpreterOutput runStepUpdateCodeInterpreterOutput);
     }
     public class RunTokenUsage : IJsonModel<RunTokenUsage>, IPersistableModel<RunTokenUsage> {
         public int InputTokenCount { get; }
         public int OutputTokenCount { get; }
         public int TotalTokenCount { get; }
-        RunTokenUsage IJsonModel<RunTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunTokenUsage IPersistableModel<RunTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunTokenUsage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(RunTokenUsage runTokenUsage);
     }
     public class RunTruncationStrategy : IJsonModel<RunTruncationStrategy>, IPersistableModel<RunTruncationStrategy> {
         public static RunTruncationStrategy Auto { get; }
         public int? LastMessages { get; }
         public static RunTruncationStrategy CreateLastMessagesStrategy(int lastMessageCount);
-        RunTruncationStrategy IJsonModel<RunTruncationStrategy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<RunTruncationStrategy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        RunTruncationStrategy IPersistableModel<RunTruncationStrategy>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<RunTruncationStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<RunTruncationStrategy>.Write(ModelReaderWriterOptions options);
+        public static explicit operator RunTruncationStrategy(ClientResult result);
+        public static implicit operator BinaryContent(RunTruncationStrategy runTruncationStrategy);
     }
     public class RunUpdate : StreamingUpdate<ThreadRun> {
     }
@@ -921,20 +811,14 @@ namespace OpenAI.Assistants {
         public IList<ThreadInitializationMessage> InitialMessages { get; }
         public IDictionary<string, string> Metadata { get; set; }
         public ToolResources ToolResources { get; set; }
-        ThreadCreationOptions IJsonModel<ThreadCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ThreadCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ThreadCreationOptions IPersistableModel<ThreadCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ThreadCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ThreadCreationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ThreadCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(ThreadCreationOptions threadCreationOptions);
     }
     public class ThreadDeletionResult : IJsonModel<ThreadDeletionResult>, IPersistableModel<ThreadDeletionResult> {
         public bool Deleted { get; }
         public string ThreadId { get; }
-        ThreadDeletionResult IJsonModel<ThreadDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ThreadDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ThreadDeletionResult IPersistableModel<ThreadDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ThreadDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ThreadDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ThreadDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(ThreadDeletionResult threadDeletionResult);
     }
     public class ThreadInitializationMessage : MessageCreationOptions {
         public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content);
@@ -954,20 +838,14 @@ namespace OpenAI.Assistants {
         public string RunId { get; }
         public MessageStatus Status { get; }
         public string ThreadId { get; }
-        ThreadMessage IJsonModel<ThreadMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ThreadMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ThreadMessage IPersistableModel<ThreadMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ThreadMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ThreadMessage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ThreadMessage(ClientResult result);
+        public static implicit operator BinaryContent(ThreadMessage threadMessage);
     }
     public class ThreadModificationOptions : IJsonModel<ThreadModificationOptions>, IPersistableModel<ThreadModificationOptions> {
         public IDictionary<string, string> Metadata { get; set; }
         public ToolResources ToolResources { get; set; }
-        ThreadModificationOptions IJsonModel<ThreadModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ThreadModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ThreadModificationOptions IPersistableModel<ThreadModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ThreadModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ThreadModificationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ThreadModificationOptions(ClientResult result);
+        public static implicit operator BinaryContent(ThreadModificationOptions threadModificationOptions);
     }
     public class ThreadRun : IJsonModel<ThreadRun>, IPersistableModel<ThreadRun> {
         public bool? AllowParallelToolCalls { get; }
@@ -996,11 +874,8 @@ namespace OpenAI.Assistants {
         public IReadOnlyList<ToolDefinition> Tools { get; }
         public RunTruncationStrategy TruncationStrategy { get; }
         public RunTokenUsage Usage { get; }
-        ThreadRun IJsonModel<ThreadRun>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ThreadRun>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ThreadRun IPersistableModel<ThreadRun>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ThreadRun>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ThreadRun>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ThreadRun(ClientResult result);
+        public static implicit operator BinaryContent(ThreadRun threadRun);
     }
     public class ThreadUpdate : StreamingUpdate<AssistantThread> {
         public DateTimeOffset CreatedAt { get; }
@@ -1013,11 +888,8 @@ namespace OpenAI.Assistants {
         public static ToolConstraint Auto { get; }
         public static ToolConstraint None { get; }
         public static ToolConstraint Required { get; }
-        ToolConstraint IJsonModel<ToolConstraint>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ToolConstraint>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ToolConstraint IPersistableModel<ToolConstraint>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ToolConstraint>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ToolConstraint(ClientResult result);
+        public static implicit operator BinaryContent(ToolConstraint toolConstraint);
     }
     public abstract class ToolDefinition : IJsonModel<ToolDefinition>, IPersistableModel<ToolDefinition> {
         protected ToolDefinition();
@@ -1025,31 +897,22 @@ namespace OpenAI.Assistants {
         public static CodeInterpreterToolDefinition CreateCodeInterpreter();
         public static FileSearchToolDefinition CreateFileSearch(int? maxResults = null);
         public static FunctionToolDefinition CreateFunction(string name, string description = null, BinaryData parameters = null, bool? strictParameterSchemaEnabled = null);
-        ToolDefinition IJsonModel<ToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ToolDefinition IPersistableModel<ToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ToolDefinition>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ToolDefinition(ClientResult result);
+        public static implicit operator BinaryContent(ToolDefinition toolDefinition);
     }
     public class ToolOutput : IJsonModel<ToolOutput>, IPersistableModel<ToolOutput> {
         public ToolOutput();
         public ToolOutput(string toolCallId, string output);
         public string Output { get; set; }
         public string ToolCallId { get; set; }
-        ToolOutput IJsonModel<ToolOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ToolOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ToolOutput IPersistableModel<ToolOutput>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ToolOutput>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ToolOutput>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ToolOutput(ClientResult result);
+        public static implicit operator BinaryContent(ToolOutput toolOutput);
     }
     public class ToolResources : IJsonModel<ToolResources>, IPersistableModel<ToolResources> {
         public CodeInterpreterToolResources CodeInterpreter { get; set; }
         public FileSearchToolResources FileSearch { get; set; }
-        ToolResources IJsonModel<ToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ToolResources IPersistableModel<ToolResources>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ToolResources>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ToolResources(ClientResult result);
+        public static implicit operator BinaryContent(ToolResources toolResources);
     }
     public class VectorStoreCreationHelper : IJsonModel<VectorStoreCreationHelper>, IPersistableModel<VectorStoreCreationHelper> {
         public VectorStoreCreationHelper();
@@ -1058,11 +921,8 @@ namespace OpenAI.Assistants {
         public FileChunkingStrategy ChunkingStrategy { get; set; }
         public IList<string> FileIds { get; }
         public IDictionary<string, string> Metadata { get; }
-        VectorStoreCreationHelper IJsonModel<VectorStoreCreationHelper>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreCreationHelper>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreCreationHelper IPersistableModel<VectorStoreCreationHelper>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreCreationHelper>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreCreationHelper>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreCreationHelper(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreCreationHelper vectorStoreCreationHelper);
     }
 }
 namespace OpenAI.Audio {
@@ -1106,15 +966,10 @@ namespace OpenAI.Audio {
         public IReadOnlyList<TranscribedSegment> Segments { get; }
         public string Text { get; }
         public IReadOnlyList<TranscribedWord> Words { get; }
-        AudioTranscription IJsonModel<AudioTranscription>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AudioTranscription>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AudioTranscription IPersistableModel<AudioTranscription>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AudioTranscription>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AudioTranscription>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AudioTranscription(ClientResult result);
+        public static implicit operator BinaryContent(AudioTranscription audioTranscription);
     }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public AudioTranscriptionFormat(string value);
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }
@@ -1138,26 +993,18 @@ namespace OpenAI.Audio {
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
         public float? Temperature { get; set; }
         public AudioTimestampGranularities TimestampGranularities { get; set; }
-        AudioTranscriptionOptions IJsonModel<AudioTranscriptionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AudioTranscriptionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AudioTranscriptionOptions IPersistableModel<AudioTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AudioTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AudioTranscriptionOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AudioTranscriptionOptions(ClientResult result);
+        public static implicit operator BinaryContent(AudioTranscriptionOptions audioTranscriptionOptions);
     }
     public class AudioTranslation : IJsonModel<AudioTranslation>, IPersistableModel<AudioTranslation> {
         public TimeSpan? Duration { get; }
         public string Language { get; }
         public IReadOnlyList<TranscribedSegment> Segments { get; }
         public string Text { get; }
-        AudioTranslation IJsonModel<AudioTranslation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AudioTranslation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AudioTranslation IPersistableModel<AudioTranslation>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AudioTranslation>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AudioTranslation>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AudioTranslation(ClientResult result);
+        public static implicit operator BinaryContent(AudioTranslation audioTranslation);
     }
     public readonly partial struct AudioTranslationFormat : IEquatable<AudioTranslationFormat> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public AudioTranslationFormat(string value);
         public static AudioTranslationFormat Simple { get; }
         public static AudioTranslationFormat Srt { get; }
@@ -1179,15 +1026,10 @@ namespace OpenAI.Audio {
         public string Prompt { get; set; }
         public AudioTranslationFormat? ResponseFormat { get; set; }
         public float? Temperature { get; set; }
-        AudioTranslationOptions IJsonModel<AudioTranslationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AudioTranslationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AudioTranslationOptions IPersistableModel<AudioTranslationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AudioTranslationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AudioTranslationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator AudioTranslationOptions(ClientResult result);
+        public static implicit operator BinaryContent(AudioTranslationOptions audioTranslationOptions);
     }
     public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public GeneratedSpeechFormat(string value);
         public static GeneratedSpeechFormat Aac { get; }
         public static GeneratedSpeechFormat Flac { get; }
@@ -1206,8 +1048,6 @@ namespace OpenAI.Audio {
         public override readonly string ToString();
     }
     public readonly partial struct GeneratedSpeechVoice : IEquatable<GeneratedSpeechVoice> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public GeneratedSpeechVoice(string value);
         public static GeneratedSpeechVoice Alloy { get; }
         public static GeneratedSpeechVoice Echo { get; }
@@ -1234,15 +1074,10 @@ namespace OpenAI.Audio {
     public class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>, IPersistableModel<SpeechGenerationOptions> {
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
         public float? SpeedRatio { get; set; }
-        SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<SpeechGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<SpeechGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<SpeechGenerationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator SpeechGenerationOptions(ClientResult result);
+        public static implicit operator BinaryContent(SpeechGenerationOptions speechGenerationOptions);
     }
     public readonly partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IPersistableModel<TranscribedSegment>, IJsonModel<object>, IPersistableModel<object> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public float AverageLogProbability { get; }
         public float CompressionRatio { get; }
         public TimeSpan EndTime { get; }
@@ -1253,33 +1088,15 @@ namespace OpenAI.Audio {
         public float Temperature { get; }
         public string Text { get; }
         public ReadOnlyMemory<int> TokenIds { get; }
-        readonly TranscribedSegment IJsonModel<TranscribedSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        readonly void IJsonModel<TranscribedSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        readonly object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        readonly void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        readonly TranscribedSegment IPersistableModel<TranscribedSegment>.Create(BinaryData data, ModelReaderWriterOptions options);
-        readonly string IPersistableModel<TranscribedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        readonly BinaryData IPersistableModel<TranscribedSegment>.Write(ModelReaderWriterOptions options);
-        readonly object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options);
-        readonly string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        readonly BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options);
+        public static explicit operator TranscribedSegment(ClientResult result);
+        public static implicit operator BinaryContent(TranscribedSegment transcribedSegment);
     }
     public readonly partial struct TranscribedWord : IJsonModel<TranscribedWord>, IPersistableModel<TranscribedWord>, IJsonModel<object>, IPersistableModel<object> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public TimeSpan EndTime { get; }
         public TimeSpan StartTime { get; }
         public string Word { get; }
-        readonly TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        readonly void IJsonModel<TranscribedWord>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        readonly object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        readonly void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        readonly TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options);
-        readonly string IPersistableModel<TranscribedWord>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        readonly BinaryData IPersistableModel<TranscribedWord>.Write(ModelReaderWriterOptions options);
-        readonly object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options);
-        readonly string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        readonly BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options);
+        public static explicit operator TranscribedWord(ClientResult result);
+        public static implicit operator BinaryContent(TranscribedWord transcribedWord);
     }
 }
 namespace OpenAI.Batch {
@@ -1322,11 +1139,12 @@ namespace OpenAI.Chat {
         public string ParticipantName { get; set; }
         public string Refusal { get; set; }
         public IList<ChatToolCall> ToolCalls { get; }
-        AssistantChatMessage IJsonModel<AssistantChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<AssistantChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        AssistantChatMessage IPersistableModel<AssistantChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<AssistantChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options);
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator AssistantChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(AssistantChatMessage assistantChatMessage);
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ChatClient {
         protected ChatClient();
@@ -1363,11 +1181,8 @@ namespace OpenAI.Chat {
         public string SystemFingerprint { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         public ChatTokenUsage Usage { get; }
-        ChatCompletion IJsonModel<ChatCompletion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatCompletion>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatCompletion IPersistableModel<ChatCompletion>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatCompletion>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatCompletion>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatCompletion(ClientResult result);
+        public static implicit operator BinaryContent(ChatCompletion chatCompletion);
     }
     public class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>, IPersistableModel<ChatCompletionOptions> {
         public bool? AllowParallelToolCalls { get; set; }
@@ -1391,11 +1206,8 @@ namespace OpenAI.Chat {
         public IList<ChatTool> Tools { get; }
         public int? TopLogProbabilityCount { get; set; }
         public float? TopP { get; set; }
-        ChatCompletionOptions IJsonModel<ChatCompletionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatCompletionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatCompletionOptions IPersistableModel<ChatCompletionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatCompletionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatCompletionOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatCompletionOptions(ClientResult result);
+        public static implicit operator BinaryContent(ChatCompletionOptions chatCompletionOptions);
     }
     public enum ChatFinishReason {
         Stop = 0,
@@ -1410,37 +1222,26 @@ namespace OpenAI.Chat {
         public string FunctionDescription { get; set; }
         public string FunctionName { get; }
         public BinaryData FunctionParameters { get; set; }
-        ChatFunction IJsonModel<ChatFunction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatFunction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatFunction IPersistableModel<ChatFunction>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatFunction>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatFunction>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatFunction(ClientResult result);
+        public static implicit operator BinaryContent(ChatFunction chatFunction);
     }
     [Obsolete("This class is obsolete. Please use ChatToolCall instead.")]
     public class ChatFunctionCall : IJsonModel<ChatFunctionCall>, IPersistableModel<ChatFunctionCall> {
         public ChatFunctionCall(string functionName, BinaryData functionArguments);
         public BinaryData FunctionArguments { get; }
         public string FunctionName { get; }
-        ChatFunctionCall IJsonModel<ChatFunctionCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatFunctionCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatFunctionCall IPersistableModel<ChatFunctionCall>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatFunctionCall>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatFunctionCall>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatFunctionCall(ClientResult result);
+        public static implicit operator BinaryContent(ChatFunctionCall chatFunctionCall);
     }
     [Obsolete("This class is obsolete. Please use ChatToolChoice instead.")]
     public class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>, IPersistableModel<ChatFunctionChoice> {
         public static ChatFunctionChoice CreateAutoChoice();
         public static ChatFunctionChoice CreateNamedChoice(string functionName);
         public static ChatFunctionChoice CreateNoneChoice();
-        ChatFunctionChoice IJsonModel<ChatFunctionChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatFunctionChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatFunctionChoice IPersistableModel<ChatFunctionChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatFunctionChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatFunctionChoice>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatFunctionChoice(ClientResult result);
+        public static implicit operator BinaryContent(ChatFunctionChoice chatFunctionChoice);
     }
     public readonly partial struct ChatImageDetailLevel : IEquatable<ChatImageDetailLevel> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ChatImageDetailLevel(string value);
         public static ChatImageDetailLevel Auto { get; }
         public static ChatImageDetailLevel High { get; }
@@ -1456,13 +1257,10 @@ namespace OpenAI.Chat {
         public override readonly string ToString();
     }
     public class ChatInputTokenUsageDetails : IJsonModel<ChatInputTokenUsageDetails>, IPersistableModel<ChatInputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
-        public int? CachedTokenCount { get; }
-        ChatInputTokenUsageDetails IJsonModel<ChatInputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatInputTokenUsageDetails IPersistableModel<ChatInputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatInputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatInputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+        public int AudioTokenCount { get; }
+        public int CachedTokenCount { get; }
+        public static explicit operator ChatInputTokenUsageDetails(ClientResult result);
+        public static implicit operator BinaryContent(ChatInputTokenUsageDetails chatInputTokenUsageDetails);
     }
     public class ChatMessage : IJsonModel<ChatMessage>, IPersistableModel<ChatMessage> {
         public ChatMessageContent Content { get; }
@@ -1483,12 +1281,9 @@ namespace OpenAI.Chat {
         public static UserChatMessage CreateUserMessage(params ChatMessageContentPart[] contentParts);
         public static UserChatMessage CreateUserMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public static UserChatMessage CreateUserMessage(string content);
+        public static explicit operator ChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(ChatMessage chatMessage);
         public static implicit operator ChatMessage(string content);
-        ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatMessage IPersistableModel<ChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options);
     }
     public class ChatMessageContent : ObjectModel.Collection<ChatMessageContentPart> {
         public ChatMessageContent();
@@ -1508,12 +1303,9 @@ namespace OpenAI.Chat {
         public static ChatMessageContentPart CreateImagePart(Uri imageUri, ChatImageDetailLevel? imageDetailLevel = null);
         public static ChatMessageContentPart CreateRefusalPart(string refusal);
         public static ChatMessageContentPart CreateTextPart(string text);
+        public static explicit operator ChatMessageContentPart(ClientResult result);
+        public static implicit operator BinaryContent(ChatMessageContentPart chatMessageContentPart);
         public static implicit operator ChatMessageContentPart(string text);
-        ChatMessageContentPart IJsonModel<ChatMessageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatMessageContentPart IPersistableModel<ChatMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatMessageContentPart>.Write(ModelReaderWriterOptions options);
     }
     public enum ChatMessageContentPartKind {
         Text = 0,
@@ -1528,44 +1320,32 @@ namespace OpenAI.Chat {
         Function = 4
     }
     public class ChatOutputTokenUsageDetails : IJsonModel<ChatOutputTokenUsageDetails>, IPersistableModel<ChatOutputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
+        public int AudioTokenCount { get; }
         public int ReasoningTokenCount { get; }
-        ChatOutputTokenUsageDetails IJsonModel<ChatOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatOutputTokenUsageDetails IPersistableModel<ChatOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatOutputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatOutputTokenUsageDetails(ClientResult result);
+        public static implicit operator BinaryContent(ChatOutputTokenUsageDetails chatOutputTokenUsageDetails);
     }
     public class ChatResponseFormat : IJsonModel<ChatResponseFormat>, IPersistableModel<ChatResponseFormat> {
         public static ChatResponseFormat CreateJsonObjectFormat();
         public static ChatResponseFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ChatResponseFormat CreateTextFormat();
-        ChatResponseFormat IJsonModel<ChatResponseFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatResponseFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatResponseFormat IPersistableModel<ChatResponseFormat>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatResponseFormat>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatResponseFormat>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatResponseFormat(ClientResult result);
+        public static implicit operator BinaryContent(ChatResponseFormat chatResponseFormat);
     }
     public class ChatTokenLogProbabilityDetails : IJsonModel<ChatTokenLogProbabilityDetails>, IPersistableModel<ChatTokenLogProbabilityDetails> {
         public float LogProbability { get; }
         public string Token { get; }
         public IReadOnlyList<ChatTokenTopLogProbabilityDetails> TopLogProbabilities { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
-        ChatTokenLogProbabilityDetails IJsonModel<ChatTokenLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatTokenLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatTokenLogProbabilityDetails IPersistableModel<ChatTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatTokenLogProbabilityDetails(ClientResult result);
+        public static implicit operator BinaryContent(ChatTokenLogProbabilityDetails chatTokenLogProbabilityDetails);
     }
     public class ChatTokenTopLogProbabilityDetails : IJsonModel<ChatTokenTopLogProbabilityDetails>, IPersistableModel<ChatTokenTopLogProbabilityDetails> {
         public float LogProbability { get; }
         public string Token { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
-        ChatTokenTopLogProbabilityDetails IJsonModel<ChatTokenTopLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatTokenTopLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatTokenTopLogProbabilityDetails IPersistableModel<ChatTokenTopLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatTokenTopLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatTokenTopLogProbabilityDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatTokenTopLogProbabilityDetails(ClientResult result);
+        public static implicit operator BinaryContent(ChatTokenTopLogProbabilityDetails chatTokenTopLogProbabilityDetails);
     }
     public class ChatTokenUsage : IJsonModel<ChatTokenUsage>, IPersistableModel<ChatTokenUsage> {
         public int InputTokenCount { get; }
@@ -1573,11 +1353,8 @@ namespace OpenAI.Chat {
         public int OutputTokenCount { get; }
         public ChatOutputTokenUsageDetails OutputTokenDetails { get; }
         public int TotalTokenCount { get; }
-        ChatTokenUsage IJsonModel<ChatTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatTokenUsage IPersistableModel<ChatTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatTokenUsage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(ChatTokenUsage chatTokenUsage);
     }
     public class ChatTool : IJsonModel<ChatTool>, IPersistableModel<ChatTool> {
         public string FunctionDescription { get; }
@@ -1586,11 +1363,8 @@ namespace OpenAI.Chat {
         public bool? FunctionSchemaIsStrict { get; }
         public ChatToolKind Kind { get; }
         public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? functionSchemaIsStrict = null);
-        ChatTool IJsonModel<ChatTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatTool IPersistableModel<ChatTool>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatTool>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatTool>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatTool(ClientResult result);
+        public static implicit operator BinaryContent(ChatTool chatTool);
     }
     public class ChatToolCall : IJsonModel<ChatToolCall>, IPersistableModel<ChatToolCall> {
         public BinaryData FunctionArguments { get; }
@@ -1598,11 +1372,8 @@ namespace OpenAI.Chat {
         public string Id { get; set; }
         public ChatToolCallKind Kind { get; }
         public static ChatToolCall CreateFunctionToolCall(string id, string functionName, BinaryData functionArguments);
-        ChatToolCall IJsonModel<ChatToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatToolCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatToolCall IPersistableModel<ChatToolCall>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatToolCall>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatToolCall>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatToolCall(ClientResult result);
+        public static implicit operator BinaryContent(ChatToolCall chatToolCall);
     }
     public enum ChatToolCallKind {
         Function = 0
@@ -1612,11 +1383,8 @@ namespace OpenAI.Chat {
         public static ChatToolChoice CreateFunctionChoice(string functionName);
         public static ChatToolChoice CreateNoneChoice();
         public static ChatToolChoice CreateRequiredChoice();
-        ChatToolChoice IJsonModel<ChatToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ChatToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ChatToolChoice IPersistableModel<ChatToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ChatToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ChatToolChoice>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ChatToolChoice(ClientResult result);
+        public static implicit operator BinaryContent(ChatToolChoice chatToolChoice);
     }
     public enum ChatToolKind {
         Function = 0
@@ -1625,16 +1393,17 @@ namespace OpenAI.Chat {
     public class FunctionChatMessage : ChatMessage, IJsonModel<FunctionChatMessage>, IPersistableModel<FunctionChatMessage> {
         public FunctionChatMessage(string functionName, string content);
         public string FunctionName { get; }
-        FunctionChatMessage IJsonModel<FunctionChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FunctionChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FunctionChatMessage IPersistableModel<FunctionChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FunctionChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FunctionChatMessage>.Write(ModelReaderWriterOptions options);
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator FunctionChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(FunctionChatMessage functionChatMessage);
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public static class OpenAIChatModelFactory {
         public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null);
-        public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int? audioTokenCount = null, int? cachedTokenCount = null);
-        public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = 0, int? audioTokenCount = null);
+        public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int audioTokenCount = 0, int cachedTokenCount = 0);
+        public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = 0, int audioTokenCount = 0);
         public static ChatTokenLogProbabilityDetails ChatTokenLogProbabilityDetails(string token = null, float logProbability = 0, ReadOnlyMemory<byte>? utf8Bytes = null, IEnumerable<ChatTokenTopLogProbabilityDetails> topLogProbabilities = null);
         public static ChatTokenTopLogProbabilityDetails ChatTokenTopLogProbabilityDetails(string token = null, float logProbability = 0, ReadOnlyMemory<byte>? utf8Bytes = null);
         public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = 0, int inputTokenCount = 0, int totalTokenCount = 0, ChatOutputTokenUsageDetails outputTokenDetails = null, ChatInputTokenUsageDetails inputTokenDetails = null);
@@ -1658,21 +1427,15 @@ namespace OpenAI.Chat {
         public string SystemFingerprint { get; }
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCallUpdates { get; }
         public ChatTokenUsage Usage { get; }
-        StreamingChatCompletionUpdate IJsonModel<StreamingChatCompletionUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<StreamingChatCompletionUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        StreamingChatCompletionUpdate IPersistableModel<StreamingChatCompletionUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<StreamingChatCompletionUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<StreamingChatCompletionUpdate>.Write(ModelReaderWriterOptions options);
+        public static explicit operator StreamingChatCompletionUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingChatCompletionUpdate streamingChatCompletionUpdate);
     }
     [Obsolete("This class is obsolete. Please use StreamingChatToolCallUpdate instead.")]
     public class StreamingChatFunctionCallUpdate : IJsonModel<StreamingChatFunctionCallUpdate>, IPersistableModel<StreamingChatFunctionCallUpdate> {
         public BinaryData FunctionArgumentsUpdate { get; }
         public string FunctionName { get; }
-        StreamingChatFunctionCallUpdate IJsonModel<StreamingChatFunctionCallUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<StreamingChatFunctionCallUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        StreamingChatFunctionCallUpdate IPersistableModel<StreamingChatFunctionCallUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<StreamingChatFunctionCallUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<StreamingChatFunctionCallUpdate>.Write(ModelReaderWriterOptions options);
+        public static explicit operator StreamingChatFunctionCallUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingChatFunctionCallUpdate streamingChatFunctionCallUpdate);
     }
     public class StreamingChatToolCallUpdate : IJsonModel<StreamingChatToolCallUpdate>, IPersistableModel<StreamingChatToolCallUpdate> {
         public BinaryData FunctionArgumentsUpdate { get; }
@@ -1680,44 +1443,44 @@ namespace OpenAI.Chat {
         public int Index { get; }
         public ChatToolCallKind Kind { get; }
         public string ToolCallId { get; }
-        StreamingChatToolCallUpdate IJsonModel<StreamingChatToolCallUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<StreamingChatToolCallUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        StreamingChatToolCallUpdate IPersistableModel<StreamingChatToolCallUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<StreamingChatToolCallUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<StreamingChatToolCallUpdate>.Write(ModelReaderWriterOptions options);
+        public static explicit operator StreamingChatToolCallUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingChatToolCallUpdate streamingChatToolCallUpdate);
     }
     public class SystemChatMessage : ChatMessage, IJsonModel<SystemChatMessage>, IPersistableModel<SystemChatMessage> {
         public SystemChatMessage(params ChatMessageContentPart[] contentParts);
         public SystemChatMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public SystemChatMessage(string content);
         public string ParticipantName { get; set; }
-        SystemChatMessage IJsonModel<SystemChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<SystemChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        SystemChatMessage IPersistableModel<SystemChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<SystemChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<SystemChatMessage>.Write(ModelReaderWriterOptions options);
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator SystemChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(SystemChatMessage systemChatMessage);
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ToolChatMessage : ChatMessage, IJsonModel<ToolChatMessage>, IPersistableModel<ToolChatMessage> {
         public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts);
         public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts);
         public ToolChatMessage(string toolCallId, string content);
         public string ToolCallId { get; }
-        ToolChatMessage IJsonModel<ToolChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ToolChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ToolChatMessage IPersistableModel<ToolChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ToolChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ToolChatMessage>.Write(ModelReaderWriterOptions options);
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ToolChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(ToolChatMessage toolChatMessage);
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class UserChatMessage : ChatMessage, IJsonModel<UserChatMessage>, IPersistableModel<UserChatMessage> {
         public UserChatMessage(params ChatMessageContentPart[] contentParts);
         public UserChatMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public UserChatMessage(string content);
         public string ParticipantName { get; set; }
-        UserChatMessage IJsonModel<UserChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<UserChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        UserChatMessage IPersistableModel<UserChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<UserChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<UserChatMessage>.Write(ModelReaderWriterOptions options);
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator UserChatMessage(ClientResult result);
+        public static implicit operator BinaryContent(UserChatMessage userChatMessage);
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
 namespace OpenAI.Embeddings {
@@ -1742,38 +1505,26 @@ namespace OpenAI.Embeddings {
     public class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>, IPersistableModel<EmbeddingGenerationOptions> {
         public int? Dimensions { get; set; }
         public string EndUserId { get; set; }
-        EmbeddingGenerationOptions IJsonModel<EmbeddingGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<EmbeddingGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        EmbeddingGenerationOptions IPersistableModel<EmbeddingGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<EmbeddingGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<EmbeddingGenerationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator EmbeddingGenerationOptions(ClientResult result);
+        public static implicit operator BinaryContent(EmbeddingGenerationOptions embeddingGenerationOptions);
     }
     public class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>, IPersistableModel<EmbeddingTokenUsage> {
         public int InputTokenCount { get; }
         public int TotalTokenCount { get; }
-        EmbeddingTokenUsage IJsonModel<EmbeddingTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<EmbeddingTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        EmbeddingTokenUsage IPersistableModel<EmbeddingTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<EmbeddingTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<EmbeddingTokenUsage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator EmbeddingTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(EmbeddingTokenUsage embeddingTokenUsage);
     }
     public class OpenAIEmbedding : IJsonModel<OpenAIEmbedding>, IPersistableModel<OpenAIEmbedding> {
         public int Index { get; }
-        OpenAIEmbedding IJsonModel<OpenAIEmbedding>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIEmbedding>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIEmbedding IPersistableModel<OpenAIEmbedding>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIEmbedding>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIEmbedding>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIEmbedding(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIEmbedding openAIEmbedding);
         public ReadOnlyMemory<float> ToFloats();
     }
     public class OpenAIEmbeddingCollection : ObjectModel.ReadOnlyCollection<OpenAIEmbedding>, IJsonModel<OpenAIEmbeddingCollection>, IPersistableModel<OpenAIEmbeddingCollection> {
         public string Model { get; }
         public EmbeddingTokenUsage Usage { get; }
-        OpenAIEmbeddingCollection IJsonModel<OpenAIEmbeddingCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIEmbeddingCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIEmbeddingCollection IPersistableModel<OpenAIEmbeddingCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIEmbeddingCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIEmbeddingCollection(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIEmbeddingCollection openAIEmbeddingCollection);
     }
     public static class OpenAIEmbeddingsModelFactory {
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = 0, int totalTokenCount = 0);
@@ -1785,11 +1536,8 @@ namespace OpenAI.Files {
     public class FileDeletionResult : IJsonModel<FileDeletionResult>, IPersistableModel<FileDeletionResult> {
         public bool Deleted { get; }
         public string FileId { get; }
-        FileDeletionResult IJsonModel<FileDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileDeletionResult IPersistableModel<FileDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator FileDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(FileDeletionResult fileDeletionResult);
     }
     public enum FilePurpose {
         Assistants = 0,
@@ -1807,8 +1555,6 @@ namespace OpenAI.Files {
         Error = 2
     }
     public readonly partial struct FileUploadPurpose : IEquatable<FileUploadPurpose> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public FileUploadPurpose(string value);
         public static FileUploadPurpose Assistants { get; }
         public static FileUploadPurpose Batch { get; }
@@ -1834,11 +1580,8 @@ namespace OpenAI.Files {
         public FileStatus Status { get; }
         [Obsolete("This property is obsolete. For details on why a fine-tuning training file failed validation, see the `error` field on the fine-tuning job.")]
         public string StatusDetails { get; }
-        OpenAIFile IJsonModel<OpenAIFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIFile>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIFile IPersistableModel<OpenAIFile>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIFile>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIFile>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIFile(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIFile openAIFile);
     }
     public class OpenAIFileClient {
         protected OpenAIFileClient();
@@ -1893,11 +1636,8 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
-        OpenAIFileCollection IJsonModel<OpenAIFileCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIFileCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIFileCollection IPersistableModel<OpenAIFileCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIFileCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIFileCollection>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIFileCollection(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIFileCollection openAIFileCollection);
     }
     public static class OpenAIFilesModelFactory {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
@@ -1944,23 +1684,15 @@ namespace OpenAI.Images {
         public BinaryData ImageBytes { get; }
         public Uri ImageUri { get; }
         public string RevisedPrompt { get; }
-        GeneratedImage IJsonModel<GeneratedImage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<GeneratedImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        GeneratedImage IPersistableModel<GeneratedImage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<GeneratedImage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<GeneratedImage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator GeneratedImage(ClientResult result);
+        public static implicit operator BinaryContent(GeneratedImage generatedImage);
     }
     public class GeneratedImageCollection : ObjectModel.ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>, IPersistableModel<GeneratedImageCollection> {
         public DateTimeOffset CreatedAt { get; }
-        GeneratedImageCollection IJsonModel<GeneratedImageCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<GeneratedImageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        GeneratedImageCollection IPersistableModel<GeneratedImageCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<GeneratedImageCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options);
+        public static explicit operator GeneratedImageCollection(ClientResult result);
+        public static implicit operator BinaryContent(GeneratedImageCollection generatedImageCollection);
     }
     public readonly partial struct GeneratedImageFormat : IEquatable<GeneratedImageFormat> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public GeneratedImageFormat(string value);
         public static GeneratedImageFormat Bytes { get; }
         public static GeneratedImageFormat Uri { get; }
@@ -1975,8 +1707,6 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public readonly partial struct GeneratedImageQuality : IEquatable<GeneratedImageQuality> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public GeneratedImageQuality(string value);
         public static GeneratedImageQuality High { get; }
         public static GeneratedImageQuality Standard { get; }
@@ -1991,8 +1721,6 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSize> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public static readonly GeneratedImageSize W1024xH1024;
         public static readonly GeneratedImageSize W1024xH1792;
         public static readonly GeneratedImageSize W1792xH1024;
@@ -2009,8 +1737,6 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public readonly partial struct GeneratedImageStyle : IEquatable<GeneratedImageStyle> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public GeneratedImageStyle(string value);
         public static GeneratedImageStyle Natural { get; }
         public static GeneratedImageStyle Vivid { get; }
@@ -2076,11 +1802,8 @@ namespace OpenAI.Images {
         public string EndUserId { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
-        ImageEditOptions IJsonModel<ImageEditOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ImageEditOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ImageEditOptions IPersistableModel<ImageEditOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ImageEditOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ImageEditOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ImageEditOptions(ClientResult result);
+        public static implicit operator BinaryContent(ImageEditOptions imageEditOptions);
     }
     public class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>, IPersistableModel<ImageGenerationOptions> {
         public string EndUserId { get; set; }
@@ -2088,21 +1811,15 @@ namespace OpenAI.Images {
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
         public GeneratedImageStyle? Style { get; set; }
-        ImageGenerationOptions IJsonModel<ImageGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ImageGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ImageGenerationOptions IPersistableModel<ImageGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ImageGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ImageGenerationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ImageGenerationOptions(ClientResult result);
+        public static implicit operator BinaryContent(ImageGenerationOptions imageGenerationOptions);
     }
     public class ImageVariationOptions : IJsonModel<ImageVariationOptions>, IPersistableModel<ImageVariationOptions> {
         public string EndUserId { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
-        ImageVariationOptions IJsonModel<ImageVariationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ImageVariationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ImageVariationOptions IPersistableModel<ImageVariationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ImageVariationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ImageVariationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ImageVariationOptions(ClientResult result);
+        public static implicit operator BinaryContent(ImageVariationOptions imageVariationOptions);
     }
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
@@ -2113,21 +1830,15 @@ namespace OpenAI.Models {
     public class ModelDeletionResult : IJsonModel<ModelDeletionResult>, IPersistableModel<ModelDeletionResult> {
         public bool Deleted { get; }
         public string ModelId { get; }
-        ModelDeletionResult IJsonModel<ModelDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ModelDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ModelDeletionResult IPersistableModel<ModelDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ModelDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ModelDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ModelDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(ModelDeletionResult modelDeletionResult);
     }
     public class OpenAIModel : IJsonModel<OpenAIModel>, IPersistableModel<OpenAIModel> {
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public string OwnedBy { get; }
-        OpenAIModel IJsonModel<OpenAIModel>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIModel>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIModel IPersistableModel<OpenAIModel>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIModel>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIModel>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIModel(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIModel openAIModel);
     }
     public class OpenAIModelClient {
         protected OpenAIModelClient();
@@ -2156,11 +1867,8 @@ namespace OpenAI.Models {
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {
-        OpenAIModelCollection IJsonModel<OpenAIModelCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<OpenAIModelCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        OpenAIModelCollection IPersistableModel<OpenAIModelCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<OpenAIModelCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<OpenAIModelCollection>.Write(ModelReaderWriterOptions options);
+        public static explicit operator OpenAIModelCollection(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIModelCollection openAIModelCollection);
     }
     public static class OpenAIModelsModelFactory {
         public static ModelDeletionResult ModelDeletionResult(string modelId = null, bool deleted = false);
@@ -2169,15 +1877,7 @@ namespace OpenAI.Models {
     }
 }
 namespace OpenAI.Moderations {
-    [Flags]
-    public enum ModerationApplicableInputKinds {
-        None = 0,
-        Other = 1,
-        Text = 2,
-        Image = 4
-    }
     public class ModerationCategory {
-        public ModerationApplicableInputKinds ApplicableInputKinds { get; }
         public bool Flagged { get; }
         public float Score { get; }
     }
@@ -2212,31 +1912,23 @@ namespace OpenAI.Moderations {
         public ModerationCategory SexualMinors { get; }
         public ModerationCategory Violence { get; }
         public ModerationCategory ViolenceGraphic { get; }
-        ModerationResult IJsonModel<ModerationResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ModerationResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ModerationResult IPersistableModel<ModerationResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ModerationResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ModerationResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ModerationResult(ClientResult result);
+        public static implicit operator BinaryContent(ModerationResult moderationResult);
     }
     public class ModerationResultCollection : ObjectModel.ReadOnlyCollection<ModerationResult>, IJsonModel<ModerationResultCollection>, IPersistableModel<ModerationResultCollection> {
         public string Id { get; }
         public string Model { get; }
-        ModerationResultCollection IJsonModel<ModerationResultCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ModerationResultCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ModerationResultCollection IPersistableModel<ModerationResultCollection>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ModerationResultCollection>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ModerationResultCollection>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ModerationResultCollection(ClientResult result);
+        public static implicit operator BinaryContent(ModerationResultCollection moderationResultCollection);
     }
     public static class OpenAIModerationsModelFactory {
-        public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0, ModerationApplicableInputKinds applicableInputKinds = ModerationApplicableInputKinds.None);
+        public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
         public static ModerationResult ModerationResult(bool flagged = false, ModerationCategory hate = null, ModerationCategory hateThreatening = null, ModerationCategory harassment = null, ModerationCategory harassmentThreatening = null, ModerationCategory selfHarm = null, ModerationCategory selfHarmIntent = null, ModerationCategory selfHarmInstructions = null, ModerationCategory sexual = null, ModerationCategory sexualMinors = null, ModerationCategory violence = null, ModerationCategory violenceGraphic = null, ModerationCategory illicit = null, ModerationCategory illicitViolent = null);
         public static ModerationResultCollection ModerationResultCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
     }
 }
 namespace OpenAI.RealtimeConversation {
     public readonly partial struct ConversationAudioFormat : IEquatable<ConversationAudioFormat> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationAudioFormat(string value);
         public static ConversationAudioFormat G711Alaw { get; }
         public static ConversationAudioFormat G711Ulaw { get; }
@@ -2259,20 +1951,15 @@ namespace OpenAI.RealtimeConversation {
     public abstract class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
         public string AudioTranscript { get; }
         public string Text { get; }
-        public static ConversationContentPart FromInputAudioTranscript(string transcript = null);
-        public static ConversationContentPart FromInputText(string text);
-        public static ConversationContentPart FromOutputAudioTranscript(string transcript = null);
-        public static ConversationContentPart FromOutputText(string text);
+        public static ConversationContentPart CreateInputAudioTranscriptPart(string transcript = null);
+        public static ConversationContentPart CreateInputTextPart(string text);
+        public static ConversationContentPart CreateOutputAudioTranscriptPart(string transcript = null);
+        public static ConversationContentPart CreateOutputTextPart(string text);
+        public static explicit operator ConversationContentPart(ClientResult result);
+        public static implicit operator BinaryContent(ConversationContentPart conversationContentPart);
         public static implicit operator ConversationContentPart(string text);
-        ConversationContentPart IJsonModel<ConversationContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationContentPart IPersistableModel<ConversationContentPart>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationContentPart>.Write(ModelReaderWriterOptions options);
     }
     public readonly partial struct ConversationContentPartKind : IEquatable<ConversationContentPartKind> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationContentPartKind(string value);
         public static ConversationContentPartKind InputAudio { get; }
         public static ConversationContentPartKind InputText { get; }
@@ -2293,11 +1980,12 @@ namespace OpenAI.RealtimeConversation {
         public string ErrorEventId { get; }
         public string Message { get; }
         public string ParameterName { get; }
-        ConversationErrorUpdate IJsonModel<ConversationErrorUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationErrorUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationErrorUpdate IPersistableModel<ConversationErrorUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationErrorUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationErrorUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationErrorUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationErrorUpdate conversationErrorUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>, IPersistableModel<ConversationFunctionTool> {
         public ConversationFunctionTool();
@@ -2305,55 +1993,57 @@ namespace OpenAI.RealtimeConversation {
         public string Description { get; set; }
         public required string Name { get; set; }
         public BinaryData Parameters { get; set; }
-        ConversationFunctionTool IJsonModel<ConversationFunctionTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationFunctionTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationFunctionTool IPersistableModel<ConversationFunctionTool>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationFunctionTool>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationFunctionTool>.Write(ModelReaderWriterOptions options);
+        protected override ConversationTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationFunctionTool(ClientResult result);
+        public static implicit operator BinaryContent(ConversationFunctionTool conversationFunctionTool);
+        protected override ConversationTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputAudioClearedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioClearedUpdate>, IPersistableModel<ConversationInputAudioClearedUpdate> {
-        ConversationInputAudioClearedUpdate IJsonModel<ConversationInputAudioClearedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputAudioClearedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputAudioClearedUpdate IPersistableModel<ConversationInputAudioClearedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputAudioClearedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputAudioClearedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputAudioClearedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputAudioClearedUpdate conversationInputAudioClearedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputAudioCommittedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioCommittedUpdate>, IPersistableModel<ConversationInputAudioCommittedUpdate> {
         public string ItemId { get; }
         public string PreviousItemId { get; }
-        ConversationInputAudioCommittedUpdate IJsonModel<ConversationInputAudioCommittedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputAudioCommittedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputAudioCommittedUpdate IPersistableModel<ConversationInputAudioCommittedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputAudioCommittedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputAudioCommittedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputAudioCommittedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputAudioCommittedUpdate conversationInputAudioCommittedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputSpeechFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechFinishedUpdate>, IPersistableModel<ConversationInputSpeechFinishedUpdate> {
         public TimeSpan AudioEndTime { get; }
         public string ItemId { get; }
-        ConversationInputSpeechFinishedUpdate IJsonModel<ConversationInputSpeechFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputSpeechFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputSpeechFinishedUpdate IPersistableModel<ConversationInputSpeechFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputSpeechFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputSpeechFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputSpeechFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputSpeechFinishedUpdate conversationInputSpeechFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputSpeechStartedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechStartedUpdate>, IPersistableModel<ConversationInputSpeechStartedUpdate> {
         public TimeSpan AudioStartTime { get; }
         public string ItemId { get; }
-        ConversationInputSpeechStartedUpdate IJsonModel<ConversationInputSpeechStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputSpeechStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputSpeechStartedUpdate IPersistableModel<ConversationInputSpeechStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputSpeechStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputSpeechStartedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputSpeechStartedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputSpeechStartedUpdate conversationInputSpeechStartedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputTokenUsageDetails : IJsonModel<ConversationInputTokenUsageDetails>, IPersistableModel<ConversationInputTokenUsageDetails> {
         public int AudioTokens { get; }
         public int CachedTokens { get; }
         public int TextTokens { get; }
-        ConversationInputTokenUsageDetails IJsonModel<ConversationInputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputTokenUsageDetails IPersistableModel<ConversationInputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationInputTokenUsageDetails(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputTokenUsageDetails conversationInputTokenUsageDetails);
     }
     public class ConversationInputTranscriptionFailedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFailedUpdate>, IPersistableModel<ConversationInputTranscriptionFailedUpdate> {
         public int ContentIndex { get; }
@@ -2361,29 +2051,28 @@ namespace OpenAI.RealtimeConversation {
         public string ErrorMessage { get; }
         public string ErrorParameterName { get; }
         public string ItemId { get; }
-        ConversationInputTranscriptionFailedUpdate IJsonModel<ConversationInputTranscriptionFailedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputTranscriptionFailedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputTranscriptionFailedUpdate IPersistableModel<ConversationInputTranscriptionFailedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputTranscriptionFailedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputTranscriptionFailedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputTranscriptionFailedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputTranscriptionFailedUpdate conversationInputTranscriptionFailedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFinishedUpdate>, IPersistableModel<ConversationInputTranscriptionFinishedUpdate> {
         public int ContentIndex { get; }
         public string ItemId { get; }
         public string Transcript { get; }
-        ConversationInputTranscriptionFinishedUpdate IJsonModel<ConversationInputTranscriptionFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputTranscriptionFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputTranscriptionFinishedUpdate IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputTranscriptionFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationInputTranscriptionFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputTranscriptionFinishedUpdate conversationInputTranscriptionFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationInputTranscriptionOptions : IJsonModel<ConversationInputTranscriptionOptions>, IPersistableModel<ConversationInputTranscriptionOptions> {
         public ConversationTranscriptionModel? Model { get; set; }
-        ConversationInputTranscriptionOptions IJsonModel<ConversationInputTranscriptionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationInputTranscriptionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationInputTranscriptionOptions IPersistableModel<ConversationInputTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationInputTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationInputTranscriptionOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationInputTranscriptionOptions(ClientResult result);
+        public static implicit operator BinaryContent(ConversationInputTranscriptionOptions conversationInputTranscriptionOptions);
     }
     public abstract class ConversationItem : IJsonModel<ConversationItem>, IPersistableModel<ConversationItem> {
         public string FunctionArguments { get; }
@@ -2395,13 +2084,10 @@ namespace OpenAI.RealtimeConversation {
         public static ConversationItem CreateAssistantMessage(IEnumerable<ConversationContentPart> contentItems);
         public static ConversationItem CreateFunctionCall(string name, string callId, string arguments);
         public static ConversationItem CreateFunctionCallOutput(string callId, string output);
-        public static ConversationItem CreateSystemMessage(string toolCallId, IEnumerable<ConversationContentPart> contentItems);
+        public static ConversationItem CreateSystemMessage(IEnumerable<ConversationContentPart> contentItems);
         public static ConversationItem CreateUserMessage(IEnumerable<ConversationContentPart> contentItems);
-        ConversationItem IJsonModel<ConversationItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItem IPersistableModel<ConversationItem>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItem>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItem>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationItem(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItem conversationItem);
     }
     public class ConversationItemCreatedUpdate : ConversationUpdate, IJsonModel<ConversationItemCreatedUpdate>, IPersistableModel<ConversationItemCreatedUpdate> {
         public string FunctionCallArguments { get; }
@@ -2412,23 +2098,23 @@ namespace OpenAI.RealtimeConversation {
         public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
         public ConversationMessageRole? MessageRole { get; }
         public string PreviousItemId { get; }
-        ConversationItemCreatedUpdate IJsonModel<ConversationItemCreatedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemCreatedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemCreatedUpdate IPersistableModel<ConversationItemCreatedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemCreatedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemCreatedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemCreatedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemCreatedUpdate conversationItemCreatedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemDeletedUpdate : ConversationUpdate, IJsonModel<ConversationItemDeletedUpdate>, IPersistableModel<ConversationItemDeletedUpdate> {
         public string ItemId { get; }
-        ConversationItemDeletedUpdate IJsonModel<ConversationItemDeletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemDeletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemDeletedUpdate IPersistableModel<ConversationItemDeletedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemDeletedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemDeletedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemDeletedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemDeletedUpdate conversationItemDeletedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct ConversationItemStatus : IEquatable<ConversationItemStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationItemStatus(string value);
         public static ConversationItemStatus Completed { get; }
         public static ConversationItemStatus Incomplete { get; }
@@ -2448,11 +2134,12 @@ namespace OpenAI.RealtimeConversation {
         public string ItemId { get; }
         public int OutputIndex { get; }
         public string ResponseId { get; }
-        ConversationItemStreamingAudioFinishedUpdate IJsonModel<ConversationItemStreamingAudioFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingAudioFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingAudioFinishedUpdate IPersistableModel<ConversationItemStreamingAudioFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingAudioFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingAudioFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemStreamingAudioFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemStreamingAudioFinishedUpdate conversationItemStreamingAudioFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingAudioTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>, IPersistableModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate> {
         public int ContentIndex { get; }
@@ -2460,11 +2147,12 @@ namespace OpenAI.RealtimeConversation {
         public int OutputIndex { get; }
         public string ResponseId { get; }
         public string Transcript { get; }
-        ConversationItemStreamingAudioTranscriptionFinishedUpdate IJsonModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingAudioTranscriptionFinishedUpdate IPersistableModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemStreamingAudioTranscriptionFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemStreamingAudioTranscriptionFinishedUpdate conversationItemStreamingAudioTranscriptionFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingFinishedUpdate>, IPersistableModel<ConversationItemStreamingFinishedUpdate> {
         public string FunctionCallArguments { get; }
@@ -2476,11 +2164,12 @@ namespace OpenAI.RealtimeConversation {
         public ConversationMessageRole? MessageRole { get; }
         public int OutputIndex { get; }
         public string ResponseId { get; }
-        ConversationItemStreamingFinishedUpdate IJsonModel<ConversationItemStreamingFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingFinishedUpdate IPersistableModel<ConversationItemStreamingFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemStreamingFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemStreamingFinishedUpdate conversationItemStreamingFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingPartDeltaUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingPartDeltaUpdate>, IPersistableModel<ConversationItemStreamingPartDeltaUpdate> {
         public BinaryData AudioBytes { get; }
@@ -2492,11 +2181,6 @@ namespace OpenAI.RealtimeConversation {
         public int ItemIndex { get; }
         public string ResponseId { get; }
         public string Text { get; }
-        ConversationItemStreamingPartDeltaUpdate IJsonModel<ConversationItemStreamingPartDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingPartDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingPartDeltaUpdate IPersistableModel<ConversationItemStreamingPartDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingPartDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingPartDeltaUpdate>.Write(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingPartFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingPartFinishedUpdate>, IPersistableModel<ConversationItemStreamingPartFinishedUpdate> {
         public string AudioTranscript { get; }
@@ -2507,11 +2191,6 @@ namespace OpenAI.RealtimeConversation {
         public int ItemIndex { get; }
         public string ResponseId { get; }
         public string Text { get; }
-        ConversationItemStreamingPartFinishedUpdate IJsonModel<ConversationItemStreamingPartFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingPartFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingPartFinishedUpdate IPersistableModel<ConversationItemStreamingPartFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingPartFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingPartFinishedUpdate>.Write(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingStartedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingStartedUpdate>, IPersistableModel<ConversationItemStreamingStartedUpdate> {
         public string FunctionCallArguments { get; }
@@ -2523,11 +2202,12 @@ namespace OpenAI.RealtimeConversation {
         public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
         public ConversationMessageRole? MessageRole { get; }
         public string ResponseId { get; }
-        ConversationItemStreamingStartedUpdate IJsonModel<ConversationItemStreamingStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingStartedUpdate IPersistableModel<ConversationItemStreamingStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingStartedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemStreamingStartedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemStreamingStartedUpdate conversationItemStreamingStartedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemStreamingTextFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingTextFinishedUpdate>, IPersistableModel<ConversationItemStreamingTextFinishedUpdate> {
         public int ContentIndex { get; }
@@ -2535,21 +2215,23 @@ namespace OpenAI.RealtimeConversation {
         public int OutputIndex { get; }
         public string ResponseId { get; }
         public string Text { get; }
-        ConversationItemStreamingTextFinishedUpdate IJsonModel<ConversationItemStreamingTextFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemStreamingTextFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemStreamingTextFinishedUpdate IPersistableModel<ConversationItemStreamingTextFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemStreamingTextFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemStreamingTextFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemStreamingTextFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemStreamingTextFinishedUpdate conversationItemStreamingTextFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationItemTruncatedUpdate : ConversationUpdate, IJsonModel<ConversationItemTruncatedUpdate>, IPersistableModel<ConversationItemTruncatedUpdate> {
         public int AudioEndMs { get; }
         public int ContentIndex { get; }
         public string ItemId { get; }
-        ConversationItemTruncatedUpdate IJsonModel<ConversationItemTruncatedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationItemTruncatedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationItemTruncatedUpdate IPersistableModel<ConversationItemTruncatedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationItemTruncatedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationItemTruncatedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationItemTruncatedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationItemTruncatedUpdate conversationItemTruncatedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationMaxTokensChoice : IJsonModel<ConversationMaxTokensChoice>, IPersistableModel<ConversationMaxTokensChoice> {
         public ConversationMaxTokensChoice(int numberValue);
@@ -2558,15 +2240,8 @@ namespace OpenAI.RealtimeConversation {
         public static ConversationMaxTokensChoice CreateInfiniteMaxTokensChoice();
         public static ConversationMaxTokensChoice CreateNumericMaxTokensChoice(int maxTokens);
         public static implicit operator ConversationMaxTokensChoice(int maxTokens);
-        ConversationMaxTokensChoice IJsonModel<ConversationMaxTokensChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationMaxTokensChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationMaxTokensChoice IPersistableModel<ConversationMaxTokensChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationMaxTokensChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationMaxTokensChoice>.Write(ModelReaderWriterOptions options);
     }
     public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationMessageRole(string value);
         public static ConversationMessageRole Assistant { get; }
         public static ConversationMessageRole System { get; }
@@ -2584,32 +2259,27 @@ namespace OpenAI.RealtimeConversation {
     public class ConversationOutputTokenUsageDetails : IJsonModel<ConversationOutputTokenUsageDetails>, IPersistableModel<ConversationOutputTokenUsageDetails> {
         public int AudioTokens { get; }
         public int TextTokens { get; }
-        ConversationOutputTokenUsageDetails IJsonModel<ConversationOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationOutputTokenUsageDetails IPersistableModel<ConversationOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationOutputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationOutputTokenUsageDetails(ClientResult result);
+        public static implicit operator BinaryContent(ConversationOutputTokenUsageDetails conversationOutputTokenUsageDetails);
     }
     public class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>, IPersistableModel<ConversationRateLimitDetailsItem> {
         public int MaximumCount { get; }
         public string Name { get; }
         public int RemainingCount { get; }
         public TimeSpan TimeUntilReset { get; }
-        ConversationRateLimitDetailsItem IJsonModel<ConversationRateLimitDetailsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationRateLimitDetailsItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationRateLimitDetailsItem IPersistableModel<ConversationRateLimitDetailsItem>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationRateLimitDetailsItem>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationRateLimitDetailsItem>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationRateLimitDetailsItem(ClientResult result);
+        public static implicit operator BinaryContent(ConversationRateLimitDetailsItem conversationRateLimitDetailsItem);
     }
     public class ConversationRateLimitsUpdate : ConversationUpdate, IJsonModel<ConversationRateLimitsUpdate>, IPersistableModel<ConversationRateLimitsUpdate> {
         public IReadOnlyList<ConversationRateLimitDetailsItem> AllDetails { get; }
         public ConversationRateLimitDetailsItem RequestDetails { get; }
         public ConversationRateLimitDetailsItem TokenDetails { get; }
-        ConversationRateLimitsUpdate IJsonModel<ConversationRateLimitsUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationRateLimitsUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationRateLimitsUpdate IPersistableModel<ConversationRateLimitsUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationRateLimitsUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationRateLimitsUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationRateLimitsUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationRateLimitsUpdate conversationRateLimitsUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationResponseFinishedUpdate : ConversationUpdate, IJsonModel<ConversationResponseFinishedUpdate>, IPersistableModel<ConversationResponseFinishedUpdate> {
         public IReadOnlyList<ConversationItem> CreatedItems { get; }
@@ -2617,11 +2287,12 @@ namespace OpenAI.RealtimeConversation {
         public ConversationStatus? Status { get; }
         public ConversationStatusDetails StatusDetails { get; }
         public ConversationTokenUsage Usage { get; }
-        ConversationResponseFinishedUpdate IJsonModel<ConversationResponseFinishedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationResponseFinishedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationResponseFinishedUpdate IPersistableModel<ConversationResponseFinishedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationResponseFinishedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationResponseFinishedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationResponseFinishedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationResponseFinishedUpdate conversationResponseFinishedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationResponseStartedUpdate : ConversationUpdate, IJsonModel<ConversationResponseStartedUpdate>, IPersistableModel<ConversationResponseStartedUpdate> {
         public IReadOnlyList<ConversationItem> CreatedItems { get; }
@@ -2629,11 +2300,12 @@ namespace OpenAI.RealtimeConversation {
         public ConversationStatus Status { get; }
         public ConversationStatusDetails StatusDetails { get; }
         public ConversationTokenUsage Usage { get; }
-        ConversationResponseStartedUpdate IJsonModel<ConversationResponseStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationResponseStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationResponseStartedUpdate IPersistableModel<ConversationResponseStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationResponseStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationResponseStartedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationResponseStartedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationResponseStartedUpdate conversationResponseStartedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationSessionConfiguredUpdate : ConversationUpdate, IJsonModel<ConversationSessionConfiguredUpdate>, IPersistableModel<ConversationSessionConfiguredUpdate> {
         public ConversationContentModalities ContentModalities { get; }
@@ -2649,11 +2321,12 @@ namespace OpenAI.RealtimeConversation {
         public IReadOnlyList<ConversationTool> Tools { get; }
         public ConversationTurnDetectionOptions TurnDetectionOptions { get; }
         public ConversationVoice Voice { get; }
-        ConversationSessionConfiguredUpdate IJsonModel<ConversationSessionConfiguredUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationSessionConfiguredUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationSessionConfiguredUpdate IPersistableModel<ConversationSessionConfiguredUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationSessionConfiguredUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationSessionConfiguredUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationSessionConfiguredUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationSessionConfiguredUpdate conversationSessionConfiguredUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationSessionOptions : IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
         public ConversationContentModalities ContentModalities { get; set; }
@@ -2667,11 +2340,8 @@ namespace OpenAI.RealtimeConversation {
         public IList<ConversationTool> Tools { get; }
         public ConversationTurnDetectionOptions TurnDetectionOptions { get; set; }
         public ConversationVoice? Voice { get; set; }
-        ConversationSessionOptions IJsonModel<ConversationSessionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationSessionOptions IPersistableModel<ConversationSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationSessionOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationSessionOptions(ClientResult result);
+        public static implicit operator BinaryContent(ConversationSessionOptions conversationSessionOptions);
     }
     public class ConversationSessionStartedUpdate : ConversationUpdate, IJsonModel<ConversationSessionStartedUpdate>, IPersistableModel<ConversationSessionStartedUpdate> {
         public ConversationContentModalities ContentModalities { get; }
@@ -2687,15 +2357,14 @@ namespace OpenAI.RealtimeConversation {
         public IReadOnlyList<ConversationTool> Tools { get; }
         public ConversationTurnDetectionOptions TurnDetectionOptions { get; }
         public ConversationVoice Voice { get; }
-        ConversationSessionStartedUpdate IJsonModel<ConversationSessionStartedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationSessionStartedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationSessionStartedUpdate IPersistableModel<ConversationSessionStartedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationSessionStartedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationSessionStartedUpdate>.Write(ModelReaderWriterOptions options);
+        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator ConversationSessionStartedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationSessionStartedUpdate conversationSessionStartedUpdate);
+        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct ConversationStatus : IEquatable<ConversationStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationStatus(string value);
         public static ConversationStatus Cancelled { get; }
         public static ConversationStatus Completed { get; }
@@ -2714,11 +2383,8 @@ namespace OpenAI.RealtimeConversation {
     }
     public abstract class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>, IPersistableModel<ConversationStatusDetails> {
         public ConversationStatus StatusKind { get; }
-        ConversationStatusDetails IJsonModel<ConversationStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationStatusDetails IPersistableModel<ConversationStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationStatusDetails(ClientResult result);
+        public static implicit operator BinaryContent(ConversationStatusDetails conversationStatusDetails);
     }
     public class ConversationTokenUsage : IJsonModel<ConversationTokenUsage>, IPersistableModel<ConversationTokenUsage> {
         public ConversationInputTokenUsageDetails InputTokenDetails { get; }
@@ -2726,20 +2392,14 @@ namespace OpenAI.RealtimeConversation {
         public ConversationOutputTokenUsageDetails OutputTokenDetails { get; }
         public int OutputTokens { get; }
         public int TotalTokens { get; }
-        ConversationTokenUsage IJsonModel<ConversationTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationTokenUsage IPersistableModel<ConversationTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationTokenUsage>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(ConversationTokenUsage conversationTokenUsage);
     }
     public abstract class ConversationTool : IJsonModel<ConversationTool>, IPersistableModel<ConversationTool> {
         public ConversationToolKind Kind { get; }
         public static ConversationTool CreateFunctionTool(string name, string description = null, BinaryData parameters = null);
-        ConversationTool IJsonModel<ConversationTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationTool IPersistableModel<ConversationTool>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationTool>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationTool>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationTool(ClientResult result);
+        public static implicit operator BinaryContent(ConversationTool conversationTool);
     }
     public class ConversationToolChoice : IJsonModel<ConversationToolChoice>, IPersistableModel<ConversationToolChoice> {
         public string FunctionName { get; }
@@ -2748,11 +2408,6 @@ namespace OpenAI.RealtimeConversation {
         public static ConversationToolChoice CreateFunctionToolChoice(string functionName);
         public static ConversationToolChoice CreateNoneToolChoice();
         public static ConversationToolChoice CreateRequiredToolChoice();
-        ConversationToolChoice IJsonModel<ConversationToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationToolChoice IPersistableModel<ConversationToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationToolChoice>.Write(ModelReaderWriterOptions options);
     }
     public enum ConversationToolChoiceKind {
         Unknown = 0,
@@ -2762,8 +2417,6 @@ namespace OpenAI.RealtimeConversation {
         Function = 4
     }
     public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationToolKind(string value);
         public static ConversationToolKind Function { get; }
         public readonly bool Equals(ConversationToolKind other);
@@ -2777,8 +2430,6 @@ namespace OpenAI.RealtimeConversation {
         public override readonly string ToString();
     }
     public readonly partial struct ConversationTranscriptionModel : IEquatable<ConversationTranscriptionModel> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationTranscriptionModel(string value);
         public static ConversationTranscriptionModel Whisper1 { get; }
         public readonly bool Equals(ConversationTranscriptionModel other);
@@ -2799,22 +2450,15 @@ namespace OpenAI.RealtimeConversation {
         public ConversationTurnDetectionKind Kind { get; protected internal set; }
         public static ConversationTurnDetectionOptions CreateDisabledTurnDetectionOptions();
         public static ConversationTurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null);
-        ConversationTurnDetectionOptions IJsonModel<ConversationTurnDetectionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationTurnDetectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationTurnDetectionOptions IPersistableModel<ConversationTurnDetectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationTurnDetectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationTurnDetectionOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationTurnDetectionOptions(ClientResult result);
+        public static implicit operator BinaryContent(ConversationTurnDetectionOptions conversationTurnDetectionOptions);
     }
     public abstract class ConversationUpdate : IJsonModel<ConversationUpdate>, IPersistableModel<ConversationUpdate> {
-        protected ConversationUpdate(string eventId);
         public string EventId { get; }
         public ConversationUpdateKind Kind { get; protected internal set; }
         public BinaryData GetRawContent();
-        ConversationUpdate IJsonModel<ConversationUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<ConversationUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        ConversationUpdate IPersistableModel<ConversationUpdate>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<ConversationUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<ConversationUpdate>.Write(ModelReaderWriterOptions options);
+        public static explicit operator ConversationUpdate(ClientResult result);
+        public static implicit operator BinaryContent(ConversationUpdate conversationUpdate);
     }
     public enum ConversationUpdateKind {
         Unknown = 0,
@@ -2848,8 +2492,6 @@ namespace OpenAI.RealtimeConversation {
         Error = 28
     }
     public readonly partial struct ConversationVoice : IEquatable<ConversationVoice> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public ConversationVoice(string value);
         public static ConversationVoice Alloy { get; }
         public static ConversationVoice Echo { get; }
@@ -2869,7 +2511,7 @@ namespace OpenAI.RealtimeConversation {
         protected internal RealtimeConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public RealtimeConversationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public RealtimeConversationClient(string model, ApiKeyCredential credential);
-        public virtual ClientPipeline Pipeline { get; }
+        public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
         public RealtimeConversationSession StartConversationSession(CancellationToken cancellationToken = default);
@@ -2983,30 +2625,25 @@ namespace OpenAI.VectorStores {
         public static FileChunkingStrategy Auto { get; }
         public static FileChunkingStrategy Unknown { get; }
         public static FileChunkingStrategy CreateStaticStrategy(int maxTokensPerChunk, int overlappingTokenCount);
-        FileChunkingStrategy IJsonModel<FileChunkingStrategy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileChunkingStrategy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileChunkingStrategy IPersistableModel<FileChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileChunkingStrategy>.Write(ModelReaderWriterOptions options);
+        public static explicit operator FileChunkingStrategy(ClientResult result);
+        public static implicit operator BinaryContent(FileChunkingStrategy fileChunkingStrategy);
     }
     public class FileFromStoreRemovalResult : IJsonModel<FileFromStoreRemovalResult>, IPersistableModel<FileFromStoreRemovalResult> {
         public string FileId { get; }
         public bool Removed { get; }
-        FileFromStoreRemovalResult IJsonModel<FileFromStoreRemovalResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<FileFromStoreRemovalResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        FileFromStoreRemovalResult IPersistableModel<FileFromStoreRemovalResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<FileFromStoreRemovalResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<FileFromStoreRemovalResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator FileFromStoreRemovalResult(ClientResult result);
+        public static implicit operator BinaryContent(FileFromStoreRemovalResult fileFromStoreRemovalResult);
     }
     public class StaticFileChunkingStrategy : FileChunkingStrategy, IJsonModel<StaticFileChunkingStrategy>, IPersistableModel<StaticFileChunkingStrategy> {
         public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount);
         public int MaxTokensPerChunk { get; }
         public int OverlappingTokenCount { get; }
-        StaticFileChunkingStrategy IJsonModel<StaticFileChunkingStrategy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<StaticFileChunkingStrategy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        StaticFileChunkingStrategy IPersistableModel<StaticFileChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<StaticFileChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<StaticFileChunkingStrategy>.Write(ModelReaderWriterOptions options);
+        protected override FileChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public new static explicit operator StaticFileChunkingStrategy(ClientResult result);
+        public static implicit operator BinaryContent(StaticFileChunkingStrategy staticFileChunkingStrategy);
+        protected override FileChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class VectorStore : IJsonModel<VectorStore>, IPersistableModel<VectorStore> {
         public DateTimeOffset CreatedAt { get; }
@@ -3019,11 +2656,8 @@ namespace OpenAI.VectorStores {
         public string Name { get; }
         public VectorStoreStatus Status { get; }
         public int UsageBytes { get; }
-        VectorStore IJsonModel<VectorStore>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStore>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStore IPersistableModel<VectorStore>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStore>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStore>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStore(ClientResult result);
+        public static implicit operator BinaryContent(VectorStore vectorStore);
     }
     public class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>, IPersistableModel<VectorStoreBatchFileJob> {
         public string BatchId { get; }
@@ -3031,15 +2665,10 @@ namespace OpenAI.VectorStores {
         public VectorStoreFileCounts FileCounts { get; }
         public VectorStoreBatchFileJobStatus Status { get; }
         public string VectorStoreId { get; }
-        VectorStoreBatchFileJob IJsonModel<VectorStoreBatchFileJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreBatchFileJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreBatchFileJob IPersistableModel<VectorStoreBatchFileJob>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreBatchFileJob>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreBatchFileJob>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreBatchFileJob(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreBatchFileJob vectorStoreBatchFileJob);
     }
     public readonly partial struct VectorStoreBatchFileJobStatus : IEquatable<VectorStoreBatchFileJobStatus> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public VectorStoreBatchFileJobStatus(string value);
         public static VectorStoreBatchFileJobStatus Cancelled { get; }
         public static VectorStoreBatchFileJobStatus Completed { get; }
@@ -3147,8 +2776,6 @@ namespace OpenAI.VectorStores {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct VectorStoreCollectionOrder : IEquatable<VectorStoreCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public VectorStoreCollectionOrder(string value);
         public static VectorStoreCollectionOrder Ascending { get; }
         public static VectorStoreCollectionOrder Descending { get; }
@@ -3168,20 +2795,14 @@ namespace OpenAI.VectorStores {
         public IList<string> FileIds { get; }
         public IDictionary<string, string> Metadata { get; set; }
         public string Name { get; set; }
-        VectorStoreCreationOptions IJsonModel<VectorStoreCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreCreationOptions IPersistableModel<VectorStoreCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreCreationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreCreationOptions vectorStoreCreationOptions);
     }
     public class VectorStoreDeletionResult : IJsonModel<VectorStoreDeletionResult>, IPersistableModel<VectorStoreDeletionResult> {
         public bool Deleted { get; }
         public string VectorStoreId { get; }
-        VectorStoreDeletionResult IJsonModel<VectorStoreDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreDeletionResult IPersistableModel<VectorStoreDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreDeletionResult>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreDeletionResult vectorStoreDeletionResult);
     }
     public enum VectorStoreExpirationAnchor {
         Unknown = 0,
@@ -3192,11 +2813,8 @@ namespace OpenAI.VectorStores {
         public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days);
         public required VectorStoreExpirationAnchor Anchor { get; set; }
         public required int Days { get; set; }
-        VectorStoreExpirationPolicy IJsonModel<VectorStoreExpirationPolicy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreExpirationPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreExpirationPolicy IPersistableModel<VectorStoreExpirationPolicy>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreExpirationPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreExpirationPolicy>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreExpirationPolicy(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreExpirationPolicy vectorStoreExpirationPolicy);
     }
     public class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>, IPersistableModel<VectorStoreFileAssociation> {
         public FileChunkingStrategy ChunkingStrategy { get; }
@@ -3206,11 +2824,8 @@ namespace OpenAI.VectorStores {
         public int Size { get; }
         public VectorStoreFileAssociationStatus Status { get; }
         public string VectorStoreId { get; }
-        VectorStoreFileAssociation IJsonModel<VectorStoreFileAssociation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreFileAssociation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreFileAssociation IPersistableModel<VectorStoreFileAssociation>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreFileAssociation>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreFileAssociation>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFileAssociation(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreFileAssociation vectorStoreFileAssociation);
     }
     public class VectorStoreFileAssociationCollectionOptions {
         public string AfterId { get; set; }
@@ -3220,8 +2835,6 @@ namespace OpenAI.VectorStores {
         public int? PageSizeLimit { get; set; }
     }
     public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public VectorStoreFileAssociationCollectionOrder(string value);
         public static VectorStoreFileAssociationCollectionOrder Ascending { get; }
         public static VectorStoreFileAssociationCollectionOrder Descending { get; }
@@ -3238,15 +2851,10 @@ namespace OpenAI.VectorStores {
     public class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IPersistableModel<VectorStoreFileAssociationError> {
         public VectorStoreFileAssociationErrorCode Code { get; }
         public string Message { get; }
-        VectorStoreFileAssociationError IJsonModel<VectorStoreFileAssociationError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreFileAssociationError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreFileAssociationError IPersistableModel<VectorStoreFileAssociationError>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreFileAssociationError>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreFileAssociationError>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFileAssociationError(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreFileAssociationError vectorStoreFileAssociationError);
     }
     public readonly partial struct VectorStoreFileAssociationErrorCode : IEquatable<VectorStoreFileAssociationErrorCode> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public VectorStoreFileAssociationErrorCode(string value);
         public static VectorStoreFileAssociationErrorCode InvalidFile { get; }
         public static VectorStoreFileAssociationErrorCode ServerError { get; }
@@ -3274,15 +2882,10 @@ namespace OpenAI.VectorStores {
         public int Failed { get; }
         public int InProgress { get; }
         public int Total { get; }
-        VectorStoreFileCounts IJsonModel<VectorStoreFileCounts>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreFileCounts>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreFileCounts IPersistableModel<VectorStoreFileCounts>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreFileCounts>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreFileCounts>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFileCounts(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreFileCounts vectorStoreFileCounts);
     }
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {
-        private readonly object _dummy;
-        private readonly int _dummyPrimitive;
         public VectorStoreFileStatusFilter(string value);
         public static VectorStoreFileStatusFilter Cancelled { get; }
         public static VectorStoreFileStatusFilter Completed { get; }
@@ -3302,11 +2905,8 @@ namespace OpenAI.VectorStores {
         public VectorStoreExpirationPolicy ExpirationPolicy { get; set; }
         public IDictionary<string, string> Metadata { get; set; }
         public string Name { get; set; }
-        VectorStoreModificationOptions IJsonModel<VectorStoreModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        void IJsonModel<VectorStoreModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        VectorStoreModificationOptions IPersistableModel<VectorStoreModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options);
-        string IPersistableModel<VectorStoreModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options);
-        BinaryData IPersistableModel<VectorStoreModificationOptions>.Write(ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreModificationOptions(ClientResult result);
+        public static implicit operator BinaryContent(VectorStoreModificationOptions vectorStoreModificationOptions);
     }
     public enum VectorStoreStatus {
         Unknown = 0,

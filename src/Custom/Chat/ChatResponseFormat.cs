@@ -97,9 +97,9 @@ public partial class ChatResponseFormat
         InternalResponseFormatJsonSchemaJsonSchema internalSchema = new(
             jsonSchemaFormatDescription,
             jsonSchemaFormatName,
-            jsonSchema,
             jsonSchemaIsStrict,
-            serializedAdditionalRawData: null);
+            schema: jsonSchema,
+            additionalBinaryDataProperties: null);
 
         return new InternalChatResponseFormatJsonSchema(internalSchema);
     }

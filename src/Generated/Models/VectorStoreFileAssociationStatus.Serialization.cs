@@ -8,21 +8,33 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreFileAssociationStatusExtensions
     {
-        public static string ToSerialString(this VectorStoreFileAssociationStatus value) => value switch
+        public static string ToSerialString(this VectorStores.VectorStoreFileAssociationStatus value) => value switch
         {
-            VectorStoreFileAssociationStatus.InProgress => "in_progress",
-            VectorStoreFileAssociationStatus.Completed => "completed",
-            VectorStoreFileAssociationStatus.Cancelled => "cancelled",
-            VectorStoreFileAssociationStatus.Failed => "failed",
+            VectorStores.VectorStoreFileAssociationStatus.InProgress => "in_progress",
+            VectorStores.VectorStoreFileAssociationStatus.Completed => "completed",
+            VectorStores.VectorStoreFileAssociationStatus.Cancelled => "cancelled",
+            VectorStores.VectorStoreFileAssociationStatus.Failed => "failed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreFileAssociationStatus value.")
         };
 
-        public static VectorStoreFileAssociationStatus ToVectorStoreFileAssociationStatus(this string value)
+        public static VectorStores.VectorStoreFileAssociationStatus ToVectorStoreFileAssociationStatus(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress")) return VectorStoreFileAssociationStatus.InProgress;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "completed")) return VectorStoreFileAssociationStatus.Completed;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "cancelled")) return VectorStoreFileAssociationStatus.Cancelled;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "failed")) return VectorStoreFileAssociationStatus.Failed;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
+            {
+                return VectorStores.VectorStoreFileAssociationStatus.InProgress;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "completed"))
+            {
+                return VectorStores.VectorStoreFileAssociationStatus.Completed;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "cancelled"))
+            {
+                return VectorStores.VectorStoreFileAssociationStatus.Cancelled;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "failed"))
+            {
+                return VectorStores.VectorStoreFileAssociationStatus.Failed;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreFileAssociationStatus value.");
         }
     }

@@ -7,68 +7,81 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class UserChatMessage : IJsonModel<UserChatMessage>
     {
-        UserChatMessage IJsonModel<UserChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(UserChatMessage)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+            if (Optional.IsDefined(ParticipantName) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(ParticipantName);
+            }
+        }
+
+        UserChatMessage IJsonModel<UserChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (UserChatMessage)JsonModelCreateCore(ref reader, options);
+
+        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(UserChatMessage)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeUserChatMessage(document.RootElement, options);
         }
 
-        internal static UserChatMessage DeserializeUserChatMessage(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static UserChatMessage DeserializeUserChatMessage(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string name = default;
-            ChatMessageRole role = default;
+            Chat.ChatMessageRole role = default;
             ChatMessageContent content = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string participantName = default;
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("name"u8))
+                if (prop.NameEquals("role"u8))
                 {
-                    name = property.Value.GetString();
+                    role = prop.Value.GetString().ToChatMessageRole();
                     continue;
                 }
-                if (property.NameEquals("role"u8))
+                if (prop.NameEquals("content"u8))
                 {
-                    role = property.Value.GetString().ToChatMessageRole();
+                    DeserializeContentValue(prop, ref content);
                     continue;
                 }
-                if (property.NameEquals("content"u8))
+                if (prop.NameEquals("name"u8))
                 {
-                    DeserializeContentValue(property, ref content);
+                    participantName = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             // CUSTOM: Initialize Content collection property.
-            return new UserChatMessage(role, content ?? new ChatMessageContent(), serializedAdditionalRawData, name);
+            return new UserChatMessage(role, content ?? new ChatMessageContent(), additionalBinaryDataProperties, participantName);
         }
 
-        BinaryData IPersistableModel<UserChatMessage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<UserChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -78,15 +91,16 @@ namespace OpenAI.Chat
             }
         }
 
-        UserChatMessage IPersistableModel<UserChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+        UserChatMessage IPersistableModel<UserChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (UserChatMessage)PersistableModelCreateCore(data, options);
 
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<UserChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeUserChatMessage(document.RootElement, options);
                     }
                 default:
@@ -96,15 +110,20 @@ namespace OpenAI.Chat
 
         string IPersistableModel<UserChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new UserChatMessage FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(UserChatMessage userChatMessage)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUserChatMessage(document.RootElement);
+            if (userChatMessage == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(userChatMessage, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator UserChatMessage(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeUserChatMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

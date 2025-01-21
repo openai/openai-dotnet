@@ -9,7 +9,8 @@ namespace OpenAI.Assistants
 {
     public partial class RunStepTokenUsage
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal RunStepTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount)
         {
             OutputTokenCount = outputTokenCount;
@@ -17,16 +18,18 @@ namespace OpenAI.Assistants
             TotalTokenCount = totalTokenCount;
         }
 
-        internal RunStepTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal RunStepTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             OutputTokenCount = outputTokenCount;
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal RunStepTokenUsage()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

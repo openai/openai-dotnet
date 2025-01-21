@@ -39,7 +39,7 @@ public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
             }
         }
 
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

@@ -4,31 +4,35 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IEnumerable<ChatTokenLogProbabilityDetails> content, IEnumerable<ChatTokenLogProbabilityDetails> refusal)
-        {
-            Content = content?.ToList();
-            Refusal = refusal?.ToList();
-        }
-
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
-            Content = content;
-            Refusal = refusal;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         internal InternalCreateChatCompletionStreamResponseChoiceLogprobs()
         {
+            Content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
+            Refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
+        }
+
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Content = content;
+            Refusal = refusal;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
+
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

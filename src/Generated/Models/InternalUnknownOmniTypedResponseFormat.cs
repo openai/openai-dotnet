@@ -9,11 +9,7 @@ namespace OpenAI.Internal
 {
     internal partial class InternalUnknownOmniTypedResponseFormat : InternalOmniTypedResponseFormat
     {
-        internal InternalUnknownOmniTypedResponseFormat(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal InternalUnknownOmniTypedResponseFormat()
+        internal InternalUnknownOmniTypedResponseFormat(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

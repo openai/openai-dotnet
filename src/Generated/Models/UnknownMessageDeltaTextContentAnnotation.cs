@@ -9,11 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownMessageDeltaTextContentAnnotation : InternalMessageDeltaTextContentAnnotation
     {
-        internal UnknownMessageDeltaTextContentAnnotation(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal UnknownMessageDeltaTextContentAnnotation()
+        internal UnknownMessageDeltaTextContentAnnotation(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

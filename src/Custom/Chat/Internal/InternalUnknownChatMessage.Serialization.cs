@@ -42,7 +42,7 @@ internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
             }
         }
 
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

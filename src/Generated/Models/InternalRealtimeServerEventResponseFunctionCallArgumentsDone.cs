@@ -9,23 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeServerEventResponseFunctionCallArgumentsDone : ConversationUpdate
     {
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, string arguments) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(responseId, nameof(responseId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(arguments, nameof(arguments));
-
-            Kind = ConversationUpdateKind.ItemStreamingFunctionCallArgumentsFinished;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            CallId = callId;
-            Arguments = arguments;
-        }
-
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDone(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string responseId, string itemId, int outputIndex, string callId, string arguments) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, string arguments) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingFunctionCallArgumentsFinished)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -34,14 +18,23 @@ namespace OpenAI.RealtimeConversation
             Arguments = arguments;
         }
 
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDone()
+        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDone(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, string callId, string arguments) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            CallId = callId;
+            Arguments = arguments;
         }
 
         public string ResponseId { get; }
+
         public string ItemId { get; }
+
         public int OutputIndex { get; }
+
         public string CallId { get; }
+
         public string Arguments { get; }
     }
 }

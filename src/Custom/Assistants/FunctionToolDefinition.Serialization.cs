@@ -19,7 +19,7 @@ public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
         writer.WriteObjectValue<InternalFunctionDefinition>(_internalFunction, options);
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(Type);
-        writer.WriteSerializedAdditionalRawData(SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 }

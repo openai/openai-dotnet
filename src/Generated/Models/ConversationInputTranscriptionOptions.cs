@@ -9,17 +9,24 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationInputTranscriptionOptions
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public ConversationInputTranscriptionOptions()
         {
         }
 
-        internal ConversationInputTranscriptionOptions(ConversationTranscriptionModel? model, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ConversationInputTranscriptionOptions(ConversationTranscriptionModel? model, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Model = model;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public ConversationTranscriptionModel? Model { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

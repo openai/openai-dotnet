@@ -15,9 +15,25 @@ public class RunStepDetailsUpdate : StreamingUpdate
     internal readonly InternalRunStepDelta _delta;
     internal readonly InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject _toolCall;
     private readonly InternalRunStepDeltaStepDetailsMessageCreationObject _asMessageCreation;
-    private readonly InternalRunStepDeltaStepDetailsToolCallsCodeObject _asCodeCall;
+    private readonly InternalRunStepDeltaStepDetailsToolCallsCodeObject _asCodeInterpreterCall;
     private readonly InternalRunStepDeltaStepDetailsToolCallsFileSearchObject _asFileSearchCall;
     private readonly InternalRunStepDeltaStepDetailsToolCallsFunctionObject _asFunctionCall;
+
+    private IReadOnlyList<RunStepUpdateCodeInterpreterOutput> _codeInterpreterOutputs;
+    private IReadOnlyList<RunStepFileSearchResult> _fileSearchResults;
+
+    internal RunStepDetailsUpdate(InternalRunStepDelta stepDelta, InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject toolCall = null)
+        : base(StreamingUpdateReason.RunStepUpdated)
+    {
+        _delta = stepDelta;
+        _toolCall = toolCall;
+
+        _asMessageCreation = stepDelta?.Delta?.StepDetails as InternalRunStepDeltaStepDetailsMessageCreationObject;
+
+        _asCodeInterpreterCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsCodeObject;
+        _asFileSearchCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFileSearchObject;
+        _asFunctionCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFunctionObject;
+    }
 
     /// <inheritdoc cref="InternalRunStepDelta.Id"/>
     public string StepId => _delta?.Id;
@@ -27,7 +43,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObject.Id"/>
     public string ToolCallId
-        => _asCodeCall?.Id
+        => _asCodeInterpreterCall?.Id
         ?? _asFileSearchCall?.Id
         ?? _asFunctionCall?.Id
         ?? (_toolCall?.SerializedAdditionalRawData?.TryGetValue("id", out BinaryData idData) == true
@@ -35,17 +51,42 @@ public class RunStepDetailsUpdate : StreamingUpdate
             : null);
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObject.Index"/>
-    public int? ToolCallIndex => _asCodeCall?.Index ?? _asFileSearchCall?.Index ?? _asFunctionCall?.Index;
+    public int? ToolCallIndex
+        => _asCodeInterpreterCall?.Index
+        ?? _asFileSearchCall?.Index
+        ?? _asFunctionCall?.Index;
+
+    #region Code Interpreter
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter.Input"/>
-    public string CodeInterpreterInput => _asCodeCall?.CodeInterpreter?.Input;
+    public string CodeInterpreterInput => _asCodeInterpreterCall?.CodeInterpreter?.Input;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter.Outputs"/>
-    public IReadOnlyList<RunStepUpdateCodeInterpreterOutput> CodeInterpreterOutputs
-        => _asCodeCall?.CodeInterpreter?.Outputs;
+    public IReadOnlyList<RunStepUpdateCodeInterpreterOutput> CodeInterpreterOutputs =>
+        _codeInterpreterOutputs
+            ??= _asCodeInterpreterCall?.CodeInterpreter?.Outputs
+                ?? new ChangeTrackingList<RunStepUpdateCodeInterpreterOutput>();
+
+    #endregion
+
+    #region File Search
+
+    // CUSTOM: Spread.
+    public FileSearchRankingOptions FileSearchRankingOptions => _asFileSearchCall?.FileSearch?.RankingOptions;
+
+    // CUSTOM: Spread.
+    /// <summary> The results of the file search. </summary>
+    public IReadOnlyList<RunStepFileSearchResult> FileSearchResults =>
+        _fileSearchResults
+            ??= _asFileSearchCall?.FileSearch?.Results
+                ?? new ChangeTrackingList<RunStepFileSearchResult>();
+
+    #endregion
+
+    #region Function
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.Name"/>
-    public string FunctionName => _asFunctionCall.Function?.Name;
+    public string FunctionName => _asFunctionCall?.Function?.Name;
 
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.Arguments"/>
     public string FunctionArguments => _asFunctionCall?.Function?.Arguments;
@@ -53,18 +94,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.Output"/>
     public string FunctionOutput => _asFunctionCall?.Function?.Output;
 
-    internal RunStepDetailsUpdate(
-        InternalRunStepDelta stepDelta,
-        InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject toolCall = null)
-            : base(StreamingUpdateReason.RunStepUpdated)
-    {
-        _asMessageCreation = stepDelta?.Delta?.StepDetails as InternalRunStepDeltaStepDetailsMessageCreationObject;
-        _asCodeCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsCodeObject;
-        _asFileSearchCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFileSearchObject;
-        _asFunctionCall = toolCall as InternalRunStepDeltaStepDetailsToolCallsFunctionObject;
-        _delta = stepDelta;
-        _toolCall = toolCall;
-    }
+    #endregion
 
     internal static IEnumerable<RunStepDetailsUpdate> DeserializeRunStepDetailsUpdates(
         JsonElement element,
@@ -73,6 +103,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
     {
         InternalRunStepDelta stepDelta = InternalRunStepDelta.DeserializeInternalRunStepDelta(element, options);
         List<RunStepDetailsUpdate> updates = [];
+
         if (stepDelta?.Delta?.StepDetails is InternalRunStepDeltaStepDetailsMessageCreationObject)
         {
             updates.Add(new RunStepDetailsUpdate(stepDelta));
@@ -84,6 +115,7 @@ public class RunStepDetailsUpdate : StreamingUpdate
                 updates.Add(new RunStepDetailsUpdate(stepDelta, toolCall));
             }
         }
+
         return updates;
     }
 }

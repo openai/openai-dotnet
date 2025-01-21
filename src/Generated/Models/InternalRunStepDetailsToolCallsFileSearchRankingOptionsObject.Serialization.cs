@@ -7,33 +7,43 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject : IJsonModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>
     {
+        internal InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject()
+        {
+        }
+
         void IJsonModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("ranker") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("ranker") != true)
             {
                 writer.WritePropertyName("ranker"u8);
                 writer.WriteStringValue(Ranker.ToString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("score_threshold") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("score_threshold") != true)
             {
                 writer.WritePropertyName("score_threshold"u8);
                 writer.WriteNumberValue(ScoreThreshold);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -41,7 +51,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -50,59 +60,55 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject IJsonModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject IJsonModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(document.RootElement, options);
         }
 
-        internal static InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker ranker = default;
             float scoreThreshold = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("ranker"u8))
+                if (prop.NameEquals("ranker"u8))
                 {
-                    ranker = new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker(property.Value.GetString());
+                    ranker = new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("score_threshold"u8))
+                if (prop.NameEquals("score_threshold"u8))
                 {
-                    scoreThreshold = property.Value.GetSingle();
+                    scoreThreshold = prop.Value.GetSingle();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(ranker, scoreThreshold, serializedAdditionalRawData);
+            return new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(ranker, scoreThreshold, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -112,15 +118,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(document.RootElement, options);
                     }
                 default:
@@ -130,15 +137,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject internalRunStepDetailsToolCallsFileSearchRankingOptionsObject)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(document.RootElement);
+            if (internalRunStepDetailsToolCallsFileSearchRankingOptionsObject == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRunStepDetailsToolCallsFileSearchRankingOptionsObject, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

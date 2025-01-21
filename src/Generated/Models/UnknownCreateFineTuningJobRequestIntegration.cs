@@ -9,11 +9,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class UnknownCreateFineTuningJobRequestIntegration : FineTuningIntegration
     {
-        internal UnknownCreateFineTuningJobRequestIntegration(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal UnknownCreateFineTuningJobRequestIntegration()
+        internal UnknownCreateFineTuningJobRequestIntegration(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
         {
         }
     }

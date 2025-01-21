@@ -6,22 +6,108 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     public partial class ToolConstraint : IJsonModel<ToolConstraint>
     {
-        string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static ToolConstraint FromResponse(PipelineResponse response)
+        internal ToolConstraint()
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeToolConstraint(document.RootElement);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(ToolConstraint)} does not support writing '{format}' format.");
+            }
+            if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
+            {
+                writer.WritePropertyName("function"u8);
+                writer.WriteObjectValue<InternalAssistantsNamedToolChoiceFunction>(Function, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(_objectType);
+            }
+            if (true && _additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
+        }
+
+        protected virtual ToolConstraint JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(ToolConstraint)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return ToolConstraint.DeserializeToolConstraint(document.RootElement, options);
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options);
+                default:
+                    throw new FormatException($"The model {nameof(ToolConstraint)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        protected virtual ToolConstraint PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
+                    {
+                        return ToolConstraint.DeserializeToolConstraint(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ToolConstraint)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static implicit operator BinaryContent(ToolConstraint toolConstraint)
+        {
+            if (toolConstraint == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(toolConstraint, ModelSerializationExtensions.WireOptions);
+        }
+
+        public static explicit operator ToolConstraint(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return ToolConstraint.DeserializeToolConstraint(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

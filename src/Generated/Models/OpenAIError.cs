@@ -9,34 +9,37 @@ namespace OpenAI.Internal
 {
     internal partial class OpenAIError
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal OpenAIError(string code, string message, string param, string type)
-        {
-            Argument.AssertNotNull(message, nameof(message));
-            Argument.AssertNotNull(type, nameof(type));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Code = code;
-            Message = message;
-            Param = param;
-            Type = type;
-        }
-
-        internal OpenAIError(string code, string message, string param, string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal OpenAIError(string code, string message, string @param, string @type)
         {
             Code = code;
             Message = message;
-            Param = param;
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Param = @param;
+            Type = @type;
         }
 
-        internal OpenAIError()
+        internal OpenAIError(string code, string message, string @param, string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Code = code;
+            Message = message;
+            Param = @param;
+            Type = @type;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Code { get; }
+
         public string Message { get; }
+
         public string Param { get; }
+
         public string Type { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }
