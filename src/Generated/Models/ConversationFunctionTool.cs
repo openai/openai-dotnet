@@ -2,9 +2,6 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-
 namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationFunctionTool : ConversationTool

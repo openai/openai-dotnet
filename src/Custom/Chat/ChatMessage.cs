@@ -126,10 +126,10 @@ public partial class ChatMessage
     /// <inheritdoc cref="AssistantChatMessage(ChatMessageContentPart[])"/>
     public static AssistantChatMessage CreateAssistantMessage(params ChatMessageContentPart[] contentParts) => new(contentParts);
 
-    /// <inheritdoc cref="AssistantChatMessage(IEnumerable{ChatToolCall}, string)"/>
+    /// <inheritdoc cref="AssistantChatMessage(IEnumerable{ChatToolCall})"/>
     public static AssistantChatMessage CreateAssistantMessage(IEnumerable<ChatToolCall> toolCalls) => new(toolCalls);
 
-    /// <inheritdoc cref="AssistantChatMessage(ChatFunctionCall, string)"/>
+    /// <inheritdoc cref="AssistantChatMessage(ChatFunctionCall)"/>
     public static AssistantChatMessage CreateAssistantMessage(ChatFunctionCall functionCall) => new(functionCall);
 
     /// <inheritdoc cref="AssistantChatMessage(ChatCompletion)"/>

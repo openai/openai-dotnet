@@ -42,7 +42,7 @@ namespace OpenAI.Moderations
                     sexualMinors: SexualMinors.Flagged,
                     violence: Violence.Flagged,
                     violenceGraphic: ViolenceGraphic.Flagged,
-                    serializedAdditionalRawData: null);
+                    additionalBinaryDataProperties: null);
                 writer.WriteObjectValue(internalCategories, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("category_scores") != true)
@@ -62,7 +62,7 @@ namespace OpenAI.Moderations
                     sexualMinors: SexualMinors.Score,
                     violence: Violence.Score,
                     violenceGraphic: ViolenceGraphic.Score,
-                    serializedAdditionalRawData: null);
+                    additionalBinaryDataProperties: null);
                 writer.WriteObjectValue(internalCategoryScores, options);
             }
             if (SerializedAdditionalRawData?.ContainsKey("category_applied_input_types") != true)
@@ -82,7 +82,7 @@ namespace OpenAI.Moderations
                     sexualMinors: SexualMinors.ApplicableInputKinds.ToInternalApplicableInputKinds(),
                     violence: Violence.ApplicableInputKinds.ToInternalApplicableInputKinds(),
                     violenceGraphic: ViolenceGraphic.ApplicableInputKinds.ToInternalApplicableInputKinds(),
-                    serializedAdditionalRawData: null);
+                    additionalBinaryDataProperties: null);
                 writer.WriteObjectValue(internalAppliedInputTypes, options);
             }
             if (SerializedAdditionalRawData != null)

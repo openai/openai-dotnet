@@ -7,26 +7,56 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Files
 {
     public partial class OpenAIFile : IJsonModel<OpenAIFile>
     {
+        internal OpenAIFile()
+        {
+        }
+
         void IJsonModel<OpenAIFile>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(OpenAIFile)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("bytes") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
+            {
+                writer.WritePropertyName("purpose"u8);
+                writer.WriteStringValue(Purpose.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(this.Object.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
                 if (SizeInBytes != null)
                 {
@@ -35,42 +65,22 @@ namespace OpenAI.Files
                 }
                 else
                 {
-                    writer.WriteNull("bytes");
+                    writer.WriteNull("bytes"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("filename") != true)
-            {
-                writer.WritePropertyName("filename"u8);
-                writer.WriteStringValue(Filename);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("purpose") != true)
-            {
-                writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose.ToSerialString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToSerialString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status_details") != true && Optional.IsDefined(StatusDetails))
+            if (Optional.IsDefined(StatusDetails) && _additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
                 writer.WritePropertyName("status_details"u8);
                 writer.WriteStringValue(StatusDetails);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -78,7 +88,7 @@ namespace OpenAI.Files
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -87,109 +97,105 @@ namespace OpenAI.Files
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        OpenAIFile IJsonModel<OpenAIFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        OpenAIFile IJsonModel<OpenAIFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual OpenAIFile JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(OpenAIFile)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeOpenAIFile(document.RootElement, options);
         }
 
-        internal static OpenAIFile DeserializeOpenAIFile(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static OpenAIFile DeserializeOpenAIFile(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string id = default;
-            int? bytes = default;
             DateTimeOffset createdAt = default;
             string filename = default;
+            Files.FilePurpose purpose = default;
             InternalOpenAIFileObject @object = default;
-            FilePurpose purpose = default;
-            FileStatus status = default;
+            int? sizeInBytes = default;
+            Files.FileStatus status = default;
             string statusDetails = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("id"u8))
+                if (prop.NameEquals("id"u8))
                 {
-                    id = property.Value.GetString();
+                    id = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("bytes"u8))
+                if (prop.NameEquals("created_at"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
+                if (prop.NameEquals("filename"u8))
+                {
+                    filename = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("purpose"u8))
+                {
+                    purpose = prop.Value.GetString().ToFilePurpose();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = new InternalOpenAIFileObject(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("bytes"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        bytes = null;
+                        sizeInBytes = null;
                         continue;
                     }
-                    bytes = property.Value.GetInt32();
+                    sizeInBytes = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("created_at"u8))
+                if (prop.NameEquals("status"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
+                    status = prop.Value.GetString().ToFileStatus();
                     continue;
                 }
-                if (property.NameEquals("filename"u8))
+                if (prop.NameEquals("status_details"u8))
                 {
-                    filename = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("object"u8))
-                {
-                    @object = new InternalOpenAIFileObject(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("purpose"u8))
-                {
-                    purpose = property.Value.GetString().ToFilePurpose();
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = property.Value.GetString().ToFileStatus();
-                    continue;
-                }
-                if (property.NameEquals("status_details"u8))
-                {
-                    statusDetails = property.Value.GetString();
+                    statusDetails = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new OpenAIFile(
                 id,
-                bytes,
                 createdAt,
                 filename,
-                @object,
                 purpose,
+                @object,
+                sizeInBytes,
                 status,
                 statusDetails,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<OpenAIFile>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<OpenAIFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -199,15 +205,16 @@ namespace OpenAI.Files
             }
         }
 
-        OpenAIFile IPersistableModel<OpenAIFile>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
+        OpenAIFile IPersistableModel<OpenAIFile>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual OpenAIFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIFile>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeOpenAIFile(document.RootElement, options);
                     }
                 default:
@@ -217,15 +224,20 @@ namespace OpenAI.Files
 
         string IPersistableModel<OpenAIFile>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static OpenAIFile FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(OpenAIFile openAIFile)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeOpenAIFile(document.RootElement);
+            if (openAIFile == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(openAIFile, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator OpenAIFile(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeOpenAIFile(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

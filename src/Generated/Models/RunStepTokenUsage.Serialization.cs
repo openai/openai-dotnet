@@ -7,38 +7,48 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     public partial class RunStepTokenUsage : IJsonModel<RunStepTokenUsage>
     {
+        internal RunStepTokenUsage()
+        {
+        }
+
         void IJsonModel<RunStepTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(RunStepTokenUsage)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("completion_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("completion_tokens") != true)
             {
                 writer.WritePropertyName("completion_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("prompt_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt_tokens") != true)
             {
                 writer.WritePropertyName("prompt_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("total_tokens") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokenCount);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +56,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,65 +65,61 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        RunStepTokenUsage IJsonModel<RunStepTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        RunStepTokenUsage IJsonModel<RunStepTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual RunStepTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(RunStepTokenUsage)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRunStepTokenUsage(document.RootElement, options);
         }
 
-        internal static RunStepTokenUsage DeserializeRunStepTokenUsage(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static RunStepTokenUsage DeserializeRunStepTokenUsage(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            int completionTokens = default;
-            int promptTokens = default;
-            int totalTokens = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            int outputTokenCount = default;
+            int inputTokenCount = default;
+            int totalTokenCount = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("completion_tokens"u8))
+                if (prop.NameEquals("completion_tokens"u8))
                 {
-                    completionTokens = property.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("prompt_tokens"u8))
+                if (prop.NameEquals("prompt_tokens"u8))
                 {
-                    promptTokens = property.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (property.NameEquals("total_tokens"u8))
+                if (prop.NameEquals("total_tokens"u8))
                 {
-                    totalTokens = property.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new RunStepTokenUsage(completionTokens, promptTokens, totalTokens, serializedAdditionalRawData);
+            return new RunStepTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<RunStepTokenUsage>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<RunStepTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -123,15 +129,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        RunStepTokenUsage IPersistableModel<RunStepTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+        RunStepTokenUsage IPersistableModel<RunStepTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual RunStepTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeRunStepTokenUsage(document.RootElement, options);
                     }
                 default:
@@ -141,15 +148,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<RunStepTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static RunStepTokenUsage FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(RunStepTokenUsage runStepTokenUsage)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeRunStepTokenUsage(document.RootElement);
+            if (runStepTokenUsage == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(runStepTokenUsage, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator RunStepTokenUsage(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeRunStepTokenUsage(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

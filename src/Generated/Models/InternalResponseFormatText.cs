@@ -9,12 +9,11 @@ namespace OpenAI.Internal
 {
     internal partial class InternalResponseFormatText : InternalOmniTypedResponseFormat
     {
-        public InternalResponseFormatText()
+        public InternalResponseFormatText() : base("text")
         {
-            Type = "text";
         }
 
-        internal InternalResponseFormatText(string type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
+        internal InternalResponseFormatText(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
         {
         }
     }

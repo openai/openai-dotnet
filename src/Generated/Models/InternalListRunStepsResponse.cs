@@ -4,44 +4,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalListRunStepsResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal InternalListRunStepsResponse(IEnumerable<RunStep> data, string firstId, string lastId, bool hasMore)
-        {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(firstId, nameof(firstId));
-            Argument.AssertNotNull(lastId, nameof(lastId));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-            Data = data.ToList();
+        internal InternalListRunStepsResponse(string firstId, string lastId, bool hasMore)
+        {
+            Data = new ChangeTrackingList<RunStep>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
         }
 
-        internal InternalListRunStepsResponse(InternalListRunStepsResponseObject @object, IReadOnlyList<RunStep> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListRunStepsResponse(InternalListRunStepsResponseObject @object, IReadOnlyList<RunStep> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Data = data;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalListRunStepsResponse()
-        {
-        }
-
-        public InternalListRunStepsResponseObject Object { get; } = InternalListRunStepsResponseObject.List;
+        public InternalListRunStepsResponseObject Object { get; } = "list";
 
         public IReadOnlyList<RunStep> Data { get; }
+
         public string FirstId { get; }
+
         public string LastId { get; }
+
         public bool HasMore { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

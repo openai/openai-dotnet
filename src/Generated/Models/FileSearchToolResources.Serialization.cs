@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -14,31 +15,41 @@ namespace OpenAI.Assistants
     {
         void IJsonModel<FileSearchToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(FileSearchToolResources)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("vector_store_ids") != true && Optional.IsCollectionDefined(VectorStoreIds))
+            if (Optional.IsCollectionDefined(VectorStoreIds) && _additionalBinaryDataProperties?.ContainsKey("vector_store_ids") != true)
             {
                 writer.WritePropertyName("vector_store_ids"u8);
                 writer.WriteStartArray();
-                foreach (var item in VectorStoreIds)
+                foreach (string item in VectorStoreIds)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("vector_stores") != true && Optional.IsCollectionDefined(NewVectorStores))
+            if (Optional.IsCollectionDefined(NewVectorStores) && _additionalBinaryDataProperties?.ContainsKey("vector_stores") != true)
             {
                 writer.WritePropertyName("vector_stores"u8);
-                SerializeNewVectorStores(writer, options);
+                this.SerializeNewVectorStores(writer, options);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +57,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,77 +66,80 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        FileSearchToolResources IJsonModel<FileSearchToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        FileSearchToolResources IJsonModel<FileSearchToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual FileSearchToolResources JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(FileSearchToolResources)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeFileSearchToolResources(document.RootElement, options);
         }
 
-        internal static FileSearchToolResources DeserializeFileSearchToolResources(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static FileSearchToolResources DeserializeFileSearchToolResources(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             IList<string> vectorStoreIds = default;
-            IList<VectorStoreCreationHelper> vectorStores = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IList<VectorStoreCreationHelper> newVectorStores = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("vector_store_ids"u8))
+                if (prop.NameEquals("vector_store_ids"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     vectorStoreIds = array;
                     continue;
                 }
-                if (property.NameEquals("vector_stores"u8))
+                if (prop.NameEquals("vector_stores"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
                     List<VectorStoreCreationHelper> array = new List<VectorStoreCreationHelper>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(VectorStoreCreationHelper.DeserializeVectorStoreCreationHelper(item, options));
                     }
-                    vectorStores = array;
+                    newVectorStores = array;
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new FileSearchToolResources(vectorStoreIds ?? new ChangeTrackingList<string>(), vectorStores ?? new ChangeTrackingList<VectorStoreCreationHelper>(), serializedAdditionalRawData);
+            return new FileSearchToolResources(vectorStoreIds ?? new ChangeTrackingList<string>(), newVectorStores ?? new ChangeTrackingList<VectorStoreCreationHelper>(), additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<FileSearchToolResources>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<FileSearchToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -135,15 +149,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        FileSearchToolResources IPersistableModel<FileSearchToolResources>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
+        FileSearchToolResources IPersistableModel<FileSearchToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual FileSearchToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolResources>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeFileSearchToolResources(document.RootElement, options);
                     }
                 default:
@@ -153,15 +168,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<FileSearchToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static FileSearchToolResources FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(FileSearchToolResources fileSearchToolResources)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeFileSearchToolResources(document.RootElement);
+            if (fileSearchToolResources == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(fileSearchToolResources, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator FileSearchToolResources(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeFileSearchToolResources(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

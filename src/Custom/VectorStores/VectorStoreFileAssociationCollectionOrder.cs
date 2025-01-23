@@ -9,9 +9,9 @@ public readonly partial struct VectorStoreFileAssociationCollectionOrder
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Asc")]
-    public static VectorStoreFileAssociationCollectionOrder Ascending { get; } = new VectorStoreFileAssociationCollectionOrder(AscendingValue);
+    public static VectorStoreFileAssociationCollectionOrder Ascending { get; } = new VectorStoreFileAssociationCollectionOrder(AscValue);
 
     // CUSTOM: Renamed.
     [CodeGenMember("Desc")]
-    public static VectorStoreFileAssociationCollectionOrder Descending { get; } = new VectorStoreFileAssociationCollectionOrder(DescendingValue);
+    public static VectorStoreFileAssociationCollectionOrder Descending { get; } = new VectorStoreFileAssociationCollectionOrder(DescValue);
 }

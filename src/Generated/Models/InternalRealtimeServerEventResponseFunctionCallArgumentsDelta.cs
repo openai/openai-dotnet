@@ -9,23 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeServerEventResponseFunctionCallArgumentsDelta : ConversationUpdate
     {
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDelta(string eventId, string responseId, string itemId, int outputIndex, string callId, string delta) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(responseId, nameof(responseId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(delta, nameof(delta));
-
-            Kind = ConversationUpdateKind.ItemStreamingFunctionCallArgumentsDelta;
-            ResponseId = responseId;
-            ItemId = itemId;
-            OutputIndex = outputIndex;
-            CallId = callId;
-            Delta = delta;
-        }
-
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDelta(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string responseId, string itemId, int outputIndex, string callId, string delta) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDelta(string eventId, string responseId, string itemId, int outputIndex, string callId, string delta) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingFunctionCallArgumentsDelta)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -34,14 +18,23 @@ namespace OpenAI.RealtimeConversation
             Delta = delta;
         }
 
-        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDelta()
+        internal InternalRealtimeServerEventResponseFunctionCallArgumentsDelta(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, string callId, string delta) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            CallId = callId;
+            Delta = delta;
         }
 
         public string ResponseId { get; }
+
         public string ItemId { get; }
+
         public int OutputIndex { get; }
+
         public string CallId { get; }
+
         public string Delta { get; }
     }
 }

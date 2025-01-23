@@ -4,38 +4,42 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
     internal partial class InternalCreateBatchRequest
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint)
         {
-            Argument.AssertNotNull(inputFileId, nameof(inputFileId));
-
             InputFileId = inputFileId;
             Endpoint = endpoint;
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputFileId = inputFileId;
             Endpoint = endpoint;
             CompletionWindow = completionWindow;
             Metadata = metadata;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal InternalCreateBatchRequest()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string InputFileId { get; }
-        public InternalCreateBatchRequestEndpoint Endpoint { get; }
-        public InternalBatchCompletionTimeframe CompletionWindow { get; } = InternalBatchCompletionTimeframe._24h;
 
-        public IReadOnlyDictionary<string, string> Metadata { get; }
+        public InternalCreateBatchRequestEndpoint Endpoint { get; }
+
+        public InternalBatchCompletionTimeframe CompletionWindow { get; } = "24h";
+
+        public IDictionary<string, string> Metadata { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

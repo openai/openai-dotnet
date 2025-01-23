@@ -4,31 +4,38 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
     internal readonly partial struct InternalCreateTranscriptionRequestModel : IEquatable<InternalCreateTranscriptionRequestModel>
     {
         private readonly string _value;
+        private const string Whisper1Value = "whisper-1";
 
         public InternalCreateTranscriptionRequestModel(string value)
         {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
         }
 
-        private const string Whisper1Value = "whisper-1";
-
         public static InternalCreateTranscriptionRequestModel Whisper1 { get; } = new InternalCreateTranscriptionRequestModel(Whisper1Value);
+
         public static bool operator ==(InternalCreateTranscriptionRequestModel left, InternalCreateTranscriptionRequestModel right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateTranscriptionRequestModel left, InternalCreateTranscriptionRequestModel right) => !left.Equals(right);
+
         public static implicit operator InternalCreateTranscriptionRequestModel(string value) => new InternalCreateTranscriptionRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateTranscriptionRequestModel other && Equals(other);
+
         public bool Equals(InternalCreateTranscriptionRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

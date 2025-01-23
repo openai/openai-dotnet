@@ -4,18 +4,13 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
     public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat>
     {
         private readonly string _value;
-
-        public GeneratedSpeechFormat(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string Mp3Value = "mp3";
         private const string OpusValue = "opus";
         private const string AacValue = "aac";
@@ -23,22 +18,39 @@ namespace OpenAI.Audio
         private const string WavValue = "wav";
         private const string PcmValue = "pcm";
 
+        public GeneratedSpeechFormat(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static GeneratedSpeechFormat Mp3 { get; } = new GeneratedSpeechFormat(Mp3Value);
+
         public static GeneratedSpeechFormat Opus { get; } = new GeneratedSpeechFormat(OpusValue);
+
         public static GeneratedSpeechFormat Aac { get; } = new GeneratedSpeechFormat(AacValue);
+
         public static GeneratedSpeechFormat Flac { get; } = new GeneratedSpeechFormat(FlacValue);
+
         public static GeneratedSpeechFormat Wav { get; } = new GeneratedSpeechFormat(WavValue);
+
         public static GeneratedSpeechFormat Pcm { get; } = new GeneratedSpeechFormat(PcmValue);
+
         public static bool operator ==(GeneratedSpeechFormat left, GeneratedSpeechFormat right) => left.Equals(right);
+
         public static bool operator !=(GeneratedSpeechFormat left, GeneratedSpeechFormat right) => !left.Equals(right);
+
         public static implicit operator GeneratedSpeechFormat(string value) => new GeneratedSpeechFormat(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedSpeechFormat other && Equals(other);
+
         public bool Equals(GeneratedSpeechFormat other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

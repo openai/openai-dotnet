@@ -9,26 +9,37 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantCreationOptions
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AssistantCreationOptions(string model, string name, string description, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal AssistantCreationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> tools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Model = model;
             Name = name;
             Description = description;
             Instructions = instructions;
-            Tools = tools;
-            ToolResources = toolResources;
             Metadata = metadata;
             Temperature = temperature;
-            NucleusSamplingFactor = nucleusSamplingFactor;
+            Model = model;
+            Tools = tools;
+            ToolResources = toolResources;
             ResponseFormat = responseFormat;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            NucleusSamplingFactor = nucleusSamplingFactor;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
         public string Name { get; set; }
+
         public string Description { get; set; }
+
         public string Instructions { get; set; }
+
         public IDictionary<string, string> Metadata { get; set; }
+
         public float? Temperature { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

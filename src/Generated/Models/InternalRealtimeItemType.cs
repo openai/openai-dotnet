@@ -4,35 +4,44 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal readonly partial struct InternalRealtimeItemType : IEquatable<InternalRealtimeItemType>
     {
         private readonly string _value;
-
-        public InternalRealtimeItemType(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string MessageValue = "message";
         private const string FunctionCallValue = "function_call";
         private const string FunctionCallOutputValue = "function_call_output";
 
+        public InternalRealtimeItemType(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalRealtimeItemType Message { get; } = new InternalRealtimeItemType(MessageValue);
+
         public static InternalRealtimeItemType FunctionCall { get; } = new InternalRealtimeItemType(FunctionCallValue);
+
         public static InternalRealtimeItemType FunctionCallOutput { get; } = new InternalRealtimeItemType(FunctionCallOutputValue);
+
         public static bool operator ==(InternalRealtimeItemType left, InternalRealtimeItemType right) => left.Equals(right);
+
         public static bool operator !=(InternalRealtimeItemType left, InternalRealtimeItemType right) => !left.Equals(right);
+
         public static implicit operator InternalRealtimeItemType(string value) => new InternalRealtimeItemType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeItemType other && Equals(other);
+
         public bool Equals(InternalRealtimeItemType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

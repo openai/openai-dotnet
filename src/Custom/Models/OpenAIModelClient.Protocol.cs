@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Models;
 
-[CodeGenSuppress("GetModelsAsync", typeof(RequestOptions))]
-[CodeGenSuppress("GetModels", typeof(RequestOptions))]
+[CodeGenSuppress("ListModelsAsync", typeof(RequestOptions))]
+[CodeGenSuppress("ListModels", typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveModelAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveModel", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("DeleteModelAsync", typeof(string), typeof(RequestOptions))]
@@ -24,8 +24,8 @@ public partial class OpenAIModelClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetModelsAsync(RequestOptions options)
     {
-        using PipelineMessage message = CreateGetModelsRequest(options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = CreateListModelsRequest(options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ public partial class OpenAIModelClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetModels(RequestOptions options)
     {
-        using PipelineMessage message = CreateGetModelsRequest(options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        using PipelineMessage message = CreateListModelsRequest(options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public partial class OpenAIModelClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         using PipelineMessage message = CreateRetrieveModelRequest(model, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public partial class OpenAIModelClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         using PipelineMessage message = CreateRetrieveModelRequest(model, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ public partial class OpenAIModelClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         using PipelineMessage message = CreateDeleteModelRequest(model, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -113,6 +113,6 @@ public partial class OpenAIModelClient
         Argument.AssertNotNullOrEmpty(model, nameof(model));
 
         using PipelineMessage message = CreateDeleteModelRequest(model, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 }

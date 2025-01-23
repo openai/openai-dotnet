@@ -9,15 +9,19 @@ namespace OpenAI.Assistants
 {
     public partial class RunTruncationStrategy
     {
-        internal RunTruncationStrategy(InternalTruncationObjectType type, int? lastMessages, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal RunTruncationStrategy(int? lastMessages, InternalTruncationObjectType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            _type = type;
             LastMessages = lastMessages;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _type = @type;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal RunTruncationStrategy()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

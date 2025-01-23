@@ -9,5 +9,12 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreExpirationPolicy
     {
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

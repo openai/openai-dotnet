@@ -4,36 +4,41 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
     internal partial class FineTuningIntegrationWandbWandb
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal FineTuningIntegrationWandbWandb(string project)
         {
-            Argument.AssertNotNull(project, nameof(project));
-
             Project = project;
             Tags = new ChangeTrackingList<string>();
         }
 
-        internal FineTuningIntegrationWandbWandb(string project, string name, string entity, IReadOnlyList<string> tags, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal FineTuningIntegrationWandbWandb(string project, string name, string entity, IList<string> tags, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Project = project;
             Name = name;
             Entity = entity;
             Tags = tags;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal FineTuningIntegrationWandbWandb()
-        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Project { get; }
+
         public string Name { get; }
+
         public string Entity { get; }
-        public IReadOnlyList<string> Tags { get; }
+
+        public IList<string> Tags { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

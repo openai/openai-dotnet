@@ -4,38 +4,52 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationSessionOptions
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public ConversationSessionOptions()
         {
-            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             Tools = new ChangeTrackingList<ConversationTool>();
+            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
         }
 
-        internal ConversationSessionOptions(IList<InternalRealtimeRequestSessionModality> internalModalities, string instructions, ConversationVoice? voice, ConversationAudioFormat? inputAudioFormat, ConversationAudioFormat? outputAudioFormat, ConversationInputTranscriptionOptions inputTranscriptionOptions, ConversationTurnDetectionOptions turnDetectionOptions, IList<ConversationTool> tools, BinaryData internalToolChoice, float? temperature, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ConversationSessionOptions(string instructions, ConversationVoice? voice, ConversationAudioFormat? inputAudioFormat, ConversationAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, ConversationTurnDetectionOptions turnDetectionOptions, ConversationInputTranscriptionOptions inputTranscriptionOptions, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            _internalModalities = internalModalities;
             Instructions = instructions;
             Voice = voice;
             InputAudioFormat = inputAudioFormat;
             OutputAudioFormat = outputAudioFormat;
-            InputTranscriptionOptions = inputTranscriptionOptions;
-            TurnDetectionOptions = turnDetectionOptions;
             Tools = tools;
-            _internalToolChoice = internalToolChoice;
             Temperature = temperature;
+            TurnDetectionOptions = turnDetectionOptions;
+            InputTranscriptionOptions = inputTranscriptionOptions;
+            _internalModalities = internalModalities;
+            _internalToolChoice = internalToolChoice;
             _maxResponseOutputTokens = maxResponseOutputTokens;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
         public string Instructions { get; set; }
+
         public ConversationVoice? Voice { get; set; }
+
         public ConversationAudioFormat? InputAudioFormat { get; set; }
+
         public ConversationAudioFormat? OutputAudioFormat { get; set; }
+
         public IList<ConversationTool> Tools { get; }
+
         public float? Temperature { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

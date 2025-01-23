@@ -38,6 +38,6 @@ public static partial class OpenAIEmbeddingsModelFactory
         return new EmbeddingTokenUsage(
             inputTokenCount,
             totalTokenCount,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 }

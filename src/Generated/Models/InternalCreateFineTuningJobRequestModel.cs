@@ -4,37 +4,47 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
     internal readonly partial struct InternalCreateFineTuningJobRequestModel : IEquatable<InternalCreateFineTuningJobRequestModel>
     {
         private readonly string _value;
-
-        public InternalCreateFineTuningJobRequestModel(string value)
-        {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
-        }
-
         private const string Babbage002Value = "babbage-002";
         private const string Davinci002Value = "davinci-002";
         private const string Gpt35TurboValue = "gpt-3.5-turbo";
         private const string Gpt4oMiniValue = "gpt-4o-mini";
 
+        public InternalCreateFineTuningJobRequestModel(string value)
+        {
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
+        }
+
         public static InternalCreateFineTuningJobRequestModel Babbage002 { get; } = new InternalCreateFineTuningJobRequestModel(Babbage002Value);
+
         public static InternalCreateFineTuningJobRequestModel Davinci002 { get; } = new InternalCreateFineTuningJobRequestModel(Davinci002Value);
+
         public static InternalCreateFineTuningJobRequestModel Gpt35Turbo { get; } = new InternalCreateFineTuningJobRequestModel(Gpt35TurboValue);
+
         public static InternalCreateFineTuningJobRequestModel Gpt4oMini { get; } = new InternalCreateFineTuningJobRequestModel(Gpt4oMiniValue);
+
         public static bool operator ==(InternalCreateFineTuningJobRequestModel left, InternalCreateFineTuningJobRequestModel right) => left.Equals(right);
+
         public static bool operator !=(InternalCreateFineTuningJobRequestModel left, InternalCreateFineTuningJobRequestModel right) => !left.Equals(right);
+
         public static implicit operator InternalCreateFineTuningJobRequestModel(string value) => new InternalCreateFineTuningJobRequestModel(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateFineTuningJobRequestModel other && Equals(other);
+
         public bool Equals(InternalCreateFineTuningJobRequestModel other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

@@ -9,17 +9,24 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage()
         {
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(string fileId, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(string fileId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string FileId { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

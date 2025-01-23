@@ -8,6 +8,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Files
 {
@@ -15,18 +16,23 @@ namespace OpenAI.Files
     {
         void IJsonModel<InternalFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("file") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
                 writer.WritePropertyName("file"u8);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(global::System.BinaryData.FromStream(File));
+                writer.WriteRawValue(global::System.BinaryData.FromStream(File));
 #else
                 using (JsonDocument document = JsonDocument.Parse(BinaryData.FromStream(File)))
                 {
@@ -34,14 +40,14 @@ namespace OpenAI.Files
                 }
 #endif
             }
-            if (SerializedAdditionalRawData?.ContainsKey("purpose") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
             {
                 writer.WritePropertyName("purpose"u8);
                 writer.WriteStringValue(Purpose.ToString());
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -49,7 +55,7 @@ namespace OpenAI.Files
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -58,102 +64,74 @@ namespace OpenAI.Files
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalFileUploadOptions IJsonModel<InternalFileUploadOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalFileUploadOptions IJsonModel<InternalFileUploadOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalFileUploadOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalFileUploadOptions(document.RootElement, options);
         }
 
-        internal static InternalFileUploadOptions DeserializeInternalFileUploadOptions(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalFileUploadOptions DeserializeInternalFileUploadOptions(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            Stream file = default;
+            Stream @file = default;
             FileUploadPurpose purpose = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("file"u8))
+                if (prop.NameEquals("file"u8))
                 {
-                    file = BinaryData.FromString(property.Value.GetRawText()).ToStream();
+                    @file = BinaryData.FromString(prop.Value.GetRawText()).ToStream();
                     continue;
                 }
-                if (property.NameEquals("purpose"u8))
+                if (prop.NameEquals("purpose"u8))
                 {
-                    purpose = new FileUploadPurpose(property.Value.GetString());
+                    purpose = new FileUploadPurpose(prop.Value.GetString());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalFileUploadOptions(file, purpose, serializedAdditionalRawData);
+            return new InternalFileUploadOptions(@file, purpose, additionalBinaryDataProperties);
         }
 
-        private BinaryData SerializeMultipart(ModelReaderWriterOptions options)
-        {
-            using MultipartFormDataBinaryContent content = ToMultipartBinaryBody();
-            using MemoryStream stream = new MemoryStream();
-            content.WriteTo(stream);
-            if (stream.Position > int.MaxValue)
-            {
-                return BinaryData.FromStream(stream);
-            }
-            else
-            {
-                return new BinaryData(stream.GetBuffer().AsMemory(0, (int)stream.Position));
-            }
-        }
+        BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        internal virtual MultipartFormDataBinaryContent ToMultipartBinaryBody()
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            MultipartFormDataBinaryContent content = new MultipartFormDataBinaryContent();
-            content.Add(File, "file", "file", "application/octet-stream");
-            content.Add(Purpose.ToString(), "purpose");
-            return content;
-        }
-
-        BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options);
-                case "MFD":
-                    return SerializeMultipart(options);
                 default:
                     throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+        InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalFileUploadOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalFileUploadOptions(document.RootElement, options);
                     }
                 default:
@@ -161,17 +139,22 @@ namespace OpenAI.Files
             }
         }
 
-        string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "MFD";
+        string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalFileUploadOptions FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalFileUploadOptions internalFileUploadOptions)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalFileUploadOptions(document.RootElement);
+            if (internalFileUploadOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalFileUploadOptions, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalFileUploadOptions(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalFileUploadOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

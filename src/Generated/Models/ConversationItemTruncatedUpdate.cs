@@ -9,30 +9,24 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationItemTruncatedUpdate : ConversationUpdate
     {
-        internal ConversationItemTruncatedUpdate(string eventId, string itemId, int contentIndex, int audioEndMs) : base(eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
-            Argument.AssertNotNull(itemId, nameof(itemId));
-
-            Kind = ConversationUpdateKind.ItemTruncated;
-            ItemId = itemId;
-            ContentIndex = contentIndex;
-            AudioEndMs = audioEndMs;
-        }
-
-        internal ConversationItemTruncatedUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData, string itemId, int contentIndex, int audioEndMs) : base(kind, eventId, serializedAdditionalRawData)
+        internal ConversationItemTruncatedUpdate(string eventId, string itemId, int contentIndex, int audioEndMs) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemTruncated)
         {
             ItemId = itemId;
             ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;
         }
 
-        internal ConversationItemTruncatedUpdate()
+        internal ConversationItemTruncatedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int contentIndex, int audioEndMs) : base(eventId, kind, additionalBinaryDataProperties)
         {
+            ItemId = itemId;
+            ContentIndex = contentIndex;
+            AudioEndMs = audioEndMs;
         }
 
         public string ItemId { get; }
+
         public int ContentIndex { get; }
+
         public int AudioEndMs { get; }
     }
 }

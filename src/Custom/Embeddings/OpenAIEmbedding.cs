@@ -78,7 +78,7 @@ public partial class OpenAIEmbedding
         Index = index;
         EmbeddingProperty = embeddingProperty;
         Object = @object;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
 
         // Handle additional custom properties.
         _vector = ConvertToVectorOfFloats(embeddingProperty);

@@ -9,11 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class UnknownRealtimeToolChoiceObject : InternalRealtimeToolChoiceObject
     {
-        internal UnknownRealtimeToolChoiceObject(ConversationToolKind type, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(type, serializedAdditionalRawData)
-        {
-        }
-
-        internal UnknownRealtimeToolChoiceObject()
+        internal UnknownRealtimeToolChoiceObject(ConversationToolKind @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", additionalBinaryDataProperties)
         {
         }
     }

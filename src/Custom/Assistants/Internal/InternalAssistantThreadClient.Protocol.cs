@@ -18,7 +18,7 @@ internal partial class InternalAssistantThreadClient
     public virtual async Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)
     {
         using PipelineMessage message = CreateCreateThreadRequest(content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ internal partial class InternalAssistantThreadClient
     public virtual ClientResult CreateThread(BinaryContent content, RequestOptions options = null)
     {
         using PipelineMessage message = CreateCreateThreadRequest(content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         using PipelineMessage message = CreateGetThreadRequest(threadId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         using PipelineMessage message = CreateGetThreadRequest(threadId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyThreadRequest(threadId, content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateModifyThreadRequest(threadId, content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         using PipelineMessage message = CreateDeleteThreadRequest(threadId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -138,6 +138,6 @@ internal partial class InternalAssistantThreadClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         using PipelineMessage message = CreateDeleteThreadRequest(threadId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 }

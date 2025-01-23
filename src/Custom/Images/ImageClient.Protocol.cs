@@ -32,7 +32,7 @@ public partial class ImageClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateImageRequest(content, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -53,7 +53,7 @@ public partial class ImageClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateImageRequest(content, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     // CUSTOM:
@@ -79,7 +79,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateImageEditRequest(content, contentType, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -105,7 +105,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateImageEditRequest(content, contentType, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     // CUSTOM:
@@ -131,7 +131,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateImageVariationRequest(content, contentType, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM:
@@ -157,6 +157,6 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateImageVariationRequest(content, contentType, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 }

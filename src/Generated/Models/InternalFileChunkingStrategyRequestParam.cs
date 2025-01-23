@@ -9,17 +9,25 @@ namespace OpenAI.VectorStores
 {
     internal abstract partial class InternalFileChunkingStrategyRequestParam
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected InternalFileChunkingStrategyRequestParam()
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        private protected InternalFileChunkingStrategyRequestParam(string @type)
         {
+            Type = @type;
         }
 
-        internal InternalFileChunkingStrategyRequestParam(string type, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFileChunkingStrategyRequestParam(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = type;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            Type = @type;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal string Type { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

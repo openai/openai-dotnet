@@ -6,29 +6,39 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     [PersistableModelProxy(typeof(UnknownRunStepDeltaStepDetails))]
-    internal partial class InternalRunStepDeltaStepDetails : IJsonModel<InternalRunStepDeltaStepDetails>
+    internal abstract partial class InternalRunStepDeltaStepDetails : IJsonModel<InternalRunStepDeltaStepDetails>
     {
+        internal InternalRunStepDeltaStepDetails()
+        {
+        }
+
         void IJsonModel<InternalRunStepDeltaStepDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetails)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -36,7 +46,7 @@ namespace OpenAI.Assistants
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -45,44 +55,45 @@ namespace OpenAI.Assistants
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalRunStepDeltaStepDetails IJsonModel<InternalRunStepDeltaStepDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRunStepDeltaStepDetails IJsonModel<InternalRunStepDeltaStepDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalRunStepDeltaStepDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetails)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRunStepDeltaStepDetails(document.RootElement, options);
         }
 
-        internal static InternalRunStepDeltaStepDetails DeserializeInternalRunStepDeltaStepDetails(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRunStepDeltaStepDetails DeserializeInternalRunStepDeltaStepDetails(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            if (element.TryGetProperty("type", out JsonElement discriminator))
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
                 switch (discriminator.GetString())
                 {
-                    case "message_creation": return InternalRunStepDeltaStepDetailsMessageCreationObject.DeserializeInternalRunStepDeltaStepDetailsMessageCreationObject(element, options);
-                    case "tool_calls": return InternalRunStepDeltaStepDetailsToolCallsObject.DeserializeInternalRunStepDeltaStepDetailsToolCallsObject(element, options);
+                    case "message_creation":
+                        return InternalRunStepDeltaStepDetailsMessageCreationObject.DeserializeInternalRunStepDeltaStepDetailsMessageCreationObject(element, options);
+                    case "tool_calls":
+                        return InternalRunStepDeltaStepDetailsToolCallsObject.DeserializeInternalRunStepDeltaStepDetailsToolCallsObject(element, options);
                 }
             }
             return UnknownRunStepDeltaStepDetails.DeserializeUnknownRunStepDeltaStepDetails(element, options);
         }
 
-        BinaryData IPersistableModel<InternalRunStepDeltaStepDetails>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRunStepDeltaStepDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -92,15 +103,16 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRunStepDeltaStepDetails IPersistableModel<InternalRunStepDeltaStepDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRunStepDeltaStepDetails IPersistableModel<InternalRunStepDeltaStepDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalRunStepDeltaStepDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRunStepDeltaStepDetails(document.RootElement, options);
                     }
                 default:
@@ -110,15 +122,20 @@ namespace OpenAI.Assistants
 
         string IPersistableModel<InternalRunStepDeltaStepDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalRunStepDeltaStepDetails FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRunStepDeltaStepDetails internalRunStepDeltaStepDetails)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaStepDetails(document.RootElement);
+            if (internalRunStepDeltaStepDetails == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRunStepDeltaStepDetails, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalRunStepDeltaStepDetails(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRunStepDeltaStepDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

@@ -4,42 +4,46 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
     public partial class AudioTranscription
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        internal AudioTranscription(string language, TimeSpan? duration, string text)
-        {
-            Argument.AssertNotNull(language, nameof(language));
-            Argument.AssertNotNull(text, nameof(text));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal AudioTranscription(string language, string text, TimeSpan? duration)
+        {
             Language = language;
-            Duration = duration;
             Text = text;
             Words = new ChangeTrackingList<TranscribedWord>();
             Segments = new ChangeTrackingList<TranscribedSegment>();
+            Duration = duration;
         }
 
-        internal AudioTranscription(InternalCreateTranscriptionResponseVerboseJsonTask task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal AudioTranscription(string language, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, InternalCreateTranscriptionResponseVerboseJsonTask task, TimeSpan? duration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Task = task;
             Language = language;
-            Duration = duration;
             Text = text;
             Words = words;
             Segments = segments;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
-        }
-
-        internal AudioTranscription()
-        {
+            Task = task;
+            Duration = duration;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Language { get; }
+
         public string Text { get; }
+
         public IReadOnlyList<TranscribedWord> Words { get; }
+
         public IReadOnlyList<TranscribedSegment> Segments { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

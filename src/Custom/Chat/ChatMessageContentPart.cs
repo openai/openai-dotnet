@@ -42,7 +42,7 @@ public partial class ChatMessageContentPart
         _text = text;
         _imageUri = imageUri;
         _refusal = refusal;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
     /// <summary> The kind of content part. </summary>

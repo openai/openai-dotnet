@@ -43,7 +43,7 @@ internal partial class InternalRealtimeClientEventResponseCreateResponse
             toolChoice: toolChoice,
             temperature: sessionOptions.Temperature,
             maxOutputTokens: maxTokensChoice,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
         return internalOptions;
     }
 }

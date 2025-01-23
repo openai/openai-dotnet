@@ -9,19 +9,27 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalModifyAssistantRequestToolResources
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalModifyAssistantRequestToolResources()
         {
         }
 
-        internal InternalModifyAssistantRequestToolResources(InternalModifyAssistantRequestToolResourcesCodeInterpreter codeInterpreter, InternalToolResourcesFileSearchIdsOnly fileSearch, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalModifyAssistantRequestToolResources(InternalModifyAssistantRequestToolResourcesCodeInterpreter codeInterpreter, InternalToolResourcesFileSearchIdsOnly fileSearch, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             CodeInterpreter = codeInterpreter;
             FileSearch = fileSearch;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public InternalModifyAssistantRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
+
         public InternalToolResourcesFileSearchIdsOnly FileSearch { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

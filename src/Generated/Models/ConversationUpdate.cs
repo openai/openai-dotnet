@@ -9,24 +9,27 @@ namespace OpenAI.RealtimeConversation
 {
     public abstract partial class ConversationUpdate
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
-        protected ConversationUpdate(string eventId)
-        {
-            Argument.AssertNotNull(eventId, nameof(eventId));
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        private protected ConversationUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind)
+        {
             EventId = eventId;
-        }
-
-        internal ConversationUpdate(ConversationUpdateKind kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        {
             Kind = kind;
-            EventId = eventId;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
         }
 
-        internal ConversationUpdate()
+        internal ConversationUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            EventId = eventId;
+            Kind = kind;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
         public string EventId { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

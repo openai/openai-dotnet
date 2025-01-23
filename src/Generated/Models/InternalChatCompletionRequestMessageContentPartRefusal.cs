@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartRefusal
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalChatCompletionRequestMessageContentPartRefusal(string refusal)
         {
             Argument.AssertNotNull(refusal, nameof(refusal));
@@ -17,19 +19,21 @@ namespace OpenAI.Chat
             Refusal = refusal;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartRefusal(InternalChatCompletionRequestMessageContentPartRefusalType type, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalChatCompletionRequestMessageContentPartRefusal(InternalChatCompletionRequestMessageContentPartRefusalType @type, string refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = type;
+            Type = @type;
             Refusal = refusal;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartRefusal()
-        {
-        }
-
-        public InternalChatCompletionRequestMessageContentPartRefusalType Type { get; } = InternalChatCompletionRequestMessageContentPartRefusalType.Refusal;
+        public InternalChatCompletionRequestMessageContentPartRefusalType Type { get; } = "refusal";
 
         public string Refusal { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

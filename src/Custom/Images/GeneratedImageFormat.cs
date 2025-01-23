@@ -8,7 +8,7 @@ public readonly partial struct GeneratedImageFormat
     // CUSTOM: Renamed.
     /// <summary> Returned as bytes in a base64-encoded string. </summary>
     [CodeGenMember("B64Json")]
-    public static GeneratedImageFormat Bytes { get; } = new GeneratedImageFormat(BytesValue);
+    public static GeneratedImageFormat Bytes { get; } = new GeneratedImageFormat(B64JsonValue);
 
     // CUSTOM: Renamed.
     /// <summary>
@@ -16,5 +16,5 @@ public readonly partial struct GeneratedImageFormat
     /// only valid for 60 minutes after the image is generated.
     /// </summary>
     [CodeGenMember("Url")]
-    public static GeneratedImageFormat Uri { get; } = new GeneratedImageFormat(UriValue);
+    public static GeneratedImageFormat Uri { get; } = new GeneratedImageFormat(UrlValue);
 }

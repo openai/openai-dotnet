@@ -4,13 +4,15 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 using OpenAI.Chat;
 
 namespace OpenAI.FineTuning
 {
     internal partial class InternalFinetuneChatRequestInput
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalFinetuneChatRequestInput()
         {
             Messages = new ChangeTrackingList<BinaryData>();
@@ -18,18 +20,27 @@ namespace OpenAI.FineTuning
             Functions = new ChangeTrackingList<ChatFunction>();
         }
 
-        internal InternalFinetuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalFinetuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Messages = messages;
             Tools = tools;
             ParallelToolCalls = parallelToolCalls;
             Functions = functions;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<BinaryData> Messages { get; }
+
         public IList<ChatTool> Tools { get; }
+
         public bool? ParallelToolCalls { get; set; }
+
         public IList<ChatFunction> Functions { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

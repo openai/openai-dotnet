@@ -10,23 +10,10 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalCreateModerationResponseResultCategoryAppliedInputTypes(IEnumerable<string> hate, IEnumerable<string> hateThreatening, IEnumerable<string> harassment, IEnumerable<string> harassmentThreatening, IEnumerable<string> illicit, IEnumerable<string> illicitViolent, IEnumerable<string> selfHarm, IEnumerable<string> selfHarmIntent, IEnumerable<string> selfHarmInstructions, IEnumerable<string> sexual, IEnumerable<string> sexualMinors, IEnumerable<string> violence, IEnumerable<string> violenceGraphic)
         {
-            Argument.AssertNotNull(hate, nameof(hate));
-            Argument.AssertNotNull(hateThreatening, nameof(hateThreatening));
-            Argument.AssertNotNull(harassment, nameof(harassment));
-            Argument.AssertNotNull(harassmentThreatening, nameof(harassmentThreatening));
-            Argument.AssertNotNull(illicit, nameof(illicit));
-            Argument.AssertNotNull(illicitViolent, nameof(illicitViolent));
-            Argument.AssertNotNull(selfHarm, nameof(selfHarm));
-            Argument.AssertNotNull(selfHarmIntent, nameof(selfHarmIntent));
-            Argument.AssertNotNull(selfHarmInstructions, nameof(selfHarmInstructions));
-            Argument.AssertNotNull(sexual, nameof(sexual));
-            Argument.AssertNotNull(sexualMinors, nameof(sexualMinors));
-            Argument.AssertNotNull(violence, nameof(violence));
-            Argument.AssertNotNull(violenceGraphic, nameof(violenceGraphic));
-
             Hate = hate.ToList();
             HateThreatening = hateThreatening.ToList();
             Harassment = harassment.ToList();
@@ -42,7 +29,7 @@ namespace OpenAI.Moderations
             ViolenceGraphic = violenceGraphic.ToList();
         }
 
-        internal InternalCreateModerationResponseResultCategoryAppliedInputTypes(IReadOnlyList<string> hate, IReadOnlyList<string> hateThreatening, IReadOnlyList<string> harassment, IReadOnlyList<string> harassmentThreatening, IReadOnlyList<string> illicit, IReadOnlyList<string> illicitViolent, IReadOnlyList<string> selfHarm, IReadOnlyList<string> selfHarmIntent, IReadOnlyList<string> selfHarmInstructions, IReadOnlyList<string> sexual, IReadOnlyList<string> sexualMinors, IReadOnlyList<string> violence, IReadOnlyList<string> violenceGraphic, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateModerationResponseResultCategoryAppliedInputTypes(IReadOnlyList<string> hate, IReadOnlyList<string> hateThreatening, IReadOnlyList<string> harassment, IReadOnlyList<string> harassmentThreatening, IReadOnlyList<string> illicit, IReadOnlyList<string> illicitViolent, IReadOnlyList<string> selfHarm, IReadOnlyList<string> selfHarmIntent, IReadOnlyList<string> selfHarmInstructions, IReadOnlyList<string> sexual, IReadOnlyList<string> sexualMinors, IReadOnlyList<string> violence, IReadOnlyList<string> violenceGraphic, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Hate = hate;
             HateThreatening = hateThreatening;
@@ -57,11 +44,13 @@ namespace OpenAI.Moderations
             SexualMinors = sexualMinors;
             Violence = violence;
             ViolenceGraphic = violenceGraphic;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalCreateModerationResponseResultCategoryAppliedInputTypes()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

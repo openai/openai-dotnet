@@ -4,12 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Moderations
 {
     internal partial class InternalCreateModerationRequestInput2
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalCreateModerationRequestInput2(InternalCreateModerationRequestInputImageUrl imageUrl)
         {
             Argument.AssertNotNull(imageUrl, nameof(imageUrl));
@@ -17,19 +19,21 @@ namespace OpenAI.Moderations
             ImageUrl = imageUrl;
         }
 
-        internal InternalCreateModerationRequestInput2(InternalCreateModerationRequestInput2Type type, InternalCreateModerationRequestInputImageUrl imageUrl, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalCreateModerationRequestInput2(InternalCreateModerationRequestInput2Type @type, InternalCreateModerationRequestInputImageUrl imageUrl, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = type;
+            Type = @type;
             ImageUrl = imageUrl;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalCreateModerationRequestInput2()
-        {
-        }
-
-        public InternalCreateModerationRequestInput2Type Type { get; } = InternalCreateModerationRequestInput2Type.ImageUrl;
+        public InternalCreateModerationRequestInput2Type Type { get; } = "image_url";
 
         public InternalCreateModerationRequestInputImageUrl ImageUrl { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

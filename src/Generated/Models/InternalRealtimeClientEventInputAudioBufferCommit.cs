@@ -9,12 +9,11 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeClientEventInputAudioBufferCommit : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventInputAudioBufferCommit()
+        public InternalRealtimeClientEventInputAudioBufferCommit() : base(InternalRealtimeClientEventType.InputAudioBufferCommit)
         {
-            Kind = InternalRealtimeClientEventType.InputAudioBufferCommit;
         }
 
-        internal InternalRealtimeClientEventInputAudioBufferCommit(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> serializedAdditionalRawData) : base(kind, eventId, serializedAdditionalRawData)
+        internal InternalRealtimeClientEventInputAudioBufferCommit(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, eventId, additionalBinaryDataProperties)
         {
         }
     }

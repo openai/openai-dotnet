@@ -3,95 +3,77 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class UnknownRealtimeResponseStatusDetails : IJsonModel<ConversationStatusDetails>
     {
+        internal UnknownRealtimeResponseStatusDetails()
+        {
+        }
+
         void IJsonModel<ConversationStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(StatusKind.ToString());
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
+            base.JsonModelWriteCore(writer, options);
         }
 
-        ConversationStatusDetails IJsonModel<ConversationStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        ConversationStatusDetails IJsonModel<ConversationStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected override ConversationStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeConversationStatusDetails(document.RootElement, options);
         }
 
-        internal static UnknownRealtimeResponseStatusDetails DeserializeUnknownRealtimeResponseStatusDetails(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static UnknownRealtimeResponseStatusDetails DeserializeUnknownRealtimeResponseStatusDetails(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            ConversationStatus type = "Unknown";
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            ConversationStatus statusKind = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    type = new ConversationStatus(property.Value.GetString());
+                    statusKind = new ConversationStatus(prop.Value.GetString());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new UnknownRealtimeResponseStatusDetails(type, serializedAdditionalRawData);
+            return new UnknownRealtimeResponseStatusDetails(statusKind, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -101,15 +83,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        ConversationStatusDetails IPersistableModel<ConversationStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
+        ConversationStatusDetails IPersistableModel<ConversationStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected override ConversationStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeConversationStatusDetails(document.RootElement, options);
                     }
                 default:
@@ -118,16 +101,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        internal static new UnknownRealtimeResponseStatusDetails FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeUnknownRealtimeResponseStatusDetails(document.RootElement);
-        }
-
-        internal override BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create<ConversationStatusDetails>(this, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

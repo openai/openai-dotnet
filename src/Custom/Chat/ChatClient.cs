@@ -16,13 +16,12 @@ namespace OpenAI.Chat;
 /// <summary> The service client for OpenAI chat operations. </summary>
 [CodeGenClient("Chat")]
 [CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
-[CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions))]
-[CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions))]
+[CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 public partial class ChatClient
 {
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
-
 
     // CUSTOM: Remove virtual keyword.
     /// <summary>
@@ -31,7 +30,7 @@ public partial class ChatClient
     public ClientPipeline Pipeline => _pipeline;
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
@@ -44,7 +43,7 @@ public partial class ChatClient
     // - Added `model` parameter.
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
@@ -58,7 +57,7 @@ public partial class ChatClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Added telemetry support.
-    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
@@ -71,7 +70,7 @@ public partial class ChatClient
         options ??= new OpenAIClientOptions();
 
         _model = model;
-        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _telemetry = new OpenTelemetrySource(model, _endpoint);
         _chatCompletionPath = chatCompletionPath;
@@ -83,7 +82,7 @@ public partial class ChatClient
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Added telemetry support.
     // - Made protected.
-    /// <summary> Initializes a new instance of <see cref="ChatClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="options"> The options to configure the client. </param>
@@ -96,7 +95,7 @@ public partial class ChatClient
         options ??= new OpenAIClientOptions();
 
         _model = model;
-        _pipeline = pipeline;
+        Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
         _telemetry = new OpenTelemetrySource(model, _endpoint);
         _chatCompletionPath = chatCompletionPath;
@@ -118,10 +117,10 @@ public partial class ChatClient
 
         try
         {
-            using BinaryContent content = options.ToBinaryContent();
+            using BinaryContent content = options;
 
             ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            ChatCompletion chatCompletion = ChatCompletion.FromResponse(result.GetRawResponse());
+            ChatCompletion chatCompletion = (ChatCompletion)result;
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
         }
@@ -148,9 +147,9 @@ public partial class ChatClient
 
         try
         {
-            using BinaryContent content = options.ToBinaryContent();
+            using BinaryContent content = options;
             ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
-            ChatCompletion chatCompletion = ChatCompletion.FromResponse(result.GetRawResponse());
+            ChatCompletion chatCompletion = (ChatCompletion)result;
 
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
@@ -196,7 +195,7 @@ public partial class ChatClient
         options ??= new();
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
-        using BinaryContent content = options.ToBinaryContent();
+        using BinaryContent content = options;
 
         async Task<ClientResult> sendRequestAsync() =>
             await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
@@ -223,7 +222,7 @@ public partial class ChatClient
         options ??= new();
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
-        using BinaryContent content = options.ToBinaryContent();
+        using BinaryContent content = options;
         ClientResult sendRequest() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
         return new InternalStreamingChatCompletionUpdateCollection(sendRequest, cancellationToken);
     }

@@ -5,20 +5,18 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Threading.Tasks;
 
 namespace OpenAI.Chat
 {
-    // Data plane generated sub-client.
     public partial class ChatClient
     {
+        private readonly Uri _endpoint;
         private const string AuthorizationHeader = "Authorization";
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationApiKeyPrefix = "Bearer";
         private readonly ClientPipeline _pipeline;
         private readonly Uri _endpoint;
         private readonly string _chatCompletionPath = "/chat/completions"; // default path
-
 
         protected ChatClient()
         {
@@ -42,6 +40,7 @@ namespace OpenAI.Chat
         }
 
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });application/JSON
+        public ClientPipeline Pipeline { get; }
     }
 }

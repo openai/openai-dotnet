@@ -43,7 +43,7 @@ public partial class ChatFunctionChoice
         _function = new(functionName);
         _isPlainString = false;
 
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
     /// <summary>

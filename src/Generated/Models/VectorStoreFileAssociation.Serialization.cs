@@ -7,51 +7,46 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>
     {
+        internal VectorStoreFileAssociation()
+        {
+        }
+
         void IJsonModel<VectorStoreFileAssociation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileAssociation)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("usage_bytes") != true)
-            {
-                writer.WritePropertyName("usage_bytes"u8);
-                writer.WriteNumberValue(Size);
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("created_at") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (SerializedAdditionalRawData?.ContainsKey("vector_store_id") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("vector_store_id") != true)
             {
                 writer.WritePropertyName("vector_store_id"u8);
                 writer.WriteStringValue(VectorStoreId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("status") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToSerialString());
             }
-            if (SerializedAdditionalRawData?.ContainsKey("last_error") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
                 if (LastError != null)
                 {
@@ -60,17 +55,32 @@ namespace OpenAI.VectorStores
                 }
                 else
                 {
-                    writer.WriteNull("last_error");
+                    writer.WriteNull("lastError"u8);
                 }
             }
-            if (SerializedAdditionalRawData?.ContainsKey("chunking_strategy") != true && Optional.IsDefined(ChunkingStrategy))
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(this.Object.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
+            {
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(Size);
+            }
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -78,7 +88,7 @@ namespace OpenAI.VectorStores
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -87,113 +97,109 @@ namespace OpenAI.VectorStores
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        VectorStoreFileAssociation IJsonModel<VectorStoreFileAssociation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        VectorStoreFileAssociation IJsonModel<VectorStoreFileAssociation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual VectorStoreFileAssociation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileAssociation)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeVectorStoreFileAssociation(document.RootElement, options);
         }
 
-        internal static VectorStoreFileAssociation DeserializeVectorStoreFileAssociation(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static VectorStoreFileAssociation DeserializeVectorStoreFileAssociation(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string id = default;
-            InternalVectorStoreFileObjectObject @object = default;
-            int usageBytes = default;
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
-            VectorStoreFileAssociationStatus status = default;
+            VectorStores.VectorStoreFileAssociationStatus status = default;
             VectorStoreFileAssociationError lastError = default;
+            InternalVectorStoreFileObjectObject @object = default;
+            string fileId = default;
+            int size = default;
             FileChunkingStrategy chunkingStrategy = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("id"u8))
+                if (prop.NameEquals("created_at"u8))
                 {
-                    id = property.Value.GetString();
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (property.NameEquals("object"u8))
+                if (prop.NameEquals("vector_store_id"u8))
                 {
-                    @object = new InternalVectorStoreFileObjectObject(property.Value.GetString());
+                    vectorStoreId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("usage_bytes"u8))
+                if (prop.NameEquals("status"u8))
                 {
-                    usageBytes = property.Value.GetInt32();
+                    status = prop.Value.GetString().ToVectorStoreFileAssociationStatus();
                     continue;
                 }
-                if (property.NameEquals("created_at"u8))
+                if (prop.NameEquals("last_error"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(property.Value.GetInt64());
-                    continue;
-                }
-                if (property.NameEquals("vector_store_id"u8))
-                {
-                    vectorStoreId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("status"u8))
-                {
-                    status = property.Value.GetString().ToVectorStoreFileAssociationStatus();
-                    continue;
-                }
-                if (property.NameEquals("last_error"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         lastError = null;
                         continue;
                     }
-                    lastError = VectorStoreFileAssociationError.DeserializeVectorStoreFileAssociationError(property.Value, options);
+                    lastError = VectorStoreFileAssociationError.DeserializeVectorStoreFileAssociationError(prop.Value, options);
                     continue;
                 }
-                if (property.NameEquals("chunking_strategy"u8))
+                if (prop.NameEquals("object"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    @object = new InternalVectorStoreFileObjectObject(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    fileId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("usage_bytes"u8))
+                {
+                    size = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("chunking_strategy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(property.Value, options);
+                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new VectorStoreFileAssociation(
-                id,
-                @object,
-                usageBytes,
                 createdAt,
                 vectorStoreId,
                 status,
                 lastError,
+                @object,
+                fileId,
+                size,
                 chunkingStrategy,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<VectorStoreFileAssociation>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<VectorStoreFileAssociation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -203,15 +209,16 @@ namespace OpenAI.VectorStores
             }
         }
 
-        VectorStoreFileAssociation IPersistableModel<VectorStoreFileAssociation>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
+        VectorStoreFileAssociation IPersistableModel<VectorStoreFileAssociation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual VectorStoreFileAssociation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeVectorStoreFileAssociation(document.RootElement, options);
                     }
                 default:
@@ -221,15 +228,20 @@ namespace OpenAI.VectorStores
 
         string IPersistableModel<VectorStoreFileAssociation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static VectorStoreFileAssociation FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(VectorStoreFileAssociation vectorStoreFileAssociation)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreFileAssociation(document.RootElement);
+            if (vectorStoreFileAssociation == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(vectorStoreFileAssociation, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator VectorStoreFileAssociation(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeVectorStoreFileAssociation(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

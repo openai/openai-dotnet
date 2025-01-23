@@ -9,9 +9,6 @@ namespace OpenAI.Audio;
 [StructLayout(LayoutKind.Auto)]
 public readonly partial struct TranscribedWord
 {
-    // CUSTOM: Remove setter. Auto-implemented instance properties in readonly structs must be readonly.
-    internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; }
-
     // CUSTOM: Renamed.
     /// <summary> The start time of the word. </summary>
     [CodeGenMember("Start")]

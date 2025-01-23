@@ -5,91 +5,20 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Threading.Tasks;
 
 namespace OpenAI.Assistants
 {
-    // Data plane generated sub-client.
     internal partial class InternalAssistantThreadClient
     {
+        private readonly Uri _endpoint;
         private const string AuthorizationHeader = "Authorization";
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationApiKeyPrefix = "Bearer";
-        private readonly ClientPipeline _pipeline;
-        private readonly Uri _endpoint;
 
         protected InternalAssistantThreadClient()
         {
         }
 
-        internal PipelineMessage CreateCreateThreadRequest(BinaryContent content, RequestOptions options)
-        {
-            var message = _pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            var request = message.Request;
-            request.Method = "POST";
-            var uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/threads", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("Content-Type", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateGetThreadRequest(string threadId, RequestOptions options)
-        {
-            var message = _pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            var request = message.Request;
-            request.Method = "GET";
-            var uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/threads/", false);
-            uri.AppendPath(threadId, true);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateModifyThreadRequest(string threadId, BinaryContent content, RequestOptions options)
-        {
-            var message = _pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            var request = message.Request;
-            request.Method = "POST";
-            var uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/threads/", false);
-            uri.AppendPath(threadId, true);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("Content-Type", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal PipelineMessage CreateDeleteThreadRequest(string threadId, RequestOptions options)
-        {
-            var message = _pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            var request = message.Request;
-            request.Method = "DELETE";
-            var uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/threads/", false);
-            uri.AppendPath(threadId, true);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
-        private static PipelineMessageClassifier _pipelineMessageClassifier200;
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        public ClientPipeline Pipeline { get; }
     }
 }

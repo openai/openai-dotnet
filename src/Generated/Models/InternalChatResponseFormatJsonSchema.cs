@@ -4,27 +4,23 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatResponseFormatJsonSchema : ChatResponseFormat
     {
-        public InternalChatResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema)
+        public InternalChatResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base("json_schema")
         {
             Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
-            Type = "json_schema";
             JsonSchema = jsonSchema;
         }
 
-        internal InternalChatResponseFormatJsonSchema(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(type, serializedAdditionalRawData)
+        internal InternalChatResponseFormatJsonSchema(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(@type, additionalBinaryDataProperties)
         {
             JsonSchema = jsonSchema;
-        }
-
-        internal InternalChatResponseFormatJsonSchema()
-        {
         }
 
         public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; }

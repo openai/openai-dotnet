@@ -4,23 +4,31 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalToolResourcesFileSearchIdsOnly
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         public InternalToolResourcesFileSearchIdsOnly()
         {
             VectorStoreIds = new ChangeTrackingList<string>();
         }
 
-        internal InternalToolResourcesFileSearchIdsOnly(IList<string> vectorStoreIds, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalToolResourcesFileSearchIdsOnly(IList<string> vectorStoreIds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             VectorStoreIds = vectorStoreIds;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> VectorStoreIds { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

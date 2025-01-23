@@ -10,33 +10,38 @@ namespace OpenAI.Batch
 {
     internal partial class InternalListBatchesResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalListBatchesResponse(IEnumerable<InternalBatchJob> data, bool hasMore)
         {
-            Argument.AssertNotNull(data, nameof(data));
-
             Data = data.ToList();
             HasMore = hasMore;
         }
 
-        internal InternalListBatchesResponse(IReadOnlyList<InternalBatchJob> data, string firstId, string lastId, bool hasMore, InternalListBatchesResponseObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalListBatchesResponse(IList<InternalBatchJob> data, string firstId, string lastId, bool hasMore, InternalListBatchesResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Data = data;
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
             Object = @object;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalListBatchesResponse()
-        {
-        }
+        public IList<InternalBatchJob> Data { get; }
 
-        public IReadOnlyList<InternalBatchJob> Data { get; }
         public string FirstId { get; }
+
         public string LastId { get; }
+
         public bool HasMore { get; }
-        public InternalListBatchesResponseObject Object { get; } = InternalListBatchesResponseObject.List;
+
+        public InternalListBatchesResponseObject Object { get; } = "list";
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

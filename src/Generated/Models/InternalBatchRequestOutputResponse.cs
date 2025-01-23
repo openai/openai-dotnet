@@ -4,27 +4,37 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
     internal partial class InternalBatchRequestOutputResponse
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal InternalBatchRequestOutputResponse()
         {
             Body = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal InternalBatchRequestOutputResponse(int? statusCode, string requestId, IReadOnlyDictionary<string, BinaryData> body, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal InternalBatchRequestOutputResponse(int? statusCode, string requestId, IDictionary<string, BinaryData> body, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             StatusCode = statusCode;
             RequestId = requestId;
             Body = body;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public int? StatusCode { get; }
+
         public string RequestId { get; }
-        public IReadOnlyDictionary<string, BinaryData> Body { get; }
+
+        public IDictionary<string, BinaryData> Body { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

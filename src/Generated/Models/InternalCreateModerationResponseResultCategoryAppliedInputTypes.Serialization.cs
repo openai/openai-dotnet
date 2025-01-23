@@ -7,153 +7,228 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Moderations
 {
     internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes : IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>
     {
+        internal InternalCreateModerationResponseResultCategoryAppliedInputTypes()
+        {
+        }
+
         void IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("hate") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("hate") != true)
             {
                 writer.WritePropertyName("hate"u8);
                 writer.WriteStartArray();
-                foreach (var item in Hate)
+                foreach (string item in Hate)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("hate/threatening") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("hate/threatening") != true)
             {
                 writer.WritePropertyName("hate/threatening"u8);
                 writer.WriteStartArray();
-                foreach (var item in HateThreatening)
+                foreach (string item in HateThreatening)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("harassment") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("harassment") != true)
             {
                 writer.WritePropertyName("harassment"u8);
                 writer.WriteStartArray();
-                foreach (var item in Harassment)
+                foreach (string item in Harassment)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("harassment/threatening") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("harassment/threatening") != true)
             {
                 writer.WritePropertyName("harassment/threatening"u8);
                 writer.WriteStartArray();
-                foreach (var item in HarassmentThreatening)
+                foreach (string item in HarassmentThreatening)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("illicit") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("illicit") != true)
             {
                 writer.WritePropertyName("illicit"u8);
                 writer.WriteStartArray();
-                foreach (var item in Illicit)
+                foreach (string item in Illicit)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("illicit/violent") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("illicit/violent") != true)
             {
                 writer.WritePropertyName("illicit/violent"u8);
                 writer.WriteStartArray();
-                foreach (var item in IllicitViolent)
+                foreach (string item in IllicitViolent)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("self-harm") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("self-harm") != true)
             {
                 writer.WritePropertyName("self-harm"u8);
                 writer.WriteStartArray();
-                foreach (var item in SelfHarm)
+                foreach (string item in SelfHarm)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("self-harm/intent") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/intent") != true)
             {
                 writer.WritePropertyName("self-harm/intent"u8);
                 writer.WriteStartArray();
-                foreach (var item in SelfHarmIntent)
+                foreach (string item in SelfHarmIntent)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("self-harm/instructions") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/instructions") != true)
             {
                 writer.WritePropertyName("self-harm/instructions"u8);
                 writer.WriteStartArray();
-                foreach (var item in SelfHarmInstructions)
+                foreach (string item in SelfHarmInstructions)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("sexual") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("sexual") != true)
             {
                 writer.WritePropertyName("sexual"u8);
                 writer.WriteStartArray();
-                foreach (var item in Sexual)
+                foreach (string item in Sexual)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("sexual/minors") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("sexual/minors") != true)
             {
                 writer.WritePropertyName("sexual/minors"u8);
                 writer.WriteStartArray();
-                foreach (var item in SexualMinors)
+                foreach (string item in SexualMinors)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("violence") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("violence") != true)
             {
                 writer.WritePropertyName("violence"u8);
                 writer.WriteStartArray();
-                foreach (var item in Violence)
+                foreach (string item in Violence)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData?.ContainsKey("violence/graphic") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("violence/graphic") != true)
             {
                 writer.WritePropertyName("violence/graphic"u8);
                 writer.WriteStartArray();
-                foreach (var item in ViolenceGraphic)
+                foreach (string item in ViolenceGraphic)
                 {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -161,7 +236,7 @@ namespace OpenAI.Moderations
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -170,25 +245,23 @@ namespace OpenAI.Moderations
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        InternalCreateModerationResponseResultCategoryAppliedInputTypes IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalCreateModerationResponseResultCategoryAppliedInputTypes IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual InternalCreateModerationResponseResultCategoryAppliedInputTypes JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement, options);
         }
 
-        internal static InternalCreateModerationResponseResultCategoryAppliedInputTypes DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalCreateModerationResponseResultCategoryAppliedInputTypes DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
@@ -206,147 +279,235 @@ namespace OpenAI.Moderations
             IReadOnlyList<string> sexualMinors = default;
             IReadOnlyList<string> violence = default;
             IReadOnlyList<string> violenceGraphic = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("hate"u8))
+                if (prop.NameEquals("hate"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     hate = array;
                     continue;
                 }
-                if (property.NameEquals("hate/threatening"u8))
+                if (prop.NameEquals("hate/threatening"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     hateThreatening = array;
                     continue;
                 }
-                if (property.NameEquals("harassment"u8))
+                if (prop.NameEquals("harassment"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     harassment = array;
                     continue;
                 }
-                if (property.NameEquals("harassment/threatening"u8))
+                if (prop.NameEquals("harassment/threatening"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     harassmentThreatening = array;
                     continue;
                 }
-                if (property.NameEquals("illicit"u8))
+                if (prop.NameEquals("illicit"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     illicit = array;
                     continue;
                 }
-                if (property.NameEquals("illicit/violent"u8))
+                if (prop.NameEquals("illicit/violent"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     illicitViolent = array;
                     continue;
                 }
-                if (property.NameEquals("self-harm"u8))
+                if (prop.NameEquals("self-harm"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     selfHarm = array;
                     continue;
                 }
-                if (property.NameEquals("self-harm/intent"u8))
+                if (prop.NameEquals("self-harm/intent"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     selfHarmIntent = array;
                     continue;
                 }
-                if (property.NameEquals("self-harm/instructions"u8))
+                if (prop.NameEquals("self-harm/instructions"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     selfHarmInstructions = array;
                     continue;
                 }
-                if (property.NameEquals("sexual"u8))
+                if (prop.NameEquals("sexual"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     sexual = array;
                     continue;
                 }
-                if (property.NameEquals("sexual/minors"u8))
+                if (prop.NameEquals("sexual/minors"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     sexualMinors = array;
                     continue;
                 }
-                if (property.NameEquals("violence"u8))
+                if (prop.NameEquals("violence"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     violence = array;
                     continue;
                 }
-                if (property.NameEquals("violence/graphic"u8))
+                if (prop.NameEquals("violence/graphic"u8))
                 {
                     List<string> array = new List<string>();
-                    foreach (var item in property.Value.EnumerateArray())
+                    foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString());
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
                     }
                     violenceGraphic = array;
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
             return new InternalCreateModerationResponseResultCategoryAppliedInputTypes(
                 hate,
                 hateThreatening,
@@ -361,13 +522,14 @@ namespace OpenAI.Moderations
                 sexualMinors,
                 violence,
                 violenceGraphic,
-                serializedAdditionalRawData);
+                additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -377,15 +539,16 @@ namespace OpenAI.Moderations
             }
         }
 
-        InternalCreateModerationResponseResultCategoryAppliedInputTypes IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+        InternalCreateModerationResponseResultCategoryAppliedInputTypes IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        protected virtual InternalCreateModerationResponseResultCategoryAppliedInputTypes PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement, options);
                     }
                 default:
@@ -395,15 +558,20 @@ namespace OpenAI.Moderations
 
         string IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static InternalCreateModerationResponseResultCategoryAppliedInputTypes FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalCreateModerationResponseResultCategoryAppliedInputTypes internalCreateModerationResponseResultCategoryAppliedInputTypes)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement);
+            if (internalCreateModerationResponseResultCategoryAppliedInputTypes == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalCreateModerationResponseResultCategoryAppliedInputTypes, ModelSerializationExtensions.WireOptions);
         }
 
-        internal virtual BinaryContent ToBinaryContent()
+        public static explicit operator InternalCreateModerationResponseResultCategoryAppliedInputTypes(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

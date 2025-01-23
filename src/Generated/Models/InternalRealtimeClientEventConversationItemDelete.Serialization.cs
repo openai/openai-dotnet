@@ -7,113 +7,91 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeClientEventConversationItemDelete : IJsonModel<InternalRealtimeClientEventConversationItemDelete>
     {
+        internal InternalRealtimeClientEventConversationItemDelete()
+        {
+        }
+
         void IJsonModel<InternalRealtimeClientEventConversationItemDelete>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventConversationItemDelete)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("item_id") != true)
+            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
-            if (SerializedAdditionalRawData?.ContainsKey("event_id") != true && Optional.IsDefined(EventId))
-            {
-                writer.WritePropertyName("event_id"u8);
-                writer.WriteStringValue(EventId);
-            }
-            if (SerializedAdditionalRawData != null)
-            {
-                foreach (var item in SerializedAdditionalRawData)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
-            writer.WriteEndObject();
         }
 
-        InternalRealtimeClientEventConversationItemDelete IJsonModel<InternalRealtimeClientEventConversationItemDelete>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        InternalRealtimeClientEventConversationItemDelete IJsonModel<InternalRealtimeClientEventConversationItemDelete>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeClientEventConversationItemDelete)JsonModelCreateCore(ref reader, options);
+
+        protected override InternalRealtimeClientEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventConversationItemDelete)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalRealtimeClientEventConversationItemDelete(document.RootElement, options);
         }
 
-        internal static InternalRealtimeClientEventConversationItemDelete DeserializeInternalRealtimeClientEventConversationItemDelete(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static InternalRealtimeClientEventConversationItemDelete DeserializeInternalRealtimeClientEventConversationItemDelete(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string itemId = default;
-            InternalRealtimeClientEventType type = default;
+            InternalRealtimeClientEventType kind = default;
             string eventId = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string itemId = default;
+            foreach (var prop in element.EnumerateObject())
             {
-                if (property.NameEquals("item_id"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    itemId = property.Value.GetString();
+                    kind = new InternalRealtimeClientEventType(prop.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("type"u8))
+                if (prop.NameEquals("event_id"u8))
                 {
-                    type = new InternalRealtimeClientEventType(property.Value.GetString());
+                    eventId = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("event_id"u8))
+                if (prop.NameEquals("item_id"u8))
                 {
-                    eventId = property.Value.GetString();
+                    itemId = prop.Value.GetString();
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new InternalRealtimeClientEventConversationItemDelete(type, eventId, serializedAdditionalRawData, itemId);
+            return new InternalRealtimeClientEventConversationItemDelete(kind, eventId, additionalBinaryDataProperties, itemId);
         }
 
-        BinaryData IPersistableModel<InternalRealtimeClientEventConversationItemDelete>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<InternalRealtimeClientEventConversationItemDelete>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -123,15 +101,16 @@ namespace OpenAI.RealtimeConversation
             }
         }
 
-        InternalRealtimeClientEventConversationItemDelete IPersistableModel<InternalRealtimeClientEventConversationItemDelete>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
+        InternalRealtimeClientEventConversationItemDelete IPersistableModel<InternalRealtimeClientEventConversationItemDelete>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeClientEventConversationItemDelete)PersistableModelCreateCore(data, options);
 
+        protected override InternalRealtimeClientEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventConversationItemDelete>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeInternalRealtimeClientEventConversationItemDelete(document.RootElement, options);
                     }
                 default:
@@ -141,15 +120,20 @@ namespace OpenAI.RealtimeConversation
 
         string IPersistableModel<InternalRealtimeClientEventConversationItemDelete>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        internal static new InternalRealtimeClientEventConversationItemDelete FromResponse(PipelineResponse response)
+        public static implicit operator BinaryContent(InternalRealtimeClientEventConversationItemDelete internalRealtimeClientEventConversationItemDelete)
         {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeClientEventConversationItemDelete(document.RootElement);
+            if (internalRealtimeClientEventConversationItemDelete == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalRealtimeClientEventConversationItemDelete, ModelSerializationExtensions.WireOptions);
         }
 
-        internal override BinaryContent ToBinaryContent()
+        public static explicit operator InternalRealtimeClientEventConversationItemDelete(ClientResult result)
         {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalRealtimeClientEventConversationItemDelete(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

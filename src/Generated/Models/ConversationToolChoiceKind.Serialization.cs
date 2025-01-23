@@ -8,19 +8,28 @@ namespace OpenAI.RealtimeConversation
 {
     internal static partial class ConversationToolChoiceKindExtensions
     {
-        public static string ToSerialString(this ConversationToolChoiceKind value) => value switch
+        public static string ToSerialString(this RealtimeConversation.ConversationToolChoiceKind value) => value switch
         {
-            ConversationToolChoiceKind.Auto => "auto",
-            ConversationToolChoiceKind.None => "none",
-            ConversationToolChoiceKind.Required => "required",
+            RealtimeConversation.ConversationToolChoiceKind.Auto => "auto",
+            RealtimeConversation.ConversationToolChoiceKind.None => "none",
+            RealtimeConversation.ConversationToolChoiceKind.Required => "required",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ConversationToolChoiceKind value.")
         };
 
-        public static ConversationToolChoiceKind ToConversationToolChoiceKind(this string value)
+        public static RealtimeConversation.ConversationToolChoiceKind ToConversationToolChoiceKind(this string value)
         {
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "auto")) return ConversationToolChoiceKind.Auto;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "none")) return ConversationToolChoiceKind.None;
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "required")) return ConversationToolChoiceKind.Required;
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "auto"))
+            {
+                return RealtimeConversation.ConversationToolChoiceKind.Auto;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "none"))
+            {
+                return RealtimeConversation.ConversationToolChoiceKind.None;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "required"))
+            {
+                return RealtimeConversation.ConversationToolChoiceKind.Required;
+            }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ConversationToolChoiceKind value.");
         }
     }

@@ -29,10 +29,10 @@ public partial class MessageCreationOptions
     /// </summary>
     public MessageCreationOptions()
     : this(
-        MessageRole.User,
-        new ChangeTrackingList<MessageContent>(),
         new ChangeTrackingList<MessageCreationAttachment>(),
         new ChangeTrackingDictionary<string, string>(),
+        MessageRole.User,
+        new ChangeTrackingList<MessageContent>(),
         new ChangeTrackingDictionary<string, BinaryData>())
     { }
 

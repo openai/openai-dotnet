@@ -2,41 +2,36 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace OpenAI.Assistants;
 
 [CodeGenClient("Runs")]
 [CodeGenSuppress("InternalAssistantRunClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
-[CodeGenSuppress("CreateThreadAndRunAsync", typeof(InternalCreateThreadAndRunRequest))]
-[CodeGenSuppress("CreateThreadAndRun", typeof(InternalCreateThreadAndRunRequest))]
-[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
-[CodeGenSuppress("CreateRun", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
-[CodeGenSuppress("GetRunsAsync", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetRuns", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string))]
-[CodeGenSuppress("GetRunAsync", typeof(string), typeof(string))]
-[CodeGenSuppress("GetRun", typeof(string), typeof(string))]
-[CodeGenSuppress("ModifyRunAsync", typeof(string), typeof(string), typeof(RunModificationOptions))]
-[CodeGenSuppress("ModifyRun", typeof(string), typeof(string), typeof(RunModificationOptions))]
-[CodeGenSuppress("CancelRunAsync", typeof(string), typeof(string))]
-[CodeGenSuppress("CancelRun", typeof(string), typeof(string))]
-[CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest))]
-[CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest))]
-[CodeGenSuppress("GetRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
-[CodeGenSuppress("GetRunSteps", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
-[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
-[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>))]
+[CodeGenSuppress("CreateThreadAndRunAsync", typeof(InternalCreateThreadAndRunRequest), typeof(CancellationToken))]
+[CodeGenSuppress("CreateThreadAndRun", typeof(InternalCreateThreadAndRunRequest), typeof(CancellationToken))]
+[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
+[CodeGenSuppress("CreateRun", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
+[CodeGenSuppress("ListRunsAsync", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ListRuns", typeof(string), typeof(int?), typeof(RunCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetRunAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetRun", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ModifyRunAsync", typeof(string), typeof(string), typeof(RunModificationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("ModifyRun", typeof(string), typeof(string), typeof(RunModificationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CancelRunAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelRun", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
+[CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string), typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
+[CodeGenSuppress("ListRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
+[CodeGenSuppress("ListRunSteps", typeof(string), typeof(string), typeof(int?), typeof(RunStepCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
+[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
+[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
 internal partial class InternalAssistantRunClient
 {
-    // CUSTOM: Remove virtual keyword.
-    /// <summary>
-    /// The HTTP pipeline for sending and receiving REST requests and responses.
-    /// </summary>
-    public ClientPipeline Pipeline => _pipeline;
-
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient"/>. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public InternalAssistantRunClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
@@ -46,7 +41,7 @@ internal partial class InternalAssistantRunClient
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient"/>. </summary>
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
@@ -55,7 +50,7 @@ internal partial class InternalAssistantRunClient
         Argument.AssertNotNull(credential, nameof(credential));
         options ??= new OpenAIClientOptions();
 
-        _pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(credential, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
@@ -63,7 +58,7 @@ internal partial class InternalAssistantRunClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Made protected.
-    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient">. </summary>
+    /// <summary> Initializes a new instance of <see cref="InternalAssistantRunClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
@@ -72,7 +67,7 @@ internal partial class InternalAssistantRunClient
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         options ??= new OpenAIClientOptions();
 
-        _pipeline = pipeline;
+        Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 }

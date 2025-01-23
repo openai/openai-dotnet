@@ -4,22 +4,22 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsObject : InternalRunStepDeltaStepDetails
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsObject()
+        internal InternalRunStepDeltaStepDetailsToolCallsObject() : base("tool_calls")
         {
-            Type = "tool_calls";
             ToolCalls = new ChangeTrackingList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>();
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsObject(string type, IDictionary<string, BinaryData> serializedAdditionalRawData, IReadOnlyList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> toolCalls) : base(type, serializedAdditionalRawData)
+        internal InternalRunStepDeltaStepDetailsToolCallsObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> toolCalls) : base(@type, additionalBinaryDataProperties)
         {
             ToolCalls = toolCalls;
         }
 
-        public IReadOnlyList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> ToolCalls { get; }
+        public IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> ToolCalls { get; }
     }
 }

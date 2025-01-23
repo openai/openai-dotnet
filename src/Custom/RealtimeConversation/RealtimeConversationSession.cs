@@ -324,7 +324,7 @@ public partial class RealtimeConversationSession : IDisposable
     {
         await foreach (ClientResult protocolEvent in ReceiveUpdatesAsync(cancellationToken.ToRequestOptions()))
         {
-            ConversationUpdate nextUpdate = ConversationUpdate.FromResponse(protocolEvent.GetRawResponse());
+            ConversationUpdate nextUpdate = (ConversationUpdate)protocolEvent;
             yield return nextUpdate;
         }
     }

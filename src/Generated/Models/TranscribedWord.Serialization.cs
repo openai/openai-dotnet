@@ -7,38 +7,48 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public partial struct TranscribedWord : IJsonModel<TranscribedWord>, IJsonModel<object>
+    public readonly partial struct TranscribedWord : IJsonModel<TranscribedWord>, IJsonModel<object>
     {
+        public TranscribedWord()
+        {
+        }
+
         void IJsonModel<TranscribedWord>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        private void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(TranscribedWord)} does not support writing '{format}' format.");
             }
-
-            writer.WriteStartObject();
-            if (SerializedAdditionalRawData?.ContainsKey("word") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("word") != true)
             {
                 writer.WritePropertyName("word"u8);
                 writer.WriteStringValue(Word);
             }
-            if (SerializedAdditionalRawData?.ContainsKey("start") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
                 writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
             }
-            if (SerializedAdditionalRawData?.ContainsKey("end") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
                 writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
-            if (SerializedAdditionalRawData != null)
+            if (true && _additionalBinaryDataProperties != null)
             {
-                foreach (var item in SerializedAdditionalRawData)
+                foreach (var item in _additionalBinaryDataProperties)
                 {
                     if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
@@ -46,7 +56,7 @@ namespace OpenAI.Audio
                     }
                     writer.WritePropertyName(item.Key);
 #if NET6_0_OR_GREATER
-				writer.WriteRawValue(item.Value);
+                    writer.WriteRawValue(item.Value);
 #else
                     using (JsonDocument document = JsonDocument.Parse(item.Value))
                     {
@@ -55,65 +65,61 @@ namespace OpenAI.Audio
 #endif
                 }
             }
-            writer.WriteEndObject();
         }
 
-        TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        private TranscribedWord JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(TranscribedWord)} does not support reading '{format}' format.");
             }
-
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeTranscribedWord(document.RootElement, options);
         }
 
-        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedWord>)this).Write(writer, options);
-
-        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedWord>)this).Create(ref reader, options);
-
-        internal static TranscribedWord DeserializeTranscribedWord(JsonElement element, ModelReaderWriterOptions options = null)
+        internal static TranscribedWord DeserializeTranscribedWord(JsonElement element, ModelReaderWriterOptions options)
         {
-            options ??= ModelSerializationExtensions.WireOptions;
-
-            string word = default;
-            TimeSpan start = default;
-            TimeSpan end = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
-            foreach (var property in element.EnumerateObject())
+            if (element.ValueKind == JsonValueKind.Null)
             {
-                if (property.NameEquals("word"u8))
+                return default;
+            }
+            string word = default;
+            TimeSpan startTime = default;
+            TimeSpan endTime = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("word"u8))
                 {
-                    word = property.Value.GetString();
+                    word = prop.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("start"u8))
+                if (prop.NameEquals("start"u8))
                 {
-                    start = TimeSpan.FromSeconds(property.Value.GetDouble());
+                    startTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                if (property.NameEquals("end"u8))
+                if (prop.NameEquals("end"u8))
                 {
-                    end = TimeSpan.FromSeconds(property.Value.GetDouble());
+                    endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (true)
                 {
-                    rawDataDictionary ??= new Dictionary<string, BinaryData>();
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new TranscribedWord(word, start, end, serializedAdditionalRawData);
+            return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<TranscribedWord>.Write(ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
+        BinaryData IPersistableModel<TranscribedWord>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        private BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -123,15 +129,16 @@ namespace OpenAI.Audio
             }
         }
 
-        TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options)
-        {
-            var format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
+        TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        private TranscribedWord PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        using JsonDocument document = JsonDocument.Parse(data);
                         return DeserializeTranscribedWord(document.RootElement, options);
                     }
                 default:
@@ -141,21 +148,26 @@ namespace OpenAI.Audio
 
         string IPersistableModel<TranscribedWord>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedWord>)this).Write(options);
+        public static implicit operator BinaryContent(TranscribedWord transcribedWord)
+        {
+            return BinaryContent.Create(transcribedWord, ModelSerializationExtensions.WireOptions);
+        }
 
-        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedWord>)this).Create(data, options);
+        public static explicit operator TranscribedWord(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeTranscribedWord(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
+        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedWord>)this).Write(writer, options);
+
+        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedWord>)this).Create(ref reader, options);
+
+        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedWord>)this).Write(options);
 
         string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options);
 
-        internal static TranscribedWord FromResponse(PipelineResponse response)
-        {
-            using var document = JsonDocument.Parse(response.Content);
-            return DeserializeTranscribedWord(document.RootElement);
-        }
-
-        internal BinaryContent ToBinaryContent()
-        {
-            return BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
-        }
+        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<TranscribedWord>)this).Create(data, options);
     }
 }

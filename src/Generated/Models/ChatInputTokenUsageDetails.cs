@@ -9,22 +9,25 @@ namespace OpenAI.Chat
 {
     public partial class ChatInputTokenUsageDetails
     {
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData { get; set; }
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
         internal ChatInputTokenUsageDetails(int audioTokenCount, int cachedTokenCount)
         {
             AudioTokenCount = audioTokenCount;
             CachedTokenCount = cachedTokenCount;
         }
 
-        internal ChatInputTokenUsageDetails(int audioTokenCount, int cachedTokenCount, IDictionary<string, BinaryData> serializedAdditionalRawData)
+        internal ChatInputTokenUsageDetails(int audioTokenCount, int cachedTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             AudioTokenCount = audioTokenCount;
             CachedTokenCount = cachedTokenCount;
-            SerializedAdditionalRawData = serializedAdditionalRawData;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal ChatInputTokenUsageDetails()
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

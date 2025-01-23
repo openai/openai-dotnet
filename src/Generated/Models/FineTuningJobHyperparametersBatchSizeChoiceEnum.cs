@@ -4,31 +4,38 @@
 
 using System;
 using System.ComponentModel;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
     internal readonly partial struct FineTuningJobHyperparametersBatchSizeChoiceEnum : IEquatable<FineTuningJobHyperparametersBatchSizeChoiceEnum>
     {
         private readonly string _value;
+        private const string AutoValue = "auto";
 
         public FineTuningJobHyperparametersBatchSizeChoiceEnum(string value)
         {
-            _value = value ?? throw new ArgumentNullException(nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
+
+            _value = value;
         }
 
-        private const string AutoValue = "auto";
-
         public static FineTuningJobHyperparametersBatchSizeChoiceEnum Auto { get; } = new FineTuningJobHyperparametersBatchSizeChoiceEnum(AutoValue);
+
         public static bool operator ==(FineTuningJobHyperparametersBatchSizeChoiceEnum left, FineTuningJobHyperparametersBatchSizeChoiceEnum right) => left.Equals(right);
+
         public static bool operator !=(FineTuningJobHyperparametersBatchSizeChoiceEnum left, FineTuningJobHyperparametersBatchSizeChoiceEnum right) => !left.Equals(right);
+
         public static implicit operator FineTuningJobHyperparametersBatchSizeChoiceEnum(string value) => new FineTuningJobHyperparametersBatchSizeChoiceEnum(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FineTuningJobHyperparametersBatchSizeChoiceEnum other && Equals(other);
+
         public bool Equals(FineTuningJobHyperparametersBatchSizeChoiceEnum other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
         public override string ToString() => _value;
     }
 }

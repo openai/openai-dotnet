@@ -12,10 +12,10 @@ public static partial class OpenAIFilesModelFactory
     public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = default)
     {
         return new FileDeletionResult(
+            deleted,
             fileId,
             InternalDeleteFileResponseObject.File,
-            deleted,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfo"/>. </summary>
@@ -24,14 +24,14 @@ public static partial class OpenAIFilesModelFactory
     {
         return new OpenAIFile(
             id,
-            sizeInBytes,
             createdAt,
             filename,
-            @object: InternalOpenAIFileObject.File,
             purpose,
+            @object: InternalOpenAIFileObject.File,
+            sizeInBytes,
             status,
             statusDetails,
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileCollection"/>. </summary>

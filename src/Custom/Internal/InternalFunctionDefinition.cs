@@ -9,5 +9,5 @@ internal partial class InternalFunctionDefinition
     /// The parameters to the function, formatting as a JSON Schema object.
     /// </summary>
     [CodeGenMember("Parameters")]
-    internal BinaryData Parameters;
+    internal BinaryData Parameters { get; set; }
 }

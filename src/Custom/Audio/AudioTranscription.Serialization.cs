@@ -20,10 +20,10 @@ public partial class AudioTranscription
                 text: response.Content?.ToString(),
                 words: new ChangeTrackingList<TranscribedWord>(),
                 segments: new ChangeTrackingList<TranscribedSegment>(),
-                serializedAdditionalRawData: new Dictionary<string, BinaryData>());
+                additionalBinaryDataProperties: new Dictionary<string, BinaryData>());
         }
 
         using var document = JsonDocument.Parse(response.Content);
-        return DeserializeAudioTranscription(document.RootElement);
+        return DeserializeAudioTranscription(document.RootElement, null);
     }
 }
