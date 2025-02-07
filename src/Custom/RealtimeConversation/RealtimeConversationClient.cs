@@ -87,7 +87,7 @@ public partial class RealtimeConversationClient
             uriBuilder.Path += uriBuilder.Path[uriBuilder.Path.Length - 1] == '/' ? "realtime" : "/realtime";
         }
 
-        uriBuilder.Query = $"?model={model}";
+        uriBuilder.Query = $"model={model}";
 
         return uriBuilder.Uri;
     }
