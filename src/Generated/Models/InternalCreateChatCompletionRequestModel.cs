@@ -11,15 +11,23 @@ namespace OpenAI.Chat
     internal readonly partial struct InternalCreateChatCompletionRequestModel : IEquatable<InternalCreateChatCompletionRequestModel>
     {
         private readonly string _value;
+        private const string O3MiniValue = "o3-mini";
+        private const string O3Mini20250131Value = "o3-mini-2025-01-31";
+        private const string O1Value = "o1";
+        private const string O120241217Value = "o1-2024-12-17";
         private const string O1PreviewValue = "o1-preview";
         private const string O1Preview20240912Value = "o1-preview-2024-09-12";
         private const string O1MiniValue = "o1-mini";
         private const string O1Mini20240912Value = "o1-mini-2024-09-12";
         private const string Gpt4oValue = "gpt-4o";
+        private const string Gpt4o20241120Value = "gpt-4o-2024-11-20";
         private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
         private const string Gpt4o20240513Value = "gpt-4o-2024-05-13";
-        private const string Gpt4oRealtimePreviewValue = "gpt-4o-realtime-preview";
-        private const string Gpt4oRealtimePreview20241001Value = "gpt-4o-realtime-preview-2024-10-01";
+        private const string Gpt4oAudioPreviewValue = "gpt-4o-audio-preview";
+        private const string Gpt4oAudioPreview20241001Value = "gpt-4o-audio-preview-2024-10-01";
+        private const string Gpt4oAudioPreview20241217Value = "gpt-4o-audio-preview-2024-12-17";
+        private const string Gpt4oMiniAudioPreviewValue = "gpt-4o-mini-audio-preview";
+        private const string Gpt4oMiniAudioPreview20241217Value = "gpt-4o-mini-audio-preview-2024-12-17";
         private const string Chatgpt4oLatestValue = "chatgpt-4o-latest";
         private const string Gpt4oMiniValue = "gpt-4o-mini";
         private const string Gpt4oMini20240718Value = "gpt-4o-mini-2024-07-18";
@@ -50,6 +58,14 @@ namespace OpenAI.Chat
             _value = value;
         }
 
+        public static InternalCreateChatCompletionRequestModel O3Mini { get; } = new InternalCreateChatCompletionRequestModel(O3MiniValue);
+
+        public static InternalCreateChatCompletionRequestModel O3Mini20250131 { get; } = new InternalCreateChatCompletionRequestModel(O3Mini20250131Value);
+
+        public static InternalCreateChatCompletionRequestModel O1 { get; } = new InternalCreateChatCompletionRequestModel(O1Value);
+
+        public static InternalCreateChatCompletionRequestModel O120241217 { get; } = new InternalCreateChatCompletionRequestModel(O120241217Value);
+
         public static InternalCreateChatCompletionRequestModel O1Preview { get; } = new InternalCreateChatCompletionRequestModel(O1PreviewValue);
 
         public static InternalCreateChatCompletionRequestModel O1Preview20240912 { get; } = new InternalCreateChatCompletionRequestModel(O1Preview20240912Value);
@@ -60,13 +76,21 @@ namespace OpenAI.Chat
 
         public static InternalCreateChatCompletionRequestModel Gpt4o { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oValue);
 
+        public static InternalCreateChatCompletionRequestModel Gpt4o20241120 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20241120Value);
+
         public static InternalCreateChatCompletionRequestModel Gpt4o20240806 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240806Value);
 
         public static InternalCreateChatCompletionRequestModel Gpt4o20240513 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4o20240513Value);
 
-        public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreviewValue);
+        public static InternalCreateChatCompletionRequestModel Gpt4oAudioPreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oAudioPreviewValue);
 
-        public static InternalCreateChatCompletionRequestModel Gpt4oRealtimePreview20241001 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oRealtimePreview20241001Value);
+        public static InternalCreateChatCompletionRequestModel Gpt4oAudioPreview20241001 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oAudioPreview20241001Value);
+
+        public static InternalCreateChatCompletionRequestModel Gpt4oAudioPreview20241217 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oAudioPreview20241217Value);
+
+        public static InternalCreateChatCompletionRequestModel Gpt4oMiniAudioPreview { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMiniAudioPreviewValue);
+
+        public static InternalCreateChatCompletionRequestModel Gpt4oMiniAudioPreview20241217 { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oMiniAudioPreview20241217Value);
 
         public static InternalCreateChatCompletionRequestModel Chatgpt4oLatest { get; } = new InternalCreateChatCompletionRequestModel(Chatgpt4oLatestValue);
 

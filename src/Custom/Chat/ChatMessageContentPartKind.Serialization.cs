@@ -13,6 +13,7 @@ internal static partial class ChatMessageContentPartKindExtensions
         ChatMessageContentPartKind.Text => "text",
         ChatMessageContentPartKind.Refusal => "refusal",
         ChatMessageContentPartKind.Image => "image_url",
+        ChatMessageContentPartKind.InputAudio => "input_audio",
         _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatMessageContentPartKind value.")
     };
 
@@ -21,6 +22,7 @@ internal static partial class ChatMessageContentPartKindExtensions
         if (StringComparer.OrdinalIgnoreCase.Equals(value, "text")) return ChatMessageContentPartKind.Text;
         if (StringComparer.OrdinalIgnoreCase.Equals(value, "refusal")) return ChatMessageContentPartKind.Refusal;
         if (StringComparer.OrdinalIgnoreCase.Equals(value, "image_url")) return ChatMessageContentPartKind.Image;
+        if (StringComparer.OrdinalIgnoreCase.Equals(value, "input_audio")) return ChatMessageContentPartKind.InputAudio;
         throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatMessageContentPartKind value.");
     }
 }

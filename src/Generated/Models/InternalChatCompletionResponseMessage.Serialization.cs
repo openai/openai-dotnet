@@ -53,6 +53,18 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            {
+                if (Audio != null)
+                {
+                    writer.WritePropertyName("audio"u8);
+                    writer.WriteObjectValue(Audio, options);
+                }
+                else
+                {
+                    writer.WriteNull("audio"u8);
+                }
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
@@ -117,6 +129,7 @@ namespace OpenAI.Chat
             }
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
+            ChatOutputAudio audio = default;
             Chat.ChatMessageRole role = default;
             ChatMessageContent content = default;
             ChatFunctionCall functionCall = default;
@@ -147,6 +160,16 @@ namespace OpenAI.Chat
                     toolCalls = array;
                     continue;
                 }
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        audio = null;
+                        continue;
+                    }
+                    audio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
@@ -175,6 +198,7 @@ namespace OpenAI.Chat
             return new InternalChatCompletionResponseMessage(
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
+                audio,
                 role,
                 content ?? new ChatMessageContent(),
                 functionCall,

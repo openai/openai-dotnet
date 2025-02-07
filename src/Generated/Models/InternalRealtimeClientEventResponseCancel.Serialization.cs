@@ -28,6 +28,11 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventResponseCancel)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            if (Optional.IsDefined(ResponseId) && _additionalBinaryDataProperties?.ContainsKey("response_id") != true)
+            {
+                writer.WritePropertyName("response_id"u8);
+                writer.WriteStringValue(ResponseId);
+            }
         }
 
         InternalRealtimeClientEventResponseCancel IJsonModel<InternalRealtimeClientEventResponseCancel>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeClientEventResponseCancel)JsonModelCreateCore(ref reader, options);
@@ -52,6 +57,7 @@ namespace OpenAI.RealtimeConversation
             InternalRealtimeClientEventType kind = default;
             string eventId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string responseId = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -64,12 +70,17 @@ namespace OpenAI.RealtimeConversation
                     eventId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("response_id"u8))
+                {
+                    responseId = prop.Value.GetString();
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            return new InternalRealtimeClientEventResponseCancel(kind, eventId, additionalBinaryDataProperties);
+            return new InternalRealtimeClientEventResponseCancel(kind, eventId, additionalBinaryDataProperties, responseId);
         }
 
         BinaryData IPersistableModel<InternalRealtimeClientEventResponseCancel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

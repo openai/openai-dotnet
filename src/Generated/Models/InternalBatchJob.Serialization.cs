@@ -126,9 +126,9 @@ namespace OpenAI.Batch
                 writer.WritePropertyName("request_counts"u8);
                 writer.WriteObjectValue(RequestCounts, options);
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                if (Metadata != null)
+                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
                 {
                     writer.WritePropertyName("metadata"u8);
                     writer.WriteStartObject();
@@ -351,6 +351,7 @@ namespace OpenAI.Batch
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        metadata = new ChangeTrackingDictionary<string, string>();
                         continue;
                     }
                     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -393,7 +394,7 @@ namespace OpenAI.Batch
                 cancellingAt,
                 cancelledAt,
                 requestCounts,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
+                metadata,
                 additionalBinaryDataProperties);
         }
 

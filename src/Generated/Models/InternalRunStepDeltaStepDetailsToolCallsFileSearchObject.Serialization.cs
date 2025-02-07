@@ -45,7 +45,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("file_search") != true)
             {
                 writer.WritePropertyName("file_search"u8);
-                writer.WriteObjectValue(FileSearch, options);
+                writer.WriteObjectValue<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>(FileSearch, options);
             }
         }
 
@@ -72,7 +72,7 @@ namespace OpenAI.Assistants
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int index = default;
             string id = default;
-            InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch fileSearch = default;
+            InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -92,7 +92,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("file_search"u8))
                 {
-                    fileSearch = InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch.DeserializeInternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(prop.Value, options);
+                    fileSearch = InternalRunStepDetailsToolCallsFileSearchObjectFileSearch.DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(prop.Value, options);
                     continue;
                 }
                 if (true)

@@ -4,7 +4,6 @@ namespace OpenAI.Chat;
 
 [CodeGenModel("ChatCompletionStreamResponseDelta")]
 [CodeGenSuppress("InternalChatCompletionStreamResponseDelta")]
-[CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
 internal partial class InternalChatCompletionStreamResponseDelta
 {
     // CUSTOM: Changed type from string.

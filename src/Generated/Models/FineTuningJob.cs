@@ -32,7 +32,7 @@ namespace OpenAI.FineTuning
             Seed = seed;
         }
 
-        internal FineTuningJob(string userProvidedSuffix, string id, DateTimeOffset createdAt, FineTuningJobError error, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningJobHyperparameters hyperparameters, string model, InternalFineTuningJobObject @object, string organizationId, IList<string> resultFiles, FineTuningJobStatus status, int? trainedTokens, string trainingFile, string validationFile, IList<InternalFineTuningIntegration> integrations, int seed, DateTimeOffset? estimatedFinish, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningJob(string userProvidedSuffix, string id, DateTimeOffset createdAt, FineTuningJobError error, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningJobHyperparameters hyperparameters, string model, InternalFineTuningJobObject @object, string organizationId, IList<string> resultFiles, FineTuningJobStatus status, int? trainedTokens, string trainingFile, string validationFile, IList<InternalFineTuningIntegration> integrations, int seed, DateTimeOffset? estimatedFinish, InternalTodoFineTuneMethod @method, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             UserProvidedSuffix = userProvidedSuffix;
             Id = id;
@@ -52,6 +52,7 @@ namespace OpenAI.FineTuning
             Integrations = integrations;
             Seed = seed;
             EstimatedFinish = estimatedFinish;
+            Method = @method;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -90,6 +91,8 @@ namespace OpenAI.FineTuning
         public int Seed { get; }
 
         public DateTimeOffset? EstimatedFinish { get; }
+
+        public InternalTodoFineTuneMethod Method { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

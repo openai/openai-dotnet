@@ -21,7 +21,7 @@ namespace OpenAI.FineTuning
             Integrations = new ChangeTrackingList<FineTuningIntegration>();
         }
 
-        internal FineTuningOptions(InternalCreateFineTuningJobRequestModel model, string trainingFile, HyperparameterOptions hyperparameters, string suffix, string validationFile, IList<FineTuningIntegration> integrations, int? seed, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningOptions(InternalCreateFineTuningJobRequestModel model, string trainingFile, HyperparameterOptions hyperparameters, string suffix, string validationFile, IList<FineTuningIntegration> integrations, int? seed, InternalTodoFineTuneMethod @method, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Model = model;
             TrainingFile = trainingFile;
@@ -30,6 +30,7 @@ namespace OpenAI.FineTuning
             ValidationFile = validationFile;
             Integrations = integrations;
             Seed = seed;
+            Method = @method;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -46,6 +47,8 @@ namespace OpenAI.FineTuning
         public IList<FineTuningIntegration> Integrations { get; set; }
 
         public int? Seed { get; set; }
+
+        public InternalTodoFineTuneMethod Method { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

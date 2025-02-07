@@ -50,23 +50,24 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            Chat.ChatMessageRole role = default;
             ChatMessageContent content = default;
+            Chat.ChatMessageRole role = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string refusal = default;
             string participantName = default;
             IList<ChatToolCall> toolCalls = default;
             ChatFunctionCall functionCall = default;
+            ChatOutputAudioReference outputAudioReference = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString().ToChatMessageRole();
-                    continue;
-                }
                 if (prop.NameEquals("content"u8))
                 {
                     DeserializeContentValue(prop, ref content);
+                    continue;
+                }
+                if (prop.NameEquals("role"u8))
+                {
+                    role = prop.Value.GetString().ToChatMessageRole();
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -108,6 +109,16 @@ namespace OpenAI.FineTuning
                     functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputAudioReference = null;
+                        continue;
+                    }
+                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
@@ -115,13 +126,14 @@ namespace OpenAI.FineTuning
             }
             // CUSTOM: Initialize Content collection property.
             return new InternalFineTuneChatCompletionRequestAssistantMessage(
-                role,
                 content ?? new ChatMessageContent(),
+                role,
                 additionalBinaryDataProperties,
                 refusal,
                 participantName,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall);
+                functionCall,
+                outputAudioReference);
         }
 
         BinaryData IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

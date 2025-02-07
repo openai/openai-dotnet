@@ -9,5 +9,7 @@ public enum ChatMessageContentPartKind
 
     Refusal,
 
-    Image
+    Image,
+
+    InputAudio,
 }

@@ -206,7 +206,11 @@ internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject { }
 internal partial class InternalRunStepDeltaStepDetailsToolCallsObject { }
 
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsFileSearchObject")]
-internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject { }
+internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject
+{
+    [CodeGenMember("FileSearch")]
+    public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; set; }
+}
 
 [CodeGenModel("RunStepDeltaStepDetailsToolCallsFunctionObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObject { }

@@ -19,10 +19,11 @@ namespace OpenAI.Chat
             Content = content;
         }
 
-        internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, Chat.ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, ChatOutputAudio audio, Chat.ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Refusal = refusal;
             ToolCalls = toolCalls;
+            Audio = audio;
             Role = role;
             Content = content;
             FunctionCall = functionCall;
@@ -32,6 +33,8 @@ namespace OpenAI.Chat
         public string Refusal { get; }
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
+
+        public ChatOutputAudio Audio { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

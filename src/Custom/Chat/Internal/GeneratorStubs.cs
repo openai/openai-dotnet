@@ -36,7 +36,7 @@ internal readonly partial struct InternalChatCompletionResponseMessageRole { }
 [CodeGenModel("ChatCompletionStreamOptions")]
 internal partial class InternalChatCompletionStreamOptions { }
 
-[CodeGenModel("ChatCompletionStreamResponseDeltaRole")]
+[CodeGenModel("ChatCompletionStreamResponseDeltaRole2")]
 internal readonly partial struct InternalChatCompletionStreamResponseDeltaRole { }
 
 [CodeGenModel("CreateChatCompletionFunctionResponse")]
@@ -93,5 +93,17 @@ internal readonly partial struct InternalCreateChatCompletionStreamResponseServi
 [CodeGenModel("CreateChatCompletionStreamResponseUsage")]
 internal partial class InternalCreateChatCompletionStreamResponseUsage { }
 
-[CodeGenModel("FunctionParameters")]
-internal partial class InternalFunctionParameters { }
+[CodeGenModel("CreateChatCompletionRequestModality")]
+internal readonly partial struct InternalCreateChatCompletionRequestModality { }
+
+[CodeGenModel("ChatCompletionRequestMessageContentPartAudioType")]
+internal readonly partial struct InternalChatCompletionRequestMessageContentPartAudioType { }
+
+[CodeGenModel("ChatCompletionRequestMessageContentPartAudio")]
+internal partial class InternalChatCompletionRequestMessageContentPartAudio { }
+
+[CodeGenModel("ChatCompletionRequestMessageContentPartAudioInputAudio")]
+internal partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio { }
+
+[CodeGenModel("UnknownChatOutputPrediction")]
+internal partial class InternalUnknownChatOutputPrediction { }

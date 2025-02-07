@@ -11,11 +11,10 @@ namespace OpenAI.RealtimeConversation
     public readonly partial struct ConversationStatus : IEquatable<ConversationStatus>
     {
         private readonly string _value;
-        private const string InProgressValue = "in_progress";
         private const string CompletedValue = "completed";
         private const string CancelledValue = "cancelled";
-        private const string IncompleteValue = "incomplete";
         private const string FailedValue = "failed";
+        private const string IncompleteValue = "incomplete";
 
         public ConversationStatus(string value)
         {
@@ -24,15 +23,13 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static ConversationStatus InProgress { get; } = new ConversationStatus(InProgressValue);
-
         public static ConversationStatus Completed { get; } = new ConversationStatus(CompletedValue);
 
         public static ConversationStatus Cancelled { get; } = new ConversationStatus(CancelledValue);
 
-        public static ConversationStatus Incomplete { get; } = new ConversationStatus(IncompleteValue);
-
         public static ConversationStatus Failed { get; } = new ConversationStatus(FailedValue);
+
+        public static ConversationStatus Incomplete { get; } = new ConversationStatus(IncompleteValue);
 
         public static bool operator ==(ConversationStatus left, ConversationStatus right) => left.Equals(right);
 

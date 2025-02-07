@@ -38,11 +38,10 @@ public static partial class OpenAIFilesModelFactory
     /// <returns> A new <see cref="OpenAI.Files.OpenAIFileCollection"/> instance for mocking. </returns>
     public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> items = null)
     {
-        items ??= new List<OpenAIFile>();
-
         return new OpenAIFileCollection(
-            items.ToList(),
-            InternalListFilesResponseObject.List,
-            serializedAdditionalRawData: null);
+            items?.ToList() ?? [],
+            firstId: null,
+            lastId : null,
+            hasMore: false);
     }
 }

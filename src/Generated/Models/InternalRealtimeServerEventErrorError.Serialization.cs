@@ -13,6 +13,10 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeServerEventErrorError : IJsonModel<InternalRealtimeServerEventErrorError>
     {
+        internal InternalRealtimeServerEventErrorError()
+        {
+        }
+
         void IJsonModel<InternalRealtimeServerEventErrorError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -27,30 +31,51 @@ namespace OpenAI.RealtimeConversation
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeServerEventErrorError)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Type) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
             if (Optional.IsDefined(Code) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
-                writer.WritePropertyName("code"u8);
-                writer.WriteStringValue(Code);
+                if (Code != null)
+                {
+                    writer.WritePropertyName("code"u8);
+                    writer.WriteStringValue(Code);
+                }
+                else
+                {
+                    writer.WriteNull("code"u8);
+                }
             }
-            if (Optional.IsDefined(Message) && _additionalBinaryDataProperties?.ContainsKey("message") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
             if (Optional.IsDefined(Param) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                writer.WritePropertyName("param"u8);
-                writer.WriteStringValue(Param);
+                if (Param != null)
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
             }
             if (Optional.IsDefined(EventId) && _additionalBinaryDataProperties?.ContainsKey("event_id") != true)
             {
-                writer.WritePropertyName("event_id"u8);
-                writer.WriteStringValue(EventId);
+                if (EventId != null)
+                {
+                    writer.WritePropertyName("event_id"u8);
+                    writer.WriteStringValue(EventId);
+                }
+                else
+                {
+                    writer.WriteNull("eventId"u8);
+                }
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -107,6 +132,11 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (prop.NameEquals("code"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        code = null;
+                        continue;
+                    }
                     code = prop.Value.GetString();
                     continue;
                 }
@@ -117,11 +147,21 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (prop.NameEquals("param"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        @param = null;
+                        continue;
+                    }
                     @param = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        eventId = null;
+                        continue;
+                    }
                     eventId = prop.Value.GetString();
                     continue;
                 }

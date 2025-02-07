@@ -50,7 +50,7 @@ namespace OpenAI.Assistants
 
         public IList<ToolDefinition> Tools { get; set; }
 
-        public IDictionary<string, string> Metadata { get; set; }
+        public IDictionary<string, string> Metadata { get; }
 
         public float? Temperature { get; set; }
 

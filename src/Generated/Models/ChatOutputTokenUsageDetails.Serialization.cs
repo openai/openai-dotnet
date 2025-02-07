@@ -13,10 +13,6 @@ namespace OpenAI.Chat
 {
     public partial class ChatOutputTokenUsageDetails : IJsonModel<ChatOutputTokenUsageDetails>
     {
-        internal ChatOutputTokenUsageDetails()
-        {
-        }
-
         void IJsonModel<ChatOutputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -40,6 +36,16 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("audio_tokens"u8);
                 writer.WriteNumberValue(AudioTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("accepted_prediction_tokens") != true)
+            {
+                writer.WritePropertyName("accepted_prediction_tokens"u8);
+                writer.WriteNumberValue(AcceptedPredictionTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("rejected_prediction_tokens") != true)
+            {
+                writer.WritePropertyName("rejected_prediction_tokens"u8);
+                writer.WriteNumberValue(RejectedPredictionTokenCount);
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -83,17 +89,45 @@ namespace OpenAI.Chat
             }
             int reasoningTokenCount = default;
             int audioTokenCount = default;
+            int acceptedPredictionTokenCount = default;
+            int rejectedPredictionTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("reasoning_tokens"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     reasoningTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("audio_tokens"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     audioTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("accepted_prediction_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    acceptedPredictionTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("rejected_prediction_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    rejectedPredictionTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
@@ -101,7 +135,7 @@ namespace OpenAI.Chat
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            return new ChatOutputTokenUsageDetails(reasoningTokenCount, audioTokenCount, additionalBinaryDataProperties);
+            return new ChatOutputTokenUsageDetails(reasoningTokenCount, audioTokenCount, acceptedPredictionTokenCount, rejectedPredictionTokenCount, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

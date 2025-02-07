@@ -31,6 +31,11 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningJobEvent)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.ToString());
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
@@ -51,10 +56,22 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (Optional.IsDefined(Type) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Type.Value.ToString());
+            }
+            if (Optional.IsDefined(Data) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
+            {
+                writer.WritePropertyName("data"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Data);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Data))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -96,14 +113,21 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
+            InternalFineTuningJobEventObject @object = default;
             string id = default;
             DateTimeOffset createdAt = default;
             FineTuning.FineTuningJobEventLevel level = default;
             string message = default;
-            InternalFineTuningJobEventObject @object = default;
+            InternalFineTuningJobEventType? @type = default;
+            BinaryData data = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = new InternalFineTuningJobEventObject(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
@@ -124,9 +148,22 @@ namespace OpenAI.FineTuning
                     message = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
+                if (prop.NameEquals("type"u8))
                 {
-                    @object = new InternalFineTuningJobEventObject(prop.Value.GetString());
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @type = new InternalFineTuningJobEventType(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("data"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    data = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (true)
@@ -135,11 +172,13 @@ namespace OpenAI.FineTuning
                 }
             }
             return new FineTuningJobEvent(
+                @object,
                 id,
                 createdAt,
                 level,
                 message,
-                @object,
+                @type,
+                data,
                 additionalBinaryDataProperties);
         }
 

@@ -12,10 +12,13 @@ namespace OpenAI.Audio
     {
         private readonly string _value;
         private const string AlloyValue = "alloy";
+        private const string AshValue = "ash";
+        private const string CoralValue = "coral";
         private const string EchoValue = "echo";
         private const string FableValue = "fable";
         private const string OnyxValue = "onyx";
         private const string NovaValue = "nova";
+        private const string SageValue = "sage";
         private const string ShimmerValue = "shimmer";
 
         public GeneratedSpeechVoice(string value)
@@ -27,6 +30,10 @@ namespace OpenAI.Audio
 
         public static GeneratedSpeechVoice Alloy { get; } = new GeneratedSpeechVoice(AlloyValue);
 
+        public static GeneratedSpeechVoice Ash { get; } = new GeneratedSpeechVoice(AshValue);
+
+        public static GeneratedSpeechVoice Coral { get; } = new GeneratedSpeechVoice(CoralValue);
+
         public static GeneratedSpeechVoice Echo { get; } = new GeneratedSpeechVoice(EchoValue);
 
         public static GeneratedSpeechVoice Fable { get; } = new GeneratedSpeechVoice(FableValue);
@@ -34,6 +41,8 @@ namespace OpenAI.Audio
         public static GeneratedSpeechVoice Onyx { get; } = new GeneratedSpeechVoice(OnyxValue);
 
         public static GeneratedSpeechVoice Nova { get; } = new GeneratedSpeechVoice(NovaValue);
+
+        public static GeneratedSpeechVoice Sage { get; } = new GeneratedSpeechVoice(SageValue);
 
         public static GeneratedSpeechVoice Shimmer { get; } = new GeneratedSpeechVoice(ShimmerValue);
 

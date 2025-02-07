@@ -11,7 +11,7 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionOptions(float? frequencyPenalty, float? presencePenalty, ChatResponseFormat responseFormat, float? temperature, float? topP, IList<ChatTool> tools, IList<ChatMessage> messages, InternalCreateChatCompletionRequestModel model, int? n, bool? stream, InternalChatCompletionStreamOptions streamOptions, bool? includeLogProbabilities, int? topLogProbabilityCount, IList<string> stopSequences, IDictionary<int, int> logitBiases, ChatToolChoice toolChoice, ChatFunctionChoice functionChoice, bool? allowParallelToolCalls, string endUserId, long? seed, int? deprecatedMaxTokens, int? maxOutputTokenCount, IList<ChatFunction> functions, IDictionary<string, string> metadata, bool? storedOutputEnabled, InternalCreateChatCompletionRequestServiceTier? serviceTier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionOptions(float? frequencyPenalty, float? presencePenalty, ChatResponseFormat responseFormat, float? temperature, float? topP, IList<ChatTool> tools, IList<ChatMessage> messages, InternalCreateChatCompletionRequestModel model, int? n, bool? stream, InternalChatCompletionStreamOptions streamOptions, bool? includeLogProbabilities, int? topLogProbabilityCount, IList<string> stopSequences, IDictionary<int, int> logitBiases, ChatToolChoice toolChoice, ChatFunctionChoice functionChoice, bool? allowParallelToolCalls, string endUserId, long? seed, int? deprecatedMaxTokens, int? maxOutputTokenCount, IList<ChatFunction> functions, IDictionary<string, string> metadata, bool? storedOutputEnabled, ChatReasoningEffortLevel? reasoningEffortLevel, ChatOutputPrediction outputPrediction, InternalCreateChatCompletionRequestServiceTier? serviceTier, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatAudioOptions audioOptions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FrequencyPenalty = frequencyPenalty;
             PresencePenalty = presencePenalty;
@@ -38,7 +38,11 @@ namespace OpenAI.Chat
             Functions = functions;
             Metadata = metadata;
             StoredOutputEnabled = storedOutputEnabled;
+            ReasoningEffortLevel = reasoningEffortLevel;
+            OutputPrediction = outputPrediction;
             _serviceTier = serviceTier;
+            _internalModalities = internalModalities;
+            _audioOptions = audioOptions;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

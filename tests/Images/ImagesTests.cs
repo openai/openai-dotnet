@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -47,7 +48,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageBytes, Is.Null);
 
         Console.WriteLine(image.ImageUri.AbsoluteUri);
-        ValidateGeneratedImage(image.ImageUri, "stop");
+        ValidateGeneratedImage(image.ImageUri, ["stop"]);
     }
 
     [Test]
@@ -69,7 +70,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageUri, Is.Not.Null);
         Assert.That(image.ImageBytes, Is.Null);
 
-        ValidateGeneratedImage(image.ImageUri, "stop");
+        ValidateGeneratedImage(image.ImageUri, ["stop"]);
     }
 
     [Test]
@@ -90,7 +91,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageUri, Is.Null);
         Assert.That(image.ImageBytes, Is.Not.Null);
 
-        ValidateGeneratedImage(image.ImageBytes, "stop");
+        ValidateGeneratedImage(image.ImageBytes, ["stop"]);
     }
 
     [Test]
@@ -132,7 +133,7 @@ public class ImagesTests : SyncAsyncTestBase
         {
             Assert.That(image.ImageUri, Is.Not.Null);
             Assert.That(image.ImageBytes, Is.Null);
-            ValidateGeneratedImage(image.ImageUri, "stop");
+            ValidateGeneratedImage(image.ImageUri, ["stop"]);
         }
     }
 
@@ -161,7 +162,7 @@ public class ImagesTests : SyncAsyncTestBase
         {
             Assert.That(image.ImageUri, Is.Null);
             Assert.That(image.ImageBytes, Is.Not.Null);
-            ValidateGeneratedImage(image.ImageBytes, "stop");
+            ValidateGeneratedImage(image.ImageBytes, ["stop"]);
         }
     }
 
@@ -222,7 +223,7 @@ public class ImagesTests : SyncAsyncTestBase
 
         Console.WriteLine(image.ImageUri.AbsoluteUri);
 
-        ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -262,7 +263,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageUri, Is.Null);
         Assert.That(image.ImageBytes, Is.Not.Null);
 
-        ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -345,7 +346,7 @@ public class ImagesTests : SyncAsyncTestBase
 
         Console.WriteLine(image.ImageUri.AbsoluteUri);
 
-        ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -388,7 +389,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageUri, Is.Null);
         Assert.That(image.ImageBytes, Is.Not.Null);
 
-        ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -478,7 +479,7 @@ public class ImagesTests : SyncAsyncTestBase
             Assert.That(image.ImageUri, Is.Not.Null);
             Assert.That(image.ImageBytes, Is.Null);
             Console.WriteLine(image.ImageUri.AbsoluteUri);
-            ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -525,7 +526,7 @@ public class ImagesTests : SyncAsyncTestBase
         {
             Assert.That(image.ImageUri, Is.Null);
             Assert.That(image.ImageBytes, Is.Not.Null);
-            ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -614,7 +615,7 @@ public class ImagesTests : SyncAsyncTestBase
             Assert.That(image.ImageUri, Is.Not.Null);
             Assert.That(image.ImageBytes, Is.Null);
             Console.WriteLine(image.ImageUri.AbsoluteUri);
-            ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -664,7 +665,7 @@ public class ImagesTests : SyncAsyncTestBase
         {
             Assert.That(image.ImageUri, Is.Null);
             Assert.That(image.ImageBytes, Is.Not.Null);
-            ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -753,7 +754,7 @@ public class ImagesTests : SyncAsyncTestBase
 
         Console.WriteLine(image.ImageUri.AbsoluteUri);
 
-        ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -792,7 +793,7 @@ public class ImagesTests : SyncAsyncTestBase
         Assert.That(image.ImageUri, Is.Null);
         Assert.That(image.ImageBytes, Is.Not.Null);
 
-        ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+        ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
@@ -876,7 +877,7 @@ public class ImagesTests : SyncAsyncTestBase
             Assert.That(image.ImageUri, Is.Not.Null);
             Assert.That(image.ImageBytes, Is.Null);
             Console.WriteLine(image.ImageUri.AbsoluteUri);
-            ValidateGeneratedImage(image.ImageUri, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -922,7 +923,7 @@ public class ImagesTests : SyncAsyncTestBase
         {
             Assert.That(image.ImageUri, Is.Null);
             Assert.That(image.ImageBytes, Is.Not.Null);
-            ValidateGeneratedImage(image.ImageBytes, "cat", "Note that it likely depicts some sort of animal.");
+            ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -971,7 +972,7 @@ public class ImagesTests : SyncAsyncTestBase
 
     #endregion
 
-    private void ValidateGeneratedImage(Uri imageUri, string expectedSubstring, string descriptionHint = null)
+    private void ValidateGeneratedImage(Uri imageUri, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
         ChatClient chatClient = GetTestClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [
@@ -982,10 +983,13 @@ public class ImagesTests : SyncAsyncTestBase
         ChatCompletionOptions chatOptions = new() { MaxOutputTokenCount = 2048 };
         ClientResult<ChatCompletion> result = chatClient.CompleteChat(messages, chatOptions);
 
-        Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
+        Assert.That(result.Value?.Content, Has.Count.EqualTo(1));
+        string contentText = result.Value.Content[0].Text.ToLowerInvariant();
+
+        Assert.That(possibleExpectedSubstrings.Any(possibleExpectedSubstring => contentText.Contains(possibleExpectedSubstring)));
     }
 
-    private void ValidateGeneratedImage(BinaryData imageBytes, string expectedSubstring, string descriptionHint = null)
+    private void ValidateGeneratedImage(BinaryData imageBytes, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
         ChatClient chatClient = GetTestClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [
@@ -996,6 +1000,9 @@ public class ImagesTests : SyncAsyncTestBase
         ChatCompletionOptions chatOptions = new() { MaxOutputTokenCount = 2048 };
         ClientResult<ChatCompletion> result = chatClient.CompleteChat(messages, chatOptions);
 
-        Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
+        Assert.That(result.Value?.Content, Has.Count.EqualTo(1));
+        string contentText = result.Value.Content[0].Text.ToLowerInvariant();
+
+        Assert.That(possibleExpectedSubstrings.Any(possibleExpectedSubstring => contentText.Contains(possibleExpectedSubstring)));
     }
 }

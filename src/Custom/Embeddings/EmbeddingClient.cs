@@ -2,7 +2,9 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -99,7 +101,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
+        CreateEmbeddingGenerationOptions(input, ref options);
 
         using BinaryContent content = options;
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -118,7 +120,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
+        CreateEmbeddingGenerationOptions(input, ref options);
 
         using BinaryContent content = options;
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
@@ -137,7 +139,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
+        CreateEmbeddingGenerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -157,7 +159,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
+        CreateEmbeddingGenerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
@@ -165,8 +167,8 @@ public partial class EmbeddingClient
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory tokens instead of BinaryData.
-    /// <summary> Generates embeddings representing the text inputs. </summary>
-    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <summary> Generates embeddings representing the tokenized text inputs. </summary>
+    /// <param name="inputs"> The tokenized text inputs to generate embeddings for. </param>
     /// <param name="options"> The options to configure the embedding generation. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
@@ -176,7 +178,7 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableReadOnlyMemoryInt32), ref options);
+        CreateEmbeddingGenerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -184,8 +186,8 @@ public partial class EmbeddingClient
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory of tokens instead of BinaryData.
-    /// <summary> Generates embeddings representing the text inputs. </summary>
-    /// <param name="inputs"> The text inputs to generate embeddings for. </param>
+    /// <summary> Generates embeddings representing the tokenized text inputs. </summary>
+    /// <param name="inputs"> The tokenized text inputs to generate embeddings for. </param>
     /// <param name="options"> The options to configure the embedding generation. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
@@ -195,16 +197,69 @@ public partial class EmbeddingClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         options ??= new();
-        CreateEmbeddingGenerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableReadOnlyMemoryInt32), ref options);
+        CreateEmbeddingGenerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
     }
 
-    private void CreateEmbeddingGenerationOptions(BinaryData input, ref EmbeddingGenerationOptions options)
+    private void CreateEmbeddingGenerationOptions(string input, ref EmbeddingGenerationOptions options)
     {
-        options.Input = input;
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStringValue(input);
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Model = _model;
+        options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
+    }
+
+    private void CreateEmbeddingGenerationOptions(IEnumerable<string> inputs, ref EmbeddingGenerationOptions options)
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartArray();
+
+        foreach (string input in inputs)
+        {
+            writer.WriteStringValue(input);
+        }
+
+        writer.WriteEndArray();
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Model = _model;
+        options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
+    }
+
+    private void CreateEmbeddingGenerationOptions(IEnumerable<ReadOnlyMemory<int>> inputs, ref EmbeddingGenerationOptions options)
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartArray();
+
+        foreach (ReadOnlyMemory<int> input in inputs)
+        {
+            writer.WriteStartArray();
+
+            foreach (int tokenId in input.ToArray())
+            {
+                writer.WriteNumberValue(tokenId);
+            }
+
+            writer.WriteEndArray();
+        }
+
+        writer.WriteEndArray();
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }

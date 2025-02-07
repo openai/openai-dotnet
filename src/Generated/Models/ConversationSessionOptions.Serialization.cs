@@ -62,6 +62,11 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
+            }
             if (Optional.IsDefined(TurnDetectionOptions) && _additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
             {
                 if (TurnDetectionOptions != null)
@@ -166,6 +171,7 @@ namespace OpenAI.RealtimeConversation
             ConversationAudioFormat? outputAudioFormat = default;
             IList<ConversationTool> tools = default;
             float? temperature = default;
+            InternalRealtimeRequestSessionModel? model = default;
             ConversationTurnDetectionOptions turnDetectionOptions = default;
             ConversationInputTranscriptionOptions inputTranscriptionOptions = default;
             IList<InternalRealtimeRequestSessionModality> internalModalities = default;
@@ -227,6 +233,15 @@ namespace OpenAI.RealtimeConversation
                         continue;
                     }
                     temperature = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    model = new InternalRealtimeRequestSessionModel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("turn_detection"u8))
@@ -293,6 +308,7 @@ namespace OpenAI.RealtimeConversation
                 outputAudioFormat,
                 tools ?? new ChangeTrackingList<ConversationTool>(),
                 temperature,
+                model,
                 turnDetectionOptions,
                 inputTranscriptionOptions,
                 internalModalities,

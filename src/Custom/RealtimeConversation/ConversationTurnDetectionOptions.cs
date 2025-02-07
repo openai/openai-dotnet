@@ -18,13 +18,15 @@ public partial class ConversationTurnDetectionOptions
     public static ConversationTurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(
         float? detectionThreshold = null,
         TimeSpan? prefixPaddingDuration = null,
-        TimeSpan? silenceDuration = null)
+        TimeSpan? silenceDuration = null,
+        bool? enableAutomaticResponseCreation = null)
     {
         return new InternalRealtimeServerVadTurnDetection()
         {
             Threshold = detectionThreshold,
             PrefixPaddingMs = prefixPaddingDuration,
-            SilenceDurationMs = silenceDuration
+            SilenceDurationMs = silenceDuration,
+            CreateResponse = enableAutomaticResponseCreation,
         };
     }
 }

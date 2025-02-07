@@ -19,7 +19,7 @@ public partial class ConversationResponseStartedUpdate
 
     public string ResponseId => _internalResponse.Id;
 
-    public ConversationStatus Status => _internalResponse.Status;
+    public ConversationStatus Status => _internalResponse.Status.Value;
 
     public ConversationStatusDetails StatusDetails => _internalResponse.StatusDetails;
 

@@ -13,8 +13,11 @@ namespace OpenAI.RealtimeConversation
         {
         }
 
-        internal InternalRealtimeClientEventResponseCancel(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, eventId, additionalBinaryDataProperties)
+        internal InternalRealtimeClientEventResponseCancel(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId) : base(kind, eventId, additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
         }
+
+        public string ResponseId { get; set; }
     }
 }

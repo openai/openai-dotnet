@@ -13,10 +13,6 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeClientEventResponseCreate : IJsonModel<InternalRealtimeClientEventResponseCreate>
     {
-        internal InternalRealtimeClientEventResponseCreate()
-        {
-        }
-
         void IJsonModel<InternalRealtimeClientEventResponseCreate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -32,7 +28,7 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(InternalRealtimeClientEventResponseCreate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("response") != true)
+            if (Optional.IsDefined(Response) && _additionalBinaryDataProperties?.ContainsKey("response") != true)
             {
                 writer.WritePropertyName("response"u8);
                 writer.WriteObjectValue(Response, options);
@@ -61,7 +57,7 @@ namespace OpenAI.RealtimeConversation
             InternalRealtimeClientEventType kind = default;
             string eventId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalRealtimeClientEventResponseCreateResponse response = default;
+            ConversationResponseOptions response = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -76,7 +72,11 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (prop.NameEquals("response"u8))
                 {
-                    response = InternalRealtimeClientEventResponseCreateResponse.DeserializeInternalRealtimeClientEventResponseCreateResponse(prop.Value, options);
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    response = ConversationResponseOptions.DeserializeConversationResponseOptions(prop.Value, options);
                     continue;
                 }
                 if (true)

@@ -22,7 +22,8 @@ public static partial class OpenAIChatModelFactory
         DateTimeOffset createdAt = default,
         string model = null,
         string systemFingerprint = null,
-        ChatTokenUsage usage = null)
+        ChatTokenUsage usage = null,
+        ChatOutputAudio outputAudio = null)
     {
         content ??= new ChatMessageContent();
         toolCalls ??= new List<ChatToolCall>();
@@ -32,6 +33,7 @@ public static partial class OpenAIChatModelFactory
         InternalChatCompletionResponseMessage message = new InternalChatCompletionResponseMessage(
             refusal,
             toolCalls.ToList(),
+            outputAudio,
             role,
             content,
             functionCall,
@@ -62,6 +64,7 @@ public static partial class OpenAIChatModelFactory
             createdAt,
             additionalBinaryDataProperties: null);
     }
+
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenLogProbabilityDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatTokenLogProbabilityDetails"/> instance for mocking. </returns>
@@ -113,9 +116,24 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
-    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int audioTokenCount = default)
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int audioTokenCount = default, int acceptedPredictionTokenCount = default, int rejectedPredictionTokenCount = 0)
     {
-        return new ChatOutputTokenUsageDetails(reasoningTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
+        return new ChatOutputTokenUsageDetails(
+            audioTokenCount: audioTokenCount,
+            reasoningTokenCount: reasoningTokenCount,
+            acceptedPredictionTokenCount: acceptedPredictionTokenCount,
+            rejectedPredictionTokenCount: rejectedPredictionTokenCount,
+            additionalBinaryDataProperties: null);
+    }
+
+    public static ChatOutputAudio ChatOutputAudio(BinaryData audioBytes, string id = null, string transcript = null, DateTimeOffset expiresAt = default)
+    {
+        return new ChatOutputAudio(
+            id,
+            expiresAt,
+            transcript,
+            audioBytes,
+            additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
@@ -133,7 +151,8 @@ public static partial class OpenAIChatModelFactory
         DateTimeOffset createdAt = default,
         string model = null,
         string systemFingerprint = null,
-        ChatTokenUsage usage = null)
+        ChatTokenUsage usage = null,
+        StreamingChatOutputAudioUpdate outputAudioUpdate = null)
     {
         contentUpdate ??= new ChatMessageContent();
         toolCallUpdates ??= new List<StreamingChatToolCallUpdate>();
@@ -141,6 +160,7 @@ public static partial class OpenAIChatModelFactory
         refusalTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
 
         InternalChatCompletionStreamResponseDelta delta = new InternalChatCompletionStreamResponseDelta(
+            outputAudioUpdate,
             functionCallUpdate,
             toolCallUpdates.ToList(),
             refusalUpdate,
@@ -182,6 +202,28 @@ public static partial class OpenAIChatModelFactory
         return new StreamingChatFunctionCallUpdate(
             functionName,
             functionArgumentsUpdate,
+            additionalBinaryDataProperties: null);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatOutputAudioUpdate"/>.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="expiresAt"></param>
+    /// <param name="transcriptUpdate"></param>
+    /// <param name="audioBytesUpdate"></param>
+    /// <returns></returns>
+    public static StreamingChatOutputAudioUpdate StreamingChatOutputAudioUpdate(
+        string id = null,
+        DateTimeOffset? expiresAt = null,
+        string transcriptUpdate = null,
+        BinaryData audioBytesUpdate = null)
+    {
+        return new StreamingChatOutputAudioUpdate(
+            id,
+            expiresAt,
+            transcriptUpdate,
+            audioBytesUpdate,
             additionalBinaryDataProperties: null);
     }
 

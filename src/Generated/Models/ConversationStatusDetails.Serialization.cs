@@ -5,18 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
-    [PersistableModelProxy(typeof(UnknownRealtimeResponseStatusDetails))]
-    public abstract partial class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>
+    public partial class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>
     {
-        internal ConversationStatusDetails()
-        {
-        }
-
         void IJsonModel<ConversationStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -35,6 +31,16 @@ namespace OpenAI.RealtimeConversation
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(StatusKind.ToString());
+            }
+            if (Optional.IsDefined(IncompleteReason) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
+            {
+                writer.WritePropertyName("reason"u8);
+                writer.WriteStringValue(IncompleteReason.Value.ToString());
+            }
+            if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
+            {
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue<InternalRealtimeResponseStatusDetailsError>(Error, options);
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -76,7 +82,45 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            return UnknownRealtimeResponseStatusDetails.DeserializeUnknownRealtimeResponseStatusDetails(element, options);
+            ConversationStatus statusKind = default;
+            ConversationIncompleteReason? incompleteReason = default;
+            InternalRealtimeResponseStatusDetailsError error = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("type"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    statusKind = new ConversationStatus(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("reason"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    incompleteReason = new ConversationIncompleteReason(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("error"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    error = InternalRealtimeResponseStatusDetailsError.DeserializeInternalRealtimeResponseStatusDetailsError(prop.Value, options);
+                    continue;
+                }
+                if (true)
+                {
+                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                }
+            }
+            return new ConversationStatusDetails(statusKind, incompleteReason, error, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

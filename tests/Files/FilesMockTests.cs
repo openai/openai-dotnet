@@ -265,6 +265,7 @@ public class FilesMockTests : SyncAsyncTestBase
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
         {
+            "object": "list",
             "data": [
                 {
                     "id": "returned_file_id"
@@ -287,6 +288,7 @@ public class FilesMockTests : SyncAsyncTestBase
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
         {
+            "object": "list",
             "data": [
                 {
                     "created_at": 1704096000
@@ -310,6 +312,7 @@ public class FilesMockTests : SyncAsyncTestBase
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
         {
+            "object": "list",
             "data": [
                 {
                     "purpose": "{{purpose.stringValue}}"
@@ -334,6 +337,7 @@ public class FilesMockTests : SyncAsyncTestBase
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
         {
+            "object": "list",
             "data": [
                 {
                     "status": "{{status.stringValue}}"
@@ -358,6 +362,7 @@ public class FilesMockTests : SyncAsyncTestBase
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
         {
+            "object": "list",
             "data": [
                 {
                     "status_details": "This is definitely an error."

@@ -19,6 +19,10 @@ namespace OpenAI.Chat;
 ///             Call <see cref="CreateRefusalPart(string)"/> to create a <see cref="ChatMessageContentPart"/> that
 ///             encapsulates a refusal coming from the model.
 ///         </item>
+///         <item>
+///             Call <see cref="CreateInputAudioPart(BinaryData, ChatInputAudioFormat)"/> to create a content part
+///             encapsulating input audio for user role messages.
+///         </item>
 ///     </list>
 /// </summary>
 [CodeGenModel("ChatMessageContentPart")]
@@ -28,6 +32,7 @@ public partial class ChatMessageContentPart
     private readonly ChatMessageContentPartKind _kind;
     private readonly string _text;
     private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUri;
+    private readonly InternalChatCompletionRequestMessageContentPartAudioInputAudio _inputAudio;
     private readonly string _refusal;
 
     // CUSTOM: Made internal.
@@ -36,12 +41,19 @@ public partial class ChatMessageContentPart
     }
 
     // CUSTOM: Added to support deserialization.
-    internal ChatMessageContentPart(ChatMessageContentPartKind kind, string text, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri, string refusal, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal ChatMessageContentPart(
+        ChatMessageContentPartKind kind,
+        string text = default,
+        InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default,
+        string refusal = default,
+        InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default,
+        IDictionary<string, BinaryData> serializedAdditionalRawData = default)
     {
         _kind = kind;
         _text = text;
         _imageUri = imageUri;
         _refusal = refusal;
+        _inputAudio = inputAudio;
         _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
@@ -68,6 +80,24 @@ public partial class ChatMessageContentPart
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.Image"/>. </remarks>
     public string ImageBytesMediaType => _imageUri?.ImageBytesMediaType;
 
+    /// <summary>
+    /// The encoded binary audio payload associated with the content part.
+    /// </summary>
+    /// <remarks>
+    /// Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.InputAudio"/>. The content part
+    /// represents user role audio input.
+    /// </remarks>
+    public BinaryData InputAudioBytes => _inputAudio?.Data;
+
+    /// <summary>
+    /// The encoding format that the audio data provided in <see cref="InputAudioBytes"/> should be interpreted with.
+    /// </summary>
+    /// <remarks>
+    /// Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.InputAudio"/>. The content part
+    /// represents user role audio input.
+    /// </remarks>
+    public ChatInputAudioFormat? InputAudioFormat => _inputAudio?.Format;
+
     // CUSTOM: Spread.
     /// <summary>
     ///     The level of detail with which the model should process the image and generate its textual understanding of
@@ -88,12 +118,7 @@ public partial class ChatMessageContentPart
     {
         Argument.AssertNotNull(text, nameof(text));
 
-        return new ChatMessageContentPart(
-            kind: ChatMessageContentPartKind.Text,
-            text: text,
-            imageUri: null,
-            refusal: null,
-            serializedAdditionalRawData: null);
+        return new ChatMessageContentPart(ChatMessageContentPartKind.Text, text: text);
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates an image. </summary>
@@ -109,10 +134,7 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.Image,
-            text: null,
-            imageUri: new(imageUri) { Detail = imageDetailLevel },
-            refusal: null,
-            serializedAdditionalRawData: null);
+            imageUri: new(imageUri) { Detail = imageDetailLevel });
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates an image. </summary>
@@ -131,10 +153,7 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.Image,
-            text: null,
-            imageUri: new(imageBytes, imageBytesMediaType) { Detail = imageDetailLevel },
-            refusal: null,
-            serializedAdditionalRawData: null);
+            imageUri: new(imageBytes, imageBytesMediaType) { Detail = imageDetailLevel });
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates a refusal coming from the model. </summary>
@@ -146,10 +165,23 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.Refusal,
-            text: null,
-            imageUri: null,
-            refusal: refusal,
-            serializedAdditionalRawData: null);
+            refusal: refusal);
+    }
+
+    /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates user role input audio in a known format. </summary>
+    /// <remarks>
+    /// Binary audio content parts may only be used with <see cref="UserChatMessage"/> instances to represent user audio input. When referring to
+    /// past audio output from the model, use <see cref="ChatOutputAudioReference(string)"/> instead.
+    /// </remarks>
+    /// <param name="inputAudioBytes"> The audio data. </param>
+    /// <param name="inputAudioFormat"> The format of the audio data. </param>
+    public static ChatMessageContentPart CreateInputAudioPart(BinaryData inputAudioBytes, ChatInputAudioFormat inputAudioFormat)
+    {
+        Argument.AssertNotNull(inputAudioBytes, nameof(inputAudioBytes));
+
+        return new ChatMessageContentPart(
+            kind: ChatMessageContentPartKind.InputAudio,
+            inputAudio: new(inputAudioBytes, inputAudioFormat));
     }
 
     /// <summary>

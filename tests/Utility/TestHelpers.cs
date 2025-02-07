@@ -17,6 +17,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 [assembly: LevelOfParallelism(8)]
 
@@ -49,7 +50,7 @@ internal static class TestHelpers
     {
         options ??= new();
         ApiKeyCredential credential = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        options.AddPolicy(GetDumpPolicy(), PipelinePosition.PerTry);
+        options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
         object clientObject = scenario switch
         {
 #pragma warning disable OPENAI001
@@ -81,36 +82,48 @@ internal static class TestHelpers
     {
         return new TestPipelinePolicy((message) =>
         {
-            Console.WriteLine($"--- New request ---");
-            IEnumerable<string> headerPairs = message?.Request?.Headers?.Select(header => $"{header.Key}={(header.Key.ToLower().Contains("auth") ? "***" : header.Value)}");
-            string headers = string.Join(',', headerPairs);
-            Console.WriteLine($"Headers: {headers}");
-            Console.WriteLine($"{message?.Request?.Method} URI: {message?.Request?.Uri}");
-            if (message.Request?.Content != null)
+            if (message.Request is not null && message.Response is null)
             {
-                string contentType = "Unknown Content Type";
-                if (message.Request.Headers?.TryGetValue("Content-Type", out contentType) == true
-                    && contentType == "application/json")
+                Console.WriteLine($"--- New request ---");
+                IEnumerable<string> headerPairs = message?.Request?.Headers?.Select(header => $"{header.Key}={(header.Key.ToLower().Contains("auth") ? "***" : header.Value)}");
+                string headers = string.Join(',', headerPairs);
+                Console.WriteLine($"Headers: {headers}");
+                Console.WriteLine($"{message?.Request?.Method} URI: {message?.Request?.Uri}");
+                if (message.Request?.Content != null)
                 {
-                    using MemoryStream stream = new();
-                    message.Request.Content.WriteTo(stream, default);
-                    stream.Position = 0;
-                    using StreamReader reader = new(stream);
-                    Console.WriteLine(reader.ReadToEnd());
-                }
-                else
-                {
-                    string length = message.Request.Content.TryComputeLength(out long numberLength)
-                        ? $"{numberLength} bytes"
-                        : "unknown length";
-                    Console.WriteLine($"<< Non-JSON content: {contentType} >> {length}");
+                    string contentType = "Unknown Content Type";
+                    if (message.Request.Headers?.TryGetValue("Content-Type", out contentType) == true
+                        && contentType == "application/json")
+                    {
+                        using MemoryStream stream = new();
+                        message.Request.Content.WriteTo(stream, default);
+                        stream.Position = 0;
+                        using StreamReader reader = new(stream);
+                        string requestDump = reader.ReadToEnd();
+                        requestDump = Regex.Replace(requestDump, @"""data"":[\\w\\r\\n]*""[^""]*""", @"""data"":""...""");
+                        Console.WriteLine(requestDump);
+                    }
+                    else
+                    {
+                        string length = message.Request.Content.TryComputeLength(out long numberLength)
+                            ? $"{numberLength} bytes"
+                            : "unknown length";
+                        Console.WriteLine($"<< Non-JSON content: {contentType} >> {length}");
+                    }
                 }
             }
             if (message.Response != null)
             {
-                Console.WriteLine("--- Begin response content ---");
-                Console.WriteLine(message.Response.Content?.ToString());
-                Console.WriteLine("--- End of response content ---");
+                if (message.BufferResponse)
+                {
+                    Console.WriteLine("--- Begin response content ---");
+                    Console.WriteLine(message.Response.Content?.ToString());
+                    Console.WriteLine("--- End of response content ---");
+                }
+                else
+                {
+                    Console.WriteLine("--- Response (unbuffered, content not rendered) ---");
+                }
             }
         });
     }

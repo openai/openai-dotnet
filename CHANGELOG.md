@@ -1,5 +1,24 @@
 # Release History
 
+## 2.2.0-beta.1 (Unreleased)
+
+### Features added
+
+- Chat completion now supports audio input and output!
+  - To configure a chat completion to request audio output using the `gpt-4o-audio-preview` model, use `ChatResponseModalities.Text | ChatResponseModalities.Audio` as the value for `ChatCompletionOptions.ResponseModalities` and create a `ChatAudioOptions` instance for `ChatCompletionOptions.AudioOptions`.
+  - Input chat audio is provided to `UserChatMessage` instances using `ChatContentPart.CreateInputAudioPart()`
+  - Output chat audio is provided on the `OutputAudio` property of `ChatCompletion`
+  - References to prior assistant audio are provided via `OutputAudioReference` instances on the `AudioReference` property of `AssistantChatMessage`; `AssistantChatMessage(chatCompletion)` will automatically handle this, too
+  - For more information, see the example in the README
+- Predicted output can be used with chat completion: the new `OutputPrediction` property on `ChatCompletionOptions` can be populated with `ChatMessageContentPart` instances via `ChatOutputPrediction.CreateStaticContentPrediction()` to substantially accelerate some varieties of requests.
+- For `o3-mini`, `o1`, and later models with reasoning capabilities:
+  - The new `DeveloperChatMessage`, which replaces `SystemChatMessage`, can be used to provide instructions to the model
+  - `ChatCompletionOptions` can specify a `ReasoningEffortLevel` property to adjust the level of token consumption the model will attempt to apply
+
+### `[Experimental]` Breaking changes
+
+- The `IDictionary<string, string> Metadata` property in several request options types in the Assistants and RealtimeConversation areas have had their setters removed, aligning them with other request use of collections. The dictionaries remain writeable and use both initializer syntax and range copies to produce the same effect.
+
 ## 2.1.0 (2024-12-04)
 
 ### Features added
