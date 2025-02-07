@@ -56,7 +56,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseFunctionCallItem IJsonModel<InternalRealtimeResponseFunctionCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeResponseFunctionCallItem)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalRealtimeResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override InternalRealtimeConversationResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -73,7 +73,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeResponseItemObject @object = default;
+            InternalRealtimeConversationResponseItemObject @object = default;
             InternalRealtimeItemType @type = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -85,7 +85,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalRealtimeResponseItemObject(prop.Value.GetString());
+                    @object = new InternalRealtimeConversationResponseItemObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("type"u8))
@@ -155,7 +155,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseFunctionCallItem IPersistableModel<InternalRealtimeResponseFunctionCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeResponseFunctionCallItem)PersistableModelCreateCore(data, options);
 
-        protected override InternalRealtimeResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override InternalRealtimeConversationResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

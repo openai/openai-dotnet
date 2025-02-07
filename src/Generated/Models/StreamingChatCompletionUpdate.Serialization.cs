@@ -80,8 +80,15 @@ namespace OpenAI.Chat
             }
             if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue<ChatTokenUsage>(Usage, options);
+                if (Usage != null)
+                {
+                    writer.WritePropertyName("usage"u8);
+                    writer.WriteObjectValue<ChatTokenUsage>(Usage, options);
+                }
+                else
+                {
+                    writer.WriteNull("usage"u8);
+                }
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -183,6 +190,7 @@ namespace OpenAI.Chat
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        usage = null;
                         continue;
                     }
                     usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);

@@ -19,15 +19,19 @@ namespace OpenAI.FineTuning
             Message = message;
         }
 
-        internal FineTuningJobEvent(string id, DateTimeOffset createdAt, FineTuning.FineTuningJobEventLevel level, string message, InternalFineTuningJobEventObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningJobEvent(InternalFineTuningJobEventObject @object, string id, DateTimeOffset createdAt, FineTuning.FineTuningJobEventLevel level, string message, InternalFineTuningJobEventType? @type, BinaryData data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Object = @object;
             Id = id;
             CreatedAt = createdAt;
             Level = level;
             Message = message;
-            Object = @object;
+            Type = @type;
+            Data = data;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public InternalFineTuningJobEventObject Object { get; } = "fine_tuning.job.event";
 
         public string Id { get; }
 
@@ -37,7 +41,9 @@ namespace OpenAI.FineTuning
 
         public string Message { get; }
 
-        public InternalFineTuningJobEventObject Object { get; } = "fine_tuning.job.event";
+        public InternalFineTuningJobEventType? Type { get; }
+
+        public BinaryData Data { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -534,6 +534,119 @@ public class ChatSmokeTests : SyncAsyncTestBase
     }
 
     [Test]
+    public void SerializeAudioThings()
+    {
+        // User audio input: wire-correlated ("real") content parts should cleanly serialize/deserialize
+        ChatMessageContentPart inputAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
+            BinaryData.FromBytes([0x4, 0x2]),
+            ChatInputAudioFormat.Mp3);
+        Assert.That(inputAudioContentPart, Is.Not.Null);
+        BinaryData serializedInputAudioContentPart = ModelReaderWriter.Write(inputAudioContentPart);
+        Assert.That(serializedInputAudioContentPart.ToString(), Does.Contain(@"""format"":""mp3"""));
+        ChatMessageContentPart deserializedInputAudioContentPart = ModelReaderWriter.Read<ChatMessageContentPart>(serializedInputAudioContentPart);
+        Assert.That(deserializedInputAudioContentPart.InputAudioBytes.ToArray()[1], Is.EqualTo(0x2));
+
+        AssistantChatMessage message = ModelReaderWriter.Read<AssistantChatMessage>(BinaryData.FromBytes("""
+            {
+                "role": "assistant",
+                "audio": {
+                    "id": "audio_correlated_id_1234"
+                }
+            }
+            """u8.ToArray()));
+        Assert.That(message.Content, Has.Count.EqualTo(0));
+        Assert.That(message.OutputAudioReference, Is.Not.Null);
+        Assert.That(message.OutputAudioReference.Id, Is.EqualTo("audio_correlated_id_1234"));
+        string serializedMessage = ModelReaderWriter.Write(message).ToString();
+        Assert.That(serializedMessage, Does.Contain(@"""audio"":{""id"":""audio_correlated_id_1234""}"));
+
+        AssistantChatMessage ordinaryTextAssistantMessage = new(["This was a message from the assistant"]);
+        ordinaryTextAssistantMessage.OutputAudioReference = new("extra-audio-id");
+        BinaryData serializedLateAudioMessage = ModelReaderWriter.Write(ordinaryTextAssistantMessage);
+        Assert.That(serializedLateAudioMessage.ToString(), Does.Contain("was a message"));
+        Assert.That(serializedLateAudioMessage.ToString(), Does.Contain("extra-audio-id"));
+
+        BinaryData rawAudioResponse = BinaryData.FromBytes("""
+            {
+              "id": "chatcmpl-AOqyHuhjVDeGVbCZXJZ8mCLyl5nBq",
+              "object": "chat.completion",
+              "created": 1730486857,
+              "model": "gpt-4o-audio-preview-2024-10-01",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": null,
+                    "refusal": null,
+                    "audio": {
+                      "id": "audio_6725224ac62481908ab55dc283289d87",
+                      "data": "dHJ1bmNhdGVk",
+                      "expires_at": 1730490458,
+                      "transcript": "Hello there! How can I assist you with your test today?"
+                    }
+                  },
+                  "finish_reason": "stop"
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 28,
+                "completion_tokens": 97,
+                "total_tokens": 125,
+                "prompt_tokens_details": {
+                  "cached_tokens": 0,
+                  "text_tokens": 11,
+                  "image_tokens": 0,
+                  "audio_tokens": 17
+                },
+                "completion_tokens_details": {
+                  "reasoning_tokens": 0,
+                  "text_tokens": 23,
+                  "audio_tokens": 74,
+                  "accepted_prediction_tokens": 0,
+                  "rejected_prediction_tokens": 0
+                }
+              },
+              "system_fingerprint": "fp_49254d0e9b"
+            }
+            """u8.ToArray());
+        ChatCompletion audioCompletion = ModelReaderWriter.Read<ChatCompletion>(rawAudioResponse);
+        Assert.That(audioCompletion, Is.Not.Null);
+        Assert.That(audioCompletion.Content, Has.Count.EqualTo(0));
+        Assert.That(audioCompletion.OutputAudio, Is.Not.Null);
+        Assert.That(audioCompletion.OutputAudio.Id, Is.EqualTo("audio_6725224ac62481908ab55dc283289d87"));
+        Assert.That(audioCompletion.OutputAudio.AudioBytes, Is.Not.Null);
+        Assert.That(audioCompletion.OutputAudio.Transcript, Is.Not.Null.And.Not.Empty);
+        
+        AssistantChatMessage audioHistoryMessage = new(audioCompletion);
+        Assert.That(audioHistoryMessage.OutputAudioReference?.Id, Is.EqualTo(audioCompletion.OutputAudio.Id));
+
+        foreach (KeyValuePair<ChatResponseModalities, (bool, bool, bool)> modalitiesValueToKeyTextAndAudioPresenceItem
+            in new List<KeyValuePair<ChatResponseModalities, (bool, bool, bool)>>()
+            {
+                new(ChatResponseModalities.Default, (false, false, false)),
+                new(ChatResponseModalities.Default | ChatResponseModalities.Text, (true, true, false)),
+                new(ChatResponseModalities.Default | ChatResponseModalities.Audio, (true, false, true)),
+                new(ChatResponseModalities.Default | ChatResponseModalities.Text | ChatResponseModalities.Audio, (true, true, true)),
+                new(ChatResponseModalities.Text, (true, true, false)),
+                new(ChatResponseModalities.Audio, (true, false, true)),
+                new(ChatResponseModalities.Text | ChatResponseModalities.Audio, (true, true, true)),
+            })
+        {
+            ChatResponseModalities modalitiesValue = modalitiesValueToKeyTextAndAudioPresenceItem.Key;
+            (bool keyExpected, bool textExpected, bool audioExpected) = modalitiesValueToKeyTextAndAudioPresenceItem.Value;
+            ChatCompletionOptions testOptions = new()
+            {
+                ResponseModalities = modalitiesValue,
+            };
+            string serializedOptions = ModelReaderWriter.Write(testOptions).ToString().ToLower();
+            Assert.That(serializedOptions.Contains("modalities"), Is.EqualTo(keyExpected));
+            Assert.That(serializedOptions.Contains("text"), Is.EqualTo(textExpected));
+            Assert.That(serializedOptions.Contains("audio"), Is.EqualTo(audioExpected));
+        }
+    }
+
+    [Test]
     [TestCase(true)]
     [TestCase(false)]
     public void SerializeChatMessageWithSingleStringContent(bool fromRawJson)
@@ -718,6 +831,27 @@ public class ChatSmokeTests : SyncAsyncTestBase
 
 #pragma warning disable CS0618
     [Test]
+    public void AssistantAndFunctionMessagesHandleNoContentCorrectly()
+    {
+        // AssistantChatMessage and FunctionChatMessage can both exist without content, but follow different rules:
+        //   - AssistantChatMessage treats content as optional, as valid assistant message variants (e.g. for tool calls)
+        //   - FunctionChatMessage meanwhile treats content as required and nullable.
+        // This test validates that no-content assistant messages just don't serialize content, while no-content
+        // function messages serialize content with an explicit null value.
+
+        ChatToolCall fakeToolCall = ChatToolCall.CreateFunctionToolCall("call_abcd1234", "function_name", functionArguments: BinaryData.FromString("{}"));
+        AssistantChatMessage assistantChatMessage = new([fakeToolCall]);
+        string serializedAssistantChatMessage = ModelReaderWriter.Write(assistantChatMessage).ToString();
+        Assert.That(serializedAssistantChatMessage, Does.Not.Contain("content"));
+
+        FunctionChatMessage functionChatMessage = new("function_name", null);
+        string serializedFunctionChatMessage = ModelReaderWriter.Write(functionChatMessage).ToString();
+        Assert.That(serializedFunctionChatMessage, Does.Contain(@"""content"":null"));
+    }
+#pragma warning restore CS0618
+
+#pragma warning disable CS0618
+    [Test]
     public void SerializeMessagesWithNullProperties()
     {
         AssistantChatMessage assistantMessage = ModelReaderWriter.Read<AssistantChatMessage>(BinaryData.FromString("""
@@ -792,5 +926,14 @@ public class ChatSmokeTests : SyncAsyncTestBase
 
         Assert.That(observedEndpoint, Is.Not.Null);
         Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("my.custom.com/expected/test/endpoint"));
+    }
+
+    [Test]
+    public void CanUseCollections()
+    {
+        ChatCompletionOptions options = new();
+        Assert.That(options.Tools.Count, Is.EqualTo(0));
+        Assert.That(options.Metadata.Count, Is.EqualTo(0));
+        Assert.That(options.StopSequences.Count, Is.EqualTo(0));
     }
 }

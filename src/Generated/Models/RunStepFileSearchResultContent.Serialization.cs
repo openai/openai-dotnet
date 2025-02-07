@@ -13,6 +13,10 @@ namespace OpenAI.Assistants
 {
     public partial class RunStepFileSearchResultContent : IJsonModel<RunStepFileSearchResultContent>
     {
+        internal RunStepFileSearchResultContent()
+        {
+        }
+
         void IJsonModel<RunStepFileSearchResultContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -27,7 +31,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);

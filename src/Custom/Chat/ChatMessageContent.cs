@@ -9,7 +9,7 @@ namespace OpenAI.Chat;
 public partial class ChatMessageContent : Collection<ChatMessageContentPart>
 {
     public ChatMessageContent()
-        : this(Array.Empty<ChatMessageContentPart>())
+        : base(new ChangeTrackingList<ChatMessageContentPart>())
     {
     }
 

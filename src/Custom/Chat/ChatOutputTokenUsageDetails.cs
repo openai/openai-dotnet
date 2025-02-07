@@ -14,4 +14,10 @@ public partial class ChatOutputTokenUsageDetails
     /// <summary> The number of audio tokens in the output. </summary>
     [CodeGenMember("AudioTokens")]
     public int AudioTokenCount { get; }
+
+    [CodeGenMember("AcceptedPredictionTokens")]
+    public int AcceptedPredictionTokenCount { get; }
+
+    [CodeGenMember("RejectedPredictionTokens")]
+    public int RejectedPredictionTokenCount { get; }
 }

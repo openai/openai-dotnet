@@ -17,19 +17,15 @@ internal partial class TestPipelinePolicy : PipelinePolicy
 
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
-        if (currentIndex < pipeline.Count - 1)
-        {
-            pipeline[currentIndex + 1].Process(message, pipeline, currentIndex + 1);
-        }
+        _processMessageAction(message); // for request
+        ProcessNext(message, pipeline, currentIndex);
+        _processMessageAction(message); // for response
     }
 
     public override async ValueTask ProcessAsync(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        _processMessageAction(message);
-        if (currentIndex < pipeline.Count - 1)
-        {
-            await pipeline[currentIndex + 1].ProcessAsync(message, pipeline, currentIndex + 1);
-        }
+        _processMessageAction(message); // for request
+        await ProcessNextAsync(message, pipeline, currentIndex);
+        _processMessageAction(message); // for response
     }
 }

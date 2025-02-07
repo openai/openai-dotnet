@@ -7,18 +7,19 @@ using System.Collections.Generic;
 
 namespace OpenAI.RealtimeConversation
 {
-    public abstract partial class ConversationStatusDetails
+    public partial class ConversationStatusDetails
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ConversationStatusDetails(ConversationStatus statusKind)
+        internal ConversationStatusDetails()
         {
-            StatusKind = statusKind;
         }
 
-        internal ConversationStatusDetails(ConversationStatus statusKind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationStatusDetails(ConversationStatus statusKind, ConversationIncompleteReason? incompleteReason, InternalRealtimeResponseStatusDetailsError error, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             StatusKind = statusKind;
+            IncompleteReason = incompleteReason;
+            Error = error;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

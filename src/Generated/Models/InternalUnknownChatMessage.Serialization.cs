@@ -45,19 +45,19 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            Chat.ChatMessageRole role = default;
             ChatMessageContent content = default;
+            Chat.ChatMessageRole role = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString().ToChatMessageRole();
-                    continue;
-                }
                 if (prop.NameEquals("content"u8))
                 {
                     DeserializeContentValue(prop, ref content);
+                    continue;
+                }
+                if (prop.NameEquals("role"u8))
+                {
+                    role = prop.Value.GetString().ToChatMessageRole();
                     continue;
                 }
                 if (true)
@@ -66,7 +66,7 @@ namespace OpenAI.Chat
                 }
             }
             // CUSTOM: Initialize Content collection property.
-            return new InternalUnknownChatMessage(role, content ?? new ChatMessageContent(), additionalBinaryDataProperties);
+            return new InternalUnknownChatMessage(content ?? new ChatMessageContent(), role, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

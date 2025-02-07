@@ -11,6 +11,7 @@ namespace OpenAI.Chat
         public static string ToSerialString(this Chat.ChatMessageRole value) => value switch
         {
             Chat.ChatMessageRole.System => "system",
+            Chat.ChatMessageRole.Developer => "developer",
             Chat.ChatMessageRole.User => "user",
             Chat.ChatMessageRole.Assistant => "assistant",
             Chat.ChatMessageRole.Tool => "tool",
@@ -23,6 +24,10 @@ namespace OpenAI.Chat
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "system"))
             {
                 return Chat.ChatMessageRole.System;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "developer"))
+            {
+                return Chat.ChatMessageRole.Developer;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "user"))
             {

@@ -13,10 +13,6 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationInputTokenUsageDetails : IJsonModel<ConversationInputTokenUsageDetails>
     {
-        internal ConversationInputTokenUsageDetails()
-        {
-        }
-
         void IJsonModel<ConversationInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -31,20 +27,20 @@ namespace OpenAI.RealtimeConversation
             {
                 throw new FormatException($"The model {nameof(ConversationInputTokenUsageDetails)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
+            {
+                writer.WritePropertyName("audio_tokens"u8);
+                writer.WriteNumberValue(AudioTokenCount);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("cached_tokens") != true)
             {
                 writer.WritePropertyName("cached_tokens"u8);
-                writer.WriteNumberValue(CachedTokens);
+                writer.WriteNumberValue(CachedTokenCount);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text_tokens") != true)
             {
                 writer.WritePropertyName("text_tokens"u8);
-                writer.WriteNumberValue(TextTokens);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
-            {
-                writer.WritePropertyName("audio_tokens"u8);
-                writer.WriteNumberValue(AudioTokens);
+                writer.WriteNumberValue(TextTokenCount);
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -86,25 +82,37 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            int cachedTokens = default;
-            int textTokens = default;
-            int audioTokens = default;
+            int audioTokenCount = default;
+            int cachedTokenCount = default;
+            int textTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("audio_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    audioTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("cached_tokens"u8))
                 {
-                    cachedTokens = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("text_tokens"u8))
                 {
-                    textTokens = prop.Value.GetInt32();
-                    continue;
-                }
-                if (prop.NameEquals("audio_tokens"u8))
-                {
-                    audioTokens = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    textTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (true)
@@ -112,7 +120,7 @@ namespace OpenAI.RealtimeConversation
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            return new ConversationInputTokenUsageDetails(cachedTokens, textTokens, audioTokens, additionalBinaryDataProperties);
+            return new ConversationInputTokenUsageDetails(audioTokenCount, cachedTokenCount, textTokenCount, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ConversationInputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -8,23 +8,21 @@ using OpenAI;
 
 namespace OpenAI.RealtimeConversation
 {
-    internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
+    internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeConversationResponseItem
     {
         internal InternalRealtimeResponseMessageItem(string id, ConversationItemStatus status, ConversationMessageRole role) : base(InternalRealtimeItemType.Message, id)
         {
+            Status = status;
+            Role = role;
             Content = new ChangeTrackingList<ConversationContentPart>();
-            Status = status;
-            Role = role;
         }
 
-        internal InternalRealtimeResponseMessageItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status, ConversationMessageRole role) : base(@object, @type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseMessageItem(InternalRealtimeConversationResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationItemStatus status, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content) : base(@object, @type, id, additionalBinaryDataProperties)
         {
-            Content = content;
             Status = status;
             Role = role;
+            Content = content;
         }
-
-        public IReadOnlyList<ConversationContentPart> Content { get; }
 
         public ConversationItemStatus Status { get; }
     }

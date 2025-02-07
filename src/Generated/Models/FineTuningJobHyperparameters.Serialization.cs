@@ -31,7 +31,7 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningJobHyperparameters)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            if (Optional.IsDefined(NEpochs) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
             {
                 writer.WritePropertyName("n_epochs"u8);
 #if NET6_0_OR_GREATER
@@ -43,7 +43,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
+            if (Optional.IsDefined(BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
             {
                 writer.WritePropertyName("batch_size"u8);
 #if NET6_0_OR_GREATER
@@ -55,7 +55,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
+            if (Optional.IsDefined(LearningRateMultiplier) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
 #if NET6_0_OR_GREATER
@@ -115,16 +115,28 @@ namespace OpenAI.FineTuning
             {
                 if (prop.NameEquals("n_epochs"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     nEpochs = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("batch_size"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     batchSize = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("learning_rate_multiplier"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }

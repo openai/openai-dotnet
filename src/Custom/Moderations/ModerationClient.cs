@@ -2,7 +2,9 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -97,7 +99,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
+        CreateModerationOptions(input, ref options);
 
         using BinaryContent content = options;
         ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -114,7 +116,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(input, nameof(input));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(input, SourceGenerationContext.Default.String), ref options);
+        CreateModerationOptions(input, ref options);
 
         using BinaryContent content = options;
         ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
@@ -131,7 +133,7 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
+        CreateModerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -148,16 +150,41 @@ public partial class ModerationClient
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
         ModerationOptions options = new();
-        CreateModerationOptions(BinaryData.FromObjectAsJson(inputs, SourceGenerationContext.Default.IEnumerableString), ref options);
+        CreateModerationOptions(inputs, ref options);
 
         using BinaryContent content = options;
         ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
     }
 
-    private void CreateModerationOptions(BinaryData input, ref ModerationOptions options)
+    private void CreateModerationOptions(string input, ref ModerationOptions options)
     {
-        options.Input = input;
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStringValue(input);
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Model = _model;
+    }
+
+    private void CreateModerationOptions(IEnumerable<string> inputs, ref ModerationOptions options)
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartArray();
+
+        foreach (string input in inputs)
+        {
+            writer.WriteStringValue(input);
+        }
+
+        writer.WriteEndArray();
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
         options.Model = _model;
     }
 }

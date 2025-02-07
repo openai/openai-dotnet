@@ -13,10 +13,6 @@ namespace OpenAI.Chat
 {
     public partial class ChatInputTokenUsageDetails : IJsonModel<ChatInputTokenUsageDetails>
     {
-        internal ChatInputTokenUsageDetails()
-        {
-        }
-
         void IJsonModel<ChatInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,11 +84,19 @@ namespace OpenAI.Chat
             {
                 if (prop.NameEquals("audio_tokens"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     audioTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("cached_tokens"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }

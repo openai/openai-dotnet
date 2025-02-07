@@ -15,7 +15,7 @@ namespace OpenAI.RealtimeConversation;
 public partial class ConversationItemStreamingFinishedUpdate
 {
     [CodeGenMember("Item")]
-    private readonly InternalRealtimeResponseItem _internalItem;
+    private readonly InternalRealtimeConversationResponseItem _internalItem;
 
     public string ItemId => _internalItem.Id;
 

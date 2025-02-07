@@ -99,6 +99,11 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("seed"u8);
                 }
             }
+            if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
+            {
+                writer.WritePropertyName("method"u8);
+                writer.WriteObjectValue(Method, options);
+            }
             if (true && _additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -146,6 +151,7 @@ namespace OpenAI.FineTuning
             string validationFile = default;
             IList<FineTuningIntegration> integrations = default;
             int? seed = default;
+            InternalTodoFineTuneMethod @method = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -212,6 +218,15 @@ namespace OpenAI.FineTuning
                     seed = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("method"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @method = InternalTodoFineTuneMethod.DeserializeInternalTodoFineTuneMethod(prop.Value, options);
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
@@ -225,6 +240,7 @@ namespace OpenAI.FineTuning
                 validationFile,
                 integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
                 seed,
+                @method,
                 additionalBinaryDataProperties);
         }
 

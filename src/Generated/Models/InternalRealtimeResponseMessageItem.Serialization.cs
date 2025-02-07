@@ -32,16 +32,6 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(InternalRealtimeResponseMessageItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (true && _additionalBinaryDataProperties?.ContainsKey("content") != true)
-            {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStartArray();
-                foreach (ConversationContentPart item in Content)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
@@ -52,11 +42,21 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToString());
             }
+            if (true && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                writer.WritePropertyName("content"u8);
+                writer.WriteStartArray();
+                foreach (ConversationContentPart item in Content)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
         }
 
         InternalRealtimeResponseMessageItem IJsonModel<InternalRealtimeResponseMessageItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeResponseMessageItem)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalRealtimeResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override InternalRealtimeConversationResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -73,18 +73,18 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeResponseItemObject @object = default;
+            InternalRealtimeConversationResponseItemObject @object = default;
             InternalRealtimeItemType @type = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            IReadOnlyList<ConversationContentPart> content = default;
             ConversationItemStatus status = default;
             ConversationMessageRole role = default;
+            IReadOnlyList<ConversationContentPart> content = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalRealtimeResponseItemObject(prop.Value.GetString());
+                    @object = new InternalRealtimeConversationResponseItemObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("type"u8))
@@ -102,16 +102,6 @@ namespace OpenAI.RealtimeConversation
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("content"u8))
-                {
-                    List<ConversationContentPart> array = new List<ConversationContentPart>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ConversationContentPart.DeserializeConversationContentPart(item, options));
-                    }
-                    content = array;
-                    continue;
-                }
                 if (prop.NameEquals("status"u8))
                 {
                     status = new ConversationItemStatus(prop.Value.GetString());
@@ -120,6 +110,16 @@ namespace OpenAI.RealtimeConversation
                 if (prop.NameEquals("role"u8))
                 {
                     role = new ConversationMessageRole(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    List<ConversationContentPart> array = new List<ConversationContentPart>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ConversationContentPart.DeserializeConversationContentPart(item, options));
+                    }
+                    content = array;
                     continue;
                 }
                 if (true)
@@ -132,9 +132,9 @@ namespace OpenAI.RealtimeConversation
                 @type,
                 id,
                 additionalBinaryDataProperties,
-                content,
                 status,
-                role);
+                role,
+                content);
         }
 
         BinaryData IPersistableModel<InternalRealtimeResponseMessageItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -153,7 +153,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseMessageItem IPersistableModel<InternalRealtimeResponseMessageItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeResponseMessageItem)PersistableModelCreateCore(data, options);
 
-        protected override InternalRealtimeResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override InternalRealtimeConversationResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

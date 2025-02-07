@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
 
         public string Instructions { get; set; }
 
-        public IDictionary<string, string> Metadata { get; set; }
+        public IDictionary<string, string> Metadata { get; }
 
         public float? Temperature { get; set; }
 

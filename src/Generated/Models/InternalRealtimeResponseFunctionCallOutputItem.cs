@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.RealtimeConversation
 {
-    internal partial class InternalRealtimeResponseFunctionCallOutputItem : InternalRealtimeResponseItem
+    internal partial class InternalRealtimeResponseFunctionCallOutputItem : InternalRealtimeConversationResponseItem
     {
         internal InternalRealtimeResponseFunctionCallOutputItem(string id, string callId, string output) : base(InternalRealtimeItemType.FunctionCallOutput, id)
         {
@@ -15,7 +15,7 @@ namespace OpenAI.RealtimeConversation
             Output = output;
         }
 
-        internal InternalRealtimeResponseFunctionCallOutputItem(InternalRealtimeResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(@object, @type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseFunctionCallOutputItem(InternalRealtimeConversationResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(@object, @type, id, additionalBinaryDataProperties)
         {
             CallId = callId;
             Output = output;

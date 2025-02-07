@@ -192,6 +192,11 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("estimatedFinish"u8);
                 }
             }
+            if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
+            {
+                writer.WritePropertyName("method"u8);
+                writer.WriteObjectValue(Method, options);
+            }
             if (true && _additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -250,6 +255,7 @@ namespace OpenAI.FineTuning
             IList<InternalFineTuningIntegration> integrations = default;
             int seed = default;
             DateTimeOffset? estimatedFinish = default;
+            InternalTodoFineTuneMethod @method = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -399,6 +405,15 @@ namespace OpenAI.FineTuning
                     estimatedFinish = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                if (prop.NameEquals("method"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @method = InternalTodoFineTuneMethod.DeserializeInternalTodoFineTuneMethod(prop.Value, options);
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
@@ -423,6 +438,7 @@ namespace OpenAI.FineTuning
                 integrations ?? new ChangeTrackingList<InternalFineTuningIntegration>(),
                 seed,
                 estimatedFinish,
+                @method,
                 additionalBinaryDataProperties);
         }
 

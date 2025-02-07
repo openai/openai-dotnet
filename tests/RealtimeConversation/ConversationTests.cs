@@ -37,7 +37,7 @@ public class ConversationTests : ConversationTestFixtureBase
         };
 
         await session.ConfigureSessionAsync(sessionOptions, CancellationToken);
-        ConversationSessionOptions responseOverrideOptions = new()
+        ConversationResponseOptions responseOverrideOptions = new()
         {
             ContentModalities = ConversationContentModalities.Text,
         };
@@ -137,6 +137,9 @@ public class ConversationTests : ConversationTestFixtureBase
             if (update is ConversationResponseFinishedUpdate responseFinishedUpdate)
             {
                 Assert.That(responseFinishedUpdate.CreatedItems, Has.Count.GreaterThan(0));
+                Assert.That(responseFinishedUpdate.Usage?.TotalTokenCount, Is.GreaterThan(0));
+                Assert.That(responseFinishedUpdate.Usage.InputTokenCount, Is.GreaterThan(0));
+                Assert.That(responseFinishedUpdate.Usage.OutputTokenCount, Is.GreaterThan(0));
                 gotResponseDone = true;
                 break;
             }
@@ -525,6 +528,78 @@ public class ConversationTests : ConversationTestFixtureBase
         }
 
         Assert.That(itemCreatedCount, Is.EqualTo(items.Count + 1));
+    }
+
+    [Test]
+    public async Task CanUseOutOfBandResponses()
+    {
+        RealtimeConversationClient client = GetTestClient();
+        using RealtimeConversationSession session = await client.StartConversationSessionAsync(CancellationToken);
+        await session.AddItemAsync(
+            ConversationItem.CreateUserMessage(["Hello! My name is Bob."]),
+            cancellationToken: CancellationToken);
+        await session.StartResponseAsync(
+            new ConversationResponseOptions()
+            {
+                ConversationSelection = ResponseConversationSelection.None,
+                ContentModalities = ConversationContentModalities.Text,
+                OverrideItems =
+                {
+                    ConversationItem.CreateUserMessage(["Can you tell me what my name is?"]),
+                },
+            },
+            CancellationToken);
+
+        StringBuilder firstResponseBuilder = new();
+        StringBuilder secondResponseBuilder = new();
+
+        int completedResponseCount = 0;
+
+        await foreach (ConversationUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
+        {
+            if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
+            {
+                Assert.That(sessionStartedUpdate.SessionId, Is.Not.Null.And.Not.Empty);
+            }
+        
+            if (update is ConversationItemStreamingPartDeltaUpdate deltaUpdate)
+            {
+                // First response (out of band) should be text, second (in-band) should be text + audio
+                if (completedResponseCount == 0)
+                {
+                    firstResponseBuilder.Append(deltaUpdate.Text);
+                    Assert.That(deltaUpdate.AudioTranscript, Is.Null.Or.Empty);
+                }
+                else
+                {
+                    secondResponseBuilder.Append(deltaUpdate.AudioTranscript);
+                    Assert.That(deltaUpdate.Text, Is.Null.Or.Empty);
+                }
+            }
+
+            if (update is ConversationResponseFinishedUpdate responseFinishedUpdate)
+            {
+                completedResponseCount++;
+                Assert.That(responseFinishedUpdate.CreatedItems, Has.Count.GreaterThan(0));
+                if (completedResponseCount == 1)
+                {
+                    // Verify that an in-band response *does* have the information
+                    _ = session.StartResponseAsync(CancellationToken);
+                }
+                else if (completedResponseCount == 2)
+                {
+                    break;
+                }
+            }
+        }
+
+        string firstResponse = firstResponseBuilder.ToString().ToLower();
+        Assert.That(firstResponse, Is.Not.Null.And.Not.Empty);
+        Assert.That(firstResponse, Does.Not.Contain("bob"));
+
+        string secondResponse = secondResponseBuilder.ToString().ToLower();
+        Assert.That(secondResponse, Is.Not.Null.And.Not.Empty);
+        Assert.That(secondResponse, Does.Contain("bob"));
     }
 
     public enum TestAudioSendType

@@ -276,36 +276,33 @@ public partial class RealtimeConversationSession : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
+    public virtual async Task StartResponseAsync(ConversationResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        InternalRealtimeClientEventResponseCreate internalCommand = new(
+            kind: InternalRealtimeClientEventType.ResponseCreate,
+            eventId: null,
+            additionalBinaryDataProperties: null,
+            response: options);
+        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
+    }
     public virtual async Task StartResponseAsync(CancellationToken cancellationToken = default)
     {
-        InternalRealtimeClientEventResponseCreateResponse internalOptions = new();
-        InternalRealtimeClientEventResponseCreate internalCommand = new(internalOptions);
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
+        await StartResponseAsync(new ConversationResponseOptions(), cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void StartResponse(CancellationToken cancellationToken = default)
+    public virtual void StartResponse(ConversationResponseOptions options, CancellationToken cancellationToken = default)
     {
-        InternalRealtimeClientEventResponseCreateResponse internalOptions = new();
-        InternalRealtimeClientEventResponseCreate internalCommand = new(internalOptions);
+        InternalRealtimeClientEventResponseCreate internalCommand = new(
+            kind: InternalRealtimeClientEventType.ResponseCreate,
+            eventId: null,
+            additionalBinaryDataProperties: null,
+            response: options);
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task StartResponseAsync(ConversationSessionOptions sessionOptionOverrides, CancellationToken cancellationToken = default)
+    public void StartResponse(CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNull(sessionOptionOverrides, nameof(sessionOptionOverrides));
-        InternalRealtimeClientEventResponseCreateResponse internalOptions
-            = InternalRealtimeClientEventResponseCreateResponse.FromSessionOptions(sessionOptionOverrides);
-        InternalRealtimeClientEventResponseCreate internalCommand = new(internalOptions);
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
-    }
-
-    public virtual void StartResponse(ConversationSessionOptions sessionOptionOverrides, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(sessionOptionOverrides, nameof(sessionOptionOverrides));
-        InternalRealtimeClientEventResponseCreateResponse internalOptions
-            = InternalRealtimeClientEventResponseCreateResponse.FromSessionOptions(sessionOptionOverrides);
-        InternalRealtimeClientEventResponseCreate internalCommand = new(internalOptions);
-        SendCommand(internalCommand, cancellationToken);
+        StartResponse(new ConversationResponseOptions(), cancellationToken);
     }
 
     public virtual async Task CancelResponseAsync(CancellationToken cancellationToken = default)

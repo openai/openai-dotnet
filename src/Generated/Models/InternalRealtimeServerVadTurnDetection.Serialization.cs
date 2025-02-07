@@ -43,6 +43,11 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("silence_duration_ms"u8);
                 this.SerializeSilenceDurationMs(writer, options);
             }
+            if (Optional.IsDefined(CreateResponse) && _additionalBinaryDataProperties?.ContainsKey("create_response") != true)
+            {
+                writer.WritePropertyName("create_response"u8);
+                writer.WriteBooleanValue(CreateResponse.Value);
+            }
         }
 
         InternalRealtimeServerVadTurnDetection IJsonModel<InternalRealtimeServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
@@ -69,6 +74,7 @@ namespace OpenAI.RealtimeConversation
             float? threshold = default;
             TimeSpan? prefixPaddingMs = default;
             TimeSpan? silenceDurationMs = default;
+            bool? createResponse = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -95,12 +101,27 @@ namespace OpenAI.RealtimeConversation
                     DeserializeMillisecondDuration(prop, ref silenceDurationMs);
                     continue;
                 }
+                if (prop.NameEquals("create_response"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    createResponse = prop.Value.GetBoolean();
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
-            return new InternalRealtimeServerVadTurnDetection(kind, additionalBinaryDataProperties, threshold, prefixPaddingMs, silenceDurationMs);
+            return new InternalRealtimeServerVadTurnDetection(
+                kind,
+                additionalBinaryDataProperties,
+                threshold,
+                prefixPaddingMs,
+                silenceDurationMs,
+                createResponse);
         }
 
         BinaryData IPersistableModel<InternalRealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

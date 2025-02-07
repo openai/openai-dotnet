@@ -27,6 +27,11 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionStreamResponseDelta)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            {
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(Audio, options);
+            }
             if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
                 writer.WritePropertyName("function_call"u8);
@@ -112,6 +117,7 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            StreamingChatOutputAudioUpdate audio = default;
             StreamingChatFunctionCallUpdate functionCall = default;
             IReadOnlyList<StreamingChatToolCallUpdate> toolCalls = default;
             string refusal = default;
@@ -120,6 +126,15 @@ namespace OpenAI.Chat
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    audio = StreamingChatOutputAudioUpdate.DeserializeStreamingChatOutputAudioUpdate(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("function_call"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -174,6 +189,7 @@ namespace OpenAI.Chat
             }
             // CUSTOM: Initialize Content collection property.
             return new InternalChatCompletionStreamResponseDelta(
+                audio,
                 functionCall,
                 toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>(),
                 refusal,

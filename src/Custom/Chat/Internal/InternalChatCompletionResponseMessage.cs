@@ -5,7 +5,6 @@ namespace OpenAI.Chat;
 
 [CodeGenModel("ChatCompletionResponseMessage")]
 [CodeGenSuppress("InternalChatCompletionResponseMessage", typeof(IEnumerable<ChatMessageContentPart>))]
-[CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
 internal partial class InternalChatCompletionResponseMessage
 {
     // CUSTOM: Changed type from InternalChatCompletionResponseMessageRole.

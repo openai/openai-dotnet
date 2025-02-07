@@ -40,7 +40,7 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("item") != true)
             {
                 writer.WritePropertyName("item"u8);
-                writer.WriteObjectValue<InternalRealtimeResponseItem>(_internalItem, options);
+                writer.WriteObjectValue<InternalRealtimeConversationResponseItem>(_internalItem, options);
             }
         }
 
@@ -67,7 +67,7 @@ namespace OpenAI.RealtimeConversation
             RealtimeConversation.ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string previousItemId = default;
-            InternalRealtimeResponseItem internalItem = default;
+            InternalRealtimeConversationResponseItem internalItem = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("event_id"u8))
@@ -87,7 +87,7 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (prop.NameEquals("item"u8))
                 {
-                    internalItem = InternalRealtimeResponseItem.DeserializeInternalRealtimeResponseItem(prop.Value, options);
+                    internalItem = InternalRealtimeConversationResponseItem.DeserializeInternalRealtimeConversationResponseItem(prop.Value, options);
                     continue;
                 }
                 if (true)

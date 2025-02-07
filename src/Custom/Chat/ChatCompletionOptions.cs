@@ -176,4 +176,51 @@ public partial class ChatCompletionOptions
     /// </summary>
     [CodeGenMember("Store")]
     public bool? StoredOutputEnabled { get; set; }
+
+    // CUSTOM: Renamed.
+    /// <summary>
+    /// (o1 and newer reasoning models only) Constrains effort on reasoning for reasoning models.
+    /// Currently supported values are <see cref="ChatReasoningEffortLevel.Low"/>, <see cref="ChatReasoningEffortLevel.Medium"/>, and <see cref="ChatReasoningEffortLevel.High"/>.
+    /// Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
+    /// </summary>
+    [CodeGenMember("ReasoningEffort")]
+    public ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
+
+    // CUSTOM: Made internal for automatic enablement via audio options.
+    [CodeGenMember("Modalities")]
+    private IList<InternalCreateChatCompletionRequestModality> _internalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
+
+    /// <summary>
+    /// Specifies the content types that the model should generate in its responses.
+    /// </summary>
+    /// <remarks>
+    /// Most models can generate text and the default <c>["text"]</c> value, from <c><see cref="ChatResponseModalities.Text"/></c>, requests this.
+    /// Some models like <c>gpt-4o-audio-preview</c> can also generate audio, and this can be requested by combining <c>["text","audio"]</c> via
+    /// the flags <c><see cref="ChatResponseModalities.Text"/> | <see cref="ChatResponseModalities.Audio"/></c>.
+    /// </remarks>
+    public ChatResponseModalities ResponseModalities
+    {
+        get => ChatResponseModalitiesExtensions.FromInternalModalities(_internalModalities);
+        set => _internalModalities = value.ToInternalModalities();
+    }
+
+    // CUSTOM: supplemented with custom setter to internally enable audio output via modalities.
+    [CodeGenMember("Audio")]
+    private ChatAudioOptions _audioOptions;
+
+    public ChatAudioOptions AudioOptions
+    {
+        get => _audioOptions;
+        set
+        {
+            _audioOptions = value;
+            _internalModalities = value is null
+                ? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>()
+                : [InternalCreateChatCompletionRequestModality.Text, InternalCreateChatCompletionRequestModality.Audio];
+        }
+    }
+
+    // CUSTOM: rename.
+    [CodeGenMember("Prediction")]
+    public ChatOutputPrediction OutputPrediction { get; set; }
 }

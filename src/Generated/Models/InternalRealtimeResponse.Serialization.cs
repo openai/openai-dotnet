@@ -31,39 +31,77 @@ namespace OpenAI.RealtimeConversation
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeResponse)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object.Value.ToString());
+            }
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("status_details") != true)
+            if (Optional.IsDefined(StatusDetails) && _additionalBinaryDataProperties?.ContainsKey("status_details") != true)
             {
-                if (StatusDetails != null)
+                writer.WritePropertyName("status_details"u8);
+                writer.WriteObjectValue(StatusDetails, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
                 {
-                    writer.WritePropertyName("status_details"u8);
-                    writer.WriteObjectValue(StatusDetails, options);
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
                 }
                 else
                 {
-                    writer.WriteNull("statusDetails"u8);
+                    writer.WriteNull("metadata"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
+            if (Optional.IsDefined(ConversationId) && _additionalBinaryDataProperties?.ContainsKey("conversation_id") != true)
+            {
+                writer.WritePropertyName("conversation_id"u8);
+                writer.WriteStringValue(ConversationId);
+            }
+            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            {
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature.Value);
+            }
+            if (Optional.IsDefined(MaxOutputTokens) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
+            {
+                writer.WritePropertyName("max_output_tokens"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(MaxOutputTokens);
+#else
+                using (JsonDocument document = JsonDocument.Parse(MaxOutputTokens))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (Optional.IsCollectionDefined(Output) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
@@ -72,6 +110,26 @@ namespace OpenAI.RealtimeConversation
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
+            }
+            if (Optional.IsCollectionDefined(Modalities) && _additionalBinaryDataProperties?.ContainsKey("modalities") != true)
+            {
+                writer.WritePropertyName("modalities"u8);
+                writer.WriteStartArray();
+                foreach (InternalRealtimeResponseModality item in Modalities)
+                {
+                    writer.WriteStringValue(item.ToString());
+                }
+                writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(Voice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.Value.ToString());
+            }
+            if (Optional.IsDefined(OutputAudioFormat) && _additionalBinaryDataProperties?.ContainsKey("output_audio_format") != true)
+            {
+                writer.WritePropertyName("output_audio_format"u8);
+                writer.WriteStringValue(OutputAudioFormat.Value.ToString());
             }
             if (true && _additionalBinaryDataProperties != null)
             {
@@ -113,27 +171,42 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeResponseObject @object = default;
             string id = default;
-            ConversationStatus status = default;
+            InternalRealtimeResponseObject? @object = default;
+            ConversationStatus? status = default;
             ConversationStatusDetails statusDetails = default;
+            IDictionary<string, string> metadata = default;
             ConversationTokenUsage usage = default;
+            string conversationId = default;
+            float? temperature = default;
+            BinaryData maxOutputTokens = default;
             IReadOnlyList<ConversationItem> output = default;
+            IReadOnlyList<InternalRealtimeResponseModality> modalities = default;
+            ConversationVoice? voice = default;
+            ConversationAudioFormat? outputAudioFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = new InternalRealtimeResponseObject(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("object"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @object = new InternalRealtimeResponseObject(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = new ConversationStatus(prop.Value.GetString());
                     continue;
                 }
@@ -141,19 +214,71 @@ namespace OpenAI.RealtimeConversation
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        statusDetails = null;
                         continue;
                     }
                     statusDetails = ConversationStatusDetails.DeserializeConversationStatusDetails(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("metadata"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        metadata = new ChangeTrackingDictionary<string, string>();
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
+                }
                 if (prop.NameEquals("usage"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     usage = ConversationTokenUsage.DeserializeConversationTokenUsage(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("conversation_id"u8))
+                {
+                    conversationId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("temperature"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    temperature = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("max_output_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    maxOutputTokens = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("output"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     List<ConversationItem> array = new List<ConversationItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
@@ -162,18 +287,57 @@ namespace OpenAI.RealtimeConversation
                     output = array;
                     continue;
                 }
+                if (prop.NameEquals("modalities"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<InternalRealtimeResponseModality> array = new List<InternalRealtimeResponseModality>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(new InternalRealtimeResponseModality(item.GetString()));
+                    }
+                    modalities = array;
+                    continue;
+                }
+                if (prop.NameEquals("voice"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    voice = new ConversationVoice(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("output_audio_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    outputAudioFormat = new ConversationAudioFormat(prop.Value.GetString());
+                    continue;
+                }
                 if (true)
                 {
                     additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
                 }
             }
             return new InternalRealtimeResponse(
-                @object,
                 id,
+                @object,
                 status,
                 statusDetails,
+                metadata,
                 usage,
-                output,
+                conversationId,
+                temperature,
+                maxOutputTokens,
+                output ?? new ChangeTrackingList<ConversationItem>(),
+                modalities ?? new ChangeTrackingList<InternalRealtimeResponseModality>(),
+                voice,
+                outputAudioFormat,
                 additionalBinaryDataProperties);
         }
 

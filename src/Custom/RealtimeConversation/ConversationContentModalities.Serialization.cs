@@ -9,7 +9,7 @@ internal static partial class ConversationContentModalitiesExtensions
 {
     internal static IList<InternalRealtimeRequestSessionModality> ToInternalModalities(this ConversationContentModalities modalities)
     {
-        List<InternalRealtimeRequestSessionModality> internalModalities = [];
+        ChangeTrackingList<InternalRealtimeRequestSessionModality> internalModalities = new();
         if (modalities.HasFlag(ConversationContentModalities.Text))
         {
             internalModalities.Add(InternalRealtimeRequestSessionModality.Text);
