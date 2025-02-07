@@ -185,7 +185,7 @@ public partial class ChatMessageContentPart
     }
 
     /// <summary>
-    ///     Implicitly intantiates a new <see cref="ChatMessageContentPart"/> from a <see cref="string"/>. As such,
+    ///     Implicitly instantiates a new <see cref="ChatMessageContentPart"/> from a <see cref="string"/>. As such,
     ///     using a <see cref="string"/> in place of a <see cref="ChatMessageContentPart"/> is equivalent to calling the
     ///     <see cref="CreateTextPart(string)"/> method.
     /// </summary>
