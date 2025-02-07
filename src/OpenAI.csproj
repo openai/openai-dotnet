@@ -6,8 +6,8 @@
     <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
-    <VersionPrefix>2.1.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>2.2.0</VersionPrefix>
+    <VersionSuffix>beta.1</VersionSuffix>
 
     <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
