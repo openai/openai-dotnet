@@ -17,7 +17,7 @@
     - Added an `OutputAudio` property to `ChatCompletion`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
     - Added an `OutputAudioReference` property to `AssistantChatMessage`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
       - Use this property to reference the output audio of a prior `ChatCompletion` to continue an existing chat.
-    - For more information, see the example in the [README](README).
+    - For more information, see the example in the [README](README.md).
   - Enabled support for [Predicted Outputs](https://platform.openai.com/docs/guides/predicted-outputs) in chat completions using the `gpt-4o` and `gpt-4o-mini` models. Predicted Outputs can greatly improve response times when large parts of the model response are known ahead of time. This is most common when you are regenerating a file with only minor changes to most of the content.
     - Added an `OutputPrediction` property to `ChatCompletionOptions` ([`prediction` in the REST API](https://platform.openai.com/docs/api-reference/chat/create)). ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
       - Use this property to configure a Predicted Output. The property is of a new type called `ChatOutputPrediction`, which you can create via the `ChatOutputPrediction.CreateStaticContentPrediction(string)` or `ChatOutputPrediction.CreateStaticContentPrediction(IEnumerable<ChatMessageContentPart>)` static methods.
