@@ -5,7 +5,7 @@
 ### Features added
 
 - OpenAI.Audio:
-  - Added explicit support for new values of `GeneretedSpeechVoice`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
+  - Added explicit support for new values of `GeneratedSpeechVoice`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
 - OpenAI.Chat:
   - Enabled support for input and output audio in chat completions using the `gpt-4o-audio-preview` model.
     - Added a `ResponseModalities` property to `ChatCompletionOptions` ([`modalities` in the REST API](https://platform.openai.com/docs/api-reference/chat/create)). ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
