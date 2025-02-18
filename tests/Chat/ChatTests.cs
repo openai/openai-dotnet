@@ -367,6 +367,56 @@ public class ChatTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task ChatWithBasicAudioOutput()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-audio-preview");
+        List<ChatMessage> messages = ["Say the exact word 'hello' and nothing else."];
+        ChatCompletionOptions options = new()
+        {
+            AudioOptions = new(ChatOutputAudioVoice.Ash, ChatOutputAudioFormat.Pcm16),
+            ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+        };
+
+        StringBuilder transcriptBuilder = new();
+        using MemoryStream outputAudioStream = new();
+        string streamedAudioId = null;
+        ChatTokenUsage streamedUsage = null;
+        DateTimeOffset? streamedExpiresAt = null;
+
+        await foreach (StreamingChatCompletionUpdate update
+            in client.CompleteChatStreamingAsync(messages, options))
+        {
+            if (update.Usage is not null)
+            {
+                Assert.That(streamedUsage, Is.Null);
+                streamedUsage = update.Usage;
+            }
+            if (update.OutputAudioUpdate?.ExpiresAt is not null)
+            {
+                Assert.That(streamedExpiresAt, Is.Null);
+                streamedExpiresAt = update.OutputAudioUpdate.ExpiresAt;
+            }
+            if (update.OutputAudioUpdate?.Id is not null)
+            {
+                if (streamedAudioId is not null)
+                {
+                    Assert.That(streamedAudioId, Is.EqualTo(update.OutputAudioUpdate.Id));
+                }
+                streamedAudioId ??= update.OutputAudioUpdate.Id;
+            }
+            transcriptBuilder.Append(update.OutputAudioUpdate?.TranscriptUpdate);
+            outputAudioStream.Write(update.OutputAudioUpdate?.AudioBytesUpdate);
+        }
+
+        Assert.That(streamedAudioId, Has.Length.GreaterThan("audio".Length));
+        Assert.That(transcriptBuilder.ToString().ToLower(), Does.Contain("hello"));
+        Assert.That(outputAudioStream.Length, Is.GreaterThan(9000));
+        Assert.That(streamedUsage?.InputTokenDetails?.AudioTokenCount, Is.EqualTo(0));
+        Assert.That(streamedUsage?.OutputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
+        Assert.That(streamedExpiresAt, Is.GreaterThan(DateTimeOffset.Parse("2025-01-01")));
+    }
+
+    [Test]
     public async Task ChatWithAudio()
     {
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-audio-preview");
@@ -417,12 +467,18 @@ public class ChatTests : SyncAsyncTestBase
         string streamedCorrelationId = null;
         DateTimeOffset? streamedExpiresAt = null;
         StringBuilder streamedTranscriptBuilder = new();
+        ChatTokenUsage streamedUsage = null;
         using MemoryStream outputAudioStream = new();
         await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages, options))
         {
             Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));
             StreamingChatOutputAudioUpdate outputAudioUpdate = update.OutputAudioUpdate;
 
+            if (update.Usage is not null)
+            {
+                Assert.That(streamedUsage, Is.Null);
+                streamedUsage = update.Usage;
+            }
             if (outputAudioUpdate is not null)
             {
                 string serializedOutputAudioUpdate = ModelReaderWriter.Write(outputAudioUpdate).ToString();
@@ -446,6 +502,8 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(streamedExpiresAt.HasValue, Is.True);
         Assert.That(streamedTranscriptBuilder.ToString(), Is.Not.Null.And.Not.Empty);
         Assert.That(outputAudioStream.Length, Is.GreaterThan(9000));
+        Assert.That(streamedUsage?.InputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
+        Assert.That(streamedUsage?.OutputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
     }
 
     [Test]

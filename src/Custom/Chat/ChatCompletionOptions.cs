@@ -1,6 +1,8 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace OpenAI.Chat;
 
@@ -8,7 +10,7 @@ namespace OpenAI.Chat;
 /// Request-level options for chat completion.
 /// </summary>
 [CodeGenModel("CreateChatCompletionRequest")]
-[CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel))]
+[CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel?))]
 [CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
@@ -32,7 +34,7 @@ public partial class ChatCompletionOptions
     /// ID of the model to use. See the <see href="https://platform.openai.com/docs/models/model-endpoint-compatibility">model endpoint compatibility</see> table for details on which models work with the Chat API.
     /// </summary>
     [CodeGenMember("Model")]
-    internal InternalCreateChatCompletionRequestModel Model { get; set; }
+    internal InternalCreateChatCompletionRequestModel? Model { get; set; }
 
     // CUSTOM: Made internal. We only ever request a single choice.
     /// <summary> How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs. </summary>
@@ -47,16 +49,18 @@ public partial class ChatCompletionOptions
     /// <summary> Gets or sets the stream options. </summary>
     [CodeGenMember("StreamOptions")]
     internal InternalChatCompletionStreamOptions StreamOptions { get; set; }
-        = new() { IncludeUsage = true };
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="ChatCompletionOptions"/> for deserialization. </summary>
     public ChatCompletionOptions()
     {
+        Messages = new ChangeTrackingList<ChatMessage>();
         LogitBiases = new ChangeTrackingDictionary<int, int>();
         StopSequences = new ChangeTrackingList<string>();
         Tools = new ChangeTrackingList<ChatTool>();
         Functions = new ChangeTrackingList<ChatFunction>();
+        InternalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
     }
 
     // CUSTOM: Renamed.
@@ -113,20 +117,6 @@ public partial class ChatCompletionOptions
     [CodeGenMember("ParallelToolCalls")]
     public bool? AllowParallelToolCalls { get; set; }
 
-    /// <summary>
-    /// An object specifying the format that the model must output.
-    /// </summary>
-    /// <remarks>
-    /// <p>
-    /// Compatible with GPT-4o, GPT-4o mini, GPT-4 Turbo and all GPT-3.5 Turbo models newer than gpt-3.5-turbo-1106.
-    /// </p>
-    /// <p>
-    /// Learn more in the Structured Outputs guide.
-    /// </p>
-    /// </remarks>
-    //[CodeGenMember("ResponseFormat")]
-    //public ChatResponseFormat ResponseFormat { get; set; }
-
     [CodeGenMember("ServiceTier")]
     internal InternalCreateChatCompletionRequestServiceTier? _serviceTier;
 
@@ -166,7 +156,7 @@ public partial class ChatCompletionOptions
     ///     <see href="https://platform.openai.com/chat-completions">OpenAI Platform dashboard</see>.
     /// </summary>
     [CodeGenMember("Metadata")]
-    public IDictionary<string, string> Metadata { get; } = new ChangeTrackingDictionary<string, string>();
+    public IDictionary<string, string> Metadata { get; }
 
     // CUSTOM: Renamed.
     /// <summary>
@@ -188,7 +178,16 @@ public partial class ChatCompletionOptions
 
     // CUSTOM: Made internal for automatic enablement via audio options.
     [CodeGenMember("Modalities")]
-    private IList<InternalCreateChatCompletionRequestModality> _internalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
+    private IList<InternalCreateChatCompletionRequestModality> InternalModalities
+    {
+        get => _internalModalities;
+        set
+        {
+            _internalModalities = value;
+            _responseModalities = ChatResponseModalitiesExtensions.FromInternalModalities(value);
+        }
+    }
+    private IList<InternalCreateChatCompletionRequestModality> _internalModalities;
 
     /// <summary>
     /// Specifies the content types that the model should generate in its responses.
@@ -200,25 +199,18 @@ public partial class ChatCompletionOptions
     /// </remarks>
     public ChatResponseModalities ResponseModalities
     {
-        get => ChatResponseModalitiesExtensions.FromInternalModalities(_internalModalities);
-        set => _internalModalities = value.ToInternalModalities();
-    }
-
-    // CUSTOM: supplemented with custom setter to internally enable audio output via modalities.
-    [CodeGenMember("Audio")]
-    private ChatAudioOptions _audioOptions;
-
-    public ChatAudioOptions AudioOptions
-    {
-        get => _audioOptions;
+        get => _responseModalities;
         set
         {
-            _audioOptions = value;
-            _internalModalities = value is null
-                ? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>()
-                : [InternalCreateChatCompletionRequestModality.Text, InternalCreateChatCompletionRequestModality.Audio];
+            _responseModalities = value;
+            _internalModalities = value.ToInternalModalities();
         }
     }
+    private ChatResponseModalities _responseModalities;
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("Audio")]
+    public ChatAudioOptions AudioOptions { get; set; }
 
     // CUSTOM: rename.
     [CodeGenMember("Prediction")]
