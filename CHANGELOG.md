@@ -1,12 +1,13 @@
 # Release History
 
-## 2.2.0-beta.2 (Unreleased)
+## 2.2.0-beta.2 (2025-02-18)
 
 ### Bugs fixed
 
-- Fixed a bug that caused `CompleteChatStreaming*()` with audio-enabled models to fail unless provided a `ChatCompletionOptions` instance that had previously been used for a non-streaming `CompleteChat()*` call
-- Addressed an issue that caused calls to `CompleteChatStreaming*()` to not report usage when provided a `ChatCompletionOptions` instance that was previously used in a non-streaming `CompleteChat*()` call
-- Addressed issues with standalone serialization and deserialization of `ChatCompletionOptions` that impacted the ability to manipulate chat completion requests via `System.ClientModel.Primitives.ModelReaderWriter` and related utilities
+- OpenAI.Chat:
+  - Fixed an issue that caused calls to the `CompleteChatStreaming` and `CompleteChatStreamingAsync` methods to fail with audio-enabled models unless provided a `ChatCompletionOptions` instance that had previously been used in a non-streaming `CompleteChat` or `CompleteChatAsync` method call. ([d6615ab](https://github.com/openai/openai-dotnet/commit/d6615abe2d04d8d09fbe150941cd8d3c118117d2))
+  - Fixed an issue that caused calls to the `CompleteChatStreaming` and `CompleteChatStreamingAsync` methods to not report token usage when provided a `ChatCompletionOptions` instance that had previously been used in a non-streaming `CompleteChat` or `CompleteChatAsync` method call. ([d6615ab](https://github.com/openai/openai-dotnet/commit/d6615abe2d04d8d09fbe150941cd8d3c118117d2))
+  - Fixed a series of issues with standalone serialization and deserialization of `ChatCompletionOptions` that impacted the ability to manipulate chat completion requests via `System.ClientModel.Primitives.ModelReaderWriter` and related utilities. ([d6615ab](https://github.com/openai/openai-dotnet/commit/d6615abe2d04d8d09fbe150941cd8d3c118117d2))
 
 ## 2.2.0-beta.1 (2025-02-07)
 
