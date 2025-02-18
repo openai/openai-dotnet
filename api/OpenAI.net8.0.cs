@@ -6,17 +6,22 @@ namespace OpenAI {
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
         public ClientPipeline Pipeline { get; }
+        [Experimental("OPENAI001")]
         public virtual AssistantClient GetAssistantClient();
         public virtual AudioClient GetAudioClient(string model);
+        [Experimental("OPENAI001")]
         public virtual BatchClient GetBatchClient();
         public virtual ChatClient GetChatClient(string model);
         public virtual EmbeddingClient GetEmbeddingClient(string model);
+        [Experimental("OPENAI001")]
         public virtual FineTuningClient GetFineTuningClient();
         public virtual ImageClient GetImageClient(string model);
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
         public virtual OpenAIModelClient GetOpenAIModelClient();
+        [Experimental("OPENAI002")]
         public virtual RealtimeConversation.RealtimeConversationClient GetRealtimeConversationClient(string model);
+        [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
@@ -27,6 +32,7 @@ namespace OpenAI {
     }
 }
 namespace OpenAI.Assistants {
+    [Experimental("OPENAI001")]
     public class Assistant : IJsonModel<Assistant>, IPersistableModel<Assistant> {
         public DateTimeOffset CreatedAt { get; }
         public string Description { get; }
@@ -43,6 +49,7 @@ namespace OpenAI.Assistants {
         public static explicit operator Assistant(ClientResult result);
         public static implicit operator BinaryContent(Assistant assistant);
     }
+    [Experimental("OPENAI001")]
     public class AssistantClient {
         protected AssistantClient();
         public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -201,12 +208,14 @@ namespace OpenAI.Assistants {
         public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
     public class AssistantCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public AssistantCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct AssistantCollectionOrder : IEquatable<AssistantCollectionOrder> {
         public AssistantCollectionOrder(string value);
         public static AssistantCollectionOrder Ascending { get; }
@@ -221,6 +230,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(AssistantCollectionOrder left, AssistantCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class AssistantCreationOptions : IJsonModel<AssistantCreationOptions>, IPersistableModel<AssistantCreationOptions> {
         public string Description { get; set; }
         public string Instructions { get; set; }
@@ -234,12 +244,14 @@ namespace OpenAI.Assistants {
         public static explicit operator AssistantCreationOptions(ClientResult result);
         public static implicit operator BinaryContent(AssistantCreationOptions assistantCreationOptions);
     }
+    [Experimental("OPENAI001")]
     public class AssistantDeletionResult : IJsonModel<AssistantDeletionResult>, IPersistableModel<AssistantDeletionResult> {
         public string AssistantId { get; }
         public bool Deleted { get; }
         public static explicit operator AssistantDeletionResult(ClientResult result);
         public static implicit operator BinaryContent(AssistantDeletionResult assistantDeletionResult);
     }
+    [Experimental("OPENAI001")]
     public class AssistantModificationOptions : IJsonModel<AssistantModificationOptions>, IPersistableModel<AssistantModificationOptions> {
         public IList<ToolDefinition> DefaultTools { get; }
         public string Description { get; set; }
@@ -254,6 +266,7 @@ namespace OpenAI.Assistants {
         public static explicit operator AssistantModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(AssistantModificationOptions assistantModificationOptions);
     }
+    [Experimental("OPENAI001")]
     public abstract class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
         public static AssistantResponseFormat Auto { get; }
         public static AssistantResponseFormat JsonObject { get; }
@@ -280,6 +293,7 @@ namespace OpenAI.Assistants {
         bool IEquatable<string>.Equals(string other);
         public override string ToString();
     }
+    [Experimental("OPENAI001")]
     public class AssistantThread : IJsonModel<AssistantThread>, IPersistableModel<AssistantThread> {
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
@@ -288,15 +302,18 @@ namespace OpenAI.Assistants {
         public static explicit operator AssistantThread(ClientResult result);
         public static implicit operator BinaryContent(AssistantThread assistantThread);
     }
+    [Experimental("OPENAI001")]
     public class CodeInterpreterToolDefinition : ToolDefinition, IJsonModel<CodeInterpreterToolDefinition>, IPersistableModel<CodeInterpreterToolDefinition> {
         public new static explicit operator CodeInterpreterToolDefinition(ClientResult result);
         public static implicit operator BinaryContent(CodeInterpreterToolDefinition codeInterpreterToolDefinition);
     }
+    [Experimental("OPENAI001")]
     public class CodeInterpreterToolResources : IJsonModel<CodeInterpreterToolResources>, IPersistableModel<CodeInterpreterToolResources> {
         public IList<string> FileIds { get; }
         public static explicit operator CodeInterpreterToolResources(ClientResult result);
         public static implicit operator BinaryContent(CodeInterpreterToolResources codeInterpreterToolResources);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct FileSearchRanker : IEquatable<FileSearchRanker> {
         public FileSearchRanker(string value);
         public static FileSearchRanker Auto { get; }
@@ -311,28 +328,34 @@ namespace OpenAI.Assistants {
         public static bool operator !=(FileSearchRanker left, FileSearchRanker right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class FileSearchRankingOptions : IJsonModel<FileSearchRankingOptions>, IPersistableModel<FileSearchRankingOptions> {
         public FileSearchRankingOptions();
+        [SetsRequiredMembers]
         public FileSearchRankingOptions(float scoreThreshold);
         public FileSearchRanker? Ranker { get; set; }
         public required float ScoreThreshold { get; set; }
         public static explicit operator FileSearchRankingOptions(ClientResult result);
         public static implicit operator BinaryContent(FileSearchRankingOptions fileSearchRankingOptions);
     }
+    [Experimental("OPENAI001")]
     public class FileSearchToolDefinition : ToolDefinition, IJsonModel<FileSearchToolDefinition>, IPersistableModel<FileSearchToolDefinition> {
         public int? MaxResults { get; set; }
         public FileSearchRankingOptions RankingOptions { get; set; }
         public new static explicit operator FileSearchToolDefinition(ClientResult result);
         public static implicit operator BinaryContent(FileSearchToolDefinition fileSearchToolDefinition);
     }
+    [Experimental("OPENAI001")]
     public class FileSearchToolResources : IJsonModel<FileSearchToolResources>, IPersistableModel<FileSearchToolResources> {
         public IList<VectorStoreCreationHelper> NewVectorStores { get; }
         public IList<string> VectorStoreIds { get; }
         public static explicit operator FileSearchToolResources(ClientResult result);
         public static implicit operator BinaryContent(FileSearchToolResources fileSearchToolResources);
     }
+    [Experimental("OPENAI001")]
     public class FunctionToolDefinition : ToolDefinition, IJsonModel<FunctionToolDefinition>, IPersistableModel<FunctionToolDefinition> {
         public FunctionToolDefinition();
+        [SetsRequiredMembers]
         public FunctionToolDefinition(string name);
         public string Description { get; set; }
         public required string FunctionName { get; set; }
@@ -341,12 +364,14 @@ namespace OpenAI.Assistants {
         public new static explicit operator FunctionToolDefinition(ClientResult result);
         public static implicit operator BinaryContent(FunctionToolDefinition functionToolDefinition);
     }
+    [Experimental("OPENAI001")]
     public class MessageCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public MessageCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct MessageCollectionOrder : IEquatable<MessageCollectionOrder> {
         public MessageCollectionOrder(string value);
         public static MessageCollectionOrder Ascending { get; }
@@ -361,6 +386,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(MessageCollectionOrder left, MessageCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public abstract class MessageContent : IJsonModel<MessageContent>, IPersistableModel<MessageContent> {
         public MessageImageDetail? ImageDetail { get; }
         public string ImageFileId { get; }
@@ -375,6 +401,7 @@ namespace OpenAI.Assistants {
         public static implicit operator BinaryContent(MessageContent messageContent);
         public static implicit operator MessageContent(string value);
     }
+    [Experimental("OPENAI001")]
     public class MessageContentUpdate : StreamingUpdate {
         public MessageImageDetail? ImageDetail { get; }
         public string ImageFileId { get; }
@@ -385,6 +412,7 @@ namespace OpenAI.Assistants {
         public string Text { get; }
         public TextAnnotationUpdate TextAnnotation { get; }
     }
+    [Experimental("OPENAI001")]
     public class MessageCreationAttachment : IJsonModel<MessageCreationAttachment>, IPersistableModel<MessageCreationAttachment> {
         public MessageCreationAttachment(string fileId, IEnumerable<ToolDefinition> tools);
         public string FileId { get; }
@@ -392,23 +420,27 @@ namespace OpenAI.Assistants {
         public static explicit operator MessageCreationAttachment(ClientResult result);
         public static implicit operator BinaryContent(MessageCreationAttachment messageCreationAttachment);
     }
+    [Experimental("OPENAI001")]
     public class MessageCreationOptions : IJsonModel<MessageCreationOptions>, IPersistableModel<MessageCreationOptions> {
         public IList<MessageCreationAttachment> Attachments { get; set; }
         public IDictionary<string, string> Metadata { get; }
         public static explicit operator MessageCreationOptions(ClientResult result);
         public static implicit operator BinaryContent(MessageCreationOptions messageCreationOptions);
     }
+    [Experimental("OPENAI001")]
     public class MessageDeletionResult : IJsonModel<MessageDeletionResult>, IPersistableModel<MessageDeletionResult> {
         public bool Deleted { get; }
         public string MessageId { get; }
         public static explicit operator MessageDeletionResult(ClientResult result);
         public static implicit operator BinaryContent(MessageDeletionResult messageDeletionResult);
     }
+    [Experimental("OPENAI001")]
     public class MessageFailureDetails : IJsonModel<MessageFailureDetails>, IPersistableModel<MessageFailureDetails> {
         public MessageFailureReason Reason { get; }
         public static explicit operator MessageFailureDetails(ClientResult result);
         public static implicit operator BinaryContent(MessageFailureDetails messageFailureDetails);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct MessageFailureReason : IEquatable<MessageFailureReason> {
         public MessageFailureReason(string value);
         public static MessageFailureReason ContentFilter { get; }
@@ -426,20 +458,24 @@ namespace OpenAI.Assistants {
         public static bool operator !=(MessageFailureReason left, MessageFailureReason right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public enum MessageImageDetail {
         Auto = 0,
         Low = 1,
         High = 2
     }
+    [Experimental("OPENAI001")]
     public class MessageModificationOptions : IJsonModel<MessageModificationOptions>, IPersistableModel<MessageModificationOptions> {
         public IDictionary<string, string> Metadata { get; }
         public static explicit operator MessageModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(MessageModificationOptions messageModificationOptions);
     }
+    [Experimental("OPENAI001")]
     public enum MessageRole {
         User = 0,
         Assistant = 1
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct MessageStatus : IEquatable<MessageStatus> {
         public MessageStatus(string value);
         public static MessageStatus Completed { get; }
@@ -455,25 +491,30 @@ namespace OpenAI.Assistants {
         public static bool operator !=(MessageStatus left, MessageStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class MessageStatusUpdate : StreamingUpdate<ThreadMessage> {
     }
+    [Experimental("OPENAI001")]
     public abstract class RequiredAction {
         public string FunctionArguments { get; }
         public string FunctionName { get; }
         public string ToolCallId { get; }
     }
+    [Experimental("OPENAI001")]
     public class RequiredActionUpdate : RunUpdate {
         public string FunctionArguments { get; }
         public string FunctionName { get; }
         public string ToolCallId { get; }
         public ThreadRun GetThreadRun();
     }
+    [Experimental("OPENAI001")]
     public class RunCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public RunCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunCollectionOrder : IEquatable<RunCollectionOrder> {
         public RunCollectionOrder(string value);
         public static RunCollectionOrder Ascending { get; }
@@ -488,6 +529,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunCollectionOrder left, RunCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunCreationOptions : IJsonModel<RunCreationOptions>, IPersistableModel<RunCreationOptions> {
         public string AdditionalInstructions { get; set; }
         public IList<ThreadInitializationMessage> AdditionalMessages { get; }
@@ -506,12 +548,14 @@ namespace OpenAI.Assistants {
         public static explicit operator RunCreationOptions(ClientResult result);
         public static implicit operator BinaryContent(RunCreationOptions runCreationOptions);
     }
+    [Experimental("OPENAI001")]
     public class RunError : IJsonModel<RunError>, IPersistableModel<RunError> {
         public RunErrorCode Code { get; }
         public string Message { get; }
         public static explicit operator RunError(ClientResult result);
         public static implicit operator BinaryContent(RunError runError);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunErrorCode : IEquatable<RunErrorCode> {
         public RunErrorCode(string value);
         public static RunErrorCode InvalidPrompt { get; }
@@ -527,11 +571,13 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunErrorCode left, RunErrorCode right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunIncompleteDetails : IJsonModel<RunIncompleteDetails>, IPersistableModel<RunIncompleteDetails> {
         public RunIncompleteReason? Reason { get; }
         public static explicit operator RunIncompleteDetails(ClientResult result);
         public static implicit operator BinaryContent(RunIncompleteDetails runIncompleteDetails);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunIncompleteReason : IEquatable<RunIncompleteReason> {
         public RunIncompleteReason(string value);
         public static RunIncompleteReason MaxInputTokenCount { get; }
@@ -546,11 +592,13 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunIncompleteReason left, RunIncompleteReason right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunModificationOptions : IJsonModel<RunModificationOptions>, IPersistableModel<RunModificationOptions> {
         public IDictionary<string, string> Metadata { get; }
         public static explicit operator RunModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(RunModificationOptions runModificationOptions);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunStatus : IEquatable<RunStatus> {
         public RunStatus(string value);
         public static RunStatus Cancelled { get; }
@@ -573,6 +621,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunStatus left, RunStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunStep : IJsonModel<RunStep>, IPersistableModel<RunStep> {
         public string AssistantId { get; }
         public DateTimeOffset? CancelledAt { get; }
@@ -592,18 +641,21 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStep(ClientResult result);
         public static implicit operator BinaryContent(RunStep runStep);
     }
+    [Experimental("OPENAI001")]
     public abstract class RunStepCodeInterpreterOutput : IJsonModel<RunStepCodeInterpreterOutput>, IPersistableModel<RunStepCodeInterpreterOutput> {
         public string ImageFileId { get; }
         public string Logs { get; }
         public static explicit operator RunStepCodeInterpreterOutput(ClientResult result);
         public static implicit operator BinaryContent(RunStepCodeInterpreterOutput runStepCodeInterpreterOutput);
     }
+    [Experimental("OPENAI001")]
     public class RunStepCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public RunStepCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunStepCollectionOrder : IEquatable<RunStepCollectionOrder> {
         public RunStepCollectionOrder(string value);
         public static RunStepCollectionOrder Ascending { get; }
@@ -618,12 +670,14 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunStepCollectionOrder left, RunStepCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public abstract class RunStepDetails : IJsonModel<RunStepDetails>, IPersistableModel<RunStepDetails> {
         public string CreatedMessageId { get; }
         public IReadOnlyList<RunStepToolCall> ToolCalls { get; }
         public static explicit operator RunStepDetails(ClientResult result);
         public static implicit operator BinaryContent(RunStepDetails runStepDetails);
     }
+    [Experimental("OPENAI001")]
     public class RunStepDetailsUpdate : StreamingUpdate {
         public string CodeInterpreterInput { get; }
         public IReadOnlyList<RunStepUpdateCodeInterpreterOutput> CodeInterpreterOutputs { get; }
@@ -637,12 +691,14 @@ namespace OpenAI.Assistants {
         public string ToolCallId { get; }
         public int? ToolCallIndex { get; }
     }
+    [Experimental("OPENAI001")]
     public class RunStepError : IJsonModel<RunStepError>, IPersistableModel<RunStepError> {
         public RunStepErrorCode Code { get; }
         public string Message { get; }
         public static explicit operator RunStepError(ClientResult result);
         public static implicit operator BinaryContent(RunStepError runStepError);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunStepErrorCode : IEquatable<RunStepErrorCode> {
         public RunStepErrorCode(string value);
         public static RunStepErrorCode RateLimitExceeded { get; }
@@ -657,6 +713,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunStepErrorCode left, RunStepErrorCode right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunStepFileSearchResult : IJsonModel<RunStepFileSearchResult>, IPersistableModel<RunStepFileSearchResult> {
         public IReadOnlyList<RunStepFileSearchResultContent> Content { get; }
         public string FileId { get; }
@@ -665,19 +722,23 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStepFileSearchResult(ClientResult result);
         public static implicit operator BinaryContent(RunStepFileSearchResult runStepFileSearchResult);
     }
+    [Experimental("OPENAI001")]
     public class RunStepFileSearchResultContent : IJsonModel<RunStepFileSearchResultContent>, IPersistableModel<RunStepFileSearchResultContent> {
         public RunStepFileSearchResultContentKind Kind { get; }
         public string Text { get; }
         public static explicit operator RunStepFileSearchResultContent(ClientResult result);
         public static implicit operator BinaryContent(RunStepFileSearchResultContent runStepFileSearchResultContent);
     }
+    [Experimental("OPENAI001")]
     public enum RunStepFileSearchResultContentKind {
         Text = 0
     }
+    [Experimental("OPENAI001")]
     public enum RunStepKind {
         CreatedMessage = 0,
         ToolCall = 1
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct RunStepStatus : IEquatable<RunStepStatus> {
         public RunStepStatus(string value);
         public static RunStepStatus Cancelled { get; }
@@ -695,6 +756,7 @@ namespace OpenAI.Assistants {
         public static bool operator !=(RunStepStatus left, RunStepStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class RunStepTokenUsage : IJsonModel<RunStepTokenUsage>, IPersistableModel<RunStepTokenUsage> {
         public int InputTokenCount { get; }
         public int OutputTokenCount { get; }
@@ -702,6 +764,7 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStepTokenUsage(ClientResult result);
         public static implicit operator BinaryContent(RunStepTokenUsage runStepTokenUsage);
     }
+    [Experimental("OPENAI001")]
     public abstract class RunStepToolCall : IJsonModel<RunStepToolCall>, IPersistableModel<RunStepToolCall> {
         public string CodeInterpreterInput { get; }
         public IReadOnlyList<RunStepCodeInterpreterOutput> CodeInterpreterOutputs { get; }
@@ -715,13 +778,16 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStepToolCall(ClientResult result);
         public static implicit operator BinaryContent(RunStepToolCall runStepToolCall);
     }
+    [Experimental("OPENAI001")]
     public enum RunStepToolCallKind {
         CodeInterpreter = 0,
         FileSearch = 1,
         Function = 2
     }
+    [Experimental("OPENAI001")]
     public class RunStepUpdate : StreamingUpdate<RunStep> {
     }
+    [Experimental("OPENAI001")]
     public abstract class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>, IPersistableModel<RunStepUpdateCodeInterpreterOutput> {
         public string ImageFileId { get; }
         public string Logs { get; }
@@ -729,6 +795,7 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStepUpdateCodeInterpreterOutput(ClientResult result);
         public static implicit operator BinaryContent(RunStepUpdateCodeInterpreterOutput runStepUpdateCodeInterpreterOutput);
     }
+    [Experimental("OPENAI001")]
     public class RunTokenUsage : IJsonModel<RunTokenUsage>, IPersistableModel<RunTokenUsage> {
         public int InputTokenCount { get; }
         public int OutputTokenCount { get; }
@@ -736,6 +803,7 @@ namespace OpenAI.Assistants {
         public static explicit operator RunTokenUsage(ClientResult result);
         public static implicit operator BinaryContent(RunTokenUsage runTokenUsage);
     }
+    [Experimental("OPENAI001")]
     public class RunTruncationStrategy : IJsonModel<RunTruncationStrategy>, IPersistableModel<RunTruncationStrategy> {
         public static RunTruncationStrategy Auto { get; }
         public int? LastMessages { get; }
@@ -743,11 +811,14 @@ namespace OpenAI.Assistants {
         public static explicit operator RunTruncationStrategy(ClientResult result);
         public static implicit operator BinaryContent(RunTruncationStrategy runTruncationStrategy);
     }
+    [Experimental("OPENAI001")]
     public class RunUpdate : StreamingUpdate<ThreadRun> {
     }
+    [Experimental("OPENAI001")]
     public abstract class StreamingUpdate {
         public StreamingUpdateReason UpdateKind { get; }
     }
+    [Experimental("OPENAI001")]
     public enum StreamingUpdateReason {
         Unknown = 0,
         ThreadCreated = 1,
@@ -776,10 +847,12 @@ namespace OpenAI.Assistants {
         Error = 24,
         Done = 25
     }
+    [Experimental("OPENAI001")]
     public class StreamingUpdate<T> : StreamingUpdate where T : class {
         public T Value { get; }
         public static implicit operator T(StreamingUpdate<T> update);
     }
+    [Experimental("OPENAI001")]
     public class TextAnnotation {
         public int EndIndex { get; }
         public string InputFileId { get; }
@@ -787,6 +860,7 @@ namespace OpenAI.Assistants {
         public int StartIndex { get; }
         public string TextToReplace { get; }
     }
+    [Experimental("OPENAI001")]
     public class TextAnnotationUpdate {
         public int ContentIndex { get; }
         public int? EndIndex { get; }
@@ -795,6 +869,7 @@ namespace OpenAI.Assistants {
         public int? StartIndex { get; }
         public string TextToReplace { get; }
     }
+    [Experimental("OPENAI001")]
     public class ThreadCreationOptions : IJsonModel<ThreadCreationOptions>, IPersistableModel<ThreadCreationOptions> {
         public IList<ThreadInitializationMessage> InitialMessages { get; }
         public IDictionary<string, string> Metadata { get; }
@@ -802,16 +877,19 @@ namespace OpenAI.Assistants {
         public static explicit operator ThreadCreationOptions(ClientResult result);
         public static implicit operator BinaryContent(ThreadCreationOptions threadCreationOptions);
     }
+    [Experimental("OPENAI001")]
     public class ThreadDeletionResult : IJsonModel<ThreadDeletionResult>, IPersistableModel<ThreadDeletionResult> {
         public bool Deleted { get; }
         public string ThreadId { get; }
         public static explicit operator ThreadDeletionResult(ClientResult result);
         public static implicit operator BinaryContent(ThreadDeletionResult threadDeletionResult);
     }
+    [Experimental("OPENAI001")]
     public class ThreadInitializationMessage : MessageCreationOptions {
         public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content);
         public static implicit operator ThreadInitializationMessage(string initializationMessage);
     }
+    [Experimental("OPENAI001")]
     public class ThreadMessage : IJsonModel<ThreadMessage>, IPersistableModel<ThreadMessage> {
         public string AssistantId { get; }
         public IReadOnlyList<MessageCreationAttachment> Attachments { get; }
@@ -829,12 +907,14 @@ namespace OpenAI.Assistants {
         public static explicit operator ThreadMessage(ClientResult result);
         public static implicit operator BinaryContent(ThreadMessage threadMessage);
     }
+    [Experimental("OPENAI001")]
     public class ThreadModificationOptions : IJsonModel<ThreadModificationOptions>, IPersistableModel<ThreadModificationOptions> {
         public IDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; set; }
         public static explicit operator ThreadModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(ThreadModificationOptions threadModificationOptions);
     }
+    [Experimental("OPENAI001")]
     public class ThreadRun : IJsonModel<ThreadRun>, IPersistableModel<ThreadRun> {
         public bool? AllowParallelToolCalls { get; }
         public string AssistantId { get; }
@@ -865,12 +945,14 @@ namespace OpenAI.Assistants {
         public static explicit operator ThreadRun(ClientResult result);
         public static implicit operator BinaryContent(ThreadRun threadRun);
     }
+    [Experimental("OPENAI001")]
     public class ThreadUpdate : StreamingUpdate<AssistantThread> {
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public ToolResources ToolResources { get; }
     }
+    [Experimental("OPENAI001")]
     public class ToolConstraint : IJsonModel<ToolConstraint>, IPersistableModel<ToolConstraint> {
         public ToolConstraint(ToolDefinition toolDefinition);
         public static ToolConstraint Auto { get; }
@@ -879,6 +961,7 @@ namespace OpenAI.Assistants {
         public static explicit operator ToolConstraint(ClientResult result);
         public static implicit operator BinaryContent(ToolConstraint toolConstraint);
     }
+    [Experimental("OPENAI001")]
     public abstract class ToolDefinition : IJsonModel<ToolDefinition>, IPersistableModel<ToolDefinition> {
         protected ToolDefinition();
         protected ToolDefinition(string type);
@@ -888,6 +971,7 @@ namespace OpenAI.Assistants {
         public static explicit operator ToolDefinition(ClientResult result);
         public static implicit operator BinaryContent(ToolDefinition toolDefinition);
     }
+    [Experimental("OPENAI001")]
     public class ToolOutput : IJsonModel<ToolOutput>, IPersistableModel<ToolOutput> {
         public ToolOutput();
         public ToolOutput(string toolCallId, string output);
@@ -896,12 +980,14 @@ namespace OpenAI.Assistants {
         public static explicit operator ToolOutput(ClientResult result);
         public static implicit operator BinaryContent(ToolOutput toolOutput);
     }
+    [Experimental("OPENAI001")]
     public class ToolResources : IJsonModel<ToolResources>, IPersistableModel<ToolResources> {
         public CodeInterpreterToolResources CodeInterpreter { get; set; }
         public FileSearchToolResources FileSearch { get; set; }
         public static explicit operator ToolResources(ClientResult result);
         public static implicit operator BinaryContent(ToolResources toolResources);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreCreationHelper : IJsonModel<VectorStoreCreationHelper>, IPersistableModel<VectorStoreCreationHelper> {
         public VectorStoreCreationHelper();
         public VectorStoreCreationHelper(IEnumerable<OpenAIFile> files);
@@ -1091,6 +1177,7 @@ namespace OpenAI.Audio {
     }
 }
 namespace OpenAI.Batch {
+    [Experimental("OPENAI001")]
     public class BatchClient {
         protected BatchClient();
         public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -1103,6 +1190,7 @@ namespace OpenAI.Batch {
         public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
     public class CreateBatchOperation : OperationResult {
         public string BatchId { get; }
         public override ContinuationToken? RehydrationToken { get; protected set; }
@@ -1199,6 +1287,7 @@ namespace OpenAI.Chat {
         public ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
         public ChatResponseFormat ResponseFormat { get; set; }
         public ChatResponseModalities ResponseModalities { get; set; }
+        [Experimental("OPENAI001")]
         public long? Seed { get; set; }
         public IList<string> StopSequences { get; }
         public bool? StoredOutputEnabled { get; set; }
@@ -1707,13 +1796,21 @@ namespace OpenAI.Files {
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         public ClientPipeline Pipeline { get; }
+        [Experimental("OPENAI001")]
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult CancelUpload(string uploadId, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult> CancelUploadAsync(string uploadId, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult CompleteUpload(string uploadId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult> CompleteUploadAsync(string uploadId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult CreateUpload(BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult> CreateUploadAsync(BinaryContent content, RequestOptions options = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteFile(string fileId, RequestOptions options);
@@ -1763,6 +1860,7 @@ namespace OpenAI.Files {
     }
 }
 namespace OpenAI.FineTuning {
+    [Experimental("OPENAI001")]
     public class FineTuningClient {
         protected FineTuningClient();
         public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -1777,6 +1875,7 @@ namespace OpenAI.FineTuning {
         public virtual CollectionResult GetJobs(string after, int? limit, RequestOptions options);
         public virtual AsyncCollectionResult GetJobsAsync(string after, int? limit, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
     public class FineTuningJobOperation : OperationResult {
         public string JobId { get; }
         public override ContinuationToken? RehydrationToken { get; protected set; }
@@ -2047,6 +2146,7 @@ namespace OpenAI.Moderations {
     }
 }
 namespace OpenAI.RealtimeConversation {
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationAudioFormat : IEquatable<ConversationAudioFormat> {
         public ConversationAudioFormat(string value);
         public static ConversationAudioFormat G711Alaw { get; }
@@ -2062,12 +2162,14 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationAudioFormat left, ConversationAudioFormat right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     [Flags]
     public enum ConversationContentModalities {
         Default = 0,
         Text = 1,
         Audio = 2
     }
+    [Experimental("OPENAI002")]
     public abstract class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
         public string AudioTranscript { get; }
         public string Text { get; }
@@ -2079,6 +2181,7 @@ namespace OpenAI.RealtimeConversation {
         public static implicit operator BinaryContent(ConversationContentPart conversationContentPart);
         public static implicit operator ConversationContentPart(string text);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationContentPartKind : IEquatable<ConversationContentPartKind> {
         public ConversationContentPartKind(string value);
         public static ConversationContentPartKind InputAudio { get; }
@@ -2095,6 +2198,7 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationContentPartKind left, ConversationContentPartKind right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class ConversationErrorUpdate : ConversationUpdate, IJsonModel<ConversationErrorUpdate>, IPersistableModel<ConversationErrorUpdate> {
         public string ErrorCode { get; }
         public string ErrorEventId { get; }
@@ -2103,8 +2207,10 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationErrorUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationErrorUpdate conversationErrorUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>, IPersistableModel<ConversationFunctionTool> {
         public ConversationFunctionTool();
+        [SetsRequiredMembers]
         public ConversationFunctionTool(string name);
         public string Description { get; set; }
         public required string Name { get; set; }
@@ -2112,6 +2218,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationFunctionTool(ClientResult result);
         public static implicit operator BinaryContent(ConversationFunctionTool conversationFunctionTool);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationIncompleteReason : IEquatable<ConversationIncompleteReason> {
         public ConversationIncompleteReason(string value);
         public static ConversationIncompleteReason ClientCancelled { get; }
@@ -2128,28 +2235,33 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationIncompleteReason left, ConversationIncompleteReason right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputAudioClearedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioClearedUpdate>, IPersistableModel<ConversationInputAudioClearedUpdate> {
         public new static explicit operator ConversationInputAudioClearedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputAudioClearedUpdate conversationInputAudioClearedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputAudioCommittedUpdate : ConversationUpdate, IJsonModel<ConversationInputAudioCommittedUpdate>, IPersistableModel<ConversationInputAudioCommittedUpdate> {
         public string ItemId { get; }
         public string PreviousItemId { get; }
         public new static explicit operator ConversationInputAudioCommittedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputAudioCommittedUpdate conversationInputAudioCommittedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputSpeechFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechFinishedUpdate>, IPersistableModel<ConversationInputSpeechFinishedUpdate> {
         public TimeSpan AudioEndTime { get; }
         public string ItemId { get; }
         public new static explicit operator ConversationInputSpeechFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputSpeechFinishedUpdate conversationInputSpeechFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputSpeechStartedUpdate : ConversationUpdate, IJsonModel<ConversationInputSpeechStartedUpdate>, IPersistableModel<ConversationInputSpeechStartedUpdate> {
         public TimeSpan AudioStartTime { get; }
         public string ItemId { get; }
         public new static explicit operator ConversationInputSpeechStartedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputSpeechStartedUpdate conversationInputSpeechStartedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputTokenUsageDetails : IJsonModel<ConversationInputTokenUsageDetails>, IPersistableModel<ConversationInputTokenUsageDetails> {
         public int AudioTokenCount { get; }
         public int CachedTokenCount { get; }
@@ -2157,6 +2269,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationInputTokenUsageDetails(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputTokenUsageDetails conversationInputTokenUsageDetails);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputTranscriptionFailedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFailedUpdate>, IPersistableModel<ConversationInputTranscriptionFailedUpdate> {
         public int ContentIndex { get; }
         public string ErrorCode { get; }
@@ -2166,6 +2279,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationInputTranscriptionFailedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputTranscriptionFailedUpdate conversationInputTranscriptionFailedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationInputTranscriptionFinishedUpdate>, IPersistableModel<ConversationInputTranscriptionFinishedUpdate> {
         public int ContentIndex { get; }
         public string ItemId { get; }
@@ -2173,11 +2287,13 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationInputTranscriptionFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputTranscriptionFinishedUpdate conversationInputTranscriptionFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationInputTranscriptionOptions : IJsonModel<ConversationInputTranscriptionOptions>, IPersistableModel<ConversationInputTranscriptionOptions> {
         public ConversationTranscriptionModel? Model { get; set; }
         public static explicit operator ConversationInputTranscriptionOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputTranscriptionOptions conversationInputTranscriptionOptions);
     }
+    [Experimental("OPENAI002")]
     public abstract class ConversationItem : IJsonModel<ConversationItem>, IPersistableModel<ConversationItem> {
         public string FunctionArguments { get; }
         public string FunctionCallId { get; }
@@ -2193,6 +2309,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationItem(ClientResult result);
         public static implicit operator BinaryContent(ConversationItem conversationItem);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemCreatedUpdate : ConversationUpdate, IJsonModel<ConversationItemCreatedUpdate>, IPersistableModel<ConversationItemCreatedUpdate> {
         public string FunctionCallArguments { get; }
         public string FunctionCallId { get; }
@@ -2205,11 +2322,13 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemCreatedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemCreatedUpdate conversationItemCreatedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemDeletedUpdate : ConversationUpdate, IJsonModel<ConversationItemDeletedUpdate>, IPersistableModel<ConversationItemDeletedUpdate> {
         public string ItemId { get; }
         public new static explicit operator ConversationItemDeletedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemDeletedUpdate conversationItemDeletedUpdate);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationItemStatus : IEquatable<ConversationItemStatus> {
         public ConversationItemStatus(string value);
         public static ConversationItemStatus Completed { get; }
@@ -2225,6 +2344,7 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationItemStatus left, ConversationItemStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingAudioFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingAudioFinishedUpdate>, IPersistableModel<ConversationItemStreamingAudioFinishedUpdate> {
         public int ContentIndex { get; }
         public string ItemId { get; }
@@ -2233,6 +2353,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemStreamingAudioFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemStreamingAudioFinishedUpdate conversationItemStreamingAudioFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingAudioTranscriptionFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate>, IPersistableModel<ConversationItemStreamingAudioTranscriptionFinishedUpdate> {
         public int ContentIndex { get; }
         public string ItemId { get; }
@@ -2242,6 +2363,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemStreamingAudioTranscriptionFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemStreamingAudioTranscriptionFinishedUpdate conversationItemStreamingAudioTranscriptionFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingFinishedUpdate>, IPersistableModel<ConversationItemStreamingFinishedUpdate> {
         public string FunctionCallArguments { get; }
         public string FunctionCallId { get; }
@@ -2255,6 +2377,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemStreamingFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemStreamingFinishedUpdate conversationItemStreamingFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingPartDeltaUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingPartDeltaUpdate>, IPersistableModel<ConversationItemStreamingPartDeltaUpdate> {
         public BinaryData AudioBytes { get; }
         public string AudioTranscript { get; }
@@ -2276,6 +2399,7 @@ namespace OpenAI.RealtimeConversation {
         public string ResponseId { get; }
         public string Text { get; }
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingStartedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingStartedUpdate>, IPersistableModel<ConversationItemStreamingStartedUpdate> {
         public string FunctionCallArguments { get; }
         public string FunctionCallId { get; }
@@ -2289,6 +2413,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemStreamingStartedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemStreamingStartedUpdate conversationItemStreamingStartedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemStreamingTextFinishedUpdate : ConversationUpdate, IJsonModel<ConversationItemStreamingTextFinishedUpdate>, IPersistableModel<ConversationItemStreamingTextFinishedUpdate> {
         public int ContentIndex { get; }
         public string ItemId { get; }
@@ -2298,6 +2423,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemStreamingTextFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemStreamingTextFinishedUpdate conversationItemStreamingTextFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationItemTruncatedUpdate : ConversationUpdate, IJsonModel<ConversationItemTruncatedUpdate>, IPersistableModel<ConversationItemTruncatedUpdate> {
         public int AudioEndMs { get; }
         public int ContentIndex { get; }
@@ -2305,6 +2431,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationItemTruncatedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationItemTruncatedUpdate conversationItemTruncatedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationMaxTokensChoice : IJsonModel<ConversationMaxTokensChoice>, IPersistableModel<ConversationMaxTokensChoice> {
         public ConversationMaxTokensChoice(int numberValue);
         public int? NumericValue { get; }
@@ -2313,6 +2440,7 @@ namespace OpenAI.RealtimeConversation {
         public static ConversationMaxTokensChoice CreateNumericMaxTokensChoice(int maxTokens);
         public static implicit operator ConversationMaxTokensChoice(int maxTokens);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole> {
         public ConversationMessageRole(string value);
         public static ConversationMessageRole Assistant { get; }
@@ -2328,12 +2456,14 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationMessageRole left, ConversationMessageRole right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class ConversationOutputTokenUsageDetails : IJsonModel<ConversationOutputTokenUsageDetails>, IPersistableModel<ConversationOutputTokenUsageDetails> {
         public int AudioTokenCount { get; }
         public int TextTokenCount { get; }
         public static explicit operator ConversationOutputTokenUsageDetails(ClientResult result);
         public static implicit operator BinaryContent(ConversationOutputTokenUsageDetails conversationOutputTokenUsageDetails);
     }
+    [Experimental("OPENAI002")]
     public class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>, IPersistableModel<ConversationRateLimitDetailsItem> {
         public int MaximumCount { get; }
         public string Name { get; }
@@ -2342,6 +2472,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationRateLimitDetailsItem(ClientResult result);
         public static implicit operator BinaryContent(ConversationRateLimitDetailsItem conversationRateLimitDetailsItem);
     }
+    [Experimental("OPENAI002")]
     public class ConversationRateLimitsUpdate : ConversationUpdate, IJsonModel<ConversationRateLimitsUpdate>, IPersistableModel<ConversationRateLimitsUpdate> {
         public IReadOnlyList<ConversationRateLimitDetailsItem> AllDetails { get; }
         public ConversationRateLimitDetailsItem RequestDetails { get; }
@@ -2349,6 +2480,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationRateLimitsUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationRateLimitsUpdate conversationRateLimitsUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationResponseFinishedUpdate : ConversationUpdate, IJsonModel<ConversationResponseFinishedUpdate>, IPersistableModel<ConversationResponseFinishedUpdate> {
         public IReadOnlyList<ConversationItem> CreatedItems { get; }
         public string ResponseId { get; }
@@ -2358,6 +2490,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationResponseFinishedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationResponseFinishedUpdate conversationResponseFinishedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationResponseOptions : IJsonModel<ConversationResponseOptions>, IPersistableModel<ConversationResponseOptions> {
         public ConversationContentModalities ContentModalities { get; set; }
         public ResponseConversationSelection? ConversationSelection { get; set; }
@@ -2373,6 +2506,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationResponseOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationResponseOptions conversationResponseOptions);
     }
+    [Experimental("OPENAI002")]
     public class ConversationResponseStartedUpdate : ConversationUpdate, IJsonModel<ConversationResponseStartedUpdate>, IPersistableModel<ConversationResponseStartedUpdate> {
         public IReadOnlyList<ConversationItem> CreatedItems { get; }
         public string ResponseId { get; }
@@ -2382,6 +2516,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationResponseStartedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationResponseStartedUpdate conversationResponseStartedUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationSessionConfiguredUpdate : ConversationUpdate, IJsonModel<ConversationSessionConfiguredUpdate>, IPersistableModel<ConversationSessionConfiguredUpdate> {
         public ConversationContentModalities ContentModalities { get; }
         public ConversationAudioFormat InputAudioFormat { get; }
@@ -2399,6 +2534,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationSessionConfiguredUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationSessionConfiguredUpdate conversationSessionConfiguredUpdate);
     }
+    [Experimental("OPENAI002")]
     public class ConversationSessionOptions : IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
         public ConversationContentModalities ContentModalities { get; set; }
         public ConversationAudioFormat? InputAudioFormat { get; set; }
@@ -2414,6 +2550,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationSessionOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationSessionOptions conversationSessionOptions);
     }
+    [Experimental("OPENAI002")]
     public class ConversationSessionStartedUpdate : ConversationUpdate, IJsonModel<ConversationSessionStartedUpdate>, IPersistableModel<ConversationSessionStartedUpdate> {
         public ConversationContentModalities ContentModalities { get; }
         public ConversationAudioFormat InputAudioFormat { get; }
@@ -2431,6 +2568,7 @@ namespace OpenAI.RealtimeConversation {
         public new static explicit operator ConversationSessionStartedUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationSessionStartedUpdate conversationSessionStartedUpdate);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationStatus : IEquatable<ConversationStatus> {
         public ConversationStatus(string value);
         public static ConversationStatus Cancelled { get; }
@@ -2447,6 +2585,7 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationStatus left, ConversationStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>, IPersistableModel<ConversationStatusDetails> {
         public string ErrorCode { get; }
         public string ErrorKind { get; }
@@ -2455,6 +2594,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationStatusDetails(ClientResult result);
         public static implicit operator BinaryContent(ConversationStatusDetails conversationStatusDetails);
     }
+    [Experimental("OPENAI002")]
     public class ConversationTokenUsage : IJsonModel<ConversationTokenUsage>, IPersistableModel<ConversationTokenUsage> {
         public int InputTokenCount { get; }
         public ConversationInputTokenUsageDetails InputTokenDetails { get; }
@@ -2464,12 +2604,14 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationTokenUsage(ClientResult result);
         public static implicit operator BinaryContent(ConversationTokenUsage conversationTokenUsage);
     }
+    [Experimental("OPENAI002")]
     public abstract class ConversationTool : IJsonModel<ConversationTool>, IPersistableModel<ConversationTool> {
         public ConversationToolKind Kind { get; }
         public static ConversationTool CreateFunctionTool(string name, string description = null, BinaryData parameters = null);
         public static explicit operator ConversationTool(ClientResult result);
         public static implicit operator BinaryContent(ConversationTool conversationTool);
     }
+    [Experimental("OPENAI002")]
     public class ConversationToolChoice : IJsonModel<ConversationToolChoice>, IPersistableModel<ConversationToolChoice> {
         public string FunctionName { get; }
         public ConversationToolChoiceKind Kind { get; }
@@ -2478,6 +2620,7 @@ namespace OpenAI.RealtimeConversation {
         public static ConversationToolChoice CreateNoneToolChoice();
         public static ConversationToolChoice CreateRequiredToolChoice();
     }
+    [Experimental("OPENAI002")]
     public enum ConversationToolChoiceKind {
         Unknown = 0,
         Auto = 1,
@@ -2485,6 +2628,7 @@ namespace OpenAI.RealtimeConversation {
         Required = 3,
         Function = 4
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
         public ConversationToolKind(string value);
         public static ConversationToolKind Function { get; }
@@ -2498,6 +2642,7 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationToolKind left, ConversationToolKind right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationTranscriptionModel : IEquatable<ConversationTranscriptionModel> {
         public ConversationTranscriptionModel(string value);
         public static ConversationTranscriptionModel Whisper1 { get; }
@@ -2511,10 +2656,12 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationTranscriptionModel left, ConversationTranscriptionModel right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public enum ConversationTurnDetectionKind {
         ServerVoiceActivityDetection = 0,
         Disabled = 1
     }
+    [Experimental("OPENAI002")]
     public abstract class ConversationTurnDetectionOptions : IJsonModel<ConversationTurnDetectionOptions>, IPersistableModel<ConversationTurnDetectionOptions> {
         public ConversationTurnDetectionKind Kind { get; protected internal set; }
         public static ConversationTurnDetectionOptions CreateDisabledTurnDetectionOptions();
@@ -2522,6 +2669,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationTurnDetectionOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationTurnDetectionOptions conversationTurnDetectionOptions);
     }
+    [Experimental("OPENAI002")]
     public abstract class ConversationUpdate : IJsonModel<ConversationUpdate>, IPersistableModel<ConversationUpdate> {
         public string EventId { get; }
         public ConversationUpdateKind Kind { get; protected internal set; }
@@ -2529,6 +2677,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationUpdate(ClientResult result);
         public static implicit operator BinaryContent(ConversationUpdate conversationUpdate);
     }
+    [Experimental("OPENAI002")]
     public enum ConversationUpdateKind {
         Unknown = 0,
         SessionStarted = 1,
@@ -2560,6 +2709,7 @@ namespace OpenAI.RealtimeConversation {
         InputAudioCleared = 27,
         Error = 28
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ConversationVoice : IEquatable<ConversationVoice> {
         public ConversationVoice(string value);
         public static ConversationVoice Alloy { get; }
@@ -2580,6 +2730,7 @@ namespace OpenAI.RealtimeConversation {
         public static bool operator !=(ConversationVoice left, ConversationVoice right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI002")]
     public class RealtimeConversationClient {
         protected RealtimeConversationClient();
         protected internal RealtimeConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
@@ -2592,6 +2743,7 @@ namespace OpenAI.RealtimeConversation {
         public virtual Task<RealtimeConversationSession> StartConversationSessionAsync(RequestOptions options);
         public virtual Task<RealtimeConversationSession> StartConversationSessionAsync(CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI002")]
     public class RealtimeConversationSession : IDisposable {
         protected internal RealtimeConversationSession(RealtimeConversationClient parentClient, Uri endpoint, ApiKeyCredential credential);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
@@ -2637,6 +2789,7 @@ namespace OpenAI.RealtimeConversation {
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI002")]
     public readonly partial struct ResponseConversationSelection : IEquatable<ResponseConversationSelection> {
         public ResponseConversationSelection(string value);
         public static ResponseConversationSelection Auto { get; }
@@ -2653,6 +2806,7 @@ namespace OpenAI.RealtimeConversation {
     }
 }
 namespace OpenAI.VectorStores {
+    [Experimental("OPENAI001")]
     public class AddFileToVectorStoreOperation : OperationResult {
         public string FileId { get; }
         public override ContinuationToken? RehydrationToken { get; protected set; }
@@ -2670,6 +2824,7 @@ namespace OpenAI.VectorStores {
         public override ClientResult UpdateStatus(RequestOptions? options = null);
         public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
     }
+    [Experimental("OPENAI001")]
     public class CreateBatchFileJobOperation : OperationResult {
         public string BatchId { get; }
         public override ContinuationToken? RehydrationToken { get; protected set; }
@@ -2693,6 +2848,7 @@ namespace OpenAI.VectorStores {
         public override ClientResult UpdateStatus(RequestOptions? options = null);
         public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
     }
+    [Experimental("OPENAI001")]
     public class CreateVectorStoreOperation : OperationResult {
         public override ContinuationToken? RehydrationToken { get; protected set; }
         public VectorStoreStatus? Status { get; }
@@ -2709,6 +2865,7 @@ namespace OpenAI.VectorStores {
         public override ClientResult UpdateStatus(RequestOptions? options = null);
         public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
     }
+    [Experimental("OPENAI001")]
     public abstract class FileChunkingStrategy : IJsonModel<FileChunkingStrategy>, IPersistableModel<FileChunkingStrategy> {
         public static FileChunkingStrategy Auto { get; }
         public static FileChunkingStrategy Unknown { get; }
@@ -2716,12 +2873,14 @@ namespace OpenAI.VectorStores {
         public static explicit operator FileChunkingStrategy(ClientResult result);
         public static implicit operator BinaryContent(FileChunkingStrategy fileChunkingStrategy);
     }
+    [Experimental("OPENAI001")]
     public class FileFromStoreRemovalResult : IJsonModel<FileFromStoreRemovalResult>, IPersistableModel<FileFromStoreRemovalResult> {
         public string FileId { get; }
         public bool Removed { get; }
         public static explicit operator FileFromStoreRemovalResult(ClientResult result);
         public static implicit operator BinaryContent(FileFromStoreRemovalResult fileFromStoreRemovalResult);
     }
+    [Experimental("OPENAI001")]
     public class StaticFileChunkingStrategy : FileChunkingStrategy, IJsonModel<StaticFileChunkingStrategy>, IPersistableModel<StaticFileChunkingStrategy> {
         public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount);
         public int MaxTokensPerChunk { get; }
@@ -2729,6 +2888,7 @@ namespace OpenAI.VectorStores {
         public new static explicit operator StaticFileChunkingStrategy(ClientResult result);
         public static implicit operator BinaryContent(StaticFileChunkingStrategy staticFileChunkingStrategy);
     }
+    [Experimental("OPENAI001")]
     public class VectorStore : IJsonModel<VectorStore>, IPersistableModel<VectorStore> {
         public DateTimeOffset CreatedAt { get; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; }
@@ -2743,6 +2903,7 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStore(ClientResult result);
         public static implicit operator BinaryContent(VectorStore vectorStore);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>, IPersistableModel<VectorStoreBatchFileJob> {
         public string BatchId { get; }
         public DateTimeOffset CreatedAt { get; }
@@ -2752,6 +2913,7 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreBatchFileJob(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreBatchFileJob vectorStoreBatchFileJob);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreBatchFileJobStatus : IEquatable<VectorStoreBatchFileJobStatus> {
         public VectorStoreBatchFileJobStatus(string value);
         public static VectorStoreBatchFileJobStatus Cancelled { get; }
@@ -2768,6 +2930,7 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -2853,12 +3016,14 @@ namespace OpenAI.VectorStores {
         public virtual Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreCollectionOrder : IEquatable<VectorStoreCollectionOrder> {
         public VectorStoreCollectionOrder(string value);
         public static VectorStoreCollectionOrder Ascending { get; }
@@ -2873,6 +3038,7 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreCollectionOrder left, VectorStoreCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreCreationOptions : IJsonModel<VectorStoreCreationOptions>, IPersistableModel<VectorStoreCreationOptions> {
         public FileChunkingStrategy ChunkingStrategy { get; set; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; set; }
@@ -2882,24 +3048,29 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreCreationOptions(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreCreationOptions vectorStoreCreationOptions);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreDeletionResult : IJsonModel<VectorStoreDeletionResult>, IPersistableModel<VectorStoreDeletionResult> {
         public bool Deleted { get; }
         public string VectorStoreId { get; }
         public static explicit operator VectorStoreDeletionResult(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreDeletionResult vectorStoreDeletionResult);
     }
+    [Experimental("OPENAI001")]
     public enum VectorStoreExpirationAnchor {
         Unknown = 0,
         LastActiveAt = 1
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreExpirationPolicy : IJsonModel<VectorStoreExpirationPolicy>, IPersistableModel<VectorStoreExpirationPolicy> {
         public VectorStoreExpirationPolicy();
+        [SetsRequiredMembers]
         public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days);
         public required VectorStoreExpirationAnchor Anchor { get; set; }
         public required int Days { get; set; }
         public static explicit operator VectorStoreExpirationPolicy(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreExpirationPolicy vectorStoreExpirationPolicy);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>, IPersistableModel<VectorStoreFileAssociation> {
         public FileChunkingStrategy ChunkingStrategy { get; }
         public DateTimeOffset CreatedAt { get; }
@@ -2911,6 +3082,7 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreFileAssociation(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreFileAssociation vectorStoreFileAssociation);
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreFileAssociationCollectionOptions {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
@@ -2918,6 +3090,7 @@ namespace OpenAI.VectorStores {
         public VectorStoreFileAssociationCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
         public VectorStoreFileAssociationCollectionOrder(string value);
         public static VectorStoreFileAssociationCollectionOrder Ascending { get; }
@@ -2932,12 +3105,14 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IPersistableModel<VectorStoreFileAssociationError> {
         public VectorStoreFileAssociationErrorCode Code { get; }
         public string Message { get; }
         public static explicit operator VectorStoreFileAssociationError(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreFileAssociationError vectorStoreFileAssociationError);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreFileAssociationErrorCode : IEquatable<VectorStoreFileAssociationErrorCode> {
         public VectorStoreFileAssociationErrorCode(string value);
         public static VectorStoreFileAssociationErrorCode InvalidFile { get; }
@@ -2953,6 +3128,7 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public enum VectorStoreFileAssociationStatus {
         Unknown = 0,
         InProgress = 1,
@@ -2960,6 +3136,7 @@ namespace OpenAI.VectorStores {
         Cancelled = 3,
         Failed = 4
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>, IPersistableModel<VectorStoreFileCounts> {
         public int Cancelled { get; }
         public int Completed { get; }
@@ -2969,6 +3146,7 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreFileCounts(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreFileCounts vectorStoreFileCounts);
     }
+    [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {
         public VectorStoreFileStatusFilter(string value);
         public static VectorStoreFileStatusFilter Cancelled { get; }
@@ -2985,6 +3163,7 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreFileStatusFilter left, VectorStoreFileStatusFilter right);
         public override readonly string ToString();
     }
+    [Experimental("OPENAI001")]
     public class VectorStoreModificationOptions : IJsonModel<VectorStoreModificationOptions>, IPersistableModel<VectorStoreModificationOptions> {
         public VectorStoreExpirationPolicy ExpirationPolicy { get; set; }
         public IDictionary<string, string> Metadata { get; }
@@ -2992,6 +3171,7 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreModificationOptions vectorStoreModificationOptions);
     }
+    [Experimental("OPENAI001")]
     public enum VectorStoreStatus {
         Unknown = 0,
         InProgress = 1,

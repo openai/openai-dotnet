@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OpenAI.Moderations;
@@ -25,6 +26,26 @@ public static partial class OpenAIModerationsModelFactory
             items.ToList(),
             serializedAdditionalRawData: null);
     }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Moderations.ModerationResult"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Moderations.ModerationResult"/> instance for mocking. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ModerationResult ModerationResult(bool flagged, ModerationCategory hate, ModerationCategory hateThreatening, ModerationCategory harassment, ModerationCategory harassmentThreatening, ModerationCategory selfHarm, ModerationCategory selfHarmIntent, ModerationCategory selfHarmInstructions, ModerationCategory sexual, ModerationCategory sexualMinors, ModerationCategory violence, ModerationCategory violenceGraphic) =>
+        ModerationResult(
+            flagged,
+            hate,
+            hateThreatening,
+            harassment,
+            harassmentThreatening,
+            selfHarm,
+            selfHarmIntent,
+            selfHarmInstructions,
+            sexual,
+            sexualMinors,
+            violence,
+            violenceGraphic,
+            default,
+            default);
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Moderations.ModerationResult"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Moderations.ModerationResult"/> instance for mocking. </returns>

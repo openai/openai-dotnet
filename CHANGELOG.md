@@ -1,5 +1,13 @@
 # Release History
 
+## 2.2.0-beta.2 (Unreleased)
+
+### Bugs fixed
+
+- Fixed a bug that caused `CompleteChatStreaming*()` with audio-enabled models to fail unless provided a `ChatCompletionOptions` instance that had previously been used for a non-streaming `CompleteChat()*` call
+- Addressed an issue that caused calls to `CompleteChatStreaming*()` to not report usage when provided a `ChatCompletionOptions` instance that was previously used in a non-streaming `CompleteChat*()` call
+- Addressed issues with standalone serialization and deserialization of `ChatCompletionOptions` that impacted the ability to manipulate chat completion requests via `System.ClientModel.Primitives.ModelReaderWriter` and related utilities
+
 ## 2.2.0-beta.1 (2025-02-07)
 
 ### Features added

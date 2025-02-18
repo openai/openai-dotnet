@@ -13,19 +13,12 @@ public partial class ChatCompletionOptions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SerializeMessagesValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        if (Messages is not null)
+        writer.WriteStartArray();
+        foreach (var item in Messages)
         {
-            writer.WriteStartArray();
-            foreach (var item in Messages)
-            {
-                writer.WriteObjectValue<ChatMessage>(item, options);
-            }
-            writer.WriteEndArray();
+            writer.WriteObjectValue<ChatMessage>(item, options);
         }
-        else
-        {
-            writer.WriteNullValue();
-        }
+        writer.WriteEndArray();
     }
 
     // CUSTOM: Added custom serialization to treat a single string as a collection of strings with one item.

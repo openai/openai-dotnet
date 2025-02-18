@@ -11,7 +11,7 @@ public partial class StreamingChatCompletionUpdate
     private IReadOnlyList<StreamingChatToolCallUpdate> _toolCallUpdates;
     private IReadOnlyList<ChatTokenLogProbabilityDetails> _contentTokenLogProbabilities;
     private IReadOnlyList<ChatTokenLogProbabilityDetails> _refusalTokenLogProbabilities;
-    internal InternalCreateChatCompletionStreamResponseChoice InternalChoice => (Choices.Count > 0) ? Choices[0] : null;
+    internal InternalCreateChatCompletionStreamResponseChoice InternalChoice => (Choices?.Count > 0) ? Choices[0] : null;
     internal InternalChatCompletionStreamResponseDelta InternalChoiceDelta => InternalChoice?.Delta;
 
     // CUSTOM:

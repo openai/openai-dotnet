@@ -251,9 +251,18 @@ public partial class ChatClient
     {
         options.Messages = messages.ToList();
         options.Model = _model;
-        options.Stream = stream
-            ? true
-            : null;
-        options.StreamOptions = stream ? options.StreamOptions : null;
+        if (stream)
+        {
+            options.Stream = true;
+            options.StreamOptions = s_includeUsageStreamOptions;
+        }
+        else
+        {
+            options.Stream = null;
+            options.StreamOptions = null;
+        }
     }
+
+    private static readonly InternalChatCompletionStreamOptions s_includeUsageStreamOptions
+        = new(includeUsage: true, additionalBinaryDataProperties: null);
 }

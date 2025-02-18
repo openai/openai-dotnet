@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OpenAI.Chat;
@@ -9,6 +10,39 @@ public static partial class OpenAIChatModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletion"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatCompletion"/> instance for mocking. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ChatCompletion ChatCompletion(
+        string id,
+        ChatFinishReason finishReason,
+        ChatMessageContent content,
+        string refusal,
+        IEnumerable<ChatToolCall> toolCalls,
+        ChatMessageRole role,
+        ChatFunctionCall functionCall,
+        IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities,
+        IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities,
+        DateTimeOffset createdAt,
+        string model,
+        string systemFingerprint,
+        ChatTokenUsage usage) =>
+        ChatCompletion(
+            id: id,
+            finishReason: finishReason,
+            content:content,
+            refusal: refusal,
+            toolCalls: toolCalls,
+            role: role,
+            functionCall: functionCall,
+            contentTokenLogProbabilities: contentTokenLogProbabilities,
+            refusalTokenLogProbabilities: refusalTokenLogProbabilities,
+            createdAt: createdAt,
+            model: model,
+            systemFingerprint: systemFingerprint,
+            usage: usage,
+            outputAudio: default);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletion"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatCompletion"/> instance for mocking. </returns>
     public static ChatCompletion ChatCompletion(
         string id = null,
         ChatFinishReason finishReason = default,
@@ -16,14 +50,14 @@ public static partial class OpenAIChatModelFactory
         string refusal = null,
         IEnumerable<ChatToolCall> toolCalls = null,
         ChatMessageRole role = default,
-        ChatFunctionCall functionCall = null,
+        ChatFunctionCall functionCall = default,
         IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null,
         IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null,
         DateTimeOffset createdAt = default,
         string model = null,
         string systemFingerprint = null,
-        ChatTokenUsage usage = null,
-        ChatOutputAudio outputAudio = null)
+        ChatTokenUsage usage = default,
+        ChatOutputAudio outputAudio = default)
     {
         content ??= new ChatMessageContent();
         toolCalls ??= new List<ChatToolCall>();
@@ -93,14 +127,25 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenUsage"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatTokenUsage"/> instance for mocking. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ChatTokenUsage ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, ChatOutputTokenUsageDetails outputTokenDetails) =>
+        ChatTokenUsage(
+            outputTokenCount: outputTokenCount,
+            inputTokenCount: inputTokenCount,
+            totalTokenCount: totalTokenCount,
+            outputTokenDetails: outputTokenDetails,
+            inputTokenDetails: default);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenUsage"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatTokenUsage"/> instance for mocking. </returns>
     public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default, ChatOutputTokenUsageDetails outputTokenDetails = null, ChatInputTokenUsageDetails inputTokenDetails = null)
     {
         return new ChatTokenUsage(
-            outputTokenCount,
-            inputTokenCount,
-            totalTokenCount,
-            outputTokenDetails,
-            inputTokenDetails,
+            outputTokenCount: outputTokenCount,
+            inputTokenCount: inputTokenCount,
+            totalTokenCount: totalTokenCount,
+            outputTokenDetails: outputTokenDetails,
+            inputTokenDetails: inputTokenDetails,
             additionalBinaryDataProperties: null);
     }
 
@@ -116,7 +161,25 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
-    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int audioTokenCount = default, int acceptedPredictionTokenCount = default, int rejectedPredictionTokenCount = 0)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount) =>
+        ChatOutputTokenUsageDetails(
+            reasoningTokenCount: reasoningTokenCount,
+            audioTokenCount: default);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount, int audioTokenCount) =>
+        ChatOutputTokenUsageDetails(
+            reasoningTokenCount: reasoningTokenCount,
+            audioTokenCount: audioTokenCount,
+            acceptedPredictionTokenCount: default,
+            rejectedPredictionTokenCount: default);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int audioTokenCount = default, int acceptedPredictionTokenCount = default, int rejectedPredictionTokenCount = default)
     {
         return new ChatOutputTokenUsageDetails(
             audioTokenCount: audioTokenCount,
@@ -138,21 +201,54 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/> instance for mocking. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(
+        string completionId,
+        ChatMessageContent contentUpdate,
+        StreamingChatFunctionCallUpdate functionCallUpdate,
+        IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates,
+        ChatMessageRole? role,
+        string refusalUpdate,
+        IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities,
+        IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities,
+        ChatFinishReason? finishReason,
+        DateTimeOffset createdAt,
+        string model,
+        string systemFingerprint,
+        ChatTokenUsage usage) =>
+        StreamingChatCompletionUpdate(
+            completionId: completionId,
+            contentUpdate: contentUpdate,
+            functionCallUpdate: functionCallUpdate,
+            toolCallUpdates: toolCallUpdates,
+            role: role,
+            refusalUpdate: refusalUpdate,
+            contentTokenLogProbabilities: contentTokenLogProbabilities,
+            refusalTokenLogProbabilities: refusalTokenLogProbabilities,
+            finishReason: finishReason,
+            createdAt: createdAt,
+            model: model,
+            systemFingerprint: systemFingerprint,
+            usage: usage,
+            outputAudioUpdate: default);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/> instance for mocking. </returns>
     public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(
         string completionId = null,
         ChatMessageContent contentUpdate = null,
         StreamingChatFunctionCallUpdate functionCallUpdate = null,
         IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates = null,
-        ChatMessageRole? role = null,
+        ChatMessageRole? role = default,
         string refusalUpdate = null,
         IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null,
         IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null,
-        ChatFinishReason? finishReason = null,
+        ChatFinishReason? finishReason = default,
         DateTimeOffset createdAt = default,
         string model = null,
         string systemFingerprint = null,
-        ChatTokenUsage usage = null,
-        StreamingChatOutputAudioUpdate outputAudioUpdate = null)
+        ChatTokenUsage usage = default,
+        StreamingChatOutputAudioUpdate outputAudioUpdate = default)
     {
         contentUpdate ??= new ChatMessageContent();
         toolCallUpdates ??= new List<StreamingChatToolCallUpdate>();

@@ -7,9 +7,11 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -935,5 +937,35 @@ public class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(options.Tools.Count, Is.EqualTo(0));
         Assert.That(options.Metadata.Count, Is.EqualTo(0));
         Assert.That(options.StopSequences.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void IdempotentOptionsSerialization()
+    {
+        ChatCompletionOptions emptyOptions = new();
+        BinaryData serializedEmptyOptions = ModelReaderWriter.Write(emptyOptions);
+        Assert.That(serializedEmptyOptions.ToString(), Is.EqualTo("{}"));
+        ChatCompletionOptions deserializedEmptyOptions = ModelReaderWriter.Read<ChatCompletionOptions>(serializedEmptyOptions);
+        BinaryData reserializedEmptyOptions = ModelReaderWriter.Write(deserializedEmptyOptions);
+        Assert.That(reserializedEmptyOptions.ToString(), Is.EqualTo("{}"));
+
+        ChatCompletionOptions originalOptions = new()
+        {
+            IncludeLogProbabilities = true,
+            FrequencyPenalty = 0.4f,
+        };
+
+        BinaryData serializedOptions = ModelReaderWriter.Write(originalOptions);
+
+        string serializedOptionsText = serializedOptions.ToString();
+        Assert.That(serializedOptionsText, Does.Contain("frequency_penalty"));
+        Assert.That(serializedOptionsText, Does.Not.Contain("presence_penalty"));
+        Assert.That(serializedOptionsText, Does.Not.Contain("stream_options"));
+
+        ChatCompletionOptions deserializedOptions = ModelReaderWriter.Read<ChatCompletionOptions>(serializedOptions);
+        BinaryData reserializedOptions = ModelReaderWriter.Write(deserializedOptions);
+
+        string reserializedOptionsText = reserializedOptions.ToString();
+        Assert.That(serializedOptions.ToString(), Is.EqualTo(reserializedOptionsText));
     }
 }
