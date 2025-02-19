@@ -28,7 +28,7 @@ internal partial class GenericActionPipelinePolicy : PipelinePolicy
         _processMessageAction(message);
         if (currentIndex < pipeline.Count - 1)
         {
-            await pipeline[currentIndex + 1].ProcessAsync(message, pipeline, currentIndex + 1);
+            await pipeline[currentIndex + 1].ProcessAsync(message, pipeline, currentIndex + 1).ConfigureAwait(false);
         }
     }
 }
