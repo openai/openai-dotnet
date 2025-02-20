@@ -12,8 +12,10 @@ body:
       label: Service
       description: Select whether you are using OpenAI or Azure OpenAI
       options:
+        - ''
         - OpenAI
         - Azure OpenAI
+      default: 0
     validations:
       required: true
   - type: textarea
