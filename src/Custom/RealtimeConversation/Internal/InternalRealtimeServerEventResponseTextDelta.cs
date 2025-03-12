@@ -14,6 +14,6 @@ namespace OpenAI.RealtimeConversation;
 /// a text content part. This and other related delta events append text data into the associated content part.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseTextDelta")]
+[CodeGenType("RealtimeServerEventResponseTextDelta")]
 internal partial class InternalRealtimeServerEventResponseTextDelta
 { }

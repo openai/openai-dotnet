@@ -128,7 +128,7 @@ namespace OpenAI.Batch
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                if (Optional.IsCollectionDefined(Metadata))
                 {
                     writer.WritePropertyName("metadata"u8);
                     writer.WriteStartObject();
@@ -149,7 +149,7 @@ namespace OpenAI.Batch
                     writer.WriteNull("metadata"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -369,10 +369,7 @@ namespace OpenAI.Batch
                     metadata = dictionary;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchJob(
                 id,

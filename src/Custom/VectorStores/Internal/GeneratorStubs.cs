@@ -2,65 +2,65 @@ namespace OpenAI.VectorStores;
 
 // CUSTOM: Made internal.
 
-[CodeGenModel("CreateVectorStoreFileBatchRequest")]
+[CodeGenType("CreateVectorStoreFileBatchRequest")]
 internal partial class InternalCreateVectorStoreFileBatchRequest { }
 
-[CodeGenModel("CreateVectorStoreFileRequest")]
+[CodeGenType("CreateVectorStoreFileRequest")]
 internal partial class InternalCreateVectorStoreFileRequest { }
 
-[CodeGenModel("DeleteVectorStoreFileResponseObject")]
+[CodeGenType("DeleteVectorStoreFileResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreFileResponseObject { }
 
-[CodeGenModel("DeleteVectorStoreResponseObject")]
+[CodeGenType("DeleteVectorStoreResponseObject")]
 internal readonly partial struct InternalDeleteVectorStoreResponseObject { }
 
-[CodeGenModel("ListVectorStoreFilesResponse")]
+[CodeGenType("ListVectorStoreFilesResponse")]
 internal partial class InternalListVectorStoreFilesResponse : IInternalListResponse<VectorStoreFileAssociation> { }
 
-[CodeGenModel("ListVectorStoreFilesResponseObject")]
+[CodeGenType("ListVectorStoreFilesResponseObject")]
 internal readonly partial struct InternalListVectorStoreFilesResponseObject { }
 
-[CodeGenModel("ListVectorStoresResponse")]
+[CodeGenType("ListVectorStoresResponse")]
 internal partial class InternalListVectorStoresResponse : IInternalListResponse<VectorStore> { }
 
-[CodeGenModel("ListVectorStoresResponseObject")]
+[CodeGenType("ListVectorStoresResponseObject")]
 internal readonly partial struct InternalListVectorStoresResponseObject { }
 
-[CodeGenModel("VectorStoreFileBatchObjectFileCounts")]
+[CodeGenType("VectorStoreFileBatchObjectFileCounts")]
 internal partial class InternalVectorStoreFileBatchObjectFileCounts { }
 
-[CodeGenModel("VectorStoreFileBatchObjectObject")]
+[CodeGenType("VectorStoreFileBatchObjectObject")]
 internal readonly partial struct InternalVectorStoreFileBatchObjectObject { }
 
-[CodeGenModel("VectorStoreFileObjectObject")]
+[CodeGenType("VectorStoreFileObjectObject")]
 internal readonly partial struct InternalVectorStoreFileObjectObject { }
 
-[CodeGenModel("VectorStoreObjectObject")]
+[CodeGenType("VectorStoreObjectObject")]
 internal readonly partial struct InternalVectorStoreObjectObject { }
 
-[CodeGenModel("StaticChunkingStrategy")]
+[CodeGenType("StaticChunkingStrategy")]
 internal partial class InternalStaticChunkingStrategyDetails { }
 
-[CodeGenModel("FileChunkingStrategyRequestParam")]
+[CodeGenType("FileChunkingStrategyRequestParam")]
 internal partial class InternalFileChunkingStrategyRequestParam { }
 
-[CodeGenModel("AutoChunkingStrategyRequestParam")]
+[CodeGenType("AutoChunkingStrategyRequestParam")]
 internal partial class InternalAutoChunkingStrategyRequestParam { }
 
-[CodeGenModel("StaticChunkingStrategyRequestParam")]
+[CodeGenType("StaticChunkingStrategyRequestParam")]
 internal partial class InternalStaticChunkingStrategyRequestParam { }
 
-[CodeGenModel("UnknownFileChunkingStrategyRequestParam")]
+[CodeGenType("UnknownFileChunkingStrategyRequestParam")]
 internal partial class InternalUnknownFileChunkingStrategyRequestParamProxy { }
 
-[CodeGenModel("AutoChunkingStrategyResponseParam")]
+[CodeGenType("AutoChunkingStrategyResponseParam")]
 internal partial class InternalAutoChunkingStrategy { }
 
-[CodeGenModel("OtherChunkingStrategyResponseParam")]
+[CodeGenType("OtherChunkingStrategyResponseParam")]
 internal partial class InternalUnknownChunkingStrategy { }
 
-[CodeGenModel("UnknownFileChunkingStrategyResponseParam")]
+[CodeGenType("UnknownFileChunkingStrategyResponseParam")]
 internal partial class InternalUnknownFileChunkingStrategyResponseParamProxy { }
 
-[CodeGenModel("ListFilesInVectorStoreBatchRequestOrder")]
-internal readonly partial struct InternalListFilesInVectorStoreBatchRequestOrder { }
+[CodeGenType("VectorStoreFileAttributes")]
+internal partial class InternalVectorStoreFileAttributes { }

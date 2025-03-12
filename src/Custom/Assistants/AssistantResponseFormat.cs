@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("AssistantResponseFormat")]
+[CodeGenType("AssistantResponseFormat")]
 public partial class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>
 {
     public static AssistantResponseFormat Auto { get; } = CreateAutoFormat();

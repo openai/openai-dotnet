@@ -25,7 +25,7 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenModel("ChatMessageContentPart")]
+[CodeGenType("ChatMessageContentPart")]
 [CodeGenSuppress("ChatMessageContentPart", typeof(IDictionary<string, BinaryData>))]
 public partial class ChatMessageContentPart
 {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.RealtimeConversation;
 
-[CodeGenClient("Realtime")]
+[CodeGenType("Realtime")]
 [CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
 [CodeGenSuppress("StartRealtimeSessionAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]

@@ -2,7 +2,7 @@
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatCompletionStreamResponseDelta")]
+[CodeGenType("ChatCompletionStreamResponseDelta")]
 [CodeGenSuppress("InternalChatCompletionStreamResponseDelta")]
 internal partial class InternalChatCompletionStreamResponseDelta
 {

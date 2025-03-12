@@ -21,19 +21,82 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFineTuneChatCompletionRequestAssistantMessage)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
+            if (Optional.IsDefined(Weight) && _additionalBinaryDataProperties?.ContainsKey("weight") != true)
+            {
+                writer.WritePropertyName("weight"u8);
+                writer.WriteStringValue(Weight.Value.ToString());
+            }
+            if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            {
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStringValue(Refusal);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToString());
+            }
+            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
+            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            {
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(Audio, options);
+            }
+            if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
+            {
+                writer.WritePropertyName("tool_calls"u8);
+                writer.WriteStartArray();
+                foreach (ChatToolCall item in ToolCalls)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
+            {
+                writer.WritePropertyName("function_call"u8);
+                writer.WriteObjectValue(FunctionCall, options);
+            }
+            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                writer.WritePropertyName("content"u8);
+                writer.WriteObjectValue(Content, options);
+            }
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
-        InternalFineTuneChatCompletionRequestAssistantMessage IJsonModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalFineTuneChatCompletionRequestAssistantMessage)JsonModelCreateCore(ref reader, options);
+        InternalFineTuneChatCompletionRequestAssistantMessage IJsonModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalFineTuneChatCompletionRequestAssistantMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -50,24 +113,24 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            ChatMessageContent content = default;
-            Chat.ChatMessageRole role = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            InternalFineTuneChatCompletionRequestAssistantMessageWeight? weight = default;
             string refusal = default;
-            string participantName = default;
+            InternalFineTuneChatCompletionRequestAssistantMessageRole role = default;
+            string name = default;
+            ChatOutputAudioReference audio = default;
             IList<ChatToolCall> toolCalls = default;
             ChatFunctionCall functionCall = default;
-            ChatOutputAudioReference outputAudioReference = default;
+            ChatMessageContent content = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("content"u8))
+                if (prop.NameEquals("weight"u8))
                 {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString().ToChatMessageRole();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    weight = new InternalFineTuneChatCompletionRequestAssistantMessageWeight(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -80,9 +143,24 @@ namespace OpenAI.FineTuning
                     refusal = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("role"u8))
+                {
+                    role = new InternalFineTuneChatCompletionRequestAssistantMessageRole(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("name"u8))
                 {
-                    participantName = prop.Value.GetString();
+                    name = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        audio = null;
+                        continue;
+                    }
+                    audio = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("tool_calls"u8))
@@ -109,36 +187,33 @@ namespace OpenAI.FineTuning
                     functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("audio"u8))
+                if (prop.NameEquals("content"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        outputAudioReference = null;
+                        content = null;
                         continue;
                     }
-                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
+                    content = ChatMessageContent.DeserializeChatMessageContent(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            // CUSTOM: Initialize Content collection property.
             return new InternalFineTuneChatCompletionRequestAssistantMessage(
-                content ?? new ChatMessageContent(),
-                role,
-                additionalBinaryDataProperties,
+                weight,
                 refusal,
-                participantName,
+                role,
+                name,
+                audio,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 functionCall,
-                outputAudioReference);
+                content,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -150,9 +225,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        InternalFineTuneChatCompletionRequestAssistantMessage IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalFineTuneChatCompletionRequestAssistantMessage)PersistableModelCreateCore(data, options);
+        InternalFineTuneChatCompletionRequestAssistantMessage IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalFineTuneChatCompletionRequestAssistantMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuneChatCompletionRequestAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

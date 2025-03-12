@@ -39,9 +39,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
-                this.SerializeTools(writer, options);
+                SerializeTools(writer, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -96,10 +96,7 @@ namespace OpenAI.Assistants
                     DeserializeTools(prop, ref tools);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new MessageCreationAttachment(fileId, tools, additionalBinaryDataProperties);
         }

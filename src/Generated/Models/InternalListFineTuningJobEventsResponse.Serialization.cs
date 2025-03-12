@@ -31,11 +31,6 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalListFineTuningJobEventsResponse)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
-            {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
@@ -51,7 +46,12 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
+            }
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -91,17 +91,12 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            bool hasMore = default;
             IList<FineTuningJobEvent> data = default;
             InternalListFineTuningJobEventsResponseObject @object = default;
+            bool hasMore = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("has_more"u8))
-                {
-                    hasMore = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("data"u8))
                 {
                     List<FineTuningJobEvent> array = new List<FineTuningJobEvent>();
@@ -117,12 +112,14 @@ namespace OpenAI.FineTuning
                     @object = new InternalListFineTuningJobEventsResponseObject(prop.Value.GetString());
                     continue;
                 }
-                if (true)
+                if (prop.NameEquals("has_more"u8))
                 {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                    hasMore = prop.Value.GetBoolean();
+                    continue;
                 }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalListFineTuningJobEventsResponse(hasMore, data, @object, additionalBinaryDataProperties);
+            return new InternalListFineTuningJobEventsResponse(data, @object, hasMore, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalListFineTuningJobEventsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

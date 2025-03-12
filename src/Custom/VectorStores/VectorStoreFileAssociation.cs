@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
@@ -6,7 +9,7 @@ namespace OpenAI.VectorStores;
 /// A representation of a file association between an uploaded file and a vector store.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("VectorStoreFileObject")]
+[CodeGenType("VectorStoreFileObject")]
 public partial class VectorStoreFileAssociation
 {
     // CUSTOM: Made internal.
@@ -26,6 +29,10 @@ public partial class VectorStoreFileAssociation
     /// </summary>
     [CodeGenMember("UsageBytes")]
     public int Size { get; }
+
+    // CUSTOM: Changed type.
+    [CodeGenMember("Attributes")]
+    public IDictionary<string, BinaryData> Attributes { get; } = new ChangeTrackingDictionary<string, BinaryData>();
 
     [CodeGenMember("ChunkingStrategy")]
     public FileChunkingStrategy ChunkingStrategy { get; }

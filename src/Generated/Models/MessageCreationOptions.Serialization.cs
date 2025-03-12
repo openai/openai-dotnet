@@ -29,20 +29,13 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsCollectionDefined(Attachments) && _additionalBinaryDataProperties?.ContainsKey("attachments") != true)
             {
-                if (Attachments != null)
+                writer.WritePropertyName("attachments"u8);
+                writer.WriteStartArray();
+                foreach (MessageCreationAttachment item in Attachments)
                 {
-                    writer.WritePropertyName("attachments"u8);
-                    writer.WriteStartArray();
-                    foreach (MessageCreationAttachment item in Attachments)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("attachments"u8);
-                }
+                writer.WriteEndArray();
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -68,9 +61,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
-                this.SerializeContent(writer, options);
+                SerializeContent(writer, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -112,7 +105,7 @@ namespace OpenAI.Assistants
             }
             IList<MessageCreationAttachment> attachments = default;
             IDictionary<string, string> metadata = default;
-            Assistants.MessageRole role = default;
+            MessageRole role = default;
             IList<MessageContent> content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -167,10 +160,7 @@ namespace OpenAI.Assistants
                     content = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new MessageCreationOptions(attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), role, content, additionalBinaryDataProperties);
         }

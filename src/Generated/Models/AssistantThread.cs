@@ -25,7 +25,7 @@ namespace OpenAI.Assistants
             Id = id;
             CreatedAt = createdAt;
             Metadata = metadata;
-            this.Object = @object;
+            Object = @object;
             ToolResources = toolResources;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

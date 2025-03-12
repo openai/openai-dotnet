@@ -41,7 +41,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("detail"u8);
                 writer.WriteStringValue(Detail);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -96,10 +96,7 @@ namespace OpenAI.Assistants
                     detail = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageContentItemFileObjectImageFile(fileId, detail, additionalBinaryDataProperties);
         }

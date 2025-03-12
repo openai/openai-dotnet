@@ -3,7 +3,7 @@ using System;
 namespace OpenAI.Chat;
 
 [Obsolete($"This class is obsolete. Please use {nameof(StreamingChatToolCallUpdate)} instead.")]
-[CodeGenModel("ChatCompletionStreamResponseDeltaFunctionCall")]
+[CodeGenType("ChatCompletionStreamResponseDeltaFunctionCall")]
 [CodeGenSerialization(nameof(FunctionArgumentsUpdate), SerializationValueHook = nameof(SerializeFunctionArgumentsUpdateValue), DeserializationValueHook = nameof(DeserializeFunctionArgumentsUpdateValue))]
 public partial class StreamingChatFunctionCallUpdate
 {

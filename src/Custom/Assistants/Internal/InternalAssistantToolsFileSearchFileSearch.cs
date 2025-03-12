@@ -1,6 +1,6 @@
 namespace OpenAI.Assistants;
 
-[CodeGenModel("AssistantToolsFileSearchFileSearch")]
+[CodeGenType("AssistantToolsFileSearchFileSearch")]
 internal partial class InternalAssistantToolsFileSearchFileSearch
 {
     [CodeGenMember("MaxNumResults")]

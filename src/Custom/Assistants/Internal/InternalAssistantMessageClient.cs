@@ -5,12 +5,12 @@ using System.Threading;
 
 namespace OpenAI.Assistants;
 
-[CodeGenClient("Messages")]
+[CodeGenType("Messages")]
 [CodeGenSuppress("InternalAssistantMessageClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateMessageAsync", typeof(string), typeof(MessageCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateMessage", typeof(string), typeof(MessageCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("ListMessagesAsync", typeof(string), typeof(int?), typeof(MessageCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListMessages", typeof(string), typeof(int?), typeof(MessageCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ListMessagesAsync", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ListMessages", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetMessageAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetMessage", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("ModifyMessageAsync", typeof(string), typeof(string), typeof(MessageModificationOptions), typeof(CancellationToken))]

@@ -5,7 +5,7 @@ namespace OpenAI.Assistants;
 
 /// <summary> The AssistantObjectToolResourcesCodeInterpreter. </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("AssistantObjectToolResourcesCodeInterpreter")]
+[CodeGenType("AssistantObjectToolResourcesCodeInterpreter")]
 public partial class CodeInterpreterToolResources
 {
     private ChangeTrackingList<string> _fileIds = new ChangeTrackingList<string>();

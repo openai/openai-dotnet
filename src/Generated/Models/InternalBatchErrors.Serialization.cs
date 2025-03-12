@@ -42,7 +42,7 @@ namespace OpenAI.Batch
                 }
                 writer.WriteEndArray();
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -110,10 +110,7 @@ namespace OpenAI.Batch
                     data = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchErrors(@object, data ?? new ChangeTrackingList<InternalBatchError>(), additionalBinaryDataProperties);
         }

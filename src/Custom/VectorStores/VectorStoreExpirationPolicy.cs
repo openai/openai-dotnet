@@ -8,7 +8,7 @@ namespace OpenAI.VectorStores;
 /// Represents the the configuration that controls when a vector store will be automatically deleted.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("VectorStoreExpirationAfter")]
+[CodeGenType("VectorStoreExpirationAfter")]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(VectorStoreExpirationAnchor), typeof(int), typeof(IDictionary<string, BinaryData>))]
@@ -51,12 +51,12 @@ public partial class VectorStoreExpirationPolicy
     /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
     /// <param name="anchor"> Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`. </param>
     /// <param name="days"> The number of days after the anchor time that the vector store will expire. </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
+    /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
     [SetsRequiredMembers]
-    internal VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days, IDictionary<string, BinaryData> additionalBinaryDataProperties)
     {
         Anchor = anchor;
         Days = days;
-        SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
+        SerializedAdditionalRawData = additionalBinaryDataProperties ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 }

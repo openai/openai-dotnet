@@ -5,7 +5,7 @@ using System.Linq;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeRequestSystemMessageItem")]
+[CodeGenType("RealtimeRequestSystemMessageItem")]
 internal partial class InternalRealtimeRequestSystemMessageItem
 {
     [CodeGenMember("Content")]

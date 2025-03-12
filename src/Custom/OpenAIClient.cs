@@ -9,6 +9,7 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.RealtimeConversation;
+using OpenAI.Responses;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -25,7 +26,7 @@ namespace OpenAI;
 /// A top-level client factory that enables convenient creation of scenario-specific sub-clients while reusing shared
 /// configuration details like endpoint, authentication, and pipeline customization.
 /// </summary>
-[CodeGenModel("OpenAIClient")]
+[CodeGenType("OpenAIClient")]
 [CodeGenSuppress("OpenAIClient", typeof(ApiKeyCredential))]
 [CodeGenSuppress("OpenAIClient", typeof(Uri), typeof(ApiKeyCredential), typeof(OpenAIClientOptions))]
 [CodeGenSuppress("_cachedAssistantClient")]
@@ -44,6 +45,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedOpenAIModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
 [CodeGenSuppress("_cachedRealtimeConversationClient")]
+[CodeGenSuppress("_cachedResponsesClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("GetAssistantClient")]
 [CodeGenSuppress("GetAudioClient")]
@@ -61,15 +63,14 @@ namespace OpenAI;
 [CodeGenSuppress("GetModelClient")]
 [CodeGenSuppress("GetModerationClient")]
 [CodeGenSuppress("GetRealtimeConversationClient")]
+[CodeGenSuppress("GetResponsesClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
 public partial class OpenAIClient
 {
     private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
-    private const string OpenAIBetaHeaderValue = "assistants=v2";
 
     private static class KnownHeaderNames
     {
-        public const string OpenAIBeta = "OpenAI-Beta";
         public const string OpenAIOrganization = "OpenAI-Organization";
         public const string OpenAIProject = "OpenAI-Project";
         public const string UserAgent = "User-Agent";
@@ -242,6 +243,17 @@ public partial class OpenAIClient
     public virtual ModerationClient GetModerationClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
+    /// Gets a new instance of <see cref="OpenAIResponseClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method is functionally equivalent to using the <see cref="OpenAIResponseClient"/> constructor directly with
+    /// the same configuration details.
+    /// </remarks>
+    /// <returns> A new <see cref="OpenAIResponseClient"/>. </returns>
+    public virtual OpenAIResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
+
+    /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
@@ -261,7 +273,6 @@ public partial class OpenAIClient
         return ClientPipeline.Create(
             options,
             perCallPolicies: [
-                CreateAddBetaFeatureHeaderPolicy(),
                 CreateAddCustomHeadersPolicy(options),
             ],
             perTryPolicies: [
@@ -274,17 +285,6 @@ public partial class OpenAIClient
     internal static Uri GetEndpoint(OpenAIClientOptions options = null)
     {
         return options?.Endpoint ?? new(OpenAIV1Endpoint);
-    }
-
-    private static PipelinePolicy CreateAddBetaFeatureHeaderPolicy()
-    {
-        return new GenericActionPipelinePolicy((message) =>
-        {
-            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.OpenAIBeta, out string _) == false)
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIBeta, OpenAIBetaHeaderValue);
-            }
-        });
     }
 
     private static PipelinePolicy CreateAddCustomHeadersPolicy(OpenAIClientOptions options = null)

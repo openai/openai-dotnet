@@ -79,10 +79,7 @@ namespace OpenAI.RealtimeConversation
                     itemId = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeClientEventConversationItemDelete(kind, eventId, additionalBinaryDataProperties, itemId);
         }

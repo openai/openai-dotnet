@@ -12,7 +12,7 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStores.VectorStoreStatus status, DateTimeOffset? lastActiveAt)
+        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? lastActiveAt)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -24,7 +24,7 @@ namespace OpenAI.VectorStores
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStores.VectorStoreStatus status, DateTimeOffset? expiresAt, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata, InternalVectorStoreObjectObject @object, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? expiresAt, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata, InternalVectorStoreObjectObject @object, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -35,7 +35,7 @@ namespace OpenAI.VectorStores
             ExpiresAt = expiresAt;
             LastActiveAt = lastActiveAt;
             Metadata = metadata;
-            this.Object = @object;
+            Object = @object;
             ExpirationPolicy = expirationPolicy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -50,7 +50,7 @@ namespace OpenAI.VectorStores
 
         public VectorStoreFileCounts FileCounts { get; }
 
-        public VectorStores.VectorStoreStatus Status { get; }
+        public VectorStoreStatus Status { get; }
 
         public DateTimeOffset? ExpiresAt { get; }
 

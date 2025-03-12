@@ -8,7 +8,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when creating a new <see cref="Assistant"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("CreateThreadRequest")]
+[CodeGenType("CreateThreadRequest")]
 public partial class ThreadCreationOptions
 {
     // CUSTOM: reuse a common type for request/response model representations of tool resources

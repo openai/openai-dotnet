@@ -5,7 +5,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents the result data for an image generation request.
 /// </summary>
-[CodeGenModel("Image")]
+[CodeGenType("Image")]
 public partial class GeneratedImage
 {
     // CUSTOM:

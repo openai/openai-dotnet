@@ -11,7 +11,7 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenModel("ChatCompletionTool")]
+[CodeGenType("ChatCompletionTool")]
 public partial class ChatTool
 {
     // CUSTOM: Made internal.
@@ -116,7 +116,7 @@ public partial class ChatTool
     ///         about structured outputs in the
     ///         <see href="https://platform.openai.com/docs/api-reference/chat/docs/guides/function-calling">function calling guide</see>.
     ///     </para>
-    /// </param> 
+    /// </param>
     public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? functionSchemaIsStrict = null)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));

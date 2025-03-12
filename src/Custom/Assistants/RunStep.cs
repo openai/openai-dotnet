@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObject")]
+[CodeGenType("RunStepObject")]
 public partial class RunStep
 {
     // CUSTOM: Made internal.

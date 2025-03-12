@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeTurnDetection")]
+[CodeGenType("RealtimeTurnDetection")]
 public partial class ConversationTurnDetectionOptions
 {
     [CodeGenMember("Kind")]

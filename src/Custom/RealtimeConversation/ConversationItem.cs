@@ -5,7 +5,7 @@ using System.Linq;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeConversationRequestItem")]
+[CodeGenType("RealtimeConversationRequestItem")]
 public partial class ConversationItem
 {
     public string FunctionCallId => (this as InternalRealtimeRequestFunctionCallItem)?.CallId;

@@ -1,6 +1,6 @@
 namespace OpenAI.Embeddings;
 
-[CodeGenModel("CreateEmbeddingResponseUsage")]
+[CodeGenType("CreateEmbeddingResponseUsage")]
 public partial class EmbeddingTokenUsage
 {
     // CUSTOM: Renamed.

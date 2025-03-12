@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace OpenAI.Assistants;
 
-[CodeGenClient("Threads")]
+[CodeGenType("Threads")]
 [CodeGenSuppress("InternalAssistantThreadClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 [CodeGenSuppress("CreateThreadAsync", typeof(ThreadCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateThread", typeof(ThreadCreationOptions), typeof(CancellationToken))]

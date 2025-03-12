@@ -51,7 +51,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -118,10 +118,7 @@ namespace OpenAI.Chat
                     audioBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatOutputAudio(id, expiresAt, transcript, audioBytes, additionalBinaryDataProperties);
         }

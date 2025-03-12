@@ -42,7 +42,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToString());
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
@@ -122,10 +122,7 @@ namespace OpenAI.RealtimeConversation
                     content = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeResponseMessageItem(
                 @object,

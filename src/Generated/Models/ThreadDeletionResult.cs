@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
         {
             Deleted = deleted;
             ThreadId = threadId;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

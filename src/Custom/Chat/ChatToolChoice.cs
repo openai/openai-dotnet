@@ -24,7 +24,7 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenModel("ChatCompletionToolChoice")]
+[CodeGenType("ChatCompletionToolChoice")]
 public partial class ChatToolChoice
 {
     private readonly bool _predefined;

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenAI.Moderations;
 
-[CodeGenModel("CreateModerationResponse")]
+[CodeGenType("CreateModerationResponse")]
 [CodeGenSuppress("Results")]
 [CodeGenSuppress(nameof(ModerationResultCollection))]
 [CodeGenSuppress(nameof(ModerationResultCollection), typeof(string), typeof(string))]

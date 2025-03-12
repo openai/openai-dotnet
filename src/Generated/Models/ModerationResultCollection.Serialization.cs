@@ -29,7 +29,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -60,7 +60,7 @@ namespace OpenAI.Moderations
                 throw new FormatException($"The model {nameof(ModerationResultCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ModerationResultCollection.DeserializeModerationResultCollection(document.RootElement, options);
+            return DeserializeModerationResultCollection(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<ModerationResultCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -87,7 +87,7 @@ namespace OpenAI.Moderations
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ModerationResultCollection.DeserializeModerationResultCollection(document.RootElement, options);
+                        return DeserializeModerationResultCollection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ModerationResultCollection)} does not support reading '{options.Format}' format.");
@@ -109,7 +109,7 @@ namespace OpenAI.Moderations
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return ModerationResultCollection.DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

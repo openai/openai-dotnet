@@ -22,7 +22,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
@@ -39,7 +39,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("has_more"u8);
                 writer.WriteBooleanValue(HasMore);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -70,7 +70,7 @@ namespace OpenAI.Files
                 throw new FormatException($"The model {nameof(OpenAIFileCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return OpenAIFileCollection.DeserializeOpenAIFileCollection(document.RootElement, options);
+            return DeserializeOpenAIFileCollection(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<OpenAIFileCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -97,7 +97,7 @@ namespace OpenAI.Files
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return OpenAIFileCollection.DeserializeOpenAIFileCollection(document.RootElement, options);
+                        return DeserializeOpenAIFileCollection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(OpenAIFileCollection)} does not support reading '{options.Format}' format.");
@@ -119,7 +119,7 @@ namespace OpenAI.Files
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return OpenAIFileCollection.DeserializeOpenAIFileCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeOpenAIFileCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

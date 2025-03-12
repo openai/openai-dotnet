@@ -4,88 +4,85 @@ namespace OpenAI.Assistants;
  * This file stubs and performs minimal customization to generated internal types for the OpenAI.Assistants namespace.
  */
 
-[CodeGenModel("SubmitToolOutputsRunRequest")]
+[CodeGenType("SubmitToolOutputsRunRequest")]
 internal partial class InternalSubmitToolOutputsRunRequest { }
 
-[CodeGenModel("CreateAssistantRequestModel")]
-internal readonly partial struct InternalCreateAssistantRequestModel { }
-
-[CodeGenModel("MessageContentTextObjectAnnotation")]
+[CodeGenType("MessageContentTextObjectAnnotation")]
 internal partial class InternalMessageContentTextObjectAnnotation { }
 
-[CodeGenModel("MessageContentTextAnnotationsFileCitationObject")]
+[CodeGenType("MessageContentTextAnnotationsFileCitationObject")]
 internal partial class InternalMessageContentTextAnnotationsFileCitationObject { }
 
-[CodeGenModel("MessageContentTextAnnotationsFilePathObject")]
+[CodeGenType("MessageContentTextAnnotationsFilePathObject")]
 internal partial class InternalMessageContentTextAnnotationsFilePathObject { }
 
-[CodeGenModel("MessageDeltaContentImageFileObjectImageFile")]
+[CodeGenType("MessageDeltaContentImageFileObjectImageFile")]
 internal partial class InternalMessageDeltaContentImageFileObjectImageFile
 {
     [CodeGenMember("Detail")]
     internal string Detail { get; set; }
 }
 
-[CodeGenModel("MessageDeltaContentImageUrlObjectImageUrl")]
+[CodeGenType("MessageDeltaContentImageUrlObjectImageUrl")]
 internal partial class InternalMessageDeltaContentImageUrlObjectImageUrl
 {
     [CodeGenMember("Detail")]
     internal string Detail { get; }
 }
 
-[CodeGenModel("MessageDeltaContentImageFileObject")]
+[CodeGenType("MessageDeltaContentImageFileObject")]
 internal partial class InternalMessageDeltaContentImageFileObject { }
 
-[CodeGenModel("MessageDeltaContentImageUrlObject")]
+[CodeGenType("MessageDeltaContentImageUrlObject")]
 internal partial class InternalMessageDeltaContentImageUrlObject { }
 
-[CodeGenModel("MessageDeltaObjectDelta")]
+[CodeGenType("MessageDeltaObjectDelta")]
 internal partial class InternalMessageDeltaObjectDelta
 {
     [CodeGenMember("Role")]
     internal MessageRole? Role { get; }
 }
 
-[CodeGenModel("MessageDeltaContentTextObject")]
+[CodeGenType("MessageDeltaContentTextObject")]
 internal partial class InternalMessageDeltaContentTextObject { }
 
-[CodeGenModel("MessageDeltaContentTextObjectText")]
+[CodeGenType("MessageDeltaContentTextObjectText")]
 internal partial class InternalMessageDeltaContentTextObjectText { }
 
-[CodeGenModel("MessageDeltaContentTextAnnotationsFileCitationObject")]
+[CodeGenType("MessageDeltaContentTextAnnotationsFileCitationObject")]
 internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObject { }
 
-[CodeGenModel("MessageDeltaTextContentAnnotation")]
+[CodeGenType("MessageDeltaTextContentAnnotation")]
 internal partial class InternalMessageDeltaTextContentAnnotation { }
 
-[CodeGenModel("MessageDeltaContentTextAnnotationsFileCitationObjectFileCitation")]
+[CodeGenType("MessageDeltaContentTextAnnotationsFileCitationObjectFileCitation")]
 internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation { }
 
-[CodeGenModel("RunStepDeltaObject")]
+[CodeGenType("RunStepDeltaObject")]
 internal partial class InternalRunStepDelta { private readonly object Object; }
 
-[CodeGenModel("RunStepDeltaObjectDelta")]
+[CodeGenType("RunStepDeltaObjectDelta")]
 internal partial class InternalRunStepDeltaObjectDelta { }
 
-[CodeGenModel("MessageDeltaContentTextAnnotationsFilePathObject")]
+[CodeGenType("MessageDeltaContentTextAnnotationsFilePathObject")]
 internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObject { }
 
-[CodeGenModel("MessageDeltaContentTextAnnotationsFilePathObjectFilePath")]
+[CodeGenType("MessageDeltaContentTextAnnotationsFilePathObjectFilePath")]
 internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath { }
 
-[CodeGenModel("MessageDeltaContent")]
+[CodeGenType("MessageDeltaContent")]
 internal partial class InternalMessageDeltaContent { }
 
-[CodeGenModel("DeleteAssistantResponseObject")]
+[CodeGenType("DeleteAssistantResponseObject")]
 internal readonly partial struct InternalDeleteAssistantResponseObject { }
 
-[CodeGenModel("DeleteThreadResponseObject")]
+[CodeGenType("DeleteThreadResponseObject")]
 internal readonly partial struct InternalDeleteThreadResponseObject { }
 
-[CodeGenModel("DeleteMessageResponseObject")]
+[CodeGenType("DeleteMessageResponseObject")]
 internal readonly partial struct InternalDeleteMessageResponseObject { }
 
-[CodeGenModel("CreateThreadAndRunRequest")]
+[CodeGenType("CreateThreadAndRunRequest")]
 internal partial class InternalCreateThreadAndRunRequest
 {
     public string Model { get; set; }
@@ -94,291 +91,291 @@ internal partial class InternalCreateThreadAndRunRequest
     public ToolConstraint ToolChoice { get; set; }
 }
 
-[CodeGenModel("MessageContentImageUrlObjectImageUrl")]
+[CodeGenType("MessageContentImageUrlObjectImageUrl")]
 internal partial class InternalMessageContentImageUrlObjectImageUrl
 {
     [CodeGenMember("Detail")]
     internal string Detail { get; }
 }
 
-[CodeGenModel("MessageContentImageFileObjectImageFile")]
+[CodeGenType("MessageContentImageFileObjectImageFile")]
 internal partial class InternalMessageContentItemFileObjectImageFile
 {
     [CodeGenMember("Detail")]
     internal string Detail { get; set; }
 }
 
-[CodeGenModel("MessageContentTextObjectText")]
+[CodeGenType("MessageContentTextObjectText")]
 internal partial class InternalMessageContentTextObjectText { }
 
-[CodeGenModel("MessageContentRefusalObjectType")]
+[CodeGenType("MessageContentRefusalObjectType")]
 internal readonly partial struct InternalMessageContentRefusalObjectType { }
 
-[CodeGenModel("RunStepDetailsMessageCreationObjectMessageCreation")]
+[CodeGenType("RunStepDetailsMessageCreationObjectMessageCreation")]
 internal partial class InternalRunStepDetailsMessageCreationObjectMessageCreation { }
 
-[CodeGenModel("RunStepDetailsToolCallsFunctionObjectFunction")]
+[CodeGenType("RunStepDetailsToolCallsFunctionObjectFunction")]
 internal partial class InternalRunStepDetailsToolCallsFunctionObjectFunction { }
 
-[CodeGenModel("RunStepDetailsToolCallsCodeObjectCodeInterpreter")]
+[CodeGenType("RunStepDetailsToolCallsCodeObjectCodeInterpreter")]
 internal partial class InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter { }
 
-[CodeGenModel("RunStepDetailsToolCallsCodeOutputImageObjectImage")]
+[CodeGenType("RunStepDetailsToolCallsCodeOutputImageObjectImage")]
 internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObjectImage { }
 
-[CodeGenModel("MessageContentTextAnnotationsFileCitationObjectFileCitation")]
+[CodeGenType("MessageContentTextAnnotationsFileCitationObjectFileCitation")]
 internal partial class InternalMessageContentTextAnnotationsFileCitationObjectFileCitation { }
 
-[CodeGenModel("MessageContentTextAnnotationsFilePathObjectFilePath")]
+[CodeGenType("MessageContentTextAnnotationsFilePathObjectFilePath")]
 internal partial class InternalMessageContentTextAnnotationsFilePathObjectFilePath { }
 
-[CodeGenModel("RunObjectRequiredAction")]
+[CodeGenType("RunObjectRequiredAction1")]
 internal partial class InternalRunRequiredAction { private readonly object Type; }
 
-[CodeGenModel("RunObjectRequiredActionSubmitToolOutputs")]
+[CodeGenType("RunObjectRequiredActionSubmitToolOutputs")]
 internal partial class InternalRunObjectRequiredActionSubmitToolOutputs { private readonly object Type; }
 
-[CodeGenModel("RunToolCallObjectFunction")]
+[CodeGenType("RunToolCallObjectFunction")]
 internal partial class InternalRunToolCallObjectFunction { }
 
-[CodeGenModel("ListAssistantsResponse")]
+[CodeGenType("ListAssistantsResponse")]
 internal partial class InternalListAssistantsResponse : IInternalListResponse<Assistant> { }
 
-[CodeGenModel("ListAssistantsResponseObject")]
+[CodeGenType("ListAssistantsResponseObject")]
 internal readonly partial struct InternalListAssistantsResponseObject { }
 
-[CodeGenModel("ListThreadsResponse")]
+[CodeGenType("ListThreadsResponse")]
 internal partial class InternalListThreadsResponse : IInternalListResponse<AssistantThread> { }
 
-[CodeGenModel("ListThreadsResponseObject")]
+[CodeGenType("ListThreadsResponseObject")]
 internal readonly partial struct InternalListThreadsResponseObject { }
 
-[CodeGenModel("ListMessagesResponse")]
+[CodeGenType("ListMessagesResponse")]
 internal partial class InternalListMessagesResponse : IInternalListResponse<ThreadMessage> { }
 
-[CodeGenModel("ListMessagesResponseObject")]
+[CodeGenType("ListMessagesResponseObject")]
 internal readonly partial struct InternalListMessagesResponseObject { }
 
-[CodeGenModel("ListRunsResponse")]
+[CodeGenType("ListRunsResponse")]
 internal partial class InternalListRunsResponse : IInternalListResponse<ThreadRun> { }
 
-[CodeGenModel("ListRunsResponseObject")]
+[CodeGenType("ListRunsResponseObject")]
 internal readonly partial struct InternalListRunsResponseObject { }
 
-[CodeGenModel("ListRunStepsResponse")]
+[CodeGenType("ListRunStepsResponse")]
 internal partial class InternalListRunStepsResponse : IInternalListResponse<RunStep> { }
 
-[CodeGenModel("ListRunStepsResponseObject")]
+[CodeGenType("ListRunStepsResponseObject")]
 internal readonly partial struct InternalListRunStepsResponseObject { }
 
-[CodeGenModel("RunStepDetailsToolCallsCodeObject")]
+[CodeGenType("RunStepDetailsToolCallsCodeObject")]
 internal partial class InternalRunStepDetailsToolCallsCodeObject { }
 
-[CodeGenModel("RunStepDetailsToolCallsFileSearchObject")]
+[CodeGenType("RunStepDetailsToolCallsFileSearchObject")]
 internal partial class InternalRunStepDetailsToolCallsFileSearchObject { }
 
-[CodeGenModel("RunStepDetailsToolCallsFunctionObject")]
+[CodeGenType("RunStepDetailsToolCallsFunctionObject")]
 internal partial class InternalRunStepDetailsToolCallsFunctionObject { }
 
-[CodeGenModel("TruncationObjectType")]
+[CodeGenType("TruncationObjectType")]
 internal readonly partial struct InternalTruncationObjectType { }
 
-[CodeGenModel("AssistantsNamedToolChoiceType")]
+[CodeGenType("AssistantsNamedToolChoiceType")]
 internal readonly partial struct InternalAssistantsNamedToolChoiceType { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeOutputImageObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeOutputImageObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject
 {
     [CodeGenMember("Logs")]
     public string InternalLogs { get; set; }
 }
 
-[CodeGenModel("RunStepDeltaStepDetailsMessageCreationObject")]
+[CodeGenType("RunStepDeltaStepDetailsMessageCreationObject")]
 internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsFileSearchObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsFileSearchObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject
 {
     [CodeGenMember("FileSearch")]
     public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; set; }
 }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsFunctionObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsFunctionObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsObjectToolCallsObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsObjectToolCallsObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject { }
 
-[CodeGenModel("RunStepDeltaStepDetailsMessageCreationObjectMessageCreation")]
+[CodeGenType("RunStepDeltaStepDetailsMessageCreationObjectMessageCreation")]
 internal partial class InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage { }
 
-[CodeGenModel("RunStepDeltaStepDetails")]
+[CodeGenType("RunStepDeltaStepDetails")]
 internal partial class InternalRunStepDeltaStepDetails { }
 
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsFunctionObjectFunction")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsFunctionObjectFunction")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction { }
 
-[CodeGenModel("AssistantsNamedToolChoiceFunction")]
+[CodeGenType("AssistantsNamedToolChoiceFunction")]
 internal partial class InternalAssistantsNamedToolChoiceFunction { }
 
-[CodeGenModel("AssistantObjectObject")]
+[CodeGenType("AssistantObjectObject")]
 internal readonly partial struct InternalAssistantObjectObject { }
 
-[CodeGenModel("MessageObjectObject")]
+[CodeGenType("MessageObjectObject")]
 internal readonly partial struct InternalMessageObjectObject { }
 
-[CodeGenModel("RunObjectObject")]
+[CodeGenType("RunObjectObject")]
 internal readonly partial struct InternalRunObjectObject { }
 
-[CodeGenModel("RunStepObjectObject")]
+[CodeGenType("RunStepObjectObject")]
 internal readonly partial struct InternalRunStepObjectObject { }
 
-[CodeGenModel("ThreadObjectObject")]
+[CodeGenType("ThreadObjectObject")]
 internal readonly partial struct InternalThreadObjectObject { }
 
-[CodeGenModel("MessageRequestContentTextObjectType")]
+[CodeGenType("MessageRequestContentTextObjectType")]
 internal readonly partial struct InternalMessageRequestContentTextObjectType { }
 
-[CodeGenModel("MessageContentImageUrlObjectImageUrlDetail")]
+[CodeGenType("MessageContentImageUrlObjectImageUrlDetail")]
 internal readonly partial struct InternalMessageContentImageUrlObjectImageUrlDetail { }
 
-[CodeGenModel("MessageContentImageFileObjectImageFileDetail")]
+[CodeGenType("MessageContentImageFileObjectImageFileDetail")]
 internal readonly partial struct InternalMessageContentImageFileObjectImageFileDetail { }
 
-[CodeGenModel("MessageDeltaContentImageFileObjectImageFileDetail")]
+[CodeGenType("MessageDeltaContentImageFileObjectImageFileDetail")]
 internal readonly partial struct InternalMessageDeltaContentImageFileObjectImageFileDetail { }
 
-[CodeGenModel("MessageDeltaContentImageUrlObjectImageUrlDetail")]
+[CodeGenType("MessageDeltaContentImageUrlObjectImageUrlDetail")]
 internal readonly partial struct InternalMessageDeltaContentImageUrlObjectImageUrlDetail { }
 
-[CodeGenModel("MessageDeltaObject")]
+[CodeGenType("MessageDeltaObject")]
 internal partial class InternalMessageDeltaObject { }
 
-[CodeGenModel("MessageDeltaObjectDeltaRole")]
+[CodeGenType("MessageDeltaObjectDeltaRole")]
 internal readonly partial struct InternalMessageDeltaObjectDeltaRole { }
 
-[CodeGenModel("MessageDeltaObjectObject")]
+[CodeGenType("MessageDeltaObjectObject")]
 internal readonly partial struct InternalMessageDeltaObjectObject { }
 
-[CodeGenModel("MessageObjectAttachment")]
+[CodeGenType("MessageObjectAttachment")]
 internal partial class InternalMessageObjectAttachment { }
 
-[CodeGenModel("MessageContentImageFileObjectType")]
+[CodeGenType("MessageContentImageFileObjectType")]
 internal readonly partial struct InternalMessageContentImageFileObjectType { }
 
-[CodeGenModel("MessageContentImageUrlObjectType")]
+[CodeGenType("MessageContentImageUrlObjectType")]
 internal readonly partial struct InternalMessageContentImageUrlObjectType { }
 
-[CodeGenModel("MessageContentTextObjectType")]
+[CodeGenType("MessageContentTextObjectType")]
 internal readonly partial struct InternalMessageContentTextObjectType { }
 
-[CodeGenModel("RunObjectRequiredActionType")]
+[CodeGenType("RunObjectRequiredAction1Type")]
 internal readonly partial struct InternalRunObjectRequiredActionType { }
 
-[CodeGenModel("RunStepDeltaObjectObject")]
+[CodeGenType("RunStepDeltaObjectObject")]
 internal readonly partial struct InternalRunStepDeltaObjectObject { }
 
-[CodeGenModel("RunToolCallObjectType")]
+[CodeGenType("RunToolCallObjectType")]
 internal readonly partial struct InternalRunToolCallObjectType { }
 
-[CodeGenModel("MessageObjectRole")]
+[CodeGenType("MessageObjectRole")]
 internal readonly partial struct InternalMessageObjectRole { }
 
-[CodeGenModel("CreateRunRequestModel")]
-internal readonly partial struct InternalCreateRunRequestModel { }
-
-[CodeGenModel("CreateAssistantRequestToolResources")]
+[CodeGenType("CreateAssistantRequestToolResources1")]
 internal partial class InternalCreateAssistantRequestToolResources { }
 
-[CodeGenModel("CreateAssistantRequestToolResourcesCodeInterpreter")]
+[CodeGenType("CreateAssistantRequestToolResourcesCodeInterpreter")]
 internal partial class InternalCreateAssistantRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("CreateThreadAndRunRequestModel")]
+[CodeGenType("CreateThreadAndRunRequestModel")]
 internal readonly partial struct InternalCreateThreadAndRunRequestModel { }
 
-[CodeGenModel("CreateThreadAndRunRequestToolChoice")]
+[CodeGenType("CreateThreadAndRunRequestToolChoice1")]
 internal readonly partial struct InternalCreateThreadAndRunRequestToolChoice { }
 
-[CodeGenModel("CreateThreadAndRunRequestToolResources")]
+[CodeGenType("CreateThreadAndRunRequestToolResources1")]
 internal partial class InternalCreateThreadAndRunRequestToolResources { }
 
-[CodeGenModel("CreateThreadAndRunRequestToolResourcesCodeInterpreter")]
+[CodeGenType("CreateThreadAndRunRequestToolResourcesCodeInterpreter")]
 internal partial class InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("CreateThreadRequestToolResources")]
+[CodeGenType("CreateThreadRequestToolResources1")]
 internal partial class InternalCreateThreadRequestToolResources { }
 
-[CodeGenModel("CreateThreadRequestToolResourcesCodeInterpreter")]
+[CodeGenType("CreateThreadRequestToolResourcesCodeInterpreter")]
 internal partial class InternalCreateThreadRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("CreateThreadRequestToolResourcesFileSearchBase")]
+[CodeGenType("CreateThreadRequestToolResourcesFileSearchBase")]
 internal partial class InternalCreateThreadRequestToolResourcesFileSearchBase { }
 
-[CodeGenModel("ModifyAssistantRequestToolResources")]
+[CodeGenType("ModifyAssistantRequestToolResources1")]
 internal partial class InternalModifyAssistantRequestToolResources { }
 
-[CodeGenModel("ModifyAssistantRequestToolResourcesCodeInterpreter")]
+[CodeGenType("ModifyAssistantRequestToolResourcesCodeInterpreter")]
 internal partial class InternalModifyAssistantRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("ModifyThreadRequestToolResources")]
+[CodeGenType("ModifyThreadRequestToolResources1")]
 internal partial class InternalModifyThreadRequestToolResources { }
 
-[CodeGenModel("ModifyThreadRequestToolResourcesCodeInterpreter")]
+[CodeGenType("ModifyThreadRequestToolResourcesCodeInterpreter")]
 internal partial class InternalModifyThreadRequestToolResourcesCodeInterpreter { }
 
-[CodeGenModel("ThreadObjectToolResources")]
+[CodeGenType("ThreadObjectToolResources1")]
 internal partial class InternalThreadObjectToolResources { }
 
-[CodeGenModel("ThreadObjectToolResourcesCodeInterpreter")]
+[CodeGenType("ThreadObjectToolResourcesCodeInterpreter")]
 internal partial class InternalThreadObjectToolResourcesCodeInterpreter { }
 
-[CodeGenModel("ThreadObjectToolResourcesFileSearch")]
+[CodeGenType("ThreadObjectToolResourcesFileSearch")]
 internal partial class InternalThreadObjectToolResourcesFileSearch { }
 
-[CodeGenModel("AssistantToolsFileSearchTypeOnly")]
+[CodeGenType("AssistantToolsFileSearchTypeOnly")]
 internal partial class InternalAssistantToolsFileSearchTypeOnly { }
 
-[CodeGenModel("AssistantToolsFileSearchTypeOnlyType")]
+[CodeGenType("AssistantToolsFileSearchTypeOnlyType")]
 internal readonly partial struct InternalAssistantToolsFileSearchTypeOnlyType { }
 
-[CodeGenModel("AssistantResponseFormatText")]
+[CodeGenType("AssistantResponseFormatText")]
 internal partial class InternalAssistantResponseFormatText { }
 
-[CodeGenModel("AssistantResponseFormatJsonObject")]
+[CodeGenType("AssistantResponseFormatJsonObject")]
 internal partial class InternalAssistantResponseFormatJsonObject { }
 
-[CodeGenModel("AssistantResponseFormatJsonSchema")]
+[CodeGenType("AssistantResponseFormatJsonSchema")]
 internal partial class InternalAssistantResponseFormatJsonSchema { }
 
-[CodeGenModel("UnknownAssistantResponseFormat")]
+[CodeGenType("UnknownAssistantResponseFormat")]
 internal partial class InternalUnknownAssistantResponseFormat { }
 
-[CodeGenModel("MessageDeltaContentRefusalObject")]
+[CodeGenType("MessageDeltaContentRefusalObject")]
 internal partial class InternalMessageDeltaContentRefusalObject { }
 
-[CodeGenModel("ToolResourcesFileSearchIdsOnly")]
+[CodeGenType("ToolResourcesFileSearchIdsOnly")]
 internal partial class InternalToolResourcesFileSearchIdsOnly { }
 
-[CodeGenModel("RunStepDetailsToolCallsFileSearchRankingOptionsObject")]
+[CodeGenType("RunStepDetailsToolCallsFileSearchRankingOptionsObject")]
 internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject { }
 
-[CodeGenModel("RunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker")]
+[CodeGenType("RunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker")]
 internal readonly partial struct InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker { }
 
-[CodeGenModel("IncludedRunStepProperty")]
+[CodeGenType("IncludedRunStepProperty")]
 internal readonly partial struct InternalIncludedRunStepProperty { }
+
+[CodeGenType("AssistantSupportedModels")]
+internal readonly partial struct InternalAssistantSupportedModels { }

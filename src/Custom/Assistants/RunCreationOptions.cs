@@ -1,3 +1,4 @@
+using OpenAI.Chat;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,7 +11,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when creating a new <see cref="ThreadRun"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("CreateRunRequest")]
+[CodeGenType("CreateRunRequest")]
 [CodeGenSuppress("RunCreationOptions", typeof(string))]
 [CodeGenSerialization(nameof(ToolConstraint), "tool_choice", SerializationValueHook = nameof(SerializeToolConstraint))]
 public partial class RunCreationOptions
@@ -130,6 +131,10 @@ public partial class RunCreationOptions
     /// </summary>
     [CodeGenMember("ToolChoice")]
     public ToolConstraint ToolConstraint { get; set; }
+
+    // CUSTOM: Made internal.
+    [CodeGenMember("ReasoningEffort")]
+    internal ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
     /// <summary>
     /// Creates a new instance of <see cref="RunCreationOptions"/>.

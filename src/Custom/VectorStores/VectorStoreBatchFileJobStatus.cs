@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.VectorStores;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("VectorStoreFileBatchObjectStatus")]
+[CodeGenType("VectorStoreFileBatchObjectStatus")]
 public readonly partial struct VectorStoreBatchFileJobStatus
 {
 }

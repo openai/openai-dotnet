@@ -2,7 +2,7 @@
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatCompletionMessageToolCallFunction")]
+[CodeGenType("ChatCompletionMessageToolCallFunction")]
 [CodeGenSerialization(nameof(Arguments), SerializationValueHook = nameof(SerializeArgumentsValue), DeserializationValueHook = nameof(DeserializeArgumentsValue))]
 internal partial class InternalChatCompletionMessageToolCallFunction
 {

@@ -8,37 +8,37 @@ namespace OpenAI.Chat
 {
     internal static partial class ChatFinishReasonExtensions
     {
-        public static string ToSerialString(this Chat.ChatFinishReason value) => value switch
+        public static string ToSerialString(this ChatFinishReason value) => value switch
         {
-            Chat.ChatFinishReason.Stop => "stop",
-            Chat.ChatFinishReason.Length => "length",
-            Chat.ChatFinishReason.ToolCalls => "tool_calls",
-            Chat.ChatFinishReason.ContentFilter => "content_filter",
-            Chat.ChatFinishReason.FunctionCall => "function_call",
+            ChatFinishReason.Stop => "stop",
+            ChatFinishReason.Length => "length",
+            ChatFinishReason.ToolCalls => "tool_calls",
+            ChatFinishReason.ContentFilter => "content_filter",
+            ChatFinishReason.FunctionCall => "function_call",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatFinishReason value.")
         };
 
-        public static Chat.ChatFinishReason ToChatFinishReason(this string value)
+        public static ChatFinishReason ToChatFinishReason(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "stop"))
             {
-                return Chat.ChatFinishReason.Stop;
+                return ChatFinishReason.Stop;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "length"))
             {
-                return Chat.ChatFinishReason.Length;
+                return ChatFinishReason.Length;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "tool_calls"))
             {
-                return Chat.ChatFinishReason.ToolCalls;
+                return ChatFinishReason.ToolCalls;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "content_filter"))
             {
-                return Chat.ChatFinishReason.ContentFilter;
+                return ChatFinishReason.ContentFilter;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "function_call"))
             {
-                return Chat.ChatFinishReason.FunctionCall;
+                return ChatFinishReason.FunctionCall;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatFinishReason value.");
         }

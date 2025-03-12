@@ -41,9 +41,9 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                if (options.Format != "W" && Optional.IsCollectionDefined(Metadata))
                 {
                     writer.WritePropertyName("metadata"u8);
                     writer.WriteStartObject();
@@ -67,21 +67,21 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
             {
-                if (ToolResources != null)
+                if (Optional.IsDefined(ToolResources))
                 {
                     writer.WritePropertyName("tool_resources"u8);
                     writer.WriteObjectValue(ToolResources, options);
                 }
                 else
                 {
-                    writer.WriteNull("toolResources"u8);
+                    writer.WriteNull("tool_resources"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -176,10 +176,7 @@ namespace OpenAI.Assistants
                     toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantThread(
                 id,

@@ -41,7 +41,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("score_threshold"u8);
                 writer.WriteNumberValue(ScoreThreshold);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -81,14 +81,14 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker ranker = default;
+            FileSearchRanker ranker = default;
             float scoreThreshold = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("ranker"u8))
                 {
-                    ranker = new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObjectRanker(prop.Value.GetString());
+                    ranker = new FileSearchRanker(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("score_threshold"u8))
@@ -96,10 +96,7 @@ namespace OpenAI.Assistants
                     scoreThreshold = prop.Value.GetSingle();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject(ranker, scoreThreshold, additionalBinaryDataProperties);
         }

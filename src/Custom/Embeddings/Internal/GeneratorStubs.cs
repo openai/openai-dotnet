@@ -2,14 +2,14 @@ namespace OpenAI.Embeddings;
 
 // CUSTOM: Made internal.
 
-[CodeGenModel("CreateEmbeddingRequestEncodingFormat")]
+[CodeGenType("CreateEmbeddingRequestEncodingFormat")]
 internal readonly partial struct InternalCreateEmbeddingRequestEncodingFormat { }
 
-[CodeGenModel("CreateEmbeddingRequestModel")]
+[CodeGenType("CreateEmbeddingRequestModel")]
 internal readonly partial struct InternalCreateEmbeddingRequestModel { }
 
-[CodeGenModel("CreateEmbeddingResponseObject")]
+[CodeGenType("CreateEmbeddingResponseObject")]
 internal readonly partial struct InternalCreateEmbeddingResponseObject { }
 
-[CodeGenModel("EmbeddingObject")]
+[CodeGenType("EmbeddingObject")]
 internal readonly partial struct InternalEmbeddingObject { }

@@ -1,6 +1,6 @@
 namespace OpenAI.Chat;
 
-[CodeGenModel("UnknownChatCompletionRequestMessage")]
+[CodeGenType("UnknownChatCompletionRequestMessage")]
 internal partial class InternalUnknownChatMessage : ChatMessage
 {
 

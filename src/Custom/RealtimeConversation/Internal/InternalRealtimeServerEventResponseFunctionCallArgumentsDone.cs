@@ -13,6 +13,6 @@ namespace OpenAI.RealtimeConversation;
 /// function call arguments and is typically interpreted as a JSON document with parameterization matching the
 /// associated function definition.
 /// </summary>
-[CodeGenModel("RealtimeServerEventResponseFunctionCallArgumentsDone")]
+[CodeGenType("RealtimeServerEventResponseFunctionCallArgumentsDone")]
 internal partial class InternalRealtimeServerEventResponseFunctionCallArgumentsDone
 { }

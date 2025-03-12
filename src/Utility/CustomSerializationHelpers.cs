@@ -150,4 +150,18 @@ internal static partial class CustomSerializationHelpers
             writer.WriteEndArray();
         }
     }
+
+    internal static void WriteFirstObject<T>(this Utf8JsonWriter writer, ModelReaderWriterOptions options, params T[] values)
+        where T : class, IJsonModel<T>
+    {
+        foreach (T value in values)
+        {
+            if (value is not null)
+            {
+                writer.WriteObjectValue(value, options);
+                break;
+            }
+        }
+
+    }
 }

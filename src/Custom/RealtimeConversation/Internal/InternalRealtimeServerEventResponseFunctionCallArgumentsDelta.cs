@@ -21,6 +21,6 @@ namespace OpenAI.RealtimeConversation;
 /// use of a compatible, incremental parser.
 /// </remarks>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseFunctionCallArgumentsDelta")]
+[CodeGenType("RealtimeServerEventResponseFunctionCallArgumentsDelta")]
 internal partial class InternalRealtimeServerEventResponseFunctionCallArgumentsDelta
 { }

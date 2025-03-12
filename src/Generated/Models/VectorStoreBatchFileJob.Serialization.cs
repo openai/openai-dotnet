@@ -54,14 +54,14 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("file_counts") != true)
             {
                 writer.WritePropertyName("file_counts"u8);
-                writer.WriteObjectValue<VectorStoreFileCounts>(FileCounts, options);
+                writer.WriteObjectValue(FileCounts, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteObjectValue<object>(this.Object, options);
+                writer.WriteObjectValue<object>(Object, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -140,10 +140,7 @@ namespace OpenAI.VectorStores
                     @object = prop.Value.GetObject();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreBatchFileJob(
                 createdAt,

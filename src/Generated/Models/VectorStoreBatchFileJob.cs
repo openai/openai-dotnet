@@ -27,7 +27,7 @@ namespace OpenAI.VectorStores
             Status = status;
             BatchId = batchId;
             FileCounts = fileCounts;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

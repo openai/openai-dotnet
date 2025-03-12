@@ -5,7 +5,7 @@ namespace OpenAI.Moderations;
 
 // CUSTOM:
 // - Removes the redundant classes `ModerationCategories` and `ModerationCategoryScores` and moves their properties into this type.
-[CodeGenModel("CreateModerationResponseResult")]
+[CodeGenType("CreateModerationResponseResult")]
 [CodeGenSuppress("Categories")]
 [CodeGenSuppress("CategoryScores")]
 [CodeGenSuppress("CategoryAppliedInputTypes")]

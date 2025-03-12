@@ -43,17 +43,10 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
-                if (Stream != null)
-                {
-                    writer.WritePropertyName("stream"u8);
-                    writer.WriteBooleanValue(Stream.Value);
-                }
-                else
-                {
-                    writer.WriteNull("stream"u8);
-                }
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -118,10 +111,7 @@ namespace OpenAI.Assistants
                     stream = prop.Value.GetBoolean();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalSubmitToolOutputsRunRequest(toolOutputs, stream, additionalBinaryDataProperties);
         }

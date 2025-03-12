@@ -8,7 +8,7 @@ namespace OpenAI.Chat;
 /// <see cref="ChatCompletionOptions.IncludeLogProbabilities"/> and
 /// <see cref="ChatCompletionOptions.TopLogProbabilityCount"/>.
 /// </summary>
-[CodeGenModel("ChatCompletionTokenLogprobTopLogprob")]
+[CodeGenType("ChatCompletionTokenLogprobTopLogprob")]
 public partial class ChatTokenTopLogProbabilityDetails
 {
     // CUSTOM: Renamed.

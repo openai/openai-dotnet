@@ -29,15 +29,8 @@ namespace OpenAI.VectorStores
             }
             if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                if (Name != null)
-                {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name"u8);
-                }
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -57,17 +50,10 @@ namespace OpenAI.VectorStores
             }
             if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
-                if (ExpirationPolicy != null)
-                {
-                    writer.WritePropertyName("expires_after"u8);
-                    writer.WriteObjectValue<VectorStoreExpirationPolicy>(ExpirationPolicy, options);
-                }
-                else
-                {
-                    writer.WriteNull("expiresAfter"u8);
-                }
+                writer.WritePropertyName("expires_after"u8);
+                writer.WriteObjectValue(ExpirationPolicy, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -154,10 +140,7 @@ namespace OpenAI.VectorStores
                     expirationPolicy = VectorStoreExpirationPolicy.DeserializeVectorStoreExpirationPolicy(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreModificationOptions(name, metadata ?? new ChangeTrackingDictionary<string, string>(), expirationPolicy, additionalBinaryDataProperties);
         }

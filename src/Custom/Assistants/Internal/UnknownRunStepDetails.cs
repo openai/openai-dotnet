@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
-[CodeGenModel("UnknownRunStepDetails")]
+[CodeGenType("UnknownRunStepDetails")]
 internal partial class UnknownRunStepDetails
 {
 }

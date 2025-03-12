@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace OpenAI.RealtimeConversation;
 
-[CodeGenModel("RealtimeRequestAssistantMessageItem")]
+[CodeGenType("RealtimeRequestAssistantMessageItem")]
 [Experimental("OPENAI002")]
 internal partial class InternalRealtimeRequestAssistantMessageItem
 {

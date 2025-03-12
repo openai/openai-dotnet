@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("MessageContent")]
+[CodeGenType("MessageContent")]
 public abstract partial class MessageContent
 {
     /// <summary>

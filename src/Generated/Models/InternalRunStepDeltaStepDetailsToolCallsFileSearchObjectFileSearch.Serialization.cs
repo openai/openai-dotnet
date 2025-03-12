@@ -27,7 +27,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch)} does not support writing '{format}' format.");
             }
-            if (true && Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
+            if (Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
             {
                 writer.WritePropertyName("results"u8);
                 writer.WriteStartArray();
@@ -40,9 +40,9 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
             {
                 writer.WritePropertyName("ranking_options"u8);
-                writer.WriteObjectValue<FileSearchRankingOptions>(RankingOptions, options);
+                writer.WriteObjectValue(RankingOptions, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -110,10 +110,7 @@ namespace OpenAI.Assistants
                     rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(results ?? new ChangeTrackingList<RunStepFileSearchResult>(), rankingOptions, additionalBinaryDataProperties);
         }

@@ -1042,5 +1042,22 @@ public class ChatTests : SyncAsyncTestBase
             options);
     }
 
+    [Test]
+    public async Task WebSearchWorks()
+    {
+        ChatClient client = GetTestClient("gpt-4o-search-preview");
+
+        ChatCompletionOptions options = new()
+        {
+            WebSearchOptions = new(),
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["What was a positive news story from today?"],
+            options);
+
+        Assert.That(completion.Annotations, Has.Count.GreaterThan(0));
+    }
+
     private static ChatClient GetTestClient(string overrideModel = null) => GetTestClient<ChatClient>(TestScenario.Chat, overrideModel);
 }

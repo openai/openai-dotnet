@@ -6,7 +6,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when modifying an existing <see cref="ThreadMessage"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("ModifyMessageRequest")]
+[CodeGenType("ModifyMessageRequest")]
 public partial class MessageModificationOptions
 {
 }

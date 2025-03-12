@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
-[CodeGenModel("UnknownRunStepDetailsToolCallsObjectToolCallsObject")]
+[CodeGenType("UnknownRunStepDetailsToolCallsObjectToolCallsObject")]
 internal partial class UnknownRunStepDetailsToolCallsObjectToolCallsObject
 {
 }

@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatOutputPredictionType")]
+[CodeGenType("ChatOutputPredictionType")]
 internal readonly partial struct InternalChatOutputPredictionKind
 {
     // CUSTOM: Rename for clarity.

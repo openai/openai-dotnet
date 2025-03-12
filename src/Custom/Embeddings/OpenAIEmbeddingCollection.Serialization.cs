@@ -30,7 +30,7 @@ public partial class OpenAIEmbeddingCollection : IJsonModel<OpenAIEmbeddingColle
         writer.WriteStringValue(instance.Object.ToString());
         writer.WritePropertyName("usage"u8);
         writer.WriteObjectValue<EmbeddingTokenUsage>(instance.Usage, options);
-        writer.WriteSerializedAdditionalRawData(instance.SerializedAdditionalRawData, options);
+        writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
 

@@ -1,3 +1,4 @@
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.ServerSentEvents;
@@ -41,15 +42,16 @@ public abstract partial class StreamingUpdate
         UpdateKind = updateKind;
     }
 
-    internal static IEnumerable<StreamingUpdate> FromEvent(SseItem<byte[]> sseItem)
+    internal static IEnumerable<StreamingUpdate> FromSseItem(SseItem<byte[]> sseItem)
     {
         StreamingUpdateReason updateKind = StreamingUpdateReasonExtensions.FromSseEventLabel(sseItem.EventType);
         using JsonDocument dataDocument = JsonDocument.Parse(sseItem.Data);
         JsonElement e = dataDocument.RootElement;
+        ModelReaderWriterOptions serializationOptions = ModelReaderWriterOptions.Json;
 
         return updateKind switch
         {
-            StreamingUpdateReason.ThreadCreated => ThreadUpdate.DeserializeThreadCreationUpdates(e, updateKind),
+            StreamingUpdateReason.ThreadCreated => ThreadUpdate.DeserializeThreadCreationUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.RunCreated
             or StreamingUpdateReason.RunQueued
             or StreamingUpdateReason.RunInProgress
@@ -58,20 +60,20 @@ public abstract partial class StreamingUpdate
             or StreamingUpdateReason.RunFailed
             or StreamingUpdateReason.RunCancelling
             or StreamingUpdateReason.RunCancelled
-            or StreamingUpdateReason.RunExpired => RunUpdate.DeserializeRunUpdates(e, updateKind),
+            or StreamingUpdateReason.RunExpired => RunUpdate.DeserializeRunUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.RunRequiresAction => RequiredActionUpdate.DeserializeRequiredActionUpdates(e),
             StreamingUpdateReason.RunStepCreated
             or StreamingUpdateReason.RunStepInProgress
             or StreamingUpdateReason.RunStepCompleted
             or StreamingUpdateReason.RunStepFailed
             or StreamingUpdateReason.RunStepCancelled
-            or StreamingUpdateReason.RunStepExpired => RunStepUpdate.DeserializeRunStepUpdates(e, updateKind),
+            or StreamingUpdateReason.RunStepExpired => RunStepUpdate.DeserializeRunStepUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.MessageCreated
             or StreamingUpdateReason.MessageInProgress
             or StreamingUpdateReason.MessageCompleted
-            or StreamingUpdateReason.MessageFailed => MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind),
-            StreamingUpdateReason.RunStepUpdated => RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind),
-            StreamingUpdateReason.MessageUpdated => MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind),
+            or StreamingUpdateReason.MessageFailed => MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind, serializationOptions),
+            StreamingUpdateReason.RunStepUpdated => RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind, serializationOptions),
+            StreamingUpdateReason.MessageUpdated => MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind, serializationOptions),
             _ => null,
         };
     }

@@ -14,7 +14,7 @@ namespace OpenAI.VectorStores;
 /// </summary>
 public partial class CreateBatchFileJobOperation : OperationResult
 {
-    private readonly ClientPipeline _pipeline;
+    private readonly VectorStoreClient _parentClient;
     private readonly Uri _endpoint;
 
     private readonly string _vectorStoreId;
@@ -34,8 +34,8 @@ public partial class CreateBatchFileJobOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetFileBatchAsync(RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = _parentClient.CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -47,8 +47,8 @@ public partial class CreateBatchFileJobOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetFileBatch(RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        using PipelineMessage message = _parentClient.CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ public partial class CreateBatchFileJobOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> CancelAsync(RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = _parentClient.CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -73,45 +73,8 @@ public partial class CreateBatchFileJobOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult Cancel(RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    }
-
-    internal virtual PipelineMessage CreateGetVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/vector_stores/", false);
-        uri.AppendPath(vectorStoreId, true);
-        uri.AppendPath("/file_batches/", false);
-        uri.AppendPath(batchId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
-
-    internal virtual PipelineMessage CreateCancelVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "POST";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/vector_stores/", false);
-        uri.AppendPath(vectorStoreId, true);
-        uri.AppendPath("/file_batches/", false);
-        uri.AppendPath(batchId, true);
-        uri.AppendPath("/cancel", false);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
+        using PipelineMessage message = _parentClient.CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 
     private static PipelineMessageClassifier? _pipelineMessageClassifier200;

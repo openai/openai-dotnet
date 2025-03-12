@@ -4,7 +4,7 @@ namespace OpenAI.Images;
 
 // CUSTOM: Added custom struct in favor of the generated extensible enum.
 /// <summary> The size of the image that will be generated. </summary>
-[CodeGenModel("CreateImageRequestSize")]
+[CodeGenType("CreateImageRequestSize")]
 [CodeGenSuppress("GeneratedImageSize", typeof(string))]
 // CUSTOM: remove the implicit operator
 [CodeGenSuppress("", typeof(string))]

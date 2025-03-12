@@ -37,7 +37,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(Output);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -92,10 +92,7 @@ namespace OpenAI.Assistants
                     output = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ToolOutput(toolCallId, output, additionalBinaryDataProperties);
         }

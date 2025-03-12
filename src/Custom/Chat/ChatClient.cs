@@ -14,8 +14,8 @@ namespace OpenAI.Chat;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI chat operations. </summary>
-[CodeGenClient("Chat")]
-[CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Chat")]
+[CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 public partial class ChatClient
@@ -188,10 +188,10 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options;
-
-        async Task<ClientResult> sendRequestAsync() =>
-            await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-        return new InternalAsyncStreamingChatCompletionUpdateCollection(sendRequestAsync, cancellationToken);
+        return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
+            async () => await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
+            cancellationToken);
     }
 
     /// <summary>
@@ -215,8 +215,10 @@ public partial class ChatClient
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options;
-        ClientResult sendRequest() => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
-        return new InternalStreamingChatCompletionUpdateCollection(sendRequest, cancellationToken);
+        return new SseUpdateCollection<StreamingChatCompletionUpdate>(
+            () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
+            cancellationToken);
     }
 
     /// <summary>

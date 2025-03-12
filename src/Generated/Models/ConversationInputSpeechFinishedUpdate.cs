@@ -9,13 +9,13 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationInputSpeechFinishedUpdate : ConversationUpdate
     {
-        internal ConversationInputSpeechFinishedUpdate(string eventId, string itemId, int audioEndMs) : base(eventId, RealtimeConversation.ConversationUpdateKind.InputSpeechStopped)
+        internal ConversationInputSpeechFinishedUpdate(string eventId, string itemId, int audioEndMs) : base(eventId, ConversationUpdateKind.InputSpeechStopped)
         {
             ItemId = itemId;
             _audioEndMs = audioEndMs;
         }
 
-        internal ConversationInputSpeechFinishedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int audioEndMs) : base(eventId, kind, additionalBinaryDataProperties)
+        internal ConversationInputSpeechFinishedUpdate(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int audioEndMs) : base(eventId, kind, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             _audioEndMs = audioEndMs;

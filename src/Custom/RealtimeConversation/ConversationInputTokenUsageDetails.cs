@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeResponseUsageInputTokenDetails")]
+[CodeGenType("RealtimeResponseUsageInputTokenDetails")]
 public partial class ConversationInputTokenUsageDetails
 {
     // CUSTOM: Remove output model optionality, make 'Count' names consistent with Chat

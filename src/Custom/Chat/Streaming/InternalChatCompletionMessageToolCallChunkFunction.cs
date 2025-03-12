@@ -3,7 +3,7 @@ using System;
 namespace OpenAI.Chat;
 
 // CUSTOM: Renamed.
-[CodeGenModel("ChatCompletionMessageToolCallChunkFunction")]
+[CodeGenType("ChatCompletionMessageToolCallChunkFunction")]
 [CodeGenSerialization(nameof(Arguments), SerializationValueHook = nameof(SerializeArgumentsValue), DeserializationValueHook = nameof(DeserializeArgumentsValue))]
 internal partial class InternalChatCompletionMessageToolCallChunkFunction
 {

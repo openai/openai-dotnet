@@ -73,7 +73,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -116,7 +116,7 @@ namespace OpenAI.FineTuning
             InternalFineTuningJobEventObject @object = default;
             string id = default;
             DateTimeOffset createdAt = default;
-            FineTuning.FineTuningJobEventLevel level = default;
+            FineTuningJobEventLevel level = default;
             string message = default;
             InternalFineTuningJobEventType? @type = default;
             BinaryData data = default;
@@ -166,10 +166,7 @@ namespace OpenAI.FineTuning
                     data = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FineTuningJobEvent(
                 @object,

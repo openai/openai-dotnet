@@ -52,7 +52,7 @@ namespace OpenAI.Chat;
 /// </item>
 /// </list>
 /// </remarks>
-[CodeGenModel("ChatCompletionRequestMessage")]
+[CodeGenType("ChatCompletionRequestMessage")]
 public partial class ChatMessage
 {
     /// <summary>

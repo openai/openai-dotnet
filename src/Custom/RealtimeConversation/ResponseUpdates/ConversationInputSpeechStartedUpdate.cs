@@ -14,7 +14,7 @@ namespace OpenAI.RealtimeConversation;
 /// speech is detected.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventInputAudioBufferSpeechStarted")]
+[CodeGenType("RealtimeServerEventInputAudioBufferSpeechStarted")]
 public partial class ConversationInputSpeechStartedUpdate
 {
     [CodeGenMember("AudioStartMs")]

@@ -6,7 +6,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents additional options available to control the behavior of an image generation operation.
 /// </summary>
-[CodeGenModel("CreateImageEditRequest")]
+[CodeGenType("CreateImageEditRequest")]
 [CodeGenSuppress("ImageEditOptions", typeof(BinaryData), typeof(string))]
 public partial class ImageEditOptions
 {
@@ -91,9 +91,9 @@ public partial class ImageEditOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultipartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
     {
-        MultipartFormDataBinaryContent content = new();
+        MultiPartFormDataBinaryContent content = new();
 
         content.Add(image, "image", imageFilename);
         content.Add(Prompt, "prompt");

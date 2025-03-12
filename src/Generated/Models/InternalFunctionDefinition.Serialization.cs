@@ -42,15 +42,8 @@ namespace OpenAI
             }
             if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
             {
-                if (Strict != null)
-                {
-                    writer.WritePropertyName("strict"u8);
-                    writer.WriteBooleanValue(Strict.Value);
-                }
-                else
-                {
-                    writer.WriteNull("strict"u8);
-                }
+                writer.WritePropertyName("strict"u8);
+                writer.WriteBooleanValue(Strict.Value);
             }
             if (Optional.IsDefined(Parameters) && _additionalBinaryDataProperties?.ContainsKey("parameters") != true)
             {
@@ -64,7 +57,7 @@ namespace OpenAI
                 }
 #endif
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -140,10 +133,7 @@ namespace OpenAI
                     parameters = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalFunctionDefinition(description, name, strict, parameters, additionalBinaryDataProperties);
         }

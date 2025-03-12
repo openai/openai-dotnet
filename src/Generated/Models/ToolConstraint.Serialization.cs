@@ -26,14 +26,14 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
                 writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue<InternalAssistantsNamedToolChoiceFunction>(Function, options);
+                writer.WriteObjectValue(Function, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(_objectType);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -62,7 +62,7 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(ToolConstraint)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ToolConstraint.DeserializeToolConstraint(document.RootElement, options);
+            return DeserializeToolConstraint(document.RootElement, options);
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
@@ -85,7 +85,7 @@ namespace OpenAI.Assistants
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ToolConstraint.DeserializeToolConstraint(document.RootElement, options);
+                        return DeserializeToolConstraint(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ToolConstraint)} does not support reading '{options.Format}' format.");
@@ -107,7 +107,7 @@ namespace OpenAI.Assistants
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return ToolConstraint.DeserializeToolConstraint(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeToolConstraint(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

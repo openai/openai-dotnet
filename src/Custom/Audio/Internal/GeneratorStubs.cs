@@ -2,29 +2,29 @@ namespace OpenAI.Audio;
 
 // CUSTOM: Made internal.
 
-[CodeGenModel("CreateSpeechRequestModel")]
+[CodeGenType("CreateSpeechRequestModel")]
 internal readonly partial struct InternalCreateSpeechRequestModel { }
 
-[CodeGenModel("CreateTranscriptionRequestModel")]
+[CodeGenType("CreateTranscriptionRequestModel")]
 internal readonly partial struct InternalCreateTranscriptionRequestModel { }
 
-[CodeGenModel("CreateTranscriptionRequestTimestampGranularities")]
+[CodeGenType("CreateTranscriptionRequestTimestampGranularities")]
 internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities { }
 
-[CodeGenModel("CreateTranscriptionResponseJson")]
+[CodeGenType("CreateTranscriptionResponseJson")]
 internal partial class InternalCreateTranscriptionResponseJson { }
 
-[CodeGenModel("CreateTranscriptionResponseVerboseJsonTask")]
+[CodeGenType("CreateTranscriptionResponseVerboseJsonTask")]
 internal readonly partial struct InternalCreateTranscriptionResponseVerboseJsonTask { }
 
-[CodeGenModel("CreateTranslationRequestModel")]
+[CodeGenType("CreateTranslationRequestModel")]
 internal readonly partial struct InternalCreateTranslationRequestModel { }
 
-[CodeGenModel("CreateTranslationResponseJson")]
+[CodeGenType("CreateTranslationResponseJson")]
 internal partial class InternalCreateTranslationResponseJson { }
 
-[CodeGenModel("CreateTranslationResponseVerboseJsonTask")]
+[CodeGenType("CreateTranslationResponseVerboseJsonTask")]
 internal readonly partial struct InternalCreateTranslationResponseVerboseJsonTask { }
 
-[CodeGenModel("AudioResponseFormat")]
+[CodeGenType("AudioResponseFormat")]
 internal readonly partial struct InternalAudioResponseFormat { }

@@ -52,7 +52,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -133,10 +133,7 @@ namespace OpenAI.Audio
                     speedRatio = prop.Value.GetSingle();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new SpeechGenerationOptions(
                 responseFormat,

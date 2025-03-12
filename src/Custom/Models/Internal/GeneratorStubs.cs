@@ -1,11 +1,11 @@
 
 namespace OpenAI.Models;
 
-[CodeGenModel("DeleteModelResponseObject")]
+[CodeGenType("DeleteModelResponseObject")]
 internal readonly partial struct InternalDeleteModelResponseObject { }
 
-[CodeGenModel("ListModelsResponseObject")]
+[CodeGenType("ListModelsResponseObject")]
 internal readonly partial struct InternalListModelsResponseObject { }
 
-[CodeGenModel("ModelObject")]
+[CodeGenType("ModelObject")]
 internal readonly partial struct InternalModelObject { }

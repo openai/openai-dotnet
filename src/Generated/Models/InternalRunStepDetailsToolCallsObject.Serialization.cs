@@ -83,10 +83,7 @@ namespace OpenAI.Assistants
                     internalToolCalls = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDetailsToolCallsObject(@type, additionalBinaryDataProperties, internalToolCalls);
         }

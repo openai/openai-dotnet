@@ -48,20 +48,20 @@ namespace OpenAI.VectorStores
             }
             if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
-                if (LastError != null)
+                if (Optional.IsDefined(LastError))
                 {
                     writer.WritePropertyName("last_error"u8);
                     writer.WriteObjectValue(LastError, options);
                 }
                 else
                 {
-                    writer.WriteNull("lastError"u8);
+                    writer.WriteNull("last_error"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -73,12 +73,35 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("usage_bytes"u8);
                 writer.WriteNumberValue(Size);
             }
+            if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            {
+                writer.WritePropertyName("attributes"u8);
+                writer.WriteStartObject();
+                foreach (var item in Attributes)
+                {
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                writer.WriteEndObject();
+            }
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue<FileChunkingStrategy>(ChunkingStrategy, options);
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -120,11 +143,12 @@ namespace OpenAI.VectorStores
             }
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
-            VectorStores.VectorStoreFileAssociationStatus status = default;
+            VectorStoreFileAssociationStatus status = default;
             VectorStoreFileAssociationError lastError = default;
             InternalVectorStoreFileObjectObject @object = default;
             string fileId = default;
             int size = default;
+            IDictionary<string, BinaryData> attributes = default;
             FileChunkingStrategy chunkingStrategy = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -169,6 +193,27 @@ namespace OpenAI.VectorStores
                     size = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("attributes"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
+                        }
+                    }
+                    attributes = dictionary;
+                    continue;
+                }
                 if (prop.NameEquals("chunking_strategy"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -178,10 +223,7 @@ namespace OpenAI.VectorStores
                     chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreFileAssociation(
                 createdAt,
@@ -191,6 +233,7 @@ namespace OpenAI.VectorStores
                 @object,
                 fileId,
                 size,
+                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 chunkingStrategy,
                 additionalBinaryDataProperties);
         }

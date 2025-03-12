@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Chat;
 
 namespace OpenAI.Assistants
 {
@@ -11,7 +12,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunCreationOptions(string assistantId, bool? stream, AssistantResponseFormat responseFormat, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, bool? allowParallelToolCalls, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunCreationOptions(string assistantId, bool? stream, AssistantResponseFormat responseFormat, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, bool? allowParallelToolCalls, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             AssistantId = assistantId;
             Stream = stream;
@@ -29,6 +30,7 @@ namespace OpenAI.Assistants
             MaxOutputTokenCount = maxOutputTokenCount;
             TruncationStrategy = truncationStrategy;
             ToolConstraint = toolConstraint;
+            ReasoningEffortLevel = reasoningEffortLevel;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

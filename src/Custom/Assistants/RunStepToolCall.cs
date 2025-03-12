@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepDetailsToolCallsObjectToolCallsObject")]
+[CodeGenType("RunStepDetailsToolCallsObjectToolCallsObject")]
 public partial class RunStepToolCall
 {
     private IReadOnlyList<RunStepCodeInterpreterOutput> _codeInterpreterOutputs;

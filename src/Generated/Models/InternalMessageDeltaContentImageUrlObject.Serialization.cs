@@ -88,10 +88,7 @@ namespace OpenAI.Assistants
                     imageUrl = InternalMessageDeltaContentImageUrlObjectImageUrl.DeserializeInternalMessageDeltaContentImageUrlObjectImageUrl(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaContentImageUrlObject(@type, additionalBinaryDataProperties, index, imageUrl);
         }

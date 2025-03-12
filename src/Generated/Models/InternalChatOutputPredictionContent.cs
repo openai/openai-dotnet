@@ -14,12 +14,14 @@ namespace OpenAI.Chat
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            Content = content;
+            // Plugin customization: ensure initialization of collection
+            Content = content ?? new ChatMessageContent();
         }
 
         internal InternalChatOutputPredictionContent(InternalChatOutputPredictionKind @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, ChatMessageContent content) : base(@type, additionalBinaryDataProperties)
         {
-            Content = content;
+            // Plugin customization: ensure initialization of collection
+            Content = content ?? new ChatMessageContent();
         }
     }
 }

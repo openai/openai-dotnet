@@ -75,10 +75,7 @@ namespace OpenAI.RealtimeConversation
                     responseId = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeClientEventResponseCancel(kind, eventId, additionalBinaryDataProperties, responseId);
         }

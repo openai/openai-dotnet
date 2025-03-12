@@ -1,3 +1,4 @@
+using OpenAI.Chat;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +8,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when creating a new <see cref="Assistant"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("CreateAssistantRequest")]
+[CodeGenType("CreateAssistantRequest")]
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
 {
@@ -39,11 +40,9 @@ public partial class AssistantCreationOptions
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; set; }
 
-    internal AssistantCreationOptions(InternalCreateAssistantRequestModel model)
-        : this()
-    {
-        Model = model.ToString();
-    }
+    // CUSTOM: Made internal.
+    [CodeGenMember("ReasoningEffort")]
+    internal ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
     /// <summary>
     /// Creates a new instance of <see cref="AssistantCreationOptions"/>.

@@ -43,7 +43,7 @@ namespace OpenAI.LegacyCompletions
             }
             if (_additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
-                if (Logprobs != null)
+                if (Optional.IsDefined(Logprobs))
                 {
                     writer.WritePropertyName("logprobs"u8);
                     writer.WriteObjectValue(Logprobs, options);
@@ -58,7 +58,7 @@ namespace OpenAI.LegacyCompletions
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -130,10 +130,7 @@ namespace OpenAI.LegacyCompletions
                     text = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateCompletionResponseChoice(finishReason, index, logprobs, text, additionalBinaryDataProperties);
         }

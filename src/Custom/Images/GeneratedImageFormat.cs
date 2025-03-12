@@ -2,7 +2,7 @@ namespace OpenAI.Images;
 
 // CUSTOM: Renamed.
 /// <summary> The format in which the generated images are returned by the service. </summary>
-[CodeGenModel("CreateImageRequestResponseFormat")]
+[CodeGenType("CreateImageRequestResponseFormat")]
 public readonly partial struct GeneratedImageFormat
 {
     // CUSTOM: Renamed.

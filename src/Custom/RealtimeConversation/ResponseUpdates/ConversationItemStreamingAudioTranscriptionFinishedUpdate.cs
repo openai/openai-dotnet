@@ -12,6 +12,6 @@ namespace OpenAI.RealtimeConversation;
 /// received.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseAudioTranscriptDone")]
+[CodeGenType("RealtimeServerEventResponseAudioTranscriptDone")]
 public partial class ConversationItemStreamingAudioTranscriptionFinishedUpdate
 { }

@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeTool")]
+[CodeGenType("RealtimeTool")]
 public abstract partial class ConversationTool
 {
     [CodeGenMember("Type")]

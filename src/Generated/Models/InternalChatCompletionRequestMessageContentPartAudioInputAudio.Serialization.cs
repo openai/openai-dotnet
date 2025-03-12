@@ -41,7 +41,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("format"u8);
                 writer.WriteStringValue(Format.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -96,10 +96,7 @@ namespace OpenAI.Chat
                     format = new ChatInputAudioFormat(prop.Value.GetString());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionRequestMessageContentPartAudioInputAudio(data, format, additionalBinaryDataProperties);
         }

@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(BinaryContent), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
-[CodeGenSuppress("CreateRun", typeof(string), typeof(BinaryContent), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("CreateRunAsync", typeof(string), typeof(BinaryContent), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("CreateRun", typeof(string), typeof(BinaryContent), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
+[CodeGenSuppress("CreateThreadAndRunAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("CreateThreadAndRun", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string), typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string), typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("ListRunStepsAsync", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("ListRunSteps", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(RequestOptions))]
@@ -29,7 +33,10 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateCreateThreadAndRunRequest(content, options);
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+            message = CreateCreateThreadAndRunRequest(content, acceptHeaderValue, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
@@ -56,7 +63,11 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateCreateThreadAndRunRequest(content, options);
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+
+            message = CreateCreateThreadAndRunRequest(content, acceptHeaderValue, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
         finally
@@ -86,10 +97,14 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+
             // Always request the included properties.
             IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
 
-            message = CreateCreateRunRequest(threadId, content, includedRunStepProperties, options);
+            message = CreateCreateRunRequest(threadId, content, acceptHeaderValue, includedRunStepProperties, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
@@ -119,10 +134,14 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+
             // Always request the included properties.
             IEnumerable<InternalIncludedRunStepProperty> includedRunStepProperties = [InternalIncludedRunStepProperty.FileSearchResultContent];
 
-            message = CreateCreateRunRequest(threadId, content, includedRunStepProperties, options);
+            message = CreateCreateRunRequest(threadId, content, acceptHeaderValue, includedRunStepProperties, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
         finally
@@ -274,7 +293,11 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+
+            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, acceptHeaderValue, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
         finally
@@ -308,7 +331,11 @@ internal partial class InternalAssistantRunClient
         PipelineMessage message = null;
         try
         {
-            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, options);
+            string acceptHeaderValue = options?.BufferResponse == false
+                ? AcceptHeaderValue.TextEventStream.ToString()
+                : AcceptHeaderValue.ApplicationJson.ToString();
+
+            message = CreateSubmitToolOutputsToRunRequest(threadId, runId, content, acceptHeaderValue, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
         finally

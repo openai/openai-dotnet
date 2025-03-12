@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace OpenAI.Moderations;
 
-[CodeGenModel("CreateModerationResponseResultCategoryAppliedInputTypes")]
+[CodeGenType("CreateModerationResponseResultCategoryAppliedInputTypes")]
 internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes
 {
     // CUSTOM: normalize to List<string> for internal representation

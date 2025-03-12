@@ -102,10 +102,7 @@ namespace OpenAI.RealtimeConversation
                     parameters = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationFunctionTool(kind, additionalBinaryDataProperties, name, description, parameters);
         }

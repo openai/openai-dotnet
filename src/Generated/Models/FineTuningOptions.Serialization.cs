@@ -48,63 +48,51 @@ namespace OpenAI.FineTuning
             }
             if (Optional.IsDefined(Suffix) && _additionalBinaryDataProperties?.ContainsKey("suffix") != true)
             {
-                if (Suffix != null)
-                {
-                    writer.WritePropertyName("suffix"u8);
-                    writer.WriteStringValue(Suffix);
-                }
-                else
-                {
-                    writer.WriteNull("suffix"u8);
-                }
+                writer.WritePropertyName("suffix"u8);
+                writer.WriteStringValue(Suffix);
             }
             if (Optional.IsDefined(ValidationFile) && _additionalBinaryDataProperties?.ContainsKey("validation_file") != true)
             {
-                if (ValidationFile != null)
-                {
-                    writer.WritePropertyName("validation_file"u8);
-                    writer.WriteStringValue(ValidationFile);
-                }
-                else
-                {
-                    writer.WriteNull("validationFile"u8);
-                }
+                writer.WritePropertyName("validation_file"u8);
+                writer.WriteStringValue(ValidationFile);
             }
             if (Optional.IsCollectionDefined(Integrations) && _additionalBinaryDataProperties?.ContainsKey("integrations") != true)
             {
-                if (Integrations != null)
+                writer.WritePropertyName("integrations"u8);
+                writer.WriteStartArray();
+                foreach (FineTuningIntegration item in Integrations)
                 {
-                    writer.WritePropertyName("integrations"u8);
-                    writer.WriteStartArray();
-                    foreach (FineTuningIntegration item in Integrations)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("integrations"u8);
-                }
+                writer.WriteEndArray();
             }
             if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
-                if (Seed != null)
-                {
-                    writer.WritePropertyName("seed"u8);
-                    writer.WriteNumberValue(Seed.Value);
-                }
-                else
-                {
-                    writer.WriteNull("seed"u8);
-                }
+                writer.WritePropertyName("seed"u8);
+                writer.WriteNumberValue(Seed.Value);
             }
             if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
             {
                 writer.WritePropertyName("method"u8);
                 writer.WriteObjectValue(Method, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
+                {
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
+            }
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -152,6 +140,7 @@ namespace OpenAI.FineTuning
             IList<FineTuningIntegration> integrations = default;
             int? seed = default;
             InternalTodoFineTuneMethod @method = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -227,10 +216,28 @@ namespace OpenAI.FineTuning
                     @method = InternalTodoFineTuneMethod.DeserializeInternalTodoFineTuneMethod(prop.Value, options);
                     continue;
                 }
-                if (true)
+                if (prop.NameEquals("metadata"u8))
                 {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
                 }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FineTuningOptions(
                 model,
@@ -241,6 +248,7 @@ namespace OpenAI.FineTuning
                 integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
                 seed,
                 @method,
+                metadata ?? new ChangeTrackingDictionary<string, string>(),
                 additionalBinaryDataProperties);
         }
 

@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace OpenAI.Audio;
 
 /// <summary> The format of the transcription. </summary>
-[CodeGenModel("TranscriptionAudioResponseFormat")]
+[CodeGenType("TranscriptionAudioResponseFormat")]
 public readonly partial struct AudioTranscriptionFormat
 {
     // CUSTOM: Hide from browsing as this is equivalent to Simple

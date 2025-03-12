@@ -61,7 +61,7 @@ namespace OpenAI.Assistants
             Usage = usage;
             Temperature = temperature;
             TruncationStrategy = truncationStrategy;
-            this.Object = @object;
+            Object = @object;
             ResponseFormat = responseFormat;
             ToolConstraint = toolConstraint;
             NucleusSamplingFactor = nucleusSamplingFactor;

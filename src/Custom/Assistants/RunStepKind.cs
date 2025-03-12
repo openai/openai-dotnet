@@ -3,7 +3,7 @@
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObjectType")]
+[CodeGenType("RunStepObjectType")]
 public enum RunStepKind
 {
     // CUSTOM: Renamed.

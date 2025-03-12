@@ -10,7 +10,7 @@ namespace OpenAI.RealtimeConversation;
 /// commands and paired with an ending <c>response.output_item.done</c> update.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseOutputItemAdded")]
+[CodeGenType("RealtimeServerEventResponseOutputItemAdded")]
 public partial class ConversationItemStreamingStartedUpdate
 {
     [CodeGenMember("Item")]

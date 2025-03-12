@@ -53,7 +53,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
-            Assistants.RunStepToolCallKind kind = default;
+            RunStepToolCallKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -67,10 +67,7 @@ namespace OpenAI.Assistants
                     kind = prop.Value.GetString().ToRunStepToolCallKind();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(id, kind, additionalBinaryDataProperties);
         }

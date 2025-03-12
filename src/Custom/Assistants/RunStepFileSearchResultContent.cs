@@ -4,7 +4,7 @@ namespace OpenAI.Assistants;
 
 // CUSTOM: Renamed.
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContent")]
+[CodeGenType("RunStepDetailsToolCallsFileSearchResultObjectContent")]
 public partial class RunStepFileSearchResultContent
 {
     // CUSTOM: Renamed.

@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
-[CodeGenModel("UnknownAssistantToolDefinition")]
+[CodeGenType("UnknownAssistantToolDefinition")]
 internal partial class UnknownAssistantToolDefinition
 {
 }

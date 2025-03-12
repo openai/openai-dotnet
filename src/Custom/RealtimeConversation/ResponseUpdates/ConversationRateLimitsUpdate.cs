@@ -10,7 +10,7 @@ namespace OpenAI.RealtimeConversation;
 /// the most recent information about configured rate limits.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventRateLimitsUpdated")]
+[CodeGenType("RealtimeServerEventRateLimitsUpdated")]
 public partial class ConversationRateLimitsUpdate
 {
     public ConversationRateLimitDetailsItem TokenDetails

@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("step_details"u8);
                 writer.WriteObjectValue(StepDetails, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -85,10 +85,7 @@ namespace OpenAI.Assistants
                     stepDetails = InternalRunStepDeltaStepDetails.DeserializeInternalRunStepDeltaStepDetails(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaObjectDelta(stepDetails, additionalBinaryDataProperties);
         }

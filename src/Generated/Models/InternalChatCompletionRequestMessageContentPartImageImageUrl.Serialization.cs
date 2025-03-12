@@ -41,7 +41,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(Url);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -100,10 +100,7 @@ namespace OpenAI.Chat
                     url = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionRequestMessageContentPartImageImageUrl(detail, url, additionalBinaryDataProperties);
         }

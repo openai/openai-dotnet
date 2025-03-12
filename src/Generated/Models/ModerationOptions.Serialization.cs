@@ -44,7 +44,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -103,10 +103,7 @@ namespace OpenAI.Moderations
                     model = new InternalCreateModerationRequestModel(prop.Value.GetString());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ModerationOptions(input, model, additionalBinaryDataProperties);
         }

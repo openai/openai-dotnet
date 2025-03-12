@@ -5,7 +5,7 @@ using System;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatResponseFormatJsonSchema")]
+[CodeGenType("ChatResponseFormatJsonSchema")]
 internal partial class InternalChatResponseFormatJsonSchema
 {
 }

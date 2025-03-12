@@ -3,7 +3,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents additional options available to control the behavior of an image generation operation.
 /// </summary>
-[CodeGenModel("CreateImageRequest")]
+[CodeGenType("CreateImageRequest")]
 [CodeGenSuppress("ImageGenerationOptions", typeof(string))]
 public partial class ImageGenerationOptions
 {

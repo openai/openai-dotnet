@@ -37,7 +37,7 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("days"u8);
                 writer.WriteNumberValue(_days);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -77,7 +77,7 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            VectorStores.VectorStoreExpirationAnchor anchor = default;
+            VectorStoreExpirationAnchor anchor = default;
             int days = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -92,10 +92,7 @@ namespace OpenAI.VectorStores
                     days = prop.Value.GetInt32();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreExpirationPolicy(anchor, days, additionalBinaryDataProperties);
         }

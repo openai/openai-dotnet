@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("AssistantObjectToolResources")]
+[CodeGenType("AssistantObjectToolResources1")]
 [CodeGenSerialization(nameof(FileSearch), "file_search", SerializationValueHook = nameof(SerializeFileSearch))]
 public partial class ToolResources
 {

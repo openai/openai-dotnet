@@ -1,7 +1,7 @@
 namespace OpenAI.Audio;
 
 /// <summary> The audio format in which to generate the speech. </summary>
-[CodeGenModel("CreateSpeechRequestResponseFormat")]
+[CodeGenType("CreateSpeechRequestResponseFormat")]
 public readonly partial struct GeneratedSpeechFormat
 {
 }

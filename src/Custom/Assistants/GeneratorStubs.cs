@@ -7,46 +7,46 @@ namespace OpenAI.Assistants;
  * that are not otherwise attributed elsewhere.
  */
 [Experimental("OPENAI001")]
-[CodeGenModel("AssistantToolsCode")]
+[CodeGenType("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition : ToolDefinition { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("MessageObjectStatus")]
+[CodeGenType("MessageObjectStatus")]
 public readonly partial struct MessageStatus { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("MessageObjectIncompleteDetails")]
+[CodeGenType("MessageObjectIncompleteDetails1")]
 public partial class MessageFailureDetails { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("MessageObjectIncompleteDetailsReason")]
+[CodeGenType("MessageObjectIncompleteDetailsReason")]
 public readonly partial struct MessageFailureReason { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunObjectLastError")]
+[CodeGenType("RunObjectLastError1")]
 public partial class RunError { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunObjectLastErrorCode")]
+[CodeGenType("RunObjectLastErrorCode")]
 public readonly partial struct RunErrorCode { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunObjectIncompleteDetails")]
+[CodeGenType("RunObjectIncompleteDetails1")]
 public partial class RunIncompleteDetails { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObjectStatus")]
+[CodeGenType("RunStepObjectStatus")]
 public readonly partial struct RunStepStatus { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObjectLastError")]
+[CodeGenType("RunStepObjectLastError1")]
 public partial class RunStepError { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepObjectLastErrorCode")]
+[CodeGenType("RunStepObjectLastErrorCode")]
 public readonly partial struct RunStepErrorCode { }
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
+[CodeGenType("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepCodeInterpreterOutput { }
 

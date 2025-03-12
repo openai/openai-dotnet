@@ -99,10 +99,7 @@ namespace OpenAI.Assistants
                     codeInterpreter = InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeObject(@type, additionalBinaryDataProperties, index, id, codeInterpreter);
         }

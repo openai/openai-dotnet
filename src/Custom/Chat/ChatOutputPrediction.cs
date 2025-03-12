@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatOutputPrediction")]
+[CodeGenType("ChatOutputPrediction")]
 public partial class ChatOutputPrediction
 {
     public static ChatOutputPrediction CreateStaticContentPrediction(IEnumerable<ChatMessageContentPart> staticContentParts)

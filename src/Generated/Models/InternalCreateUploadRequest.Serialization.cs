@@ -51,7 +51,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("mime_type"u8);
                 writer.WriteStringValue(MimeType);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -118,10 +118,7 @@ namespace OpenAI.Files
                     mimeType = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateUploadRequest(filename, purpose, bytes, mimeType, additionalBinaryDataProperties);
         }

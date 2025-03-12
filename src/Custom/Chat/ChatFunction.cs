@@ -6,7 +6,7 @@ namespace OpenAI.Chat;
 /// Represents the definition of a function that the model may call, as supplied in a chat completion request.
 /// </summary>
 [Obsolete($"This class is obsolete. Please use {nameof(ChatTool)} instead.")]
-[CodeGenModel("ChatCompletionFunctions")]
+[CodeGenType("ChatCompletionFunctions")]
 [CodeGenSuppress("ChatFunction", typeof(string))]
 public partial class ChatFunction
 {

@@ -35,7 +35,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
             {
                 writer.WritePropertyName("image"u8);
-                writer.WriteObjectValue<InternalRunStepDetailsToolCallsCodeOutputImageObjectImage>(_image, options);
+                writer.WriteObjectValue(_image, options);
             }
         }
 
@@ -73,10 +73,7 @@ namespace OpenAI.Assistants
                     image = InternalRunStepDetailsToolCallsCodeOutputImageObjectImage.DeserializeInternalRunStepDetailsToolCallsCodeOutputImageObjectImage(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDetailsToolCallsCodeOutputImageObject(@type, additionalBinaryDataProperties, image);
         }

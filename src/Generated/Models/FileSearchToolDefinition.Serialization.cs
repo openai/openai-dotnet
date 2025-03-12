@@ -24,7 +24,7 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(_fileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
             {
                 writer.WritePropertyName("file_search"u8);
-                writer.WriteObjectValue<InternalAssistantToolsFileSearchFileSearch>(_fileSearch, options);
+                writer.WriteObjectValue(_fileSearch, options);
             }
         }
 
@@ -66,10 +66,7 @@ namespace OpenAI.Assistants
                     fileSearch = InternalAssistantToolsFileSearchFileSearch.DeserializeInternalAssistantToolsFileSearchFileSearch(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FileSearchToolDefinition(@type, additionalBinaryDataProperties, fileSearch);
         }

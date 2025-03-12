@@ -7,7 +7,7 @@ namespace OpenAI.VectorStores;
 /// Represents the possible states for a vector store.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("VectorStoreObjectStatus")]
+[CodeGenType("VectorStoreObjectStatus")]
 public enum VectorStoreStatus
 {
     /// <summary>

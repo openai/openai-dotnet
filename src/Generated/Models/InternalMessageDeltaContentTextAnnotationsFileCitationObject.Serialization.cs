@@ -129,10 +129,7 @@ namespace OpenAI.Assistants
                     endIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaContentTextAnnotationsFileCitationObject(
                 @type,

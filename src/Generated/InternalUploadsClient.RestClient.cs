@@ -14,7 +14,7 @@ namespace OpenAI.Files
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateCreateUploadRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateUploadRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -31,7 +31,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateAddUploadPartRequest(string uploadId, BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateAddUploadPartRequest(string uploadId, BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -50,7 +50,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateCompleteUploadRequest(string uploadId, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCompleteUploadRequest(string uploadId, BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -69,7 +69,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateCancelUploadRequest(string uploadId, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelUploadRequest(string uploadId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

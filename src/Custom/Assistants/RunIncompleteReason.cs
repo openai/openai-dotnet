@@ -6,7 +6,7 @@ using System.Text;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    [CodeGenModel("RunObjectIncompleteDetailsReason")]
+    [CodeGenType("RunObjectIncompleteDetailsReason")]
     public readonly partial struct RunIncompleteReason
     {
         // CUSTOM: Renamed.

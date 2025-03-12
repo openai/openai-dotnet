@@ -3,7 +3,7 @@
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("DeleteAssistantResponse")]
+[CodeGenType("DeleteAssistantResponse")]
 public partial class AssistantDeletionResult
 {
     // CUSTOM: Renamed.

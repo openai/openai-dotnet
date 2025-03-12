@@ -12,8 +12,8 @@ namespace OpenAI.Audio;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI audio operations. </summary>
-[CodeGenClient("Audio")]
-[CodeGenSuppress("AudioClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Audio")]
+[CodeGenSuppress("AudioClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateSpeechAsync", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateSpeech", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 public partial class AudioClient
@@ -157,7 +157,7 @@ public partial class AudioClient
         options ??= new();
         CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
@@ -181,7 +181,7 @@ public partial class AudioClient
         options ??= new();
         CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
@@ -243,7 +243,7 @@ public partial class AudioClient
         options ??= new();
         CreateAudioTranslationOptions(audio, audioFilename, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = await TranslateAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(AudioTranslation.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
@@ -267,7 +267,7 @@ public partial class AudioClient
         options ??= new();
         CreateAudioTranslationOptions(audio, audioFilename, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = TranslateAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(AudioTranslation.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }

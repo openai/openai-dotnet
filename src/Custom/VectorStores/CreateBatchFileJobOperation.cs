@@ -16,12 +16,12 @@ namespace OpenAI.VectorStores;
 public partial class CreateBatchFileJobOperation : OperationResult
 {
     internal CreateBatchFileJobOperation(
-        ClientPipeline pipeline,
+        VectorStoreClient parentClient,
         Uri endpoint,
         ClientResult<VectorStoreBatchFileJob> result)
         : base(result.GetRawResponse())
     {
-        _pipeline = pipeline;
+        _parentClient = parentClient;
         _endpoint = endpoint;
 
         Value = result;

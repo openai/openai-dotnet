@@ -6,7 +6,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents additional options available to control the behavior of an image generation operation.
 /// </summary>
-[CodeGenModel("CreateImageVariationRequest")]
+[CodeGenType("CreateImageVariationRequest")]
 [CodeGenSuppress("ImageVariationOptions", typeof(BinaryData))]
 public partial class ImageVariationOptions
 {
@@ -64,9 +64,9 @@ public partial class ImageVariationOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultipartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename)
     {
-        MultipartFormDataBinaryContent content = new();
+        MultiPartFormDataBinaryContent content = new();
 
         content.Add(image, "image", imageFilename);
         content.Add(Model.Value.ToString(), "model");

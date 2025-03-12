@@ -30,14 +30,14 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(CodeInterpreter) && _additionalBinaryDataProperties?.ContainsKey("code_interpreter") != true)
             {
                 writer.WritePropertyName("code_interpreter"u8);
-                writer.WriteObjectValue<CodeInterpreterToolResources>(CodeInterpreter, options);
+                writer.WriteObjectValue(CodeInterpreter, options);
             }
             if (Optional.IsDefined(FileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
             {
                 writer.WritePropertyName("file_search"u8);
-                this.SerializeFileSearch(writer, options);
+                SerializeFileSearch(writer, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -100,10 +100,7 @@ namespace OpenAI.Assistants
                     fileSearch = FileSearchToolResources.DeserializeFileSearchToolResources(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
         }

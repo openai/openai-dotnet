@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 
 namespace OpenAI.Audio
@@ -11,9 +10,6 @@ namespace OpenAI.Audio
     public partial class AudioClient
     {
         private readonly Uri _endpoint;
-        private const string AuthorizationHeader = "Authorization";
-        private readonly ApiKeyCredential _keyCredential;
-        private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected AudioClient()
         {

@@ -7,7 +7,7 @@ using System.Linq;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("ToolResourcesFileSearchVectorStore")]
+[CodeGenType("ToolResourcesFileSearchVectorStore")]
 public partial class VectorStoreCreationHelper
 {
     [CodeGenMember("ChunkingStrategy")]

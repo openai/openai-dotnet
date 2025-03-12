@@ -9,7 +9,7 @@ namespace OpenAI.Assistants;
 /// Use the <see cref="MessageContent.FromImageFileId(string,MessageImageDetail?)"/> method to
 /// create an instance of this type.
 /// </remarks>
-[CodeGenModel("MessageContentImageFileObject")]
+[CodeGenType("MessageContentImageFileObject")]
 [CodeGenSuppress("InternalMessageImageFileContent", typeof(InternalMessageContentItemFileObjectImageFile))]
 internal partial class InternalMessageImageFileContent
 {

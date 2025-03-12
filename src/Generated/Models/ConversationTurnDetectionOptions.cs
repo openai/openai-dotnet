@@ -7,16 +7,16 @@ using System.Collections.Generic;
 
 namespace OpenAI.RealtimeConversation
 {
-    public abstract partial class ConversationTurnDetectionOptions
+    public partial class ConversationTurnDetectionOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ConversationTurnDetectionOptions(RealtimeConversation.ConversationTurnDetectionKind kind)
+        private protected ConversationTurnDetectionOptions(ConversationTurnDetectionKind kind)
         {
             Kind = kind;
         }
 
-        internal ConversationTurnDetectionOptions(RealtimeConversation.ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationTurnDetectionOptions(ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

@@ -58,7 +58,12 @@ namespace OpenAI.VectorStores
                 }
 #endif
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (Optional.IsDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            {
+                writer.WritePropertyName("attributes"u8);
+                writer.WriteObjectValue(Attributes, options);
+            }
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -100,6 +105,7 @@ namespace OpenAI.VectorStores
             }
             IList<string> fileIds = default;
             BinaryData chunkingStrategy = default;
+            InternalVectorStoreFileAttributes attributes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -129,12 +135,19 @@ namespace OpenAI.VectorStores
                     chunkingStrategy = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
+                if (prop.NameEquals("attributes"u8))
                 {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        attributes = null;
+                        continue;
+                    }
+                    attributes = InternalVectorStoreFileAttributes.DeserializeInternalVectorStoreFileAttributes(prop.Value, options);
+                    continue;
                 }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateVectorStoreFileBatchRequest(fileIds, chunkingStrategy, additionalBinaryDataProperties);
+            return new InternalCreateVectorStoreFileBatchRequest(fileIds, chunkingStrategy, attributes, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateVectorStoreFileBatchRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

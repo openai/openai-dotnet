@@ -8,27 +8,27 @@ namespace OpenAI.VectorStores
 {
     internal static partial class VectorStoreStatusExtensions
     {
-        public static string ToSerialString(this VectorStores.VectorStoreStatus value) => value switch
+        public static string ToSerialString(this VectorStoreStatus value) => value switch
         {
-            VectorStores.VectorStoreStatus.Expired => "expired",
-            VectorStores.VectorStoreStatus.InProgress => "in_progress",
-            VectorStores.VectorStoreStatus.Completed => "completed",
+            VectorStoreStatus.Expired => "expired",
+            VectorStoreStatus.InProgress => "in_progress",
+            VectorStoreStatus.Completed => "completed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreStatus value.")
         };
 
-        public static VectorStores.VectorStoreStatus ToVectorStoreStatus(this string value)
+        public static VectorStoreStatus ToVectorStoreStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "expired"))
             {
-                return VectorStores.VectorStoreStatus.Expired;
+                return VectorStoreStatus.Expired;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
             {
-                return VectorStores.VectorStoreStatus.InProgress;
+                return VectorStoreStatus.InProgress;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "completed"))
             {
-                return VectorStores.VectorStoreStatus.Completed;
+                return VectorStoreStatus.Completed;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown VectorStoreStatus value.");
         }

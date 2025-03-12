@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
         {
             Id = id;
             Delta = delta;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

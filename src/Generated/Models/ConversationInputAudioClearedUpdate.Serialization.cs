@@ -54,7 +54,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string eventId = default;
-            RealtimeConversation.ConversationUpdateKind kind = default;
+            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -68,10 +68,7 @@ namespace OpenAI.RealtimeConversation
                     kind = prop.Value.GetString().ToConversationUpdateKind();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationInputAudioClearedUpdate(eventId, kind, additionalBinaryDataProperties);
         }

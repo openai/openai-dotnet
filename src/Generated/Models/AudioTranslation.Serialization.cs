@@ -41,7 +41,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (true && Optional.IsCollectionDefined(Segments) && _additionalBinaryDataProperties?.ContainsKey("segments") != true)
+            if (Optional.IsCollectionDefined(Segments) && _additionalBinaryDataProperties?.ContainsKey("segments") != true)
             {
                 writer.WritePropertyName("segments"u8);
                 writer.WriteStartArray();
@@ -61,7 +61,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("duration"u8);
                 writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -143,10 +143,7 @@ namespace OpenAI.Audio
                     duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranslation(
                 language,

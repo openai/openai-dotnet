@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateListPaginatedFineTuningJobsRequest(string after, int? limit, RequestOptions options)
+        internal virtual PipelineMessage CreateListPaginatedFineTuningJobsRequest(string after, int? limit, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -36,7 +36,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
-        internal PipelineMessage CreateCancelFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -53,7 +53,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
-        internal PipelineMessage CreateListFineTuningJobCheckpointsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
+        internal virtual PipelineMessage CreateListFineTuningJobCheckpointsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -78,7 +78,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
-        internal PipelineMessage CreateListFineTuningEventsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
+        internal virtual PipelineMessage CreateListFineTuningEventsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

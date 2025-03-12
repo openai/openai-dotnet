@@ -43,15 +43,8 @@ namespace OpenAI.Internal
             }
             if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
             {
-                if (Strict != null)
-                {
-                    writer.WritePropertyName("strict"u8);
-                    writer.WriteBooleanValue(Strict.Value);
-                }
-                else
-                {
-                    writer.WriteNull("strict"u8);
-                }
+                writer.WritePropertyName("strict"u8);
+                writer.WriteBooleanValue(Strict.Value);
             }
             if (Optional.IsDefined(Schema) && _additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
@@ -65,7 +58,7 @@ namespace OpenAI.Internal
                 }
 #endif
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -141,10 +134,7 @@ namespace OpenAI.Internal
                     schema = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalResponseFormatJsonSchemaJsonSchema(description, name, strict, schema, additionalBinaryDataProperties);
         }

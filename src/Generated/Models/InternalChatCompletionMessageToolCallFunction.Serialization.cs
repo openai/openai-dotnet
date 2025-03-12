@@ -39,9 +39,9 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
-                this.SerializeArgumentsValue(writer, options);
+                SerializeArgumentsValue(writer, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -96,10 +96,7 @@ namespace OpenAI.Chat
                     DeserializeArgumentsValue(prop, ref arguments);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionMessageToolCallFunction(name, arguments, additionalBinaryDataProperties);
         }

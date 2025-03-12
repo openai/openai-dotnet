@@ -39,7 +39,7 @@ namespace OpenAI.RealtimeConversation
             }
             if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
-                if (InternalTranscriptValue != null)
+                if (Optional.IsDefined(InternalTranscriptValue))
                 {
                     writer.WritePropertyName("transcript"u8);
                     writer.WriteStringValue(InternalTranscriptValue);
@@ -96,10 +96,7 @@ namespace OpenAI.RealtimeConversation
                     internalTranscriptValue = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeResponseAudioContentPart(kind, additionalBinaryDataProperties, @type, internalTranscriptValue);
         }

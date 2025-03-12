@@ -41,7 +41,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("input_audio"u8);
                 writer.WriteObjectValue(InputAudio, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -96,10 +96,7 @@ namespace OpenAI.Chat
                     inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio.DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionRequestMessageContentPartAudio(@type, inputAudio, additionalBinaryDataProperties);
         }

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Chat;
 
 namespace OpenAI.Assistants
 {
@@ -11,7 +12,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AssistantCreationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> tools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantCreationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> tools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             Description = description;
@@ -23,6 +24,7 @@ namespace OpenAI.Assistants
             ToolResources = toolResources;
             ResponseFormat = responseFormat;
             NucleusSamplingFactor = nucleusSamplingFactor;
+            ReasoningEffortLevel = reasoningEffortLevel;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

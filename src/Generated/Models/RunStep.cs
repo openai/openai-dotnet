@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunStepTokenUsage usage, Assistants.RunStepKind kind, RunStepDetails details)
+        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunStepTokenUsage usage, RunStepKind kind, RunStepDetails details)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -31,7 +31,7 @@ namespace OpenAI.Assistants
             Details = details;
         }
 
-        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, InternalRunStepObjectObject @object, Assistants.RunStepKind kind, RunStepDetails details, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, InternalRunStepObjectObject @object, RunStepKind kind, RunStepDetails details, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -46,7 +46,7 @@ namespace OpenAI.Assistants
             CompletedAt = completedAt;
             Metadata = metadata;
             Usage = usage;
-            this.Object = @object;
+            Object = @object;
             Kind = kind;
             Details = details;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

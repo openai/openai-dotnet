@@ -24,7 +24,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("flagged"u8);
                 writer.WriteBooleanValue(Flagged);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -55,7 +55,7 @@ namespace OpenAI.Moderations
                 throw new FormatException($"The model {nameof(ModerationResult)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ModerationResult.DeserializeModerationResult(document.RootElement, options);
+            return DeserializeModerationResult(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<ModerationResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -82,7 +82,7 @@ namespace OpenAI.Moderations
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ModerationResult.DeserializeModerationResult(document.RootElement, options);
+                        return DeserializeModerationResult(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ModerationResult)} does not support reading '{options.Format}' format.");
@@ -104,7 +104,7 @@ namespace OpenAI.Moderations
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return ModerationResult.DeserializeModerationResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeModerationResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

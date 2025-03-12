@@ -47,7 +47,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(Param);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -114,10 +114,7 @@ namespace OpenAI.RealtimeConversation
                     @param = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(@type, code, message, @param, additionalBinaryDataProperties);
         }

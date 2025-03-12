@@ -15,6 +15,8 @@ namespace OpenAI.Files
         private const string BatchValue = "batch";
         private const string FineTuneValue = "fine-tune";
         private const string VisionValue = "vision";
+        private const string UserDataValue = "user_data";
+        private const string EvalsValue = "evals";
 
         public FileUploadPurpose(string value)
         {
@@ -30,6 +32,8 @@ namespace OpenAI.Files
         public static FileUploadPurpose FineTune { get; } = new FileUploadPurpose(FineTuneValue);
 
         public static FileUploadPurpose Vision { get; } = new FileUploadPurpose(VisionValue);
+
+        public static FileUploadPurpose UserData { get; } = new FileUploadPurpose(UserDataValue);
 
         public static bool operator ==(FileUploadPurpose left, FileUploadPurpose right) => left.Equals(right);
 

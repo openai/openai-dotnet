@@ -4,7 +4,7 @@ namespace OpenAI.VectorStores;
 
 // CUSTOM: Renamed.
 [Experimental("OPENAI001")]
-[CodeGenModel("ListVectorStoresRequestOrder")]
+[CodeGenType("ListVectorStoresRequestOrder")]
 public readonly partial struct VectorStoreCollectionOrder
 {
     // CUSTOM: Renamed.

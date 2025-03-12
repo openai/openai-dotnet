@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Models;
 
-[CodeGenModel("DeleteModelResponse")]
+[CodeGenType("DeleteModelResponse")]
 public partial class ModelDeletionResult
 {
     // CUSTOM: Renamed.

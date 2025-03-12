@@ -45,17 +45,10 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
             {
-                if (ToolResources != null)
-                {
-                    writer.WritePropertyName("tool_resources"u8);
-                    writer.WriteObjectValue(ToolResources, options);
-                }
-                else
-                {
-                    writer.WriteNull("toolResources"u8);
-                }
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -131,10 +124,7 @@ namespace OpenAI.Assistants
                     toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ThreadModificationOptions(metadata ?? new ChangeTrackingDictionary<string, string>(), toolResources, additionalBinaryDataProperties);
         }

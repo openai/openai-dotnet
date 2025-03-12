@@ -90,10 +90,7 @@ namespace OpenAI.RealtimeConversation
                     output = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeRequestFunctionCallOutputItem(@type, id, additionalBinaryDataProperties, callId, output);
         }

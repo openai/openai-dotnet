@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenAI.Files;
 
-[CodeGenModel("ListFilesResponse")]
+[CodeGenType("ListFilesResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIFileCollection))]
 [CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(bool))]
@@ -12,9 +12,9 @@ namespace OpenAI.Files;
 public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
-    [CodeGenMember("Object")]    
+    [CodeGenMember("Object")]
     private InternalListFilesResponseObject Object { get; } = InternalListFilesResponseObject.List;
-    
+
     // CUSTOM: Internalizing pending stanardized pagination representation for the list operation.
     [CodeGenMember("FirstId")]
     internal string FirstId { get; }

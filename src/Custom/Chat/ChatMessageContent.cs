@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatMessageContent")]
+[CodeGenType("ChatMessageContent")]
 public partial class ChatMessageContent : Collection<ChatMessageContentPart>
 {
     public ChatMessageContent()
@@ -27,6 +27,10 @@ public partial class ChatMessageContent : Collection<ChatMessageContentPart>
         : base(new ChangeTrackingList<ChatMessageContentPart>((IList<ChatMessageContentPart>)[.. contentParts]))
     {
     }
+
+    internal ChatMessageContent(IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        : this()
+    { }
 
     internal bool IsInnerCollectionDefined()
     {

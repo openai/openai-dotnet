@@ -9,7 +9,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Request-level options for chat completion.
 /// </summary>
-[CodeGenModel("CreateChatCompletionRequest")]
+[CodeGenType("CreateChatCompletionRequest")]
 [CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel?))]
 [CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
@@ -109,7 +109,7 @@ public partial class ChatCompletionOptions
 
     // CUSTOM: Renamed.
     /// <summary>
-    /// Whether to enable parallel function calling during tool use. 
+    /// Whether to enable parallel function calling during tool use.
     /// </summary>
     /// <remarks>
     /// Assumed <c>true</c> if not otherwise specified.

@@ -2,7 +2,7 @@
 
 namespace OpenAI.Files;
 
-[CodeGenModel("CreateFileRequest")]
+[CodeGenType("CreateFileRequest")]
 [CodeGenSuppress("InternalFileUploadOptions", typeof(Stream), typeof(FileUploadPurpose))]
 internal partial class InternalFileUploadOptions
 {
@@ -29,9 +29,9 @@ internal partial class InternalFileUploadOptions
     {
     }
 
-    internal MultipartFormDataBinaryContent ToMultipartContent(Stream file, string filename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream file, string filename)
     {
-        MultipartFormDataBinaryContent content = new();
+        MultiPartFormDataBinaryContent content = new();
 
         content.Add(file, "file", filename);
 

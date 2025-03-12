@@ -11,6 +11,7 @@ namespace OpenAI.Chat
     internal readonly partial struct InternalChatCompletionStreamResponseDeltaRole : IEquatable<InternalChatCompletionStreamResponseDeltaRole>
     {
         private readonly string _value;
+        private const string DeveloperValue = "developer";
         private const string SystemValue = "system";
         private const string UserValue = "user";
         private const string AssistantValue = "assistant";
@@ -22,6 +23,8 @@ namespace OpenAI.Chat
 
             _value = value;
         }
+
+        public static InternalChatCompletionStreamResponseDeltaRole Developer { get; } = new InternalChatCompletionStreamResponseDeltaRole(DeveloperValue);
 
         public static InternalChatCompletionStreamResponseDeltaRole System { get; } = new InternalChatCompletionStreamResponseDeltaRole(SystemValue);
 

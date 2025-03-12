@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("AssistantsNamedToolChoice")]
+[CodeGenType("AssistantsNamedToolChoice")]
 public partial class ToolConstraint
 {
     private readonly string _plainTextValue;

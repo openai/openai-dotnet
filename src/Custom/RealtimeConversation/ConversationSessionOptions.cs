@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeRequestSession")]
+[CodeGenType("RealtimeRequestSession")]
 public partial class ConversationSessionOptions
 {
     [CodeGenMember("Model")]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Moderations;
 
-[CodeGenModel("CreateModerationRequest")]
+[CodeGenType("CreateModerationRequest")]
 [CodeGenSuppress("ModerationOptions", typeof(BinaryData))]
 internal partial class ModerationOptions
 {

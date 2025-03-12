@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 
 namespace OpenAI.Assistants
@@ -11,9 +10,6 @@ namespace OpenAI.Assistants
     public partial class AssistantClient
     {
         private readonly Uri _endpoint;
-        private const string AuthorizationHeader = "Authorization";
-        private readonly ApiKeyCredential _keyCredential;
-        private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected AssistantClient()
         {

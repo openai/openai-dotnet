@@ -17,7 +17,7 @@ namespace OpenAI.Assistants
             Content = new ChangeTrackingList<InternalMessageDeltaContent>();
         }
 
-        internal InternalMessageDeltaObjectDelta(IList<InternalMessageDeltaContent> content, Assistants.MessageRole? role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalMessageDeltaObjectDelta(IList<InternalMessageDeltaContent> content, MessageRole? role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Content = content;
             Role = role;

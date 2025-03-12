@@ -11,7 +11,7 @@ namespace OpenAI.RealtimeConversation;
 /// processing a request command or generating another response command.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventError")]
+[CodeGenType("RealtimeServerEventError")]
 public partial class ConversationErrorUpdate
 {
     [CodeGenMember("Error")]

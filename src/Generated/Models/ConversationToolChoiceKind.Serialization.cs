@@ -8,27 +8,27 @@ namespace OpenAI.RealtimeConversation
 {
     internal static partial class ConversationToolChoiceKindExtensions
     {
-        public static string ToSerialString(this RealtimeConversation.ConversationToolChoiceKind value) => value switch
+        public static string ToSerialString(this ConversationToolChoiceKind value) => value switch
         {
-            RealtimeConversation.ConversationToolChoiceKind.Auto => "auto",
-            RealtimeConversation.ConversationToolChoiceKind.None => "none",
-            RealtimeConversation.ConversationToolChoiceKind.Required => "required",
+            ConversationToolChoiceKind.Auto => "auto",
+            ConversationToolChoiceKind.None => "none",
+            ConversationToolChoiceKind.Required => "required",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ConversationToolChoiceKind value.")
         };
 
-        public static RealtimeConversation.ConversationToolChoiceKind ToConversationToolChoiceKind(this string value)
+        public static ConversationToolChoiceKind ToConversationToolChoiceKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "auto"))
             {
-                return RealtimeConversation.ConversationToolChoiceKind.Auto;
+                return ConversationToolChoiceKind.Auto;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "none"))
             {
-                return RealtimeConversation.ConversationToolChoiceKind.None;
+                return ConversationToolChoiceKind.None;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "required"))
             {
-                return RealtimeConversation.ConversationToolChoiceKind.Required;
+                return ConversationToolChoiceKind.Required;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ConversationToolChoiceKind value.");
         }

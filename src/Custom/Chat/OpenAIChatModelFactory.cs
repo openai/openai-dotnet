@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace OpenAI.Chat;
 
@@ -57,16 +58,18 @@ public static partial class OpenAIChatModelFactory
         string model = null,
         string systemFingerprint = null,
         ChatTokenUsage usage = default,
-        ChatOutputAudio outputAudio = default)
+        ChatOutputAudio outputAudio = default,
+        IEnumerable<ChatMessageAnnotation> messageAnnotations = default)
     {
         content ??= new ChatMessageContent();
         toolCalls ??= new List<ChatToolCall>();
         contentTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
         refusalTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
 
-        InternalChatCompletionResponseMessage message = new InternalChatCompletionResponseMessage(
+        InternalChatCompletionResponseMessage message = new(
             refusal,
             toolCalls.ToList(),
+            messageAnnotations.ToList(),
             outputAudio,
             role,
             content,
@@ -99,6 +102,27 @@ public static partial class OpenAIChatModelFactory
             additionalBinaryDataProperties: null);
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="ChatMessageAnnotation"/> for mocks and testing.
+    /// </summary>
+    /// <param name="startIndex"></param>
+    /// <param name="endIndex"></param>
+    /// <param name="webResourceUri"></param>
+    /// <param name="webResourceTitle"></param>
+    /// <returns></returns>
+    public static ChatMessageAnnotation ChatMessageAnnotation(
+        int startIndex = default,
+        int endIndex = default,
+        Uri webResourceUri = default,
+        string webResourceTitle = default)
+    {
+        return new ChatMessageAnnotation(
+            new InternalChatCompletionResponseMessageAnnotationUrlCitation(
+                endIndex,
+                startIndex,
+                webResourceUri,
+                webResourceTitle));
+    }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenLogProbabilityDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatTokenLogProbabilityDetails"/> instance for mocking. </returns>

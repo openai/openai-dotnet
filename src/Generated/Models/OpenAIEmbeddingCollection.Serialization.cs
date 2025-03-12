@@ -32,9 +32,9 @@ namespace OpenAI.Embeddings
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -65,7 +65,7 @@ namespace OpenAI.Embeddings
                 throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return OpenAIEmbeddingCollection.DeserializeOpenAIEmbeddingCollection(document.RootElement, options);
+            return DeserializeOpenAIEmbeddingCollection(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -92,7 +92,7 @@ namespace OpenAI.Embeddings
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return OpenAIEmbeddingCollection.DeserializeOpenAIEmbeddingCollection(document.RootElement, options);
+                        return DeserializeOpenAIEmbeddingCollection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support reading '{options.Format}' format.");
@@ -114,7 +114,7 @@ namespace OpenAI.Embeddings
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return OpenAIEmbeddingCollection.DeserializeOpenAIEmbeddingCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeOpenAIEmbeddingCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

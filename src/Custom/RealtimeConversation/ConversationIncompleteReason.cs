@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeResponseStatusDetailsReason")]
+[CodeGenType("RealtimeResponseStatusDetailsReason")]
 public readonly partial struct ConversationIncompleteReason
 {
 }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("CreateMessageRequestRole")]
+[CodeGenType("CreateMessageRequestRole")]
 public enum MessageRole
 {
     /// <summary>

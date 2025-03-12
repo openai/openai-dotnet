@@ -4,7 +4,7 @@ using System.ClientModel.Primitives;
 namespace OpenAI;
 
 /// <summary> The options to configure the client. </summary>
-[CodeGenModel("OpenAIClientOptions")]
+[CodeGenType("OpenAIClientOptions")]
 public partial class OpenAIClientOptions : ClientPipelineOptions
 {
     private Uri _endpoint;

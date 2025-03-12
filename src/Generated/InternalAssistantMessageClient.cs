@@ -13,12 +13,15 @@ namespace OpenAI.Assistants
     internal partial class InternalAssistantMessageClient
     {
         private readonly Uri _endpoint;
-        private const string AuthorizationHeader = "Authorization";
-        private readonly ApiKeyCredential _keyCredential;
-        private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected InternalAssistantMessageClient()
         {
+        }
+
+        internal InternalAssistantMessageClient(ClientPipeline pipeline, Uri endpoint)
+        {
+            _endpoint = endpoint;
+            Pipeline = pipeline;
         }
 
         public ClientPipeline Pipeline { get; }

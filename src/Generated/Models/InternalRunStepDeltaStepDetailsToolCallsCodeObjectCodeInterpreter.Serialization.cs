@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("input"u8);
                 writer.WriteStringValue(Input);
             }
-            if (true && Optional.IsCollectionDefined(Outputs) && _additionalBinaryDataProperties?.ContainsKey("outputs") != true)
+            if (Optional.IsCollectionDefined(Outputs) && _additionalBinaryDataProperties?.ContainsKey("outputs") != true)
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
@@ -42,7 +42,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -106,10 +106,7 @@ namespace OpenAI.Assistants
                     outputs = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter(input, outputs ?? new ChangeTrackingList<RunStepUpdateCodeInterpreterOutput>(), additionalBinaryDataProperties);
         }

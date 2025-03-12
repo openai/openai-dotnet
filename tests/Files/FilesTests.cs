@@ -3,6 +3,8 @@ using OpenAI.Files;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +22,18 @@ public class FilesTests : SyncAsyncTestBase
 
     public FilesTests(bool isAsync) : base(isAsync)
     {
+    }
+
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        OpenAIFileClient client = GetTestClient();
+
+        RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
+        foreach (string fileId in FileIdsForCleanup)
+        {
+            _ = client.DeleteFile(fileId, noThrowOptions);
+        }
     }
 
     [Test]
@@ -40,8 +54,11 @@ public class FilesTests : SyncAsyncTestBase
         try
         {
             uploadedFile1 = await client.UploadFileAsync(file1, filename, FileUploadPurpose.Assistants);
+            Validate(uploadedFile1);
             uploadedFile2 = await client.UploadFileAsync(file2, filename, FileUploadPurpose.Assistants);
+            Validate(uploadedFile2);
             uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
+            Validate(uploadedVisionFile);
 
             fileInfoCollection = IsAsync
                 ? await client.GetFilesAsync(FilePurpose.Assistants)
@@ -135,12 +152,14 @@ public class FilesTests : SyncAsyncTestBase
                 fileInfo = IsAsync
                     ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision)
                     : client.UploadFile(file, filename, FileUploadPurpose.Vision);
+                Validate(fileInfo);
             }
             else if (fileSourceKind == FileSourceKind.UsingFilePath)
             {
                 fileInfo = IsAsync
                     ? await client.UploadFileAsync(path, FileUploadPurpose.Vision)
                     : client.UploadFile(path, FileUploadPurpose.Vision);
+                Validate(fileInfo);
             }
             else if (fileSourceKind == FileSourceKind.UsingBinaryData)
             {
@@ -150,6 +169,7 @@ public class FilesTests : SyncAsyncTestBase
                 fileInfo = IsAsync
                     ? await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision)
                     : client.UploadFile(content, filename, FileUploadPurpose.Vision);
+                Validate(fileInfo);
             }
             else
             {
@@ -211,6 +231,7 @@ public class FilesTests : SyncAsyncTestBase
         string filename = "test-file-delete-me.txt";
 
         OpenAIFile uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+        Validate(uploadedFile);
         FileDeletionResult result;
 
         if (useFileInfoOverload)
@@ -260,6 +281,7 @@ public class FilesTests : SyncAsyncTestBase
         try
         {
             uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+            Validate(uploadedFile);
 
             fileInfo = IsAsync
                 ? await client.GetFileAsync(uploadedFile.Id)
@@ -316,6 +338,7 @@ public class FilesTests : SyncAsyncTestBase
         try
         {
             uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
+            Validate(uploadedFile);
 
             downloadedContent = IsAsync
                 ? await client.DownloadFileAsync(uploadedFile.Id)
@@ -368,6 +391,35 @@ public class FilesTests : SyncAsyncTestBase
         OpenAIFile uploadedFile = IsAsync
             ? await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants)
             : client.UploadFile(fileContent, filename, FileUploadPurpose.Assistants);
+        Validate(uploadedFile);
         Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));
     }
+
+    [Test]
+    public async Task UserDataPurpose()
+    {
+        OpenAIFileClient client = GetTestClient();
+
+        BinaryData fileContent = BinaryData.FromString("Hello, world!");
+        OpenAIFile uploadedFile = IsAsync
+            ? await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData)
+            : client.UploadFile(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
+        Validate(uploadedFile);
+        Assert.That(uploadedFile.Purpose, Is.EqualTo(FilePurpose.UserData));
+    }
+
+    private void Validate<T>(T instance)
+    {
+        if (instance is OpenAIFile file)
+        {
+            Assert.That(file?.Id, Is.Not.Null.And.Not.Empty);
+            FileIdsForCleanup.Add(file.Id);
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private readonly List<string> FileIdsForCleanup = [];
 }

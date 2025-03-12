@@ -21,7 +21,7 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenModel("ChatResponseFormat")]
+[CodeGenType("ChatResponseFormat")]
 public partial class ChatResponseFormat
 {
     /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting plain text. </summary>
@@ -86,7 +86,7 @@ public partial class ChatResponseFormat
     ///         in the
     ///         <see href="https://platform.openai.com/docs/guides/structured-outputs">structured outputs guide</see>.
     ///     </para>
-    /// </param> 
+    /// </param>
     /// <exception cref="ArgumentNullException"> <paramref name="jsonSchemaFormatName"/> or <paramref name="jsonSchema"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="jsonSchemaFormatName"/> is an empty string, and was expected to be non-empty. </exception>
     public static ChatResponseFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null)
