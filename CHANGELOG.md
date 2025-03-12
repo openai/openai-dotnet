@@ -7,6 +7,7 @@
 - OpenAI.Responses:
   - Enabled support for the new Responses API. ([0ca4c06](https://github.com/openai/openai-dotnet/commit/0ca4c062c2fce219ce42cb4d2f1f2ab2056811aa))
     - Added a new `OpenAIResponseClient` in a corresponding scenario namespace.
+    - This release aims to bring the new Responses API to .NET as soon as possible. Details, examples, and comprehensive updates for other operations are coming soon!
 - OpenAI.Chat:
   - Enabled support for web search. ([0ca4c06](https://github.com/openai/openai-dotnet/commit/0ca4c062c2fce219ce42cb4d2f1f2ab2056811aa))
     - Added a `WebSearchOptions` property to `ChatCompletionOptions` ([`web_search_options` in the REST API](https://platform.openai.com/docs/api-reference/chat/create)).
