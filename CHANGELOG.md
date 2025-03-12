@@ -1,14 +1,18 @@
 # Release History
 
-## 2.2.0-beta.3 (Unreleased)
+## 2.2.0-beta.3 (2025-03-11)
 
 ### Features Added
 
-### Breaking Changes
-
-### Bugs Fixed
-
-### Other Changes
+- OpenAI.Responses:
+  - Enabled support for the new Responses API. ([0ca4c06](https://github.com/openai/openai-dotnet/commit/0ca4c062c2fce219ce42cb4d2f1f2ab2056811aa))
+    - Added a new `OpenAIResponseClient` in a corresponding scenario namespace.
+- OpenAI.Chat:
+  - Enabled support for web search. ([0ca4c06](https://github.com/openai/openai-dotnet/commit/0ca4c062c2fce219ce42cb4d2f1f2ab2056811aa))
+    - Added a `WebSearchOptions` property to `ChatCompletionOptions` ([`web_search_options` in the REST API](https://platform.openai.com/docs/api-reference/chat/create)).
+    - Added an `Annotations` property to `ChatCompletion`.
+- OpenAI.Files:
+  - Enabled support for user data and evals files. ([0ca4c06](https://github.com/openai/openai-dotnet/commit/0ca4c062c2fce219ce42cb4d2f1f2ab2056811aa))
 
 ## 2.2.0-beta.2 (2025-02-18)
 
