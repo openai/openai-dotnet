@@ -19,6 +19,9 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
 - [How to use chat completions with structured outputs](#how-to-use-chat-completions-with-structured-outputs)
 - [How to use chat completions with audio](#how-to-use-chat-completions-with-audio)
+- [How to use responses with streaming and reasoning](#how-to-use-responses-with-streaming-and-reasoning)
+- [How to use responses with file search](#how-to-use-responses-with-file-search)
+- [How to use responses with web search](#how-to-use-responses-with-web-search)
 - [How to generate text embeddings](#how-to-generate-text-embeddings)
 - [How to generate images](#how-to-generate-images)
 - [How to transcribe audio](#how-to-transcribe-audio)
@@ -81,6 +84,7 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Images`               | `ImageClient`                |                                                                   |
 | `OpenAI.Models`               | `OpenAIModelClient`          |                                                                   |
 | `OpenAI.Moderations`          | `ModerationClient`           |                                                                   |
+| `OpenAI.Responses`            | `OpenAIResponseClient`       |                                                                   |
 | `OpenAI.VectorStores`         | `VectorStoreClient`          | ![Experimental](https://img.shields.io/badge/experimental-purple) |
 
 ### Using the async API
@@ -423,6 +427,107 @@ contain any of:
 - The `Id` of the streamed audio content, which can be referenced by subsequent `AssistantChatMessage` instances via `ChatAudioReference` once the streaming response is complete; this may appear across multiple `StreamingChatCompletionUpdate` instances but will always be the same value when present
 - The `ExpiresAt` value that describes when the `Id` will no longer be valid for use with `ChatAudioReference` in subsequent requests; this typically appears once and only once, in the final `StreamingOutputAudioUpdate`
 - Incremental `TranscriptUpdate` and/or `AudioBytesUpdate` values, which can incrementally consumed and, when concatenated, form the complete audio transcript and audio output for the overall response; many of these typically appear
+
+## How to use responses with streaming and reasoning
+
+```csharp
+OpenAIResponseClient client = new(
+    model: "o3-mini",
+    apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+OpenAIResponse response = await client.CreateResponseAsync(
+    userInputText: "What's the optimal strategy to win at poker?",
+    new ResponseCreationOptions()
+    {
+        ReasoningOptions = new ResponseReasoningOptions()
+        {
+            ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+        },
+    });
+
+await foreach (StreamingResponseUpdate update
+    in client.CreateResponseStreamingAsync(
+        userInputText: "What's the optimal strategy to win at poker?",
+        new ResponseCreationOptions()
+        {
+            ReasoningOptions = new ResponseReasoningOptions()
+            {
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+            },
+        }))
+{
+    if (update is StreamingResponseItemUpdate itemUpdate
+        && itemUpdate.Item is ReasoningResponseItem reasoningItem)
+    {
+        Console.WriteLine($"[Reasoning] ({reasoningItem.Status})");
+    }
+    else if (update is StreamingResponseContentPartDeltaUpdate deltaUpdate)
+    {
+        Console.Write(deltaUpdate.Text);
+    }
+}
+```
+
+## How to use responses with file search
+
+```csharp
+OpenAIResponseClient client = new(
+    model: "gpt-4o-mini",
+    apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+ResponseTool fileSearchTool
+    = ResponseTool.CreateFileSearchTool(
+        vectorStoreIds: [ExistingVectorStoreForTest.Id]);
+OpenAIResponse response = await client.CreateResponseAsync(
+    userInputText: "According to available files, what's the secret number?",
+    new ResponseCreationOptions()
+    {
+        Tools = { fileSearchTool }
+    });
+
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FileSearchCallResponseItem fileSearchCall)
+    {
+        Console.WriteLine($"[file_search] ({fileSearchCall.Status}): {fileSearchCall.Id}");
+        foreach (string query in fileSearchCall.Queries)
+        {
+            Console.WriteLine($"  - {query}");
+        }
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        Console.WriteLine($"[{message.Role}] {message.Content.FirstOrDefault()?.Text}");
+    }
+}
+```
+
+## How to use responses with web search
+
+```csharp
+OpenAIResponseClient client = new(
+    model: "gpt-4o-mini",
+    apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+OpenAIResponse response = await client.CreateResponseAsync(
+    userInputText: "What's a happy news headline from today?",
+    new ResponseCreationOptions()
+    {
+        Tools = { ResponseTool.CreateWebSearchTool() },
+    });
+
+foreach (ResponseItem item in response.OutputItems)
+{
+    if (item is WebSearchCallResponseItem webSearchCall)
+    {
+        Console.WriteLine($"[Web search invoked]({webSearchCall.Status}) {webSearchCall.Id}");
+    }
+    else if (item is MessageResponseItem message)
+    {
+        Console.WriteLine($"[{message.Role}] {message.Content?.FirstOrDefault()?.Text}");
+    }
+}
+```
 
 ## How to generate text embeddings
 
