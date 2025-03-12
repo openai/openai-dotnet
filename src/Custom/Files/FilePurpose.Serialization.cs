@@ -18,7 +18,49 @@ namespace OpenAI.Files
             FilePurpose.FineTuneResults => "fine-tune-results",
             FilePurpose.Vision => "vision",
             FilePurpose.UserData => "user_data",
+            FilePurpose.Evaluations => "evals",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FilePurpose value.")
         };
+
+        public static FilePurpose ToFilePurpose(this string value)
+        {
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistants"))
+            {
+                return FilePurpose.Assistants;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "assistants_output"))
+            {
+                return FilePurpose.AssistantsOutput;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "batch"))
+            {
+                return FilePurpose.Batch;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "batch_output"))
+            {
+                return FilePurpose.BatchOutput;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "fine-tune"))
+            {
+                return FilePurpose.FineTune;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "fine-tune-results"))
+            {
+                return FilePurpose.FineTuneResults;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "vision"))
+            {
+                return FilePurpose.Vision;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "user_data"))
+            {
+                return FilePurpose.UserData;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "evals"))
+            {
+                return FilePurpose.Evaluations;
+            }
+            throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown FilePurpose value.");
+        }
     }
 }
