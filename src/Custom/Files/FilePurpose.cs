@@ -18,4 +18,6 @@ public enum FilePurpose
     Vision,
 
     UserData,
+
+    Evaluations,
 }
