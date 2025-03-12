@@ -46,7 +46,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("end"u8);
                 writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -107,10 +107,7 @@ namespace OpenAI.Audio
                     endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties);
         }

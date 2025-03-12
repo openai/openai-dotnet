@@ -33,7 +33,7 @@ namespace OpenAI.Internal
             }
             if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
-                if (Code != null)
+                if (Optional.IsDefined(Code))
                 {
                     writer.WritePropertyName("code"u8);
                     writer.WriteStringValue(Code);
@@ -50,7 +50,7 @@ namespace OpenAI.Internal
             }
             if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                if (Param != null)
+                if (Optional.IsDefined(Param))
                 {
                     writer.WritePropertyName("param"u8);
                     writer.WriteStringValue(Param);
@@ -65,7 +65,7 @@ namespace OpenAI.Internal
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -142,10 +142,7 @@ namespace OpenAI.Internal
                     @type = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new OpenAIError(code, message, @param, @type, additionalBinaryDataProperties);
         }

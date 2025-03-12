@@ -11,8 +11,8 @@ namespace OpenAI.Files;
 // - Renamed.
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 /// <summary> The service client for OpenAI file operations. </summary>
-[CodeGenClient("Files")]
-[CodeGenSuppress("OpenAIFileClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Files")]
+[CodeGenSuppress("OpenAIFileClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("ListFilesAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("ListFiles", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveFileAsync", typeof(string), typeof(CancellationToken))]
@@ -96,7 +96,7 @@ public partial class OpenAIFileClient
             Purpose = purpose
         };
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
@@ -123,7 +123,7 @@ public partial class OpenAIFileClient
             Purpose = purpose
         };
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }

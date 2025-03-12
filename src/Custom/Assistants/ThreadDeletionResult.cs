@@ -3,7 +3,7 @@
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("DeleteThreadResponse")]
+[CodeGenType("DeleteThreadResponse")]
 public partial class ThreadDeletionResult
 {
     // CUSTOM: Renamed.

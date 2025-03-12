@@ -14,6 +14,6 @@ namespace OpenAI.RealtimeConversation;
 /// an audio content part. This and other related delta events append audio data into the associated content part.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseAudioDelta")]
+[CodeGenType("RealtimeServerEventResponseAudioDelta")]
 internal partial class InternalRealtimeServerEventResponseAudioDelta
 { }

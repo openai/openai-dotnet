@@ -1,6 +1,6 @@
 namespace OpenAI;
 
-[CodeGenModel("OpenAIModelFactory")]
+[CodeGenType("OpenAIModelFactory")]
 internal static partial class OpenAIModelFactory
 {
 }

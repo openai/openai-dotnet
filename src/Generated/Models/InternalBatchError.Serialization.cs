@@ -39,29 +39,15 @@ namespace OpenAI.Batch
             }
             if (Optional.IsDefined(Param) && _additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                if (Param != null)
-                {
-                    writer.WritePropertyName("param"u8);
-                    writer.WriteStringValue(Param);
-                }
-                else
-                {
-                    writer.WriteNull("param"u8);
-                }
+                writer.WritePropertyName("param"u8);
+                writer.WriteStringValue(Param);
             }
             if (Optional.IsDefined(Line) && _additionalBinaryDataProperties?.ContainsKey("line") != true)
             {
-                if (Line != null)
-                {
-                    writer.WritePropertyName("line"u8);
-                    writer.WriteNumberValue(Line.Value);
-                }
-                else
-                {
-                    writer.WriteNull("line"u8);
-                }
+                writer.WritePropertyName("line"u8);
+                writer.WriteNumberValue(Line.Value);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -138,10 +124,7 @@ namespace OpenAI.Batch
                     line = prop.Value.GetInt32();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchError(code, message, @param, line, additionalBinaryDataProperties);
         }

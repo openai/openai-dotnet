@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeFunctionTool")]
+[CodeGenType("RealtimeFunctionTool")]
 public partial class ConversationFunctionTool : ConversationTool
 {
     [CodeGenMember("Name")]

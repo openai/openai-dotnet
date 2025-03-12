@@ -14,7 +14,7 @@ namespace OpenAI.Files
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateCreateFileRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateFileRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -31,7 +31,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateListFilesRequest(string purpose, RequestOptions options)
+        internal virtual PipelineMessage CreateListFilesRequest(string purpose, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -50,7 +50,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateRetrieveFileRequest(string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateRetrieveFileRequest(string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -66,7 +66,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateDeleteFileRequest(string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateDeleteFileRequest(string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -82,7 +82,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal PipelineMessage CreateDownloadFileRequest(string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateDownloadFileRequest(string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

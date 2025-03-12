@@ -51,7 +51,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("reset_seconds"u8);
                 writer.WriteNumberValue(Convert.ToDouble(TimeUntilReset.ToString("s\\.FFF")));
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -118,10 +118,7 @@ namespace OpenAI.RealtimeConversation
                     timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationRateLimitDetailsItem(name, maximumCount, remainingCount, timeUntilReset, additionalBinaryDataProperties);
         }

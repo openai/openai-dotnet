@@ -10,7 +10,7 @@ namespace OpenAI.Embeddings;
 /// <summary>
 /// Represents an embedding vector returned by embedding endpoint.
 /// </summary>
-[CodeGenModel("Embedding")]
+[CodeGenType("Embedding")]
 [CodeGenSuppress("OpenAIEmbedding", typeof(int), typeof(BinaryData))]
 public partial class OpenAIEmbedding
 {

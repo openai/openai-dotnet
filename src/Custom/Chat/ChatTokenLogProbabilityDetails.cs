@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /// Represents a single token's log probability information, as requested via
 /// <see cref="ChatCompletionOptions.IncludeLogProbabilities"/>.
 /// </summary>
-[CodeGenModel("ChatCompletionTokenLogprob")]
+[CodeGenType("ChatCompletionTokenLogprob")]
 public partial class ChatTokenLogProbabilityDetails
 {
     // CUSTOM: Renamed.

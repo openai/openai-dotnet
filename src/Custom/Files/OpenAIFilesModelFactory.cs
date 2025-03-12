@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OpenAI.Files;
@@ -18,19 +19,30 @@ public static partial class OpenAIFilesModelFactory
             additionalBinaryDataProperties: null);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Files.OpenAIFileInfo"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Files.OpenAIFileInfo"/> instance for mocking. </returns>
-    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails) =>
+        OpenAIFileInfo(
+            id: id,
+            sizeInBytes: sizeInBytes,
+            createdAt: createdAt,
+            filename: filename,
+            purpose: purpose,
+            status: status,
+            statusDetails: statusDetails,
+            expiresAt: default);
+
+    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null, DateTimeOffset? expiresAt = null)
     {
         return new OpenAIFile(
-            id,
-            createdAt,
-            filename,
-            purpose,
+            id: id,
+            createdAt: createdAt,
+            expiresAt: expiresAt,
+            filename: filename,
+            purpose: purpose,
             @object: InternalOpenAIFileObject.File,
-            sizeInBytes,
-            status,
-            statusDetails,
+            sizeInBytes: sizeInBytes,
+            status: status,
+            statusDetails: statusDetails,
             additionalBinaryDataProperties: null);
     }
 

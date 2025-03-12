@@ -9,7 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationItemStreamingTextFinishedUpdate : ConversationUpdate
     {
-        internal ConversationItemStreamingTextFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string text) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingPartTextFinished)
+        internal ConversationItemStreamingTextFinishedUpdate(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string text) : base(eventId, ConversationUpdateKind.ItemStreamingPartTextFinished)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -18,7 +18,7 @@ namespace OpenAI.RealtimeConversation
             Text = text;
         }
 
-        internal ConversationItemStreamingTextFinishedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string text) : base(eventId, kind, additionalBinaryDataProperties)
+        internal ConversationItemStreamingTextFinishedUpdate(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string text) : base(eventId, kind, additionalBinaryDataProperties)
         {
             ResponseId = responseId;
             ItemId = itemId;

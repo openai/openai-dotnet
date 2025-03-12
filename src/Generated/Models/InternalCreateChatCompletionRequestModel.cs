@@ -19,6 +19,11 @@ namespace OpenAI.Chat
         private const string O1Preview20240912Value = "o1-preview-2024-09-12";
         private const string O1MiniValue = "o1-mini";
         private const string O1Mini20240912Value = "o1-mini-2024-09-12";
+        private const string ComputerUsePreviewValue = "computer-use-preview";
+        private const string ComputerUsePreview20250204Value = "computer-use-preview-2025-02-04";
+        private const string ComputerUsePreview20250311Value = "computer-use-preview-2025-03-11";
+        private const string Gpt45PreviewValue = "gpt-4.5-preview";
+        private const string Gpt45Preview20250227Value = "gpt-4.5-preview-2025-02-27";
         private const string Gpt4oValue = "gpt-4o";
         private const string Gpt4o20241120Value = "gpt-4o-2024-11-20";
         private const string Gpt4o20240806Value = "gpt-4o-2024-08-06";
@@ -73,6 +78,16 @@ namespace OpenAI.Chat
         public static InternalCreateChatCompletionRequestModel O1Mini { get; } = new InternalCreateChatCompletionRequestModel(O1MiniValue);
 
         public static InternalCreateChatCompletionRequestModel O1Mini20240912 { get; } = new InternalCreateChatCompletionRequestModel(O1Mini20240912Value);
+
+        public static InternalCreateChatCompletionRequestModel ComputerUsePreview { get; } = new InternalCreateChatCompletionRequestModel(ComputerUsePreviewValue);
+
+        public static InternalCreateChatCompletionRequestModel ComputerUsePreview20250204 { get; } = new InternalCreateChatCompletionRequestModel(ComputerUsePreview20250204Value);
+
+        public static InternalCreateChatCompletionRequestModel ComputerUsePreview20250311 { get; } = new InternalCreateChatCompletionRequestModel(ComputerUsePreview20250311Value);
+
+        public static InternalCreateChatCompletionRequestModel Gpt45Preview { get; } = new InternalCreateChatCompletionRequestModel(Gpt45PreviewValue);
+
+        public static InternalCreateChatCompletionRequestModel Gpt45Preview20250227 { get; } = new InternalCreateChatCompletionRequestModel(Gpt45Preview20250227Value);
 
         public static InternalCreateChatCompletionRequestModel Gpt4o { get; } = new InternalCreateChatCompletionRequestModel(Gpt4oValue);
 

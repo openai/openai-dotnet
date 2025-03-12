@@ -63,67 +63,67 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
-                if (LastError != null)
+                if (Optional.IsDefined(LastError))
                 {
                     writer.WritePropertyName("last_error"u8);
                     writer.WriteObjectValue(LastError, options);
                 }
                 else
                 {
-                    writer.WriteNull("lastError"u8);
+                    writer.WriteNull("last_error"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("expired_at") != true)
             {
-                if (ExpiredAt != null)
+                if (Optional.IsDefined(ExpiredAt))
                 {
                     writer.WritePropertyName("expired_at"u8);
                     writer.WriteNumberValue(ExpiredAt.Value, "U");
                 }
                 else
                 {
-                    writer.WriteNull("expiredAt"u8);
+                    writer.WriteNull("expired_at"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("cancelled_at") != true)
             {
-                if (CancelledAt != null)
+                if (Optional.IsDefined(CancelledAt))
                 {
                     writer.WritePropertyName("cancelled_at"u8);
                     writer.WriteNumberValue(CancelledAt.Value, "U");
                 }
                 else
                 {
-                    writer.WriteNull("cancelledAt"u8);
+                    writer.WriteNull("cancelled_at"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("failed_at") != true)
             {
-                if (FailedAt != null)
+                if (Optional.IsDefined(FailedAt))
                 {
                     writer.WritePropertyName("failed_at"u8);
                     writer.WriteNumberValue(FailedAt.Value, "U");
                 }
                 else
                 {
-                    writer.WriteNull("failedAt"u8);
+                    writer.WriteNull("failed_at"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
-                if (CompletedAt != null)
+                if (Optional.IsDefined(CompletedAt))
                 {
                     writer.WritePropertyName("completed_at"u8);
                     writer.WriteNumberValue(CompletedAt.Value, "U");
                 }
                 else
                 {
-                    writer.WriteNull("completedAt"u8);
+                    writer.WriteNull("completed_at"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                if (Metadata != null && Optional.IsCollectionDefined(Metadata))
+                if (options.Format != "W" && Optional.IsCollectionDefined(Metadata))
                 {
                     writer.WritePropertyName("metadata"u8);
                     writer.WriteStartObject();
@@ -146,7 +146,7 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
-                if (Usage != null)
+                if (Optional.IsDefined(Usage))
                 {
                     writer.WritePropertyName("usage"u8);
                     writer.WriteObjectValue(Usage, options);
@@ -159,7 +159,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
@@ -169,9 +169,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("step_details") != true)
             {
                 writer.WritePropertyName("step_details"u8);
-                writer.WriteObjectValue<RunStepDetails>(Details, options);
+                writer.WriteObjectValue(Details, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -225,7 +225,7 @@ namespace OpenAI.Assistants
             IReadOnlyDictionary<string, string> metadata = default;
             RunStepTokenUsage usage = default;
             InternalRunStepObjectObject @object = default;
-            Assistants.RunStepKind kind = default;
+            RunStepKind kind = default;
             RunStepDetails details = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -357,10 +357,7 @@ namespace OpenAI.Assistants
                     details = RunStepDetails.DeserializeRunStepDetails(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunStep(
                 id,

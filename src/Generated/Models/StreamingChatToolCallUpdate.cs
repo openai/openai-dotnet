@@ -11,7 +11,7 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal StreamingChatToolCallUpdate(int index, InternalChatCompletionMessageToolCallChunkFunction function, Chat.ChatToolCallKind kind, string toolCallId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingChatToolCallUpdate(int index, InternalChatCompletionMessageToolCallChunkFunction function, ChatToolCallKind kind, string toolCallId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Index = index;
             Function = function;

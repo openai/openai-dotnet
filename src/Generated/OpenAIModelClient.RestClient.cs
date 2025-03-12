@@ -13,7 +13,7 @@ namespace OpenAI.Models
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateListModelsRequest(RequestOptions options)
+        internal virtual PipelineMessage CreateListModelsRequest(RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -28,7 +28,7 @@ namespace OpenAI.Models
             return message;
         }
 
-        internal PipelineMessage CreateRetrieveModelRequest(string model, RequestOptions options)
+        internal virtual PipelineMessage CreateRetrieveModelRequest(string model, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -44,7 +44,7 @@ namespace OpenAI.Models
             return message;
         }
 
-        internal PipelineMessage CreateDeleteModelRequest(string model, RequestOptions options)
+        internal virtual PipelineMessage CreateDeleteModelRequest(string model, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

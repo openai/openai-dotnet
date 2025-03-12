@@ -39,29 +39,15 @@ namespace OpenAI.Batch
             }
             if (Optional.IsDefined(Response) && _additionalBinaryDataProperties?.ContainsKey("response") != true)
             {
-                if (Response != null)
-                {
-                    writer.WritePropertyName("response"u8);
-                    writer.WriteObjectValue(Response, options);
-                }
-                else
-                {
-                    writer.WriteNull("response"u8);
-                }
+                writer.WritePropertyName("response"u8);
+                writer.WriteObjectValue(Response, options);
             }
             if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
-                if (Error != null)
-                {
-                    writer.WritePropertyName("error"u8);
-                    writer.WriteObjectValue(Error, options);
-                }
-                else
-                {
-                    writer.WriteNull("error"u8);
-                }
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue(Error, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -138,10 +124,7 @@ namespace OpenAI.Batch
                     error = InternalBatchRequestOutputError.DeserializeInternalBatchRequestOutputError(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchRequestOutput(id, customId, response, error, additionalBinaryDataProperties);
         }

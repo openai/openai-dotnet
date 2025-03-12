@@ -73,10 +73,7 @@ namespace OpenAI.FineTuning
                     wandb = FineTuningIntegrationWandbWandb.DeserializeFineTuningIntegrationWandbWandb(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalFineTuningIntegrationWandb(@type, additionalBinaryDataProperties, wandb);
         }

@@ -8,7 +8,7 @@ using System.Linq;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeResponseCreateParams")]
+[CodeGenType("RealtimeResponseCreateParams")]
 public partial class ConversationResponseOptions
 {
     [CodeGenMember("Conversation")]

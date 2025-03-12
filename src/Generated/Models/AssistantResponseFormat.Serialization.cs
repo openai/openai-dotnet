@@ -10,8 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(InternalUnknownAssistantResponseFormat))]
-    public abstract partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
+    public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
     {
         internal AssistantResponseFormat()
         {
@@ -29,7 +28,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -58,7 +57,7 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(AssistantResponseFormat)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return AssistantResponseFormat.DeserializeAssistantResponseFormat(document.RootElement, options);
+            return DeserializeAssistantResponseFormat(document.RootElement, options);
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
@@ -81,7 +80,7 @@ namespace OpenAI.Assistants
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return AssistantResponseFormat.DeserializeAssistantResponseFormat(document.RootElement, options);
+                        return DeserializeAssistantResponseFormat(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(AssistantResponseFormat)} does not support reading '{options.Format}' format.");
@@ -101,7 +100,7 @@ namespace OpenAI.Assistants
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return AssistantResponseFormat.DeserializeAssistantResponseFormat(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeAssistantResponseFormat(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace OpenAI.Chat
             Model = model;
             SystemFingerprint = systemFingerprint;
             Usage = usage;
-            this.Object = @object;
+            Object = @object;
             ServiceTier = serviceTier;
             Choices = choices;
             CreatedAt = createdAt;

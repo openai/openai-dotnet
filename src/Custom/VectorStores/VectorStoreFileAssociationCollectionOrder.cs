@@ -1,17 +1,40 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
-// CUSTOM: Renamed.
 [Experimental("OPENAI001")]
-[CodeGenModel("ListVectorStoreFilesRequestOrder")]
-public readonly partial struct VectorStoreFileAssociationCollectionOrder
+public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder>
 {
-    // CUSTOM: Renamed.
-    [CodeGenMember("Asc")]
-    public static VectorStoreFileAssociationCollectionOrder Ascending { get; } = new VectorStoreFileAssociationCollectionOrder(AscValue);
+    public static VectorStoreFileAssociationCollectionOrder Ascending { get; } = new VectorStoreFileAssociationCollectionOrder("asc");
 
-    // CUSTOM: Renamed.
-    [CodeGenMember("Desc")]
-    public static VectorStoreFileAssociationCollectionOrder Descending { get; } = new VectorStoreFileAssociationCollectionOrder(DescValue);
+    public static VectorStoreFileAssociationCollectionOrder Descending { get; } = new VectorStoreFileAssociationCollectionOrder("desc");
+
+    private readonly string _value;
+    private const string AscValue = "asc";
+    private const string DescValue = "desc";
+
+    public VectorStoreFileAssociationCollectionOrder(string value)
+    {
+        Argument.AssertNotNull(value, nameof(value));
+
+        _value = value;
+    }
+
+    public static bool operator ==(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right) => left.Equals(right);
+
+    public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right) => !left.Equals(right);
+
+    public static implicit operator VectorStoreFileAssociationCollectionOrder(string value) => new VectorStoreFileAssociationCollectionOrder(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is VectorStoreFileAssociationCollectionOrder other && Equals(other);
+
+    public bool Equals(VectorStoreFileAssociationCollectionOrder other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
+    public override string ToString() => _value;
 }

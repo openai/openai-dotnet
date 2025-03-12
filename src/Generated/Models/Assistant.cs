@@ -36,7 +36,7 @@ namespace OpenAI.Assistants
             ToolResources = toolResources;
             Metadata = metadata;
             Temperature = temperature;
-            this.Object = @object;
+            Object = @object;
             ResponseFormat = responseFormat;
             NucleusSamplingFactor = nucleusSamplingFactor;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

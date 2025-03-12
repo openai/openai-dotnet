@@ -41,7 +41,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -82,7 +82,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string text = default;
-            Assistants.RunStepFileSearchResultContentKind kind = default;
+            RunStepFileSearchResultContentKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -96,10 +96,7 @@ namespace OpenAI.Assistants
                     kind = prop.Value.GetString().ToRunStepFileSearchResultContentKind();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunStepFileSearchResultContent(text, kind, additionalBinaryDataProperties);
         }

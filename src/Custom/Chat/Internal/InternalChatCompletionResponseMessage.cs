@@ -3,7 +3,7 @@
 namespace OpenAI.Chat;
 
 
-[CodeGenModel("ChatCompletionResponseMessage")]
+[CodeGenType("ChatCompletionResponseMessage")]
 [CodeGenSuppress("InternalChatCompletionResponseMessage", typeof(IEnumerable<ChatMessageContentPart>))]
 internal partial class InternalChatCompletionResponseMessage
 {

@@ -13,6 +13,6 @@ namespace OpenAI.RealtimeConversation;
 /// purging the user audio input buffer.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventInputAudioBufferCleared")]
+[CodeGenType("RealtimeServerEventInputAudioBufferCleared")]
 public partial class ConversationInputAudioClearedUpdate
 { }

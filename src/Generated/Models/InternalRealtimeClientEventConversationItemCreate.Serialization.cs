@@ -90,10 +90,7 @@ namespace OpenAI.RealtimeConversation
                     item = ConversationItem.DeserializeConversationItem(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeClientEventConversationItemCreate(kind, eventId, additionalBinaryDataProperties, previousItemId, item);
         }

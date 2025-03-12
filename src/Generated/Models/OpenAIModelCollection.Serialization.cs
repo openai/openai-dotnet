@@ -22,9 +22,9 @@ namespace OpenAI.Models
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -55,7 +55,7 @@ namespace OpenAI.Models
                 throw new FormatException($"The model {nameof(OpenAIModelCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return OpenAIModelCollection.DeserializeOpenAIModelCollection(document.RootElement, options);
+            return DeserializeOpenAIModelCollection(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<OpenAIModelCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -82,7 +82,7 @@ namespace OpenAI.Models
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return OpenAIModelCollection.DeserializeOpenAIModelCollection(document.RootElement, options);
+                        return DeserializeOpenAIModelCollection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(OpenAIModelCollection)} does not support reading '{options.Format}' format.");
@@ -104,7 +104,7 @@ namespace OpenAI.Models
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return OpenAIModelCollection.DeserializeOpenAIModelCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeOpenAIModelCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

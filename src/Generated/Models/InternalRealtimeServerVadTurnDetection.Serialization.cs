@@ -36,12 +36,12 @@ namespace OpenAI.RealtimeConversation
             if (Optional.IsDefined(PrefixPaddingMs) && _additionalBinaryDataProperties?.ContainsKey("prefix_padding_ms") != true)
             {
                 writer.WritePropertyName("prefix_padding_ms"u8);
-                this.SerializePrefixPaddingMs(writer, options);
+                SerializePrefixPaddingMs(writer, options);
             }
             if (Optional.IsDefined(SilenceDurationMs) && _additionalBinaryDataProperties?.ContainsKey("silence_duration_ms") != true)
             {
                 writer.WritePropertyName("silence_duration_ms"u8);
-                this.SerializeSilenceDurationMs(writer, options);
+                SerializeSilenceDurationMs(writer, options);
             }
             if (Optional.IsDefined(CreateResponse) && _additionalBinaryDataProperties?.ContainsKey("create_response") != true)
             {
@@ -69,7 +69,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            RealtimeConversation.ConversationTurnDetectionKind kind = default;
+            ConversationTurnDetectionKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             float? threshold = default;
             TimeSpan? prefixPaddingMs = default;
@@ -110,10 +110,7 @@ namespace OpenAI.RealtimeConversation
                     createResponse = prop.Value.GetBoolean();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeServerVadTurnDetection(
                 kind,

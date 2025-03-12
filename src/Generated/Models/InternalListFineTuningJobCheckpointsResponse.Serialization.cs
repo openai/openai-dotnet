@@ -48,34 +48,20 @@ namespace OpenAI.FineTuning
             }
             if (Optional.IsDefined(FirstId) && _additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
-                if (FirstId != null)
-                {
-                    writer.WritePropertyName("first_id"u8);
-                    writer.WriteStringValue(FirstId);
-                }
-                else
-                {
-                    writer.WriteNull("firstId"u8);
-                }
+                writer.WritePropertyName("first_id"u8);
+                writer.WriteStringValue(FirstId);
             }
             if (Optional.IsDefined(LastId) && _additionalBinaryDataProperties?.ContainsKey("last_id") != true)
             {
-                if (LastId != null)
-                {
-                    writer.WritePropertyName("last_id"u8);
-                    writer.WriteStringValue(LastId);
-                }
-                else
-                {
-                    writer.WriteNull("lastId"u8);
-                }
+                writer.WritePropertyName("last_id"u8);
+                writer.WriteStringValue(LastId);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
             {
                 writer.WritePropertyName("has_more"u8);
                 writer.WriteBooleanValue(HasMore);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -163,10 +149,7 @@ namespace OpenAI.FineTuning
                     hasMore = prop.Value.GetBoolean();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalListFineTuningJobCheckpointsResponse(
                 data,

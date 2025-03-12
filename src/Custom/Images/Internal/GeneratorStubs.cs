@@ -2,23 +2,23 @@ namespace OpenAI.Images;
 
 // CUSTOM: Made internal.
 
-[CodeGenModel("CreateImageEditRequestModel")]
+[CodeGenType("CreateImageEditRequestModel")]
 internal readonly partial struct InternalCreateImageEditRequestModel { }
 
-[CodeGenModel("CreateImageEditRequestResponseFormat")]
+[CodeGenType("CreateImageEditRequestResponseFormat")]
 internal readonly partial struct InternalCreateImageEditRequestResponseFormat { }
 
-[CodeGenModel("CreateImageEditRequestSize")]
+[CodeGenType("CreateImageEditRequestSize")]
 internal readonly partial struct InternalCreateImageEditRequestSize { }
 
-[CodeGenModel("CreateImageRequestModel")]
+[CodeGenType("CreateImageRequestModel")]
 internal readonly partial struct InternalCreateImageRequestModel { }
 
-[CodeGenModel("CreateImageVariationRequestModel")]
+[CodeGenType("CreateImageVariationRequestModel")]
 internal readonly partial struct InternalCreateImageVariationRequestModel { }
 
-[CodeGenModel("CreateImageVariationRequestResponseFormat")]
+[CodeGenType("CreateImageVariationRequestResponseFormat")]
 internal readonly partial struct InternalCreateImageVariationRequestResponseFormat { }
 
-[CodeGenModel("CreateImageVariationRequestSize")]
+[CodeGenType("CreateImageVariationRequestSize")]
 internal readonly partial struct InternalCreateImageVariationRequestSize { }

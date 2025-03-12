@@ -16,6 +16,8 @@ namespace OpenAI {
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
         public virtual OpenAIModelClient GetOpenAIModelClient();
+        public virtual Responses.OpenAIResponseClient GetOpenAIResponseClient();
+        public virtual Responses.OpenAIResponseClient GetOpenAIResponseClient(string model);
         public virtual RealtimeConversation.RealtimeConversationClient GetRealtimeConversationClient(string model);
         public virtual VectorStoreClient GetVectorStoreClient();
     }
@@ -254,7 +256,7 @@ namespace OpenAI.Assistants {
         public static explicit operator AssistantModificationOptions(ClientResult result);
         public static implicit operator BinaryContent(AssistantModificationOptions assistantModificationOptions);
     }
-    public abstract class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
+    public class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
         public static AssistantResponseFormat Auto { get; }
         public static AssistantResponseFormat JsonObject { get; }
         public static AssistantResponseFormat Text { get; }
@@ -702,7 +704,7 @@ namespace OpenAI.Assistants {
         public static explicit operator RunStepTokenUsage(ClientResult result);
         public static implicit operator BinaryContent(RunStepTokenUsage runStepTokenUsage);
     }
-    public abstract class RunStepToolCall : IJsonModel<RunStepToolCall>, IPersistableModel<RunStepToolCall> {
+    public class RunStepToolCall : IJsonModel<RunStepToolCall>, IPersistableModel<RunStepToolCall> {
         public string CodeInterpreterInput { get; }
         public IReadOnlyList<RunStepCodeInterpreterOutput> CodeInterpreterOutputs { get; }
         public FileSearchRankingOptions FileSearchRankingOptions { get; }
@@ -722,7 +724,7 @@ namespace OpenAI.Assistants {
     }
     public class RunStepUpdate : StreamingUpdate<RunStep> {
     }
-    public abstract class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>, IPersistableModel<RunStepUpdateCodeInterpreterOutput> {
+    public class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>, IPersistableModel<RunStepUpdateCodeInterpreterOutput> {
         public string ImageFileId { get; }
         public string Logs { get; }
         public int OutputIndex { get; }
@@ -1163,6 +1165,7 @@ namespace OpenAI.Chat {
         public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
         public ChatMessageContent Content { get; }
         public IReadOnlyList<ChatTokenLogProbabilityDetails> ContentTokenLogProbabilities { get; }
         public DateTimeOffset CreatedAt { get; }
@@ -1207,6 +1210,7 @@ namespace OpenAI.Chat {
         public IList<ChatTool> Tools { get; }
         public int? TopLogProbabilityCount { get; set; }
         public float? TopP { get; set; }
+        public ChatWebSearchOptions WebSearchOptions { get; set; }
         public static explicit operator ChatCompletionOptions(ClientResult result);
         public static implicit operator BinaryContent(ChatCompletionOptions chatCompletionOptions);
     }
@@ -1303,6 +1307,14 @@ namespace OpenAI.Chat {
         public static explicit operator ChatMessage(ClientResult result);
         public static implicit operator BinaryContent(ChatMessage chatMessage);
         public static implicit operator ChatMessage(string content);
+    }
+    public class ChatMessageAnnotation : IJsonModel<ChatMessageAnnotation>, IPersistableModel<ChatMessageAnnotation> {
+        public int EndIndex { get; }
+        public int StartIndex { get; }
+        public string WebResourceTitle { get; }
+        public Uri WebResourceUri { get; }
+        public static explicit operator ChatMessageAnnotation(ClientResult result);
+        public static implicit operator BinaryContent(ChatMessageAnnotation chatMessageAnnotation);
     }
     public class ChatMessageContent : ObjectModel.Collection<ChatMessageContentPart> {
         public ChatMessageContent();
@@ -1493,6 +1505,10 @@ namespace OpenAI.Chat {
     public enum ChatToolKind {
         Function = 0
     }
+    public class ChatWebSearchOptions : IJsonModel<ChatWebSearchOptions>, IPersistableModel<ChatWebSearchOptions> {
+        public static explicit operator ChatWebSearchOptions(ClientResult result);
+        public static implicit operator BinaryContent(ChatWebSearchOptions chatWebSearchOptions);
+    }
     public class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>, IPersistableModel<DeveloperChatMessage> {
         public DeveloperChatMessage(params ChatMessageContentPart[] contentParts);
         public DeveloperChatMessage(IEnumerable<ChatMessageContentPart> contentParts);
@@ -1509,10 +1525,11 @@ namespace OpenAI.Chat {
         public static implicit operator BinaryContent(FunctionChatMessage functionChatMessage);
     }
     public static class OpenAIChatModelFactory {
-        public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null);
+        public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null, IEnumerable<ChatMessageAnnotation> messageAnnotations = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ChatCompletion ChatCompletion(string id, ChatFinishReason finishReason, ChatMessageContent content, string refusal, IEnumerable<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities, DateTimeOffset createdAt, string model, string systemFingerprint, ChatTokenUsage usage);
         public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int audioTokenCount = 0, int cachedTokenCount = 0);
+        public static ChatMessageAnnotation ChatMessageAnnotation(int startIndex = 0, int endIndex = 0, Uri webResourceUri = null, string webResourceTitle = null);
         public static ChatOutputAudio ChatOutputAudio(BinaryData audioBytes, string id = null, string transcript = null, DateTimeOffset expiresAt = default);
         public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = 0, int audioTokenCount = 0, int acceptedPredictionTokenCount = 0, int rejectedPredictionTokenCount = 0);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1663,7 +1680,8 @@ namespace OpenAI.Files {
         BatchOutput = 3,
         FineTune = 4,
         FineTuneResults = 5,
-        Vision = 6
+        Vision = 6,
+        UserData = 7
     }
     [Obsolete("This struct is obsolete. If this is a fine-tuning training file, it may take some time to process after it has been uploaded. While the file is processing, you can still create a fine-tuning job but it will not start until the file processing has completed.")]
     public enum FileStatus {
@@ -1675,7 +1693,9 @@ namespace OpenAI.Files {
         public FileUploadPurpose(string value);
         public static FileUploadPurpose Assistants { get; }
         public static FileUploadPurpose Batch { get; }
+        public static FileUploadPurpose Evaluations { get; }
         public static FileUploadPurpose FineTune { get; }
+        public static FileUploadPurpose UserData { get; }
         public static FileUploadPurpose Vision { get; }
         public readonly bool Equals(FileUploadPurpose other);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1689,6 +1709,7 @@ namespace OpenAI.Files {
     }
     public class OpenAIFile : IJsonModel<OpenAIFile>, IPersistableModel<OpenAIFile> {
         public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset? ExpiresAt { get; }
         public string Filename { get; }
         public string Id { get; }
         public FilePurpose Purpose { get; }
@@ -1759,7 +1780,9 @@ namespace OpenAI.Files {
     public static class OpenAIFilesModelFactory {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> items = null);
-        public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null);
+        public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null, DateTimeOffset? expiresAt = null);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails);
     }
 }
 namespace OpenAI.FineTuning {
@@ -2068,7 +2091,7 @@ namespace OpenAI.RealtimeConversation {
         Text = 1,
         Audio = 2
     }
-    public abstract class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
+    public class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
         public string AudioTranscript { get; }
         public string Text { get; }
         public static ConversationContentPart CreateInputAudioTranscriptPart(string transcript = null);
@@ -2178,7 +2201,7 @@ namespace OpenAI.RealtimeConversation {
         public static explicit operator ConversationInputTranscriptionOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationInputTranscriptionOptions conversationInputTranscriptionOptions);
     }
-    public abstract class ConversationItem : IJsonModel<ConversationItem>, IPersistableModel<ConversationItem> {
+    public class ConversationItem : IJsonModel<ConversationItem>, IPersistableModel<ConversationItem> {
         public string FunctionArguments { get; }
         public string FunctionCallId { get; }
         public string FunctionName { get; }
@@ -2515,14 +2538,14 @@ namespace OpenAI.RealtimeConversation {
         ServerVoiceActivityDetection = 0,
         Disabled = 1
     }
-    public abstract class ConversationTurnDetectionOptions : IJsonModel<ConversationTurnDetectionOptions>, IPersistableModel<ConversationTurnDetectionOptions> {
+    public class ConversationTurnDetectionOptions : IJsonModel<ConversationTurnDetectionOptions>, IPersistableModel<ConversationTurnDetectionOptions> {
         public ConversationTurnDetectionKind Kind { get; protected internal set; }
         public static ConversationTurnDetectionOptions CreateDisabledTurnDetectionOptions();
         public static ConversationTurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null, bool? enableAutomaticResponseCreation = null);
         public static explicit operator ConversationTurnDetectionOptions(ClientResult result);
         public static implicit operator BinaryContent(ConversationTurnDetectionOptions conversationTurnDetectionOptions);
     }
-    public abstract class ConversationUpdate : IJsonModel<ConversationUpdate>, IPersistableModel<ConversationUpdate> {
+    public class ConversationUpdate : IJsonModel<ConversationUpdate>, IPersistableModel<ConversationUpdate> {
         public string EventId { get; }
         public ConversationUpdateKind Kind { get; protected internal set; }
         public BinaryData GetRawContent();
@@ -2650,6 +2673,638 @@ namespace OpenAI.RealtimeConversation {
         public static implicit operator ResponseConversationSelection(string value);
         public static bool operator !=(ResponseConversationSelection left, ResponseConversationSelection right);
         public override readonly string ToString();
+    }
+}
+namespace OpenAI.Responses {
+    public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
+        public Drawing.Point? ClickCoordinates { get; }
+        public ComputerCallActionMouseButton? ClickMouseButton { get; }
+        public Drawing.Point? DoubleClickCoordinates { get; }
+        public IList<Drawing.Point> DragPath { get; }
+        public IList<string> KeyPressKeyCodes { get; }
+        public ComputerCallActionKind Kind { get; }
+        public Drawing.Point? MoveCoordinates { get; }
+        public Drawing.Point? ScrollCoordinates { get; }
+        public int? ScrollHorizontalOffset { get; }
+        public int? ScrollVerticalOffset { get; }
+        public string TypeText { get; }
+        public static ComputerCallAction CreateClickAction(Drawing.Point clickCoordinates, ComputerCallActionMouseButton clickMouseButton);
+        public static ComputerCallAction CreateDoubleClickAction(Drawing.Point doubleClickCoordinates, ComputerCallActionMouseButton doubleClickMouseButton);
+        public static ComputerCallAction CreateDragAction(IList<Drawing.Point> dragPath);
+        public static ComputerCallAction CreateKeyPressAction(IList<string> keyCodes);
+        public static ComputerCallAction CreateMoveAction(Drawing.Point moveCoordinates);
+        public static ComputerCallAction CreateScreenshotAction();
+        public static ComputerCallAction CreateScrollAction(Drawing.Point scrollCoordinates, int horizontalOffset, int verticalOffset);
+        public static ComputerCallAction CreateTypeAction(string typeText);
+        public static ComputerCallAction CreateWaitAction();
+        public static explicit operator ComputerCallAction(ClientResult result);
+        public static implicit operator BinaryContent(ComputerCallAction computerCallAction);
+    }
+    public enum ComputerCallActionKind {
+        Click = 0,
+        DoubleClick = 1,
+        Drag = 2,
+        KeyPress = 3,
+        Move = 4,
+        Screenshot = 5,
+        Scroll = 6,
+        Type = 7,
+        Wait = 8
+    }
+    public enum ComputerCallActionMouseButton {
+        Left = 0,
+        Right = 1,
+        Wheel = 2,
+        Back = 3,
+        Forward = 4
+    }
+    public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
+        public ComputerCallOutputResponseItem(string callId, IEnumerable<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output);
+        public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
+        public string CallId { get; set; }
+        public ComputerOutput Output { get; set; }
+        public ComputerCallOutputStatus? Status { get; }
+        public new static explicit operator ComputerCallOutputResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(ComputerCallOutputResponseItem computerCallOutputResponseItem);
+    }
+    public enum ComputerCallOutputStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
+        public ComputerCallResponseItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
+        public ComputerCallAction Action { get; set; }
+        public string CallId { get; set; }
+        public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
+        public ComputerCallStatus Status { get; }
+        public new static explicit operator ComputerCallResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(ComputerCallResponseItem computerCallResponseItem);
+    }
+    public class ComputerCallSafetyCheck : IJsonModel<ComputerCallSafetyCheck>, IPersistableModel<ComputerCallSafetyCheck> {
+        public ComputerCallSafetyCheck(string id, string code, string message);
+        public string Code { get; set; }
+        public string Id { get; set; }
+        public string Message { get; set; }
+        public static explicit operator ComputerCallSafetyCheck(ClientResult result);
+        public static implicit operator BinaryContent(ComputerCallSafetyCheck computerCallSafetyCheck);
+    }
+    public enum ComputerCallStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class ComputerOutput : IJsonModel<ComputerOutput>, IPersistableModel<ComputerOutput> {
+        public static ComputerOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ComputerOutput CreateScreenshotOutput(string screenshotImageFileId);
+        public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri);
+        public static explicit operator ComputerOutput(ClientResult result);
+        public static implicit operator BinaryContent(ComputerOutput computerOutput);
+    }
+    public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment> {
+        public ComputerToolEnvironment(string value);
+        public static ComputerToolEnvironment Browser { get; }
+        public static ComputerToolEnvironment Mac { get; }
+        public static ComputerToolEnvironment Ubuntu { get; }
+        public static ComputerToolEnvironment Windows { get; }
+        public readonly bool Equals(ComputerToolEnvironment other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ComputerToolEnvironment left, ComputerToolEnvironment right);
+        public static implicit operator ComputerToolEnvironment(string value);
+        public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
+        public override readonly string ToString();
+    }
+    public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
+        public FileSearchCallResponseItem(string id, IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public IList<string> Queries { get; }
+        public IList<FileSearchCallResult> Results { get; set; }
+        public FileSearchCallStatus Status { get; }
+        public new static explicit operator FileSearchCallResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchCallResponseItem fileSearchCallResponseItem);
+    }
+    public class FileSearchCallResult : IJsonModel<FileSearchCallResult>, IPersistableModel<FileSearchCallResult> {
+        public IDictionary<string, BinaryData> Attributes { get; }
+        public string FileId { get; set; }
+        public string Filename { get; set; }
+        public float? Score { get; set; }
+        public string Text { get; set; }
+        public static explicit operator FileSearchCallResult(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchCallResult fileSearchCallResult);
+    }
+    public enum FileSearchCallStatus {
+        InProgress = 0,
+        Searching = 1,
+        Completed = 2,
+        Incomplete = 3,
+        Failed = 4
+    }
+    public readonly partial struct FileSearchToolRanker : IEquatable<FileSearchToolRanker> {
+        public FileSearchToolRanker(string value);
+        public static FileSearchToolRanker Auto { get; }
+        public static FileSearchToolRanker Default20241115 { get; }
+        public readonly bool Equals(FileSearchToolRanker other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FileSearchToolRanker left, FileSearchToolRanker right);
+        public static implicit operator FileSearchToolRanker(string value);
+        public static bool operator !=(FileSearchToolRanker left, FileSearchToolRanker right);
+        public override readonly string ToString();
+    }
+    public class FileSearchToolRankingOptions : IJsonModel<FileSearchToolRankingOptions>, IPersistableModel<FileSearchToolRankingOptions> {
+        public FileSearchToolRanker? Ranker { get; set; }
+        public float? ScoreThreshold { get; set; }
+        public static explicit operator FileSearchToolRankingOptions(ClientResult result);
+        public static implicit operator BinaryContent(FileSearchToolRankingOptions fileSearchToolRankingOptions);
+    }
+    public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
+        public FunctionCallOutputResponseItem(string callId, string functionOutput);
+        public string CallId { get; set; }
+        public string FunctionOutput { get; set; }
+        public FunctionCallOutputStatus? Status { get; }
+        public new static explicit operator FunctionCallOutputResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(FunctionCallOutputResponseItem functionCallOutputResponseItem);
+    }
+    public enum FunctionCallOutputStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
+        public FunctionCallResponseItem(string id, string callId, string functionName, BinaryData functionArguments);
+        public string CallId { get; set; }
+        public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
+        public FunctionCallStatus? Status { get; }
+        public new static explicit operator FunctionCallResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(FunctionCallResponseItem functionCallResponseItem);
+    }
+    public enum FunctionCallStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
+        public MessageResponseItem(MessageRole role);
+        public IList<ResponseContentPart> Content { get; }
+        public MessageRole Role { get; }
+        public MessageStatus? Status { get; }
+        public new static explicit operator MessageResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(MessageResponseItem messageResponseItem);
+    }
+    public readonly partial struct MessageRole : IEquatable<MessageRole> {
+        public MessageRole(string value);
+        public static MessageRole Assistant { get; }
+        public static MessageRole Developer { get; }
+        public static MessageRole System { get; }
+        public static MessageRole User { get; }
+        public readonly bool Equals(MessageRole other);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessageRole left, MessageRole right);
+        public static implicit operator MessageRole(string value);
+        public static bool operator !=(MessageRole left, MessageRole right);
+        public override readonly string ToString();
+    }
+    public enum MessageStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class OpenAIResponse : IJsonModel<OpenAIResponse>, IPersistableModel<OpenAIResponse> {
+        public bool AllowParallelToolCalls { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string EndUserId { get; }
+        public ResponseError Error { get; }
+        public string Id { get; }
+        public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; }
+        public string Instructions { get; }
+        public int? MaxOutputTokenCount { get; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; }
+        public IList<ResponseItem> OutputItems { get; }
+        public string PreviousResponseId { get; }
+        public ResponseReasoningOptions ReasoningOptions { get; }
+        public ResponseStatus? Status { get; }
+        public float Temperature { get; }
+        public ResponseTextOptions TextOptions { get; }
+        public BinaryData ToolChoice { get; }
+        public IList<ResponseTool> Tools { get; }
+        public float TopP { get; }
+        public ResponseTruncationMode? TruncationMode { get; }
+        public ResponseTokenUsage Usage { get; }
+        public static explicit operator OpenAIResponse(ClientResult result);
+        public static implicit operator BinaryContent(OpenAIResponse openAIResponse);
+    }
+    public class OpenAIResponseClient {
+        protected OpenAIResponseClient();
+        protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
+        public OpenAIResponseClient(string model, ApiKeyCredential credential);
+        public OpenAIResponseClient(string model, string apiKey);
+        public ClientPipeline Pipeline { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
+        public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
+        public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual ClientResult GetResponse(string responseId, RequestOptions options);
+        public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual Task<ClientResult> GetResponseAsync(string responseId, RequestOptions options);
+        public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
+        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
+    }
+    public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
+        public ReasoningResponseItem(string id, IEnumerable<string> summaryTextParts);
+        public ReasoningStatus? Status { get; }
+        public IReadOnlyList<string> SummaryTextParts { get; }
+        public new static explicit operator ReasoningResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(ReasoningResponseItem reasoningResponseItem);
+    }
+    public enum ReasoningStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2
+    }
+    public class ReferenceResponseItem : ResponseItem, IJsonModel<ReferenceResponseItem>, IPersistableModel<ReferenceResponseItem> {
+        public ReferenceResponseItem(string id);
+        public new static explicit operator ReferenceResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(ReferenceResponseItem referenceResponseItem);
+    }
+    public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
+        public BinaryData InputFileBytes { get; }
+        public string InputFileId { get; }
+        public string InputFilename { get; }
+        public ResponseImageDetailLevel? InputImageDetailLevel { get; }
+        public string InputImageFileId { get; }
+        public ResponseContentPartKind Kind { get; }
+        public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
+        public string Refusal { get; }
+        public string Text { get; }
+        public static ResponseContentPart CreateInputFilePart(string fileId, string filename, BinaryData fileBytes);
+        public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, string imageBytesMediaType, ResponseImageDetailLevel? imageDetailLevel = null);
+        public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
+        public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
+        public static ResponseContentPart CreateInputTextPart(string text);
+        public static ResponseContentPart CreateOutputTextPart(string text, IEnumerable<ResponseMessageAnnotation> annotations);
+        public static ResponseContentPart CreateRefusalPart(string refusal);
+        public static explicit operator ResponseContentPart(ClientResult result);
+        public static implicit operator BinaryContent(ResponseContentPart responseContentPart);
+    }
+    public enum ResponseContentPartKind {
+        InputText = 0,
+        InputImage = 1,
+        InputFile = 2,
+        OutputText = 3,
+        Refusal = 4
+    }
+    public class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>, IPersistableModel<ResponseCreationOptions> {
+        public bool? AllowParallelToolCalls { get; set; }
+        public string EndUserId { get; set; }
+        public string Instructions { get; set; }
+        public int? MaxOutputTokenCount { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string PreviousResponseId { get; set; }
+        public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public bool? StoredOutputEnabled { get; set; }
+        public float? Temperature { get; set; }
+        public ResponseTextOptions TextOptions { get; set; }
+        public BinaryData ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; set; }
+        public float? TopP { get; set; }
+        public ResponseTruncationMode? TruncationMode { get; set; }
+        public static explicit operator ResponseCreationOptions(ClientResult result);
+        public static implicit operator BinaryContent(ResponseCreationOptions responseCreationOptions);
+    }
+    public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
+        public bool Deleted { get; }
+        public string Id { get; }
+        public static explicit operator ResponseDeletionResult(ClientResult result);
+        public static implicit operator BinaryContent(ResponseDeletionResult responseDeletionResult);
+    }
+    public class ResponseError : IJsonModel<ResponseError>, IPersistableModel<ResponseError> {
+        public string Code { get; }
+        public string Message { get; }
+        public static explicit operator ResponseError(ClientResult result);
+        public static implicit operator BinaryContent(ResponseError responseError);
+    }
+    public readonly partial struct ResponseImageDetailLevel : IEquatable<ResponseImageDetailLevel> {
+        public ResponseImageDetailLevel(string value);
+        public static ResponseImageDetailLevel Auto { get; }
+        public static ResponseImageDetailLevel High { get; }
+        public static ResponseImageDetailLevel Low { get; }
+        public readonly bool Equals(ResponseImageDetailLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
+        public static implicit operator ResponseImageDetailLevel(string value);
+        public static bool operator !=(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
+        public override readonly string ToString();
+    }
+    public class ResponseIncompleteStatusDetails : IJsonModel<ResponseIncompleteStatusDetails>, IPersistableModel<ResponseIncompleteStatusDetails> {
+        public ResponseIncompleteStatusReason? Reason { get; }
+        public static explicit operator ResponseIncompleteStatusDetails(ClientResult result);
+        public static implicit operator BinaryContent(ResponseIncompleteStatusDetails responseIncompleteStatusDetails);
+    }
+    public readonly partial struct ResponseIncompleteStatusReason : IEquatable<ResponseIncompleteStatusReason> {
+        public ResponseIncompleteStatusReason(string value);
+        public static ResponseIncompleteStatusReason ContentFilter { get; }
+        public static ResponseIncompleteStatusReason MaxOutputTokens { get; }
+        public readonly bool Equals(ResponseIncompleteStatusReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseIncompleteStatusReason left, ResponseIncompleteStatusReason right);
+        public static implicit operator ResponseIncompleteStatusReason(string value);
+        public static bool operator !=(ResponseIncompleteStatusReason left, ResponseIncompleteStatusReason right);
+        public override readonly string ToString();
+    }
+    public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
+        public string Id { get; }
+        public static MessageResponseItem CreateAssistantMessageItem(string id, string content);
+        public static ResponseItem CreateComputerCallItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
+        public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId);
+        public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri);
+        public static MessageResponseItem CreateDeveloperMessageItem(string content);
+        public static FileSearchCallResponseItem CreateFileSearchCallResponseItem(string id, IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public static FunctionCallResponseItem CreateFunctionCall(string id, string callId, string functionName, BinaryData functionArguments);
+        public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static ReasoningResponseItem CreateReasoningItem(string id, IEnumerable<string> summaryTextParts);
+        public static ReferenceResponseItem CreateReferenceItem(string id);
+        public static MessageResponseItem CreateSystemMessageItem(string content);
+        public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts);
+        public static MessageResponseItem CreateUserMessageItem(string content);
+        public static WebSearchCallResponseItem CreateWebSearchCallItem(string id);
+        public static explicit operator ResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(ResponseItem responseItem);
+    }
+    public class ResponseItemCollectionOptions {
+        public string AfterId { get; set; }
+        public string BeforeId { get; set; }
+        public ResponseItemCollectionOrder? Order { get; set; }
+        public int? PageSizeLimit { get; set; }
+    }
+    public readonly partial struct ResponseItemCollectionOrder : IEquatable<ResponseItemCollectionOrder> {
+        public ResponseItemCollectionOrder(string value);
+        public static ResponseItemCollectionOrder Ascending { get; }
+        public static ResponseItemCollectionOrder Descending { get; }
+        public readonly bool Equals(ResponseItemCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseItemCollectionOrder left, ResponseItemCollectionOrder right);
+        public static implicit operator ResponseItemCollectionOrder(string value);
+        public static bool operator !=(ResponseItemCollectionOrder left, ResponseItemCollectionOrder right);
+        public override readonly string ToString();
+    }
+    public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
+        public string FileCitationFileId { get; }
+        public int? FileCitationIndex { get; }
+        public string FilePathFileId { get; }
+        public int? FilePathIndex { get; }
+        public ResponseMessageAnnotationKind Kind { get; }
+        public int? UriCitationEndIndex { get; }
+        public int? UriCitationStartIndex { get; }
+        public string UriCitationTitle { get; }
+        public string UriCitationUri { get; }
+        public static explicit operator ResponseMessageAnnotation(ClientResult result);
+        public static implicit operator BinaryContent(ResponseMessageAnnotation responseMessageAnnotation);
+    }
+    public enum ResponseMessageAnnotationKind {
+        FileCitation = 0,
+        UriCitation = 1,
+        FilePath = 2
+    }
+    public class ResponseOutputTokenUsageDetails : IJsonModel<ResponseOutputTokenUsageDetails>, IPersistableModel<ResponseOutputTokenUsageDetails> {
+        public int ReasoningTokenCount { get; }
+        public static explicit operator ResponseOutputTokenUsageDetails(ClientResult result);
+        public static implicit operator BinaryContent(ResponseOutputTokenUsageDetails responseOutputTokenUsageDetails);
+    }
+    public readonly partial struct ResponseReasoningEffortLevel : IEquatable<ResponseReasoningEffortLevel> {
+        public ResponseReasoningEffortLevel(string value);
+        public static ResponseReasoningEffortLevel High { get; }
+        public static ResponseReasoningEffortLevel Low { get; }
+        public static ResponseReasoningEffortLevel Medium { get; }
+        public readonly bool Equals(ResponseReasoningEffortLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseReasoningEffortLevel left, ResponseReasoningEffortLevel right);
+        public static implicit operator ResponseReasoningEffortLevel(string value);
+        public static bool operator !=(ResponseReasoningEffortLevel left, ResponseReasoningEffortLevel right);
+        public override readonly string ToString();
+    }
+    public class ResponseReasoningOptions : IJsonModel<ResponseReasoningOptions>, IPersistableModel<ResponseReasoningOptions> {
+        public ResponseReasoningOptions();
+        public ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel);
+        public ResponseReasoningEffortLevel? ReasoningEffortLevel { get; set; }
+        public ResponseReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
+        public static explicit operator ResponseReasoningOptions(ClientResult result);
+        public static implicit operator BinaryContent(ResponseReasoningOptions responseReasoningOptions);
+    }
+    public readonly partial struct ResponseReasoningSummaryVerbosity : IEquatable<ResponseReasoningSummaryVerbosity> {
+        public ResponseReasoningSummaryVerbosity(string value);
+        public static ResponseReasoningSummaryVerbosity Concise { get; }
+        public static ResponseReasoningSummaryVerbosity Detailed { get; }
+        public readonly bool Equals(ResponseReasoningSummaryVerbosity other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
+        public static implicit operator ResponseReasoningSummaryVerbosity(string value);
+        public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
+        public override readonly string ToString();
+    }
+    public enum ResponseStatus {
+        InProgress = 0,
+        Completed = 1,
+        Incomplete = 2,
+        Failed = 3
+    }
+    public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
+        public static ResponseTextFormat CreateJsonObjectFormat();
+        public static ResponseTextFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
+        public static ResponseTextFormat CreateTextFormat();
+        public static explicit operator ResponseTextFormat(ClientResult result);
+        public static implicit operator BinaryContent(ResponseTextFormat responseTextFormat);
+    }
+    public class ResponseTextOptions : IJsonModel<ResponseTextOptions>, IPersistableModel<ResponseTextOptions> {
+        public ResponseTextFormat ResponseFormat { get; set; }
+        public static explicit operator ResponseTextOptions(ClientResult result);
+        public static implicit operator BinaryContent(ResponseTextOptions responseTextOptions);
+    }
+    public class ResponseTokenUsage : IJsonModel<ResponseTokenUsage>, IPersistableModel<ResponseTokenUsage> {
+        public int InputTokenCount { get; }
+        public int OutputTokenCount { get; }
+        public ResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public int TotalTokenCount { get; }
+        public static explicit operator ResponseTokenUsage(ClientResult result);
+        public static implicit operator BinaryContent(ResponseTokenUsage responseTokenUsage);
+    }
+    public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
+        public static ResponseTool CreateComputerTool(int displayWidth, int displayHeight, ComputerToolEnvironment environment);
+        public static ResponseTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
+        public static ResponseTool CreateFunctionTool(string functionName, string functionDescription, BinaryData functionParameters, bool functionSchemaIsStrict = false);
+        public static ResponseTool CreateWebSearchTool(WebSearchToolLocation webSearchToolUserLocation = null, WebSearchToolContextSize? webSearchToolContextSize = null);
+        public static explicit operator ResponseTool(ClientResult result);
+        public static implicit operator BinaryContent(ResponseTool responseTool);
+    }
+    public readonly partial struct ResponseTruncationMode : IEquatable<ResponseTruncationMode> {
+        public ResponseTruncationMode(string value);
+        public static ResponseTruncationMode Auto { get; }
+        public static ResponseTruncationMode Disabled { get; }
+        public readonly bool Equals(ResponseTruncationMode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseTruncationMode left, ResponseTruncationMode right);
+        public static implicit operator ResponseTruncationMode(string value);
+        public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
+        public override readonly string ToString();
+    }
+    public class StreamingResponseContentPartDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartDeltaUpdate>, IPersistableModel<StreamingResponseContentPartDeltaUpdate> {
+        public int ContentPartIndex { get; }
+        public string FunctionArguments { get; }
+        public string ItemId { get; }
+        public int ItemIndex { get; }
+        public string Refusal { get; }
+        public string Text { get; }
+    }
+    public class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>, IPersistableModel<StreamingResponseErrorUpdate> {
+        public string Code { get; }
+        public string Message { get; }
+        public string Param { get; }
+        public new static explicit operator StreamingResponseErrorUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseErrorUpdate streamingResponseErrorUpdate);
+    }
+    public class StreamingResponseFileSearchCallUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallUpdate>, IPersistableModel<StreamingResponseFileSearchCallUpdate> {
+        public string OutputItemId { get; }
+        public int OutputItemIndex { get; }
+    }
+    public class StreamingResponseItemUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseItemUpdate>, IPersistableModel<StreamingResponseItemUpdate> {
+        public ResponseItem Item { get; }
+        public int ItemIndex { get; }
+    }
+    public class StreamingResponseStatusUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseStatusUpdate>, IPersistableModel<StreamingResponseStatusUpdate> {
+        public OpenAIResponse Response { get; }
+    }
+    public class StreamingResponseTextAnnotationUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationUpdate>, IPersistableModel<StreamingResponseTextAnnotationUpdate> {
+        public ResponseMessageAnnotation Annotation { get; }
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseTextAnnotationUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseTextAnnotationUpdate streamingResponseTextAnnotationUpdate);
+    }
+    public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        public StreamingResponseUpdateKind Kind { get; }
+        public static explicit operator StreamingResponseUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseUpdate streamingResponseUpdate);
+    }
+    public readonly partial struct StreamingResponseUpdateKind : IEquatable<StreamingResponseUpdateKind> {
+        public StreamingResponseUpdateKind(string value);
+        public static StreamingResponseUpdateKind Error { get; }
+        public static StreamingResponseUpdateKind ResponseCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartAdded { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartDone { get; }
+        public static StreamingResponseUpdateKind ResponseCreated { get; }
+        public static StreamingResponseUpdateKind ResponseFailed { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallSearching { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDelta { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDone { get; }
+        public static StreamingResponseUpdateKind ResponseIncomplete { get; }
+        public static StreamingResponseUpdateKind ResponseInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemDone { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }
+        public readonly bool Equals(StreamingResponseUpdateKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public static implicit operator StreamingResponseUpdateKind(string value);
+        public static bool operator !=(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public override readonly string ToString();
+    }
+    public class StreamingResponseWebSearchCallUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallUpdate>, IPersistableModel<StreamingResponseWebSearchCallUpdate> {
+        public string OutputItemId { get; }
+        public int OutputItemIndex { get; }
+    }
+    public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
+        public WebSearchCallResponseItem(string id);
+        public WebSearchCallStatus Status { get; }
+        public new static explicit operator WebSearchCallResponseItem(ClientResult result);
+        public static implicit operator BinaryContent(WebSearchCallResponseItem webSearchCallResponseItem);
+    }
+    public enum WebSearchCallStatus {
+        InProgress = 0,
+        Searching = 1,
+        Completed = 2,
+        Failed = 3
+    }
+    public readonly partial struct WebSearchToolContextSize : IEquatable<WebSearchToolContextSize> {
+        public WebSearchToolContextSize(string value);
+        public static WebSearchToolContextSize High { get; }
+        public static WebSearchToolContextSize Low { get; }
+        public static WebSearchToolContextSize Medium { get; }
+        public readonly bool Equals(WebSearchToolContextSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(WebSearchToolContextSize left, WebSearchToolContextSize right);
+        public static implicit operator WebSearchToolContextSize(string value);
+        public static bool operator !=(WebSearchToolContextSize left, WebSearchToolContextSize right);
+        public override readonly string ToString();
+    }
+    public class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>, IPersistableModel<WebSearchToolLocation> {
+        public static WebSearchToolLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
+        public static explicit operator WebSearchToolLocation(ClientResult result);
+        public static implicit operator BinaryContent(WebSearchToolLocation webSearchToolLocation);
     }
 }
 namespace OpenAI.VectorStores {
@@ -2901,6 +3556,7 @@ namespace OpenAI.VectorStores {
         public static implicit operator BinaryContent(VectorStoreExpirationPolicy vectorStoreExpirationPolicy);
     }
     public class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>, IPersistableModel<VectorStoreFileAssociation> {
+        public IDictionary<string, BinaryData> Attributes { get; }
         public FileChunkingStrategy ChunkingStrategy { get; }
         public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }

@@ -116,10 +116,7 @@ namespace OpenAI.RealtimeConversation
                     status = new ConversationItemStatus(prop.Value.GetString());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeRequestFunctionCallItem(
                 @type,

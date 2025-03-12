@@ -20,16 +20,19 @@ namespace OpenAI.VectorStores
             FileIds = fileIds.ToList();
         }
 
-        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, BinaryData chunkingStrategy, InternalVectorStoreFileAttributes attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileIds = fileIds;
             ChunkingStrategy = chunkingStrategy;
+            Attributes = attributes;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> FileIds { get; }
 
         public BinaryData ChunkingStrategy { get; set; }
+
+        public InternalVectorStoreFileAttributes Attributes { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

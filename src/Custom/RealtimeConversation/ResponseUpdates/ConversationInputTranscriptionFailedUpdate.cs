@@ -13,7 +13,7 @@ namespace OpenAI.RealtimeConversation;
 /// settings.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventConversationItemInputAudioTranscriptionFailed")]
+[CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionFailed")]
 public partial class ConversationInputTranscriptionFailedUpdate
 {
     [CodeGenMember("Error")]

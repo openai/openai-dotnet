@@ -45,7 +45,7 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>(_error, options);
+                writer.WriteObjectValue(_error, options);
             }
         }
 
@@ -69,7 +69,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string eventId = default;
-            RealtimeConversation.ConversationUpdateKind kind = default;
+            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string itemId = default;
             int contentIndex = default;
@@ -101,10 +101,7 @@ namespace OpenAI.RealtimeConversation
                     error = InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError.DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationInputTranscriptionFailedUpdate(
                 eventId,

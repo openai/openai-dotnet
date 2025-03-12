@@ -36,7 +36,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -85,10 +85,7 @@ namespace OpenAI.Chat
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatOutputAudioReference(id, additionalBinaryDataProperties);
         }

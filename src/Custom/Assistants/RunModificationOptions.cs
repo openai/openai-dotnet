@@ -6,7 +6,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when modifying an existing <see cref="ThreadRun"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("ModifyRunRequest")]
+[CodeGenType("ModifyRunRequest")]
 public partial class RunModificationOptions
 {
 }

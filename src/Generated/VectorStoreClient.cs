@@ -13,9 +13,6 @@ namespace OpenAI.VectorStores
     public partial class VectorStoreClient
     {
         private readonly Uri _endpoint;
-        private const string AuthorizationHeader = "Authorization";
-        private readonly ApiKeyCredential _keyCredential;
-        private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected VectorStoreClient()
         {
@@ -27,7 +24,7 @@ namespace OpenAI.VectorStores
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = this.CreateCreateVectorStoreRequest(content, options);
+            using PipelineMessage message = CreateCreateVectorStoreRequest(content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
@@ -35,7 +32,7 @@ namespace OpenAI.VectorStores
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = this.CreateCreateVectorStoreRequest(content, options);
+            using PipelineMessage message = CreateCreateVectorStoreRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

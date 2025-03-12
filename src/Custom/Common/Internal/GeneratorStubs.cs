@@ -1,19 +1,26 @@
 namespace OpenAI.Internal;
 
-[CodeGenModel("OmniTypedResponseFormat")]
+[CodeGenType("OmniTypedResponseFormat")]
 internal partial class InternalOmniTypedResponseFormat { }
 
-[CodeGenModel("ResponseFormatJsonObject")]
+[CodeGenType("ResponseFormatJsonObject")]
 internal partial class InternalResponseFormatJsonObject { }
 
-[CodeGenModel("ResponseFormatJsonSchema")]
+[CodeGenType("ResponseFormatJsonSchema")]
 internal partial class InternalResponseFormatJsonSchema { }
 
-[CodeGenModel("ResponseFormatJsonSchemaSchema")]
+[CodeGenType("ResponseFormatJsonSchemaSchema")]
 internal partial class InternalResponseFormatJsonSchemaSchema { }
 
-[CodeGenModel("ResponseFormatText")]
+[CodeGenType("ResponseFormatText")]
 internal partial class InternalResponseFormatText { }
 
-[CodeGenModel("UnknownOmniTypedResponseFormat")]
+[CodeGenType("UnknownOmniTypedResponseFormat")]
 internal partial class InternalUnknownOmniTypedResponseFormat { }
+
+[CodeGenType("WebSearchLocation")]
+internal partial class InternalWebSearchLocation { }
+
+[CodeGenType("WebSearchContextSize")]
+internal readonly partial struct InternalWebSearchContextSize { }
+

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeContentPart")]
+[CodeGenType("RealtimeContentPart")]
 public partial class ConversationContentPart
 {
     public string Text =>

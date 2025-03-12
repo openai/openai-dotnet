@@ -41,6 +41,11 @@ namespace OpenAI.Files
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
+            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            {
+                writer.WritePropertyName("expires_at"u8);
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
                 writer.WritePropertyName("filename"u8);
@@ -54,11 +59,11 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
-                if (SizeInBytes != null)
+                if (Optional.IsDefined(SizeInBytes))
                 {
                     writer.WritePropertyName("bytes"u8);
                     writer.WriteNumberValue(SizeInBytes.Value);
@@ -78,7 +83,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("status_details"u8);
                 writer.WriteStringValue(StatusDetails);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -120,11 +125,12 @@ namespace OpenAI.Files
             }
             string id = default;
             DateTimeOffset createdAt = default;
+            DateTimeOffset? expiresAt = default;
             string filename = default;
-            Files.FilePurpose purpose = default;
+            FilePurpose purpose = default;
             InternalOpenAIFileObject @object = default;
             int? sizeInBytes = default;
-            Files.FileStatus status = default;
+            FileStatus status = default;
             string statusDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -137,6 +143,15 @@ namespace OpenAI.Files
                 if (prop.NameEquals("created_at"u8))
                 {
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
+                if (prop.NameEquals("expires_at"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -174,14 +189,12 @@ namespace OpenAI.Files
                     statusDetails = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new OpenAIFile(
                 id,
                 createdAt,
+                expiresAt,
                 filename,
                 purpose,
                 @object,

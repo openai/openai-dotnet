@@ -1,25 +1,25 @@
 namespace OpenAI.Moderations;
 
-[CodeGenModel("CreateModerationRequestModel")]
+[CodeGenType("CreateModerationRequestModel")]
 internal readonly partial struct InternalCreateModerationRequestModel { }
 
-[CodeGenModel("CreateModerationRequestInput2")]
+[CodeGenType("CreateModerationRequestInput2")]
 internal partial class InternalCreateModerationRequestInput2 { }
 
-[CodeGenModel("CreateModerationRequestInput2Type")]
+[CodeGenType("CreateModerationRequestInput2Type")]
 internal readonly partial struct InternalCreateModerationRequestInput2Type { }
 
-[CodeGenModel("CreateModerationRequestInput3")]
+[CodeGenType("CreateModerationRequestInput3")]
 internal partial class InternalCreateModerationRequestInput3 { }
 
-[CodeGenModel("CreateModerationRequestInput3Type")]
+[CodeGenType("CreateModerationRequestInput3Type")]
 internal readonly partial struct InternalCreateModerationRequestInput3Type { }
 
-[CodeGenModel("CreateModerationRequestInputImageUrl")]
+[CodeGenType("CreateModerationRequestInputImageUrl")]
 internal partial class InternalCreateModerationRequestInputImageUrl { }
 
-[CodeGenModel("CreateModerationResponseResultCategories")]
+[CodeGenType("CreateModerationResponseResultCategories")]
 internal partial class InternalModerationCategories { }
 
-[CodeGenModel("CreateModerationResponseResultCategoryScores")]
+[CodeGenType("CreateModerationResponseResultCategoryScores")]
 internal partial class InternalModerationCategoryScores { }

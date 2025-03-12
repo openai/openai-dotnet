@@ -13,7 +13,7 @@ namespace OpenAI.RealtimeConversation;
 /// <see cref="ConversationInputSpeechFinishedUpdate"/> when the end of speech is detected.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventInputAudioBufferSpeechStopped")]
+[CodeGenType("RealtimeServerEventInputAudioBufferSpeechStopped")]
 public partial class ConversationInputSpeechFinishedUpdate
 {
     [CodeGenMember("AudioEndMs")]

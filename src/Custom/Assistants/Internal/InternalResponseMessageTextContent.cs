@@ -5,7 +5,7 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// Represents an item of annotated text content within an Assistants API response message.
 /// </summary>
-[CodeGenModel("MessageContentTextObject")]
+[CodeGenType("MessageContentTextObject")]
 internal partial class InternalResponseMessageTextContent
 {
     /// <inheritdoc cref="InternalMessageContentTextObjectText.Value"/>

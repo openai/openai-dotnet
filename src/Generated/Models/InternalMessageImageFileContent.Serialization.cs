@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("image_file") != true)
             {
                 writer.WritePropertyName("image_file"u8);
-                writer.WriteObjectValue<InternalMessageContentItemFileObjectImageFile>(_imageFile, options);
+                writer.WriteObjectValue(_imageFile, options);
             }
         }
 
@@ -71,10 +71,7 @@ namespace OpenAI.Assistants
                     imageFile = InternalMessageContentItemFileObjectImageFile.DeserializeInternalMessageContentItemFileObjectImageFile(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageImageFileContent(additionalBinaryDataProperties, @type, imageFile);
         }

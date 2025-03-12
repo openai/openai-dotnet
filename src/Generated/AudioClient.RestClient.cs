@@ -14,7 +14,7 @@ namespace OpenAI.Audio
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateCreateSpeechRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateSpeechRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -31,7 +31,7 @@ namespace OpenAI.Audio
             return message;
         }
 
-        internal PipelineMessage CreateCreateTranscriptionRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateTranscriptionRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -48,7 +48,7 @@ namespace OpenAI.Audio
             return message;
         }
 
-        internal PipelineMessage CreateCreateTranslationRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateTranslationRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

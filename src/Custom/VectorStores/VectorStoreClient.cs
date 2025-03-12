@@ -13,14 +13,14 @@ namespace OpenAI.VectorStores;
 /// The service client for OpenAI vector store operations.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenClient("VectorStores")]
-[CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("VectorStores")]
+[CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("ListVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("ListVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreFileAssociationCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreFileAssociationCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("ListVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("ListVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
@@ -33,8 +33,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(InternalListFilesInVectorStoreBatchRequestOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("ListFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(InternalListFilesInVectorStoreBatchRequestOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("ListFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("ListFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 public partial class VectorStoreClient
 {
     // CUSTOM: Added as a convenience.
@@ -89,17 +89,17 @@ public partial class VectorStoreClient
 
     internal virtual CreateVectorStoreOperation CreateCreateVectorStoreOperation(ClientResult<VectorStore> result)
     {
-        return new CreateVectorStoreOperation(Pipeline, _endpoint, result);
+        return new CreateVectorStoreOperation(this, _endpoint, result);
     }
 
     internal virtual AddFileToVectorStoreOperation CreateAddFileToVectorStoreOperation(ClientResult<VectorStoreFileAssociation> result)
     {
-        return new AddFileToVectorStoreOperation(Pipeline, _endpoint, result);
+        return new AddFileToVectorStoreOperation(this, _endpoint, result);
     }
 
     internal virtual CreateBatchFileJobOperation CreateBatchFileJobOperation(ClientResult<VectorStoreBatchFileJob> result)
     {
-        return new CreateBatchFileJobOperation(Pipeline, _endpoint, result);
+        return new CreateBatchFileJobOperation(this, _endpoint, result);
     }
 
     /// <summary> Creates a vector store. </summary>

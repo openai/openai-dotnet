@@ -61,10 +61,7 @@ namespace OpenAI.RealtimeConversation
                     @type = new ConversationToolKind(prop.Value.GetString());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new UnknownRealtimeToolChoiceObject(@type, additionalBinaryDataProperties);
         }

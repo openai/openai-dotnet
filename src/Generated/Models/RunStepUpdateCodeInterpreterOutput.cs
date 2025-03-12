@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    public abstract partial class RunStepUpdateCodeInterpreterOutput
+    public partial class RunStepUpdateCodeInterpreterOutput
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

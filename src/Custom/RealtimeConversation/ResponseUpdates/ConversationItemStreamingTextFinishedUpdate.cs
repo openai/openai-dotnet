@@ -15,6 +15,6 @@ namespace OpenAI.RealtimeConversation;
 /// has completed and the associated content part will soon be completed.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseTextDone")]
+[CodeGenType("RealtimeServerEventResponseTextDone")]
 public partial class ConversationItemStreamingTextFinishedUpdate
 { }

@@ -10,6 +10,7 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.RealtimeConversation;
+using OpenAI.Responses;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -40,6 +41,7 @@ internal static class TestHelpers
         Models,
         Moderations,
         RealtimeConversation,
+        Responses,
         VectorStores,
         TopLevel,
     }
@@ -72,6 +74,9 @@ internal static class TestHelpers
             TestScenario.TopLevel => new OpenAIClient(credential, options),
 #pragma warning disable OPENAI002
             TestScenario.RealtimeConversation => new RealtimeConversationClient(overrideModel ?? "gpt-4o-realtime-preview-2024-10-01", credential, options),
+#pragma warning restore
+#pragma warning disable OPENAI003
+            TestScenario.Responses => new OpenAIResponseClient(overrideModel ?? "gpt-4o-mini", credential, options),
 #pragma warning restore
             _ => throw new NotImplementedException(),
         };

@@ -2,49 +2,49 @@
 
 namespace OpenAI.RealtimeConversation;
 
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEvent")] internal partial class InternalRealtimeClientEvent { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventConversationItemCreate")] internal partial class InternalRealtimeClientEventConversationItemCreate { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventConversationItemDelete")] internal partial class InternalRealtimeClientEventConversationItemDelete { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventConversationItemTruncate")] internal partial class InternalRealtimeClientEventConversationItemTruncate { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventInputAudioBufferAppend")] internal partial class InternalRealtimeClientEventInputAudioBufferAppend { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventInputAudioBufferClear")] internal partial class InternalRealtimeClientEventInputAudioBufferClear { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventInputAudioBufferCommit")] internal partial class InternalRealtimeClientEventInputAudioBufferCommit { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventResponseCancel")] internal partial class InternalRealtimeClientEventResponseCancel { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventSessionUpdate")] internal partial class InternalRealtimeClientEventSessionUpdate { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeClientEventType")] internal readonly partial struct InternalRealtimeClientEventType { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeConversationResponseItemObject")] internal readonly partial struct InternalRealtimeConversationResponseItemObject { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeItemType")] internal readonly partial struct InternalRealtimeItemType { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeModality")] internal readonly partial struct InternalRealtimeRequestSessionModality { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestAudioContentPart")] internal partial class InternalRealtimeRequestAudioContentPart { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestFunctionCallItem")] internal partial class InternalRealtimeRequestFunctionCallItem { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestFunctionCallOutputItem")] internal partial class InternalRealtimeRequestFunctionCallOutputItem { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestMessageItem")] internal partial class InternalRealtimeRequestMessageItem { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestSessionModel")] internal readonly partial struct InternalRealtimeRequestSessionModel { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeRequestTextContentPart")] internal partial class InternalRealtimeRequestTextContentPart { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseAudioContentPart")] internal partial class InternalRealtimeResponseAudioContentPart { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseFunctionCallItem")] internal partial class InternalRealtimeResponseFunctionCallItem { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseFunctionCallOutputItem")] internal partial class InternalRealtimeResponseFunctionCallOutputItem { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseModality")] internal readonly partial struct InternalRealtimeResponseModality { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseObject")] internal readonly partial struct InternalRealtimeResponseObject { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseOutputAudioFormat")] internal readonly partial struct InternalRealtimeResponseOutputAudioFormat { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseSessionObject")] internal readonly partial struct InternalRealtimeResponseSessionObject { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseStatusDetailsError")] internal partial class InternalRealtimeResponseStatusDetailsError { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseStatusDetailsType")] internal readonly partial struct InternalRealtimeResponseStatusDetailsType { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseTextContentPart")] internal partial class InternalRealtimeResponseTextContentPart { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeResponseVoice")] internal readonly partial struct InternalRealtimeResponseVoice { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeServerEventConversationCreated")] internal partial class InternalRealtimeServerEventConversationCreated { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeServerEventConversationCreatedConversation")] internal partial class InternalRealtimeServerEventConversationCreatedConversation { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeServerEventConversationItemInputAudioTranscriptionFailedError")] internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeServerEventErrorError")] internal partial class InternalRealtimeServerEventErrorError { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeToolChoiceFunctionObject")] internal partial class InternalRealtimeToolChoiceFunctionObject { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeToolChoiceFunctionObjectFunction")] internal partial class InternalRealtimeToolChoiceFunctionObjectFunction { }
-[Experimental("OPENAI002")][CodeGenModel("RealtimeToolChoiceObject")] internal partial class InternalRealtimeToolChoiceObject { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeClientEvent")] internal partial class UnknownRealtimeClientEvent { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeContentPart")] internal partial class UnknownRealtimeContentPart { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeConversationRequestItem")] internal partial class UnknownRealtimeRequestItem { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeConversationResponseItem")] internal partial class UnknownRealtimeResponseItem { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeRequestMessageItem")] internal partial class UnknownRealtimeRequestMessageItem { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeServerEvent")] internal partial class UnknownRealtimeServerEvent { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeTool")] internal partial class UnknownRealtimeTool { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeToolChoiceObject")] internal partial class UnknownRealtimeToolChoiceObject { }
-[Experimental("OPENAI002")][CodeGenModel("UnknownRealtimeTurnDetection")] internal partial class UnknownRealtimeTurnDetection { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEvent")] internal partial class InternalRealtimeClientEvent { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventConversationItemCreate")] internal partial class InternalRealtimeClientEventConversationItemCreate { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventConversationItemDelete")] internal partial class InternalRealtimeClientEventConversationItemDelete { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventConversationItemTruncate")] internal partial class InternalRealtimeClientEventConversationItemTruncate { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventInputAudioBufferAppend")] internal partial class InternalRealtimeClientEventInputAudioBufferAppend { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventInputAudioBufferClear")] internal partial class InternalRealtimeClientEventInputAudioBufferClear { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventInputAudioBufferCommit")] internal partial class InternalRealtimeClientEventInputAudioBufferCommit { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventResponseCancel")] internal partial class InternalRealtimeClientEventResponseCancel { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventSessionUpdate")] internal partial class InternalRealtimeClientEventSessionUpdate { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventType")] internal readonly partial struct InternalRealtimeClientEventType { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeConversationResponseItemObject")] internal readonly partial struct InternalRealtimeConversationResponseItemObject { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeItemType")] internal readonly partial struct InternalRealtimeItemType { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeModality")] internal readonly partial struct InternalRealtimeRequestSessionModality { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestAudioContentPart")] internal partial class InternalRealtimeRequestAudioContentPart { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestFunctionCallItem")] internal partial class InternalRealtimeRequestFunctionCallItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestFunctionCallOutputItem")] internal partial class InternalRealtimeRequestFunctionCallOutputItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestMessageItem")] internal partial class InternalRealtimeRequestMessageItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestSessionModel")] internal readonly partial struct InternalRealtimeRequestSessionModel { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeRequestTextContentPart")] internal partial class InternalRealtimeRequestTextContentPart { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseAudioContentPart")] internal partial class InternalRealtimeResponseAudioContentPart { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseFunctionCallItem")] internal partial class InternalRealtimeResponseFunctionCallItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseFunctionCallOutputItem")] internal partial class InternalRealtimeResponseFunctionCallOutputItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseModality")] internal readonly partial struct InternalRealtimeResponseModality { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseObject")] internal readonly partial struct InternalRealtimeResponseObject { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseOutputAudioFormat")] internal readonly partial struct InternalRealtimeResponseOutputAudioFormat { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseSessionObject")] internal readonly partial struct InternalRealtimeResponseSessionObject { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseStatusDetailsError")] internal partial class InternalRealtimeResponseStatusDetailsError { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseStatusDetailsType")] internal readonly partial struct InternalRealtimeResponseStatusDetailsType { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseTextContentPart")] internal partial class InternalRealtimeResponseTextContentPart { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseVoice")] internal readonly partial struct InternalRealtimeResponseVoice { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationCreated")] internal partial class InternalRealtimeServerEventConversationCreated { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationCreatedConversation")] internal partial class InternalRealtimeServerEventConversationCreatedConversation { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionFailedError")] internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeServerEventErrorError")] internal partial class InternalRealtimeServerEventErrorError { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeToolChoiceFunctionObject")] internal partial class InternalRealtimeToolChoiceFunctionObject { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeToolChoiceFunctionObjectFunction")] internal partial class InternalRealtimeToolChoiceFunctionObjectFunction { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeToolChoiceObject")] internal partial class InternalRealtimeToolChoiceObject { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeClientEvent")] internal partial class UnknownRealtimeClientEvent { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeContentPart")] internal partial class UnknownRealtimeContentPart { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeConversationRequestItem")] internal partial class UnknownRealtimeRequestItem { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeConversationResponseItem")] internal partial class UnknownRealtimeResponseItem { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeRequestMessageItem")] internal partial class UnknownRealtimeRequestMessageItem { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeServerEvent")] internal partial class UnknownRealtimeServerEvent { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeTool")] internal partial class UnknownRealtimeTool { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeToolChoiceObject")] internal partial class UnknownRealtimeToolChoiceObject { }
+[Experimental("OPENAI002")][CodeGenType("UnknownRealtimeTurnDetection")] internal partial class UnknownRealtimeTurnDetection { }

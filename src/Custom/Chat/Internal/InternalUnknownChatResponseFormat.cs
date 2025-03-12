@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Chat;
 
-[CodeGenModel("UnknownChatResponseFormat")]
+[CodeGenType("UnknownChatResponseFormat")]
 internal partial class InternalUnknownChatResponseFormat
 {
 }

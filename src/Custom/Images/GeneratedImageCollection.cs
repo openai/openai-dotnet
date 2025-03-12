@@ -7,7 +7,7 @@ namespace OpenAI.Images;
 /// <summary>
 /// Represents an image generation response payload that contains information for multiple generated images.
 /// </summary>
-[CodeGenModel("ImagesResponse")]
+[CodeGenType("ImagesResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress("Created")]
 [CodeGenSuppress(nameof(GeneratedImageCollection))]

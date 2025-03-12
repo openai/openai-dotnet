@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatCompletionRequestMessageContentPartImageImageUrl")]
+[CodeGenType("ChatCompletionRequestMessageContentPartImageImageUrl")]
 [CodeGenSuppress("InternalChatCompletionRequestMessageContentPartImageImageUrl", typeof(string))]
 internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
 {

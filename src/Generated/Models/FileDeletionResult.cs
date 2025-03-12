@@ -21,7 +21,7 @@ namespace OpenAI.Files
         {
             Deleted = deleted;
             FileId = fileId;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

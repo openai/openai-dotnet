@@ -9,7 +9,7 @@ namespace OpenAI.RealtimeConversation;
 /// completed and no further content part or item information will be transmitted.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseDone")]
+[CodeGenType("RealtimeServerEventResponseDone")]
 public partial class ConversationResponseFinishedUpdate
 {
     [CodeGenMember("Response")]

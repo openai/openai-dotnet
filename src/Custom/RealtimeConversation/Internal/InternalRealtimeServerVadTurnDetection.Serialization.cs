@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerVadTurnDetection")]
+[CodeGenType("RealtimeServerVadTurnDetection")]
 [CodeGenSerialization(nameof(PrefixPaddingMs), DeserializationValueHook = nameof(DeserializeMillisecondDuration), SerializationValueHook = nameof(SerializePrefixPaddingMs))]
 [CodeGenSerialization(nameof(SilenceDurationMs), DeserializationValueHook = nameof(DeserializeMillisecondDuration), SerializationValueHook = nameof(SerializeSilenceDurationMs))]
 internal partial class InternalRealtimeServerVadTurnDetection

@@ -46,7 +46,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokens);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -107,10 +107,7 @@ namespace OpenAI.Chat
                     totalTokens = prop.Value.GetInt32();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateChatCompletionStreamResponseUsage(completionTokens, promptTokens, totalTokens, additionalBinaryDataProperties);
         }

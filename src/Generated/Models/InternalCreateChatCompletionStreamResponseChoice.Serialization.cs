@@ -30,15 +30,8 @@ namespace OpenAI.Chat
             }
             if (Optional.IsDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
-                if (Logprobs != null)
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteObjectValue(Logprobs, options);
-                }
-                else
-                {
-                    writer.WriteNull("logprobs"u8);
-                }
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteObjectValue(Logprobs, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
@@ -47,17 +40,17 @@ namespace OpenAI.Chat
             }
             if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
             {
-                if (FinishReason != null)
+                if (Optional.IsDefined(FinishReason))
                 {
                     writer.WritePropertyName("finish_reason"u8);
                     writer.WriteStringValue(FinishReason.Value.ToSerialString());
                 }
                 else
                 {
-                    writer.WriteNull("finishReason"u8);
+                    writer.WriteNull("finish_reason"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -88,7 +81,7 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionStreamResponseChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return InternalCreateChatCompletionStreamResponseChoice.DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
+            return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionStreamResponseChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -115,7 +108,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return InternalCreateChatCompletionStreamResponseChoice.DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
+                        return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateChatCompletionStreamResponseChoice)} does not support reading '{options.Format}' format.");
@@ -137,7 +130,7 @@ namespace OpenAI.Chat
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return InternalCreateChatCompletionStreamResponseChoice.DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

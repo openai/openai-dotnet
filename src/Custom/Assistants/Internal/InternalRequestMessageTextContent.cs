@@ -7,7 +7,7 @@
 /// Use the <see cref="MessageContent.FromText(string)"/> method to create an instance of this
 /// type.
 /// </remarks>
-[CodeGenModel("MessageRequestContentTextObject")]
+[CodeGenType("MessageRequestContentTextObject")]
 internal partial class InternalRequestMessageTextContent
 {
     [CodeGenMember("Text")]

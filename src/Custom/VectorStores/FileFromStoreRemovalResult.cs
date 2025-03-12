@@ -3,7 +3,7 @@
 namespace OpenAI.VectorStores;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("DeleteVectorStoreFileResponse")]
+[CodeGenType("DeleteVectorStoreFileResponse")]
 public partial class FileFromStoreRemovalResult
 {
     // CUSTOM: Renamed.

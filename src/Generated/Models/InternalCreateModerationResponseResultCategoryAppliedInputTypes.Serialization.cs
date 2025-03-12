@@ -226,7 +226,7 @@ namespace OpenAI.Moderations
                 }
                 writer.WriteEndArray();
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -503,10 +503,7 @@ namespace OpenAI.Moderations
                     violenceGraphic = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateModerationResponseResultCategoryAppliedInputTypes(
                 hate,

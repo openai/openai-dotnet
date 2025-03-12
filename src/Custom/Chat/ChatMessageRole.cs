@@ -54,7 +54,7 @@ namespace OpenAI.Chat;
 /// </item>
 /// </list>
 /// </remarks>
-[CodeGenModel("ChatCompletionRole")]
+[CodeGenType("ChatCompletionRole")]
 public enum ChatMessageRole
 {
     /// <summary>

@@ -32,7 +32,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("message_id"u8);
                 writer.WriteStringValue(MessageId);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -81,10 +81,7 @@ namespace OpenAI.Assistants
                     messageId = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation(messageId, additionalBinaryDataProperties);
         }

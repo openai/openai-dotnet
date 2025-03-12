@@ -46,7 +46,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("delta"u8);
                 writer.WriteObjectValue(Delta, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -107,10 +107,7 @@ namespace OpenAI.Assistants
                     delta = InternalMessageDeltaObjectDelta.DeserializeInternalMessageDeltaObjectDelta(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaObject(id, @object, delta, additionalBinaryDataProperties);
         }

@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatOutputPredictionContent")]
+[CodeGenType("ChatOutputPredictionContent")]
 internal partial class InternalChatOutputPredictionContent
 {
     // CUSTOM: Assign type to a collection of content parts

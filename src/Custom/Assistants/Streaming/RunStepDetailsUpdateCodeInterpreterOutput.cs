@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
+[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepUpdateCodeInterpreterOutput
 {
     /// <inheritdoc cref="InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject.Index"/>

@@ -13,12 +13,12 @@ namespace OpenAI.VectorStores;
 public partial class CreateVectorStoreOperation : OperationResult
 {
     internal CreateVectorStoreOperation(
-        ClientPipeline pipeline,
+        VectorStoreClient parentClient,
         Uri endpoint,
         ClientResult<VectorStore> result)
         : base(result.GetRawResponse())
     {
-        _pipeline = pipeline;
+        _parentClient = parentClient;
         _endpoint = endpoint;
 
         Value = result;

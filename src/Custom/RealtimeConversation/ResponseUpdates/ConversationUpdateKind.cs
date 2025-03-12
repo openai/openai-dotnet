@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventType")]
+[CodeGenType("RealtimeServerEventType")]
 public enum ConversationUpdateKind
 {
     /// <summary>

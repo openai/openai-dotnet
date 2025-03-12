@@ -19,7 +19,7 @@ namespace OpenAI.Chat;
 /// </item>
 /// </list>
 /// </summary>
-[CodeGenModel("ChatCompletionRequestToolMessage")]
+[CodeGenType("ChatCompletionRequestToolMessage")]
 [CodeGenSuppress("ToolChatMessage", typeof(ChatMessageContent), typeof(string))]
 [CodeGenSuppress("ToolChatMessage", typeof(string))]
 public partial class ToolChatMessage : ChatMessage

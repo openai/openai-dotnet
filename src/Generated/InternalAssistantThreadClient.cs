@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 
 namespace OpenAI.Assistants
@@ -11,12 +10,15 @@ namespace OpenAI.Assistants
     internal partial class InternalAssistantThreadClient
     {
         private readonly Uri _endpoint;
-        private const string AuthorizationHeader = "Authorization";
-        private readonly ApiKeyCredential _keyCredential;
-        private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected InternalAssistantThreadClient()
         {
+        }
+
+        internal InternalAssistantThreadClient(ClientPipeline pipeline, Uri endpoint)
+        {
+            _endpoint = endpoint;
+            Pipeline = pipeline;
         }
 
         public ClientPipeline Pipeline { get; }

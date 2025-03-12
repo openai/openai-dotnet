@@ -88,10 +88,7 @@ namespace OpenAI.Assistants
                     image = InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(@type, additionalBinaryDataProperties, index, image);
         }

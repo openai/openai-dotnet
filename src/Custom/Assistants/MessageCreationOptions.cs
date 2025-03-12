@@ -8,7 +8,7 @@ namespace OpenAI.Assistants;
 /// Represents additional options available when creating a new <see cref="ThreadMessage"/>.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenModel("CreateMessageRequest")]
+[CodeGenType("CreateMessageRequest")]
 [CodeGenSuppress("MessageCreationOptions", typeof(MessageRole), typeof(IEnumerable<MessageContent>))]
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContent))]
 public partial class MessageCreationOptions

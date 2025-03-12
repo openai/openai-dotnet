@@ -9,7 +9,7 @@ namespace OpenAI.Chat;
 /// messages are originated by the model on responses, <see cref="AssistantChatMessage"/> instances typically
 /// represent chat history or example interactions to guide model behavior.
 /// </summary>
-[CodeGenModel("ChatCompletionRequestAssistantMessage")]
+[CodeGenType("ChatCompletionRequestAssistantMessage")]
 public partial class AssistantChatMessage : ChatMessage
 {
     // CUSTOM: Made internal.
@@ -88,7 +88,7 @@ public partial class AssistantChatMessage : ChatMessage
     /// Creates a new instance of <see cref="AssistantChatMessage"/> that represents a prior response from the model
     /// that included audio with a correlation ID.
     /// </summary>
-    /// <param name="outputAudioReference"> The <c>audio</c> reference with an <c>id</c>, produced by the model. </param>    
+    /// <param name="outputAudioReference"> The <c>audio</c> reference with an <c>id</c>, produced by the model. </param>
     public AssistantChatMessage(ChatOutputAudioReference outputAudioReference)
     {
         Argument.AssertNotNull(outputAudioReference, nameof(outputAudioReference));
@@ -102,7 +102,7 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <remarks>
     ///     This constructor will copy the <c>content</c>, <c>tool_calls</c>, and <c>function_call</c> from a chat
-    ///     completion response into a new <c>assistant</c> role request message. 
+    ///     completion response into a new <c>assistant</c> role request message.
     /// </remarks>
     /// <param name="chatCompletion">
     ///     The <see cref="ChatCompletion"/> from which the conversation history request message should be created.

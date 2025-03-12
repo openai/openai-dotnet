@@ -9,13 +9,13 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationInputAudioCommittedUpdate : ConversationUpdate
     {
-        internal ConversationInputAudioCommittedUpdate(string eventId, string previousItemId, string itemId) : base(eventId, RealtimeConversation.ConversationUpdateKind.InputAudioCommitted)
+        internal ConversationInputAudioCommittedUpdate(string eventId, string previousItemId, string itemId) : base(eventId, ConversationUpdateKind.InputAudioCommitted)
         {
             PreviousItemId = previousItemId;
             ItemId = itemId;
         }
 
-        internal ConversationInputAudioCommittedUpdate(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string previousItemId, string itemId) : base(eventId, kind, additionalBinaryDataProperties)
+        internal ConversationInputAudioCommittedUpdate(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string previousItemId, string itemId) : base(eventId, kind, additionalBinaryDataProperties)
         {
             PreviousItemId = previousItemId;
             ItemId = itemId;

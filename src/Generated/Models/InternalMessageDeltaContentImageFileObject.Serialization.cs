@@ -88,10 +88,7 @@ namespace OpenAI.Assistants
                     imageFile = InternalMessageDeltaContentImageFileObjectImageFile.DeserializeInternalMessageDeltaContentImageFileObjectImageFile(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaContentImageFileObject(@type, additionalBinaryDataProperties, index, imageFile);
         }

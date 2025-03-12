@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Files;
 
-[CodeGenModel("DeleteFileResponse")]
+[CodeGenType("DeleteFileResponse")]
 public partial class FileDeletionResult
 {
     // CUSTOM: Renamed.

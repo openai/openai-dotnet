@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventRateLimitsUpdatedRateLimitsItem")]
+[CodeGenType("RealtimeServerEventRateLimitsUpdatedRateLimitsItem")]
 public partial class ConversationRateLimitDetailsItem
 {
     [CodeGenMember("Limit")]

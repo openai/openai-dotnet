@@ -37,7 +37,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("cached_tokens"u8);
                 writer.WriteNumberValue(CachedTokenCount);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -100,10 +100,7 @@ namespace OpenAI.Chat
                     cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatInputTokenUsageDetails(audioTokenCount, cachedTokenCount, additionalBinaryDataProperties);
         }

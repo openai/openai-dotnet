@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenAI.Embeddings;
 
-[CodeGenModel("CreateEmbeddingResponse")]
+[CodeGenType("CreateEmbeddingResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection))]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage))]
@@ -46,7 +46,7 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
         Model = model;
         Object = @object;
         Usage = usage;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
+        _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.

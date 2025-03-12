@@ -35,7 +35,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("message_creation") != true)
             {
                 writer.WritePropertyName("message_creation"u8);
-                writer.WriteObjectValue<InternalRunStepDetailsMessageCreationObjectMessageCreation>(_messageCreation, options);
+                writer.WriteObjectValue(_messageCreation, options);
             }
         }
 
@@ -73,10 +73,7 @@ namespace OpenAI.Assistants
                     messageCreation = InternalRunStepDetailsMessageCreationObjectMessageCreation.DeserializeInternalRunStepDetailsMessageCreationObjectMessageCreation(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDetailsMessageCreationObject(@type, additionalBinaryDataProperties, messageCreation);
         }

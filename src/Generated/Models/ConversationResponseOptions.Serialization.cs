@@ -81,7 +81,7 @@ namespace OpenAI.RealtimeConversation
             if (Optional.IsDefined(MaxOutputTokens) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteObjectValue<RealtimeConversation.ConversationMaxTokensChoice>(MaxOutputTokens, options);
+                writer.WriteObjectValue(MaxOutputTokens, options);
             }
             if (Optional.IsCollectionDefined(OverrideItems) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
@@ -115,7 +115,7 @@ namespace OpenAI.RealtimeConversation
                 }
 #endif
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -162,7 +162,7 @@ namespace OpenAI.RealtimeConversation
             float? temperature = default;
             IDictionary<string, string> metadata = default;
             ResponseConversationSelection? conversationSelection = default;
-            RealtimeConversation.ConversationMaxTokensChoice maxOutputTokens = default;
+            ConversationMaxTokensChoice maxOutputTokens = default;
             IList<ConversationItem> overrideItems = default;
             IList<InternalRealtimeRequestSessionModality> internalModalities = default;
             BinaryData internalToolChoice = default;
@@ -251,7 +251,7 @@ namespace OpenAI.RealtimeConversation
                     {
                         continue;
                     }
-                    maxOutputTokens = RealtimeConversation.ConversationMaxTokensChoice.DeserializeConversationMaxTokensChoice(prop.Value, options);
+                    maxOutputTokens = ConversationMaxTokensChoice.DeserializeConversationMaxTokensChoice(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("input"u8))
@@ -291,10 +291,7 @@ namespace OpenAI.RealtimeConversation
                     internalToolChoice = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationResponseOptions(
                 instructions,

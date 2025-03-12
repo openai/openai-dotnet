@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
         {
             Deleted = deleted;
             AssistantId = assistantId;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

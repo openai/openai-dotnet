@@ -3,7 +3,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Represents computed token consumption statistics for a chat completion request.
 /// </summary>
-[CodeGenModel("CompletionUsage")]
+[CodeGenType("CompletionUsage")]
 public partial class ChatTokenUsage
 {
     // CUSTOM: Renamed.

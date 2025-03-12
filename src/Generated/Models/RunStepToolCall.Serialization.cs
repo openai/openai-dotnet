@@ -10,8 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(UnknownRunStepDetailsToolCallsObjectToolCallsObject))]
-    public abstract partial class RunStepToolCall : IJsonModel<RunStepToolCall>
+    public partial class RunStepToolCall : IJsonModel<RunStepToolCall>
     {
         void IJsonModel<RunStepToolCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -37,7 +36,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {

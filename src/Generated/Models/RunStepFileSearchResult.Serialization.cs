@@ -46,7 +46,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("score"u8);
                 writer.WriteNumberValue(Score);
             }
-            if (true && Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
@@ -56,7 +56,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -132,10 +132,7 @@ namespace OpenAI.Assistants
                     content = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunStepFileSearchResult(fileId, fileName, score, content ?? new ChangeTrackingList<RunStepFileSearchResultContent>(), additionalBinaryDataProperties);
         }

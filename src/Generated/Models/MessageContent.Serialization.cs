@@ -19,7 +19,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(MessageContent)} does not support writing '{format}' format.");
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -50,7 +50,7 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return MessageContent.DeserializeMessageContent(document.RootElement, options);
+            return DeserializeMessageContent(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<MessageContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -77,7 +77,7 @@ namespace OpenAI.Assistants
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return MessageContent.DeserializeMessageContent(document.RootElement, options);
+                        return DeserializeMessageContent(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(MessageContent)} does not support reading '{options.Format}' format.");
@@ -99,7 +99,7 @@ namespace OpenAI.Assistants
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return MessageContent.DeserializeMessageContent(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeMessageContent(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

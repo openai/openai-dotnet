@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI.Audio;
 
-[CodeGenModel("CreateTranslationResponseVerboseJson")]
+[CodeGenType("CreateTranslationResponseVerboseJson")]
 public partial class AudioTranslation
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.

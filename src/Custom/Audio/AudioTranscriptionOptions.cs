@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace OpenAI.Audio;
 
-[CodeGenModel("CreateTranscriptionRequest")]
+[CodeGenType("CreateTranscriptionRequest")]
 [CodeGenSuppress("AudioTranscriptionOptions", typeof(BinaryData), typeof(InternalCreateTranscriptionRequestModel))]
 public partial class AudioTranscriptionOptions
 {
@@ -31,9 +31,9 @@ public partial class AudioTranscriptionOptions
     /// </summary>
     public AudioTimestampGranularities TimestampGranularities { get; set; }
 
-    internal MultipartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
     {
-        MultipartFormDataBinaryContent content = new();
+        MultiPartFormDataBinaryContent content = new();
 
         content.Add(audio, "file", audioFilename);
         content.Add(Model.ToString(), "model");

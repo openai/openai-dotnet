@@ -12,7 +12,7 @@ namespace OpenAI.RealtimeConversation;
 /// <see cref="InternalConversationContentPartFinishedUpdate"/> command (<c>response.content_part.done</c>).
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseContentPartAdded")]
+[CodeGenType("RealtimeServerEventResponseContentPartAdded")]
 internal partial class InternalRealtimeServerEventResponseContentPartAdded
 {
     [CodeGenMember("Part")]

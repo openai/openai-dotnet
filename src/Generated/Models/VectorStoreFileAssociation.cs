@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.VectorStores
 {
@@ -11,7 +12,7 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStores.VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, string fileId, int size)
+        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, string fileId, int size)
         {
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
@@ -19,17 +20,19 @@ namespace OpenAI.VectorStores
             LastError = lastError;
             FileId = fileId;
             Size = size;
+            Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStores.VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, InternalVectorStoreFileObjectObject @object, string fileId, int size, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, InternalVectorStoreFileObjectObject @object, string fileId, int size, IDictionary<string, BinaryData> attributes, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
             LastError = lastError;
-            this.Object = @object;
+            Object = @object;
             FileId = fileId;
             Size = size;
+            Attributes = attributes;
             ChunkingStrategy = chunkingStrategy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -38,7 +41,7 @@ namespace OpenAI.VectorStores
 
         public string VectorStoreId { get; }
 
-        public VectorStores.VectorStoreFileAssociationStatus Status { get; }
+        public VectorStoreFileAssociationStatus Status { get; }
 
         public VectorStoreFileAssociationError LastError { get; }
 

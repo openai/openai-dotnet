@@ -13,8 +13,8 @@ namespace OpenAI.Images;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI image operations. </summary>
-[CodeGenClient("Images")]
-[CodeGenSuppress("ImageClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Images")]
+[CodeGenSuppress("ImageClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateImageAsync", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateImage", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 public partial class ImageClient
@@ -191,7 +191,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -220,7 +220,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -297,7 +297,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -334,7 +334,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -420,7 +420,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
@@ -450,7 +450,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
@@ -530,7 +530,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
@@ -568,7 +568,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
@@ -654,7 +654,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -678,7 +678,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageVariationOptions(image, imageFilename, null, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
@@ -739,7 +739,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
@@ -764,7 +764,7 @@ public partial class ImageClient
         options ??= new();
         CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
 
-        using MultipartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }

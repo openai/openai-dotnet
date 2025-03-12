@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace OpenAI.Audio;
 
 /// <summary> A segment of the transcribed audio. </summary>
-[CodeGenModel("TranscriptionSegment")]
+[CodeGenType("TranscriptionSegment")]
 [StructLayout(LayoutKind.Auto)]
 public readonly partial struct TranscribedSegment
 {

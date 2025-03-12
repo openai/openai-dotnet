@@ -10,7 +10,7 @@ namespace OpenAI.Internal;
 // - 'FromResponse' added for convenience with parent type
 // - 'ToExceptionMessage' added for encapsulated message formatting
 
-[CodeGenModel("Error")]
+[CodeGenType("Error")]
 internal partial class OpenAIError
 {
     internal static OpenAIError TryCreateFromResponse(PipelineResponse response)
@@ -49,5 +49,5 @@ internal partial class OpenAIError
 // Custom:
 // - Renamed
 
-[CodeGenModel("ErrorResponse")]
+[CodeGenType("ErrorResponse")]
 internal partial class OpenAIErrorResponse { }

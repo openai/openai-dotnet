@@ -8,27 +8,27 @@ namespace OpenAI.Assistants
 {
     internal static partial class RunStepToolCallKindExtensions
     {
-        public static string ToSerialString(this Assistants.RunStepToolCallKind value) => value switch
+        public static string ToSerialString(this RunStepToolCallKind value) => value switch
         {
-            Assistants.RunStepToolCallKind.CodeInterpreter => "code_interpreter",
-            Assistants.RunStepToolCallKind.FileSearch => "file_search",
-            Assistants.RunStepToolCallKind.Function => "function",
+            RunStepToolCallKind.CodeInterpreter => "code_interpreter",
+            RunStepToolCallKind.FileSearch => "file_search",
+            RunStepToolCallKind.Function => "function",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepToolCallKind value.")
         };
 
-        public static Assistants.RunStepToolCallKind ToRunStepToolCallKind(this string value)
+        public static RunStepToolCallKind ToRunStepToolCallKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "code_interpreter"))
             {
-                return Assistants.RunStepToolCallKind.CodeInterpreter;
+                return RunStepToolCallKind.CodeInterpreter;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "file_search"))
             {
-                return Assistants.RunStepToolCallKind.FileSearch;
+                return RunStepToolCallKind.FileSearch;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "function"))
             {
-                return Assistants.RunStepToolCallKind.Function;
+                return RunStepToolCallKind.Function;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepToolCallKind value.");
         }

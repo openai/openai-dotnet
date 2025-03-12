@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using OpenAI;
+using OpenAI.Chat;
 
 namespace OpenAI.Assistants
 {
@@ -18,7 +19,7 @@ namespace OpenAI.Assistants
             DefaultTools = new ChangeTrackingList<ToolDefinition>();
         }
 
-        internal AssistantModificationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> defaultTools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantModificationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> defaultTools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             Description = description;
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
             ToolResources = toolResources;
             ResponseFormat = responseFormat;
             NucleusSamplingFactor = nucleusSamplingFactor;
+            ReasoningEffortLevel = reasoningEffortLevel;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

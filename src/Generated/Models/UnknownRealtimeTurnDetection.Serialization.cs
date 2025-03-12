@@ -43,7 +43,7 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ConversationTurnDetectionOptions.DeserializeConversationTurnDetectionOptions(document.RootElement, options);
+            return DeserializeConversationTurnDetectionOptions(document.RootElement, options);
         }
 
         internal static UnknownRealtimeTurnDetection DeserializeUnknownRealtimeTurnDetection(JsonElement element, ModelReaderWriterOptions options)
@@ -52,7 +52,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            RealtimeConversation.ConversationTurnDetectionKind kind = default;
+            ConversationTurnDetectionKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -61,10 +61,7 @@ namespace OpenAI.RealtimeConversation
                     kind = prop.Value.GetString().ToConversationTurnDetectionKind();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new UnknownRealtimeTurnDetection(kind, additionalBinaryDataProperties);
         }
@@ -93,7 +90,7 @@ namespace OpenAI.RealtimeConversation
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ConversationTurnDetectionOptions.DeserializeConversationTurnDetectionOptions(document.RootElement, options);
+                        return DeserializeConversationTurnDetectionOptions(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support reading '{options.Format}' format.");

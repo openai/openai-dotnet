@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    [CodeGenModel("RunCompletionUsage")]
+    [CodeGenType("RunCompletionUsage")]
     public partial class RunTokenUsage
     {
         // CUSTOM: Renamed.

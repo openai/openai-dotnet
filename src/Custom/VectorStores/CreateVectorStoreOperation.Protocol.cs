@@ -10,7 +10,7 @@ namespace OpenAI.VectorStores;
 
 public partial class CreateVectorStoreOperation : OperationResult
 {
-    private readonly ClientPipeline _pipeline;
+    private readonly VectorStoreClient _parentClient;
     private readonly Uri _endpoint;
 
     private readonly string _vectorStoreId;
@@ -27,8 +27,8 @@ public partial class CreateVectorStoreOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetVectorStoreAsync(RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetVectorStoreRequest(_vectorStoreId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = _parentClient.CreateGetVectorStoreRequest(_vectorStoreId, options);
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -40,24 +40,8 @@ public partial class CreateVectorStoreOperation : OperationResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetVectorStore(RequestOptions? options)
     {
-        using PipelineMessage message = CreateGetVectorStoreRequest(_vectorStoreId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
-    }
-
-    internal virtual PipelineMessage CreateGetVectorStoreRequest(string vectorStoreId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/vector_stores/", false);
-        uri.AppendPath(vectorStoreId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
+        using PipelineMessage message = _parentClient.CreateGetVectorStoreRequest(_vectorStoreId, options);
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 
     private static PipelineMessageClassifier? _pipelineMessageClassifier200;

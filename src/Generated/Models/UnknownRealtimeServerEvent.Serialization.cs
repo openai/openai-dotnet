@@ -43,7 +43,7 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(ConversationUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ConversationUpdate.DeserializeConversationUpdate(document.RootElement, options);
+            return DeserializeConversationUpdate(document.RootElement, options);
         }
 
         internal static UnknownRealtimeServerEvent DeserializeUnknownRealtimeServerEvent(JsonElement element, ModelReaderWriterOptions options)
@@ -53,7 +53,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string eventId = default;
-            RealtimeConversation.ConversationUpdateKind kind = default;
+            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -67,10 +67,7 @@ namespace OpenAI.RealtimeConversation
                     kind = prop.Value.GetString().ToConversationUpdateKind();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new UnknownRealtimeServerEvent(eventId, kind, additionalBinaryDataProperties);
         }
@@ -99,7 +96,7 @@ namespace OpenAI.RealtimeConversation
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ConversationUpdate.DeserializeConversationUpdate(document.RootElement, options);
+                        return DeserializeConversationUpdate(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ConversationUpdate)} does not support reading '{options.Format}' format.");

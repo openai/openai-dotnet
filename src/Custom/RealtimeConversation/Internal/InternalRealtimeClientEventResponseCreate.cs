@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeClientEventResponseCreate")]
+[CodeGenType("RealtimeClientEventResponseCreate")]
 internal partial class InternalRealtimeClientEventResponseCreate
 {
 }

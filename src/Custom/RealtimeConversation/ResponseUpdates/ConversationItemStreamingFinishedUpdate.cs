@@ -11,7 +11,7 @@ namespace OpenAI.RealtimeConversation;
 /// <see cref="InternalConversationTextContentDeltaUpdate"/>).
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseOutputItemDone")]
+[CodeGenType("RealtimeServerEventResponseOutputItemDone")]
 public partial class ConversationItemStreamingFinishedUpdate
 {
     [CodeGenMember("Item")]

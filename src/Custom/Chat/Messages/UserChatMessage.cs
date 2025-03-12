@@ -8,7 +8,7 @@ namespace OpenAI.Chat;
 /// information originating from the caller and serves as a prompt for the model to complete. User messages may result
 /// in either direct <c>assistant</c> message responses or in calls to supplied <c>tools</c> or <c>functions</c>.
 /// </summary>
-[CodeGenModel("ChatCompletionRequestUserMessage")]
+[CodeGenType("ChatCompletionRequestUserMessage")]
 [CodeGenSuppress("UserChatMessage", typeof(ChatMessageContent))]
 public partial class UserChatMessage : ChatMessage
 {

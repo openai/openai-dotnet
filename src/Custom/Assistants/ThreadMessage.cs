@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("MessageObject")]
+[CodeGenType("MessageObject")]
 public partial class ThreadMessage
 {
     // CUSTOM: Made internal.

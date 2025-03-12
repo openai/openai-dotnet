@@ -11,14 +11,14 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, int index, Chat.ChatFinishReason? finishReason)
+        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, int index, ChatFinishReason? finishReason)
         {
             Delta = delta;
             Index = index;
             FinishReason = finishReason;
         }
 
-        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs, int index, Chat.ChatFinishReason? finishReason, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateChatCompletionStreamResponseChoice(InternalChatCompletionStreamResponseDelta delta, InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs, int index, ChatFinishReason? finishReason, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Delta = delta;
             Logprobs = logprobs;

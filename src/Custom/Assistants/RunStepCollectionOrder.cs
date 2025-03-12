@@ -1,17 +1,40 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-// CUSTOM: Renamed.
 [Experimental("OPENAI001")]
-[CodeGenModel("ListRunStepsRequestOrder")]
-public readonly partial struct RunStepCollectionOrder
+public readonly partial struct RunStepCollectionOrder : IEquatable<RunStepCollectionOrder>
 {
-    // CUSTOM: Renamed.
-    [CodeGenMember("Asc")]
-    public static RunStepCollectionOrder Ascending { get; } = new RunStepCollectionOrder(AscValue);
+    public static RunStepCollectionOrder Ascending { get; } = new RunStepCollectionOrder("asc");
 
-    // CUSTOM: Renamed.
-    [CodeGenMember("Desc")]
-    public static RunStepCollectionOrder Descending { get; } = new RunStepCollectionOrder(DescValue);
+    public static RunStepCollectionOrder Descending { get; } = new RunStepCollectionOrder("desc");
+
+    private readonly string _value;
+    private const string AscValue = "asc";
+    private const string DescValue = "desc";
+
+    public RunStepCollectionOrder(string value)
+    {
+        Argument.AssertNotNull(value, nameof(value));
+
+        _value = value;
+    }
+
+    public static bool operator ==(RunStepCollectionOrder left, RunStepCollectionOrder right) => left.Equals(right);
+
+    public static bool operator !=(RunStepCollectionOrder left, RunStepCollectionOrder right) => !left.Equals(right);
+
+    public static implicit operator RunStepCollectionOrder(string value) => new RunStepCollectionOrder(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is RunStepCollectionOrder other && Equals(other);
+
+    public bool Equals(RunStepCollectionOrder other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
+    public override string ToString() => _value;
 }

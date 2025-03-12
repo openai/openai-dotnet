@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI.Files;
 
-[CodeGenModel("OpenAIFile")]
+[CodeGenType("OpenAIFile")]
 public partial class OpenAIFile
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.

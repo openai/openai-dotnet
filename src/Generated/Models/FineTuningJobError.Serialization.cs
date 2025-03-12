@@ -43,7 +43,7 @@ namespace OpenAI.FineTuning
             }
             if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
             {
-                if (Param != null)
+                if (Optional.IsDefined(Param))
                 {
                     writer.WritePropertyName("param"u8);
                     writer.WriteStringValue(Param);
@@ -53,7 +53,7 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("param"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -119,10 +119,7 @@ namespace OpenAI.FineTuning
                     @param = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FineTuningJobError(code, message, @param, additionalBinaryDataProperties);
         }

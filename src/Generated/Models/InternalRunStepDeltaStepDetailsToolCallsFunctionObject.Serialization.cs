@@ -99,10 +99,7 @@ namespace OpenAI.Assistants
                     function = InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction.DeserializeInternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsFunctionObject(@type, additionalBinaryDataProperties, index, id, function);
         }

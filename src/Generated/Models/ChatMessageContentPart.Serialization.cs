@@ -19,7 +19,7 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatMessageContentPart)} does not support writing '{format}' format.");
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -50,7 +50,7 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessageContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return ChatMessageContentPart.DeserializeChatMessageContentPart(document.RootElement, options);
+            return DeserializeChatMessageContentPart(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<ChatMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -77,7 +77,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return ChatMessageContentPart.DeserializeChatMessageContentPart(document.RootElement, options);
+                        return DeserializeChatMessageContentPart(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatMessageContentPart)} does not support reading '{options.Format}' format.");
@@ -99,7 +99,7 @@ namespace OpenAI.Chat
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return ChatMessageContentPart.DeserializeChatMessageContentPart(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeChatMessageContentPart(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

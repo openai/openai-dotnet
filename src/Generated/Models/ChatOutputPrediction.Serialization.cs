@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatOutputPrediction))]
     public partial class ChatOutputPrediction : IJsonModel<ChatOutputPrediction>
     {
         internal ChatOutputPrediction()
@@ -36,7 +35,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {

@@ -12,8 +12,8 @@ namespace OpenAI.Assistants;
 
 /// <summary> The service client for OpenAI assistants operations. </summary>
 [Experimental("OPENAI001")]
-[CodeGenClient("Assistants")]
-[CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Assistants")]
+[CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateAssistantAsync", typeof(AssistantCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateAssistant", typeof(AssistantCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetAssistantAsync", typeof(string))]
@@ -22,8 +22,8 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyAssistant", typeof(string), typeof(AssistantModificationOptions))]
 [CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
 [CodeGenSuppress("DeleteAssistant", typeof(string))]
-[CodeGenSuppress("ListAssistantsAsync", typeof(int?), typeof(AssistantCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListAssistants", typeof(int?), typeof(AssistantCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ListAssistantsAsync", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("ListAssistants", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 public partial class AssistantClient
 {
     private readonly InternalAssistantMessageClient _messageSubClient;
@@ -725,11 +725,10 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        async Task<ClientResult> sendRequestAsync() =>
-            await CreateRunAsync(threadId, options, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
+        return new AsyncSseUpdateCollection<StreamingUpdate>(
+            async () => await CreateRunAsync(threadId, options, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>
@@ -753,8 +752,10 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        ClientResult sendRequest() => CreateRun(threadId, options, cancellationToken.ToRequestOptions(streaming: true));
-        return new StreamingUpdateCollection(sendRequest, cancellationToken);
+        return new SseUpdateCollection<StreamingUpdate>(
+            () => CreateRun(threadId, options, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>
@@ -818,11 +819,10 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        async Task<ClientResult> sendRequestAsync() =>
-            await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
+        return new AsyncSseUpdateCollection<StreamingUpdate>(
+            async () => await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>
@@ -844,8 +844,10 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        ClientResult sendRequest() => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
-        return new StreamingUpdateCollection(sendRequest, cancellationToken);
+        return new SseUpdateCollection<StreamingUpdate>(
+            () => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>
@@ -1043,11 +1045,10 @@ public partial class AssistantClient
 
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
 
-        async Task<ClientResult> sendRequestAsync() =>
-            await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true))
-            .ConfigureAwait(false);
-
-        return new AsyncStreamingUpdateCollection(sendRequestAsync, cancellationToken);
+        return new AsyncSseUpdateCollection<StreamingUpdate>(
+            async () => await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>
@@ -1070,8 +1071,10 @@ public partial class AssistantClient
 
         BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
 
-        ClientResult sendRequest() => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
-        return new StreamingUpdateCollection(sendRequest, cancellationToken);
+        return new SseUpdateCollection<StreamingUpdate>(
+            () => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingUpdate.FromSseItem,
+            cancellationToken);
     }
 
     /// <summary>

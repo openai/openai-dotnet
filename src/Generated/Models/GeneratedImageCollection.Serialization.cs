@@ -24,7 +24,7 @@ namespace OpenAI.Images
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -55,7 +55,7 @@ namespace OpenAI.Images
                 throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return GeneratedImageCollection.DeserializeGeneratedImageCollection(document.RootElement, options);
+            return DeserializeGeneratedImageCollection(document.RootElement, options);
         }
 
         BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -82,7 +82,7 @@ namespace OpenAI.Images
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return GeneratedImageCollection.DeserializeGeneratedImageCollection(document.RootElement, options);
+                        return DeserializeGeneratedImageCollection(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support reading '{options.Format}' format.");
@@ -104,7 +104,7 @@ namespace OpenAI.Images
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return GeneratedImageCollection.DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

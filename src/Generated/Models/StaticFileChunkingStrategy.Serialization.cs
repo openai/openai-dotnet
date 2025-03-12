@@ -35,7 +35,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("static") != true)
             {
                 writer.WritePropertyName("static"u8);
-                writer.WriteObjectValue<InternalStaticChunkingStrategyDetails>(_internalDetails, options);
+                writer.WriteObjectValue(_internalDetails, options);
             }
         }
 
@@ -73,10 +73,7 @@ namespace OpenAI.VectorStores
                     internalDetails = InternalStaticChunkingStrategyDetails.DeserializeInternalStaticChunkingStrategyDetails(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new StaticFileChunkingStrategy(@type, additionalBinaryDataProperties, internalDetails);
         }

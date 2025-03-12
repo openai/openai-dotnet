@@ -73,10 +73,7 @@ namespace OpenAI.Assistants
                     messageCreation = InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation.DeserializeInternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsMessageCreationObject(@type, additionalBinaryDataProperties, messageCreation);
         }

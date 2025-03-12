@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
-                writer.WriteObjectValue<InternalMessageContentTextObjectText>(_text, options);
+                writer.WriteObjectValue(_text, options);
             }
         }
 
@@ -71,10 +71,7 @@ namespace OpenAI.Assistants
                     text = InternalMessageContentTextObjectText.DeserializeInternalMessageContentTextObjectText(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalResponseMessageTextContent(additionalBinaryDataProperties, @type, text);
         }

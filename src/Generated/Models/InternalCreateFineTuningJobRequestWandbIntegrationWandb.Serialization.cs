@@ -33,27 +33,13 @@ namespace OpenAI.FineTuning
             }
             if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
-                if (Name != null)
-                {
-                    writer.WritePropertyName("name"u8);
-                    writer.WriteStringValue(Name);
-                }
-                else
-                {
-                    writer.WriteNull("name"u8);
-                }
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
             }
             if (Optional.IsDefined(Entity) && _additionalBinaryDataProperties?.ContainsKey("entity") != true)
             {
-                if (Entity != null)
-                {
-                    writer.WritePropertyName("entity"u8);
-                    writer.WriteStringValue(Entity);
-                }
-                else
-                {
-                    writer.WriteNull("entity"u8);
-                }
+                writer.WritePropertyName("entity"u8);
+                writer.WriteStringValue(Entity);
             }
             if (Optional.IsCollectionDefined(Tags) && _additionalBinaryDataProperties?.ContainsKey("tags") != true)
             {
@@ -75,7 +61,7 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("project"u8);
                 writer.WriteStringValue(Project);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -168,10 +154,7 @@ namespace OpenAI.FineTuning
                     project = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(name, entity, tags ?? new ChangeTrackingList<string>(), project, additionalBinaryDataProperties);
         }

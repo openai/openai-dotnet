@@ -1,6 +1,6 @@
 namespace OpenAI.Assistants;
 
-[CodeGenModel("RunStepDetailsToolCallsCodeOutputImageObject")]
+[CodeGenType("RunStepDetailsToolCallsCodeOutputImageObject")]
 internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObject
 {
     /// <inheritdoc cref="InternalRunStepDetailsToolCallsCodeOutputImageObjectImage.FileId"/>

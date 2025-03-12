@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeToolChoiceLiteral")]
+[CodeGenType("RealtimeToolChoiceLiteral")]
 public enum ConversationToolChoiceKind
 {
     Unknown,

@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI.Internal;
 
-[CodeGenModel("ResponseFormatJsonSchemaJsonSchema")]
+[CodeGenType("ResponseFormatJsonSchemaJsonSchema")]
 internal partial class InternalResponseFormatJsonSchemaJsonSchema
 {
     [CodeGenMember("Schema")]

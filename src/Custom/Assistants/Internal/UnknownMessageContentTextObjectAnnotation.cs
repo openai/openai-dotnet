@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
-[CodeGenModel("UnknownMessageContentTextObjectAnnotation")]
+[CodeGenType("UnknownMessageContentTextObjectAnnotation")]
 internal partial class UnknownMessageContentTextObjectAnnotation
 {
 }

@@ -84,10 +84,7 @@ namespace OpenAI.Assistants
                     internalLogs = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject(@type, additionalBinaryDataProperties, index, internalLogs);
         }

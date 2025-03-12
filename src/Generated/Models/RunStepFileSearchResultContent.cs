@@ -16,7 +16,7 @@ namespace OpenAI.Assistants
             Text = text;
         }
 
-        internal RunStepFileSearchResultContent(string text, Assistants.RunStepFileSearchResultContentKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunStepFileSearchResultContent(string text, RunStepFileSearchResultContentKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Text = text;
             Kind = kind;

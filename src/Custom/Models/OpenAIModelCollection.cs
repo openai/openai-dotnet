@@ -8,7 +8,7 @@ namespace OpenAI.Models;
 /// <summary>
 /// Represents a collection of entries for available models.
 /// </summary>
-[CodeGenModel("ListModelsResponse")]
+[CodeGenType("ListModelsResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIModelCollection))]
 [CodeGenSuppress(nameof(OpenAIModelCollection), typeof(InternalListModelsResponseObject), typeof(IDictionary<string, BinaryData>))]

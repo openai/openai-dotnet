@@ -1,7 +1,7 @@
 namespace OpenAI.Audio;
 
 /// <summary> The options to configure text-to-speech audio generation. </summary>
-[CodeGenModel("CreateSpeechRequest")]
+[CodeGenType("CreateSpeechRequest")]
 [CodeGenSuppress("SpeechGenerationOptions", typeof(InternalCreateSpeechRequestModel), typeof(string), typeof(GeneratedSpeechVoice))]
 public partial class SpeechGenerationOptions
 {

@@ -33,7 +33,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("image_url") != true)
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteObjectValue<InternalMessageContentImageUrlObjectImageUrl>(_imageUrl, options);
+                writer.WriteObjectValue(_imageUrl, options);
             }
         }
 
@@ -71,10 +71,7 @@ namespace OpenAI.Assistants
                     imageUrl = InternalMessageContentImageUrlObjectImageUrl.DeserializeInternalMessageContentImageUrlObjectImageUrl(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageImageUrlContent(additionalBinaryDataProperties, @type, imageUrl);
         }

@@ -10,8 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject))]
-    public abstract partial class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>
+    public partial class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>
     {
         internal RunStepUpdateCodeInterpreterOutput()
         {
@@ -36,7 +35,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Type);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {

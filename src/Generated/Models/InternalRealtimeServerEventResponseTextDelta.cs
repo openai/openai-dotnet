@@ -9,7 +9,7 @@ namespace OpenAI.RealtimeConversation
 {
     internal partial class InternalRealtimeServerEventResponseTextDelta : ConversationUpdate
     {
-        internal InternalRealtimeServerEventResponseTextDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, RealtimeConversation.ConversationUpdateKind.ItemStreamingPartTextDelta)
+        internal InternalRealtimeServerEventResponseTextDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, ConversationUpdateKind.ItemStreamingPartTextDelta)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -18,7 +18,7 @@ namespace OpenAI.RealtimeConversation
             Delta = delta;
         }
 
-        internal InternalRealtimeServerEventResponseTextDelta(string eventId, RealtimeConversation.ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, kind, additionalBinaryDataProperties)
+        internal InternalRealtimeServerEventResponseTextDelta(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, kind, additionalBinaryDataProperties)
         {
             ResponseId = responseId;
             ItemId = itemId;

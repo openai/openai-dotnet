@@ -12,7 +12,7 @@ namespace OpenAI.RealtimeConversation;
 /// until the next response; shared session configuration, such as input audio format, will apply immediately.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventSessionUpdated")]
+[CodeGenType("RealtimeServerEventSessionUpdated")]
 public partial class ConversationSessionConfiguredUpdate
 {
     [CodeGenMember("Session")]

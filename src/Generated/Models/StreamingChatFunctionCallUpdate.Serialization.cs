@@ -35,9 +35,9 @@ namespace OpenAI.Chat
             if (Optional.IsDefined(FunctionArgumentsUpdate) && _additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
-                this.SerializeFunctionArgumentsUpdateValue(writer, options);
+                SerializeFunctionArgumentsUpdateValue(writer, options);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -92,10 +92,7 @@ namespace OpenAI.Chat
                     DeserializeFunctionArgumentsUpdateValue(prop, ref functionArgumentsUpdate);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new StreamingChatFunctionCallUpdate(functionName, functionArgumentsUpdate, additionalBinaryDataProperties);
         }

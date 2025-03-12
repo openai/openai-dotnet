@@ -12,7 +12,7 @@ namespace OpenAI.RealtimeConversation;
 /// <see cref="InternalConversationOutputTranscriptionDeltaUpdate"/>).
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventResponseContentPartDone")]
+[CodeGenType("RealtimeServerEventResponseContentPartDone")]
 internal partial class InternalRealtimeServerEventResponseContentPartDone
 {
     [CodeGenMember("Part")]

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.VectorStores;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("StaticChunkingStrategyResponseParam")]
+[CodeGenType("StaticChunkingStrategyResponseParam")]
 public partial class StaticFileChunkingStrategy : FileChunkingStrategy
 {
     [CodeGenMember("Static")]

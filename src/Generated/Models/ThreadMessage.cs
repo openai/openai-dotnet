@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, string assistantId, string runId, Assistants.MessageRole role, IEnumerable<MessageCreationAttachment> attachments)
+        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, string assistantId, string runId, MessageRole role, IEnumerable<MessageCreationAttachment> attachments)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -30,7 +30,7 @@ namespace OpenAI.Assistants
             Attachments = attachments.ToList();
         }
 
-        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyDictionary<string, string> metadata, InternalMessageObjectObject @object, Assistants.MessageRole role, IReadOnlyList<MessageCreationAttachment> attachments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyDictionary<string, string> metadata, InternalMessageObjectObject @object, MessageRole role, IReadOnlyList<MessageCreationAttachment> attachments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -43,7 +43,7 @@ namespace OpenAI.Assistants
             AssistantId = assistantId;
             RunId = runId;
             Metadata = metadata;
-            this.Object = @object;
+            Object = @object;
             Role = role;
             Attachments = attachments;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

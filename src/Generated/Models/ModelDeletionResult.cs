@@ -21,7 +21,7 @@ namespace OpenAI.Models
         {
             Deleted = deleted;
             ModelId = modelId;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

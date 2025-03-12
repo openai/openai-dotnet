@@ -6,7 +6,7 @@ namespace OpenAI.Images;
 ///     hyper-real and dramatic images. <see cref="Natural"> causes the model to produce more natural, less hyper-real
 ///     looking images.
 /// </summary>
-[CodeGenModel("CreateImageRequestStyle")]
+[CodeGenType("CreateImageRequestStyle")]
 public readonly partial struct GeneratedImageStyle
 {
 }

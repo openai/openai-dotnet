@@ -78,14 +78,14 @@ namespace OpenAI.RealtimeConversation
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input_audio_transcription") != true)
             {
-                if (InputAudioTranscription != null)
+                if (Optional.IsDefined(InputAudioTranscription))
                 {
                     writer.WritePropertyName("input_audio_transcription"u8);
                     writer.WriteObjectValue(InputAudioTranscription, options);
                 }
                 else
                 {
-                    writer.WriteNull("inputAudioTranscription"u8);
+                    writer.WriteNull("input_audio_transcription"u8);
                 }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
@@ -93,7 +93,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("turn_detection"u8);
                 writer.WriteObjectValue(TurnDetection, options);
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -122,7 +122,7 @@ namespace OpenAI.RealtimeConversation
             }
             if (_additionalBinaryDataProperties?.ContainsKey("max_response_output_tokens") != true)
             {
-                if (_maxResponseOutputTokens != null)
+                if (Optional.IsDefined(_maxResponseOutputTokens))
                 {
                     writer.WritePropertyName("max_response_output_tokens"u8);
 #if NET6_0_OR_GREATER
@@ -136,10 +136,10 @@ namespace OpenAI.RealtimeConversation
                 }
                 else
                 {
-                    writer.WriteNull("maxResponseOutputTokens"u8);
+                    writer.WriteNull("max_response_output_tokens"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -286,10 +286,7 @@ namespace OpenAI.RealtimeConversation
                     maxResponseOutputTokens = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeResponseSession(
                 @object,

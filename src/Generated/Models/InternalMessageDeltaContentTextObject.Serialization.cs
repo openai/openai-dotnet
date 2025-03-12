@@ -88,10 +88,7 @@ namespace OpenAI.Assistants
                     text = InternalMessageDeltaContentTextObjectText.DeserializeInternalMessageDeltaContentTextObjectText(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaContentTextObject(@type, additionalBinaryDataProperties, index, text);
         }

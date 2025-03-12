@@ -35,7 +35,7 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("session") != true)
             {
                 writer.WritePropertyName("session"u8);
-                writer.WriteObjectValue<InternalRealtimeResponseSession>(_internalSession, options);
+                writer.WriteObjectValue(_internalSession, options);
             }
         }
 
@@ -59,7 +59,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string eventId = default;
-            RealtimeConversation.ConversationUpdateKind kind = default;
+            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalRealtimeResponseSession internalSession = default;
             foreach (var prop in element.EnumerateObject())
@@ -79,10 +79,7 @@ namespace OpenAI.RealtimeConversation
                     internalSession = InternalRealtimeResponseSession.DeserializeInternalRealtimeResponseSession(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationSessionConfiguredUpdate(eventId, kind, additionalBinaryDataProperties, internalSession);
         }

@@ -54,19 +54,12 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(this.Object.ToString());
+                writer.WriteStringValue(Object.ToString());
             }
             if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
             {
-                if (ServiceTier != null)
-                {
-                    writer.WritePropertyName("service_tier"u8);
-                    writer.WriteStringValue(ServiceTier.Value.ToString());
-                }
-                else
-                {
-                    writer.WriteNull("serviceTier"u8);
-                }
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
             {
@@ -83,7 +76,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -188,10 +181,7 @@ namespace OpenAI.Chat
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatCompletion(
                 id,

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenModel("ThreadObject")]
+[CodeGenType("ThreadObject")]
 public partial class AssistantThread
 {
     // CUSTOM: Made internal.

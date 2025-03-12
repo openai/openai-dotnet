@@ -33,22 +33,15 @@ namespace OpenAI.Assistants
             }
             if (Optional.IsDefined(LastMessages) && _additionalBinaryDataProperties?.ContainsKey("last_messages") != true)
             {
-                if (LastMessages != null)
-                {
-                    writer.WritePropertyName("last_messages"u8);
-                    writer.WriteNumberValue(LastMessages.Value);
-                }
-                else
-                {
-                    writer.WriteNull("lastMessages"u8);
-                }
+                writer.WritePropertyName("last_messages"u8);
+                writer.WriteNumberValue(LastMessages.Value);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(_type.ToString());
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -108,10 +101,7 @@ namespace OpenAI.Assistants
                     @type = new InternalTruncationObjectType(prop.Value.GetString());
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunTruncationStrategy(lastMessages, @type, additionalBinaryDataProperties);
         }

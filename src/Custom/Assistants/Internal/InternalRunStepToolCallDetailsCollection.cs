@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants;
 
-[CodeGenModel("RunStepDetailsToolCallsObject")]
+[CodeGenType("RunStepDetailsToolCallsObject")]
 internal partial class InternalRunStepDetailsToolCallsObject : IReadOnlyList<RunStepToolCall>
 {
     [CodeGenMember("ToolCalls")]

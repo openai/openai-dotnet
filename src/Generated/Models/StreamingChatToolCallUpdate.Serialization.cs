@@ -39,7 +39,7 @@ namespace OpenAI.Chat
             if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
                 writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue<InternalChatCompletionMessageToolCallChunkFunction>(Function, options);
+                writer.WriteObjectValue(Function, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
@@ -51,7 +51,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(ToolCallId);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -93,7 +93,7 @@ namespace OpenAI.Chat
             }
             int index = default;
             InternalChatCompletionMessageToolCallChunkFunction function = default;
-            Chat.ChatToolCallKind kind = default;
+            ChatToolCallKind kind = default;
             string toolCallId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -126,10 +126,7 @@ namespace OpenAI.Chat
                     toolCallId = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new StreamingChatToolCallUpdate(index, function, kind, toolCallId, additionalBinaryDataProperties);
         }

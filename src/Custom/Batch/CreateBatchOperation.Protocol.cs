@@ -17,20 +17,19 @@ namespace OpenAI.Batch;
 [Experimental("OPENAI001")]
 public class CreateBatchOperation : OperationResult
 {
-    private readonly ClientPipeline _pipeline;
+    private readonly BatchClient _parentClient;
     private readonly Uri _endpoint;
-
     private readonly string _batchId;
 
     internal CreateBatchOperation(
-        ClientPipeline pipeline,
+        BatchClient parentClient,
         Uri endpoint,
         string batchId,
         string status,
         PipelineResponse response)
-        : base(response)
+            : base(response)
     {
-        _pipeline = pipeline;
+        _parentClient = parentClient;
         _endpoint = endpoint;
         _batchId = batchId;
 
@@ -160,8 +159,8 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual async Task<ClientResult> GetBatchAsync(RequestOptions? options)
     {
-        using PipelineMessage message = CreateRetrieveBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = _parentClient.CreateRetrieveBatchRequest(_batchId, options);
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -172,8 +171,8 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual ClientResult GetBatch(RequestOptions? options)
     {
-        using PipelineMessage message = CreateRetrieveBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        using PipelineMessage message = _parentClient.CreateRetrieveBatchRequest(_batchId, options);
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -184,8 +183,8 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual async Task<ClientResult> CancelAsync(RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        using PipelineMessage message = _parentClient.CreateCancelBatchRequest(_batchId, options);
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -196,43 +195,7 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual ClientResult Cancel(RequestOptions? options)
     {
-        using PipelineMessage message = CreateCancelBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+        using PipelineMessage message = _parentClient.CreateCancelBatchRequest(_batchId, options);
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
-
-    internal virtual PipelineMessage CreateRetrieveBatchRequest(string batchId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches/", false);
-        uri.AppendPath(batchId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
-
-    internal virtual PipelineMessage CreateCancelBatchRequest(string batchId, RequestOptions? options)
-    {
-        var message = _pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "POST";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches/", false);
-        uri.AppendPath(batchId, true);
-        uri.AppendPath("/cancel", false);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
-
-    private static PipelineMessageClassifier? _pipelineMessageClassifier200;
-    private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 }

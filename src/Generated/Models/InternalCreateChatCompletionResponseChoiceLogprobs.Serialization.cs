@@ -27,9 +27,9 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support writing '{format}' format.");
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
-                if (Content != null && Optional.IsCollectionDefined(Content))
+                if (options.Format != "W" && Optional.IsCollectionDefined(Content))
                 {
                     writer.WritePropertyName("content"u8);
                     writer.WriteStartArray();
@@ -44,9 +44,9 @@ namespace OpenAI.Chat
                     writer.WriteNull("content"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
-                if (Refusal != null && Optional.IsCollectionDefined(Refusal))
+                if (options.Format != "W" && Optional.IsCollectionDefined(Refusal))
                 {
                     writer.WritePropertyName("refusal"u8);
                     writer.WriteStartArray();
@@ -61,7 +61,7 @@ namespace OpenAI.Chat
                     writer.WriteNull("refusal"u8);
                 }
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -136,10 +136,7 @@ namespace OpenAI.Chat
                     refusal = array;
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateChatCompletionResponseChoiceLogprobs(content, refusal, additionalBinaryDataProperties);
         }

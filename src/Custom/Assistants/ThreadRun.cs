@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 //    hierarchy and formatted into a more intuitive collection for the consumer.
 
 [Experimental("OPENAI001")]
-[CodeGenModel("RunObject")]
+[CodeGenType("RunObject")]
 public partial class ThreadRun
 {
     // CUSTOM: Made internal.

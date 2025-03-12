@@ -75,13 +75,6 @@ public class ChatSmokeTests : SyncAsyncTestBase
         Assert.That(completion.CreatedAt.ToUnixTimeSeconds, Is.EqualTo(mockCreated));
         Assert.That(completion.Role, Is.EqualTo(ChatMessageRole.Assistant));
         Assert.That(completion.Content[0].Text, Is.EqualTo("Hi there, user!"));
-
-        var data = (IDictionary<string, BinaryData>)
-            typeof(ChatCompletion)
-            .GetProperty("SerializedAdditionalRawData", BindingFlags.Instance | BindingFlags.NonPublic)
-            .GetValue(completion);
-        Assert.That(data, Is.Not.Null);
-        Assert.That(data.Count, Is.GreaterThan(0));
     }
 
     [Test]

@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.RealtimeConversation;
 
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeContentPartType")]
+[CodeGenType("RealtimeContentPartType")]
 public readonly partial struct ConversationContentPartKind
 {
     [CodeGenMember("Audio")]

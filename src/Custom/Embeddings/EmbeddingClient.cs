@@ -15,8 +15,8 @@ namespace OpenAI.Embeddings;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI embedding operations. </summary>
-[CodeGenClient("Embeddings")]
-[CodeGenSuppress("EmbeddingClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
+[CodeGenType("Embeddings")]
+[CodeGenSuppress("EmbeddingClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateEmbeddingAsync", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateEmbedding", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
 public partial class EmbeddingClient

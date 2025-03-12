@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
-[CodeGenModel("UnknownMessageDeltaContent")]
+[CodeGenType("UnknownMessageDeltaContent")]
 internal partial class UnknownMessageDeltaContent
 {
 }

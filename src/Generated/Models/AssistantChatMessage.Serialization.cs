@@ -23,15 +23,8 @@ namespace OpenAI.Chat
             base.JsonModelWriteCore(writer, options);
             if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
-                if (Refusal != null)
-                {
-                    writer.WritePropertyName("refusal"u8);
-                    writer.WriteStringValue(Refusal);
-                }
-                else
-                {
-                    writer.WriteNull("refusal"u8);
-                }
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStringValue(Refusal);
             }
             if (Optional.IsDefined(ParticipantName) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -50,27 +43,13 @@ namespace OpenAI.Chat
             }
             if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
-                if (FunctionCall != null)
-                {
-                    writer.WritePropertyName("function_call"u8);
-                    writer.WriteObjectValue<ChatFunctionCall>(FunctionCall, options);
-                }
-                else
-                {
-                    writer.WriteNull("functionCall"u8);
-                }
+                writer.WritePropertyName("function_call"u8);
+                writer.WriteObjectValue(FunctionCall, options);
             }
             if (Optional.IsDefined(OutputAudioReference) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
-                if (OutputAudioReference != null)
-                {
-                    writer.WritePropertyName("audio"u8);
-                    writer.WriteObjectValue<ChatOutputAudioReference>(OutputAudioReference, options);
-                }
-                else
-                {
-                    writer.WriteNull("audio"u8);
-                }
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(OutputAudioReference, options);
             }
         }
 
@@ -94,7 +73,7 @@ namespace OpenAI.Chat
                 return null;
             }
             ChatMessageContent content = default;
-            Chat.ChatMessageRole role = default;
+            ChatMessageRole role = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string refusal = default;
             string participantName = default;
@@ -162,14 +141,10 @@ namespace OpenAI.Chat
                     outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            // CUSTOM: Initialize Content collection property.
             return new AssistantChatMessage(
-                content ?? new ChatMessageContent(),
+                content,
                 role,
                 additionalBinaryDataProperties,
                 refusal,

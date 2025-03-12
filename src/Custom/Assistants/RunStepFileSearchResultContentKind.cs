@@ -4,7 +4,7 @@ namespace OpenAI.Assistants;
 
 // CUSTOM: Renamed.
 [Experimental("OPENAI001")]
-[CodeGenModel("RunStepDetailsToolCallsFileSearchResultObjectContentType")]
+[CodeGenType("RunStepDetailsToolCallsFileSearchResultObjectContentType")]
 public enum RunStepFileSearchResultContentKind
 {
     Text,

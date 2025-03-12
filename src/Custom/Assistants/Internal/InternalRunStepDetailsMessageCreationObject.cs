@@ -1,6 +1,6 @@
 namespace OpenAI.Assistants;
 
-[CodeGenModel("RunStepDetailsMessageCreationObject")]
+[CodeGenType("RunStepDetailsMessageCreationObject")]
 internal partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails
 {
     /// <inheritdoc cref="InternalRunStepDetailsMessageCreationObjectMessageCreation.MessageId"/>

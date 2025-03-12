@@ -12,6 +12,6 @@ namespace OpenAI.RealtimeConversation;
 /// audio input buffer.
 /// </summary>
 [Experimental("OPENAI002")]
-[CodeGenModel("RealtimeServerEventConversationItemInputAudioTranscriptionCompleted")]
+[CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionCompleted")]
 public partial class ConversationInputTranscriptionFinishedUpdate
 { }

@@ -13,7 +13,7 @@ namespace OpenAI.Batch
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal PipelineMessage CreateListBatchesRequest(string after, int? limit, RequestOptions options)
+        internal virtual PipelineMessage CreateListBatchesRequest(string after, int? limit, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

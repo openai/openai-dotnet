@@ -35,7 +35,7 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue<InternalRealtimeServerEventErrorError>(_error, options);
+                writer.WriteObjectValue(_error, options);
             }
         }
 
@@ -59,7 +59,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string eventId = default;
-            RealtimeConversation.ConversationUpdateKind kind = default;
+            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalRealtimeServerEventErrorError error = default;
             foreach (var prop in element.EnumerateObject())
@@ -79,10 +79,7 @@ namespace OpenAI.RealtimeConversation
                     error = InternalRealtimeServerEventErrorError.DeserializeInternalRealtimeServerEventErrorError(prop.Value, options);
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationErrorUpdate(eventId, kind, additionalBinaryDataProperties, error);
         }

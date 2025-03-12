@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI.Embeddings;
 
-[CodeGenModel("CreateEmbeddingRequest")]
+[CodeGenType("CreateEmbeddingRequest")]
 [CodeGenSuppress("EmbeddingGenerationOptions", typeof(BinaryData), typeof(InternalCreateEmbeddingRequestModel))]
 public partial class EmbeddingGenerationOptions
 {

@@ -67,10 +67,7 @@ namespace OpenAI.RealtimeConversation
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new UnknownRealtimeRequestItem(@type, id, additionalBinaryDataProperties);
         }

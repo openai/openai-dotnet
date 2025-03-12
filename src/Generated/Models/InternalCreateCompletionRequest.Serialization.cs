@@ -39,7 +39,7 @@ namespace OpenAI.LegacyCompletions
             }
             if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
             {
-                if (Prompt != null)
+                if (Optional.IsDefined(Prompt))
                 {
                     writer.WritePropertyName("prompt"u8);
 #if NET6_0_OR_GREATER
@@ -58,203 +58,98 @@ namespace OpenAI.LegacyCompletions
             }
             if (Optional.IsDefined(BestOf) && _additionalBinaryDataProperties?.ContainsKey("best_of") != true)
             {
-                if (BestOf != null)
-                {
-                    writer.WritePropertyName("best_of"u8);
-                    writer.WriteNumberValue(BestOf.Value);
-                }
-                else
-                {
-                    writer.WriteNull("bestOf"u8);
-                }
+                writer.WritePropertyName("best_of"u8);
+                writer.WriteNumberValue(BestOf.Value);
             }
             if (Optional.IsDefined(Echo) && _additionalBinaryDataProperties?.ContainsKey("echo") != true)
             {
-                if (Echo != null)
-                {
-                    writer.WritePropertyName("echo"u8);
-                    writer.WriteBooleanValue(Echo.Value);
-                }
-                else
-                {
-                    writer.WriteNull("echo"u8);
-                }
+                writer.WritePropertyName("echo"u8);
+                writer.WriteBooleanValue(Echo.Value);
             }
             if (Optional.IsDefined(FrequencyPenalty) && _additionalBinaryDataProperties?.ContainsKey("frequency_penalty") != true)
             {
-                if (FrequencyPenalty != null)
-                {
-                    writer.WritePropertyName("frequency_penalty"u8);
-                    writer.WriteNumberValue(FrequencyPenalty.Value);
-                }
-                else
-                {
-                    writer.WriteNull("frequencyPenalty"u8);
-                }
+                writer.WritePropertyName("frequency_penalty"u8);
+                writer.WriteNumberValue(FrequencyPenalty.Value);
             }
             if (Optional.IsCollectionDefined(LogitBias) && _additionalBinaryDataProperties?.ContainsKey("logit_bias") != true)
             {
-                if (LogitBias != null)
+                writer.WritePropertyName("logit_bias"u8);
+                writer.WriteStartObject();
+                foreach (var item in LogitBias)
                 {
-                    writer.WritePropertyName("logit_bias"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in LogitBias)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        writer.WriteNumberValue(item.Value);
-                    }
-                    writer.WriteEndObject();
+                    writer.WritePropertyName(item.Key);
+                    writer.WriteNumberValue(item.Value);
                 }
-                else
-                {
-                    writer.WriteNull("logitBias"u8);
-                }
+                writer.WriteEndObject();
             }
             if (Optional.IsDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
-                if (Logprobs != null)
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteNumberValue(Logprobs.Value);
-                }
-                else
-                {
-                    writer.WriteNull("logprobs"u8);
-                }
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteNumberValue(Logprobs.Value);
             }
             if (Optional.IsDefined(MaxTokens) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
             {
-                if (MaxTokens != null)
-                {
-                    writer.WritePropertyName("max_tokens"u8);
-                    writer.WriteNumberValue(MaxTokens.Value);
-                }
-                else
-                {
-                    writer.WriteNull("maxTokens"u8);
-                }
+                writer.WritePropertyName("max_tokens"u8);
+                writer.WriteNumberValue(MaxTokens.Value);
             }
             if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
-                if (N != null)
-                {
-                    writer.WritePropertyName("n"u8);
-                    writer.WriteNumberValue(N.Value);
-                }
-                else
-                {
-                    writer.WriteNull("n"u8);
-                }
+                writer.WritePropertyName("n"u8);
+                writer.WriteNumberValue(N.Value);
             }
             if (Optional.IsDefined(PresencePenalty) && _additionalBinaryDataProperties?.ContainsKey("presence_penalty") != true)
             {
-                if (PresencePenalty != null)
-                {
-                    writer.WritePropertyName("presence_penalty"u8);
-                    writer.WriteNumberValue(PresencePenalty.Value);
-                }
-                else
-                {
-                    writer.WriteNull("presencePenalty"u8);
-                }
+                writer.WritePropertyName("presence_penalty"u8);
+                writer.WriteNumberValue(PresencePenalty.Value);
             }
             if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
-                if (Seed != null)
-                {
-                    writer.WritePropertyName("seed"u8);
-                    writer.WriteNumberValue(Seed.Value);
-                }
-                else
-                {
-                    writer.WriteNull("seed"u8);
-                }
+                writer.WritePropertyName("seed"u8);
+                writer.WriteNumberValue(Seed.Value);
             }
             if (Optional.IsDefined(Stop) && _additionalBinaryDataProperties?.ContainsKey("stop") != true)
             {
-                if (Stop != null)
-                {
-                    writer.WritePropertyName("stop"u8);
+                writer.WritePropertyName("stop"u8);
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(Stop);
+                writer.WriteRawValue(Stop);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(Stop))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-                else
+                using (JsonDocument document = JsonDocument.Parse(Stop))
                 {
-                    writer.WriteNull("stop"u8);
+                    JsonSerializer.Serialize(writer, document.RootElement);
                 }
+#endif
             }
             if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
             {
-                if (Stream != null)
-                {
-                    writer.WritePropertyName("stream"u8);
-                    writer.WriteBooleanValue(Stream.Value);
-                }
-                else
-                {
-                    writer.WriteNull("stream"u8);
-                }
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
             }
             if (Optional.IsDefined(StreamOptions) && _additionalBinaryDataProperties?.ContainsKey("stream_options") != true)
             {
-                if (StreamOptions != null)
-                {
-                    writer.WritePropertyName("stream_options"u8);
-                    writer.WriteObjectValue(StreamOptions, options);
-                }
-                else
-                {
-                    writer.WriteNull("streamOptions"u8);
-                }
+                writer.WritePropertyName("stream_options"u8);
+                writer.WriteObjectValue(StreamOptions, options);
             }
             if (Optional.IsDefined(Suffix) && _additionalBinaryDataProperties?.ContainsKey("suffix") != true)
             {
-                if (Suffix != null)
-                {
-                    writer.WritePropertyName("suffix"u8);
-                    writer.WriteStringValue(Suffix);
-                }
-                else
-                {
-                    writer.WriteNull("suffix"u8);
-                }
+                writer.WritePropertyName("suffix"u8);
+                writer.WriteStringValue(Suffix);
             }
             if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                if (Temperature != null)
-                {
-                    writer.WritePropertyName("temperature"u8);
-                    writer.WriteNumberValue(Temperature.Value);
-                }
-                else
-                {
-                    writer.WriteNull("temperature"u8);
-                }
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature.Value);
             }
             if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                if (TopP != null)
-                {
-                    writer.WritePropertyName("top_p"u8);
-                    writer.WriteNumberValue(TopP.Value);
-                }
-                else
-                {
-                    writer.WriteNull("topP"u8);
-                }
+                writer.WritePropertyName("top_p"u8);
+                writer.WriteNumberValue(TopP.Value);
             }
             if (Optional.IsDefined(User) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(User);
             }
-            if (true && _additionalBinaryDataProperties != null)
+            if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
@@ -489,10 +384,7 @@ namespace OpenAI.LegacyCompletions
                     user = prop.Value.GetString();
                     continue;
                 }
-                if (true)
-                {
-                    additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-                }
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateCompletionRequest(
                 model,

@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
-[CodeGenModel("ChatCompletionRequestMessageContentPartAudioInputAudioFormat")]
+[CodeGenType("ChatCompletionRequestMessageContentPartAudioInputAudioFormat")]
 public readonly partial struct ChatInputAudioFormat
 {
 

@@ -20,7 +20,7 @@ namespace OpenAI.RealtimeConversation
             _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
         }
 
-        internal ConversationResponseOptions(string instructions, ConversationVoice? voice, ConversationAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, IDictionary<string, string> metadata, ResponseConversationSelection? conversationSelection, RealtimeConversation.ConversationMaxTokensChoice maxOutputTokens, IList<ConversationItem> overrideItems, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationResponseOptions(string instructions, ConversationVoice? voice, ConversationAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, IDictionary<string, string> metadata, ResponseConversationSelection? conversationSelection, ConversationMaxTokensChoice maxOutputTokens, IList<ConversationItem> overrideItems, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Instructions = instructions;
             Voice = voice;

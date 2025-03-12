@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI;
 
-[CodeGenModel("FunctionObject")]
+[CodeGenType("FunctionObject")]
 internal partial class InternalFunctionDefinition
 {
     /// <summary>

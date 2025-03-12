@@ -21,7 +21,7 @@ namespace OpenAI.VectorStores
         {
             FileId = fileId;
             Removed = removed;
-            this.Object = @object;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
