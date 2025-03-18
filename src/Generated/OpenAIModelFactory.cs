@@ -808,7 +808,7 @@ namespace OpenAI
             return new ChatMessageContent(additionalBinaryDataProperties: null);
         }
 
-        public static ChatMessageContentPart ChatMessageContentPart(ChatMessageContentPartKind kind = default, string text = default, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default, string refusal = default, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default)
+        public static ChatMessageContentPart ChatMessageContentPart(ChatMessageContentPartKind kind = default, string text = default, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default, string refusal = default, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default, InternalChatCompletionRequestMessageContentPartFileFile fileFile = default)
         {
 
             return new ChatMessageContentPart(
@@ -817,6 +817,7 @@ namespace OpenAI
                 imageUri,
                 refusal,
                 inputAudio,
+                fileFile,
                 serializedAdditionalRawData: null);
         }
 

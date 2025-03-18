@@ -1412,6 +1412,10 @@ namespace OpenAI.Chat {
         public ChatMessageContent(string content);
     }
     public class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>, IPersistableModel<ChatMessageContentPart> {
+        public BinaryData FileBytes { get; }
+        public string FileBytesMediaType { get; }
+        public string FileId { get; }
+        public string Filename { get; }
         public BinaryData ImageBytes { get; }
         public string ImageBytesMediaType { get; }
         public ChatImageDetailLevel? ImageDetailLevel { get; }
@@ -1421,6 +1425,8 @@ namespace OpenAI.Chat {
         public ChatMessageContentPartKind Kind { get; }
         public string Refusal { get; }
         public string Text { get; }
+        public static ChatMessageContentPart CreateFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
+        public static ChatMessageContentPart CreateFilePart(string fileId);
         public static ChatMessageContentPart CreateImagePart(BinaryData imageBytes, string imageBytesMediaType, ChatImageDetailLevel? imageDetailLevel = null);
         public static ChatMessageContentPart CreateImagePart(Uri imageUri, ChatImageDetailLevel? imageDetailLevel = null);
         public static ChatMessageContentPart CreateInputAudioPart(BinaryData inputAudioBytes, ChatInputAudioFormat inputAudioFormat);
@@ -1434,7 +1440,8 @@ namespace OpenAI.Chat {
         Text = 0,
         Refusal = 1,
         Image = 2,
-        InputAudio = 3
+        InputAudio = 3,
+        File = 4
     }
     public enum ChatMessageRole {
         System = 0,

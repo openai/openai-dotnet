@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
+using OpenAI.Files;
 using OpenAI.Tests.Telemetry;
 using OpenAI.Tests.Utility;
 using System;
@@ -1057,6 +1058,87 @@ public class ChatTests : SyncAsyncTestBase
             options);
 
         Assert.That(completion.Annotations, Has.Count.GreaterThan(0));
+    }
+
+    [Test]
+    public async Task FileIdContentWorks()
+    {
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFile testInputFile = await fileClient.UploadFileAsync(
+            Path.Combine("Assets", "files_travis_favorite_food.pdf"),
+            FileUploadPurpose.UserData);
+        Validate(testInputFile);
+
+        ChatMessageContentPart fileIdContentPart
+            = ChatMessageContentPart.CreateFilePart(testInputFile.Id);
+        Assert.That(fileIdContentPart.FileId, Is.EqualTo(testInputFile.Id));
+        Assert.That(fileIdContentPart.FileBytes, Is.Null);
+        Assert.That(fileIdContentPart.FileBytesMediaType, Is.Null);
+        Assert.That(fileIdContentPart.Filename, Is.Null);
+
+        ChatClient client = GetTestClient();
+        ChatCompletion completion = await client.CompleteChatAsync(
+            [
+                ChatMessage.CreateUserMessage(
+                    "Based on the following, what food should I order for whom?",
+                    fileIdContentPart)
+            ]);
+        Assert.That(completion?.Content, Is.Not.Null.And.Not.Empty);
+        Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
+    }
+
+    [Test]
+    public async Task FileBinaryContentWorks()
+    {
+        ChatMessageContentPart binaryFileContentPart
+            = ChatMessageContentPart.CreateFilePart(
+                fileBytes: BinaryData.FromStream(
+                    File.OpenRead(
+                        Path.Combine("Assets", "files_travis_favorite_food.pdf"))),
+                fileBytesMediaType: "application/pdf",
+                "test_travis_favorite_food.pdf");
+        Assert.That(binaryFileContentPart.FileBytes, Is.Not.Null);
+        Assert.That(binaryFileContentPart.FileBytesMediaType, Is.EqualTo("application/pdf"));
+        Assert.That(binaryFileContentPart.Filename, Is.EqualTo("test_travis_favorite_food.pdf"));
+        Assert.That(binaryFileContentPart.FileId, Is.Null);
+
+        ChatClient client = GetTestClient();
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            [
+                ChatMessage.CreateUserMessage(
+                    "Based on the following, what food should I order for whom?",
+                    binaryFileContentPart)
+            ]);
+        Assert.That(completion?.Content, Is.Not.Null.And.Not.Empty);
+        Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
+    }
+
+    private List<string> FileIdsToDelete = [];
+    private void Validate<T>(T item)
+    {
+        Assert.IsNotNull(item);
+        if (item is OpenAIFile file)
+        {
+            FileIdsToDelete.Add(file.Id);
+        }
+        else
+        {
+            Assert.Fail($"Unhandled item type for validation: {item.GetType().Name}");
+        }
+    }
+
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+
+        RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
+
+        foreach (string fileId in FileIdsToDelete)
+        {
+            _ = fileClient.DeleteFile(fileId, noThrowOptions);
+        }
     }
 
     private static ChatClient GetTestClient(string overrideModel = null) => GetTestClient<ChatClient>(TestScenario.Chat, overrideModel);

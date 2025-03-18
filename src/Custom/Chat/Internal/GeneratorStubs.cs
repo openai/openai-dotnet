@@ -92,7 +92,7 @@ internal readonly partial struct InternalCreateChatCompletionStreamResponseObjec
 [CodeGenType("CreateChatCompletionStreamResponseServiceTier")]
 internal readonly partial struct InternalCreateChatCompletionStreamResponseServiceTier { }
 
-[CodeGenType("CreateChatCompletionStreamResponseUsage1")]
+[CodeGenType("CreateChatCompletionStreamResponseUsage")]
 internal partial class InternalCreateChatCompletionStreamResponseUsage { }
 
 [CodeGenType("CreateChatCompletionRequestModality")]
@@ -122,9 +122,6 @@ internal readonly partial struct InternalChatCompletionResponseMessageAnnotation
 [CodeGenType("ChatCompletionRequestMessageContentPartFile")]
 internal partial class InternalChatCompletionRequestMessageContentPartFile { }
 
-[CodeGenType("ChatCompletionRequestMessageContentPartFileFile")]
-internal partial class InternalChatCompletionRequestMessageContentPartFileFile { }
-
 [CodeGenType("CreateChatCompletionRequestWebSearchOptionsUserLocation1")]
 internal partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 { }
 
@@ -133,5 +130,3 @@ internal partial class InternalChatCompletionResponseMessageAnnotationUrlCitatio
 
 [CodeGenType("CreateChatCompletionStreamResponseChoiceFinishReason1")]
 internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason1 { }
-
-[CodeGenType("CreateChatCompletionStreamResponseUsage")] internal partial class InternalCreateChatCompletionStreamResponseUsage { }

@@ -32,15 +32,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
             }
-            if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
-            {
-                writer.WritePropertyName("file_data"u8);
-                writer.WriteStringValue(FileData);
-            }
             if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
+            }
+            if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
+            {
+                writer.WritePropertyName("file_data"u8);
+                writer.WriteStringValue(FileData);
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -83,8 +83,8 @@ namespace OpenAI.Chat
                 return null;
             }
             string filename = default;
-            string fileData = default;
             string fileId = default;
+            string fileData = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -93,19 +93,19 @@ namespace OpenAI.Chat
                     filename = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("file_data"u8))
-                {
-                    fileData = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("file_id"u8))
                 {
                     fileId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("file_data"u8))
+                {
+                    fileData = prop.Value.GetString();
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileData, fileId, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileId, fileData, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
