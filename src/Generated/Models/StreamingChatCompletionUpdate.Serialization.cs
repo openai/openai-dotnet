@@ -176,7 +176,6 @@ namespace OpenAI.Chat
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        usage = null;
                         continue;
                     }
                     usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);

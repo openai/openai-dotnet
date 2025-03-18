@@ -56,7 +56,7 @@ namespace OpenAI.Responses
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             MessageStatus? status = default;
-            MessageRole role = default;
+            InternalResponsesMessageRole internalRole = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -80,12 +80,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    role = new MessageRole(prop.Value.GetString());
+                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUnknownResponsesMessage(@type, id, additionalBinaryDataProperties, status, role);
+            return new InternalUnknownResponsesMessage(@type, id, additionalBinaryDataProperties, status, internalRole);
         }
 
         BinaryData IPersistableModel<MessageResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -2734,7 +2734,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
-        public ComputerCallResponseItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
+        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public ComputerCallAction Action { get; set; }
         public string CallId { get; set; }
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
@@ -2779,7 +2779,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
-        public FileSearchCallResponseItem(string id, IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public FileSearchCallResponseItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
         public IList<string> Queries { get; }
         public IList<FileSearchCallResult> Results { get; set; }
         public FileSearchCallStatus Status { get; }
@@ -2836,7 +2836,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
-        public FunctionCallResponseItem(string id, string callId, string functionName, BinaryData functionArguments);
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
@@ -2850,28 +2850,18 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
-        public MessageResponseItem(MessageRole role);
         public IList<ResponseContentPart> Content { get; }
         public MessageRole Role { get; }
         public MessageStatus? Status { get; }
         public new static explicit operator MessageResponseItem(ClientResult result);
         public static implicit operator BinaryContent(MessageResponseItem messageResponseItem);
     }
-    public readonly partial struct MessageRole : IEquatable<MessageRole> {
-        public MessageRole(string value);
-        public static MessageRole Assistant { get; }
-        public static MessageRole Developer { get; }
-        public static MessageRole System { get; }
-        public static MessageRole User { get; }
-        public readonly bool Equals(MessageRole other);
-        [EditorBrowsable(global::EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(global::EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(MessageRole left, MessageRole right);
-        public static implicit operator MessageRole(string value);
-        public static bool operator !=(MessageRole left, MessageRole right);
-        public override readonly string ToString();
+    public enum MessageRole {
+        Unknown = 0,
+        Assistant = 1,
+        Developer = 2,
+        System = 3,
+        User = 4
     }
     public enum MessageStatus {
         InProgress = 0,
@@ -2879,7 +2869,6 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class OpenAIResponse : IJsonModel<OpenAIResponse>, IPersistableModel<OpenAIResponse> {
-        public bool AllowParallelToolCalls { get; }
         public DateTimeOffset CreatedAt { get; }
         public string EndUserId { get; }
         public ResponseError Error { get; }
@@ -2890,16 +2879,18 @@ namespace OpenAI.Responses {
         public IDictionary<string, string> Metadata { get; }
         public string Model { get; }
         public IList<ResponseItem> OutputItems { get; }
+        public bool ParallelToolCallsEnabled { get; }
         public string PreviousResponseId { get; }
         public ResponseReasoningOptions ReasoningOptions { get; }
         public ResponseStatus? Status { get; }
         public float Temperature { get; }
         public ResponseTextOptions TextOptions { get; }
-        public BinaryData ToolChoice { get; }
+        public ResponseToolChoice ToolChoice { get; }
         public IList<ResponseTool> Tools { get; }
         public float TopP { get; }
         public ResponseTruncationMode? TruncationMode { get; }
         public ResponseTokenUsage Usage { get; }
+        public string GetOutputText();
         public static explicit operator OpenAIResponse(ClientResult result);
         public static implicit operator BinaryContent(OpenAIResponse openAIResponse);
     }
@@ -2942,7 +2933,7 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
     }
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
-        public ReasoningResponseItem(string id, IEnumerable<string> summaryTextParts);
+        public ReasoningResponseItem(IEnumerable<string> summaryTextParts);
         public ReasoningStatus? Status { get; }
         public IReadOnlyList<string> SummaryTextParts { get; }
         public new static explicit operator ReasoningResponseItem(ClientResult result);
@@ -2979,25 +2970,26 @@ namespace OpenAI.Responses {
         public static implicit operator BinaryContent(ResponseContentPart responseContentPart);
     }
     public enum ResponseContentPartKind {
-        InputText = 0,
-        InputImage = 1,
-        InputFile = 2,
-        OutputText = 3,
-        Refusal = 4
+        Unknown = 0,
+        InputText = 1,
+        InputImage = 2,
+        InputFile = 3,
+        OutputText = 4,
+        Refusal = 5
     }
     public class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>, IPersistableModel<ResponseCreationOptions> {
-        public bool? AllowParallelToolCalls { get; set; }
         public string EndUserId { get; set; }
         public string Instructions { get; set; }
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
+        public bool? ParallelToolCallsEnabled { get; set; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
-        public BinaryData ToolChoice { get; set; }
-        public IList<ResponseTool> Tools { get; set; }
+        public ResponseToolChoice ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; }
         public float? TopP { get; set; }
         public ResponseTruncationMode? TruncationMode { get; set; }
         public static explicit operator ResponseCreationOptions(ClientResult result);
@@ -3051,21 +3043,24 @@ namespace OpenAI.Responses {
     }
     public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
         public string Id { get; }
-        public static MessageResponseItem CreateAssistantMessageItem(string id, string content);
-        public static ResponseItem CreateComputerCallItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
+        public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
+        public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
+        public static ResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
         public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId);
         public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri);
-        public static MessageResponseItem CreateDeveloperMessageItem(string content);
-        public static FileSearchCallResponseItem CreateFileSearchCallResponseItem(string id, IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
-        public static FunctionCallResponseItem CreateFunctionCall(string id, string callId, string functionName, BinaryData functionArguments);
+        public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
+        public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
+        public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
-        public static ReasoningResponseItem CreateReasoningItem(string id, IEnumerable<string> summaryTextParts);
+        public static ReasoningResponseItem CreateReasoningItem(IEnumerable<string> summaryTextParts);
         public static ReferenceResponseItem CreateReferenceItem(string id);
-        public static MessageResponseItem CreateSystemMessageItem(string content);
+        public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts);
+        public static MessageResponseItem CreateSystemMessageItem(string inputTextContent);
         public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts);
-        public static MessageResponseItem CreateUserMessageItem(string content);
-        public static WebSearchCallResponseItem CreateWebSearchCallItem(string id);
+        public static MessageResponseItem CreateUserMessageItem(string inputTextContent);
+        public static WebSearchCallResponseItem CreateWebSearchCallItem();
         public static explicit operator ResponseItem(ClientResult result);
         public static implicit operator BinaryContent(ResponseItem responseItem);
     }
@@ -3156,14 +3151,21 @@ namespace OpenAI.Responses {
         Failed = 3
     }
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
+        public ResponseTextFormatKind Kind { get; set; }
         public static ResponseTextFormat CreateJsonObjectFormat();
         public static ResponseTextFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ResponseTextFormat CreateTextFormat();
         public static explicit operator ResponseTextFormat(ClientResult result);
         public static implicit operator BinaryContent(ResponseTextFormat responseTextFormat);
     }
+    public enum ResponseTextFormatKind {
+        Unknown = 0,
+        Text = 1,
+        JsonObject = 2,
+        JsonSchema = 3
+    }
     public class ResponseTextOptions : IJsonModel<ResponseTextOptions>, IPersistableModel<ResponseTextOptions> {
-        public ResponseTextFormat ResponseFormat { get; set; }
+        public ResponseTextFormat TextFormat { get; set; }
         public static explicit operator ResponseTextOptions(ClientResult result);
         public static implicit operator BinaryContent(ResponseTextOptions responseTextOptions);
     }
@@ -3183,6 +3185,27 @@ namespace OpenAI.Responses {
         public static explicit operator ResponseTool(ClientResult result);
         public static implicit operator BinaryContent(ResponseTool responseTool);
     }
+    public class ResponseToolChoice : IJsonModel<ResponseToolChoice>, IPersistableModel<ResponseToolChoice> {
+        public string FunctionName { get; }
+        public ResponseToolChoiceKind Kind { get; }
+        public static ResponseToolChoice CreateAutoChoice();
+        public static ResponseToolChoice CreateComputerChoice();
+        public static ResponseToolChoice CreateFileSearchChoice();
+        public static ResponseToolChoice CreateFunctionChoice(string functionName);
+        public static ResponseToolChoice CreateNoneChoice();
+        public static ResponseToolChoice CreateRequiredChoice();
+        public static ResponseToolChoice CreateWebSearchChoice();
+    }
+    public enum ResponseToolChoiceKind {
+        Unknown = 0,
+        Auto = 1,
+        None = 2,
+        Required = 3,
+        Function = 4,
+        FileSearch = 5,
+        WebSearch = 6,
+        Computer = 7
+    }
     public readonly partial struct ResponseTruncationMode : IEquatable<ResponseTruncationMode> {
         public ResponseTruncationMode(string value);
         public static ResponseTruncationMode Auto { get; }
@@ -3197,13 +3220,31 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
     }
-    public class StreamingResponseContentPartDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartDeltaUpdate>, IPersistableModel<StreamingResponseContentPartDeltaUpdate> {
-        public int ContentPartIndex { get; }
-        public string FunctionArguments { get; }
+    public class StreamingResponseCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCompletedUpdate>, IPersistableModel<StreamingResponseCompletedUpdate> {
+        public OpenAIResponse Response { get; }
+        public new static explicit operator StreamingResponseCompletedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseCompletedUpdate streamingResponseCompletedUpdate);
+    }
+    public class StreamingResponseContentPartAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartAddedUpdate>, IPersistableModel<StreamingResponseContentPartAddedUpdate> {
+        public int ContentIndex { get; }
         public string ItemId { get; }
-        public int ItemIndex { get; }
-        public string Refusal { get; }
-        public string Text { get; }
+        public int OutputIndex { get; }
+        public ResponseContentPart Part { get; }
+        public new static explicit operator StreamingResponseContentPartAddedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseContentPartAddedUpdate streamingResponseContentPartAddedUpdate);
+    }
+    public class StreamingResponseContentPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartDoneUpdate>, IPersistableModel<StreamingResponseContentPartDoneUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public ResponseContentPart Part { get; }
+        public new static explicit operator StreamingResponseContentPartDoneUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseContentPartDoneUpdate streamingResponseContentPartDoneUpdate);
+    }
+    public class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>, IPersistableModel<StreamingResponseCreatedUpdate> {
+        public OpenAIResponse Response { get; }
+        public new static explicit operator StreamingResponseCreatedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseCreatedUpdate streamingResponseCreatedUpdate);
     }
     public class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>, IPersistableModel<StreamingResponseErrorUpdate> {
         public string Code { get; }
@@ -3212,71 +3253,129 @@ namespace OpenAI.Responses {
         public new static explicit operator StreamingResponseErrorUpdate(ClientResult result);
         public static implicit operator BinaryContent(StreamingResponseErrorUpdate streamingResponseErrorUpdate);
     }
-    public class StreamingResponseFileSearchCallUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallUpdate>, IPersistableModel<StreamingResponseFileSearchCallUpdate> {
-        public string OutputItemId { get; }
-        public int OutputItemIndex { get; }
-    }
-    public class StreamingResponseItemUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseItemUpdate>, IPersistableModel<StreamingResponseItemUpdate> {
-        public ResponseItem Item { get; }
-        public int ItemIndex { get; }
-    }
-    public class StreamingResponseStatusUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseStatusUpdate>, IPersistableModel<StreamingResponseStatusUpdate> {
+    public class StreamingResponseFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFailedUpdate>, IPersistableModel<StreamingResponseFailedUpdate> {
         public OpenAIResponse Response { get; }
+        public new static explicit operator StreamingResponseFailedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFailedUpdate streamingResponseFailedUpdate);
     }
-    public class StreamingResponseTextAnnotationUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationUpdate>, IPersistableModel<StreamingResponseTextAnnotationUpdate> {
+    public class StreamingResponseFileSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseFileSearchCallCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseFileSearchCallCompletedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFileSearchCallCompletedUpdate streamingResponseFileSearchCallCompletedUpdate);
+    }
+    public class StreamingResponseFileSearchCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallInProgressUpdate>, IPersistableModel<StreamingResponseFileSearchCallInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseFileSearchCallInProgressUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFileSearchCallInProgressUpdate streamingResponseFileSearchCallInProgressUpdate);
+    }
+    public class StreamingResponseFileSearchCallSearchingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallSearchingUpdate>, IPersistableModel<StreamingResponseFileSearchCallSearchingUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseFileSearchCallSearchingUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFileSearchCallSearchingUpdate streamingResponseFileSearchCallSearchingUpdate);
+    }
+    public class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate> {
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseFunctionCallArgumentsDeltaUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFunctionCallArgumentsDeltaUpdate streamingResponseFunctionCallArgumentsDeltaUpdate);
+    }
+    public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
+        public string Arguments { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseFunctionCallArgumentsDoneUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseFunctionCallArgumentsDoneUpdate streamingResponseFunctionCallArgumentsDoneUpdate);
+    }
+    public class StreamingResponseIncompleteUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseIncompleteUpdate>, IPersistableModel<StreamingResponseIncompleteUpdate> {
+        public OpenAIResponse Response { get; }
+        public new static explicit operator StreamingResponseIncompleteUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseIncompleteUpdate streamingResponseIncompleteUpdate);
+    }
+    public class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>, IPersistableModel<StreamingResponseInProgressUpdate> {
+        public OpenAIResponse Response { get; }
+        public new static explicit operator StreamingResponseInProgressUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseInProgressUpdate streamingResponseInProgressUpdate);
+    }
+    public class StreamingResponseOutputItemAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputItemAddedUpdate>, IPersistableModel<StreamingResponseOutputItemAddedUpdate> {
+        public ResponseItem Item { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseOutputItemAddedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseOutputItemAddedUpdate streamingResponseOutputItemAddedUpdate);
+    }
+    public class StreamingResponseOutputItemDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputItemDoneUpdate>, IPersistableModel<StreamingResponseOutputItemDoneUpdate> {
+        public ResponseItem Item { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseOutputItemDoneUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseOutputItemDoneUpdate streamingResponseOutputItemDoneUpdate);
+    }
+    public class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>, IPersistableModel<StreamingResponseOutputTextDeltaUpdate> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseOutputTextDeltaUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseOutputTextDeltaUpdate streamingResponseOutputTextDeltaUpdate);
+    }
+    public class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>, IPersistableModel<StreamingResponseOutputTextDoneUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string Text { get; }
+        public new static explicit operator StreamingResponseOutputTextDoneUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseOutputTextDoneUpdate streamingResponseOutputTextDoneUpdate);
+    }
+    public class StreamingResponseRefusalDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDeltaUpdate>, IPersistableModel<StreamingResponseRefusalDeltaUpdate> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseRefusalDeltaUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseRefusalDeltaUpdate streamingResponseRefusalDeltaUpdate);
+    }
+    public class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDoneUpdate>, IPersistableModel<StreamingResponseRefusalDoneUpdate> {
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string Refusal { get; }
+        public new static explicit operator StreamingResponseRefusalDoneUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseRefusalDoneUpdate streamingResponseRefusalDoneUpdate);
+    }
+    public class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseTextAnnotationAddedUpdate> {
         public ResponseMessageAnnotation Annotation { get; }
         public int ContentIndex { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
-        public new static explicit operator StreamingResponseTextAnnotationUpdate(ClientResult result);
-        public static implicit operator BinaryContent(StreamingResponseTextAnnotationUpdate streamingResponseTextAnnotationUpdate);
+        public new static explicit operator StreamingResponseTextAnnotationAddedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseTextAnnotationAddedUpdate streamingResponseTextAnnotationAddedUpdate);
     }
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
-        public StreamingResponseUpdateKind Kind { get; }
         public static explicit operator StreamingResponseUpdate(ClientResult result);
         public static implicit operator BinaryContent(StreamingResponseUpdate streamingResponseUpdate);
     }
-    public readonly partial struct StreamingResponseUpdateKind : IEquatable<StreamingResponseUpdateKind> {
-        public StreamingResponseUpdateKind(string value);
-        public static StreamingResponseUpdateKind Error { get; }
-        public static StreamingResponseUpdateKind ResponseCompleted { get; }
-        public static StreamingResponseUpdateKind ResponseContentPartAdded { get; }
-        public static StreamingResponseUpdateKind ResponseContentPartDone { get; }
-        public static StreamingResponseUpdateKind ResponseCreated { get; }
-        public static StreamingResponseUpdateKind ResponseFailed { get; }
-        public static StreamingResponseUpdateKind ResponseFileSearchCallCompleted { get; }
-        public static StreamingResponseUpdateKind ResponseFileSearchCallInProgress { get; }
-        public static StreamingResponseUpdateKind ResponseFileSearchCallSearching { get; }
-        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDelta { get; }
-        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDone { get; }
-        public static StreamingResponseUpdateKind ResponseIncomplete { get; }
-        public static StreamingResponseUpdateKind ResponseInProgress { get; }
-        public static StreamingResponseUpdateKind ResponseOutputItemAdded { get; }
-        public static StreamingResponseUpdateKind ResponseOutputItemDone { get; }
-        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; }
-        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; }
-        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; }
-        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
-        public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
-        public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
-        public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
-        public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }
-        public readonly bool Equals(StreamingResponseUpdateKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
-        public static implicit operator StreamingResponseUpdateKind(string value);
-        public static bool operator !=(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
-        public override readonly string ToString();
+    public class StreamingResponseWebSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseWebSearchCallCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseWebSearchCallCompletedUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseWebSearchCallCompletedUpdate streamingResponseWebSearchCallCompletedUpdate);
     }
-    public class StreamingResponseWebSearchCallUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallUpdate>, IPersistableModel<StreamingResponseWebSearchCallUpdate> {
-        public string OutputItemId { get; }
-        public int OutputItemIndex { get; }
+    public class StreamingResponseWebSearchCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallInProgressUpdate>, IPersistableModel<StreamingResponseWebSearchCallInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseWebSearchCallInProgressUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseWebSearchCallInProgressUpdate streamingResponseWebSearchCallInProgressUpdate);
+    }
+    public class StreamingResponseWebSearchCallSearchingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallSearchingUpdate>, IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public new static explicit operator StreamingResponseWebSearchCallSearchingUpdate(ClientResult result);
+        public static implicit operator BinaryContent(StreamingResponseWebSearchCallSearchingUpdate streamingResponseWebSearchCallSearchingUpdate);
     }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
-        public WebSearchCallResponseItem(string id);
+        public WebSearchCallResponseItem();
         public WebSearchCallStatus Status { get; }
         public new static explicit operator WebSearchCallResponseItem(ClientResult result);
         public static implicit operator BinaryContent(WebSearchCallResponseItem webSearchCallResponseItem);

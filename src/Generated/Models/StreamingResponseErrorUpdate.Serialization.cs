@@ -82,7 +82,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            StreamingResponseUpdateKind kind = default;
+            InternalResponsesResponseStreamEventType @type = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string message = default;
             string code = default;
@@ -91,7 +91,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
+                    @type = new InternalResponsesResponseStreamEventType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("message"u8))
@@ -121,7 +121,7 @@ namespace OpenAI.Responses
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseErrorUpdate(kind, additionalBinaryDataProperties, message, code, @param);
+            return new StreamingResponseErrorUpdate(@type, additionalBinaryDataProperties, message, code, @param);
         }
 
         BinaryData IPersistableModel<StreamingResponseErrorUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

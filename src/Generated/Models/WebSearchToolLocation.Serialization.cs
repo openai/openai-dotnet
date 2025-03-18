@@ -79,7 +79,7 @@ namespace OpenAI.Responses
                         return InternalResponsesWebSearchApproximateLocation.DeserializeInternalResponsesWebSearchApproximateLocation(element, options);
                 }
             }
-            return UnknownResponsesWebSearchLocation.DeserializeUnknownResponsesWebSearchLocation(element, options);
+            return InternalUnknownResponsesWebSearchLocation.DeserializeInternalUnknownResponsesWebSearchLocation(element, options);
         }
 
         BinaryData IPersistableModel<WebSearchToolLocation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

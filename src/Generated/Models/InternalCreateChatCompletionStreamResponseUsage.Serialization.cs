@@ -46,6 +46,16 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokens);
             }
+            if (Optional.IsDefined(CompletionTokensDetails) && _additionalBinaryDataProperties?.ContainsKey("completion_tokens_details") != true)
+            {
+                writer.WritePropertyName("completion_tokens_details"u8);
+                writer.WriteObjectValue(CompletionTokensDetails, options);
+            }
+            if (Optional.IsDefined(PromptTokensDetails) && _additionalBinaryDataProperties?.ContainsKey("prompt_tokens_details") != true)
+            {
+                writer.WritePropertyName("prompt_tokens_details"u8);
+                writer.WriteObjectValue(PromptTokensDetails, options);
+            }
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -89,6 +99,8 @@ namespace OpenAI.Chat
             int completionTokens = default;
             int promptTokens = default;
             int totalTokens = default;
+            ChatOutputTokenUsageDetails completionTokensDetails = default;
+            ChatInputTokenUsageDetails promptTokensDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -107,9 +119,33 @@ namespace OpenAI.Chat
                     totalTokens = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("completion_tokens_details"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    completionTokensDetails = ChatOutputTokenUsageDetails.DeserializeChatOutputTokenUsageDetails(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("prompt_tokens_details"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    promptTokensDetails = ChatInputTokenUsageDetails.DeserializeChatInputTokenUsageDetails(prop.Value, options);
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateChatCompletionStreamResponseUsage(completionTokens, promptTokens, totalTokens, additionalBinaryDataProperties);
+            return new InternalCreateChatCompletionStreamResponseUsage(
+                completionTokens,
+                promptTokens,
+                totalTokens,
+                completionTokensDetails,
+                promptTokensDetails,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionStreamResponseUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

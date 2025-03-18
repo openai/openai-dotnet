@@ -89,10 +89,10 @@ namespace OpenAI
             return new ResponseReasoningOptions(reasoningEffortLevel, reasoningSummaryVerbosity, additionalBinaryDataProperties: null);
         }
 
-        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat responseFormat = default)
+        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
 
-            return new ResponseTextOptions(responseFormat, additionalBinaryDataProperties: null);
+            return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
         }
 
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
@@ -104,19 +104,13 @@ namespace OpenAI
         public static WebSearchToolLocation WebSearchToolLocation(string @type = default)
         {
 
-            return new UnknownResponsesWebSearchLocation(@type, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseContentPart ResponseContentPart(string kind = default)
-        {
-
-            return new UnknownResponsesContent(kind.ToResponseContentPartKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownResponsesWebSearchLocation(@type, additionalBinaryDataProperties: null);
         }
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
 
-            return new UnknownResponsesOutputTextAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownResponsesOutputTextAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
@@ -144,18 +138,6 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static StreamingResponseUpdate StreamingResponseUpdate(string kind = default)
-        {
-
-            return new UnknownResponsesResponseStreamEvent(new StreamingResponseUpdateKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingResponseErrorUpdate StreamingResponseErrorUpdate(string message = default, string code = default, string @param = default)
-        {
-
-            return new StreamingResponseErrorUpdate(StreamingResponseUpdateKind.Error, additionalBinaryDataProperties: null, message, code, @param);
-        }
-
         public static ResponseError ResponseError(string code = default, string message = default)
         {
 
@@ -178,18 +160,6 @@ namespace OpenAI
         {
 
             return new ResponseOutputTokenUsageDetails(reasoningTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingResponseTextAnnotationUpdate StreamingResponseTextAnnotationUpdate(string itemId = default, int outputIndex = default, int contentIndex = default, ResponseMessageAnnotation annotation = default)
-        {
-
-            return new StreamingResponseTextAnnotationUpdate(
-                StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded,
-                additionalBinaryDataProperties: null,
-                itemId,
-                outputIndex,
-                contentIndex,
-                annotation);
         }
 
         public static ThreadCreationOptions ThreadCreationOptions(IDictionary<string, string> metadata = default, ToolResources toolResources = default, IEnumerable<MessageCreationOptions> internalMessages = default)

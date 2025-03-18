@@ -9,23 +9,23 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesComputerTool : ResponseTool
     {
-        public InternalResponsesComputerTool(float displayWidth, float displayHeight, ComputerToolEnvironment environment) : base(InternalResponsesToolType.Computer)
+        public InternalResponsesComputerTool(int displayWidth, int displayHeight, ComputerToolEnvironment environment) : base(InternalResponsesToolType.Computer)
         {
             DisplayWidth = displayWidth;
             DisplayHeight = displayHeight;
             Environment = environment;
         }
 
-        internal InternalResponsesComputerTool(InternalResponsesToolType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, float displayWidth, float displayHeight, ComputerToolEnvironment environment) : base(@type, additionalBinaryDataProperties)
+        internal InternalResponsesComputerTool(InternalResponsesToolType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int displayWidth, int displayHeight, ComputerToolEnvironment environment) : base(@type, additionalBinaryDataProperties)
         {
             DisplayWidth = displayWidth;
             DisplayHeight = displayHeight;
             Environment = environment;
         }
 
-        public float DisplayWidth { get; set; }
+        public int DisplayWidth { get; set; }
 
-        public float DisplayHeight { get; set; }
+        public int DisplayHeight { get; set; }
 
         public ComputerToolEnvironment Environment { get; set; }
     }

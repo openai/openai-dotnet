@@ -50,14 +50,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(FunctionArguments);
-#else
-                using (JsonDocument document = JsonDocument.Parse(FunctionArguments))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                SerializeFunctionArgumentsValue(writer, options);
             }
         }
 
@@ -120,7 +113,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    functionArguments = BinaryData.FromString(prop.Value.GetRawText());
+                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));

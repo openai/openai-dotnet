@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseError error, string instructions, string model, string previousResponseId, float temperature, BinaryData toolChoice, IEnumerable<ResponseTool> tools, float topP, IDictionary<string, string> metadata, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool allowParallelToolCalls)
+        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseError error, string instructions, string model, string previousResponseId, float temperature, IEnumerable<ResponseTool> tools, float topP, IDictionary<string, string> metadata, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -21,16 +21,16 @@ namespace OpenAI.Responses
             Model = model;
             PreviousResponseId = previousResponseId;
             Temperature = temperature;
-            ToolChoice = toolChoice;
             Tools = tools.ToList();
             TopP = topP;
             Metadata = metadata;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems.ToList();
-            AllowParallelToolCalls = allowParallelToolCalls;
+            ParallelToolCallsEnabled = parallelToolCallsEnabled;
+            ToolChoice = toolChoice;
         }
 
-        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseStatus? status, ResponseError error, string instructions, string model, string previousResponseId, float temperature, BinaryData toolChoice, IList<ResponseTool> tools, float topP, ResponseTokenUsage usage, IDictionary<string, string> metadata, InternalCreateResponsesResponseObject @object, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool allowParallelToolCalls, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseStatus? status, ResponseError error, string instructions, string model, string previousResponseId, float temperature, IList<ResponseTool> tools, float topP, ResponseTokenUsage usage, IDictionary<string, string> metadata, InternalCreateResponsesResponseObject @object, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -40,7 +40,6 @@ namespace OpenAI.Responses
             Model = model;
             PreviousResponseId = previousResponseId;
             Temperature = temperature;
-            ToolChoice = toolChoice;
             Tools = tools;
             TopP = topP;
             Usage = usage;
@@ -53,7 +52,8 @@ namespace OpenAI.Responses
             TruncationMode = truncationMode;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems;
-            AllowParallelToolCalls = allowParallelToolCalls;
+            ParallelToolCallsEnabled = parallelToolCallsEnabled;
+            ToolChoice = toolChoice;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -72,8 +72,6 @@ namespace OpenAI.Responses
         public string PreviousResponseId { get; }
 
         public float Temperature { get; }
-
-        public BinaryData ToolChoice { get; }
 
         public IList<ResponseTool> Tools { get; }
 

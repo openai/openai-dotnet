@@ -71,7 +71,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            ResponseContentPartKind kind = default;
+            InternalResponsesContentType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string fileId = default;
             string filename = default;
@@ -80,7 +80,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToResponseContentPartKind();
+                    internalType = new InternalResponsesContentType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -104,7 +104,7 @@ namespace OpenAI.Responses
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponsesInputFileContentPart(kind, additionalBinaryDataProperties, fileId, filename, fileBytes);
+            return new InternalResponsesInputFileContentPart(internalType, additionalBinaryDataProperties, fileId, filename, fileBytes);
         }
 
         BinaryData IPersistableModel<InternalResponsesInputFileContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -10,6 +10,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -125,18 +126,22 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task ChatWithCua()
+    public async Task ComputerToolWithScreenshotRoundTrip()
     {
         OpenAIResponseClient client = GetTestClient("computer-use-preview-2025-03-11");
-
         ResponseTool computerTool = ResponseTool.CreateComputerTool(1024, 768, ComputerToolEnvironment.Windows);
+        ResponseCreationOptions responseOptions = new()
+        {
+            Tools = { computerTool },
+            TruncationMode = ResponseTruncationMode.Auto,
+        };
         OpenAIResponse response = await client.CreateResponseAsync(
             inputItems:
             [
                 ResponseItem.CreateDeveloperMessageItem("Call tools when the user asks to perform computer-related tasks like clicking interface elements."),
                 ResponseItem.CreateUserMessageItem("Click on the Save button.")
             ],
-            new ResponseCreationOptions() { Tools = { computerTool } });
+            responseOptions);
 
         while (true)
         {
@@ -154,13 +159,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
                         screenshotBytes,
                         "image/png");
 
-                    response = await client.CreateResponseAsync(
-                        [screenshotReply],
-                        new ResponseCreationOptions()
-                        {
-                            PreviousResponseId = response.Id,
-                            Tools = { computerTool },
-                        });
+                    responseOptions.PreviousResponseId = response.Id;
+                    response = await client.CreateResponseAsync([screenshotReply], responseOptions);
                 }
                 else if (computerCall.Action.Kind == ComputerCallActionKind.Click)
                 {
@@ -177,13 +177,10 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     || assistantText.Contains("could you confirm")
                     || assistantText.Contains("please confirm")))
             {
+                responseOptions.PreviousResponseId = response.Id;
                 response = await client.CreateResponseAsync(
                     "Yes, proceed.",
-                    new ResponseCreationOptions()
-                    {
-                        PreviousResponseId = response.Id,
-                        Tools = { computerTool }
-                    });
+                    responseOptions);
             }
             else
             {
@@ -243,36 +240,39 @@ public partial class ResponsesTests : SyncAsyncTestBase
         await foreach (StreamingResponseUpdate update
             in client.CreateResponseStreamingAsync(message, responseOptions))
         {
-            if (update is StreamingResponseWebSearchCallUpdate webCallUpdate)
+            if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
             {
-                Assert.That(webCallUpdate.OutputItemId, Is.Not.Null.And.Not.Empty);
-                searchItemId ??= webCallUpdate.OutputItemId;
-                Assert.That(searchItemId, Is.EqualTo(webCallUpdate.OutputItemId));
-                Assert.That(webCallUpdate.OutputItemIndex, Is.EqualTo(0));
-                if (webCallUpdate.Kind == StreamingResponseUpdateKind.ResponseWebSearchCallInProgress)
-                {
-                    inProgressCount++;
-                }
-                else if (webCallUpdate.Kind == StreamingResponseUpdateKind.ResponseWebSearchCallSearching)
-                {
-                    searchingCount++;
-                }
-                else if (webCallUpdate.Kind == StreamingResponseUpdateKind.ResponseWebSearchCallCompleted)
-                {
-                    completedCount++;
-                }
+                Assert.That(searchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallInProgressUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallInProgressUpdate.ItemId));
+                Assert.That(searchCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
+                inProgressCount++;
             }
-            else if (update is StreamingResponseItemUpdate itemUpdate
-                && itemUpdate.Kind == StreamingResponseUpdateKind.ResponseOutputItemDone)
+            else if (update is StreamingResponseWebSearchCallSearchingUpdate searchCallSearchingUpdate)
             {
-                if (itemUpdate.Item is WebSearchCallResponseItem finishedWebSearchCall)
+                Assert.That(searchCallSearchingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallSearchingUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallSearchingUpdate.ItemId));
+                Assert.That(searchCallSearchingUpdate.OutputIndex, Is.EqualTo(0));
+                searchingCount++;
+            }
+            else if (update is StreamingResponseWebSearchCallCompletedUpdate searchCallCompletedUpdate)
+            {
+                Assert.That(searchCallCompletedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallCompletedUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallCompletedUpdate.ItemId));
+                Assert.That(searchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
+                completedCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is WebSearchCallResponseItem webSearchCallItem)
                 {
-                    Assert.That(finishedWebSearchCall.Status, Is.EqualTo(WebSearchCallStatus.Completed));
-                    Assert.That(finishedWebSearchCall.Id, Is.EqualTo(searchItemId));
+                    Assert.That(webSearchCallItem.Status, Is.EqualTo(WebSearchCallStatus.Completed));
+                    Assert.That(webSearchCallItem.Id, Is.EqualTo(searchItemId));
                     gotFinishedSearchItem = true;
                 }
             }
-            // Console.WriteLine(ModelReaderWriter.Write(update).ToString());
         }
         Assert.Multiple(() =>
         {
@@ -290,26 +290,24 @@ public partial class ResponsesTests : SyncAsyncTestBase
         OpenAIResponseClient client = GetTestClient("gpt-4o-mini"); // "computer-use-alpha");
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
+        List<string> deltaTextSegments = [];
+        string finalResponseText = null;
         await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
-            if (update is StreamingResponseContentPartDeltaUpdate deltaUpdate)
+            if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
             {
-                Console.Write(deltaUpdate.Text);
+                deltaTextSegments.Add(outputTextDeltaUpdate.Delta);
+                Console.Write(outputTextDeltaUpdate.Delta);
+            }
+            else if (update is StreamingResponseCompletedUpdate responseCompletedUpdate)
+            {
+                finalResponseText = responseCompletedUpdate.Response.GetOutputText();
             }
         }
-    }
-
-    [Test]
-    [Category("Smoke")]
-    public void DeserializeStreamingWrapper()
-    {
-        string serializedEvent = """
-            {"type":"response.output_text.delta","item_id":"msg_67cbd19634ac8190a8d1fe7d421960e0","output_index":0,"content_index":0,"delta":"Hello"}
-            """;
-        StreamingResponseContentPartDeltaUpdate deltaUpdate = ModelReaderWriter.Read<StreamingResponseContentPartDeltaUpdate>(BinaryData.FromString(serializedEvent));
-        Assert.That(deltaUpdate, Is.Not.Null);
-        Assert.That(deltaUpdate.Text, Is.EqualTo("Hello"));
+        Assert.That(deltaTextSegments, Has.Count.GreaterThan(0));
+        Assert.That(finalResponseText, Is.Not.Null.And.Not.Empty);
+        Assert.That(string.Join(string.Empty, deltaTextSegments), Is.EqualTo(finalResponseText));
     }
 
     [Test]
@@ -339,6 +337,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                         """),
                     functionSchemaIsStrict: false),
             },
+            TruncationMode = ResponseTruncationMode.Auto,
         };
 
         OpenAIResponse response = await client.CreateResponseAsync(
@@ -382,7 +381,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null);
         Assert.That(response.CreatedAt, Is.GreaterThan(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)));
-        Assert.That(response.TruncationMode, Is.EqualTo(ResponseTruncationMode.Auto));
+        Assert.That(response.TruncationMode, Is.EqualTo(ResponseTruncationMode.Disabled));
         Assert.That(response.MaxOutputTokenCount, Is.Null);
         Assert.That(response.Model, Does.StartWith("o3-mini"));
         Assert.That(response.Usage, Is.Not.Null);
@@ -399,22 +398,25 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    [TestCase("computer-use-preview-2025-02-04")]
+    [TestCase("computer-use-preview-2025-03-11")]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
         OpenAIResponseClient client = GetTestClient(model);
 
-        ResponseContentPart contentPart = ResponseContentPart.CreateInputTextPart("Hello, responses!");
+        ResponseContentPart contentPart
+            = ResponseContentPart.CreateInputTextPart("Hello, responses!");
         ResponseItem inputItem = ResponseItem.CreateUserMessageItem([contentPart]);
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync([inputItem]))
+        await foreach (StreamingResponseUpdate update
+            in client.CreateResponseStreamingAsync(
+                [inputItem],
+                new ResponseCreationOptions()
+                {
+                    TruncationMode = ResponseTruncationMode.Auto,
+                }))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
-            //if (update is ResponsesItemStreamingPartDeltaUpdate partDeltaUpdate)
-            //{
-            //    Console.Write(partDeltaUpdate.Text);
-            //}
         }
     }
 
@@ -456,7 +458,28 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    [Ignore("Assistant message needs an ID.")]
+    public async Task OutputTextMethod()
+    {
+        OpenAIResponseClient client = GetTestClient();
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Respond with only the word hello.");
+        Assert.That(response?.GetOutputText()?.Length, Is.GreaterThan(0).And.LessThan(7));
+        Assert.That(response?.GetOutputText()?.ToLower(), Does.Contain("hello"));
+
+        response.OutputItems.Add(ResponseItem.CreateAssistantMessageItem("More text!"));
+        Assert.That(response?.GetOutputText()?.ToLower(), Does.EndWith("more text!"));
+
+        response = await client.CreateResponseAsync(
+            "How's the weather?",
+            new ResponseCreationOptions()
+            {
+                Tools = { ResponseTool.CreateFunctionTool("get_weather", "gets the weather", BinaryData.FromString("{}")) },
+                ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            });
+        Assert.That(response.GetOutputText(), Is.Null);
+    }
+
+    [Test]
     public async Task MessageHistoryWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -465,7 +488,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             [
                 ResponseItem.CreateDeveloperMessageItem("You are a helpful assistant."),
                 ResponseItem.CreateUserMessageItem("Hello, Assistant, my name is Bob!"),
-                ResponseItem.CreateAssistantMessageItem("1", "Hello, Bob. It's a nice, sunny day!"),
+                ResponseItem.CreateAssistantMessageItem("Hello, Bob. It's a nice, sunny day!"),
                 ResponseItem.CreateUserMessageItem("What's my name and what did you tell me the weather was like?"),
             ]);
 
@@ -585,6 +608,55 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    [TestCase("gpt-4o-mini")]
+    [TestCase("computer-use-preview", Ignore = "Not yet supported with computer-use-preview")]
+    public async Task StructuredOutputs(string modelName)
+    {
+        OpenAIResponseClient client = GetTestClient(modelName);
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Write a JSON document with a list of five animals",
+            new ResponseCreationOptions()
+            {
+                TextOptions = new ResponseTextOptions()
+                {
+                    TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+                        "data_list",
+                        BinaryData.FromString("""
+                            {
+                              "type": "object",
+                              "properties": {
+                                "animal_data_list": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": ["animal_data_list"],
+                              "additionalProperties": false
+                            }
+                            """)),
+                }
+            });
+
+        Assert.That(
+            response?.TextOptions?.TextFormat?.Kind,
+            Is.EqualTo(ResponseTextFormatKind.JsonSchema));
+        Assert.That(response?.OutputItems, Has.Count.EqualTo(1));
+        MessageResponseItem message = response.OutputItems[0] as MessageResponseItem;
+        Assert.That(message?.Content, Has.Count.EqualTo(1));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+
+        Assert.DoesNotThrow(() =>
+        {
+            using JsonDocument document = JsonDocument.Parse(message.Content[0].Text);
+            bool hasListElement = document.RootElement.TryGetProperty("animal_data_list", out JsonElement listElement);
+            Assert.That(hasListElement, Is.True);
+        });
+    }
+
+    [Test]
     public async Task FunctionCall()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -605,6 +677,12 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo("get_weather_at_location"));
         Assert.That(functionCall.FunctionArguments, Is.Not.Null);
 
+        Assert.DoesNotThrow(() =>
+        {
+            using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
+            _ = document.RootElement.GetProperty("location");
+        });
+
         ResponseCreationOptions turn2Options = new()
         {
             PreviousResponseId = response.Id,
@@ -624,6 +702,26 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task MaxTokens()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Write three haikus about tropical fruit",
+            new ResponseCreationOptions()
+            {
+                MaxOutputTokenCount = 20,
+            });
+
+        Assert.That(
+            response?.IncompleteStatusDetails?.Reason,
+            Is.EqualTo(ResponseIncompleteStatusReason.MaxOutputTokens));
+        MessageResponseItem message = response?.OutputItems?.FirstOrDefault() as MessageResponseItem; ;
+        Assert.That(message?.Content?.FirstOrDefault(), Is.Not.Null);
+        Assert.That(message?.Status, Is.EqualTo(MessageStatus.Incomplete));
+    }
+
+    [Test]
     public async Task FunctionCallStreaming()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -633,19 +731,47 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 "What should I wear for the weather in San Francisco right now?",
                 new ResponseCreationOptions() { Tools = { s_GetWeatherAtLocationTool } }))
         {
-            if (update is StreamingResponseStatusUpdate statusUpdate)
+            Console.WriteLine(ModelReaderWriter.Write(update).ToString());
+            if (update is StreamingResponseCreatedUpdate responseCreatedUpdate)
             {
-                Console.WriteLine($"{statusUpdate.Kind}: {statusUpdate.Response.Id}");
+                Console.WriteLine($"response.created: {responseCreatedUpdate.Response.Id}");
             }
-            else if (update is StreamingResponseContentPartDeltaUpdate deltaUpdate)
+            else if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
             {
-                Console.Write(deltaUpdate.FunctionArguments);
+                Console.Write(functionCallArgumentsDeltaUpdate.Delta);
             }
         }
     }
 
-    private static string s_GetWeatherAtLocationToolName = "get_weather_at_location";
-    private static ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(
+    [Test]
+    public async Task FunctionToolChoiceWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        ResponseToolChoice toolChoice
+            = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName);
+
+        ResponseCreationOptions options = new()
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            ToolChoice = toolChoice,
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")],
+            options);
+
+        Assert.That(response.ToolChoice, Is.Not.Null);
+        Assert.That(response.ToolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Function));
+        Assert.That(response.ToolChoice.FunctionName, Is.EqualTo(toolChoice.FunctionName));
+
+        FunctionCallResponseItem functionCall = response.OutputItems.FirstOrDefault() as FunctionCallResponseItem;
+        Assert.That(functionCall, Is.Not.Null);
+        Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
+    }
+
+    private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
+    private static readonly ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(
             s_GetWeatherAtLocationToolName,
             "Gets the weather at a specified location, optionally specifying units for temperature",
             BinaryData.FromString("""

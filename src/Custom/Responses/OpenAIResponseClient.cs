@@ -135,7 +135,7 @@ public partial class OpenAIResponseClient
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true);
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
             async () => await CreateResponseAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
-            StreamingResponseUpdate.DeserializeUpdateWithWrappers,
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
 
@@ -146,7 +146,7 @@ public partial class OpenAIResponseClient
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true);
         return new SseUpdateCollection<StreamingResponseUpdate>(
             () => CreateResponse(content, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeUpdateWithWrappers,
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
 
@@ -239,9 +239,6 @@ public partial class OpenAIResponseClient
             : userOptions.GetClone();
         copiedOptions.Input = inputItems.ToList();
         copiedOptions.Model = _model;
-        // Note: as of 2025-03-03, some models *require* that "truncation": "auto" is explicitly provided; unless
-        // otherwise specified, ensure that value is set here.
-        copiedOptions.TruncationMode ??= ResponseTruncationMode.Auto;
         if (stream)
         {
             copiedOptions.Stream = true;

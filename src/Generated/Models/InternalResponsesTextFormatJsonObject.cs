@@ -13,7 +13,7 @@ namespace OpenAI.Responses
         {
         }
 
-        internal InternalResponsesTextFormatJsonObject(InternalResponsesTextFormatType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
+        internal InternalResponsesTextFormatJsonObject(InternalResponsesTextFormatType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(internalType, additionalBinaryDataProperties)
         {
         }
     }

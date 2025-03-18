@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class UnknownResponsesResponseStreamEvent : StreamingResponseUpdate
     {
-        internal UnknownResponsesResponseStreamEvent(StreamingResponseUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal UnknownResponsesResponseStreamEvent(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", additionalBinaryDataProperties)
         {
         }
     }

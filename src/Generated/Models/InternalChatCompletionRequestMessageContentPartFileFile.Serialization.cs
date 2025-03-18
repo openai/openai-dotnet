@@ -27,10 +27,10 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartFileFile)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(FileName) && _additionalBinaryDataProperties?.ContainsKey("file_name") != true)
+            if (Optional.IsDefined(Filename) && _additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
-                writer.WritePropertyName("file_name"u8);
-                writer.WriteStringValue(FileName);
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
             }
             if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
             {
@@ -82,15 +82,15 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string fileName = default;
+            string filename = default;
             string fileData = default;
             string fileId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("file_name"u8))
+                if (prop.NameEquals("filename"u8))
                 {
-                    fileName = prop.Value.GetString();
+                    filename = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_data"u8))
@@ -105,7 +105,7 @@ namespace OpenAI.Chat
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartFileFile(fileName, fileData, fileId, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileData, fileId, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

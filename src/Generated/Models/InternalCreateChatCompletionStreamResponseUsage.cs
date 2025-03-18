@@ -18,11 +18,13 @@ namespace OpenAI.Chat
             TotalTokens = totalTokens;
         }
 
-        internal InternalCreateChatCompletionStreamResponseUsage(int completionTokens, int promptTokens, int totalTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateChatCompletionStreamResponseUsage(int completionTokens, int promptTokens, int totalTokens, ChatOutputTokenUsageDetails completionTokensDetails, ChatInputTokenUsageDetails promptTokensDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             CompletionTokens = completionTokens;
             PromptTokens = promptTokens;
             TotalTokens = totalTokens;
+            CompletionTokensDetails = completionTokensDetails;
+            PromptTokensDetails = promptTokensDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -31,6 +33,10 @@ namespace OpenAI.Chat
         public int PromptTokens { get; }
 
         public int TotalTokens { get; }
+
+        public ChatOutputTokenUsageDetails CompletionTokensDetails { get; }
+
+        public ChatInputTokenUsageDetails PromptTokensDetails { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -33,7 +33,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Type.ToString());
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -82,49 +82,49 @@ namespace OpenAI.Responses
                     case "error":
                         return StreamingResponseErrorUpdate.DeserializeStreamingResponseErrorUpdate(element, options);
                     case "response.completed":
-                        return InternalResponsesResponseStreamEventResponseCompleted.DeserializeInternalResponsesResponseStreamEventResponseCompleted(element, options);
+                        return StreamingResponseCompletedUpdate.DeserializeStreamingResponseCompletedUpdate(element, options);
                     case "response.content_part.added":
-                        return InternalResponsesResponseStreamEventResponseContentPartAdded.DeserializeInternalResponsesResponseStreamEventResponseContentPartAdded(element, options);
+                        return StreamingResponseContentPartAddedUpdate.DeserializeStreamingResponseContentPartAddedUpdate(element, options);
                     case "response.content_part.done":
-                        return InternalResponsesResponseStreamEventResponseContentPartDone.DeserializeInternalResponsesResponseStreamEventResponseContentPartDone(element, options);
+                        return StreamingResponseContentPartDoneUpdate.DeserializeStreamingResponseContentPartDoneUpdate(element, options);
                     case "response.created":
-                        return InternalResponsesResponseStreamEventResponseCreated.DeserializeInternalResponsesResponseStreamEventResponseCreated(element, options);
+                        return StreamingResponseCreatedUpdate.DeserializeStreamingResponseCreatedUpdate(element, options);
                     case "response.failed":
-                        return InternalResponsesResponseStreamEventResponseFailed.DeserializeInternalResponsesResponseStreamEventResponseFailed(element, options);
+                        return StreamingResponseFailedUpdate.DeserializeStreamingResponseFailedUpdate(element, options);
                     case "response.file_search_call.completed":
-                        return InternalResponsesResponseStreamEventResponseFileSearchCallCompleted.DeserializeInternalResponsesResponseStreamEventResponseFileSearchCallCompleted(element, options);
+                        return StreamingResponseFileSearchCallCompletedUpdate.DeserializeStreamingResponseFileSearchCallCompletedUpdate(element, options);
                     case "response.file_search_call.in.progress":
-                        return InternalResponsesResponseStreamEventResponseFileSearchCallInProgress.DeserializeInternalResponsesResponseStreamEventResponseFileSearchCallInProgress(element, options);
+                        return StreamingResponseFileSearchCallInProgressUpdate.DeserializeStreamingResponseFileSearchCallInProgressUpdate(element, options);
                     case "response.file_search_call.searching":
-                        return InternalResponsesResponseStreamEventResponseFileSearchCallSearching.DeserializeInternalResponsesResponseStreamEventResponseFileSearchCallSearching(element, options);
+                        return StreamingResponseFileSearchCallSearchingUpdate.DeserializeStreamingResponseFileSearchCallSearchingUpdate(element, options);
                     case "response.function_call_arguments.delta":
-                        return InternalResponsesResponseStreamEventResponseFunctionCallArgumentsDelta.DeserializeInternalResponsesResponseStreamEventResponseFunctionCallArgumentsDelta(element, options);
+                        return StreamingResponseFunctionCallArgumentsDeltaUpdate.DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(element, options);
                     case "response.function_call_arguments.done":
-                        return InternalResponsesResponseStreamEventResponseFunctionCallArgumentsDone.DeserializeInternalResponsesResponseStreamEventResponseFunctionCallArgumentsDone(element, options);
+                        return StreamingResponseFunctionCallArgumentsDoneUpdate.DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(element, options);
                     case "response.incomplete":
-                        return InternalResponsesResponseStreamEventResponseIncomplete.DeserializeInternalResponsesResponseStreamEventResponseIncomplete(element, options);
+                        return StreamingResponseIncompleteUpdate.DeserializeStreamingResponseIncompleteUpdate(element, options);
                     case "response.in_progress":
-                        return InternalResponsesResponseStreamEventResponseInProgress.DeserializeInternalResponsesResponseStreamEventResponseInProgress(element, options);
+                        return StreamingResponseInProgressUpdate.DeserializeStreamingResponseInProgressUpdate(element, options);
                     case "response.output_item.added":
-                        return InternalResponsesResponseStreamEventResponseOutputItemAdded.DeserializeInternalResponsesResponseStreamEventResponseOutputItemAdded(element, options);
+                        return StreamingResponseOutputItemAddedUpdate.DeserializeStreamingResponseOutputItemAddedUpdate(element, options);
                     case "response.output_item.done":
-                        return InternalResponsesResponseStreamEventResponseOutputItemDone.DeserializeInternalResponsesResponseStreamEventResponseOutputItemDone(element, options);
+                        return StreamingResponseOutputItemDoneUpdate.DeserializeStreamingResponseOutputItemDoneUpdate(element, options);
                     case "response.output_text.annotation.added":
-                        return StreamingResponseTextAnnotationUpdate.DeserializeStreamingResponseTextAnnotationUpdate(element, options);
+                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, options);
                     case "response.output_text.delta":
-                        return InternalResponsesResponseStreamEventResponseOutputTextDelta.DeserializeInternalResponsesResponseStreamEventResponseOutputTextDelta(element, options);
+                        return StreamingResponseOutputTextDeltaUpdate.DeserializeStreamingResponseOutputTextDeltaUpdate(element, options);
                     case "response.output_text.done":
-                        return InternalResponsesResponseStreamEventResponseOutputTextDone.DeserializeInternalResponsesResponseStreamEventResponseOutputTextDone(element, options);
+                        return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, options);
                     case "response.refusal.delta":
-                        return InternalResponsesResponseStreamEventResponseRefusalDelta.DeserializeInternalResponsesResponseStreamEventResponseRefusalDelta(element, options);
+                        return StreamingResponseRefusalDeltaUpdate.DeserializeStreamingResponseRefusalDeltaUpdate(element, options);
                     case "response.refusal.done":
-                        return InternalResponsesResponseStreamEventResponseRefusalDone.DeserializeInternalResponsesResponseStreamEventResponseRefusalDone(element, options);
+                        return StreamingResponseRefusalDoneUpdate.DeserializeStreamingResponseRefusalDoneUpdate(element, options);
                     case "response.web_search_call.completed":
-                        return InternalResponsesResponseStreamEventResponseWebSearchCallCompleted.DeserializeInternalResponsesResponseStreamEventResponseWebSearchCallCompleted(element, options);
+                        return StreamingResponseWebSearchCallCompletedUpdate.DeserializeStreamingResponseWebSearchCallCompletedUpdate(element, options);
                     case "response.web_search_call.in_progress":
-                        return InternalResponsesResponseStreamEventResponseWebSearchCallInProgress.DeserializeInternalResponsesResponseStreamEventResponseWebSearchCallInProgress(element, options);
+                        return StreamingResponseWebSearchCallInProgressUpdate.DeserializeStreamingResponseWebSearchCallInProgressUpdate(element, options);
                     case "response.web_search_call.searching":
-                        return InternalResponsesResponseStreamEventResponseWebSearchCallSearching.DeserializeInternalResponsesResponseStreamEventResponseWebSearchCallSearching(element, options);
+                        return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, options);
                 }
             }
             return UnknownResponsesResponseStreamEvent.DeserializeUnknownResponsesResponseStreamEvent(element, options);

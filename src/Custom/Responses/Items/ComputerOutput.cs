@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
 [CodeGenType("ResponsesComputerCallOutputItemOutput")]
+[Experimental("OPENAICUA001")]
 public partial class ComputerOutput
 {
     public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri)

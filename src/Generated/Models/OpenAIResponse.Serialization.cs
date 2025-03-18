@@ -92,18 +92,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
-            {
-                writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
@@ -202,7 +190,12 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(AllowParallelToolCalls);
+                writer.WriteBooleanValue(ParallelToolCallsEnabled);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            {
+                writer.WritePropertyName("tool_choice"u8);
+                writer.WriteObjectValue(ToolChoice, options);
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -252,7 +245,6 @@ namespace OpenAI.Responses
             string model = default;
             string previousResponseId = default;
             float temperature = default;
-            BinaryData toolChoice = default;
             IList<ResponseTool> tools = default;
             float topP = default;
             ResponseTokenUsage usage = default;
@@ -265,7 +257,8 @@ namespace OpenAI.Responses
             ResponseTruncationMode? truncationMode = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
-            bool allowParallelToolCalls = default;
+            bool parallelToolCallsEnabled = default;
+            ResponseToolChoice toolChoice = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -326,11 +319,6 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("temperature"u8))
                 {
                     temperature = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("tool_choice"u8))
-                {
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -450,7 +438,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
                 {
-                    allowParallelToolCalls = prop.Value.GetBoolean();
+                    parallelToolCallsEnabled = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("tool_choice"u8))
+                {
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
@@ -464,7 +457,6 @@ namespace OpenAI.Responses
                 model,
                 previousResponseId,
                 temperature,
-                toolChoice,
                 tools,
                 topP,
                 usage,
@@ -477,7 +469,8 @@ namespace OpenAI.Responses
                 truncationMode,
                 incompleteStatusDetails,
                 outputItems,
-                allowParallelToolCalls,
+                parallelToolCallsEnabled,
+                toolChoice,
                 additionalBinaryDataProperties);
         }
 

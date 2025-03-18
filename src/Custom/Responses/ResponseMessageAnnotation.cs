@@ -15,7 +15,7 @@ public partial class ResponseMessageAnnotation
     public int? FileCitationIndex => (this as InternalResponsesMessageAnnotationFileCitation)?.Index;
 
     // CUSTOM: Exposed URL citation properties.
-    public string UriCitationUri => (this as InternalResponsesMessageAnnotationUrlCitation).Url;
+    public string UriCitationUri => (this as InternalResponsesMessageAnnotationUrlCitation)?.Url;
     public string UriCitationTitle => (this as InternalResponsesMessageAnnotationUrlCitation)?.Title;
     public int? UriCitationStartIndex => (this as InternalResponsesMessageAnnotationUrlCitation)?.StartIndex;
     public int? UriCitationEndIndex => (this as InternalResponsesMessageAnnotationUrlCitation)?.EndIndex;

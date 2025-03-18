@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace OpenAI.Responses;
 
@@ -40,5 +42,18 @@ public partial class OpenAIResponse
 
     // CUSTOM: Renamed.
     [CodeGenMember("ParallelToolCalls")]
-    public bool AllowParallelToolCalls { get; }
+    public bool ParallelToolCallsEnabled { get; }
+
+    // CUSTOM: Using convenience type.
+    [CodeGenMember("ToolChoice")]
+    public ResponseToolChoice ToolChoice { get; }
+
+    public string GetOutputText()
+    {
+        IEnumerable<string> outputTextSegments = OutputItems.Where(item => item is MessageResponseItem)
+            .Select(item => item as MessageResponseItem)
+            .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
+                .Select(outputTextPart => outputTextPart.Text));
+        return outputTextSegments.Any() ? string.Join(string.Empty, outputTextSegments) : null;
+    }
 }

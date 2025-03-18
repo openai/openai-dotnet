@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownResponsesMessage : MessageResponseItem
     {
-        internal InternalUnknownResponsesMessage(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, MessageRole role) : base(@type != default ? @type : "unknown", id, additionalBinaryDataProperties, status, role != default ? role : "unknown")
+        internal InternalUnknownResponsesMessage(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(@type != default ? @type : "unknown", id, additionalBinaryDataProperties, status, internalRole != default ? internalRole : "unknown")
         {
         }
     }

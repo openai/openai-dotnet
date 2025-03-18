@@ -33,7 +33,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(InternalType.ToString());
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -91,7 +91,7 @@ namespace OpenAI.Responses
                         return InternalResponsesOutputRefusalContentPart.DeserializeInternalResponsesOutputRefusalContentPart(element, options);
                 }
             }
-            return UnknownResponsesContent.DeserializeUnknownResponsesContent(element, options);
+            return InternalUnknownResponsesContent.DeserializeInternalUnknownResponsesContent(element, options);
         }
 
         BinaryData IPersistableModel<ResponseContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

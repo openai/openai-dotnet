@@ -133,3 +133,5 @@ internal partial class InternalChatCompletionResponseMessageAnnotationUrlCitatio
 
 [CodeGenType("CreateChatCompletionStreamResponseChoiceFinishReason1")]
 internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason1 { }
+
+[CodeGenType("CreateChatCompletionStreamResponseUsage")] internal partial class InternalCreateChatCompletionStreamResponseUsage { }

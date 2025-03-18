@@ -7,8 +7,13 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponsesContent")]
 public partial class ResponseContentPart
 {
+    public ResponseContentPartKind Kind
+    {
+        get => InternalType.ToString().ToResponseContentPartKind();
+        private set => InternalType = Kind.ToSerialString();
+    }
     [CodeGenMember("Type")]
-    public ResponseContentPartKind Kind { get; }
+    internal InternalResponsesContentType InternalType { get; set; }
 
     // CUSTOM: Exposed input text properties.
     public string Text

@@ -87,7 +87,7 @@ namespace OpenAI.Responses
                         return InternalResponsesMessageAnnotationFilePath.DeserializeInternalResponsesMessageAnnotationFilePath(element, options);
                 }
             }
-            return UnknownResponsesOutputTextAnnotation.DeserializeUnknownResponsesOutputTextAnnotation(element, options);
+            return InternalUnknownResponsesOutputTextAnnotation.DeserializeInternalUnknownResponsesOutputTextAnnotation(element, options);
         }
 
         BinaryData IPersistableModel<ResponseMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -10,14 +10,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesInputTextContentPart : ResponseContentPart
     {
-        public InternalResponsesInputTextContentPart(string internalText) : base(ResponseContentPartKind.InputText)
+        public InternalResponsesInputTextContentPart(string internalText) : base(InternalResponsesContentType.InputText)
         {
             Argument.AssertNotNull(internalText, nameof(internalText));
 
             InternalText = internalText;
         }
 
-        internal InternalResponsesInputTextContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesInputTextContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(internalType, additionalBinaryDataProperties)
         {
             InternalText = internalText;
         }

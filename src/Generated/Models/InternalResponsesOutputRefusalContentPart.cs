@@ -10,14 +10,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesOutputRefusalContentPart : ResponseContentPart
     {
-        public InternalResponsesOutputRefusalContentPart(string internalRefusal) : base(ResponseContentPartKind.Refusal)
+        public InternalResponsesOutputRefusalContentPart(string internalRefusal) : base(InternalResponsesContentType.Refusal)
         {
             Argument.AssertNotNull(internalRefusal, nameof(internalRefusal));
 
             InternalRefusal = internalRefusal;
         }
 
-        internal InternalResponsesOutputRefusalContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalRefusal) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesOutputRefusalContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalRefusal) : base(internalType, additionalBinaryDataProperties)
         {
             InternalRefusal = internalRefusal;
         }

@@ -4,11 +4,23 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     public partial class FunctionCallResponseItem : ResponseItem
     {
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments) : base(InternalResponsesItemType.FunctionCall)
+        {
+            Argument.AssertNotNull(callId, nameof(callId));
+            Argument.AssertNotNull(functionName, nameof(functionName));
+            Argument.AssertNotNull(functionArguments, nameof(functionArguments));
+
+            CallId = callId;
+            FunctionName = functionName;
+            FunctionArguments = functionArguments;
+        }
+
         internal FunctionCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FunctionCallStatus? status, string callId, string functionName, BinaryData functionArguments) : base(@type, id, additionalBinaryDataProperties)
         {
             Status = status;

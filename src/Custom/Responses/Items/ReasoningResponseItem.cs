@@ -5,14 +5,12 @@ namespace OpenAI.Responses;
 
 // CUSTOM:
 // - Renamed.
-// - Suppressed constructor in favor of custom constructor with required `id` parameter.
 [CodeGenType("ResponsesReasoningItem")]
-[CodeGenSuppress(nameof(ReasoningResponseItem), typeof(IEnumerable<ResponseContentPart>))]
 public partial class ReasoningResponseItem
 {
-    public ReasoningResponseItem(string id, IEnumerable<string> summaryTextParts) : base(InternalResponsesItemType.Reasoning, id)
+    // CUSTOM: Convert simple text input into typed wire input
+    public ReasoningResponseItem(IEnumerable<string> summaryTextParts) : base(InternalResponsesItemType.Reasoning)
     {
-        Argument.AssertNotNull(id, nameof(id));
         Argument.AssertNotNull(summaryTextParts, nameof(summaryTextParts));
 
         Summary ??= [];
