@@ -4,11 +4,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : ResponseItem
     {
+        public FileSearchCallResponseItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results) : base(InternalResponsesItemType.FileSearchCall)
+        {
+            Argument.AssertNotNull(queries, nameof(queries));
+
+            Queries = queries.ToList();
+            Results = results?.ToList();
+        }
+
         internal FileSearchCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FileSearchCallStatus status, IList<string> queries, IList<FileSearchCallResult> results) : base(@type, id, additionalBinaryDataProperties)
         {
             Status = status;

@@ -68,7 +68,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            ResponseContentPartKind kind = default;
+            InternalResponsesContentType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<ResponseMessageAnnotation> annotations = default;
             string internalText = default;
@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToResponseContentPartKind();
+                    internalType = new InternalResponsesContentType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("annotations"u8))
@@ -96,7 +96,7 @@ namespace OpenAI.Responses
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponsesOutputTextContentPart(kind, additionalBinaryDataProperties, annotations, internalText);
+            return new InternalResponsesOutputTextContentPart(internalType, additionalBinaryDataProperties, annotations, internalText);
         }
 
         BinaryData IPersistableModel<InternalResponsesOutputTextContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -1,93 +1,75 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace OpenAI.Responses;
 
 [CodeGenType("ResponsesItem")]
 public partial class ResponseItem
 {
-    // CUSTOM: Added custom constructor to be able to set the ID for those items where it is required.
-    private protected ResponseItem(InternalResponsesItemType @type, string id)
-    {
-        Type = @type;
-        Id = id;
-    }
-
-    public static MessageResponseItem CreateUserMessageItem(string content)
-    {
-        Argument.AssertNotNull(content, nameof(content));
-
-        return new InternalResponsesSystemMessage(
-            type: InternalResponsesItemType.Message,
-            id: null,
-            additionalBinaryDataProperties: null,
-            status: null,
-            MessageRole.User,
-            internalContent: [ResponseContentPart.CreateInputTextPart(content)]);
-    }
-
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
-
-        return new InternalResponsesSystemMessage(
-            type: InternalResponsesItemType.Message,
-            id: null,
-            additionalBinaryDataProperties: null,
-            status: null,
-            MessageRole.User,
-            internalContent: [.. contentParts]);
+        return new InternalResponsesUserMessage(contentParts);
     }
 
-    public static MessageResponseItem CreateDeveloperMessageItem(string content)
+    public static MessageResponseItem CreateUserMessageItem(string inputTextContent)
     {
-        Argument.AssertNotNull(content, nameof(content));
-
-        return new InternalResponsesSystemMessage(
-            type: InternalResponsesItemType.Message,
-            id: null,
-            additionalBinaryDataProperties: null,
-            status: null,
-            MessageRole.Developer,
-            internalContent: [ResponseContentPart.CreateInputTextPart(content)]);
+        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
+        return new InternalResponsesUserMessage(
+            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
     }
 
-    public static MessageResponseItem CreateSystemMessageItem(string content)
+    public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
-        Argument.AssertNotNull(content, nameof(content));
-
-        return new InternalResponsesSystemMessage(
-            type: InternalResponsesItemType.Message,
-            id: null,
-            additionalBinaryDataProperties: null,
-            status: null,
-            MessageRole.System,
-            internalContent: [ResponseContentPart.CreateInputTextPart(content)]);
+        Argument.AssertNotNull(contentParts, nameof(contentParts));
+        return new InternalResponsesDeveloperMessage(contentParts);
     }
 
-    public static MessageResponseItem CreateAssistantMessageItem(string id, string content)
+    public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent)
     {
-        Argument.AssertNotNull(id, nameof(id));
-        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
+        return new InternalResponsesDeveloperMessage(
+            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
+    }
 
+    public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts)
+    {
+        Argument.AssertNotNull(contentParts, nameof(contentParts));
+        return new InternalResponsesSystemMessage(contentParts);
+    }
+
+    public static MessageResponseItem CreateSystemMessageItem(string inputTextContent)
+    {
+        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
+        return new InternalResponsesSystemMessage(
+            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
+    }
+
+    public static MessageResponseItem CreateAssistantMessageItem(
+        IEnumerable<ResponseContentPart> contentParts)
+    {
+        Argument.AssertNotNull(contentParts, nameof(contentParts));
+        return new InternalResponsesAssistantMessage(contentParts);
+    }
+
+    public static MessageResponseItem CreateAssistantMessageItem(
+        string outputTextContent,
+        IEnumerable<ResponseMessageAnnotation> annotations = null)
+    {
+        Argument.AssertNotNull(outputTextContent, nameof(outputTextContent));
         return new InternalResponsesAssistantMessage(
-            type: InternalResponsesItemType.Message,
-            id: id,
-            additionalBinaryDataProperties: null,
-            status: null,
-            MessageRole.Assistant,
-            internalContent: [ResponseContentPart.CreateInputTextPart(content)]);
+            internalContent:
+            [
+                new InternalResponsesOutputTextContentPart(annotations ?? [], outputTextContent),
+            ]);
     }
 
-    public static FileSearchCallResponseItem CreateFileSearchCallResponseItem(string id, IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results)
+    [Experimental("OPENAICUA001")]
+    public static ResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
     {
-        return new FileSearchCallResponseItem(id, queries, results);
-    }
-
-    public static ResponseItem CreateComputerCallItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
-    {
-        return new ComputerCallResponseItem(id, callId, action, pendingSafetyChecks);
+        return new ComputerCallResponseItem(callId, action, pendingSafetyChecks);
     }
 
     [Experimental("OPENAICUA001")]
@@ -117,14 +99,21 @@ public partial class ResponseItem
             ComputerOutput.CreateScreenshotOutput(screenshotImageBytes, screenshotImageBytesMediaType));
     }
 
-    public static WebSearchCallResponseItem CreateWebSearchCallItem(string id)
+    public static WebSearchCallResponseItem CreateWebSearchCallItem()
     {
-        return new WebSearchCallResponseItem(id);
+        return new WebSearchCallResponseItem();
     }
 
-    public static FunctionCallResponseItem CreateFunctionCall(string id, string callId, string functionName, BinaryData functionArguments)
+    public static FileSearchCallResponseItem CreateFileSearchCallItem(
+        IEnumerable<string> queries,
+        IEnumerable<FileSearchCallResult> results)
     {
-        return new FunctionCallResponseItem(id, callId, functionName, functionArguments);
+        return new FileSearchCallResponseItem(queries, results);
+    }
+
+    public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments)
+    {
+        return new FunctionCallResponseItem(callId, functionName, functionArguments);
     }
 
     public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput)
@@ -132,9 +121,9 @@ public partial class ResponseItem
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }
 
-    public static ReasoningResponseItem CreateReasoningItem(string id, IEnumerable<string> summaryTextParts)
+    public static ReasoningResponseItem CreateReasoningItem(IEnumerable<string> summaryTextParts)
     {
-        return new ReasoningResponseItem(id, summaryTextParts);
+        return new ReasoningResponseItem(summaryTextParts);
     }
 
     public static ReferenceResponseItem CreateReferenceItem(string id)

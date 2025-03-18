@@ -11,15 +11,13 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string previousResponseId, string instructions, IList<ResponseTool> tools, BinaryData toolChoice, IList<InternalCreateResponsesRequestIncludable> include, InternalCreateResponsesRequestModel model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? allowParallelToolCalls, bool? storedOutputEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string previousResponseId, string instructions, IList<InternalCreateResponsesRequestIncludable> include, InternalCreateResponsesRequestModel model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Metadata = metadata;
             Temperature = temperature;
             TopP = topP;
             PreviousResponseId = previousResponseId;
             Instructions = instructions;
-            Tools = tools;
-            ToolChoice = toolChoice;
             Include = include;
             Model = model;
             Input = input;
@@ -29,8 +27,10 @@ namespace OpenAI.Responses
             MaxOutputTokenCount = maxOutputTokenCount;
             TextOptions = textOptions;
             TruncationMode = truncationMode;
-            AllowParallelToolCalls = allowParallelToolCalls;
+            ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
+            ToolChoice = toolChoice;
+            Tools = tools;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -43,10 +43,6 @@ namespace OpenAI.Responses
         public string PreviousResponseId { get; set; }
 
         public string Instructions { get; set; }
-
-        public IList<ResponseTool> Tools { get; set; }
-
-        public BinaryData ToolChoice { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

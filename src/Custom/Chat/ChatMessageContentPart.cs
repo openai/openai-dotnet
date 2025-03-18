@@ -33,6 +33,7 @@ public partial class ChatMessageContentPart
     private readonly string _text;
     private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUri;
     private readonly InternalChatCompletionRequestMessageContentPartAudioInputAudio _inputAudio;
+    private readonly InternalChatCompletionRequestMessageContentPartFileFile _fileFile;
     private readonly string _refusal;
 
     // CUSTOM: Made internal.
@@ -47,6 +48,7 @@ public partial class ChatMessageContentPart
         InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default,
         string refusal = default,
         InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default,
+        InternalChatCompletionRequestMessageContentPartFileFile fileFile = default,
         IDictionary<string, BinaryData> serializedAdditionalRawData = default)
     {
         _kind = kind;
@@ -54,6 +56,7 @@ public partial class ChatMessageContentPart
         _imageUri = imageUri;
         _refusal = refusal;
         _inputAudio = inputAudio;
+        _fileFile = fileFile;
         _additionalBinaryDataProperties = serializedAdditionalRawData;
     }
 
@@ -97,6 +100,26 @@ public partial class ChatMessageContentPart
     /// represents user role audio input.
     /// </remarks>
     public ChatInputAudioFormat? InputAudioFormat => _inputAudio?.Format;
+
+    // CUSTOM: Spread.
+    /// <summary> The ID of the previously uploaded file that the content part represents. </summary>
+    /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content part refers to a previously uploaded file. </remarks>
+    public string FileId => _fileFile?.FileId;
+
+    // CUSTOM: Spread.
+    /// <summary> The binary file content of the file content part. </summary>
+    /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    public BinaryData FileBytes => _fileFile?.FileBytes;
+
+    // CUSTOM: Spread.
+    /// <summary> The MIME type of the file, e.g., <c>application/pdf</c>. </summary>
+    /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    public string FileBytesMediaType => _fileFile?.FileBytesMediaType;
+
+    // CUSTOM: Spread.
+    /// <summary> The filename for the new file content creation that the content part encapsulates. </summary>
+    /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    public string Filename => _fileFile?.Filename;
 
     // CUSTOM: Spread.
     /// <summary>
@@ -182,6 +205,40 @@ public partial class ChatMessageContentPart
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.InputAudio,
             inputAudio: new(inputAudioBytes, inputAudioFormat));
+    }
+
+    /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that represents a previously uploaded file. </summary>
+    /// <exception cref="ArgumentException"> <paramref name="fileId"/> is null or empty. </exception>
+    public static ChatMessageContentPart CreateFilePart(string fileId)
+    {
+        Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+        return new ChatMessageContentPart(
+            kind: ChatMessageContentPartKind.File,
+            fileFile: new()
+            {
+                FileId = fileId,
+            });
+    }
+
+    /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates new file data to upload. </summary>
+    /// <param name="fileBytes"> The binary content of the file. </param>
+    /// <param name="fileBytesMediaType"> The MIME type of the file, e.g., <c>application/pdf</c>. </param>
+    /// <param name="filename"> The filename to use for the file that will be created. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="fileBytes"/> or <paramref name="fileBytesMediaType"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="fileBytesMediaType"/> or <paramref name="filename"/>> is an empty string, and was expected to be non-empty. </exception>
+    public static ChatMessageContentPart CreateFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename)
+    {
+        Argument.AssertNotNull(fileBytes, nameof(fileBytes));
+        Argument.AssertNotNullOrEmpty(fileBytesMediaType, nameof(fileBytesMediaType));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+
+        return new ChatMessageContentPart(
+            kind: ChatMessageContentPartKind.File,
+            fileFile: new(fileBytes, fileBytesMediaType)
+            {
+                Filename = filename,
+            });
     }
 
     /// <summary>

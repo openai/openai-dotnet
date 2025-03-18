@@ -15,9 +15,9 @@ namespace OpenAI.Responses
         {
         }
 
-        internal ResponseTextOptions(ResponseTextFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseTextOptions(ResponseTextFormat textFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            ResponseFormat = responseFormat;
+            TextFormat = textFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

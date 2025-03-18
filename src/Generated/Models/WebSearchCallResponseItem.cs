@@ -9,6 +9,10 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchCallResponseItem : ResponseItem
     {
+        public WebSearchCallResponseItem() : base(InternalResponsesItemType.WebSearchCall)
+        {
+        }
+
         internal WebSearchCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchCallStatus status) : base(@type, id, additionalBinaryDataProperties)
         {
             Status = status;

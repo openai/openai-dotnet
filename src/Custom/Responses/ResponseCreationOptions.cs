@@ -24,7 +24,7 @@ public partial class ResponseCreationOptions
     // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
     [CodeGenMember("Input")]
-    internal IList<ResponseItem> Input { get; set; } = new ChangeTrackingList<ResponseItem>();
+    internal IList<ResponseItem> Input { get; set; }
 
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     internal bool? Stream { get; set; }
@@ -60,11 +60,19 @@ public partial class ResponseCreationOptions
 
     // CUSTOM: Renamed.
     [CodeGenMember("ParallelToolCalls")]
-    public bool? AllowParallelToolCalls { get; set; }
+    public bool? ParallelToolCallsEnabled { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Store")]
     public bool? StoredOutputEnabled { get; set; }
+
+    // CUSTOM: Using convenience type.
+    [CodeGenMember("ToolChoice")]
+    public ResponseToolChoice ToolChoice { get; set; }
+
+    // CUSTOM: Apply get-only collection pattern
+    [CodeGenMember("Tools")]
+    public IList<ResponseTool> Tools { get; }
 
     internal ResponseCreationOptions GetClone()
     {

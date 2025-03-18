@@ -27,20 +27,20 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartFileFile)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(FileName) && _additionalBinaryDataProperties?.ContainsKey("file_name") != true)
+            if (Optional.IsDefined(Filename) && _additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
-                writer.WritePropertyName("file_name"u8);
-                writer.WriteStringValue(FileName);
-            }
-            if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
-            {
-                writer.WritePropertyName("file_data"u8);
-                writer.WriteStringValue(FileData);
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
             }
             if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
+            }
+            if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
+            {
+                writer.WritePropertyName("file_data"u8);
+                writer.WriteStringValue(FileData);
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -82,20 +82,15 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string fileName = default;
-            string fileData = default;
+            string filename = default;
             string fileId = default;
+            string fileData = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("file_name"u8))
+                if (prop.NameEquals("filename"u8))
                 {
-                    fileName = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("file_data"u8))
-                {
-                    fileData = prop.Value.GetString();
+                    filename = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -103,9 +98,14 @@ namespace OpenAI.Chat
                     fileId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("file_data"u8))
+                {
+                    fileData = prop.Value.GetString();
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartFileFile(fileName, fileData, fileId, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileId, fileData, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

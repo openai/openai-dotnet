@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownResponsesTextFormat : ResponseTextFormat
     {
-        internal InternalUnknownResponsesTextFormat(InternalResponsesTextFormatType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownResponsesTextFormat(InternalResponsesTextFormatType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(internalType != default ? internalType : "unknown", additionalBinaryDataProperties)
         {
         }
     }

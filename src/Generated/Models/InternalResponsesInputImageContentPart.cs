@@ -9,11 +9,11 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesInputImageContentPart : ResponseContentPart
     {
-        public InternalResponsesInputImageContentPart() : base(ResponseContentPartKind.InputImage)
+        public InternalResponsesInputImageContentPart() : base(InternalResponsesContentType.InputImage)
         {
         }
 
-        internal InternalResponsesInputImageContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesInputImageContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(internalType, additionalBinaryDataProperties)
         {
             ImageUrl = imageUrl;
             FileId = fileId;

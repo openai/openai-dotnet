@@ -27,10 +27,10 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ResponseTextOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
+            if (Optional.IsDefined(TextFormat) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteObjectValue(ResponseFormat, options);
+                writer.WriteObjectValue(TextFormat, options);
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -72,7 +72,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            ResponseTextFormat responseFormat = default;
+            ResponseTextFormat textFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -82,12 +82,12 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    responseFormat = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, options);
+                    textFormat = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, options);
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseTextOptions(responseFormat, additionalBinaryDataProperties);
+            return new ResponseTextOptions(textFormat, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ResponseTextOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

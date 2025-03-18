@@ -41,7 +41,7 @@
     <NoWarn>$(NoWarn),0169</NoWarn>
 
     <!-- Disable warnings for experimental APIs -->
-    <NoWarn>$(NoWarn),OPENAI001;OPENAI002</NoWarn>
+    <NoWarn>$(NoWarn),OPENAI001;OPENAI002;OPENAICUA001</NoWarn>
 
     <Configurations>Debug;Release;Unsigned</Configurations>
 

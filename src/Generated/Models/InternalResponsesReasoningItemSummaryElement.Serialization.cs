@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(UnknownResponsesReasoningItemSummaryElement))]
+    [PersistableModelProxy(typeof(InternalUnknownResponsesReasoningItemSummaryElement))]
     internal abstract partial class InternalResponsesReasoningItemSummaryElement : IJsonModel<InternalResponsesReasoningItemSummaryElement>
     {
         internal InternalResponsesReasoningItemSummaryElement()
@@ -84,7 +84,7 @@ namespace OpenAI.Responses
                         return InternalResponsesReasoningItemSummaryElementSummaryText.DeserializeInternalResponsesReasoningItemSummaryElementSummaryText(element, options);
                 }
             }
-            return UnknownResponsesReasoningItemSummaryElement.DeserializeUnknownResponsesReasoningItemSummaryElement(element, options);
+            return InternalUnknownResponsesReasoningItemSummaryElement.DeserializeInternalUnknownResponsesReasoningItemSummaryElement(element, options);
         }
 
         BinaryData IPersistableModel<InternalResponsesReasoningItemSummaryElement>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -52,18 +52,18 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            StreamingResponseUpdateKind kind = default;
+            InternalResponsesResponseStreamEventType @type = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
+                    @type = new InternalResponsesResponseStreamEventType(prop.Value.GetString());
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new UnknownResponsesResponseStreamEvent(kind, additionalBinaryDataProperties);
+            return new UnknownResponsesResponseStreamEvent(@type, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<StreamingResponseUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

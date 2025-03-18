@@ -58,14 +58,14 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            ResponseContentPartKind kind = default;
+            InternalResponsesContentType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string internalRefusal = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToResponseContentPartKind();
+                    internalType = new InternalResponsesContentType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -75,7 +75,7 @@ namespace OpenAI.Responses
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponsesOutputRefusalContentPart(kind, additionalBinaryDataProperties, internalRefusal);
+            return new InternalResponsesOutputRefusalContentPart(internalType, additionalBinaryDataProperties, internalRefusal);
         }
 
         BinaryData IPersistableModel<InternalResponsesOutputRefusalContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

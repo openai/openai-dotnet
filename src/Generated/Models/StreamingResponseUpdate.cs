@@ -11,16 +11,18 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected StreamingResponseUpdate(StreamingResponseUpdateKind kind)
+        private protected StreamingResponseUpdate(InternalResponsesResponseStreamEventType @type)
         {
-            Kind = kind;
+            Type = @type;
         }
 
-        internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingResponseUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
+            Type = @type;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        internal InternalResponsesResponseStreamEventType Type { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -11,14 +11,14 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ResponseContentPart(ResponseContentPartKind kind)
+        private protected ResponseContentPart(InternalResponsesContentType internalType)
         {
-            Kind = kind;
+            InternalType = internalType;
         }
 
-        internal ResponseContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
+            InternalType = internalType;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

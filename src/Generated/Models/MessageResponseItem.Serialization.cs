@@ -39,7 +39,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToString());
+                writer.WriteStringValue(InternalRole.ToString());
             }
         }
 

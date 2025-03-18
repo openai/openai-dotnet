@@ -4,11 +4,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     public partial class ComputerCallResponseItem : ResponseItem
     {
+        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalResponsesItemType.ComputerCall)
+        {
+            Argument.AssertNotNull(callId, nameof(callId));
+            Argument.AssertNotNull(action, nameof(action));
+            Argument.AssertNotNull(pendingSafetyChecks, nameof(pendingSafetyChecks));
+
+            CallId = callId;
+            Action = action;
+            PendingSafetyChecks = pendingSafetyChecks.ToList();
+        }
+
         internal ComputerCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus status) : base(@type, id, additionalBinaryDataProperties)
         {
             CallId = callId;

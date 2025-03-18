@@ -63,28 +63,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
-            {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ResponseTool item in Tools)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
-            {
-                writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
             if (Optional.IsCollectionDefined(Include) && _additionalBinaryDataProperties?.ContainsKey("include") != true)
             {
                 writer.WritePropertyName("include"u8);
@@ -140,15 +118,30 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("truncation"u8);
                 writer.WriteStringValue(TruncationMode.Value.ToString());
             }
-            if (Optional.IsDefined(AllowParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            if (Optional.IsDefined(ParallelToolCallsEnabled) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
+                writer.WriteBooleanValue(ParallelToolCallsEnabled.Value);
             }
             if (Optional.IsDefined(StoredOutputEnabled) && _additionalBinaryDataProperties?.ContainsKey("store") != true)
             {
                 writer.WritePropertyName("store"u8);
                 writer.WriteBooleanValue(StoredOutputEnabled.Value);
+            }
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            {
+                writer.WritePropertyName("tool_choice"u8);
+                writer.WriteObjectValue(ToolChoice, options);
+            }
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            {
+                writer.WritePropertyName("tools"u8);
+                writer.WriteStartArray();
+                foreach (ResponseTool item in Tools)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -195,8 +188,6 @@ namespace OpenAI.Responses
             float? topP = default;
             string previousResponseId = default;
             string instructions = default;
-            IList<ResponseTool> tools = default;
-            BinaryData toolChoice = default;
             IList<InternalCreateResponsesRequestIncludable> include = default;
             InternalCreateResponsesRequestModel model = default;
             IList<ResponseItem> input = default;
@@ -206,8 +197,10 @@ namespace OpenAI.Responses
             int? maxOutputTokenCount = default;
             ResponseTextOptions textOptions = default;
             ResponseTruncationMode? truncationMode = default;
-            bool? allowParallelToolCalls = default;
+            bool? parallelToolCallsEnabled = default;
             bool? storedOutputEnabled = default;
+            ResponseToolChoice toolChoice = default;
+            IList<ResponseTool> tools = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -270,29 +263,6 @@ namespace OpenAI.Responses
                         continue;
                     }
                     instructions = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("tools"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<ResponseTool> array = new List<ResponseTool>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
-                    }
-                    tools = array;
-                    continue;
-                }
-                if (prop.NameEquals("tool_choice"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("include"u8))
@@ -381,10 +351,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        allowParallelToolCalls = null;
+                        parallelToolCallsEnabled = null;
                         continue;
                     }
-                    allowParallelToolCalls = prop.Value.GetBoolean();
+                    parallelToolCallsEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("store"u8))
@@ -397,6 +367,29 @@ namespace OpenAI.Responses
                     storedOutputEnabled = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("tool_choice"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("tools"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ResponseTool> array = new List<ResponseTool>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
+                    }
+                    tools = array;
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ResponseCreationOptions(
@@ -405,8 +398,6 @@ namespace OpenAI.Responses
                 topP,
                 previousResponseId,
                 instructions,
-                tools ?? new ChangeTrackingList<ResponseTool>(),
-                toolChoice,
                 include ?? new ChangeTrackingList<InternalCreateResponsesRequestIncludable>(),
                 model,
                 input,
@@ -416,8 +407,10 @@ namespace OpenAI.Responses
                 maxOutputTokenCount,
                 textOptions,
                 truncationMode,
-                allowParallelToolCalls,
+                parallelToolCallsEnabled,
                 storedOutputEnabled,
+                toolChoice,
+                tools ?? new ChangeTrackingList<ResponseTool>(),
                 additionalBinaryDataProperties);
         }
 

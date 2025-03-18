@@ -13,7 +13,10 @@ internal partial class InternalChatCompletionMessageToolCallFunction : IJsonMode
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SerializeArgumentsValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        writer.WriteStringValue(Arguments.ToString());
+        string value = Arguments.ToMemory().IsEmpty
+            ? string.Empty
+            : Arguments.ToString();
+        writer.WriteStringValue(value);
     }
 
     // CUSTOM: Replaced the call to GetRawText() for a call to GetString() because otherwise the starting and ending

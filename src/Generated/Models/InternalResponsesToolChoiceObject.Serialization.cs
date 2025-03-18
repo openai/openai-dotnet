@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(UnknownResponsesToolChoiceObject))]
+    [PersistableModelProxy(typeof(InternalUnknownResponsesToolChoiceObject))]
     internal abstract partial class InternalResponsesToolChoiceObject : IJsonModel<InternalResponsesToolChoiceObject>
     {
         internal InternalResponsesToolChoiceObject()
@@ -90,7 +90,7 @@ namespace OpenAI.Responses
                         return InternalResponsesToolChoiceObjectComputer.DeserializeInternalResponsesToolChoiceObjectComputer(element, options);
                 }
             }
-            return UnknownResponsesToolChoiceObject.DeserializeUnknownResponsesToolChoiceObject(element, options);
+            return InternalUnknownResponsesToolChoiceObject.DeserializeInternalUnknownResponsesToolChoiceObject(element, options);
         }
 
         BinaryData IPersistableModel<InternalResponsesToolChoiceObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -9,11 +9,11 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesInputFileContentPart : ResponseContentPart
     {
-        public InternalResponsesInputFileContentPart() : base(ResponseContentPartKind.InputFile)
+        public InternalResponsesInputFileContentPart() : base(InternalResponsesContentType.InputFile)
         {
         }
 
-        internal InternalResponsesInputFileContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, string filename, BinaryData fileBytes) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesInputFileContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, string filename, BinaryData fileBytes) : base(internalType, additionalBinaryDataProperties)
         {
             FileId = fileId;
             Filename = filename;

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 
 namespace OpenAI.Responses;
 
 [CodeGenType("ResponsesComputerCallItemAction")]
+[Experimental("OPENAICUA001")]
 public partial class ComputerCallAction
 {
     // CUSTOM:

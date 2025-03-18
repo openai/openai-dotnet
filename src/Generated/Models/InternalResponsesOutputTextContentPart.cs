@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesOutputTextContentPart : ResponseContentPart
     {
-        public InternalResponsesOutputTextContentPart(IEnumerable<ResponseMessageAnnotation> annotations, string internalText) : base(ResponseContentPartKind.OutputText)
+        public InternalResponsesOutputTextContentPart(IEnumerable<ResponseMessageAnnotation> annotations, string internalText) : base(InternalResponsesContentType.OutputText)
         {
             Argument.AssertNotNull(annotations, nameof(annotations));
             Argument.AssertNotNull(internalText, nameof(internalText));
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
             InternalText = internalText;
         }
 
-        internal InternalResponsesOutputTextContentPart(ResponseContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<ResponseMessageAnnotation> annotations, string internalText) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesOutputTextContentPart(InternalResponsesContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<ResponseMessageAnnotation> annotations, string internalText) : base(internalType, additionalBinaryDataProperties)
         {
             Annotations = annotations;
             InternalText = internalText;

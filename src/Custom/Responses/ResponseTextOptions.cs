@@ -5,5 +5,5 @@ public partial class ResponseTextOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Format")]
-    public ResponseTextFormat ResponseFormat { get; set; }
+    public ResponseTextFormat TextFormat { get; set; }
 }

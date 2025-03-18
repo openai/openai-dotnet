@@ -49,18 +49,18 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesTextFormatType @type = default;
+            InternalResponsesTextFormatType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesTextFormatType(prop.Value.GetString());
+                    internalType = new InternalResponsesTextFormatType(prop.Value.GetString());
                     continue;
                 }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponsesTextFormatText(@type, additionalBinaryDataProperties);
+            return new InternalResponsesTextFormatText(internalType, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalResponsesTextFormatText>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

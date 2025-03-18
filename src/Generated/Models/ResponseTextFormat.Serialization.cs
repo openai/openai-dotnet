@@ -33,7 +33,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(InternalType.ToString());
             }
             if (_additionalBinaryDataProperties != null)
             {

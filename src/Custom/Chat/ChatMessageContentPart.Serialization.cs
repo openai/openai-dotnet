@@ -38,6 +38,11 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             writer.WritePropertyName("input_audio"u8);
             writer.WriteObjectValue(instance._inputAudio, options);
         }
+        else if (instance._kind == ChatMessageContentPartKind.File)
+        {
+            writer.WritePropertyName("file"u8);
+            writer.WriteObjectValue(instance._fileFile, options);
+        }
         writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
         writer.WriteEndObject();
     }
@@ -56,6 +61,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         string refusal = default;
         InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default;
         InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
+        InternalChatCompletionRequestMessageContentPartFileFile fileFile = default;
         IDictionary<string, BinaryData> serializedAdditionalRawData = default;
         Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
         foreach (var property in element.EnumerateObject())
@@ -86,12 +92,18 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
                     .DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(property.Value, options);
                 continue;
             }
+            if (property.NameEquals("file"u8))
+            {
+                fileFile = InternalChatCompletionRequestMessageContentPartFileFile
+                    .DeserializeInternalChatCompletionRequestMessageContentPartFileFile(property.Value, options);
+                continue;
+            }
             if (true)
             {
                 rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new ChatMessageContentPart(kind, text, imageUri, refusal, inputAudio, serializedAdditionalRawData);
+        return new ChatMessageContentPart(kind, text, imageUri, refusal, inputAudio, fileFile, serializedAdditionalRawData);
     }
 }

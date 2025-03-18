@@ -70,8 +70,8 @@ namespace OpenAI.Responses
             }
             InternalResponsesToolType @type = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            float displayWidth = default;
-            float displayHeight = default;
+            int displayWidth = default;
+            int displayHeight = default;
             ComputerToolEnvironment environment = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -82,12 +82,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("display_width"u8))
                 {
-                    displayWidth = prop.Value.GetSingle();
+                    displayWidth = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("display_height"u8))
                 {
-                    displayHeight = prop.Value.GetSingle();
+                    displayHeight = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("environment"u8))
