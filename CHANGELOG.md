@@ -1,5 +1,28 @@
 # Release History
 
+## 2.2.0-beta.4 (2025-03-18)
+
+- OpenAI.Chat:
+  - Enabled support for file inputs. When using models with vision capabilities, you can now also provide PDF files as inputs, either as a file ID or as base64-encoded data. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+    - Added the `CreateFilePart(string fileId)` and `CreateFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename)` factory methods to `ChatMessageContentPart`.
+- OpenAI.Responses:
+  - Added the `ResponseToolChoice` class to help specify which tool the model should select when generating a response. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+
+### Breaking changes in Preview APIs
+
+- OpenAI.Assistants:
+  - Removed the default constructor and the use of the `required` keyword from the `FileSearchRankingOptions` and `FunctionToolDefinition` classes to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
+- OpenAI.RealtimeConversation:
+  - Removed the default constructor and the use of the `required` keyword from the `ConversationFunctionTool` class to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
+- OpenAI.Responses:
+  - Removed the `id` parameter from the factory methods of the `ResponseItem` class.
+  - Renamed the `AllowParallelToolCalls` property of the `ResponseCreationOptions` and `OpenAIResponse` classes to `ParallelToolCallsEnabled`. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+  - Changed the type of the `ToolChoice` property of the `ResponseCreationOptions` and `OpenAIResponse`classes from `BinaryData` to `ResponseToolChoice`. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+  - Changed `MessageRole` from an "extensible enum" to a regular enum. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+  - Refactored the `StreamingResponse*` classes. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
+- OpenAI.VectorStores:
+  - Removed the default constructor and the use of the `required` keyword from the `VectorStoreExpirationPolicy` class to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
+
 ## 2.2.0-beta.3 (2025-03-11)
 
 ### Features Added
