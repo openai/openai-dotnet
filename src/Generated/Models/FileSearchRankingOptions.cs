@@ -11,7 +11,21 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        public FileSearchRankingOptions(float scoreThreshold)
+        {
+            ScoreThreshold = scoreThreshold;
+        }
+
+        internal FileSearchRankingOptions(FileSearchRanker? ranker, float scoreThreshold, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Ranker = ranker;
+            ScoreThreshold = scoreThreshold;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
         public FileSearchRanker? Ranker { get; set; }
+
+        public float ScoreThreshold { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

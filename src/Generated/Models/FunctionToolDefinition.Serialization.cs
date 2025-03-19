@@ -13,6 +13,10 @@ namespace OpenAI.Assistants
 {
     public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
     {
+        internal FunctionToolDefinition()
+        {
+        }
+
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;

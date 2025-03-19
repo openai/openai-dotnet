@@ -9,54 +9,14 @@ namespace OpenAI.VectorStores;
 /// </summary>
 [Experimental("OPENAI001")]
 [CodeGenType("VectorStoreExpirationAfter")]
-[CodeGenSuppress(nameof(VectorStoreExpirationPolicy))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
-[CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(VectorStoreExpirationAnchor), typeof(int), typeof(IDictionary<string, BinaryData>))]
 public partial class VectorStoreExpirationPolicy
 {
     [CodeGenMember("Anchor")]
-    private VectorStoreExpirationAnchor _anchor;
-    [CodeGenMember("Days")]
-    private int _days;
+    public VectorStoreExpirationAnchor Anchor { get; set; } = VectorStoreExpirationAnchor.LastActiveAt;
 
-    /// <summary> Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`. </summary>
-    public required VectorStoreExpirationAnchor Anchor
-    {
-        get => _anchor;
-        set => _anchor = value;
-    }
-
-    /// <summary> The number of days after the anchor time that the vector store will expire. </summary>
-    public required int Days
-    {
-        get => _days;
-        set => _days = value;
-    }
-
-    /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
-    [SetsRequiredMembers]
     public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days)
-        : this(anchor, days, null)
+        : this(days, anchor, null)
     {
-        Days = days;
-        Anchor = anchor;
-    }
-
-    /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
-    public VectorStoreExpirationPolicy()
-    {
-        SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
-    }
-
-    /// <summary> Initializes a new instance of <see cref="VectorStoreExpirationPolicy"/>. </summary>
-    /// <param name="anchor"> Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`. </param>
-    /// <param name="days"> The number of days after the anchor time that the vector store will expire. </param>
-    /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
-    [SetsRequiredMembers]
-    internal VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days, IDictionary<string, BinaryData> additionalBinaryDataProperties)
-    {
-        Anchor = anchor;
-        Days = days;
-        SerializedAdditionalRawData = additionalBinaryDataProperties ?? new ChangeTrackingDictionary<string, BinaryData>();
     }
 }

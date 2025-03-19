@@ -10,7 +10,7 @@ public partial class ConversationFunctionTool : ConversationTool
 {
     [CodeGenMember("Name")]
     private string _name;
-    public required string Name
+    public string Name
     {
         get => _name;
         set => _name = value;
@@ -32,24 +32,5 @@ public partial class ConversationFunctionTool : ConversationTool
     {
         get => _parameters;
         set => _parameters = value;
-    }
-
-    public ConversationFunctionTool() : base(ConversationToolKind.Function, null)
-    {
-    }
-
-    [SetsRequiredMembers]
-    public ConversationFunctionTool(string name)
-        : this(ConversationToolKind.Function, null, name, null, null)
-    {
-        Argument.AssertNotNull(name, nameof(name));
-    }
-
-    [SetsRequiredMembers]
-    internal ConversationFunctionTool(ConversationToolKind kind, IDictionary<string, BinaryData> serializedAdditionalRawData, string name, string description, BinaryData parameters) : base(kind, serializedAdditionalRawData)
-    {
-        _name = name;
-        _description = description;
-        _parameters = parameters;
     }
 }
