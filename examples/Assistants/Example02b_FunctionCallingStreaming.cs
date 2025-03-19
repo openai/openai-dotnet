@@ -19,9 +19,8 @@ public partial class AssistantExamples
 
         // First, define the functions that the assistant will use in its defined tools.
 
-        FunctionToolDefinition getTemperatureTool = new()
+        FunctionToolDefinition getTemperatureTool = new("get_current_temperature")
         {
-            FunctionName = "get_current_temperature",
             Description = "Gets the current temperature at a specific location.",
             Parameters = BinaryData.FromString("""
             {
@@ -41,9 +40,8 @@ public partial class AssistantExamples
             """),
         };
 
-        FunctionToolDefinition getRainProbabilityTool = new()
+        FunctionToolDefinition getRainProbabilityTool = new("get_current_rain_probability")
         {
-            FunctionName = "get_current_rain_probability",
             Description = "Gets the current forecasted probability of rain at a specific location,"
                 + " represented as a percent chance in the range of 0 to 100.",
             Parameters = BinaryData.FromString("""

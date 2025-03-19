@@ -13,6 +13,10 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreExpirationPolicy : IJsonModel<VectorStoreExpirationPolicy>
     {
+        internal VectorStoreExpirationPolicy()
+        {
+        }
+
         void IJsonModel<VectorStoreExpirationPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -27,15 +31,15 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("anchor") != true)
-            {
-                writer.WritePropertyName("anchor"u8);
-                writer.WriteStringValue(_anchor.ToSerialString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("days") != true)
             {
                 writer.WritePropertyName("days"u8);
-                writer.WriteNumberValue(_days);
+                writer.WriteNumberValue(Days);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("anchor") != true)
+            {
+                writer.WritePropertyName("anchor"u8);
+                writer.WriteStringValue(Anchor.ToSerialString());
             }
             if (_additionalBinaryDataProperties != null)
             {
@@ -77,24 +81,24 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            VectorStoreExpirationAnchor anchor = default;
             int days = default;
+            VectorStoreExpirationAnchor anchor = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("anchor"u8))
-                {
-                    anchor = prop.Value.GetString().ToVectorStoreExpirationAnchor();
-                    continue;
-                }
                 if (prop.NameEquals("days"u8))
                 {
                     days = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("anchor"u8))
+                {
+                    anchor = prop.Value.GetString().ToVectorStoreExpirationAnchor();
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new VectorStoreExpirationPolicy(anchor, days, additionalBinaryDataProperties);
+            return new VectorStoreExpirationPolicy(days, anchor, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<VectorStoreExpirationPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -484,9 +484,8 @@ public class AssistantsTests : SyncAsyncTestBase
         {
             Tools =
             {
-                new FunctionToolDefinition()
+                new FunctionToolDefinition("get_favorite_food_for_day_of_week")
                 {
-                    FunctionName = "get_favorite_food_for_day_of_week",
                     Description = "gets the user's favorite food for a given day of the week, like Tuesday",
                     Parameters = BinaryData.FromObjectAsJson(new
                     {
@@ -666,9 +665,8 @@ public class AssistantsTests : SyncAsyncTestBase
         AssertAsyncOnly();
 
         AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new()
+        FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
-            FunctionName = "get_current_weather",
             Description = "Gets the user's current weather",
         };
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new()
@@ -730,9 +728,8 @@ public class AssistantsTests : SyncAsyncTestBase
         AssertSyncOnly();
 
         AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new()
+        FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
-            FunctionName = "get_current_weather",
             Description = "Gets the user's current weather",
         };
         Assistant assistant = client.CreateAssistant("gpt-4o-mini", new()
@@ -810,9 +807,8 @@ public class AssistantsTests : SyncAsyncTestBase
         FileSearchToolDefinition fileSearchTool = new()
         {
             MaxResults = 2,
-            RankingOptions = new()
+            RankingOptions = new(0.5f)
             {
-                ScoreThreshold = 0.5f,
                 Ranker = FileSearchRanker.Default20240821
             }
         };

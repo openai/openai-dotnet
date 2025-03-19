@@ -2,9 +2,17 @@
 
 #nullable disable
 
+using System;
+using System.Collections.Generic;
+using OpenAI;
+
 namespace OpenAI.Assistants
 {
     public partial class FunctionToolDefinition : ToolDefinition
     {
+        internal FunctionToolDefinition(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalFunctionDefinition internalFunction) : base(@type, additionalBinaryDataProperties)
+        {
+            _internalFunction = internalFunction;
+        }
     }
 }

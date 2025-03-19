@@ -31,10 +31,10 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor = default, int days = default)
+        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(int days = default, VectorStoreExpirationAnchor anchor = default)
         {
 
-            return new VectorStoreExpirationPolicy(anchor, days, additionalBinaryDataProperties: null);
+            return new VectorStoreExpirationPolicy(days, anchor, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreCreationOptions VectorStoreCreationOptions(IEnumerable<string> fileIds = default, string name = default, IDictionary<string, string> metadata = default, VectorStoreExpirationPolicy expirationPolicy = default, FileChunkingStrategy chunkingStrategy = default)
@@ -201,7 +201,7 @@ namespace OpenAI
         public static FileSearchRankingOptions FileSearchRankingOptions(FileSearchRanker? ranker = default, float scoreThreshold = default)
         {
 
-            return new FileSearchRankingOptions(ranker, scoreThreshold, serializedAdditionalRawData: null);
+            return new FileSearchRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
         public static FileSearchToolResources FileSearchToolResources(IEnumerable<string> vectorStoreIds = default, IEnumerable<VectorStoreCreationHelper> newVectorStores = default)
@@ -346,10 +346,10 @@ namespace OpenAI
             return new UnknownRealtimeTool(new ConversationToolKind(kind), additionalBinaryDataProperties: null);
         }
 
-        public static ConversationFunctionTool ConversationFunctionTool(ConversationToolKind kind = default, string name = default, string description = default, BinaryData parameters = default)
+        public static ConversationFunctionTool ConversationFunctionTool(string name = default, string description = default, BinaryData parameters = default)
         {
 
-            return new ConversationFunctionTool(kind, serializedAdditionalRawData: null, name, description, parameters);
+            return new ConversationFunctionTool(ConversationToolKind.Function, additionalBinaryDataProperties: null, name, description, parameters);
         }
 
         public static ConversationContentPart ConversationContentPart(string kind = default)

@@ -11,6 +11,15 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal VectorStoreExpirationPolicy(int days, VectorStoreExpirationAnchor anchor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Days = days;
+            Anchor = anchor;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
+        public int Days { get; set; }
+
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;

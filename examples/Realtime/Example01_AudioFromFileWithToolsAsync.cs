@@ -174,9 +174,8 @@ public partial class RealtimeExamples
 
     private static ConversationFunctionTool CreateSampleWeatherTool()
     {
-        return new ConversationFunctionTool()
+        return new ConversationFunctionTool("get_weather_for_location")
         {
-            Name = "get_weather_for_location",
             Description = "gets the weather for a location",
             Parameters = BinaryData.FromString("""
             {

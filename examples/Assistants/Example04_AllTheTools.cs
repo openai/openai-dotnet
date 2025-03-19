@@ -23,9 +23,8 @@ public partial class AssistantExamples
                 _ => throw new ArgumentException(relation, nameof(relation))
             };
 
-        FunctionToolDefinition getNameOfFamilyMemberTool = new()
+        FunctionToolDefinition getNameOfFamilyMemberTool = new(nameof(GetNameOfFamilyMember))
         {
-            FunctionName = nameof(GetNameOfFamilyMember),
             Description = "Provided a family relation type like 'father' or 'mother', "
                 + "gets the name of the related person from the user.",
             Parameters = BinaryData.FromString("""

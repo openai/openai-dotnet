@@ -13,6 +13,10 @@ namespace OpenAI.RealtimeConversation
 {
     public partial class ConversationFunctionTool : IJsonModel<ConversationFunctionTool>
     {
+        internal ConversationFunctionTool()
+        {
+        }
+
         void IJsonModel<ConversationFunctionTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();

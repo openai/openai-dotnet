@@ -22,9 +22,8 @@ public partial class AssistantExamples
 
         const string GetCurrentLocationFunctionName = "get_current_location";
 
-        FunctionToolDefinition getLocationTool = new()
+        FunctionToolDefinition getLocationTool = new(GetCurrentLocationFunctionName)
         {
-            FunctionName = GetCurrentLocationFunctionName,
             Description = "Get the user's current location"
         };
 
@@ -36,9 +35,8 @@ public partial class AssistantExamples
 
         const string GetCurrentWeatherFunctionName = "get_current_weather";
 
-        FunctionToolDefinition getWeatherTool = new()
+        FunctionToolDefinition getWeatherTool = new(GetCurrentWeatherFunctionName)
         {
-            FunctionName = GetCurrentWeatherFunctionName,
             Description = "Get the current weather in a given location",
             Parameters = BinaryData.FromString("""
             {

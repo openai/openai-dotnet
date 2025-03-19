@@ -13,6 +13,10 @@ namespace OpenAI.Assistants
 {
     public partial class FileSearchRankingOptions : IJsonModel<FileSearchRankingOptions>
     {
+        internal FileSearchRankingOptions()
+        {
+        }
+
         void IJsonModel<FileSearchRankingOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -35,7 +39,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("score_threshold") != true)
             {
                 writer.WritePropertyName("score_threshold"u8);
-                writer.WriteNumberValue(_scoreThreshold);
+                writer.WriteNumberValue(ScoreThreshold);
             }
             if (_additionalBinaryDataProperties != null)
             {

@@ -332,11 +332,9 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class FileSearchRankingOptions : IJsonModel<FileSearchRankingOptions>, IPersistableModel<FileSearchRankingOptions> {
-        public FileSearchRankingOptions();
-        [SetsRequiredMembers]
         public FileSearchRankingOptions(float scoreThreshold);
         public FileSearchRanker? Ranker { get; set; }
-        public required float ScoreThreshold { get; set; }
+        public float ScoreThreshold { get; set; }
         public static explicit operator FileSearchRankingOptions(ClientResult result);
         public static implicit operator BinaryContent(FileSearchRankingOptions fileSearchRankingOptions);
     }
@@ -356,11 +354,9 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class FunctionToolDefinition : ToolDefinition, IJsonModel<FunctionToolDefinition>, IPersistableModel<FunctionToolDefinition> {
-        public FunctionToolDefinition();
-        [SetsRequiredMembers]
         public FunctionToolDefinition(string name);
         public string Description { get; set; }
-        public required string FunctionName { get; set; }
+        public string FunctionName { get; set; }
         public BinaryData Parameters { get; set; }
         public bool? StrictParameterSchemaEnabled { get; set; }
         public new static explicit operator FunctionToolDefinition(ClientResult result);
@@ -2240,11 +2236,9 @@ namespace OpenAI.RealtimeConversation {
     }
     [Experimental("OPENAI002")]
     public class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>, IPersistableModel<ConversationFunctionTool> {
-        public ConversationFunctionTool();
-        [SetsRequiredMembers]
         public ConversationFunctionTool(string name);
         public string Description { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public BinaryData Parameters { get; set; }
         public new static explicit operator ConversationFunctionTool(ClientResult result);
         public static implicit operator BinaryContent(ConversationFunctionTool conversationFunctionTool);
@@ -3842,11 +3836,9 @@ namespace OpenAI.VectorStores {
     }
     [Experimental("OPENAI001")]
     public class VectorStoreExpirationPolicy : IJsonModel<VectorStoreExpirationPolicy>, IPersistableModel<VectorStoreExpirationPolicy> {
-        public VectorStoreExpirationPolicy();
-        [SetsRequiredMembers]
         public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days);
-        public required VectorStoreExpirationAnchor Anchor { get; set; }
-        public required int Days { get; set; }
+        public VectorStoreExpirationAnchor Anchor { get; set; }
+        public int Days { get; set; }
         public static explicit operator VectorStoreExpirationPolicy(ClientResult result);
         public static implicit operator BinaryContent(VectorStoreExpirationPolicy vectorStoreExpirationPolicy);
     }
