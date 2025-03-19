@@ -21,7 +21,7 @@
   - Changed `MessageRole` from an "extensible enum" to a regular enum. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
   - Refactored the `StreamingResponse*` classes. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
 - OpenAI.VectorStores:
-  - Removed the default constructor and the use of the `required` keyword from the `VectorStoreExperationPoligy` class to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
+  - Removed the default constructor and the use of the `required` keyword from the `VectorStoreExpirationPolicy` class to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
 
 ## 2.2.0-beta.3 (2025-03-11)
 
