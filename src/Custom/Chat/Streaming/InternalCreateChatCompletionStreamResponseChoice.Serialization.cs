@@ -81,12 +81,14 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
             if (property.NameEquals("finish_reason"u8))
             {
-                if (property.Value.ValueKind == JsonValueKind.Null)
+                var propertyValue = property.Value;
+                string propertyValueString;
+                if (propertyValue.ValueKind == JsonValueKind.Null||(propertyValueString=propertyValue.GetString())?.Trim()==string.Empty)
                 {
                     finishReason = null;
                     continue;
                 }
-                finishReason = property.Value.GetString().ToChatFinishReason();
+                finishReason = propertyValueString.ToChatFinishReason();
                 continue;
             }
             if (property.NameEquals("index"u8))
