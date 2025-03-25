@@ -83,7 +83,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             {
                 var propertyValue = property.Value;
                 string propertyValueString;
-                if (propertyValue.ValueKind == JsonValueKind.Null||(propertyValueString=propertyValue.GetString())?.Trim()==string.Empty)
+                if (propertyValue.ValueKind == JsonValueKind.Null||string.IsNullOrEmpty((propertyValueString=propertyValue.GetString())?.Trim()))
                 {
                     finishReason = null;
                     continue;
