@@ -293,7 +293,12 @@ public abstract class ToolsBase<TTool> where TTool : class
             xSumSquared += x[i] * x[i];
             ySumSquared += y[i] * y[i];
         }
+#if NETSTANDARD2_0
+
+        return dot / (float)(Math.Sqrt(xSumSquared) * (float)Math.Sqrt(ySumSquared));
+#else
         return dot / (MathF.Sqrt(xSumSquared) * MathF.Sqrt(ySumSquared));
+#endif
     }
 
     // Abstract methods that concrete implementations must provide

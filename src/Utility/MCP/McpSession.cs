@@ -123,11 +123,7 @@ internal class McpSession : IDisposable
             while (!_cancellationSource.Token.IsCancellationRequested)
             {
                 DebugPrint("Reading line from SSE stream...");
-#if !NETSTANDARD2_0
-                string line = await streamReader.ReadLineAsync(_cancellationSource.Token).ConfigureAwait(false);
-#else
                 string line = await streamReader.ReadLineAsync().ConfigureAwait(false);
-#endif
                 if (line == null)
                 {
                     throw new IOException("SSE stream closed unexpectedly");
