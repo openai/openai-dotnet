@@ -107,5 +107,71 @@ public class ResponseTools : ToolsBase<ResponseTool>
     }
 
     public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.ToOptions();
+
+    public string Call(FunctionCallResponseItem call)
+    {
+        var arguments = new List<object>();
+        if (call.FunctionArguments != null)
+        {
+            using var document = JsonDocument.Parse(call.FunctionArguments);
+            foreach (JsonProperty argument in document.RootElement.EnumerateObject())
+            {
+                arguments.Add(argument.Value.ValueKind switch
+                {
+                    JsonValueKind.String => argument.Value.GetString()!,
+                    JsonValueKind.Number => argument.Value.GetDouble(),
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+                    _ => throw new NotImplementedException()
+                });
+            }
+        }
+        return Call(call.FunctionName, [.. arguments]);
+    }
+
+    protected async Task<string> CallMcp(FunctionCallResponseItem call)
+    {
+        if (!_mcpMethods.TryGetValue(call.FunctionName, out var method))
+            throw new NotImplementedException($"MCP tool {call.FunctionName} not found.");
+
+#if !NETSTANDARD2_0
+        var actualFunctionName = call.FunctionName.Split(_mcpToolSeparator, 2)[1];
+#else
+        var index = call.FunctionName.IndexOf(_mcpToolSeparator);
+        var actualFunctionName = call.FunctionName.Substring(index + _mcpToolSeparator.Length);
+#endif
+        var result = await method(actualFunctionName, call.FunctionArguments).ConfigureAwait(false);
+        return result.ToString();
+    }
+
+    public IEnumerable<FunctionCallOutputResponseItem> CallAll(IEnumerable<FunctionCallResponseItem> toolCalls)
+    {
+        var messages = new List<FunctionCallOutputResponseItem>();
+        foreach (FunctionCallResponseItem toolCall in toolCalls)
+        {
+            var result = Call(toolCall);
+            messages.Add(new FunctionCallOutputResponseItem(toolCall.Id, result));
+        }
+        return messages;
+    }
+
+    public async Task<FunctionCallOutputResponseItem> CallWithErrors(FunctionCallResponseItem toolCall)
+    {
+        bool isMcpTool = false;
+        if (!_methods.ContainsKey(toolCall.FunctionName))
+        {
+            if (_mcpMethods.ContainsKey(toolCall.FunctionName))
+            {
+                isMcpTool = true;
+            }
+            else
+            {
+                return new FunctionCallOutputResponseItem(toolCall.Id, $"I don't have a tool called {toolCall.FunctionName}");
+            }
+        }
+
+        var result = isMcpTool ? await CallMcp(toolCall).ConfigureAwait(false) : Call(toolCall);
+        return new FunctionCallOutputResponseItem(toolCall.Id, result);
+    }
 }
 
