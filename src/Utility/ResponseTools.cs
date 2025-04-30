@@ -171,7 +171,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
         }
 
         var result = isMcpTool ? await CallMcp(toolCall).ConfigureAwait(false) : Call(toolCall);
-        return new FunctionCallOutputResponseItem(toolCall.Id, result);
+        return new FunctionCallOutputResponseItem(toolCall.CallId, result);
     }
 }
 

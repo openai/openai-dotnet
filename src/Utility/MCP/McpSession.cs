@@ -86,6 +86,7 @@ internal class McpSession : IDisposable
 
             // Get the message endpoint from the server
             _messageEndpoint = await GetMessageEndpointAsync().ConfigureAwait(false);
+            DebugPrint($"Message endpoint: {_messageEndpoint}");
             await SendInitializeAsync().ConfigureAwait(false);
             _isInitialized = true;
         }
@@ -172,7 +173,8 @@ internal class McpSession : IDisposable
                 {
                     var serverUri = _serverEndpoint;
                     var endpoint = serverUri.GetLeftPart(UriPartial.Authority);
-                    var messageEndpoint = $"{endpoint}{sseEvent.Data.Trim()}";
+                    string trailingSlash = endpoint.EndsWith("/") ? "" : "/";
+                    var messageEndpoint = $"{endpoint}{trailingSlash}{sseEvent.Data.Trim()}";
                     _endpointTcs.TrySetResult(messageEndpoint);
                 }
                 break;
