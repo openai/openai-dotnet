@@ -108,7 +108,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
 
     public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.ToOptions();
 
-    public string Call(FunctionCallResponseItem call)
+    internal string CallLocal(FunctionCallResponseItem call)
     {
         var arguments = new List<object>();
         if (call.FunctionArguments != null)
@@ -126,10 +126,10 @@ public class ResponseTools : ToolsBase<ResponseTool>
                 });
             }
         }
-        return Call(call.FunctionName, [.. arguments]);
+        return CallLocal(call.FunctionName, [.. arguments]);
     }
 
-    protected async Task<string> CallMcp(FunctionCallResponseItem call)
+    internal async Task<string> CallMcpAsync(FunctionCallResponseItem call)
     {
         if (!_mcpMethods.TryGetValue(call.FunctionName, out var method))
             throw new NotImplementedException($"MCP tool {call.FunctionName} not found.");
@@ -144,18 +144,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
         return result.ToString();
     }
 
-    public IEnumerable<FunctionCallOutputResponseItem> CallAll(IEnumerable<FunctionCallResponseItem> toolCalls)
-    {
-        var messages = new List<FunctionCallOutputResponseItem>();
-        foreach (FunctionCallResponseItem toolCall in toolCalls)
-        {
-            var result = Call(toolCall);
-            messages.Add(new FunctionCallOutputResponseItem(toolCall.Id, result));
-        }
-        return messages;
-    }
-
-    public async Task<FunctionCallOutputResponseItem> CallWithErrors(FunctionCallResponseItem toolCall)
+    public async Task<FunctionCallOutputResponseItem> CallAsync(FunctionCallResponseItem toolCall)
     {
         bool isMcpTool = false;
         if (!_methods.ContainsKey(toolCall.FunctionName))
@@ -170,7 +159,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
             }
         }
 
-        var result = isMcpTool ? await CallMcp(toolCall).ConfigureAwait(false) : Call(toolCall);
+        var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
         return new FunctionCallOutputResponseItem(toolCall.CallId, result);
     }
 }

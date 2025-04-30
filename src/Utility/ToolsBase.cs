@@ -82,7 +82,7 @@ public abstract class ToolsBase<TTool> where TTool : class
 
     internal abstract Task Add(BinaryData toolDefinitions, McpClient client);
 
-    public string Call(string name, object[] arguments)
+    internal string CallLocal(string name, object[] arguments)
     {
         if (!_methods.TryGetValue(name, out MethodInfo method))
             return $"I don't have a tool called {name}";

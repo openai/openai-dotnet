@@ -107,7 +107,7 @@ public class ChatTools : ToolsBase<ChatTool>
 
     public static implicit operator ChatCompletionOptions(ChatTools tools) => tools.ToOptions();
 
-    public string Call(ChatToolCall call)
+    internal string CallLocal(ChatToolCall call)
     {
         var arguments = new List<object>();
         if (call.FunctionArguments != null)
@@ -125,10 +125,10 @@ public class ChatTools : ToolsBase<ChatTool>
                 });
             }
         }
-        return Call(call.FunctionName, [.. arguments]);
+        return CallLocal(call.FunctionName, [.. arguments]);
     }
 
-    protected async Task<string> CallMcp(ChatToolCall call)
+    internal async Task<string> CallMcpAsync(ChatToolCall call)
     {
         if (!_mcpMethods.TryGetValue(call.FunctionName, out var method))
             throw new NotImplementedException($"MCP tool {call.FunctionName} not found.");
@@ -143,18 +143,32 @@ public class ChatTools : ToolsBase<ChatTool>
         return result.ToString();
     }
 
-    public IEnumerable<ToolChatMessage> CallAll(IEnumerable<ChatToolCall> toolCalls)
+    public async Task<IEnumerable<ToolChatMessage>> CallAllAsync(IEnumerable<ChatToolCall> toolCalls)
     {
         var messages = new List<ToolChatMessage>();
         foreach (ChatToolCall toolCall in toolCalls)
         {
-            var result = Call(toolCall);
+            bool isMcpTool = false;
+            if (!_methods.ContainsKey(toolCall.FunctionName))
+            {
+                if (_mcpMethods.ContainsKey(toolCall.FunctionName))
+                {
+                    isMcpTool = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Tool not found: " + toolCall.FunctionName);
+                }
+            }
+
+            var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
             messages.Add(new ToolChatMessage(toolCall.Id, result));
         }
+
         return messages;
     }
 
-    public async Task<ToolCallChatResult> CallAllWithErrors(IEnumerable<ChatToolCall> toolCalls)
+    public async Task<ToolCallChatResult> CallAllWithErrorsAsync(IEnumerable<ChatToolCall> toolCalls)
     {
         List<string> failed = null;
         var messages = new List<ToolChatMessage>();
@@ -176,7 +190,7 @@ public class ChatTools : ToolsBase<ChatTool>
                 }
             }
 
-            var result = isMcpTool ? await CallMcp(toolCall).ConfigureAwait(false) : Call(toolCall);
+            var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
             messages.Add(new ToolChatMessage(toolCall.Id, result));
         }
 
