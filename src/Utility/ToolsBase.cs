@@ -28,7 +28,7 @@ public abstract class ToolsBase<TTool> where TTool : class
 
     protected readonly List<McpClient> _mcpClients = [];
     protected readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
-    protected const string _mcpToolSeparator = "_._";
+    protected const string _mcpToolSeparator = "_-_";
 
     protected ToolsBase(EmbeddingClient client = null)
     {
