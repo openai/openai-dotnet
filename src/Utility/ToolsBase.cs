@@ -26,8 +26,8 @@ public abstract class ToolsBase<TTool> where TTool : class
     protected readonly EmbeddingClient _client;
     protected readonly List<VectorbaseEntry> _entries = [];
 
-    protected readonly List<McpClient> _mcpClients = [];
-    protected readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
+    internal readonly List<McpClient> _mcpClients = [];
+    internal readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
     protected const string _mcpToolSeparator = "_-_";
 
     protected ToolsBase(EmbeddingClient client = null)
@@ -44,7 +44,7 @@ public abstract class ToolsBase<TTool> where TTool : class
             Add(functionHolder);
     }
 
-    public async Task AddMcpServerAsync(McpClient client)
+    internal async Task AddMcpServerAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;
@@ -80,7 +80,7 @@ public abstract class ToolsBase<TTool> where TTool : class
 
     internal abstract TTool MethodInfoToTool(MethodInfo methodInfo);
 
-    protected abstract Task Add(BinaryData toolDefinitions, McpClient client);
+    internal abstract Task Add(BinaryData toolDefinitions, McpClient client);
 
     public string Call(string name, object[] arguments)
     {

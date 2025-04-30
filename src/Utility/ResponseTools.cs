@@ -27,7 +27,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
     internal override ResponseTool MethodInfoToTool(MethodInfo methodInfo) =>
         ResponseTool.CreateFunctionTool(methodInfo.Name, GetMethodDescription(methodInfo), BuildParametersJson(methodInfo.GetParameters()));
 
-    protected override async Task Add(BinaryData toolDefinitions, McpClient client)
+    internal override async Task Add(BinaryData toolDefinitions, McpClient client)
     {
         using var document = JsonDocument.Parse(toolDefinitions);
         if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))

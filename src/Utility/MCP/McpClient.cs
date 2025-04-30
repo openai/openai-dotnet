@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-public class McpClient
+internal class McpClient
 {
     private readonly McpSession _session;
     private readonly ClientPipeline _pipeline = ClientPipeline.Create();

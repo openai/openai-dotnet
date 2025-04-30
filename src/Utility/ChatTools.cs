@@ -27,7 +27,7 @@ public class ChatTools : ToolsBase<ChatTool>
     internal override ChatTool MethodInfoToTool(MethodInfo methodInfo) =>
         ChatTool.CreateFunctionTool(methodInfo.Name, GetMethodDescription(methodInfo), BuildParametersJson(methodInfo.GetParameters()));
 
-    protected override async Task Add(BinaryData toolDefinitions, McpClient client)
+    internal override async Task Add(BinaryData toolDefinitions, McpClient client)
     {
         using var document = JsonDocument.Parse(toolDefinitions);
         if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))
