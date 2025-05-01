@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -12,13 +13,24 @@ namespace OpenAI.Responses;
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for responses.
 /// </summary>
-public class ResponseTools : Tools<ResponseTool>
+public class ResponseTools
 {
+    private readonly Dictionary<string, MethodInfo> _methods = [];
+    private readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
+    private readonly List<ResponseTool> _tools = [];
+    private readonly EmbeddingClient _client;
+    private readonly List<VectorbaseEntry> _entries = [];
+    private readonly List<McpClient> _mcpClients = [];
+    private readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
+
     /// <summary>
     /// Initializes a new instance of the ResponseTools class with an optional embedding client.
     /// </summary>
     /// <param name="client">The embedding client used for tool vectorization, or null to disable vectorization.</param>
-    public ResponseTools(EmbeddingClient client = null) : base(client) { }
+    public ResponseTools(EmbeddingClient client = null)
+    {
+        _client = client;
+    }
 
     /// <summary>
     /// Initializes a new instance of the ResponseTools class with the specified tool types.
@@ -33,10 +45,75 @@ public class ResponseTools : Tools<ResponseTool>
                 AddLocalTool(t);
     }
 
-    internal override ResponseTool MethodInfoToTool(MethodInfo methodInfo) =>
-        ResponseTool.CreateFunctionTool(methodInfo.Name, GetMethodDescription(methodInfo), BuildParametersJson(methodInfo.GetParameters()));
+    /// <summary>
+    /// Gets the list of defined tools.
+    /// </summary>
+    public IList<ResponseTool> Tools => _tools;
 
-    internal override async Task Add(BinaryData toolDefinitions, McpClient client)
+    /// <summary>
+    /// Gets whether tools can be filtered using embeddings provided by the provided <see cref="EmbeddingClient"/> .
+    /// </summary>
+    public bool CanFilterTools => _client != null;
+
+    /// <summary>
+    /// Adds local tool implementations from the provided types.
+    /// </summary>
+    /// <param name="tools">Types containing static methods to be used as tools.</param>
+    public void AddLocalTools(params Type[] tools)
+    {
+        foreach (Type functionHolder in tools)
+            AddLocalTool(functionHolder);
+    }
+
+    /// <summary>
+    /// Adds all public static methods from the specified type as tools.
+    /// </summary>
+    /// <param name="functions">The type containing tool methods.</param>
+    public void AddLocalTool(Type functions)
+    {
+#pragma warning disable IL2070
+        foreach (MethodInfo function in functions.GetMethods(BindingFlags.Public | BindingFlags.Static))
+        {
+            AddLocalTool(function);
+        }
+#pragma warning restore IL2070
+    }
+
+    public void AddLocalTool(MethodInfo function)
+    {
+        string name = function.Name;
+        var tool = ResponseTool.CreateFunctionTool(name, ToolsUtility.GetMethodDescription(function), ToolsUtility.BuildParametersJson(function.GetParameters()));
+        _tools.Add(tool);
+        _methods[name] = function;
+    }
+
+    /// <summary>
+    /// Adds a remote MCP server as a tool provider.
+    /// </summary>
+    /// <param name="client">The MCP client instance.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    internal async Task AddMcpServerAsync(McpClient client)
+    {
+        if (client == null) throw new ArgumentNullException(nameof(client));
+        _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;
+        await client.StartAsync().ConfigureAwait(false);
+        BinaryData tools = await client.ListToolsAsync().ConfigureAwait(false);
+        await AddToolsAsync(tools, client).ConfigureAwait(false);
+        _mcpClients.Add(client);
+    }
+
+    /// <summary>
+    /// Adds a remote MCP server as a tool provider.
+    /// </summary>
+    /// <param name="serverEndpoint">The URI endpoint of the MCP server.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task AddMcpServerAsync(Uri serverEndpoint)
+    {
+        var client = new McpClient(serverEndpoint);
+        await AddMcpServerAsync(client).ConfigureAwait(false);
+    }
+
+    private async Task AddToolsAsync(BinaryData toolDefinitions, McpClient client)
     {
         using var document = JsonDocument.Parse(toolDefinitions);
         if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))
@@ -47,7 +124,7 @@ public class ResponseTools : Tools<ResponseTool>
 
         foreach (var tool in toolsElement.EnumerateArray())
         {
-            var name = $"{serverKey}{_mcpToolSeparator}{tool.GetProperty("name").GetString()!}";
+            var name = $"{serverKey}{ToolsUtility.McpToolSeparator}{tool.GetProperty("name").GetString()!}";
             var description = tool.GetProperty("description").GetString()!;
 #pragma warning disable IL2026, IL3050
             var inputSchema = JsonSerializer.Serialize(
@@ -61,12 +138,22 @@ public class ResponseTools : Tools<ResponseTool>
             _mcpMethods[name] = client.CallToolAsync;
         }
 
-        await AddToolsToVectorBaseAsync(toolsToVectorize).ConfigureAwait(false);
+        if (_client != null)
+        {
+            var embeddings = await _client.GenerateEmbeddingsAsync(toolsToVectorize.ConvertAll(GetDescription)).ConfigureAwait(false);
+            foreach (var embedding in embeddings.Value)
+            {
+                var vector = embedding.ToFloats();
+                var item = toolsToVectorize[embedding.Index];
+                var toolDefinition = SerializeTool(item);
+                _entries.Add(new VectorbaseEntry(vector, toolDefinition));
+            }
+        }
     }
 
-    protected override string GetDescription(ResponseTool tool) => (tool as InternalResponsesFunctionTool)?.Description ?? "";
+    private string GetDescription(ResponseTool tool) => (tool as InternalResponsesFunctionTool)?.Description ?? "";
 
-    protected override BinaryData SerializeTool(ResponseTool tool)
+    private BinaryData SerializeTool(ResponseTool tool)
     {
         var functionTool = tool as InternalResponsesFunctionTool;
         using var stream = new MemoryStream();
@@ -85,7 +172,7 @@ public class ResponseTools : Tools<ResponseTool>
         return BinaryData.FromStream(stream);
     }
 
-    protected override ResponseTool ParseToolDefinition(BinaryData data)
+    private ResponseTool ParseToolDefinition(BinaryData data)
     {
         using var document = JsonDocument.Parse(data);
         var root = document.RootElement;
@@ -109,7 +196,7 @@ public class ResponseTools : Tools<ResponseTool>
     }
 
     /// <summary>
-    /// Converts the tools collection to <see cref="ResponseCreationOptions">, filtered by relevance to the given prompt. Filtering is only applied if <see cref="CanFilterTools"/> is true.
+    /// Converts the tools collection to <see cref="ResponseCreationOptions">, filtered by relevance to the given prompt.
     /// </summary>
     /// <param name="prompt">The prompt to find relevant tools for.</param>
     /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
@@ -120,9 +207,33 @@ public class ResponseTools : Tools<ResponseTool>
             return CreateResponseOptions();
 
         var completionOptions = new ResponseCreationOptions();
-        foreach (var tool in RelatedTo(prompt, options?.MaxTools ?? 5))
+        foreach (var tool in FindRelatedTools(prompt, options?.MaxTools ?? 5))
             completionOptions.Tools.Add(tool);
         return completionOptions;
+    }
+
+    private IEnumerable<ResponseTool> FindRelatedTools(string prompt, int maxEntries = 5)
+    {
+        if (!CanFilterTools)
+            return _tools;
+
+        var options = new ToolSelectionOptions { MaxTools = maxEntries };
+        return FindVectorMatches(prompt, options).Select(e => ParseToolDefinition(e.Data));
+    }
+
+    private IEnumerable<VectorbaseEntry> FindVectorMatches(string prompt, ToolSelectionOptions options)
+    {
+        var vector = ToolsUtility.GetEmbedding(_client, prompt).GetAwaiter().GetResult();
+        lock (_entries)
+        {
+            var distances = _entries
+                .Select((e, i) => (Distance: 1f - ToolsUtility.CosineSimilarity(e.Vector.Span, vector.Span), Index: i))
+                .OrderBy(t => t.Distance)
+                .Take(options.MaxTools)
+                .Where(t => t.Distance <= options.MinVectorDistance);
+
+            return distances.Select(d => _entries[d.Index]);
+        }
     }
 
     /// <summary>
@@ -152,16 +263,25 @@ public class ResponseTools : Tools<ResponseTool>
         return CallLocal(call.FunctionName, [.. arguments]);
     }
 
+    private string CallLocal(string name, object[] arguments)
+    {
+        if (!_methods.TryGetValue(name, out MethodInfo method))
+            return $"I don't have a tool called {name}";
+
+        object result = method.Invoke(null, arguments);
+        return result?.ToString() ?? string.Empty;
+    }
+
     internal async Task<string> CallMcpAsync(FunctionCallResponseItem call)
     {
         if (!_mcpMethods.TryGetValue(call.FunctionName, out var method))
             throw new NotImplementedException($"MCP tool {call.FunctionName} not found.");
 
 #if !NETSTANDARD2_0
-        var actualFunctionName = call.FunctionName.Split(_mcpToolSeparator, 2)[1];
+        var actualFunctionName = call.FunctionName.Split(ToolsUtility.McpToolSeparator, 2)[1];
 #else
-        var index = call.FunctionName.IndexOf(_mcpToolSeparator);
-        var actualFunctionName = call.FunctionName.Substring(index + _mcpToolSeparator.Length);
+        var index = call.FunctionName.IndexOf(ToolsUtility.McpToolSeparator);
+        var actualFunctionName = call.FunctionName.Substring(index + ToolsUtility.McpToolSeparator.Length);
 #endif
         var result = await method(actualFunctionName, call.FunctionArguments).ConfigureAwait(false);
         return result.ToString();
