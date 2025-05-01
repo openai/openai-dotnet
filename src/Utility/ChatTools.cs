@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -65,11 +66,11 @@ public class ChatTools
     /// <summary>
     /// Adds all public static methods from the specified type as tools.
     /// </summary>
-    /// <param name="functions">The type containing tool methods.</param>
-    public void AddLocalTool(Type functions)
+    /// <param name="tool">The type containing tool methods.</param>
+    internal void AddLocalTool(Type tool)
     {
 #pragma warning disable IL2070
-        foreach (MethodInfo function in functions.GetMethods(BindingFlags.Public | BindingFlags.Static))
+        foreach (MethodInfo function in tool.GetMethods(BindingFlags.Public | BindingFlags.Static))
         {
             AddLocalTool(function);
         }
@@ -89,7 +90,7 @@ public class ChatTools
     /// </summary>
     /// <param name="client">The MCP client instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    internal async Task AddMcpServerAsync(McpClient client)
+    internal async Task AddMcpToolsAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;
@@ -102,12 +103,15 @@ public class ChatTools
     /// <summary>
     /// Adds a remote MCP server as a tool provider.
     /// </summary>
-    /// <param name="serverEndpoint">The URI endpoint of the MCP server.</param>
+    /// <param name="mcpEndpoint">The URI endpoint of the MCP server.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task AddMcpServerAsync(Uri serverEndpoint)
+    public async Task AddMcpToolsAsync(Uri mcpEndpoint) =>
+        await AddMcpToolsAsync(mcpEndpoint, null).ConfigureAwait(false);
+
+    internal async Task AddMcpToolsAsync(Uri serverEndpoint, ClientPipeline pipeline)
     {
-        var client = new McpClient(serverEndpoint);
-        await AddMcpServerAsync(client).ConfigureAwait(false);
+        var client = new McpClient(serverEndpoint, pipeline);
+        await AddMcpToolsAsync(client).ConfigureAwait(false);
     }
 
     private async Task AddToolsAsync(BinaryData toolDefinitions, McpClient client)
@@ -193,29 +197,29 @@ public class ChatTools
     /// Converts the tools collection to <see cref="ChatCompletionOptions"/>, filtered by relevance to the given prompt.
     /// </summary>
     /// <param name="prompt">The prompt to find relevant tools for.</param>
-    /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
+    /// <param name="maxTools">The maximum number of tools to return. Default is 3.</param>
+    /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
     /// <returns>A new <see cref="ChatCompletionOptions"/> containing the most relevant tools.</returns>
-    public ChatCompletionOptions CreateCompletionOptions(string prompt, ToolSelectionOptions options = null)
+    public ChatCompletionOptions CreateCompletionOptions(string prompt, int maxTools = 3, float minVectorDistance = 0.29f)
     {
         if (!CanFilterTools)
             return CreateCompletionOptions();
 
         var completionOptions = new ChatCompletionOptions();
-        foreach (var tool in FindRelatedTools(prompt, options?.MaxTools ?? 5))
+        foreach (var tool in FindRelatedTools(prompt, maxTools, minVectorDistance))
             completionOptions.Tools.Add(tool);
         return completionOptions;
     }
 
-    private IEnumerable<ChatTool> FindRelatedTools(string prompt, int maxEntries = 5)
+    private IEnumerable<ChatTool> FindRelatedTools(string prompt, int maxTools, float minVectorDistance)
     {
         if (!CanFilterTools)
             return _tools;
 
-        var options = new ToolSelectionOptions { MaxTools = maxEntries };
-        return FindVectorMatches(prompt, options).Select(e => ParseToolDefinition(e.Data));
+        return FindVectorMatches(prompt, maxTools, minVectorDistance).Select(e => ParseToolDefinition(e.Data));
     }
 
-    private IEnumerable<VectorbaseEntry> FindVectorMatches(string prompt, ToolSelectionOptions options)
+    private IEnumerable<VectorbaseEntry> FindVectorMatches(string prompt, int maxTools, float minVectorDistance)
     {
         var vector = ToolsUtility.GetEmbedding(_client, prompt).GetAwaiter().GetResult();
         lock (_entries)
@@ -223,8 +227,8 @@ public class ChatTools
             var distances = _entries
                 .Select((e, i) => (Distance: 1f - ToolsUtility.CosineSimilarity(e.Vector.Span, vector.Span), Index: i))
                 .OrderBy(t => t.Distance)
-                .Take(options.MaxTools)
-                .Where(t => t.Distance <= options.MinVectorDistance);
+                .Take(maxTools)
+                .Where(t => t.Distance <= minVectorDistance);
 
             return distances.Select(d => _entries[d.Index]);
         }

@@ -7,12 +7,13 @@ namespace OpenAI;
 internal class McpClient
 {
     private readonly McpSession _session;
-    private readonly ClientPipeline _pipeline = ClientPipeline.Create();
+    private readonly ClientPipeline _pipeline;
 
     public virtual Uri ServerEndpoint { get; }
 
-    public McpClient(Uri endpoint)
+    public McpClient(Uri endpoint, ClientPipeline pipeline = null)
     {
+        _pipeline = pipeline ?? ClientPipeline.Create();
         _session = new McpSession(endpoint, _pipeline);
         ServerEndpoint = endpoint;
     }
