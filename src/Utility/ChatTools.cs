@@ -10,12 +10,21 @@ using OpenAI.Embeddings;
 namespace OpenAI;
 
 /// <summary>
-/// The service client for OpenAI Chat Completions endpoint tools.
+/// Provides functionality to manage and execute OpenAI function tools for chat completions.
 /// </summary>
 public class ChatTools : ToolsBase<ChatTool>
 {
+    /// <summary>
+    /// Initializes a new instance of the ChatTools class with an optional embedding client.
+    /// </summary>
+    /// <param name="client">The embedding client used for tool vectorization, or null to disable vectorization.</param>
     public ChatTools(EmbeddingClient client = null) : base(client) { }
 
+    /// <summary>
+    /// Initializes a new instance of the ChatTools class with the specified tool types.
+    /// </summary>
+    /// <param name="tool">The primary tool type to add.</param>
+    /// <param name="additionalTools">Additional tool types to add.</param>
     public ChatTools(Type tool, params Type[] additionalTools) : this((EmbeddingClient)null)
     {
         Add(tool);
@@ -86,6 +95,10 @@ public class ChatTools : ToolsBase<ChatTool>
             BinaryData.FromString(root.GetProperty("inputSchema").GetRawText()));
     }
 
+    /// <summary>
+    /// Converts the tools collection to chat completion options.
+    /// </summary>
+    /// <returns>A new ChatCompletionOptions containing all defined tools.</returns>
     public ChatCompletionOptions ToOptions()
     {
         var options = new ChatCompletionOptions();
@@ -94,6 +107,12 @@ public class ChatTools : ToolsBase<ChatTool>
         return options;
     }
 
+    /// <summary>
+    /// Converts the tools collection to <see cref="ChatCompletionOptions"/>, filtered by relevance to the given prompt.
+    /// </summary>
+    /// <param name="prompt">The prompt to find relevant tools for.</param>
+    /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
+    /// <returns>A new <see cref="ChatCompletionOptions"/> containing the most relevant tools.</returns>
     public ChatCompletionOptions ToOptions(string prompt, ToolFindOptions options = null)
     {
         if (!CanFilterTools)
@@ -105,6 +124,10 @@ public class ChatTools : ToolsBase<ChatTool>
         return completionOptions;
     }
 
+    /// <summary>
+    /// Implicitly converts ChatTools to <see cref="ChatCompletionOptions"/>.
+    /// </summary>
+    /// <param name="tools">The ChatTools instance to convert.</param>
     public static implicit operator ChatCompletionOptions(ChatTools tools) => tools.ToOptions();
 
     internal string CallLocal(ChatToolCall call)
@@ -143,6 +166,11 @@ public class ChatTools : ToolsBase<ChatTool>
         return result.ToString();
     }
 
+    /// <summary>
+    /// Executes all tool calls and returns their results.
+    /// </summary>
+    /// <param name="toolCalls">The collection of tool calls to execute.</param>
+    /// <returns>A collection of tool chat messages containing the results.</returns>
     public async Task<IEnumerable<ToolChatMessage>> CallAllAsync(IEnumerable<ChatToolCall> toolCalls)
     {
         var messages = new List<ToolChatMessage>();
@@ -168,6 +196,11 @@ public class ChatTools : ToolsBase<ChatTool>
         return messages;
     }
 
+    /// <summary>
+    /// Executes all tool calls and returns both results and any failed tool names.
+    /// </summary>
+    /// <param name="toolCalls">The collection of tool calls to execute.</param>
+    /// <returns>A result object containing successful tool messages and failed tool names.</returns>
     public async Task<ToolCallChatResult> CallAllWithErrorsAsync(IEnumerable<ChatToolCall> toolCalls)
     {
         List<string> failed = null;

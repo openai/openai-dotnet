@@ -10,12 +10,21 @@ using OpenAI.Responses;
 namespace OpenAI;
 
 /// <summary>
-/// The service client for OpenAI Responses endpoint tools.
+/// Provides functionality to manage and execute OpenAI function tools for responses.
 /// </summary>
 public class ResponseTools : ToolsBase<ResponseTool>
 {
+    /// <summary>
+    /// Initializes a new instance of the ResponseTools class with an optional embedding client.
+    /// </summary>
+    /// <param name="client">The embedding client used for tool vectorization, or null to disable vectorization.</param>
     public ResponseTools(EmbeddingClient client = null) : base(client) { }
 
+    /// <summary>
+    /// Initializes a new instance of the ResponseTools class with the specified tool types.
+    /// </summary>
+    /// <param name="tool">The primary tool type to add.</param>
+    /// <param name="additionalTools">Additional tool types to add.</param>
     public ResponseTools(Type tool, params Type[] additionalTools) : this((EmbeddingClient)null)
     {
         Add(tool);
@@ -87,6 +96,10 @@ public class ResponseTools : ToolsBase<ResponseTool>
             BinaryData.FromString(root.GetProperty("inputSchema").GetRawText()));
     }
 
+    /// <summary>
+    /// Converts the tools collection to <see cref="ResponseCreationOptions"> configured with the tools contained in this instance..
+    /// </summary>
+    /// <returns>A new ResponseCreationOptions containing all defined tools.</returns>
     public ResponseCreationOptions ToOptions()
     {
         var options = new ResponseCreationOptions();
@@ -95,6 +108,12 @@ public class ResponseTools : ToolsBase<ResponseTool>
         return options;
     }
 
+    /// <summary>
+    /// Converts the tools collection to <see cref="ResponseCreationOptions">, filtered by relevance to the given prompt. Filtering is only applied if <see cref="CanFilterTools"/> is true.
+    /// </summary>
+    /// <param name="prompt">The prompt to find relevant tools for.</param>
+    /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
+    /// <returns>A new ResponseCreationOptions containing the most relevant tools.</returns>
     public ResponseCreationOptions ToOptions(string prompt, ToolFindOptions options = null)
     {
         if (!CanFilterTools)
@@ -106,6 +125,10 @@ public class ResponseTools : ToolsBase<ResponseTool>
         return completionOptions;
     }
 
+    /// <summary>
+    /// Implicitly converts ResponseTools to ResponseCreationOptions.
+    /// </summary>
+    /// <param name="tools">The ResponseTools instance to convert.</param>
     public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.ToOptions();
 
     internal string CallLocal(FunctionCallResponseItem call)
@@ -144,6 +167,11 @@ public class ResponseTools : ToolsBase<ResponseTool>
         return result.ToString();
     }
 
+    /// <summary>
+    /// Executes a function call and returns its result as a FunctionCallOutputResponseItem.
+    /// </summary>
+    /// <param name="toolCall">The function call to execute.</param>
+    /// <returns>A task that represents the asynchronous operation and contains the function call result.</returns>
     public async Task<FunctionCallOutputResponseItem> CallAsync(FunctionCallResponseItem toolCall)
     {
         bool isMcpTool = false;
@@ -155,7 +183,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
             }
             else
             {
-                return new FunctionCallOutputResponseItem(toolCall.Id, $"I don't have a tool called {toolCall.FunctionName}");
+                return new FunctionCallOutputResponseItem(toolCall.CallId, $"I don't have a tool called {toolCall.FunctionName}");
             }
         }
 

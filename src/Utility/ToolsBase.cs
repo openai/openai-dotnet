@@ -4,10 +4,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using OpenAI.Chat;
 using OpenAI.Embeddings;
 
 namespace OpenAI;
@@ -15,7 +13,7 @@ namespace OpenAI;
 /// <summary>
 /// Base class containing common functionality for tool management.
 /// </summary>
-/// <typeparam name="TTool">The concrete tool type (ChatTool or ResponseTool)</typeparam>
+/// <typeparam name="TTool">The concrete tool type (<see cref="ChatTool"/> or <see cref="ResponseTool"/>)</typeparam>
 public abstract class ToolsBase<TTool> where TTool : class
 {
     protected static readonly BinaryData s_noparams = BinaryData.FromString("""{ "type" : "object", "properties" : {} }""");
@@ -35,15 +33,31 @@ public abstract class ToolsBase<TTool> where TTool : class
         _client = client;
     }
 
+    /// <summary>
+    /// Gets the list of defined tools.
+    /// </summary>
     public IList<TTool> Definitions => _definitions;
+
+    /// <summary>
+    /// Gets whether tools can be filtered using embeddings provided by the provided <see cref="EmbeddingClient"/> .
+    /// </summary>
     public bool CanFilterTools => _client != null;
 
+    /// <summary>
+    /// Adds local tool implementations from the provided types.
+    /// </summary>
+    /// <param name="tools">Types containing static methods to be used as tools.</param>
     public void AddLocalTools(params Type[] tools)
     {
         foreach (Type functionHolder in tools)
             Add(functionHolder);
     }
 
+    /// <summary>
+    /// Adds a remote MCP server as a tool provider.
+    /// </summary>
+    /// <param name="client">The MCP client instance.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     internal async Task AddMcpServerAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
@@ -54,12 +68,21 @@ public abstract class ToolsBase<TTool> where TTool : class
         _mcpClients.Add(client);
     }
 
+    /// <summary>
+    /// Adds a remote MCP server as a tool provider.
+    /// </summary>
+    /// <param name="serverEndpoint">The URI endpoint of the MCP server.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task AddMcpServerAsync(Uri serverEndpoint)
     {
         var client = new McpClient(serverEndpoint);
         await AddMcpServerAsync(client).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Adds all public static methods from the specified type as tools.
+    /// </summary>
+    /// <param name="functions">The type containing tool methods.</param>
     public void Add(Type functions)
     {
 #pragma warning disable IL2070
@@ -230,9 +253,19 @@ public abstract class ToolsBase<TTool> where TTool : class
     protected abstract BinaryData SerializeTool(TTool tool);
     protected abstract TTool ParseToolDefinition(BinaryData data);
 
+    /// <summary>
+    /// Options for finding related tools.
+    /// </summary>
     public class ToolFindOptions
     {
+        /// <summary>
+        /// Gets or sets the maximum number of tools to return. Default is 3.
+        /// </summary>
         public int MaxEntries { get; set; } = 3;
+
+        /// <summary>
+        /// Gets or sets the similarity threshold for including tools. Default is 0.29.
+        /// </summary>
         public float Threshold { get; set; } = 0.29f;
     }
 }
