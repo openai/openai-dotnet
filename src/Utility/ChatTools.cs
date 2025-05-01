@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 
-namespace OpenAI;
+namespace OpenAI.Chat;
 
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for chat completions.

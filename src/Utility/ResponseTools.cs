@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using OpenAI.Embeddings;
 using OpenAI.Responses;
 
-namespace OpenAI;
+namespace OpenAI.Responses;
 
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for responses.
