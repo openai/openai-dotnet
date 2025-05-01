@@ -5,7 +5,7 @@ namespace OpenAI;
 /// <summary>
 /// A vectorbase entry.
 /// </summary>
-public readonly struct VectorbaseEntry
+internal readonly struct VectorbaseEntry
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="VectorbaseEntry"/> class.
