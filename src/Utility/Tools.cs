@@ -14,21 +14,21 @@ namespace OpenAI;
 /// Base class containing common functionality for tool management.
 /// </summary>
 /// <typeparam name="TTool">The concrete tool type (<see cref="ChatTool"/> or <see cref="ResponseTool"/>)</typeparam>
-public abstract class ToolsBase<TTool> where TTool : class
+public abstract class Tools<TTool> where TTool : class
 {
-    protected static readonly BinaryData s_noparams = BinaryData.FromString("""{ "type" : "object", "properties" : {} }""");
+    internal static readonly BinaryData s_noparams = BinaryData.FromString("""{ "type" : "object", "properties" : {} }""");
 
-    protected readonly Dictionary<string, MethodInfo> _methods = [];
-    protected readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
-    protected readonly List<TTool> _definitions = [];
-    protected readonly EmbeddingClient _client;
-    protected readonly List<VectorbaseEntry> _entries = [];
+    internal readonly Dictionary<string, MethodInfo> _methods = [];
+    internal readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
+    internal readonly List<TTool> _tools = [];
+    internal readonly EmbeddingClient _client;
+    internal readonly List<VectorbaseEntry> _entries = [];
 
     internal readonly List<McpClient> _mcpClients = [];
     internal readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
-    protected const string _mcpToolSeparator = "_-_";
+    internal const string _mcpToolSeparator = "_-_";
 
-    protected ToolsBase(EmbeddingClient client = null)
+    protected Tools(EmbeddingClient client = null)
     {
         _client = client;
     }
@@ -36,7 +36,7 @@ public abstract class ToolsBase<TTool> where TTool : class
     /// <summary>
     /// Gets the list of defined tools.
     /// </summary>
-    public IList<TTool> Definitions => _definitions;
+    public IList<TTool> ToolList => _tools;
 
     /// <summary>
     /// Gets whether tools can be filtered using embeddings provided by the provided <see cref="EmbeddingClient"/> .
@@ -50,7 +50,7 @@ public abstract class ToolsBase<TTool> where TTool : class
     public void AddLocalTools(params Type[] tools)
     {
         foreach (Type functionHolder in tools)
-            Add(functionHolder);
+            AddLocalTool(functionHolder);
     }
 
     /// <summary>
@@ -83,21 +83,21 @@ public abstract class ToolsBase<TTool> where TTool : class
     /// Adds all public static methods from the specified type as tools.
     /// </summary>
     /// <param name="functions">The type containing tool methods.</param>
-    public void Add(Type functions)
+    public void AddLocalTool(Type functions)
     {
 #pragma warning disable IL2070
         foreach (MethodInfo function in functions.GetMethods(BindingFlags.Public | BindingFlags.Static))
         {
-            Add(function);
+            AddLocalTool(function);
         }
 #pragma warning restore IL2070
     }
 
-    public void Add(MethodInfo function)
+    public void AddLocalTool(MethodInfo function)
     {
         string name = function.Name;
         var tool = MethodInfoToTool(function);
-        _definitions.Add(tool);
+        _tools.Add(tool);
         _methods[name] = function;
     }
 
@@ -210,13 +210,13 @@ public abstract class ToolsBase<TTool> where TTool : class
     protected IEnumerable<TTool> RelatedTo(string prompt, int maxEntries = 5)
     {
         if (!CanFilterTools)
-            return _definitions;
+            return _tools;
 
-        var options = new ToolFindOptions { MaxEntries = maxEntries };
+        var options = new ToolSelectionOptions { MaxTools = maxEntries };
         return Find(prompt, options).Select(e => ParseToolDefinition(e.Data));
     }
 
-    protected IEnumerable<VectorbaseEntry> Find(string prompt, ToolFindOptions options)
+    protected IEnumerable<VectorbaseEntry> Find(string prompt, ToolSelectionOptions options)
     {
         ReadOnlyMemory<float> vector = GetEmbedding(prompt).GetAwaiter().GetResult();
         lock (_entries)
@@ -224,8 +224,8 @@ public abstract class ToolsBase<TTool> where TTool : class
             var distances = _entries
                 .Select((e, i) => (Distance: 1f - CosineSimilarity(e.Vector.Span, vector.Span), Index: i))
                 .OrderBy(t => t.Distance)
-                .Take(options.MaxEntries)
-                .Where(t => t.Distance <= options.Threshold);
+                .Take(options.MaxTools)
+                .Where(t => t.Distance <= options.MinVectorDistance);
 
             return distances.Select(d => _entries[d.Index]);
         }
@@ -256,16 +256,16 @@ public abstract class ToolsBase<TTool> where TTool : class
     /// <summary>
     /// Options for finding related tools.
     /// </summary>
-    public class ToolFindOptions
+    public class ToolSelectionOptions
     {
         /// <summary>
         /// Gets or sets the maximum number of tools to return. Default is 3.
         /// </summary>
-        public int MaxEntries { get; set; } = 3;
+        public int MaxTools { get; set; } = 3;
 
         /// <summary>
         /// Gets or sets the similarity threshold for including tools. Default is 0.29.
         /// </summary>
-        public float Threshold { get; set; } = 0.29f;
+        public float MinVectorDistance { get; set; } = 0.29f;
     }
 }

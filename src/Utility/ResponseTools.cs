@@ -12,7 +12,7 @@ namespace OpenAI.Responses;
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for responses.
 /// </summary>
-public class ResponseTools : ToolsBase<ResponseTool>
+public class ResponseTools : Tools<ResponseTool>
 {
     /// <summary>
     /// Initializes a new instance of the ResponseTools class with an optional embedding client.
@@ -27,10 +27,10 @@ public class ResponseTools : ToolsBase<ResponseTool>
     /// <param name="additionalTools">Additional tool types to add.</param>
     public ResponseTools(Type tool, params Type[] additionalTools) : this((EmbeddingClient)null)
     {
-        Add(tool);
+        AddLocalTool(tool);
         if (additionalTools != null)
             foreach (var t in additionalTools)
-                Add(t);
+                AddLocalTool(t);
     }
 
     internal override ResponseTool MethodInfoToTool(MethodInfo methodInfo) =>
@@ -56,7 +56,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
 #pragma warning restore IL2026, IL3050
 
             var responseTool = ResponseTool.CreateFunctionTool(name, description, BinaryData.FromString(inputSchema));
-            _definitions.Add(responseTool);
+            _tools.Add(responseTool);
             toolsToVectorize.Add(responseTool);
             _mcpMethods[name] = client.CallToolAsync;
         }
@@ -100,10 +100,10 @@ public class ResponseTools : ToolsBase<ResponseTool>
     /// Converts the tools collection to <see cref="ResponseCreationOptions"> configured with the tools contained in this instance..
     /// </summary>
     /// <returns>A new ResponseCreationOptions containing all defined tools.</returns>
-    public ResponseCreationOptions ToOptions()
+    public ResponseCreationOptions CreateResponseOptions()
     {
         var options = new ResponseCreationOptions();
-        foreach (var tool in _definitions)
+        foreach (var tool in _tools)
             options.Tools.Add(tool);
         return options;
     }
@@ -114,13 +114,13 @@ public class ResponseTools : ToolsBase<ResponseTool>
     /// <param name="prompt">The prompt to find relevant tools for.</param>
     /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
     /// <returns>A new ResponseCreationOptions containing the most relevant tools.</returns>
-    public ResponseCreationOptions ToOptions(string prompt, ToolFindOptions options = null)
+    public ResponseCreationOptions CreateResponseOptions(string prompt, ToolSelectionOptions options = null)
     {
         if (!CanFilterTools)
-            return ToOptions();
+            return CreateResponseOptions();
 
         var completionOptions = new ResponseCreationOptions();
-        foreach (var tool in RelatedTo(prompt, options?.MaxEntries ?? 5))
+        foreach (var tool in RelatedTo(prompt, options?.MaxTools ?? 5))
             completionOptions.Tools.Add(tool);
         return completionOptions;
     }
@@ -129,7 +129,7 @@ public class ResponseTools : ToolsBase<ResponseTool>
     /// Implicitly converts ResponseTools to ResponseCreationOptions.
     /// </summary>
     /// <param name="tools">The ResponseTools instance to convert.</param>
-    public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.ToOptions();
+    public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.CreateResponseOptions();
 
     internal string CallLocal(FunctionCallResponseItem call)
     {

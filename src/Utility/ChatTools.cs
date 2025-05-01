@@ -12,7 +12,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for chat completions.
 /// </summary>
-public class ChatTools : ToolsBase<ChatTool>
+public class ChatTools : Tools<ChatTool>
 {
     /// <summary>
     /// Initializes a new instance of the ChatTools class with an optional embedding client.
@@ -23,14 +23,11 @@ public class ChatTools : ToolsBase<ChatTool>
     /// <summary>
     /// Initializes a new instance of the ChatTools class with the specified tool types.
     /// </summary>
-    /// <param name="tool">The primary tool type to add.</param>
     /// <param name="additionalTools">Additional tool types to add.</param>
-    public ChatTools(Type tool, params Type[] additionalTools) : this((EmbeddingClient)null)
+    public ChatTools(params Type[] additionalTools) : this((EmbeddingClient)null)
     {
-        Add(tool);
-        if (additionalTools != null)
-            foreach (var t in additionalTools)
-                Add(t);
+        foreach (var t in additionalTools)
+            AddLocalTool(t);
     }
 
     internal override ChatTool MethodInfoToTool(MethodInfo methodInfo) =>
@@ -56,7 +53,7 @@ public class ChatTools : ToolsBase<ChatTool>
 #pragma warning restore IL2026, IL3050
 
             var chatTool = ChatTool.CreateFunctionTool(name, description, BinaryData.FromString(inputSchema));
-            _definitions.Add(chatTool);
+            _tools.Add(chatTool);
             toolsToVectorize.Add(chatTool);
             _mcpMethods[name] = client.CallToolAsync;
         }
@@ -99,10 +96,10 @@ public class ChatTools : ToolsBase<ChatTool>
     /// Converts the tools collection to chat completion options.
     /// </summary>
     /// <returns>A new ChatCompletionOptions containing all defined tools.</returns>
-    public ChatCompletionOptions ToOptions()
+    public ChatCompletionOptions CreateCompletionOptions()
     {
         var options = new ChatCompletionOptions();
-        foreach (var tool in _definitions)
+        foreach (var tool in _tools)
             options.Tools.Add(tool);
         return options;
     }
@@ -113,13 +110,13 @@ public class ChatTools : ToolsBase<ChatTool>
     /// <param name="prompt">The prompt to find relevant tools for.</param>
     /// <param name="options">Options for filtering tools, including maximum number of tools to return.</param>
     /// <returns>A new <see cref="ChatCompletionOptions"/> containing the most relevant tools.</returns>
-    public ChatCompletionOptions ToOptions(string prompt, ToolFindOptions options = null)
+    public ChatCompletionOptions CreateCompletionOptions(string prompt, ToolSelectionOptions options = null)
     {
         if (!CanFilterTools)
-            return ToOptions();
+            return CreateCompletionOptions();
 
         var completionOptions = new ChatCompletionOptions();
-        foreach (var tool in RelatedTo(prompt, options?.MaxEntries ?? 5))
+        foreach (var tool in RelatedTo(prompt, options?.MaxTools ?? 5))
             completionOptions.Tools.Add(tool);
         return completionOptions;
     }
@@ -128,7 +125,7 @@ public class ChatTools : ToolsBase<ChatTool>
     /// Implicitly converts ChatTools to <see cref="ChatCompletionOptions"/>.
     /// </summary>
     /// <param name="tools">The ChatTools instance to convert.</param>
-    public static implicit operator ChatCompletionOptions(ChatTools tools) => tools.ToOptions();
+    public static implicit operator ChatCompletionOptions(ChatTools tools) => tools.CreateCompletionOptions();
 
     internal string CallLocal(ChatToolCall call)
     {
@@ -171,7 +168,7 @@ public class ChatTools : ToolsBase<ChatTool>
     /// </summary>
     /// <param name="toolCalls">The collection of tool calls to execute.</param>
     /// <returns>A collection of tool chat messages containing the results.</returns>
-    public async Task<IEnumerable<ToolChatMessage>> CallAllAsync(IEnumerable<ChatToolCall> toolCalls)
+    public async Task<IEnumerable<ToolChatMessage>> CallAsync(IEnumerable<ChatToolCall> toolCalls)
     {
         var messages = new List<ToolChatMessage>();
         foreach (ChatToolCall toolCall in toolCalls)
@@ -194,40 +191,6 @@ public class ChatTools : ToolsBase<ChatTool>
         }
 
         return messages;
-    }
-
-    /// <summary>
-    /// Executes all tool calls and returns both results and any failed tool names.
-    /// </summary>
-    /// <param name="toolCalls">The collection of tool calls to execute.</param>
-    /// <returns>A result object containing successful tool messages and failed tool names.</returns>
-    public async Task<ToolCallChatResult> CallAllWithErrorsAsync(IEnumerable<ChatToolCall> toolCalls)
-    {
-        List<string> failed = null;
-        var messages = new List<ToolChatMessage>();
-
-        foreach (ChatToolCall toolCall in toolCalls)
-        {
-            bool isMcpTool = false;
-            if (!_methods.ContainsKey(toolCall.FunctionName))
-            {
-                if (_mcpMethods.ContainsKey(toolCall.FunctionName))
-                {
-                    isMcpTool = true;
-                }
-                else
-                {
-                    failed ??= new();
-                    failed.Add(toolCall.FunctionName);
-                    continue;
-                }
-            }
-
-            var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
-            messages.Add(new ToolChatMessage(toolCall.Id, result));
-        }
-
-        return new(messages, failed);
     }
 }
 
