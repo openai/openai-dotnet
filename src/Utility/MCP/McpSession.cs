@@ -508,7 +508,7 @@ internal class McpSession : IDisposable
     {
 #if DEBUGPRINT
         var color = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.DarkGray;// This is a placeholder for a debug print functi
+        Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.WriteLine(message);
         Console.ForegroundColor = color;
 #endif
