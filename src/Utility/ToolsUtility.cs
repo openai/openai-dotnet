@@ -36,6 +36,7 @@ internal static class ToolsUtility
         clrType switch
         {
             Type t when t == typeof(double) => "number"u8,
+            Type t when t == typeof(int) => "number"u8,
             Type t when t == typeof(string) => "string"u8,
             Type t when t == typeof(bool) => "bool"u8,
             _ => throw new NotImplementedException()
@@ -45,6 +46,7 @@ internal static class ToolsUtility
         clrType switch
         {
             Type t when t == typeof(double) => "number",
+            Type t when t == typeof(int) => "number",
             Type t when t == typeof(string) => "string",
             Type t when t == typeof(bool) => "bool",
             _ => throw new NotImplementedException()

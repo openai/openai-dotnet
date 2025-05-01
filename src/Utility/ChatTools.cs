@@ -251,7 +251,7 @@ public class ChatTools
                 arguments.Add(argument.Value.ValueKind switch
                 {
                     JsonValueKind.String => argument.Value.GetString()!,
-                    JsonValueKind.Number => argument.Value.GetDouble(),
+                    JsonValueKind.Number => argument.Value.GetInt32(),
                     JsonValueKind.True => true,
                     JsonValueKind.False => false,
                     _ => throw new NotImplementedException()
