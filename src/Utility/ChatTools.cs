@@ -90,7 +90,7 @@ public class ChatTools
     /// </summary>
     /// <param name="client">The MCP client instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    internal async Task AddMcpToolsAsync(McpClient client)
+    public async Task AddMcpToolsAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;

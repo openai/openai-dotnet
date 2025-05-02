@@ -93,7 +93,7 @@ public class ResponseTools
     /// </summary>
     /// <param name="client">The MCP client instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    internal async Task AddMcpToolsAsync(McpClient client)
+    public async Task AddMcpToolsAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;
@@ -257,7 +257,7 @@ public class ResponseTools
                 arguments.Add(argument.Value.ValueKind switch
                 {
                     JsonValueKind.String => argument.Value.GetString()!,
-                    JsonValueKind.Number => argument.Value.GetDouble(),
+                    JsonValueKind.Number => argument.Value.GetInt32(),
                     JsonValueKind.True => true,
                     JsonValueKind.False => false,
                     _ => throw new NotImplementedException()

@@ -128,4 +128,201 @@ public class ChatToolsTests
 
         Assert.ThrowsAsync<InvalidOperationException>(() => tools.CallAsync(toolCalls));
     }
+
+    [Test]
+    public async Task AddMcpToolsAsync_AddsToolsCorrectly()
+    {
+        // Arrange
+        var mcpEndpoint = new Uri("http://localhost:1234");
+        var mockMcpClient = new Mock<McpClient>(mcpEndpoint, null);
+        var tools = new ChatTools();
+
+        var mockToolsResponse = BinaryData.FromString(@"
+        {
+            ""tools"": [
+                {
+                    ""name"": ""mcp-tool-1"",
+                    ""description"": ""This is the first MCP tool."",
+                    ""inputSchema"": {
+                        ""type"": ""object"",
+                        ""properties"": {
+                            ""param1"": {
+                                ""type"": ""string"",
+                                ""description"": ""The first param.""
+                            },
+                            ""param2"": {
+                                ""type"": ""string"",
+                                ""description"": ""The second param.""
+                            }
+                        },
+                        ""required"": [""param1""]
+                    }
+                },
+                {
+                    ""name"": ""mcp-tool-2"",
+                    ""description"": ""This is the second MCP tool."",
+                    ""inputSchema"": {
+                        ""type"": ""object"",
+                        ""properties"": {
+                            ""param1"": {
+                                ""type"": ""string"",
+                                ""description"": ""The first param.""
+                            },
+                            ""param2"": {
+                                ""type"": ""string"",
+                                ""description"": ""The second param.""
+                            }
+                        },
+                        ""required"": []
+                    }
+                }
+            ]
+        }");
+
+        mockMcpClient.Setup(c => c.StartAsync())
+            .Returns(Task.CompletedTask);
+        mockMcpClient.Setup(c => c.ListToolsAsync())
+            .ReturnsAsync(mockToolsResponse);
+        mockMcpClient.Setup(c => c.CallToolAsync(It.IsAny<string>(), It.IsAny<BinaryData>()))
+            .ReturnsAsync(BinaryData.FromString("\"test result\""));
+        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+            .Returns(mcpEndpoint);
+
+        // Act
+        await tools.AddMcpToolsAsync(mockMcpClient.Object);
+
+        // Assert
+        Assert.That(tools.Tools, Has.Count.EqualTo(2));
+        var toolNames = tools.Tools.Select(t => t.FunctionName).ToList();
+        Assert.That(toolNames, Contains.Item("localhost1234_-_mcp-tool-1"));
+        Assert.That(toolNames, Contains.Item("localhost1234_-_mcp-tool-2"));
+
+        // Verify we can call the tools
+        var toolCall = ChatToolCall.CreateFunctionToolCall("call1", "localhost1234_-_mcp-tool-1", BinaryData.FromString(@"{""param1"": ""test""}"));
+        var result = await tools.CallAsync(new[] { toolCall });
+        var resultsList = result.ToList();
+
+        Assert.That(resultsList, Has.Count.EqualTo(1));
+        Assert.That(resultsList[0].ToolCallId, Is.EqualTo("call1"));
+        Assert.That(resultsList[0].Content[0].Text, Is.EqualTo("\"test result\""));
+    }
+
+    [Test]
+    public async Task CreateCompletionOptions_WithMaxToolsParameter_FiltersTools()
+    {
+        // Arrange
+        var mcpEndpoint = new Uri("http://localhost:1234");
+        var mockMcpClient = new Mock<McpClient>(mcpEndpoint, null);
+        var tools = new ChatTools(mockEmbeddingClient.Object);
+
+        var mockToolsResponse = BinaryData.FromString(@"
+        {
+            ""tools"": [
+                {
+                    ""name"": ""math-tool"",
+                    ""description"": ""Tool for performing mathematical calculations"",
+                    ""inputSchema"": {
+                        ""type"": ""object"",
+                        ""properties"": {
+                            ""expression"": {
+                                ""type"": ""string"",
+                                ""description"": ""The mathematical expression to evaluate""
+                            }
+                        }
+                    }
+                },
+                {
+                    ""name"": ""weather-tool"",
+                    ""description"": ""Tool for getting weather information"",
+                    ""inputSchema"": {
+                        ""type"": ""object"",
+                        ""properties"": {
+                            ""location"": {
+                                ""type"": ""string"",
+                                ""description"": ""The location to get weather for""
+                            }
+                        }
+                    }
+                },
+                {
+                    ""name"": ""translate-tool"",
+                    ""description"": ""Tool for translating text between languages"",
+                    ""inputSchema"": {
+                        ""type"": ""object"",
+                        ""properties"": {
+                            ""text"": {
+                                ""type"": ""string"",
+                                ""description"": ""Text to translate""
+                            },
+                            ""targetLanguage"": {
+                                ""type"": ""string"",
+                                ""description"": ""Target language code""
+                            }
+                        }
+                    }
+                }
+            ]
+        }");
+
+        // Setup mock responses
+        var embeddings = new[]
+        {
+            OpenAIEmbeddingsModelFactory.OpenAIEmbedding(vector: new[] { 0.8f, 0.5f }),
+            OpenAIEmbeddingsModelFactory.OpenAIEmbedding(vector: new[] { 0.6f, 0.4f }),
+            OpenAIEmbeddingsModelFactory.OpenAIEmbedding(vector: new[] { 0.3f, 0.2f })
+        };
+        var embeddingCollection = OpenAIEmbeddingsModelFactory.OpenAIEmbeddingCollection(
+            items: embeddings,
+            model: "text-embedding-ada-002",
+            usage: OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(30, 30));
+        var mockResponse = new MockPipelineResponse(200);
+
+        mockMcpClient.Setup(c => c.StartAsync())
+            .Returns(Task.CompletedTask);
+        mockMcpClient.Setup(c => c.ListToolsAsync())
+            .ReturnsAsync(mockToolsResponse);
+        mockMcpClient.Setup(c => c.CallToolAsync("math-tool", It.IsAny<BinaryData>()))
+            .ReturnsAsync(BinaryData.FromString("\"math-tool result\""));
+        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+            .Returns(mcpEndpoint);
+
+        mockEmbeddingClient
+            .Setup(c => c.GenerateEmbeddingAsync(
+                It.IsAny<string>(),
+                It.IsAny<EmbeddingGenerationOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ClientResult.FromValue(embeddings[0], mockResponse));
+
+        mockEmbeddingClient
+            .Setup(c => c.GenerateEmbeddingsAsync(
+                It.IsAny<IList<string>>(),
+                It.IsAny<EmbeddingGenerationOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ClientResult.FromValue(embeddingCollection, mockResponse));
+
+        // Add the tools
+        await tools.AddMcpToolsAsync(mockMcpClient.Object);
+
+        // Act & Assert
+        // Test with maxTools = 1
+        var options1 = await Task.Run(() => tools.CreateCompletionOptions("calculate 2+2", 1, 0.5f));
+        Assert.That(options1.Tools, Has.Count.EqualTo(1));
+
+        // Test with maxTools = 2
+        var options2 = await Task.Run(() => tools.CreateCompletionOptions("calculate 2+2", 2, 0.5f));
+        Assert.That(options2.Tools, Has.Count.EqualTo(2));
+
+        // Test that we can call the tools after filtering
+        var toolCall = ChatToolCall.CreateFunctionToolCall(
+            "call1",
+            "localhost1234_-_math-tool",
+            BinaryData.FromString(@"{""expression"": ""2+2""}"));
+        var result = await tools.CallAsync(new[] { toolCall });
+        Assert.That(result.First().ToolCallId, Is.EqualTo("call1"));
+        Assert.That(result.First().Content[0].Text, Is.EqualTo("\"math-tool result\""));
+
+        // Verify expected interactions
+        mockMcpClient.Verify(c => c.StartAsync(), Times.Once);
+        mockMcpClient.Verify(c => c.ListToolsAsync(), Times.Once);
+    }
 }
