@@ -86,9 +86,15 @@ internal static class ToolsUtility
         return BinaryData.FromStream(stream);
     }
 
-    internal static async Task<ReadOnlyMemory<float>> GetEmbedding(EmbeddingClient client, string text)
+    internal static async Task<ReadOnlyMemory<float>> GetEmbeddingAsync(EmbeddingClient client, string text)
     {
         var result = await client.GenerateEmbeddingAsync(text).ConfigureAwait(false);
+        return result.Value.ToFloats();
+    }
+
+    internal static ReadOnlyMemory<float> GetEmbedding(EmbeddingClient client, string text)
+    {
+        var result = client.GenerateEmbedding(text);
         return result.Value.ToFloats();
     }
 

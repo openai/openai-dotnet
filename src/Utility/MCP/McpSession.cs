@@ -395,7 +395,7 @@ internal class McpSession : IDisposable
         _cancellationSource.Dispose();
     }
 
-    public struct SseEvent
+    internal struct SseEvent
     {
         public string Event { get; set; }
         public string Data { get; set; }

@@ -100,7 +100,7 @@ public class ChatToolsTests
         var tools = new ChatTools(mockEmbeddingClient.Object);
         tools.AddLocalTools(typeof(TestTools));
 
-        var options = await Task.Run(() => tools.CreateCompletionOptions("Need to add two numbers", 1, 0.5f));
+        var options = await tools.CreateCompletionOptionsAsync("Need to add two numbers", 1, 0.5f);
 
         Assert.That(options.Tools, Has.Count.LessThanOrEqualTo(1));
     }
@@ -306,11 +306,11 @@ public class ChatToolsTests
 
         // Act & Assert
         // Test with maxTools = 1
-        var options1 = await Task.Run(() => tools.CreateCompletionOptions("calculate 2+2", 1, 0.5f));
+        var options1 = await tools.CreateCompletionOptionsAsync("calculate 2+2", 1, 0.5f);
         Assert.That(options1.Tools, Has.Count.EqualTo(1));
 
         // Test with maxTools = 2
-        var options2 = await Task.Run(() => tools.CreateCompletionOptions("calculate 2+2", 2, 0.5f));
+        var options2 = await tools.CreateCompletionOptionsAsync("calculate 2+2", 2, 0.5f);
         Assert.That(options2.Tools, Has.Count.EqualTo(2));
 
         // Test that we can call the tools after filtering

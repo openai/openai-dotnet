@@ -107,7 +107,7 @@ public class ResponseToolsTests
         var tools = new ResponseTools(mockEmbeddingClient.Object);
         tools.AddLocalTools(typeof(TestTools));
 
-        var options = await Task.Run(() => tools.CreateResponseOptions("Need to add two numbers", 1, 0.5f));
+        var options = await tools.CreateResponseOptionsAsync("Need to add two numbers", 1, 0.5f);
 
         Assert.That(options.Tools, Has.Count.LessThanOrEqualTo(1));
     }
@@ -310,20 +310,17 @@ public class ResponseToolsTests
 
         // Act & Assert
         // Test with maxTools = 1
-        var options1 = await Task.Run(() => tools.CreateResponseOptions("calculate 2+2", 1, 0.5f));
+        var options1 = await tools.CreateResponseOptionsAsync("calculate 2+2", 1, 0.5f);
         Assert.That(options1.Tools, Has.Count.EqualTo(1));
 
         // Test with maxTools = 2
-        var options2 = await Task.Run(() => tools.CreateResponseOptions("calculate 2+2", 2, 0.5f));
+        var options2 = await tools.CreateResponseOptionsAsync("calculate 2+2", 2, 0.5f);
         Assert.That(options2.Tools, Has.Count.EqualTo(2));
 
         // Test that tool choice affects results
-        var optionsWithToolChoice = await Task.Run(() =>
-        {
-            var opts = tools.CreateResponseOptions("calculate 2+2", 1, 0.5f);
-            opts.ToolChoice = ResponseToolChoice.CreateRequiredChoice();
-            return opts;
-        });
+        var optionsWithToolChoice = await tools.CreateResponseOptionsAsync("calculate 2+2", 1, 0.5f);
+        optionsWithToolChoice.ToolChoice = ResponseToolChoice.CreateRequiredChoice();
+
         Assert.That(optionsWithToolChoice.ToolChoice, Is.Not.Null);
         Assert.That(optionsWithToolChoice.Tools, Has.Count.EqualTo(1));
 

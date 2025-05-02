@@ -207,22 +207,43 @@ public class ResponseTools
             return CreateResponseOptions();
 
         var completionOptions = new ResponseCreationOptions();
-        foreach (var tool in FindRelatedTools(prompt, maxTools, minVectorDistance))
+        foreach (var tool in FindRelatedTools(false, prompt, maxTools, minVectorDistance).GetAwaiter().GetResult())
             completionOptions.Tools.Add(tool);
         return completionOptions;
     }
 
-    private IEnumerable<ResponseTool> FindRelatedTools(string prompt, int maxTools, float minVectorDistance)
+    /// <summary>
+    /// Converts the tools collection to <see cref="ResponseCreationOptions">, filtered by relevance to the given prompt.
+    /// </summary>
+    /// <param name="prompt">The prompt to find relevant tools for.</param>
+    /// <param name="maxTools">The maximum number of tools to return. Default is 5.</param>
+    /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
+    /// <returns>A new ResponseCreationOptions containing the most relevant tools.</returns>
+    public async Task<ResponseCreationOptions> CreateResponseOptionsAsync(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
+    {
+        if (!CanFilterTools)
+            return CreateResponseOptions();
+
+        var completionOptions = new ResponseCreationOptions();
+        foreach (var tool in await FindRelatedTools(true, prompt, maxTools, minVectorDistance).ConfigureAwait(false))
+            completionOptions.Tools.Add(tool);
+        return completionOptions;
+    }
+
+    private async Task<IEnumerable<ResponseTool>> FindRelatedTools(bool async, string prompt, int maxTools, float minVectorDistance)
     {
         if (!CanFilterTools)
             return _tools;
 
-        return FindVectorMatches(prompt, maxTools, minVectorDistance).Select(e => ParseToolDefinition(e.Data));
+        return (await FindVectorMatches(async, prompt, maxTools, minVectorDistance).ConfigureAwait(false))
+            .Select(e => ParseToolDefinition(e.Data));
     }
 
-    private IEnumerable<VectorbaseEntry> FindVectorMatches(string prompt, int maxTools, float minVectorDistance)
+    private async Task<IEnumerable<VectorbaseEntry>> FindVectorMatches(bool async, string prompt, int maxTools, float minVectorDistance)
     {
-        var vector = ToolsUtility.GetEmbedding(_client, prompt).GetAwaiter().GetResult();
+        var vector = async ?
+            await ToolsUtility.GetEmbeddingAsync(_client, prompt).ConfigureAwait(false) :
+            ToolsUtility.GetEmbedding(_client, prompt);
         lock (_entries)
         {
             var distances = _entries
