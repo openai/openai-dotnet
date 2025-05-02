@@ -140,20 +140,7 @@ public class ChatTools
 
     private BinaryData SerializeTool(ChatTool tool)
     {
-        using var stream = new MemoryStream();
-        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
-
-        writer.WriteStartObject();
-        writer.WriteString("name", tool.FunctionName);
-        writer.WriteString("description", tool.FunctionDescription);
-        writer.WritePropertyName("inputSchema");
-        using (var doc = JsonDocument.Parse(tool.FunctionParameters))
-            doc.RootElement.WriteTo(writer);
-        writer.WriteEndObject();
-        writer.Flush();
-
-        stream.Position = 0;
-        return BinaryData.FromStream(stream);
+        return ToolsUtility.SerializeTool(tool.FunctionName, tool.FunctionDescription, tool.FunctionParameters);
     }
 
     private ChatTool ParseToolDefinition(BinaryData data)

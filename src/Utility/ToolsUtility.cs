@@ -173,4 +173,22 @@ internal static class ToolsUtility
 
         return distances.Select(d => entries[d.Index]);
     }
+
+    internal static BinaryData SerializeTool(string name, string description, BinaryData parameters)
+    {
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
+
+        writer.WriteStartObject();
+        writer.WriteString("name", name);
+        writer.WriteString("description", description);
+        writer.WritePropertyName("inputSchema");
+        using (var doc = JsonDocument.Parse(parameters))
+            doc.RootElement.WriteTo(writer);
+        writer.WriteEndObject();
+        writer.Flush();
+
+        stream.Position = 0;
+        return BinaryData.FromStream(stream);
+    }
 }

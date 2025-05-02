@@ -143,20 +143,7 @@ public class ResponseTools
     private BinaryData SerializeTool(ResponseTool tool)
     {
         var functionTool = tool as InternalResponsesFunctionTool;
-        using var stream = new MemoryStream();
-        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions { Indented = true });
-
-        writer.WriteStartObject();
-        writer.WriteString("name", functionTool?.Name);
-        writer.WriteString("description", functionTool?.Description);
-        writer.WritePropertyName("inputSchema");
-        using (var doc = JsonDocument.Parse(functionTool?.Parameters ?? BinaryData.FromString("{}")))
-            doc.RootElement.WriteTo(writer);
-        writer.WriteEndObject();
-        writer.Flush();
-
-        stream.Position = 0;
-        return BinaryData.FromStream(stream);
+        return ToolsUtility.SerializeTool(functionTool?.Name, functionTool?.Description, functionTool?.Parameters ?? BinaryData.FromString("{}"));
     }
 
     private ResponseTool ParseToolDefinition(BinaryData data)
