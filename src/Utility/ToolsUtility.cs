@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using OpenAI.Agents;
 using OpenAI.Embeddings;
 
 namespace OpenAI;
@@ -112,5 +113,28 @@ internal static class ToolsUtility
 #else
         return dot / (MathF.Sqrt(xSumSquared) * MathF.Sqrt(ySumSquared));
 #endif
+    }
+
+    internal static IEnumerable<(string name, string description, string inputSchema)> ParseMcpToolDefinitions(BinaryData toolDefinitions, McpClient client)
+    {
+        using var document = JsonDocument.Parse(toolDefinitions);
+        if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))
+            throw new JsonException("The JSON document must contain a 'tools' array.");
+
+        var serverKey = client.Endpoint.Host + client.Endpoint.Port.ToString();
+        var result = new List<(string name, string description, string inputSchema)>();
+
+        foreach (var tool in toolsElement.EnumerateArray())
+        {
+            var name = $"{serverKey}{McpToolSeparator}{tool.GetProperty("name").GetString()!}";
+            var description = tool.GetProperty("description").GetString()!;
+            var inputSchema = JsonSerializer.Serialize(
+                JsonSerializer.Deserialize<JsonElement>(tool.GetProperty("inputSchema").GetRawText()),
+                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+
+            result.Add((name, description, inputSchema));
+        }
+
+        return result;
     }
 }

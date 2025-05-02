@@ -114,23 +114,11 @@ public class ResponseTools
 
     private async Task AddToolsAsync(BinaryData toolDefinitions, McpClient client)
     {
-        using var document = JsonDocument.Parse(toolDefinitions);
-        if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))
-            throw new JsonException("The JSON document must contain a 'tools' array.");
-
-        var serverKey = client.Endpoint.Host + client.Endpoint.Port.ToString();
         List<ResponseTool> toolsToVectorize = new();
+        var parsedTools = ToolsUtility.ParseMcpToolDefinitions(toolDefinitions, client);
 
-        foreach (var tool in toolsElement.EnumerateArray())
+        foreach (var (name, description, inputSchema) in parsedTools)
         {
-            var name = $"{serverKey}{ToolsUtility.McpToolSeparator}{tool.GetProperty("name").GetString()!}";
-            var description = tool.GetProperty("description").GetString()!;
-#pragma warning disable IL2026, IL3050
-            var inputSchema = JsonSerializer.Serialize(
-                JsonSerializer.Deserialize<JsonElement>(tool.GetProperty("inputSchema").GetRawText()),
-                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-#pragma warning restore IL2026, IL3050
-
             var responseTool = ResponseTool.CreateFunctionTool(name, description, BinaryData.FromString(inputSchema));
             _tools.Add(responseTool);
             toolsToVectorize.Add(responseTool);
