@@ -9,6 +9,7 @@ using OpenAI.Embeddings;
 using OpenAI.Responses;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using OpenAI.Agents;
 
 namespace OpenAI.Tests.Utility;
 
@@ -138,7 +139,7 @@ public class ResponseToolsTests
     public async Task AddMcpToolsAsync_AddsToolsCorrectly()
     {
         // Arrange
-        var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"), null);
+        var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"));
         var tools = new ResponseTools();
 
         var mockToolsResponse = BinaryData.FromString(@"
@@ -189,7 +190,7 @@ public class ResponseToolsTests
             .ReturnsAsync(mockToolsResponse);
         mockMcpClient.Setup(c => c.CallToolAsync(It.IsAny<string>(), It.IsAny<BinaryData>()))
             .ReturnsAsync(BinaryData.FromString("\"test result\""));
-        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+        mockMcpClient.SetupGet(c => c.Endpoint)
             .Returns(new Uri("http://localhost:1234"));
 
         // Act
@@ -216,7 +217,7 @@ public class ResponseToolsTests
     public async Task CreateResponseOptions_WithMaxToolsParameter_FiltersTools()
     {
         // Arrange
-        var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"), null);
+        var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"));
         var tools = new ResponseTools(mockEmbeddingClient.Object);
 
         var mockToolsResponse = BinaryData.FromString(@"
@@ -287,7 +288,7 @@ public class ResponseToolsTests
             .ReturnsAsync(mockToolsResponse);
         mockMcpClient.Setup(c => c.CallToolAsync("math-tool", It.IsAny<BinaryData>()))
             .ReturnsAsync(BinaryData.FromString("\"math-tool result\""));
-        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+        mockMcpClient.SetupGet(c => c.Endpoint)
             .Returns(new Uri("http://localhost:1234"));
 
         mockEmbeddingClient

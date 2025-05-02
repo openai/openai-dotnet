@@ -2,7 +2,7 @@ using System;
 using System.ClientModel.Primitives;
 using System.Threading.Tasks;
 
-namespace OpenAI;
+namespace OpenAI.Agents;
 
 /// <summary>
 /// Client for interacting with a Model Context Protocol (MCP) server.
@@ -15,18 +15,17 @@ public class McpClient
     /// <summary>
     /// Gets the endpoint URI of the MCP server.
     /// </summary>
-    public virtual Uri ServerEndpoint { get; }
+    public virtual Uri Endpoint { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="McpClient"/> class.
     /// </summary>
     /// <param name="endpoint">The URI endpoint of the MCP server.</param>
-    /// <param name="pipeline">Optional custom client pipeline. If not provided, a default pipeline will be created.</param>
-    public McpClient(Uri endpoint, ClientPipeline pipeline = null)
+    public McpClient(Uri endpoint)
     {
-        _pipeline = pipeline ?? ClientPipeline.Create();
+        _pipeline = ClientPipeline.Create();
         _session = new McpSession(endpoint, _pipeline);
-        ServerEndpoint = endpoint;
+        Endpoint = endpoint;
     }
 
     /// <summary>

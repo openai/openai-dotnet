@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using OpenAI.Agents;
 using OpenAI.Embeddings;
 using OpenAI.Responses;
 
@@ -36,14 +37,11 @@ public class ResponseTools
     /// <summary>
     /// Initializes a new instance of the ResponseTools class with the specified tool types.
     /// </summary>
-    /// <param name="tool">The primary tool type to add.</param>
-    /// <param name="additionalTools">Additional tool types to add.</param>
-    public ResponseTools(Type tool, params Type[] additionalTools) : this((EmbeddingClient)null)
+    /// <param name="tools">Additional tool types to add.</param>
+    public ResponseTools(params Type[] tools) : this((EmbeddingClient)null)
     {
-        AddLocalTool(tool);
-        if (additionalTools != null)
-            foreach (var t in additionalTools)
-                AddLocalTool(t);
+        foreach (var t in tools)
+            AddLocalTool(t);
     }
 
     /// <summary>
@@ -80,7 +78,7 @@ public class ResponseTools
 #pragma warning restore IL2070
     }
 
-    public void AddLocalTool(MethodInfo function)
+    internal void AddLocalTool(MethodInfo function)
     {
         string name = function.Name;
         var tool = ResponseTool.CreateFunctionTool(name, ToolsUtility.GetMethodDescription(function), ToolsUtility.BuildParametersJson(function.GetParameters()));
@@ -96,7 +94,7 @@ public class ResponseTools
     public async Task AddMcpToolsAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
-        _mcpClientsByEndpoint[client.ServerEndpoint.AbsoluteUri] = client;
+        _mcpClientsByEndpoint[client.Endpoint.AbsoluteUri] = client;
         await client.StartAsync().ConfigureAwait(false);
         BinaryData tools = await client.ListToolsAsync().ConfigureAwait(false);
         await AddToolsAsync(tools, client).ConfigureAwait(false);
@@ -108,12 +106,9 @@ public class ResponseTools
     /// </summary>
     /// <param name="mcpEndpoint">The URI endpoint of the MCP server.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task AddMcpToolsAsync(Uri mcpEndpoint) =>
-        await AddMcpToolsAsync(mcpEndpoint, null).ConfigureAwait(false);
-
-    internal async Task AddMcpToolsAsync(Uri serverEndpoint, ClientPipeline pipeline)
+    public async Task AddMcpToolsAsync(Uri mcpEndpoint)
     {
-        var client = new McpClient(serverEndpoint, pipeline);
+        var client = new McpClient(mcpEndpoint);
         await AddMcpToolsAsync(client).ConfigureAwait(false);
     }
 
@@ -123,7 +118,7 @@ public class ResponseTools
         if (!document.RootElement.TryGetProperty("tools", out JsonElement toolsElement))
             throw new JsonException("The JSON document must contain a 'tools' array.");
 
-        var serverKey = client.ServerEndpoint.Host + client.ServerEndpoint.Port.ToString();
+        var serverKey = client.Endpoint.Host + client.Endpoint.Port.ToString();
         List<ResponseTool> toolsToVectorize = new();
 
         foreach (var tool in toolsElement.EnumerateArray())

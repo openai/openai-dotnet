@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenAI.Agents;
 
 namespace OpenAI.Tests.Utility;
 
@@ -134,7 +135,7 @@ public class ChatToolsTests
     {
         // Arrange
         var mcpEndpoint = new Uri("http://localhost:1234");
-        var mockMcpClient = new Mock<McpClient>(mcpEndpoint, null);
+        var mockMcpClient = new Mock<McpClient>(mcpEndpoint);
         var tools = new ChatTools();
 
         var mockToolsResponse = BinaryData.FromString(@"
@@ -185,7 +186,7 @@ public class ChatToolsTests
             .ReturnsAsync(mockToolsResponse);
         mockMcpClient.Setup(c => c.CallToolAsync(It.IsAny<string>(), It.IsAny<BinaryData>()))
             .ReturnsAsync(BinaryData.FromString("\"test result\""));
-        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+        mockMcpClient.SetupGet(c => c.Endpoint)
             .Returns(mcpEndpoint);
 
         // Act
@@ -212,7 +213,7 @@ public class ChatToolsTests
     {
         // Arrange
         var mcpEndpoint = new Uri("http://localhost:1234");
-        var mockMcpClient = new Mock<McpClient>(mcpEndpoint, null);
+        var mockMcpClient = new Mock<McpClient>(mcpEndpoint);
         var tools = new ChatTools(mockEmbeddingClient.Object);
 
         var mockToolsResponse = BinaryData.FromString(@"
@@ -283,7 +284,7 @@ public class ChatToolsTests
             .ReturnsAsync(mockToolsResponse);
         mockMcpClient.Setup(c => c.CallToolAsync("math-tool", It.IsAny<BinaryData>()))
             .ReturnsAsync(BinaryData.FromString("\"math-tool result\""));
-        mockMcpClient.SetupGet(c => c.ServerEndpoint)
+        mockMcpClient.SetupGet(c => c.Endpoint)
             .Returns(mcpEndpoint);
 
         mockEmbeddingClient
