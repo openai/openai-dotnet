@@ -232,13 +232,7 @@ public class ChatTools
 
         lock (_entries)
         {
-            var distances = _entries
-                .Select((e, i) => (Distance: 1f - ToolsUtility.CosineSimilarity(e.Vector.Span, vector.Span), Index: i))
-                .OrderBy(t => t.Distance)
-                .Take(maxTools)
-                .Where(t => t.Distance <= minVectorDistance);
-
-            return distances.Select(d => _entries[d.Index]);
+            return ToolsUtility.GetClosestEntries(_entries, maxTools, minVectorDistance, vector);
         }
     }
 
@@ -253,18 +247,7 @@ public class ChatTools
         var arguments = new List<object>();
         if (call.FunctionArguments != null)
         {
-            using var document = JsonDocument.Parse(call.FunctionArguments);
-            foreach (JsonProperty argument in document.RootElement.EnumerateObject())
-            {
-                arguments.Add(argument.Value.ValueKind switch
-                {
-                    JsonValueKind.String => argument.Value.GetString()!,
-                    JsonValueKind.Number => argument.Value.GetInt32(),
-                    JsonValueKind.True => true,
-                    JsonValueKind.False => false,
-                    _ => throw new NotImplementedException()
-                });
-            }
+            ToolsUtility.ParseFunctionCallArgs(call.FunctionArguments, out arguments);
         }
         return CallLocal(call.FunctionName, [.. arguments]);
     }

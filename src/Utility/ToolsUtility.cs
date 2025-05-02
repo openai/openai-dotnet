@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -128,13 +129,48 @@ internal static class ToolsUtility
         {
             var name = $"{serverKey}{McpToolSeparator}{tool.GetProperty("name").GetString()!}";
             var description = tool.GetProperty("description").GetString()!;
-            var inputSchema = JsonSerializer.Serialize(
-                JsonSerializer.Deserialize<JsonElement>(tool.GetProperty("inputSchema").GetRawText()),
-                new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+            var inputSchemaElement = tool.GetProperty("inputSchema");
+            string inputSchema;
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new Utf8JsonWriter(stream))
+                {
+                    inputSchemaElement.WriteTo(writer);
+                }
+                inputSchema = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+            }
 
             result.Add((name, description, inputSchema));
         }
 
         return result;
+    }
+
+    internal static void ParseFunctionCallArgs(BinaryData functionCallArguments, out List<object> arguments)
+    {
+        arguments = new List<object>();
+        using var document = JsonDocument.Parse(functionCallArguments);
+        foreach (JsonProperty argument in document.RootElement.EnumerateObject())
+        {
+            arguments.Add(argument.Value.ValueKind switch
+            {
+                JsonValueKind.String => argument.Value.GetString()!,
+                JsonValueKind.Number => argument.Value.GetInt32(),
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                _ => throw new NotImplementedException()
+            });
+        }
+    }
+
+    internal static IEnumerable<VectorbaseEntry> GetClosestEntries(List<VectorbaseEntry> entries, int maxTools, float minVectorDistance, ReadOnlyMemory<float> vector)
+    {
+        var distances = entries
+                        .Select((e, i) => (Distance: 1f - ToolsUtility.CosineSimilarity(e.Vector.Span, vector.Span), Index: i))
+                        .OrderBy(t => t.Distance)
+                        .Take(maxTools)
+                        .Where(t => t.Distance <= minVectorDistance);
+
+        return distances.Select(d => entries[d.Index]);
     }
 }
