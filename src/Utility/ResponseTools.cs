@@ -21,7 +21,7 @@ public class ResponseTools
     private readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
     private readonly List<ResponseTool> _tools = [];
     private readonly EmbeddingClient _client;
-    private readonly List<VectorbaseEntry> _entries = [];
+    private readonly List<VectorDatabaseEntry> _entries = [];
     private readonly List<McpClient> _mcpClients = [];
     private readonly Dictionary<string, McpClient> _mcpClientsByEndpoint = [];
 
@@ -133,7 +133,7 @@ public class ResponseTools
                 var vector = embedding.ToFloats();
                 var item = toolsToVectorize[embedding.Index];
                 var toolDefinition = SerializeTool(item);
-                _entries.Add(new VectorbaseEntry(vector, toolDefinition));
+                _entries.Add(new VectorDatabaseEntry(vector, toolDefinition));
             }
         }
     }
@@ -214,7 +214,7 @@ public class ResponseTools
             .Select(e => ParseToolDefinition(e.Data));
     }
 
-    private async Task<IEnumerable<VectorbaseEntry>> FindVectorMatches(bool async, string prompt, int maxTools, float minVectorDistance)
+    private async Task<IEnumerable<VectorDatabaseEntry>> FindVectorMatches(bool async, string prompt, int maxTools, float minVectorDistance)
     {
         var vector = async ?
             await ToolsUtility.GetEmbeddingAsync(_client, prompt).ConfigureAwait(false) :

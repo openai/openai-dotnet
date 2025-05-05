@@ -182,7 +182,7 @@ internal static class ToolsUtility
         }
     }
 
-    internal static IEnumerable<VectorbaseEntry> GetClosestEntries(List<VectorbaseEntry> entries, int maxTools, float minVectorDistance, ReadOnlyMemory<float> vector)
+    internal static IEnumerable<VectorDatabaseEntry> GetClosestEntries(List<VectorDatabaseEntry> entries, int maxTools, float minVectorDistance, ReadOnlyMemory<float> vector)
     {
         var distances = entries
                         .Select((e, i) => (Distance: 1f - ToolsUtility.CosineSimilarity(e.Vector.Span, vector.Span), Index: i))

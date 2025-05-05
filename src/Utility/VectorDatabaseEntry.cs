@@ -3,17 +3,17 @@ using System;
 namespace OpenAI;
 
 /// <summary>
-/// A vectorbase entry.
+/// A vector database entry.
 /// </summary>
-internal readonly struct VectorbaseEntry
+internal readonly struct VectorDatabaseEntry
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="VectorbaseEntry"/> class.
+    /// Initializes a new instance of the <see cref="VectorDatabaseEntry"/> class.
     /// </summary>
     /// <param name="vector"></param>
     /// <param name="data"></param>
     /// <param name="id"></param>
-    public VectorbaseEntry(ReadOnlyMemory<float> vector, BinaryData data, int? id = default)
+    public VectorDatabaseEntry(ReadOnlyMemory<float> vector, BinaryData data, int? id = default)
     {
         Vector = vector;
         Data = data;
