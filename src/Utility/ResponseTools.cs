@@ -230,7 +230,10 @@ public class ResponseTools
         List<object> arguments = new();
         if (call.FunctionArguments != null)
         {
-            ToolsUtility.ParseFunctionCallArgs(call.FunctionArguments, out arguments);
+            if (!_methods.TryGetValue(call.FunctionName, out MethodInfo method))
+                return $"I don't have a tool called {call.FunctionName}";
+
+            ToolsUtility.ParseFunctionCallArgs(method, call.FunctionArguments, out arguments);
         }
         return CallLocal(call.FunctionName, [.. arguments]);
     }

@@ -39,6 +39,8 @@ internal static class ToolsUtility
         {
             Type t when t == typeof(double) => "number"u8,
             Type t when t == typeof(int) => "number"u8,
+            Type t when t == typeof(long) => "number"u8,
+            Type t when t == typeof(float) => "number"u8,
             Type t when t == typeof(string) => "string"u8,
             Type t when t == typeof(bool) => "bool"u8,
             _ => throw new NotImplementedException()
@@ -146,19 +148,36 @@ internal static class ToolsUtility
         return result;
     }
 
-    internal static void ParseFunctionCallArgs(BinaryData functionCallArguments, out List<object> arguments)
+    internal static void ParseFunctionCallArgs(MethodInfo method, BinaryData functionCallArguments, out List<object> arguments)
     {
         arguments = new List<object>();
         using var document = JsonDocument.Parse(functionCallArguments);
-        foreach (JsonProperty argument in document.RootElement.EnumerateObject())
+        var parameters = method.GetParameters();
+        var argumentsByName = document.RootElement.EnumerateObject().ToDictionary(p => p.Name, p => p.Value);
+
+        foreach (var param in parameters)
         {
-            arguments.Add(argument.Value.ValueKind switch
+            if (!argumentsByName.TryGetValue(param.Name!, out var value))
             {
-                JsonValueKind.String => argument.Value.GetString()!,
-                JsonValueKind.Number => argument.Value.GetInt32(),
+                if (param.HasDefaultValue)
+                {
+                    arguments.Add(param.DefaultValue!);
+                    continue;
+                }
+                throw new JsonException($"Required parameter '{param.Name}' not found in function call arguments.");
+            }
+
+            arguments.Add(value.ValueKind switch
+            {
+                JsonValueKind.String => value.GetString()!,
+                JsonValueKind.Number when param.ParameterType == typeof(int) => value.GetInt32(),
+                JsonValueKind.Number when param.ParameterType == typeof(long) => value.GetInt64(),
+                JsonValueKind.Number when param.ParameterType == typeof(double) => value.GetDouble(),
+                JsonValueKind.Number when param.ParameterType == typeof(float) => value.GetSingle(),
                 JsonValueKind.True => true,
                 JsonValueKind.False => false,
-                _ => throw new NotImplementedException()
+                JsonValueKind.Null when param.HasDefaultValue => param.DefaultValue!,
+                _ => throw new NotImplementedException($"Conversion from {value.ValueKind} to {param.ParameterType.Name} is not implemented.")
             });
         }
     }

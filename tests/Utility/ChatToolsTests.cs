@@ -23,6 +23,10 @@ public class ChatToolsTests
     {
         public static string Echo(string message) => message;
         public static int Add(int a, int b) => a + b;
+        public static double Multiply(double x, double y) => x * y;
+        public static bool IsGreaterThan(long value1, long value2) => value1 > value2;
+        public static float Divide(float numerator, float denominator) => numerator / denominator;
+        public static string ConcatWithBool(string text, bool flag) => $"{text}:{flag}";
     }
 
     private Mock<EmbeddingClient> mockEmbeddingClient;
@@ -39,9 +43,13 @@ public class ChatToolsTests
         var tools = new ChatTools();
         tools.AddFunctionTools(typeof(TestTools));
 
-        Assert.That(tools.Tools, Has.Count.EqualTo(2));
+        Assert.That(tools.Tools, Has.Count.EqualTo(6));
         Assert.That(tools.Tools.Any(t => t.FunctionName == "Echo"));
         Assert.That(tools.Tools.Any(t => t.FunctionName == "Add"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "Multiply"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "IsGreaterThan"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "Divide"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "ConcatWithBool"));
     }
 
     [Test]
@@ -53,17 +61,29 @@ public class ChatToolsTests
         var toolCalls = new[]
         {
             ChatToolCall.CreateFunctionToolCall("call1", "Echo", BinaryData.FromString(@"{""message"": ""Hello""}")),
-            ChatToolCall.CreateFunctionToolCall("call2", "Add", BinaryData.FromString(@"{""a"": 2, ""b"": 3}"))
+            ChatToolCall.CreateFunctionToolCall("call2", "Add", BinaryData.FromString(@"{""a"": 2, ""b"": 3}")),
+            ChatToolCall.CreateFunctionToolCall("call3", "Multiply", BinaryData.FromString(@"{""x"": 2.5, ""y"": 3.0}")),
+            ChatToolCall.CreateFunctionToolCall("call4", "IsGreaterThan", BinaryData.FromString(@"{""value1"": 100, ""value2"": 50}")),
+            ChatToolCall.CreateFunctionToolCall("call5", "Divide", BinaryData.FromString(@"{""numerator"": 10.0, ""denominator"": 2.0}")),
+            ChatToolCall.CreateFunctionToolCall("call6", "ConcatWithBool", BinaryData.FromString(@"{""text"": ""Test"", ""flag"": true}"))
         };
 
         var results = await tools.CallAsync(toolCalls);
         var resultsList = results.ToList();
 
-        Assert.That(resultsList, Has.Count.EqualTo(2));
+        Assert.That(resultsList, Has.Count.EqualTo(6));
         Assert.That(resultsList[0].ToolCallId, Is.EqualTo("call1"));
         Assert.That(resultsList[0].Content[0].Text, Is.EqualTo("Hello"));
         Assert.That(resultsList[1].ToolCallId, Is.EqualTo("call2"));
         Assert.That(resultsList[1].Content[0].Text, Is.EqualTo("5"));
+        Assert.That(resultsList[2].ToolCallId, Is.EqualTo("call3"));
+        Assert.That(resultsList[2].Content[0].Text, Is.EqualTo("7.5"));
+        Assert.That(resultsList[3].ToolCallId, Is.EqualTo("call4"));
+        Assert.That(resultsList[3].Content[0].Text, Is.EqualTo("True"));
+        Assert.That(resultsList[4].ToolCallId, Is.EqualTo("call5"));
+        Assert.That(resultsList[4].Content[0].Text, Is.EqualTo("5"));
+        Assert.That(resultsList[5].ToolCallId, Is.EqualTo("call6"));
+        Assert.That(resultsList[5].Content[0].Text, Is.EqualTo("Test:True"));
     }
 
     [Test]
@@ -74,9 +94,13 @@ public class ChatToolsTests
 
         var options = tools.ToChatCompletionOptions();
 
-        Assert.That(options.Tools, Has.Count.EqualTo(2));
+        Assert.That(options.Tools, Has.Count.EqualTo(6));
         Assert.That(options.Tools.Any(t => t.FunctionName == "Echo"));
         Assert.That(options.Tools.Any(t => t.FunctionName == "Add"));
+        Assert.That(options.Tools.Any(t => t.FunctionName == "Multiply"));
+        Assert.That(options.Tools.Any(t => t.FunctionName == "IsGreaterThan"));
+        Assert.That(options.Tools.Any(t => t.FunctionName == "Divide"));
+        Assert.That(options.Tools.Any(t => t.FunctionName == "ConcatWithBool"));
     }
 
     [Test]

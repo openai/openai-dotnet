@@ -21,6 +21,10 @@ public class ResponseToolsTests
     {
         public static string Echo(string message) => message;
         public static int Add(int a, int b) => a + b;
+        public static double Multiply(double x, double y) => x * y;
+        public static bool IsGreaterThan(long value1, long value2) => value1 > value2;
+        public static float Divide(float numerator, float denominator) => numerator / denominator;
+        public static string ConcatWithBool(string text, bool flag) => $"{text}:{flag}";
     }
 
     private Mock<EmbeddingClient> mockEmbeddingClient;
@@ -37,9 +41,13 @@ public class ResponseToolsTests
         var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestTools));
 
-        Assert.That(tools.Tools, Has.Count.EqualTo(2));
+        Assert.That(tools.Tools, Has.Count.EqualTo(6));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Echo")));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Add")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Multiply")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("IsGreaterThan")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Divide")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("ConcatWithBool")));
     }
 
     [Test]
@@ -48,17 +56,42 @@ public class ResponseToolsTests
         var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestTools));
 
-        var toolCall = new FunctionCallResponseItem("call1", "Echo", BinaryData.FromString(@"{""message"": ""Hello""}"));
-        var result = await tools.CallAsync(toolCall);
+        var toolCalls = new[]
+        {
+            new FunctionCallResponseItem("call1", "Echo", BinaryData.FromString(@"{""message"": ""Hello""}")),
+            new FunctionCallResponseItem("call2", "Add", BinaryData.FromString(@"{""a"": 2, ""b"": 3}")),
+            new FunctionCallResponseItem("call3", "Multiply", BinaryData.FromString(@"{""x"": 2.5, ""y"": 3.0}")),
+            new FunctionCallResponseItem("call4", "IsGreaterThan", BinaryData.FromString(@"{""value1"": 100, ""value2"": 50}")),
+            new FunctionCallResponseItem("call5", "Divide", BinaryData.FromString(@"{""numerator"": 10.0, ""denominator"": 2.0}")),
+            new FunctionCallResponseItem("call6", "ConcatWithBool", BinaryData.FromString(@"{""text"": ""Test"", ""flag"": true}"))
+        };
 
-        Assert.That(result.CallId, Is.EqualTo("call1"));
-        Assert.That(result.FunctionOutput, Is.EqualTo("Hello"));
-
-        var addCall = new FunctionCallResponseItem("call2", "Add", BinaryData.FromString(@"{""a"": 2, ""b"": 3}"));
-        result = await tools.CallAsync(addCall);
-
-        Assert.That(result.CallId, Is.EqualTo("call2"));
-        Assert.That(result.FunctionOutput, Is.EqualTo("5"));
+        foreach (var toolCall in toolCalls)
+        {
+            var result = await tools.CallAsync(toolCall);
+            Assert.That(result.CallId, Is.EqualTo(toolCall.CallId));
+            switch (toolCall.CallId)
+            {
+                case "call1":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("Hello"));
+                    break;
+                case "call2":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("5"));
+                    break;
+                case "call3":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("7.5"));
+                    break;
+                case "call4":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("True"));
+                    break;
+                case "call5":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("5"));
+                    break;
+                case "call6":
+                    Assert.That(result.FunctionOutput, Is.EqualTo("Test:True"));
+                    break;
+            }
+        }
     }
 
     [Test]
@@ -69,9 +102,13 @@ public class ResponseToolsTests
 
         var options = tools.ToResponseCreationOptions();
 
-        Assert.That(options.Tools, Has.Count.EqualTo(2));
+        Assert.That(options.Tools, Has.Count.EqualTo(6));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Echo")));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Add")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Multiply")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("IsGreaterThan")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Divide")));
+        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("ConcatWithBool")));
     }
 
     [Test]
