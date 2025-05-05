@@ -41,7 +41,7 @@ public class ResponseTools
     public ResponseTools(params Type[] tools) : this((EmbeddingClient)null)
     {
         foreach (var t in tools)
-            AddLocalTool(t);
+            AddFunctionTool(t);
     }
 
     /// <summary>
@@ -58,27 +58,27 @@ public class ResponseTools
     /// Adds local tool implementations from the provided types.
     /// </summary>
     /// <param name="tools">Types containing static methods to be used as tools.</param>
-    public void AddLocalTools(params Type[] tools)
+    public void AddFunctionTools(params Type[] tools)
     {
         foreach (Type functionHolder in tools)
-            AddLocalTool(functionHolder);
+            AddFunctionTool(functionHolder);
     }
 
     /// <summary>
     /// Adds all public static methods from the specified type as tools.
     /// </summary>
     /// <param name="tool">The type containing tool methods.</param>
-    internal void AddLocalTool(Type tool)
+    internal void AddFunctionTool(Type tool)
     {
 #pragma warning disable IL2070
         foreach (MethodInfo function in tool.GetMethods(BindingFlags.Public | BindingFlags.Static))
         {
-            AddLocalTool(function);
+            AddFunctionTool(function);
         }
 #pragma warning restore IL2070
     }
 
-    internal void AddLocalTool(MethodInfo function)
+    internal void AddFunctionTool(MethodInfo function)
     {
         string name = function.Name;
         var tool = ResponseTool.CreateFunctionTool(name, ToolsUtility.GetMethodDescription(function), ToolsUtility.BuildParametersJson(function.GetParameters()));
@@ -97,7 +97,7 @@ public class ResponseTools
         _mcpClientsByEndpoint[client.Endpoint.AbsoluteUri] = client;
         await client.StartAsync().ConfigureAwait(false);
         BinaryData tools = await client.ListToolsAsync().ConfigureAwait(false);
-        await AddToolsAsync(tools, client).ConfigureAwait(false);
+        await AddMcpToolsAsync(tools, client).ConfigureAwait(false);
         _mcpClients.Add(client);
     }
 
@@ -112,7 +112,7 @@ public class ResponseTools
         await AddMcpToolsAsync(client).ConfigureAwait(false);
     }
 
-    private async Task AddToolsAsync(BinaryData toolDefinitions, McpClient client)
+    private async Task AddMcpToolsAsync(BinaryData toolDefinitions, McpClient client)
     {
         List<ResponseTool> toolsToVectorize = new();
         var parsedTools = ToolsUtility.ParseMcpToolDefinitions(toolDefinitions, client);
@@ -161,7 +161,7 @@ public class ResponseTools
     /// Converts the tools collection to <see cref="ResponseCreationOptions"> configured with the tools contained in this instance..
     /// </summary>
     /// <returns>A new ResponseCreationOptions containing all defined tools.</returns>
-    public ResponseCreationOptions CreateResponseOptions()
+    public ResponseCreationOptions ToResponseCreationOptions()
     {
         var options = new ResponseCreationOptions();
         foreach (var tool in _tools)
@@ -176,10 +176,10 @@ public class ResponseTools
     /// <param name="maxTools">The maximum number of tools to return. Default is 5.</param>
     /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
     /// <returns>A new ResponseCreationOptions containing the most relevant tools.</returns>
-    public ResponseCreationOptions CreateResponseOptions(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
+    public ResponseCreationOptions ToResponseCreationOptions(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
     {
         if (!CanFilterTools)
-            return CreateResponseOptions();
+            return ToResponseCreationOptions();
 
         var completionOptions = new ResponseCreationOptions();
         foreach (var tool in FindRelatedTools(false, prompt, maxTools, minVectorDistance).GetAwaiter().GetResult())
@@ -194,10 +194,10 @@ public class ResponseTools
     /// <param name="maxTools">The maximum number of tools to return. Default is 5.</param>
     /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
     /// <returns>A new ResponseCreationOptions containing the most relevant tools.</returns>
-    public async Task<ResponseCreationOptions> CreateResponseOptionsAsync(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
+    public async Task<ResponseCreationOptions> ToResponseCreationOptionsAsync(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
     {
         if (!CanFilterTools)
-            return CreateResponseOptions();
+            return ToResponseCreationOptions();
 
         var completionOptions = new ResponseCreationOptions();
         foreach (var tool in await FindRelatedTools(true, prompt, maxTools, minVectorDistance).ConfigureAwait(false))
@@ -224,12 +224,6 @@ public class ResponseTools
             return ToolsUtility.GetClosestEntries(_entries, maxTools, minVectorDistance, vector);
         }
     }
-
-    /// <summary>
-    /// Implicitly converts ResponseTools to ResponseCreationOptions.
-    /// </summary>
-    /// <param name="tools">The ResponseTools instance to convert.</param>
-    public static implicit operator ResponseCreationOptions(ResponseTools tools) => tools.CreateResponseOptions();
 
     internal string CallLocal(FunctionCallResponseItem call)
     {

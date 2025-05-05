@@ -41,7 +41,7 @@ public class ChatTools
     public ChatTools(params Type[] tools) : this((EmbeddingClient)null)
     {
         foreach (var t in tools)
-            AddLocalTool(t);
+            AddFunctionTool(t);
     }
 
     /// <summary>
@@ -58,27 +58,27 @@ public class ChatTools
     /// Adds local tool implementations from the provided types.
     /// </summary>
     /// <param name="tools">Types containing static methods to be used as tools.</param>
-    public void AddLocalTools(params Type[] tools)
+    public void AddFunctionTools(params Type[] tools)
     {
         foreach (Type functionHolder in tools)
-            AddLocalTool(functionHolder);
+            AddFunctionTool(functionHolder);
     }
 
     /// <summary>
     /// Adds all public static methods from the specified type as tools.
     /// </summary>
     /// <param name="tool">The type containing tool methods.</param>
-    internal void AddLocalTool(Type tool)
+    internal void AddFunctionTool(Type tool)
     {
 #pragma warning disable IL2070
         foreach (MethodInfo function in tool.GetMethods(BindingFlags.Public | BindingFlags.Static))
         {
-            AddLocalTool(function);
+            AddFunctionTool(function);
         }
 #pragma warning restore IL2070
     }
 
-    internal void AddLocalTool(MethodInfo function)
+    internal void AddFunctionTool(MethodInfo function)
     {
         string name = function.Name;
         var tool = ChatTool.CreateFunctionTool(name, ToolsUtility.GetMethodDescription(function), ToolsUtility.BuildParametersJson(function.GetParameters()));
@@ -97,7 +97,7 @@ public class ChatTools
         _mcpClientsByEndpoint[client.Endpoint.AbsoluteUri] = client;
         await client.StartAsync().ConfigureAwait(false);
         BinaryData tools = await client.ListToolsAsync().ConfigureAwait(false);
-        await AddToolsAsync(tools, client).ConfigureAwait(false);
+        await AddMcpToolsAsync(tools, client).ConfigureAwait(false);
         _mcpClients.Add(client);
     }
 
@@ -112,7 +112,7 @@ public class ChatTools
         await AddMcpToolsAsync(client).ConfigureAwait(false);
     }
 
-    private async Task AddToolsAsync(BinaryData toolDefinitions, McpClient client)
+    private async Task AddMcpToolsAsync(BinaryData toolDefinitions, McpClient client)
     {
         List<ChatTool> toolsToVectorize = new();
         var parsedTools = ToolsUtility.ParseMcpToolDefinitions(toolDefinitions, client);
@@ -158,7 +158,7 @@ public class ChatTools
     /// Converts the tools collection to chat completion options.
     /// </summary>
     /// <returns>A new ChatCompletionOptions containing all defined tools.</returns>
-    public ChatCompletionOptions CreateCompletionOptions()
+    public ChatCompletionOptions ToChatCompletionOptions()
     {
         var options = new ChatCompletionOptions();
         foreach (var tool in _tools)
@@ -173,10 +173,10 @@ public class ChatTools
     /// <param name="maxTools">The maximum number of tools to return. Default is 3.</param>
     /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
     /// <returns>A new <see cref="ChatCompletionOptions"/> containing the most relevant tools.</returns>
-    public ChatCompletionOptions CreateCompletionOptions(string prompt, int maxTools = 3, float minVectorDistance = 0.29f)
+    public ChatCompletionOptions CreateCompletionOptions(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
     {
         if (!CanFilterTools)
-            return CreateCompletionOptions();
+            return ToChatCompletionOptions();
 
         var completionOptions = new ChatCompletionOptions();
         foreach (var tool in FindRelatedTools(false, prompt, maxTools, minVectorDistance).GetAwaiter().GetResult())
@@ -191,10 +191,10 @@ public class ChatTools
     /// <param name="maxTools">The maximum number of tools to return. Default is 3.</param>
     /// <param name="minVectorDistance">The similarity threshold for including tools. Default is 0.29.</param>
     /// <returns>A new <see cref="ChatCompletionOptions"/> containing the most relevant tools.</returns>
-    public async Task<ChatCompletionOptions> CreateCompletionOptionsAsync(string prompt, int maxTools = 3, float minVectorDistance = 0.29f)
+    public async Task<ChatCompletionOptions> ToChatCompletionOptions(string prompt, int maxTools = 5, float minVectorDistance = 0.29f)
     {
         if (!CanFilterTools)
-            return CreateCompletionOptions();
+            return ToChatCompletionOptions();
 
         var completionOptions = new ChatCompletionOptions();
         foreach (var tool in await FindRelatedTools(true, prompt, maxTools, minVectorDistance).ConfigureAwait(false))
@@ -222,12 +222,6 @@ public class ChatTools
             return ToolsUtility.GetClosestEntries(_entries, maxTools, minVectorDistance, vector);
         }
     }
-
-    /// <summary>
-    /// Implicitly converts ChatTools to <see cref="ChatCompletionOptions"/>.
-    /// </summary>
-    /// <param name="tools">The ChatTools instance to convert.</param>
-    public static implicit operator ChatCompletionOptions(ChatTools tools) => tools.CreateCompletionOptions();
 
     internal string CallLocal(ChatToolCall call)
     {
@@ -260,6 +254,8 @@ public class ChatTools
         var actualFunctionName = call.FunctionName.Substring(index + ToolsUtility.McpToolSeparator.Length);
 #endif
         var result = await method(actualFunctionName, call.FunctionArguments).ConfigureAwait(false);
+        if (result == null)
+            throw new InvalidOperationException($"MCP tool {call.FunctionName} returned null. Function tools should always return a value.");
         return result.ToString();
     }
 

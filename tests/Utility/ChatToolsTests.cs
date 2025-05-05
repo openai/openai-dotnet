@@ -1,17 +1,17 @@
-using Moq;
-using NUnit.Framework;
-using OpenAI.Chat;
-using OpenAI.Embeddings;
 using System;
-using System.Collections.Generic;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
+using NUnit.Framework;
 using OpenAI.Agents;
+using OpenAI.Chat;
+using OpenAI.Embeddings;
 
 namespace OpenAI.Tests.Utility;
 
@@ -37,7 +37,7 @@ public class ChatToolsTests
     public void CanAddLocalTools()
     {
         var tools = new ChatTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
         Assert.That(tools.Tools, Has.Count.EqualTo(2));
         Assert.That(tools.Tools.Any(t => t.FunctionName == "Echo"));
@@ -48,7 +48,7 @@ public class ChatToolsTests
     public async Task CanCallToolsAsync()
     {
         var tools = new ChatTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
         var toolCalls = new[]
         {
@@ -70,9 +70,9 @@ public class ChatToolsTests
     public void CreatesCompletionOptionsWithTools()
     {
         var tools = new ChatTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
-        var options = tools.CreateCompletionOptions();
+        var options = tools.ToChatCompletionOptions();
 
         Assert.That(options.Tools, Has.Count.EqualTo(2));
         Assert.That(options.Tools.Any(t => t.FunctionName == "Echo"));
@@ -98,24 +98,11 @@ public class ChatToolsTests
             .ReturnsAsync(ClientResult.FromValue(embedding, mockResponse));
 
         var tools = new ChatTools(mockEmbeddingClient.Object);
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
-        var options = await tools.CreateCompletionOptionsAsync("Need to add two numbers", 1, 0.5f);
+        var options = await tools.ToChatCompletionOptions("Need to add two numbers", 1, 0.5f);
 
         Assert.That(options.Tools, Has.Count.LessThanOrEqualTo(1));
-    }
-
-    [Test]
-    public void ImplicitConversionToCompletionOptions()
-    {
-        var tools = new ChatTools();
-        tools.AddLocalTools(typeof(TestTools));
-
-        ChatCompletionOptions options = tools;
-
-        Assert.That(options.Tools, Has.Count.EqualTo(2));
-        Assert.That(options.Tools.Any(t => t.FunctionName == "Echo"));
-        Assert.That(options.Tools.Any(t => t.FunctionName == "Add"));
     }
 
     [Test]
@@ -306,11 +293,11 @@ public class ChatToolsTests
 
         // Act & Assert
         // Test with maxTools = 1
-        var options1 = await tools.CreateCompletionOptionsAsync("calculate 2+2", 1, 0.5f);
+        var options1 = await tools.ToChatCompletionOptions("calculate 2+2", 1, 0.5f);
         Assert.That(options1.Tools, Has.Count.EqualTo(1));
 
         // Test with maxTools = 2
-        var options2 = await tools.CreateCompletionOptionsAsync("calculate 2+2", 2, 0.5f);
+        var options2 = await tools.ToChatCompletionOptions("calculate 2+2", 2, 0.5f);
         Assert.That(options2.Tools, Has.Count.EqualTo(2));
 
         // Test that we can call the tools after filtering

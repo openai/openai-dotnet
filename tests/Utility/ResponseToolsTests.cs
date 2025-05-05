@@ -1,15 +1,15 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using OpenAI.Agents;
 using OpenAI.Embeddings;
 using OpenAI.Responses;
-using System.ClientModel;
-using System.ClientModel.Primitives;
-using OpenAI.Agents;
 
 namespace OpenAI.Tests.Utility;
 
@@ -35,7 +35,7 @@ public class ResponseToolsTests
     public void CanAddLocalTools()
     {
         var tools = new ResponseTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
         Assert.That(tools.Tools, Has.Count.EqualTo(2));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Echo")));
@@ -46,7 +46,7 @@ public class ResponseToolsTests
     public async Task CanCallToolAsync()
     {
         var tools = new ResponseTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
         var toolCall = new FunctionCallResponseItem("call1", "Echo", BinaryData.FromString(@"{""message"": ""Hello""}"));
         var result = await tools.CallAsync(toolCall);
@@ -65,9 +65,9 @@ public class ResponseToolsTests
     public void CreatesResponseOptionsWithTools()
     {
         var tools = new ResponseTools();
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
-        var options = tools.CreateResponseOptions();
+        var options = tools.ToResponseCreationOptions();
 
         Assert.That(options.Tools, Has.Count.EqualTo(2));
         Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Echo")));
@@ -105,24 +105,11 @@ public class ResponseToolsTests
             .ReturnsAsync(ClientResult.FromValue(embeddingCollection, mockResponse));
 
         var tools = new ResponseTools(mockEmbeddingClient.Object);
-        tools.AddLocalTools(typeof(TestTools));
+        tools.AddFunctionTools(typeof(TestTools));
 
-        var options = await tools.CreateResponseOptionsAsync("Need to add two numbers", 1, 0.5f);
+        var options = await tools.ToResponseCreationOptionsAsync("Need to add two numbers", 1, 0.5f);
 
         Assert.That(options.Tools, Has.Count.LessThanOrEqualTo(1));
-    }
-
-    [Test]
-    public void ImplicitConversionToResponseOptions()
-    {
-        var tools = new ResponseTools();
-        tools.AddLocalTools(typeof(TestTools));
-
-        ResponseCreationOptions options = tools;
-
-        Assert.That(options.Tools, Has.Count.EqualTo(2));
-        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Echo")));
-        Assert.That(tools.Tools.Any(t => ((string)t.GetType().GetProperty("Name").GetValue(t)).Contains("Add")));
     }
 
     [Test]
@@ -310,15 +297,15 @@ public class ResponseToolsTests
 
         // Act & Assert
         // Test with maxTools = 1
-        var options1 = await tools.CreateResponseOptionsAsync("calculate 2+2", 1, 0.5f);
+        var options1 = await tools.ToResponseCreationOptionsAsync("calculate 2+2", 1, 0.5f);
         Assert.That(options1.Tools, Has.Count.EqualTo(1));
 
         // Test with maxTools = 2
-        var options2 = await tools.CreateResponseOptionsAsync("calculate 2+2", 2, 0.5f);
+        var options2 = await tools.ToResponseCreationOptionsAsync("calculate 2+2", 2, 0.5f);
         Assert.That(options2.Tools, Has.Count.EqualTo(2));
 
         // Test that tool choice affects results
-        var optionsWithToolChoice = await tools.CreateResponseOptionsAsync("calculate 2+2", 1, 0.5f);
+        var optionsWithToolChoice = await tools.ToResponseCreationOptionsAsync("calculate 2+2", 1, 0.5f);
         optionsWithToolChoice.ToolChoice = ResponseToolChoice.CreateRequiredChoice();
 
         Assert.That(optionsWithToolChoice.ToolChoice, Is.Not.Null);
