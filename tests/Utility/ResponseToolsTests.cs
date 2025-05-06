@@ -46,24 +46,24 @@ public class ResponseToolsTests
             await Task.Delay(1); // Simulate async work
             return x * y;
         }
-            
-            public static async Task<bool> IsGreaterThanAsync(long value1, long value2)
-            {
-                await Task.Delay(1); // Simulate async work
-                return value1 > value2;
-            }
-                
-            public static async Task<float> DivideAsync(float numerator, float denominator)
-            {
-                await Task.Delay(1); // Simulate async work
-                return numerator / denominator;
-            }
 
-            public static async Task<string> ConcatWithBoolAsync(string text, bool flag)
-            {
-                await Task.Delay(1); // Simulate async work
-                return $"{text}:{flag}";
-            }
+        public static async Task<bool> IsGreaterThanAsync(long value1, long value2)
+        {
+            await Task.Delay(1); // Simulate async work
+            return value1 > value2;
+        }
+
+        public static async Task<float> DivideAsync(float numerator, float denominator)
+        {
+            await Task.Delay(1); // Simulate async work
+            return numerator / denominator;
+        }
+
+        public static async Task<string> ConcatWithBoolAsync(string text, bool flag)
+        {
+            await Task.Delay(1); // Simulate async work
+            return $"{text}:{flag}";
+        }
     }
 
     private Mock<EmbeddingClient> mockEmbeddingClient;
@@ -77,7 +77,7 @@ public class ResponseToolsTests
     [Test]
     public void CanAddLocalTools()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestTools));
 
         Assert.That(tools.Tools, Has.Count.EqualTo(6));
@@ -92,7 +92,7 @@ public class ResponseToolsTests
     [Test]
     public void CanAddLocalAsyncTools()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestToolsAsync));
 
         Assert.That(tools.Tools, Has.Count.EqualTo(6));
@@ -107,7 +107,7 @@ public class ResponseToolsTests
     [Test]
     public async Task CanCallToolAsync()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestTools));
 
         var toolCalls = new[]
@@ -151,7 +151,7 @@ public class ResponseToolsTests
     [Test]
     public async Task CanCallAsyncToolsAsync()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestToolsAsync));
 
         var toolCalls = new[]
@@ -195,7 +195,7 @@ public class ResponseToolsTests
     [Test]
     public void CreatesResponseOptionsWithTools()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         tools.AddFunctionTools(typeof(TestTools));
 
         var options = tools.ToResponseCreationOptions();
@@ -239,7 +239,7 @@ public class ResponseToolsTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(ClientResult.FromValue(embeddingCollection, mockResponse));
 
-        var tools = new CallLocalAsync(mockEmbeddingClient.Object);
+        var tools = new ResponseTools(mockEmbeddingClient.Object);
         tools.AddFunctionTools(typeof(TestTools));
 
         var options = await tools.ToResponseCreationOptionsAsync("Need to add two numbers", 1, 0.5f);
@@ -250,7 +250,7 @@ public class ResponseToolsTests
     [Test]
     public async Task ReturnsErrorForNonExistentTool()
     {
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
         var toolCall = new FunctionCallResponseItem("call1", "NonExistentTool", BinaryData.FromString("{}"));
 
         var result = await tools.CallAsync(toolCall);
@@ -262,7 +262,7 @@ public class ResponseToolsTests
     {
         // Arrange
         var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"));
-        var tools = new CallLocalAsync();
+        var tools = new ResponseTools();
 
         var mockToolsResponse = BinaryData.FromString(@"
         {
@@ -340,7 +340,7 @@ public class ResponseToolsTests
     {
         // Arrange
         var mockMcpClient = new Mock<McpClient>(new Uri("http://localhost:1234"));
-        var tools = new CallLocalAsync(mockEmbeddingClient.Object);
+        var tools = new ResponseTools(mockEmbeddingClient.Object);
 
         var mockToolsResponse = BinaryData.FromString(@"
         {

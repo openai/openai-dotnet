@@ -16,7 +16,7 @@ namespace OpenAI.Responses;
 /// Provides functionality to manage and execute OpenAI function tools for responses.
 /// </summary>
 //[Experimental("OPENAIMCP001")
-public class CallLocalAsync
+public class ResponseTools
 {
     private readonly Dictionary<string, MethodInfo> _methods = [];
     private readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
@@ -30,7 +30,7 @@ public class CallLocalAsync
     /// Initializes a new instance of the ResponseTools class with an optional embedding client.
     /// </summary>
     /// <param name="client">The embedding client used for tool vectorization, or null to disable vectorization.</param>
-    public CallLocalAsync(EmbeddingClient client = null)
+    public ResponseTools(EmbeddingClient client = null)
     {
         _client = client;
     }
@@ -39,7 +39,7 @@ public class CallLocalAsync
     /// Initializes a new instance of the ResponseTools class with the specified tool types.
     /// </summary>
     /// <param name="tools">Additional tool types to add.</param>
-    public CallLocalAsync(params Type[] tools) : this((EmbeddingClient)null)
+    public ResponseTools(params Type[] tools) : this((EmbeddingClient)null)
     {
         foreach (var t in tools)
             AddFunctionTool(t);
