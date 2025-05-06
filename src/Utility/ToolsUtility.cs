@@ -210,4 +210,44 @@ internal static class ToolsUtility
         stream.Position = 0;
         return BinaryData.FromStream(stream);
     }
+
+    internal static async Task<string> CallFunctionToolAsync(Dictionary<string, MethodInfo> methods, string name, object[] arguments)
+    {
+        if (!methods.TryGetValue(name, out MethodInfo method))
+            throw new InvalidOperationException($"Tool not found: {name}");
+
+        object result;
+        if (IsGenericTask(method.ReturnType, out Type taskResultType))
+        {
+            // Method is async, invoke and await
+            var task = (Task)method.Invoke(null, arguments);
+            await task.ConfigureAwait(false);
+            // Get the Result property from the Task
+            result = taskResultType.GetProperty("Result").GetValue(task);
+        }
+        else
+        {
+            // Method is synchronous
+            result = method.Invoke(null, arguments);
+        }
+
+        return result?.ToString() ?? string.Empty;
+    }
+
+    private static bool IsGenericTask(Type type, out Type taskResultType)
+    {
+        while (type != null && type != typeof(object))
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>))
+            {
+                taskResultType = type;//type.GetGenericArguments()[0];
+                return true;
+            }
+
+            type = type.BaseType!;
+        }
+
+        taskResultType = null;
+        return false;
+    }
 }

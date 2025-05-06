@@ -15,7 +15,8 @@ namespace OpenAI.Responses;
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for responses.
 /// </summary>
-public class ResponseTools
+//[Experimental("OPENAIMCP001")
+public class CallLocalAsync
 {
     private readonly Dictionary<string, MethodInfo> _methods = [];
     private readonly Dictionary<string, Func<string, BinaryData, Task<BinaryData>>> _mcpMethods = [];
@@ -29,7 +30,7 @@ public class ResponseTools
     /// Initializes a new instance of the ResponseTools class with an optional embedding client.
     /// </summary>
     /// <param name="client">The embedding client used for tool vectorization, or null to disable vectorization.</param>
-    public ResponseTools(EmbeddingClient client = null)
+    public CallLocalAsync(EmbeddingClient client = null)
     {
         _client = client;
     }
@@ -38,7 +39,7 @@ public class ResponseTools
     /// Initializes a new instance of the ResponseTools class with the specified tool types.
     /// </summary>
     /// <param name="tools">Additional tool types to add.</param>
-    public ResponseTools(params Type[] tools) : this((EmbeddingClient)null)
+    public CallLocalAsync(params Type[] tools) : this((EmbeddingClient)null)
     {
         foreach (var t in tools)
             AddFunctionTool(t);
@@ -225,7 +226,7 @@ public class ResponseTools
         }
     }
 
-    internal string CallLocal(FunctionCallResponseItem call)
+    internal async Task<string> CallFunctionToolAsync(FunctionCallResponseItem call)
     {
         List<object> arguments = new();
         if (call.FunctionArguments != null)
@@ -235,16 +236,8 @@ public class ResponseTools
 
             ToolsUtility.ParseFunctionCallArgs(method, call.FunctionArguments, out arguments);
         }
-        return CallLocal(call.FunctionName, [.. arguments]);
-    }
 
-    private string CallLocal(string name, object[] arguments)
-    {
-        if (!_methods.TryGetValue(name, out MethodInfo method))
-            return $"I don't have a tool called {name}";
-
-        object result = method.Invoke(null, arguments);
-        return result?.ToString() ?? string.Empty;
+        return await ToolsUtility.CallFunctionToolAsync(_methods, call.FunctionName, [.. arguments]);
     }
 
     internal async Task<string> CallMcpAsync(FunctionCallResponseItem call)
@@ -282,7 +275,7 @@ public class ResponseTools
             }
         }
 
-        var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
+        var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : await CallFunctionToolAsync(toolCall);
         return new FunctionCallOutputResponseItem(toolCall.CallId, result);
     }
 }

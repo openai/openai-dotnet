@@ -7,6 +7,7 @@ namespace OpenAI.Agents;
 /// <summary>
 /// Client for interacting with a Model Context Protocol (MCP) server.
 /// </summary>
+//[Experimental("OPENAIMCP001")]
 public class McpClient
 {
     private readonly McpSession _session;

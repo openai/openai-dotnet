@@ -15,6 +15,7 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Provides functionality to manage and execute OpenAI function tools for chat completions.
 /// </summary>
+//[Experimental("OPENAIMCP001")]
 public class ChatTools
 {
     private readonly Dictionary<string, MethodInfo> _methods = [];
@@ -223,26 +224,17 @@ public class ChatTools
         }
     }
 
-    internal string CallLocal(ChatToolCall call)
+    internal async Task<string> CallFunctionToolAsync(ChatToolCall call)
     {
         var arguments = new List<object>();
         if (call.FunctionArguments != null)
         {
             if (!_methods.TryGetValue(call.FunctionName, out MethodInfo method))
-                return $"I don't have a tool called {call.FunctionName}";
+                throw new InvalidOperationException($"Tool not found: {call.FunctionName}");
 
             ToolsUtility.ParseFunctionCallArgs(method, call.FunctionArguments, out arguments);
         }
-        return CallLocal(call.FunctionName, [.. arguments]);
-    }
-
-    private string CallLocal(string name, object[] arguments)
-    {
-        if (!_methods.TryGetValue(name, out MethodInfo method))
-            return $"I don't have a tool called {name}";
-
-        object result = method.Invoke(null, arguments);
-        return result?.ToString() ?? string.Empty;
+        return await ToolsUtility.CallFunctionToolAsync(_methods, call.FunctionName, [.. arguments]);
     }
 
     internal async Task<string> CallMcpAsync(ChatToolCall call)
@@ -285,7 +277,7 @@ public class ChatTools
                 }
             }
 
-            var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : CallLocal(toolCall);
+            var result = isMcpTool ? await CallMcpAsync(toolCall).ConfigureAwait(false) : await CallFunctionToolAsync(toolCall).ConfigureAwait(false);
             messages.Add(new ToolChatMessage(toolCall.Id, result));
         }
 

@@ -29,6 +29,45 @@ public class ChatToolsTests
         public static string ConcatWithBool(string text, bool flag) => $"{text}:{flag}";
     }
 
+    private class TestToolsAsync
+    {
+        public static async Task<string> EchoAsync(string message)
+        {
+            await Task.Delay(1); // Simulate async work
+            return message;
+        }
+
+        public static async Task<int> AddAsync(int a, int b)
+        {
+            await Task.Delay(1); // Simulate async work
+            return a + b;
+        }
+
+        public static async Task<double> MultiplyAsync(double x, double y)
+        {
+            await Task.Delay(1); // Simulate async work
+            return x * y;
+        }
+            
+            public static async Task<bool> IsGreaterThanAsync(long value1, long value2)
+            {
+                await Task.Delay(1); // Simulate async work
+                return value1 > value2;
+            }
+                
+            public static async Task<float> DivideAsync(float numerator, float denominator)
+            {
+                await Task.Delay(1); // Simulate async work
+                return numerator / denominator;
+            }
+
+            public static async Task<string> ConcatWithBoolAsync(string text, bool flag)
+            {
+                await Task.Delay(1); // Simulate async work
+                return $"{text}:{flag}";
+            }
+    }
+
     private Mock<EmbeddingClient> mockEmbeddingClient;
 
     [SetUp]
@@ -53,6 +92,21 @@ public class ChatToolsTests
     }
 
     [Test]
+    public void CanAddAsyncLocalTools()
+    {
+        var tools = new ChatTools();
+        tools.AddFunctionTools(typeof(TestToolsAsync));
+
+        Assert.That(tools.Tools, Has.Count.EqualTo(6));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "EchoAsync"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "AddAsync"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "MultiplyAsync"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "IsGreaterThanAsync"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "DivideAsync"));
+        Assert.That(tools.Tools.Any(t => t.FunctionName == "ConcatWithBoolAsync"));
+    }
+
+    [Test]
     public async Task CanCallToolsAsync()
     {
         var tools = new ChatTools();
@@ -66,6 +120,40 @@ public class ChatToolsTests
             ChatToolCall.CreateFunctionToolCall("call4", "IsGreaterThan", BinaryData.FromString(@"{""value1"": 100, ""value2"": 50}")),
             ChatToolCall.CreateFunctionToolCall("call5", "Divide", BinaryData.FromString(@"{""numerator"": 10.0, ""denominator"": 2.0}")),
             ChatToolCall.CreateFunctionToolCall("call6", "ConcatWithBool", BinaryData.FromString(@"{""text"": ""Test"", ""flag"": true}"))
+        };
+
+        var results = await tools.CallAsync(toolCalls);
+        var resultsList = results.ToList();
+
+        Assert.That(resultsList, Has.Count.EqualTo(6));
+        Assert.That(resultsList[0].ToolCallId, Is.EqualTo("call1"));
+        Assert.That(resultsList[0].Content[0].Text, Is.EqualTo("Hello"));
+        Assert.That(resultsList[1].ToolCallId, Is.EqualTo("call2"));
+        Assert.That(resultsList[1].Content[0].Text, Is.EqualTo("5"));
+        Assert.That(resultsList[2].ToolCallId, Is.EqualTo("call3"));
+        Assert.That(resultsList[2].Content[0].Text, Is.EqualTo("7.5"));
+        Assert.That(resultsList[3].ToolCallId, Is.EqualTo("call4"));
+        Assert.That(resultsList[3].Content[0].Text, Is.EqualTo("True"));
+        Assert.That(resultsList[4].ToolCallId, Is.EqualTo("call5"));
+        Assert.That(resultsList[4].Content[0].Text, Is.EqualTo("5"));
+        Assert.That(resultsList[5].ToolCallId, Is.EqualTo("call6"));
+        Assert.That(resultsList[5].Content[0].Text, Is.EqualTo("Test:True"));
+    }
+
+    [Test]
+    public async Task CanCallAsyncToolsAsync()
+    {
+        var tools = new ChatTools();
+        tools.AddFunctionTools(typeof(TestToolsAsync));
+
+        var toolCalls = new[]
+        {
+            ChatToolCall.CreateFunctionToolCall("call1", "EchoAsync", BinaryData.FromString(@"{""message"": ""Hello""}")),
+            ChatToolCall.CreateFunctionToolCall("call2", "AddAsync", BinaryData.FromString(@"{""a"": 2, ""b"": 3}")),
+            ChatToolCall.CreateFunctionToolCall("call3", "MultiplyAsync", BinaryData.FromString(@"{""x"": 2.5, ""y"": 3.0}")),
+            ChatToolCall.CreateFunctionToolCall("call4", "IsGreaterThanAsync", BinaryData.FromString(@"{""value1"": 100, ""value2"": 50}")),
+            ChatToolCall.CreateFunctionToolCall("call5", "DivideAsync", BinaryData.FromString(@"{""numerator"": 10.0, ""denominator"": 2.0}")),
+            ChatToolCall.CreateFunctionToolCall("call6", "ConcatWithBoolAsync", BinaryData.FromString(@"{""text"": ""Test"", ""flag"": true}"))
         };
 
         var results = await tools.CallAsync(toolCalls);
