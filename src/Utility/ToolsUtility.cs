@@ -46,16 +46,6 @@ internal static class ToolsUtility
             _ => throw new NotImplementedException()
         };
 
-    internal static string ClrToJsonTypeUtf16(Type clrType) =>
-        clrType switch
-        {
-            Type t when t == typeof(double) => "number",
-            Type t when t == typeof(int) => "number",
-            Type t when t == typeof(string) => "string",
-            Type t when t == typeof(bool) => "bool",
-            _ => throw new NotImplementedException()
-        };
-
     internal static BinaryData BuildParametersJson(ParameterInfo[] parameters)
     {
         if (parameters.Length == 0)
