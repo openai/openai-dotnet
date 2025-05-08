@@ -92,7 +92,7 @@ public class ResponseTools
     /// </summary>
     /// <param name="client">The MCP client instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public async Task AddMcpToolsAsync(McpClient client)
+    internal async Task AddMcpToolsAsync(McpClient client)
     {
         if (client == null) throw new ArgumentNullException(nameof(client));
         _mcpClientsByEndpoint[client.Endpoint.AbsoluteUri] = client;

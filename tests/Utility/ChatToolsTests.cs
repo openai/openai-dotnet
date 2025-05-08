@@ -1,10 +1,7 @@
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -17,57 +14,8 @@ namespace OpenAI.Tests.Utility;
 
 [TestFixture]
 [Category("Utility")]
-public class ChatToolsTests
+public class ChatToolsTests : ToolsTestsBase
 {
-    private class TestTools
-    {
-        public static string Echo(string message) => message;
-        public static int Add(int a, int b) => a + b;
-        public static double Multiply(double x, double y) => x * y;
-        public static bool IsGreaterThan(long value1, long value2) => value1 > value2;
-        public static float Divide(float numerator, float denominator) => numerator / denominator;
-        public static string ConcatWithBool(string text, bool flag) => $"{text}:{flag}";
-    }
-
-    private class TestToolsAsync
-    {
-        public static async Task<string> EchoAsync(string message)
-        {
-            await Task.Delay(1); // Simulate async work
-            return message;
-        }
-
-        public static async Task<int> AddAsync(int a, int b)
-        {
-            await Task.Delay(1); // Simulate async work
-            return a + b;
-        }
-
-        public static async Task<double> MultiplyAsync(double x, double y)
-        {
-            await Task.Delay(1); // Simulate async work
-            return x * y;
-        }
-            
-            public static async Task<bool> IsGreaterThanAsync(long value1, long value2)
-            {
-                await Task.Delay(1); // Simulate async work
-                return value1 > value2;
-            }
-                
-            public static async Task<float> DivideAsync(float numerator, float denominator)
-            {
-                await Task.Delay(1); // Simulate async work
-                return numerator / denominator;
-            }
-
-            public static async Task<string> ConcatWithBoolAsync(string text, bool flag)
-            {
-                await Task.Delay(1); // Simulate async work
-                return $"{text}:{flag}";
-            }
-    }
-
     private Mock<EmbeddingClient> mockEmbeddingClient;
 
     [SetUp]
@@ -234,9 +182,6 @@ public class ChatToolsTests
     {
         // Arrange
         var mcpEndpoint = new Uri("http://localhost:1234");
-        var mockMcpClient = new Mock<McpClient>(mcpEndpoint);
-        var tools = new ChatTools();
-
         var mockToolsResponse = BinaryData.FromString(@"
         {
             ""tools"": [
@@ -279,17 +224,20 @@ public class ChatToolsTests
             ]
         }");
 
-        mockMcpClient.Setup(c => c.StartAsync())
-            .Returns(Task.CompletedTask);
-        mockMcpClient.Setup(c => c.ListToolsAsync())
-            .ReturnsAsync(mockToolsResponse);
-        mockMcpClient.Setup(c => c.CallToolAsync(It.IsAny<string>(), It.IsAny<BinaryData>()))
-            .ReturnsAsync(BinaryData.FromString("\"test result\""));
-        mockMcpClient.SetupGet(c => c.Endpoint)
-            .Returns(mcpEndpoint);
+        var responsesByTool = new Dictionary<string, string>
+        {
+            ["mcp-tool-1"] = "\"tool1 result\"",
+            ["mcp-tool-2"] = "\"tool2 result\""
+        };
+
+        var testClient = new TestMcpClient(
+            mcpEndpoint,
+            mockToolsResponse,
+            toolName => BinaryData.FromString(responsesByTool[toolName.Split('_').Last()]));
+        var tools = new ChatTools();
 
         // Act
-        await tools.AddMcpToolsAsync(mockMcpClient.Object);
+        await tools.AddMcpToolsAsync(testClient);
 
         // Assert
         Assert.That(tools.Tools, Has.Count.EqualTo(2));
@@ -297,14 +245,20 @@ public class ChatToolsTests
         Assert.That(toolNames, Contains.Item("localhost1234_-_mcp-tool-1"));
         Assert.That(toolNames, Contains.Item("localhost1234_-_mcp-tool-2"));
 
-        // Verify we can call the tools
-        var toolCall = ChatToolCall.CreateFunctionToolCall("call1", "localhost1234_-_mcp-tool-1", BinaryData.FromString(@"{""param1"": ""test""}"));
-        var result = await tools.CallAsync(new[] { toolCall });
-        var resultsList = result.ToList();
+        // Verify we can call the tools with different responses
+        var toolCalls = new[]
+        {
+            ChatToolCall.CreateFunctionToolCall("call1", "localhost1234_-_mcp-tool-1", BinaryData.FromString(@"{""param1"": ""test""}")),
+            ChatToolCall.CreateFunctionToolCall("call2", "localhost1234_-_mcp-tool-2", BinaryData.FromString(@"{""param2"": ""test""}"))
+        };
+        var results = await tools.CallAsync(toolCalls);
+        var resultsList = results.ToList();
 
-        Assert.That(resultsList, Has.Count.EqualTo(1));
+        Assert.That(resultsList, Has.Count.EqualTo(2));
         Assert.That(resultsList[0].ToolCallId, Is.EqualTo("call1"));
-        Assert.That(resultsList[0].Content[0].Text, Is.EqualTo("\"test result\""));
+        Assert.That(resultsList[0].Content[0].Text, Is.EqualTo("\"tool1 result\""));
+        Assert.That(resultsList[1].ToolCallId, Is.EqualTo("call2"));
+        Assert.That(resultsList[1].Content[0].Text, Is.EqualTo("\"tool2 result\""));
     }
 
     [Test]
@@ -312,9 +266,6 @@ public class ChatToolsTests
     {
         // Arrange
         var mcpEndpoint = new Uri("http://localhost:1234");
-        var mockMcpClient = new Mock<McpClient>(mcpEndpoint);
-        var tools = new ChatTools(mockEmbeddingClient.Object);
-
         var mockToolsResponse = BinaryData.FromString(@"
         {
             ""tools"": [
@@ -364,7 +315,7 @@ public class ChatToolsTests
             ]
         }");
 
-        // Setup mock responses
+        // Setup mock embedding responses
         var embeddings = new[]
         {
             OpenAIEmbeddingsModelFactory.OpenAIEmbedding(vector: new[] { 0.8f, 0.5f }),
@@ -376,15 +327,6 @@ public class ChatToolsTests
             model: "text-embedding-ada-002",
             usage: OpenAIEmbeddingsModelFactory.EmbeddingTokenUsage(30, 30));
         var mockResponse = new MockPipelineResponse(200);
-
-        mockMcpClient.Setup(c => c.StartAsync())
-            .Returns(Task.CompletedTask);
-        mockMcpClient.Setup(c => c.ListToolsAsync())
-            .ReturnsAsync(mockToolsResponse);
-        mockMcpClient.Setup(c => c.CallToolAsync("math-tool", It.IsAny<BinaryData>()))
-            .ReturnsAsync(BinaryData.FromString("\"math-tool result\""));
-        mockMcpClient.SetupGet(c => c.Endpoint)
-            .Returns(mcpEndpoint);
 
         mockEmbeddingClient
             .Setup(c => c.GenerateEmbeddingAsync(
@@ -400,8 +342,14 @@ public class ChatToolsTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(ClientResult.FromValue(embeddingCollection, mockResponse));
 
+        var testClient = new TestMcpClient(
+            mcpEndpoint,
+            mockToolsResponse,
+            toolName => BinaryData.FromString($"\"{toolName} result\""));
+        var tools = new ChatTools(mockEmbeddingClient.Object);
+
         // Add the tools
-        await tools.AddMcpToolsAsync(mockMcpClient.Object);
+        await tools.AddMcpToolsAsync(testClient);
 
         // Act & Assert
         // Test with maxTools = 1
@@ -420,9 +368,5 @@ public class ChatToolsTests
         var result = await tools.CallAsync(new[] { toolCall });
         Assert.That(result.First().ToolCallId, Is.EqualTo("call1"));
         Assert.That(result.First().Content[0].Text, Is.EqualTo("\"math-tool result\""));
-
-        // Verify expected interactions
-        mockMcpClient.Verify(c => c.StartAsync(), Times.Once);
-        mockMcpClient.Verify(c => c.ListToolsAsync(), Times.Once);
     }
 }

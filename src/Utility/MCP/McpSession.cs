@@ -173,8 +173,9 @@ internal class McpSession : IDisposable
                 {
                     var serverUri = _serverEndpoint;
                     var endpoint = serverUri.GetLeftPart(UriPartial.Authority);
-                    string trailingSlash = endpoint.EndsWith("/") ? "" : "/";
-                    var messageEndpoint = $"{endpoint}{trailingSlash}{sseEvent.Data.Trim()}";
+                    var path = sseEvent.Data.Trim();
+                    string trailingSlash = endpoint.EndsWith("/") || path.StartsWith("/") ? "" : "/";
+                    var messageEndpoint = $"{endpoint}{trailingSlash}{path}";
                     _endpointTcs.TrySetResult(messageEndpoint);
                 }
                 break;
