@@ -10,6 +10,13 @@
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <!-- Sign the assembly with the specified key file. -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />
   </ItemGroup>
@@ -22,8 +29,4 @@
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
-  </ItemGroup>
 </Project>
