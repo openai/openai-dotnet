@@ -84,4 +84,12 @@ public enum ChatFinishReason
     /// </remarks>
     [CodeGenMember("FunctionCall")]
     FunctionCall,
+
+    /// <summary>
+    /// Indicates that the model returns unknown finish reason (or null).
+    /// We interpret this as a stop sequence.
+    /// </summary>
+    [CodeGenMember("Stop")]
+    Unknown
+
 }
