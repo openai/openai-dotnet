@@ -29,7 +29,7 @@ public readonly partial struct GeneratedImageQuality
     /// </summary>
     /// 
     [CodeGenMember("High")]
-    public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HdValue);
+    public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HighValue);
     /// <summary>
     /// Medium quality level.
     /// <para>
