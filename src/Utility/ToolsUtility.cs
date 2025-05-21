@@ -42,7 +42,7 @@ internal static class ToolsUtility
             Type t when t == typeof(long) => "number"u8,
             Type t when t == typeof(float) => "number"u8,
             Type t when t == typeof(string) => "string"u8,
-            Type t when t == typeof(bool) => "bool"u8,
+            Type t when t == typeof(bool) => "boolean"u8,
             _ => throw new NotImplementedException()
         };
 
