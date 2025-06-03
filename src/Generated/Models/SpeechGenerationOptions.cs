@@ -11,13 +11,14 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal SpeechGenerationOptions(GeneratedSpeechFormat? responseFormat, InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, float? speedRatio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal SpeechGenerationOptions(GeneratedSpeechFormat? responseFormat, InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, float? speedRatio, string instructions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ResponseFormat = responseFormat;
             Model = model;
             Input = input;
             Voice = voice;
             SpeedRatio = speedRatio;
+            Instructions = instructions;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

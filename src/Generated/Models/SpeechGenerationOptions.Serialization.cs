@@ -52,6 +52,11 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -97,6 +102,7 @@ namespace OpenAI.Audio
             string input = default;
             GeneratedSpeechVoice voice = default;
             float? speedRatio = default;
+            string instructions = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -133,6 +139,11 @@ namespace OpenAI.Audio
                     speedRatio = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("instructions"u8))
+                {
+                    instructions = prop.Value.GetString();
+                    continue;
+                }
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new SpeechGenerationOptions(
@@ -141,6 +152,7 @@ namespace OpenAI.Audio
                 input,
                 voice,
                 speedRatio,
+                instructions,
                 additionalBinaryDataProperties);
         }
 
