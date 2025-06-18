@@ -121,6 +121,7 @@ public partial class OpenAIEmbedding
         OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
         if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
         {
+            ArrayPool<byte>.Shared.Return(bytes);
             ThrowInvalidData();
         }
 
