@@ -60,13 +60,7 @@ public class CreateBatchOperation : OperationResult
 
         CreateBatchOperationToken token = CreateBatchOperationToken.FromToken(rehydrationToken);
 
-        ClientResult result = await client.GetBatchAsync(token.BatchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        PipelineResponse response = result.GetRawResponse();
-
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
-
-        return client.CreateCreateBatchOperation(token.BatchId, status, response);
+        return await RehydrateAsync(client, token.BatchId, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -87,13 +81,53 @@ public class CreateBatchOperation : OperationResult
 
         CreateBatchOperationToken token = CreateBatchOperationToken.FromToken(rehydrationToken);
 
-        ClientResult result = client.GetBatch(token.BatchId, cancellationToken.ToRequestOptions());
+        return Rehydrate(client, token.BatchId, cancellationToken);
+    }
+
+    /// <summary>
+    /// Recreates a <see cref="CreateBatchOperation"/> from a batch ID.
+    /// </summary>
+    /// <param name="client"> The <see cref="BatchClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="batchId"> The ID of the batch operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
+    /// <exception cref="ArgumentNullException"> <paramref name="client"/> is null. </exception>
+    public static async Task<CreateBatchOperation> RehydrateAsync(BatchClient client, string batchId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+
+        ClientResult result = await client.GetBatchAsync(batchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string status = doc.RootElement.GetProperty("status"u8).GetString()!;
 
-        return client.CreateCreateBatchOperation(token.BatchId, status, response);
+        return client.CreateCreateBatchOperation(batchId, status, response);
+    }
+
+    /// <summary>
+    /// Recreates a <see cref="CreateBatchOperation"/> from a batch ID.
+    /// </summary>
+    /// <param name="client"> The <see cref="BatchClient"/> used to obtain the 
+    /// operation status from the service. </param>
+    /// <param name="batchId"> The ID of the batch operation to rehydrate. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel the 
+    /// request. </param>
+    /// <returns> The rehydrated operation. </returns>
+    /// <exception cref="ArgumentNullException"> <paramref name="client"/> is null. </exception>
+    public static CreateBatchOperation Rehydrate(BatchClient client, string batchId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(client, nameof(client));
+
+        ClientResult result = client.GetBatch(batchId, cancellationToken.ToRequestOptions());
+        PipelineResponse response = result.GetRawResponse();
+
+        using JsonDocument doc = JsonDocument.Parse(response.Content);
+        string status = doc.RootElement.GetProperty("status"u8).GetString()!;
+
+        return client.CreateCreateBatchOperation(batchId, status, response);
     }
 
     /// <inheritdoc/>
