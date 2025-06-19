@@ -39,9 +39,9 @@ namespace OpenAI.Responses
                     writer.WriteNull("effort"u8);
                 }
             }
-            if (Optional.IsDefined(ReasoningSummaryVerbosity) && _additionalBinaryDataProperties?.ContainsKey("generate_summary") != true)
+            if (Optional.IsDefined(ReasoningSummaryVerbosity) && _additionalBinaryDataProperties?.ContainsKey("summary") != true)
             {
-                writer.WritePropertyName("generate_summary"u8);
+                writer.WritePropertyName("summary"u8);
                 writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
             }
             if (_additionalBinaryDataProperties != null)
@@ -99,7 +99,7 @@ namespace OpenAI.Responses
                     reasoningEffortLevel = new ResponseReasoningEffortLevel(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("generate_summary"u8))
+                if (prop.NameEquals("summary"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
