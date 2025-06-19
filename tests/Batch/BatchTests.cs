@@ -153,8 +153,9 @@ public class BatchTests : SyncAsyncTestBase
         Assert.That(status, Is.EqualTo("validating"));
     }
 
-    [Test]
-    public async Task CanRehydrateBatchOperation()
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task CanRehydrateBatchOperation(bool useBatchId)
     {
         using MemoryStream testFileStream = new();
         using StreamWriter streamWriter = new(testFileStream);
@@ -183,13 +184,22 @@ public class BatchTests : SyncAsyncTestBase
             ? await client.CreateBatchAsync(content, waitUntilCompleted: false)
             : client.CreateBatch(content, waitUntilCompleted: false);
 
-        // Simulate rehydration of the operation
-        BinaryData rehydrationBytes = batchOperation.RehydrationToken.ToBytes();
-        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+        CreateBatchOperation rehydratedOperation;
+        if (useBatchId)
+        {
+            rehydratedOperation = IsAsync ?
+                await CreateBatchOperation.RehydrateAsync(client, batchOperation.BatchId) :
+                CreateBatchOperation.Rehydrate(client, batchOperation.BatchId);
+        }
+        else {
+            // Simulate rehydration of the operation
+            BinaryData rehydrationBytes = batchOperation.RehydrationToken.ToBytes();
+            ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        CreateBatchOperation rehydratedOperation = IsAsync ?
-            await CreateBatchOperation.RehydrateAsync(client, rehydrationToken) :
-            CreateBatchOperation.Rehydrate(client, rehydrationToken);
+            rehydratedOperation = IsAsync ?
+                await CreateBatchOperation.RehydrateAsync(client, rehydrationToken) :
+                CreateBatchOperation.Rehydrate(client, rehydrationToken);
+        }
 
         static bool Validate(CreateBatchOperation operation)
         {
