@@ -8,7 +8,7 @@ public partial class ResponseReasoningOptions
     public ResponseReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
     // CUSTOM: Renamed.
-    [CodeGenMember("GenerateSummary")]
+    [CodeGenMember("Summary")]
     public ResponseReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
 
     // CUSTOM: Make default constructor public.
