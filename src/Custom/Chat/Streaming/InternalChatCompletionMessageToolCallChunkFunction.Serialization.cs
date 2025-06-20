@@ -26,6 +26,16 @@ internal partial class InternalChatCompletionMessageToolCallChunkFunction : IJso
         {
             return;
         }
-        arguments = BinaryData.FromString(property.Value.GetString());
+
+        //for a tool calls without arguments there will be an Object instead of String.
+        var obj = property.Value.GetObject();
+        if (obj is string s)
+        {
+            arguments = BinaryData.FromString(s);
+        }
+        else
+        {
+            arguments = BinaryData.FromString(string.Empty);
+        }
     }
 }

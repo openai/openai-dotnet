@@ -40,7 +40,7 @@ namespace OpenAI.Chat
             {
                 return ChatFinishReason.FunctionCall;
             }
-            throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ChatFinishReason value.");
+            return ChatFinishReason.Unknown;
         }
     }
 }
