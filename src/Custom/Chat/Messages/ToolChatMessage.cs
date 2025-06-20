@@ -37,7 +37,7 @@ public partial class ToolChatMessage : ChatMessage
     public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts)
         : base(ChatMessageRole.Tool, contentParts)
     {
-        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
 
         ToolCallId = toolCallId;
@@ -56,7 +56,7 @@ public partial class ToolChatMessage : ChatMessage
     public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts)
         : base(ChatMessageRole.Tool, contentParts)
     {
-        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
 
         ToolCallId = toolCallId;
@@ -72,7 +72,7 @@ public partial class ToolChatMessage : ChatMessage
     public ToolChatMessage(string toolCallId, string content)
         : base(ChatMessageRole.Tool, content)
     {
-        Argument.AssertNotNullOrEmpty(toolCallId, nameof(toolCallId));
+        Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNull(content, nameof(content));
 
         ToolCallId = toolCallId;
