@@ -68,6 +68,27 @@ Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
 While you can pass your API key directly as a string, it is highly recommended that you keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
 
+
+### Using a custom base URL and API key
+
+If you need to connect to an alternative API endpoint (for example, a proxy or self-hosted OpenAI-compatible LLM), you can specify a custom base URL and API key using the `ApiKeyCredential` and `OpenAIClientOptions`:
+
+```csharp
+using OpenAI.Chat;
+using OpenAI;
+
+var client = new ChatClient(
+    model: CHAT_MODEL,
+    credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("API_KEY") ?? ""),
+    options: new OpenAIClientOptions
+    {
+        Endpoint = new Uri(BASE_URL),
+    }
+);
+```
+
+Replace `CHAT_MODEL` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
+
 ### Namespace organization
 
 The library is organized into namespaces by feature areas in the OpenAI REST API. Each namespace contains a corresponding client class.
