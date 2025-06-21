@@ -10,9 +10,10 @@ public partial class ResponseMessageAnnotation
     [CodeGenMember("Type")]
     public ResponseMessageAnnotationKind Kind { get; }
 
-    // CUSTOM: Exposed file citation properties.
-    public string FileCitationFileId => (this as InternalResponsesMessageAnnotationFileCitation)?.FileId;
-    public int? FileCitationIndex => (this as InternalResponsesMessageAnnotationFileCitation)?.Index;
+	// CUSTOM: Exposed file citation properties.
+	public string FileCitationFileId => (this as InternalResponsesMessageAnnotationFileCitation)?.FileId;
+	public string FileCitationFileName => (this as InternalResponsesMessageAnnotationFileCitation)?.FileName;
+	public int? FileCitationIndex => (this as InternalResponsesMessageAnnotationFileCitation)?.Index;
 
     // CUSTOM: Exposed URL citation properties.
     public string UriCitationUri => (this as InternalResponsesMessageAnnotationUrlCitation)?.Url;

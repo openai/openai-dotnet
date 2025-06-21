@@ -37,14 +37,19 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-        }
+			if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+			{
+				writer.WritePropertyName("file_id"u8);
+				writer.WriteStringValue(FileId);
+			}
+			if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+			{
+				writer.WritePropertyName("filename"u8);
+				writer.WriteStringValue(FileName);
+			}
+		}
 
-        InternalResponsesMessageAnnotationFileCitation IJsonModel<InternalResponsesMessageAnnotationFileCitation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesMessageAnnotationFileCitation)JsonModelCreateCore(ref reader, options);
+		InternalResponsesMessageAnnotationFileCitation IJsonModel<InternalResponsesMessageAnnotationFileCitation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesMessageAnnotationFileCitation)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
@@ -66,8 +71,9 @@ namespace OpenAI.Responses
             ResponseMessageAnnotationKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int index = default;
-            string fileId = default;
-            foreach (var prop in element.EnumerateObject())
+			string fileId = default;
+			string fileName = default;
+			foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
@@ -79,14 +85,19 @@ namespace OpenAI.Responses
                     index = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("file_id"u8))
-                {
-                    fileId = prop.Value.GetString();
-                    continue;
-                }
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+				if (prop.NameEquals("file_id"u8))
+				{
+					fileId = prop.Value.GetString();
+					continue;
+				}
+				if (prop.NameEquals("filename"u8))
+				{
+					fileName = prop.Value.GetString();
+					continue;
+				}
+				additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponsesMessageAnnotationFileCitation(kind, additionalBinaryDataProperties, index, fileId);
+            return new InternalResponsesMessageAnnotationFileCitation(kind, additionalBinaryDataProperties, index, fileId, fileName);
         }
 
         BinaryData IPersistableModel<InternalResponsesMessageAnnotationFileCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
