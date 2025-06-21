@@ -11,21 +11,24 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails)
+        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails, ResponseInputTokenDetails inputTokenDetails)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
             OutputTokenDetails = outputTokenDetails;
-        }
+            InputTokenDetails = inputTokenDetails;
 
-        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+		}
+
+        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails, ResponseInputTokenDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
             OutputTokenDetails = outputTokenDetails;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+			InputTokenDetails = inputTokenDetails;
+			_additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
