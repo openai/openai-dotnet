@@ -10,22 +10,25 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesMessageAnnotationFileCitation : ResponseMessageAnnotation
     {
-        public InternalResponsesMessageAnnotationFileCitation(int index, string fileId) : base(ResponseMessageAnnotationKind.FileCitation)
+        public InternalResponsesMessageAnnotationFileCitation(int index, string fileId, string fileName) : base(ResponseMessageAnnotationKind.FileCitation)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
 
             Index = index;
             FileId = fileId;
-        }
+            FileName = fileName;
+		}
 
-        internal InternalResponsesMessageAnnotationFileCitation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string fileId) : base(kind, additionalBinaryDataProperties)
+        internal InternalResponsesMessageAnnotationFileCitation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string fileId, string fileName) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             FileId = fileId;
+            FileName = fileName;
         }
 
         public int Index { get; set; }
 
-        public string FileId { get; set; }
-    }
+		public string FileId { get; set; }
+		public string FileName { get; set; }
+	}
 }
