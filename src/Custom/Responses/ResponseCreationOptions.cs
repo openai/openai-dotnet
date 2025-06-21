@@ -72,7 +72,7 @@ public partial class ResponseCreationOptions
 
     // CUSTOM: Apply get-only collection pattern
     [CodeGenMember("Tools")]
-    public IList<ResponseTool> Tools { get; }
+    public IList<ResponseTool> Tools { get; set; }
 
     internal ResponseCreationOptions GetClone()
     {
