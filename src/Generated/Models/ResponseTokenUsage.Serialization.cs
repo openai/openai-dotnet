@@ -93,9 +93,10 @@ namespace OpenAI.Responses
             }
             int inputTokenCount = default;
             int outputTokenCount = default;
-            int totalTokenCount = default;
-            ResponseOutputTokenUsageDetails outputTokenDetails = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+			int totalTokenCount = default;
+			ResponseOutputTokenUsageDetails outputTokenDetails = default;
+			ResponseInputTokenDetails inputTokenDetails = default;
+			IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("input_tokens"u8))
@@ -113,14 +114,19 @@ namespace OpenAI.Responses
                     totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("output_tokens_details"u8))
-                {
-                    outputTokenDetails = ResponseOutputTokenUsageDetails.DeserializeResponseOutputTokenUsageDetails(prop.Value, options);
-                    continue;
-                }
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+				if (prop.NameEquals("output_tokens_details"u8))
+				{
+					outputTokenDetails = ResponseOutputTokenUsageDetails.DeserializeResponseOutputTokenUsageDetails(prop.Value, options);
+					continue;
+				}
+				if (prop.NameEquals("input_tokens_details"u8))
+				{
+					inputTokenDetails = ResponseInputTokenDetails.DeserializeResponseInputTokenDetails(prop.Value, options);
+					continue;
+				}
+				additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, outputTokenDetails, additionalBinaryDataProperties);
+            return new ResponseTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, outputTokenDetails, inputTokenDetails, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ResponseTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

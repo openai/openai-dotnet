@@ -150,10 +150,10 @@ namespace OpenAI
             return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties: null);
         }
 
-        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default, ResponseOutputTokenUsageDetails outputTokenDetails = default)
+        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default, ResponseOutputTokenUsageDetails outputTokenDetails = default, ResponseInputTokenDetails inputTokenDetails = default)
         {
 
-            return new ResponseTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, outputTokenDetails, additionalBinaryDataProperties: null);
+            return new ResponseTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, outputTokenDetails, inputTokenDetails, additionalBinaryDataProperties: null);
         }
 
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)

@@ -18,4 +18,7 @@ public partial class ResponseTokenUsage
     // CUSTOM: Renamed.
     [CodeGenMember("OutputTokensDetails")]
     public ResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+
+	[CodeGenMember("InputTokensDetails")]
+	public ResponseInputTokenDetails InputTokenDetails { get; }
 }
