@@ -341,7 +341,6 @@ public class ConversationTests : ConversationTestFixtureBase
             {
                 byte[] allAudioBytes = await File.ReadAllBytesAsync(inputAudioFilePath, CancellationToken);
                 const int audioSendBufferLength = 8 * 1024;
-                byte[] audioSendBuffer = ArrayPool<byte>.Shared.Rent(audioSendBufferLength);
                 for (int readPos = 0; readPos < allAudioBytes.Length; readPos += audioSendBufferLength)
                 {
                     int nextSegmentLength = Math.Min(audioSendBufferLength, allAudioBytes.Length - readPos);

@@ -55,9 +55,9 @@ public partial class RealtimeConversationSession : IDisposable
             }
             _isSendingAudioStream = true;
         }
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(1024 * 16);
         try
         {
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(1024 * 16);
             while (true)
             {
                 int bytesRead = await audio.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
@@ -75,6 +75,7 @@ public partial class RealtimeConversationSession : IDisposable
         }
         finally
         {
+            ArrayPool<byte>.Shared.Return(buffer);
             using (await _audioSendSemaphore.AutoReleaseWaitAsync(cancellationToken).ConfigureAwait(false))
             {
                 _isSendingAudioStream = false;
@@ -93,9 +94,9 @@ public partial class RealtimeConversationSession : IDisposable
             }
             _isSendingAudioStream = true;
         }
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(1024 * 16);
         try
         {
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(1024 * 16);
             while (true)
             {
                 int bytesRead = audio.Read(buffer, 0, buffer.Length);
@@ -113,6 +114,7 @@ public partial class RealtimeConversationSession : IDisposable
         }
         finally
         {
+            ArrayPool<byte>.Shared.Return(buffer);
             using (_audioSendSemaphore.AutoReleaseWait(cancellationToken))
             {
                 _isSendingAudioStream = false;
