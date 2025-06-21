@@ -18,6 +18,7 @@ namespace OpenAI.Audio
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
+            message.BufferResponse = false;
             PipelineRequest request = message.Request;
             request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
