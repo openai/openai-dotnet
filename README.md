@@ -68,7 +68,6 @@ Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
 While you can pass your API key directly as a string, it is highly recommended that you keep it in a secure location and instead access it via an environment variable or configuration file as shown above to avoid storing it in source control.
 
-
 ### Using a custom base URL and API key
 
 If you need to connect to an alternative API endpoint (for example, a proxy or self-hosted OpenAI-compatible LLM), you can specify a custom base URL and API key using the `ApiKeyCredential` and `OpenAIClientOptions`:
