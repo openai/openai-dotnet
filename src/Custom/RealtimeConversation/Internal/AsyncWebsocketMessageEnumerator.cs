@@ -14,6 +14,7 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
     private readonly CancellationToken _cancellationToken;
     private readonly WebSocket _webSocket;
     private readonly byte[] _receiveBuffer;
+    private bool _disposed = false;
 
     public AsyncWebsocketMessageResultEnumerator(WebSocket webSocket, CancellationToken cancellationToken)
     {
@@ -26,8 +27,12 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
 
     public ValueTask DisposeAsync()
     {
-        ArrayPool<byte>.Shared.Return(_receiveBuffer);
-        _webSocket?.Dispose();
+        if (!_disposed)
+        {
+            ArrayPool<byte>.Shared.Return(_receiveBuffer);
+            _webSocket?.Dispose();
+            _disposed = true;
+        }
         return new ValueTask(Task.CompletedTask);
     }
 
