@@ -118,32 +118,36 @@ public partial class OpenAIEmbedding
 
         // Decode base64 string to bytes.
         byte[] bytes = ArrayPool<byte>.Shared.Rent(Base64.GetMaxDecodedFromUtf8Length(base64.Length));
-        OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
-        if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
+        try
         {
-            ThrowInvalidData();
-        }
+            OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
+            if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
+            {
+                ThrowInvalidData();
+            }
 
-        // Interpret bytes as floats
-        float[] vector = new float[bytesWritten / sizeof(float)];
-        bytes.AsSpan(0, bytesWritten).CopyTo(MemoryMarshal.AsBytes(vector.AsSpan()));
-        if (!BitConverter.IsLittleEndian)
-        {
-            Span<int> ints = MemoryMarshal.Cast<float, int>(vector.AsSpan());
+            // Interpret bytes as floats
+            float[] vector = new float[bytesWritten / sizeof(float)];
+            bytes.AsSpan(0, bytesWritten).CopyTo(MemoryMarshal.AsBytes(vector.AsSpan()));
+            if (!BitConverter.IsLittleEndian)
+            {
+                Span<int> ints = MemoryMarshal.Cast<float, int>(vector.AsSpan());
 #if NET8_0_OR_GREATER
-            BinaryPrimitives.ReverseEndianness(ints, ints);
+                BinaryPrimitives.ReverseEndianness(ints, ints);
 #else
             for (int i = 0; i < ints.Length; i++)
             {
                 ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
             }
 #endif
+            }
+            return new ReadOnlyMemory<float>(vector);
         }
-
-        ArrayPool<byte>.Shared.Return(bytes);
-        return new ReadOnlyMemory<float>(vector);
-
-        static void ThrowInvalidData() =>
-            throw new FormatException("The input is not a valid Base64 string of encoded floats.");
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(bytes);
+        }
     }
+    static void ThrowInvalidData() =>
+            throw new FormatException("The input is not a valid Base64 string of encoded floats.");
 }
