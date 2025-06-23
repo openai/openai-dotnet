@@ -1,0 +1,16 @@
+name: Question
+description: Ask a question about this library or its usage
+title: "[QUESTION]"
+labels: ['needs-triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to ask your question!
+  - type: textarea
+    id: background
+    attributes:
+      label: How can we help?
+      description: A clear and concise description of the question that you would like answered.
+    validations:
+      required: true
