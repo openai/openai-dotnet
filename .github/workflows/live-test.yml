@@ -31,7 +31,6 @@ jobs:
 
       - name: Run live tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
-          --framework net8.0
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
