@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 
     <!--Ignore XML doc comments on test types and members-->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -10,7 +10,7 @@
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
     <!-- Sign the assembly with the specified key file. -->
     <SignAssembly>true</SignAssembly>

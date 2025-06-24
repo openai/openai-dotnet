@@ -21,11 +21,17 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run live tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
+          --framework net8.0
           --configuration Release
           --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"

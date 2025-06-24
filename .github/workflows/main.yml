@@ -22,6 +22,11 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x'
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -33,6 +38,16 @@ jobs:
 
       - name: Run unit tests
         run: dotnet test
+          --framework net9.0
+          --configuration Release
+          --filter="TestCategory=Smoke&TestCategory!=Manual"
+          --logger "trx;LogFilePrefix=smoke"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
+
+      - name: Run unit tests .NET 8
+        run: dotnet test
+          --framework net8.0
           --configuration Release
           --filter="TestCategory=Smoke&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=smoke"
