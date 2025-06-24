@@ -31,7 +31,7 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
             ArrayPool<byte>.Shared.Return(toReturn);
         }
         _webSocket?.Dispose();
-        return new ValueTask(Task.CompletedTask);
+        return default;
     }
 
     public async ValueTask<bool> MoveNextAsync()
