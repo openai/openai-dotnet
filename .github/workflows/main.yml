@@ -11,7 +11,7 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  build: # Test, pack and publish the Open AI nuget package as a build artifact 
+  build: # Test, pack and publish the Open AI nuget package as a build artifact
     name: Build
     runs-on: ubuntu-latest
     env:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '9.x'
 
       - name: Checkout code
         uses: actions/checkout@v2
