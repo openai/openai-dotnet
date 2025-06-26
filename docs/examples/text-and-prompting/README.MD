@@ -2,7 +2,7 @@
 
 ## Running the Samples
 
-The samples use a new .NET 10 feature that allows running single *.cs file applications. Each *.cs file in this folder is a standalone application. 
+The samples use a new .NET 10 feature that allows [running single C# file applications](https://devblogs.microsoft.com/dotnet/announcing-dotnet-run-app/). Each file in this folder is a standalone application. 
 
 To run them, you need to install the .NET 10 preview. 
 
