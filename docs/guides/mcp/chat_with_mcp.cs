@@ -4,7 +4,6 @@
 #:package ModelContextProtocol.Core@*-*
 #:property PublishAot=false
 
-using System.Text.Json;
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using OpenAI.Chat;
@@ -68,9 +67,9 @@ public static class TemporaryExtensions
         List<ChatMessageContentPart> parts = new();
         foreach (Microsoft.Extensions.AI.AIContent content in contents)
         {
-            string serialized = JsonSerializer.Serialize(content.RawRepresentation);
-            using JsonDocument json = JsonDocument.Parse(serialized); 
-            JsonElement text = json.RootElement.GetProperty("text");
+            string serialized = System.Text.Json.JsonSerializer.Serialize(content.RawRepresentation);
+            using System.Text.Json.JsonDocument json = System.Text.Json.JsonDocument.Parse(serialized);
+            System.Text.Json.JsonElement text = json.RootElement.GetProperty("text");
             string textValue = text.GetString() ?? string.Empty;
             parts.Add(ChatMessageContentPart.CreateTextPart(textValue));
         }
