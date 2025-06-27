@@ -4,6 +4,8 @@
 #:package ModelContextProtocol.Core@*-*
 #:property PublishAot=false
 
+using System.Text.Json;
+using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using OpenAI.Chat;
 
@@ -45,7 +47,7 @@ switch (chatCompletion.FinishReason)
             Console.WriteLine("Tool call detected, calling MCP server...");
             ModelContextProtocol.Protocol.CallToolResult result = await mcpClient.CallToolAsync(call.FunctionName, mcpArguments!);
             Console.WriteLine($"tool call result {result.Content[0]}");
-            ChatMessage message = result.ToMessage(call);
+            ChatMessage message = call.ToMessage(result.Content.ToAIContents());
             conversation.Add(message);
         }     
         goto start;
@@ -60,27 +62,23 @@ switch (chatCompletion.FinishReason)
 // this is temporary. all these APIs will endup being in one of the packages used here. 
 public static class TemporaryExtensions
 {
-    public static ChatMessage ToMessage(this ModelContextProtocol.Protocol.CallToolResult mcpCallResult, ChatToolCall openaiCall)
+    // this needs to be in the adapter package
+    public static ChatMessage ToMessage(this ChatToolCall openaiCall, IEnumerable<Microsoft.Extensions.AI.AIContent> contents)
     {
         List<ChatMessageContentPart> parts = new();
-        var sc = mcpCallResult.StructuredContent;
-
-        foreach (ModelContextProtocol.Protocol.ContentBlock block in mcpCallResult.Content)
+        foreach (Microsoft.Extensions.AI.AIContent content in contents)
         {
-            if (block is ModelContextProtocol.Protocol.TextContentBlock textContent)
-            {
-                parts.Add(ChatMessageContentPart.CreateTextPart(textContent.Text));
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            string serialized = JsonSerializer.Serialize(content.RawRepresentation);
+            using JsonDocument json = JsonDocument.Parse(serialized); 
+            JsonElement text = json.RootElement.GetProperty("text");
+            string textValue = text.GetString() ?? string.Empty;
+            parts.Add(ChatMessageContentPart.CreateTextPart(textValue));
         }
         ToolChatMessage message = ChatMessage.CreateToolMessage(openaiCall.Id, parts);
         return message;
     }
 
-    // this is in the adapter package; waiting for package to be dropped. 
+    // this is in the adapter package
     public static ChatTool AsOpenAIChatTool(this Microsoft.Extensions.AI.AIFunction mcpTool)
     {
         return ChatTool.CreateFunctionTool(
