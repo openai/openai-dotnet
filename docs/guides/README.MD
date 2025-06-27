@@ -1,12 +1,10 @@
-# OpenAI .NET SDK - Getting Started Guide
-
-This guide will help you run the OpenAI .NET SDK based code samples (.cs files) in this folder directly without a project using the latest .NET 10 preview features.
+# OpenAI with .NET 10 - Getting Started Guide
+This readme shows you how to run each OpenAI based sample (.cs) file in this folder directly without a project or additional setup using the latest .NET 10 Preview features. 
 
 ## Prerequisites
 
 ### 1. Install .NET 10 Preview
 
-You need both the .NET 10 runtime and SDK to run these samples.
 
 #### Option A: Using Windows Package Manager (winget) - Recommended
 ```powershell
