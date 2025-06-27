@@ -1,6 +1,7 @@
 // SAMPLE: Generate text with instructions
+// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start 
 #:package OpenAI@2.2.*-*
-#:property PublishAot=false
+#:property PublishAot false
 
 using OpenAI.Responses; 
 
