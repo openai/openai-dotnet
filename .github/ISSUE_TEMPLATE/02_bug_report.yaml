@@ -1,21 +1,12 @@
 name: Bug report
 description: Report an issue or bug with this library
-labels: ['bug']
+title: "[BUG]"
+labels: ['needs-triage']
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-  - type: dropdown
-    id: service-kind
-    attributes:
-      label: Service
-      description: Select whether you are using OpenAI or Azure OpenAI
-      options:
-        - OpenAI
-        - Azure OpenAI
-    validations:
-      required: true
   - type: textarea
     id: what-happened
     attributes:
@@ -47,7 +38,7 @@ body:
     id: os
     attributes:
       label: OS
-      placeholder: winOS
+      placeholder: Windows, macOS, Linux, etc.
     validations:
       required: true
   - type: input
