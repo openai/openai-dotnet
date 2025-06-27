@@ -24,8 +24,13 @@ namespace OpenAI.Responses
         public static ResponseReasoningSummaryVerbosity Concise { get; } = new ResponseReasoningSummaryVerbosity(ConciseValue);
 
         public static ResponseReasoningSummaryVerbosity Detailed { get; } = new ResponseReasoningSummaryVerbosity(DetailedValue);
+		/****************************************************************************
+		 * <GP> Added missing option                                                */
+		public static ResponseReasoningSummaryVerbosity Auto { get; } = new ResponseReasoningSummaryVerbosity("auto");
+		/* </GP> Added missing option                                               *
+		 ****************************************************************************/
 
-        public static bool operator ==(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right) => left.Equals(right);
+		public static bool operator ==(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right) => left.Equals(right);
 
         public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right) => !left.Equals(right);
 
