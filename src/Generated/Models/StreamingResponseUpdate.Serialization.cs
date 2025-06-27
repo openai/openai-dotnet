@@ -10,7 +10,25 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
+    /**************************************************************************
+	/* <GP> Added generic event handling for unsupported events               */
+	public class JsonResponsesResponseStreamEvent : StreamingResponseUpdate
+	{
+		public JsonResponsesResponseStreamEvent(string type, JsonElement element, ModelReaderWriterOptions options)
+		{
+			EventType = type;
+			Element = element.Clone();
+			Options = options;
+		}
+        public String EventType { get; }
+
+		public JsonElement Element { get; }
+		public ModelReaderWriterOptions Options { get; }
+	}
+	/* </GP> Added generic event handling for unsupported events              *
+     **************************************************************************/
+
+	public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
         internal StreamingResponseUpdate()
         {
@@ -125,8 +143,43 @@ namespace OpenAI.Responses
                         return StreamingResponseWebSearchCallInProgressUpdate.DeserializeStreamingResponseWebSearchCallInProgressUpdate(element, options);
                     case "response.web_search_call.searching":
                         return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, options);
-                }
-            }
+					/**************************************************************************
+					 * <GP> Added generic event handling for unsupported events               *
+                     * The strings are intentionally handled to generate a compile time error *
+                     * once officially supported above.                                       */
+					case "response.reasoning_summary_part.added":
+					case "response.reasoning_summary_part.done":
+					case "response.reasoning_summary_text.delta":
+					case "response.image_generation_call.completed":
+					case "response.reasoning_summary_text.done":
+					case "response.image_generation_call.generating":
+					case "response.image_generation_call.in_progress":
+					case "response.image_generation_call.partial_image":
+					case "response.mcp_call.arguments.delta":
+					case "response.mcp_call.arguments.done":
+					case "response.mcp_call.completed":
+					case "response.mcp_call.failed":
+					case "response.mcp_call.in_progress":
+					case "response.mcp_list_tools.completed:":
+					case "response.mcp_list_tools.failed":
+					case "response.mcp_list_tools.in_progress":
+					case "response.code_interpreter_call.in_progress":
+					case "response.code_interpreter_call.interpreting":
+					case "response.code_interpreter_call.completed":
+					case "response.code_interpreter_call_code.delta":
+					case "response.code_interpreter_call_code.done":
+					case "response.output_text_annotation.added":
+					case "response.queued":
+					case "response.reasoning.delta":
+					case "response.reasoning.done":
+					case "response.reasoning_summary.delta":
+					case "response.reasoning_summary.done":
+					default:
+						return new JsonResponsesResponseStreamEvent(discriminator.GetString(), element, options);
+					/* </GP> Added generic event handling for unsupported events              *
+					 **************************************************************************/
+				}
+			}
             return UnknownResponsesResponseStreamEvent.DeserializeUnknownResponsesResponseStreamEvent(element, options);
         }
 
