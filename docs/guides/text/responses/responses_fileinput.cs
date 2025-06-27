@@ -1,6 +1,6 @@
 // SAMPLE: Prompt template with file input variable
 #:package OpenAI@2.2.*-*
-#:property PublishAot=false
+#:property PublishAot false
 
 using OpenAI.Responses;
 using OpenAI.Files;

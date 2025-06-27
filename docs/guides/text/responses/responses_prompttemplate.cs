@@ -1,6 +1,6 @@
 // SAMPLE: Generate text with a prompt template
 #:package OpenAI@2.2.*-*
-#:property PublishAot=false
+#:property PublishAot false
 
 using OpenAI.Responses;
 using System.ClientModel;

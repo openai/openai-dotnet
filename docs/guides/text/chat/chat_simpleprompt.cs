@@ -1,6 +1,6 @@
 // SAMPLE: Generate text from a simple prompt
 #:package OpenAI@2.2.*-*
-#:property PublishAot=false
+#:property PublishAot false
 
 using OpenAI.Chat; 
 
