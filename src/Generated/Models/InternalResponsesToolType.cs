@@ -31,7 +31,14 @@ namespace OpenAI.Responses
 
         public static InternalResponsesToolType Computer { get; } = new InternalResponsesToolType(ComputerValue);
 
-        public static bool operator ==(InternalResponsesToolType left, InternalResponsesToolType right) => left.Equals(right);
+        /**********************************************************************
+         * <GP> Added missing code_interpreter tool type                      */
+		private const string CodeInterpreterValue = "code_interpreter";
+		public static InternalResponsesToolType CodeInterpreter { get; } = new InternalResponsesToolType(CodeInterpreterValue);
+        /* </GP> Added missing code_interpreter tool type                      *
+		 **********************************************************************/
+
+		public static bool operator ==(InternalResponsesToolType left, InternalResponsesToolType right) => left.Equals(right);
 
         public static bool operator !=(InternalResponsesToolType left, InternalResponsesToolType right) => !left.Equals(right);
 
