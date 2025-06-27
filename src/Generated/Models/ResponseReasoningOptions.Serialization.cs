@@ -41,8 +41,13 @@ namespace OpenAI.Responses
             }
             if (Optional.IsDefined(ReasoningSummaryVerbosity) && _additionalBinaryDataProperties?.ContainsKey("generate_summary") != true)
             {
-                writer.WritePropertyName("generate_summary"u8);
-                writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
+				/****************************************************************************
+                 * <GP> generate_summary is deprecated                                      */
+				//writer.WritePropertyName("generate_summary"u8);
+				writer.WritePropertyName("summary"u8);
+				/* <GP> generate_summary is deprecated                                      *
+				 ****************************************************************************/
+				writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
             }
             if (_additionalBinaryDataProperties != null)
             {
