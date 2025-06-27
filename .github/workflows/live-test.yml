@@ -19,6 +19,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
+          dotnet-version: '9.x'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
           dotnet-version: '8.x'
 
       - name: Checkout code
