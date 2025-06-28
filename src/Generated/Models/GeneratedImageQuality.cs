@@ -14,6 +14,11 @@ namespace OpenAI.Images
         private const string StandardValue = "standard";
         private const string HdValue = "hd";
 
+        private const string HighValue = "high";
+        private const string MediumValue = "medium";
+        private const string LowValue = "low";
+        private const string AutoValue = "auto";
+
         public GeneratedImageQuality(string value)
         {
             Argument.AssertNotNull(value, nameof(value));

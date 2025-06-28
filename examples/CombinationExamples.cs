@@ -21,7 +21,7 @@ public partial class CombinationExamples
             new()
             {
                 Style = GeneratedImageStyle.Vivid,
-                Quality = GeneratedImageQuality.High,
+                Quality = GeneratedImageQuality.Hd,
                 Size = GeneratedImageSize.W1792xH1024,
             });
         GeneratedImage imageGeneration = imageResult.Value;
@@ -109,7 +109,7 @@ public partial class CombinationExamples
             new ImageGenerationOptions()
             {
                 Size = GeneratedImageSize.W1792xH1024,
-                Quality = GeneratedImageQuality.High,
+                Quality = GeneratedImageQuality.Hd,
             });
         Uri imageLocation = imageGenerationResult.Value.ImageUri;
         Console.WriteLine($"Creature image available at:\n{imageLocation.AbsoluteUri}");
