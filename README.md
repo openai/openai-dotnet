@@ -138,6 +138,46 @@ AudioClient ttsClient = client.GetAudioClient("tts-1");
 AudioClient whisperClient = client.GetAudioClient("whisper-1");
 ```
 
+## How to use dependency injection
+
+The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse.
+
+Register the `OpenAIClient` as a singleton in your `Program.cs`:
+
+```csharp
+builder.Services.AddSingleton<OpenAIClient>(serviceProvider =>
+{
+    var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+
+    return new OpenAIClient(apiKey);
+});
+```
+
+Then inject and use the client in your controllers or services:
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class ChatController : ControllerBase
+{
+    private readonly OpenAIClient _openAIClient;
+
+    public ChatController(OpenAIClient openAIClient)
+    {
+        _openAIClient = openAIClient;
+    }
+
+    [HttpPost("complete")]
+    public async Task<IActionResult> CompleteChat([FromBody] string message)
+    {
+        ChatClient chatClient = _openAIClient.GetChatClient("gpt-4o");
+        ChatCompletion completion = await chatClient.CompleteChatAsync(message);
+        
+        return Ok(new { response = completion.Content[0].Text });
+    }
+}
+```
+
 ## How to use chat completions with streaming
 
 When you request a chat completion, the default behavior is for the server to generate it in its entirety before sending it back in a single response. Consequently, long chat completions can require waiting for several seconds before hearing back from the server. To mitigate this, the OpenAI REST API supports the ability to stream partial results back as they are being generated, allowing you to start processing the beginning of the completion before it is finished.
