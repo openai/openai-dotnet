@@ -52,7 +52,7 @@ public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSiz
     /// <summary>
     /// A square image with 1024 pixels of both width and height.
     /// <para>
-    /// <b>Supported</b> and <b>default</b> for both <c>dall-e-2</c> and <c>dall-e-3</c> models.
+    /// <b>Supported</b> and <b>default</b> for both <c>dall-e-2</c>, <c>dall-e-3</c> and <c>gpt-image-1</c> models.
     /// </para>
     /// </summary>
     [CodeGenMember("_1024x1024")]
@@ -75,4 +75,22 @@ public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSiz
     /// </summary>
     [CodeGenMember("_1024x1792")]
     public static readonly GeneratedImageSize W1792xH1024 = new(1792, 1024);
+
+    /// <summary>
+    /// A landscape rectangular image with 1536 pixels of width and 1024 pixels of height.
+    /// <para>
+    /// Supported <b>only</b> for the newer <c>gpt-image-1</c> model.
+    /// </para>
+    /// </summary>
+    [CodeGenMember("_1536x1024")]
+    public static readonly GeneratedImageSize W1536xH1024 = new(1536, 1024);
+
+    /// <summary>
+    /// A portrait rectangular image with 1024 pixels of width and 1536 pixels of height.
+    /// <para>
+    /// Supported <b>only</b> for the newer <c>gpt-image-1</c> model.
+    /// </para>
+    /// </summary>
+    [CodeGenMember("1024x_1536")]
+    public static readonly GeneratedImageSize W1024xH1536 = new(1024, 1536);
 }
