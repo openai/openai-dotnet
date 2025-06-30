@@ -11,13 +11,18 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  build: # Test, pack and publish the Open AI nuget package as a build artifact 
+  build: # Test, pack and publish the Open AI nuget package as a build artifact
     name: Build
     runs-on: ubuntu-latest
     env:
       version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
+
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.x'
