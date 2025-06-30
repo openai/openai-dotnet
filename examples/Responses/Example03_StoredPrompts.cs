@@ -22,8 +22,8 @@ public partial class ResponseExamples
         };
 
         // Add variables to substitute in the prompt template
-        options.Prompt.Variables["location"] = "San Francisco";
-        options.Prompt.Variables["unit"] = "celsius";
+        options.Prompt.Variables["location"] = BinaryData.FromString("San Francisco");
+        options.Prompt.Variables["unit"] = BinaryData.FromString("celsius");
 
         OpenAIResponse response = client.CreateResponse([], options);
 
