@@ -799,8 +799,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
             Id = "test-prompt-id",
             Version = "v1.0"
         };
-        prompt.Variables["location"] = "San Francisco";
-        prompt.Variables["unit"] = "celsius";
+        prompt.Variables["location"] = BinaryData.FromString("San Francisco");
+        prompt.Variables["unit"] = BinaryData.FromString("celsius");
 
         string json = BinaryData.FromObjectAsJson(prompt).ToString();
         JsonDocument document = JsonDocument.Parse(json);
