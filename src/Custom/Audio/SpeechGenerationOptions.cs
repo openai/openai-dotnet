@@ -37,4 +37,11 @@ public partial class SpeechGenerationOptions
     [CodeGenMember("Speed")]
 
     public float? SpeedRatio { get; set; }
+
+    // CUSTOM:
+    /// <summary>
+    ///     Control the voice of your generated audio with additional instructions. Does not work with tts-1 or tts-1-hd.
+    /// </summary>
+    [CodeGenMember("Instructions")]
+    public string Instructions { get; set; }
 }
