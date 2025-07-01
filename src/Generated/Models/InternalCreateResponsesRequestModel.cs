@@ -11,6 +11,8 @@ namespace OpenAI.Responses
     internal readonly partial struct InternalCreateResponsesRequestModel : IEquatable<InternalCreateResponsesRequestModel>
     {
         private readonly string _value;
+        private const string O4MiniValue = "o4-mini";
+        private const string O3Value = "o3";
         private const string O3MiniValue = "o3-mini";
         private const string O3Mini20250131Value = "o3-mini-2025-01-31";
         private const string O1Value = "o1";

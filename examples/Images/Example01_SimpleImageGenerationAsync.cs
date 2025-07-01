@@ -23,7 +23,7 @@ public partial class ImageExamples
 
         ImageGenerationOptions options = new()
         {
-            Quality = GeneratedImageQuality.High,
+            Quality = GeneratedImageQuality.Hd,
             Size = GeneratedImageSize.W1792xH1024,
             Style = GeneratedImageStyle.Vivid,
             ResponseFormat = GeneratedImageFormat.Bytes
