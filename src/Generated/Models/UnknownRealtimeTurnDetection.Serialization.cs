@@ -5,45 +5,48 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTurnDetection : IJsonModel<ConversationTurnDetectionOptions>
+    internal partial class UnknownRealtimeTurnDetection : IJsonModel<TurnDetectionOptions>
     {
-        internal UnknownRealtimeTurnDetection()
+        internal UnknownRealtimeTurnDetection() : this(default, default, default, null)
         {
         }
 
-        void IJsonModel<ConversationTurnDetectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<TurnDetectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationTurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(TurnDetectionOptions)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
         }
 
-        ConversationTurnDetectionOptions IJsonModel<ConversationTurnDetectionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        TurnDetectionOptions IJsonModel<TurnDetectionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationTurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override TurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationTurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(TurnDetectionOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeConversationTurnDetectionOptions(document.RootElement, options);
+            return DeserializeTurnDetectionOptions(document.RootElement, options);
         }
 
         internal static UnknownRealtimeTurnDetection DeserializeUnknownRealtimeTurnDetection(JsonElement element, ModelReaderWriterOptions options)
@@ -52,51 +55,74 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            ConversationTurnDetectionKind kind = default;
+            TurnDetectionKind kind = default;
+            bool? responseCreationEnabled = default;
+            bool? responseInterruptionEnabled = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToConversationTurnDetectionKind();
+                    kind = prop.Value.GetString().ToTurnDetectionKind();
                     continue;
                 }
+                if (prop.NameEquals("create_response"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseCreationEnabled = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("interrupt_response"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseInterruptionEnabled = prop.Value.GetBoolean();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new UnknownRealtimeTurnDetection(kind, additionalBinaryDataProperties);
+            return new UnknownRealtimeTurnDetection(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ConversationTurnDetectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<TurnDetectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationTurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(TurnDetectionOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ConversationTurnDetectionOptions IPersistableModel<ConversationTurnDetectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        TurnDetectionOptions IPersistableModel<TurnDetectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override ConversationTurnDetectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override TurnDetectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationTurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TurnDetectionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeConversationTurnDetectionOptions(document.RootElement, options);
+                        return DeserializeTurnDetectionOptions(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ConversationTurnDetectionOptions)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(TurnDetectionOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ConversationTurnDetectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<TurnDetectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

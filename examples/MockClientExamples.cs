@@ -6,6 +6,10 @@ using OpenAI.Audio;
 
 namespace OpenAI.Examples.Miscellaneous;
 
+// This example uses experimental APIs which are subject to change. To use experimental APIs,
+// please acknowledge their experimental status by suppressing the corresponding warning.
+#pragma warning disable OPENAI001
+
 public partial class MockClientExamples
 {
     [Test]
@@ -42,3 +46,5 @@ public partial class MockClientExamples
         return transcription.Text.Contains(secretWord);
     }
 }
+
+#pragma warning restore OPENAI001

@@ -9,16 +9,16 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningIntegrationWandb : InternalFineTuningIntegration
     {
-        internal InternalFineTuningIntegrationWandb(FineTuningIntegrationWandbWandb wandb) : base("wandb")
+        internal InternalFineTuningIntegrationWandb(FineTuningIntegrationWandbWandb wandb) : base(InternalFineTuningIntegrationType.Wandb)
         {
             Wandb = wandb;
         }
 
-        internal InternalFineTuningIntegrationWandb(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, FineTuningIntegrationWandbWandb wandb) : base(@type, additionalBinaryDataProperties)
+        internal InternalFineTuningIntegrationWandb(InternalFineTuningIntegrationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, FineTuningIntegrationWandbWandb wandb) : base(kind, additionalBinaryDataProperties)
         {
             Wandb = wandb;
         }
 
-        public FineTuningIntegrationWandbWandb Wandb { get; }
+        internal FineTuningIntegrationWandbWandb Wandb { get; }
     }
 }

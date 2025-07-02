@@ -6,6 +6,6 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("FileSearchRankingOptions")]
+[CodeGenVisibility(nameof(FileSearchRankingOptions), CodeGenVisibility.Internal)]
 public partial class FileSearchRankingOptions
-{
-}
+{ }

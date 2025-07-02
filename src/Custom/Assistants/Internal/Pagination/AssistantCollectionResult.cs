@@ -90,7 +90,7 @@ internal class AssistantCollectionResult : CollectionResult<Assistant>
 
     internal virtual ClientResult GetAssistants(int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _assistantClient.CreateListAssistantsRequest(limit, order, after, before, options);
+        using PipelineMessage message = _assistantClient.CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

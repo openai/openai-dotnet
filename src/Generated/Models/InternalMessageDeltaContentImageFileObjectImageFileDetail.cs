@@ -22,11 +22,11 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalMessageDeltaContentImageFileObjectImageFileDetail Auto { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(AutoValue);
+        internal static InternalMessageDeltaContentImageFileObjectImageFileDetail Auto { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(AutoValue);
 
-        public static InternalMessageDeltaContentImageFileObjectImageFileDetail Low { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(LowValue);
+        internal static InternalMessageDeltaContentImageFileObjectImageFileDetail Low { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(LowValue);
 
-        public static InternalMessageDeltaContentImageFileObjectImageFileDetail High { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(HighValue);
+        internal static InternalMessageDeltaContentImageFileObjectImageFileDetail High { get; } = new InternalMessageDeltaContentImageFileObjectImageFileDetail(HighValue);
 
         public static bool operator ==(InternalMessageDeltaContentImageFileObjectImageFileDetail left, InternalMessageDeltaContentImageFileObjectImageFileDetail right) => left.Equals(right);
 

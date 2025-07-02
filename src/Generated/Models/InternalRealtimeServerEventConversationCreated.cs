@@ -5,20 +5,20 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventConversationCreated : ConversationUpdate
+    internal partial class InternalRealtimeServerEventConversationCreated : RealtimeUpdate
     {
-        internal InternalRealtimeServerEventConversationCreated(string eventId, InternalRealtimeServerEventConversationCreatedConversation conversation) : base(eventId, ConversationUpdateKind.ConversationCreated)
+        internal InternalRealtimeServerEventConversationCreated(InternalRealtimeServerEventConversationCreatedConversation conversation) : base(RealtimeUpdateKind.ConversationCreated)
         {
             Conversation = conversation;
         }
 
-        internal InternalRealtimeServerEventConversationCreated(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeServerEventConversationCreatedConversation conversation) : base(eventId, kind, additionalBinaryDataProperties)
+        internal InternalRealtimeServerEventConversationCreated(RealtimeUpdateKind kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeServerEventConversationCreatedConversation conversation) : base(kind, eventId, additionalBinaryDataProperties)
         {
             Conversation = conversation;
         }
 
-        public InternalRealtimeServerEventConversationCreatedConversation Conversation { get; }
+        internal InternalRealtimeServerEventConversationCreatedConversation Conversation { get; }
     }
 }

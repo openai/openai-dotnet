@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,11 +37,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("url_citation"u8);
                 writer.WriteObjectValue(UrlCitation, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
-            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -64,6 +61,7 @@ namespace OpenAI.Chat
 
         ChatMessageAnnotation IJsonModel<ChatMessageAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,7 +80,6 @@ namespace OpenAI.Chat
                 return null;
             }
             InternalChatCompletionResponseMessageAnnotationUrlCitation urlCitation = default;
-            InternalChatCompletionResponseMessageAnnotationType @type = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -91,25 +88,22 @@ namespace OpenAI.Chat
                     urlCitation = InternalChatCompletionResponseMessageAnnotationUrlCitation.DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("type"u8))
-                {
-                    @type = new InternalChatCompletionResponseMessageAnnotationType(prop.Value.GetString());
-                    continue;
-                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatMessageAnnotation(urlCitation, @type, additionalBinaryDataProperties);
+            return new ChatMessageAnnotation(urlCitation, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support writing '{options.Format}' format.");
             }
@@ -117,6 +111,7 @@ namespace OpenAI.Chat
 
         ChatMessageAnnotation IPersistableModel<ChatMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -133,21 +128,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatMessageAnnotation chatMessageAnnotation)
-        {
-            if (chatMessageAnnotation == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatMessageAnnotation, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatMessageAnnotation(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatMessageAnnotation(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

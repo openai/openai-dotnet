@@ -12,17 +12,16 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public VectorStoreCreationOptions()
+        public VectorStoreCreationOptions() : this(null, null, null, null, null, null)
         {
-            FileIds = new ChangeTrackingList<string>();
-            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
         internal VectorStoreCreationOptions(IList<string> fileIds, string name, IDictionary<string, string> metadata, VectorStoreExpirationPolicy expirationPolicy, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            FileIds = fileIds;
+            // Plugin customization: ensure initialization of collections
+            FileIds = fileIds ?? new ChangeTrackingList<string>();
             Name = name;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             ExpirationPolicy = expirationPolicy;
             ChunkingStrategy = chunkingStrategy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

@@ -12,18 +12,18 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public FileSearchCallResult()
+        public FileSearchCallResult() : this(null, null, null, default, null, null)
         {
-            Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal FileSearchCallResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FileSearchCallResult(string fileId, string text, string filename, float? score, IReadOnlyDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             FileId = fileId;
             Text = text;
             Filename = filename;
-            Attributes = attributes;
             Score = score;
+            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -32,8 +32,6 @@ namespace OpenAI.Responses
         public string Text { get; set; }
 
         public string Filename { get; set; }
-
-        public IDictionary<string, BinaryData> Attributes { get; }
 
         public float? Score { get; set; }
 

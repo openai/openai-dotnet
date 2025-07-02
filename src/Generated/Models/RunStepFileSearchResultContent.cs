@@ -11,9 +11,10 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunStepFileSearchResultContent(string text)
+        internal RunStepFileSearchResultContent(string text, RunStepFileSearchResultContentKind kind)
         {
             Text = text;
+            Kind = kind;
         }
 
         internal RunStepFileSearchResultContent(string text, RunStepFileSearchResultContentKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)

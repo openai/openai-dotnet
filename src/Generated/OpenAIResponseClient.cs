@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -22,5 +25,21 @@ namespace OpenAI.Responses
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult CancelResponse(string responseId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateCancelResponseRequest(responseId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateCancelResponseRequest(responseId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

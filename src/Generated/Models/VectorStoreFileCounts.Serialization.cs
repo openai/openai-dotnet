@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
@@ -56,6 +57,7 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("total"u8);
                 writer.WriteNumberValue(Total);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -79,6 +81,7 @@ namespace OpenAI.VectorStores
 
         VectorStoreFileCounts IJsonModel<VectorStoreFileCounts>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual VectorStoreFileCounts JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
@@ -129,6 +132,7 @@ namespace OpenAI.VectorStores
                     total = prop.Value.GetInt32();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreFileCounts(
@@ -142,13 +146,14 @@ namespace OpenAI.VectorStores
 
         BinaryData IPersistableModel<VectorStoreFileCounts>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(VectorStoreFileCounts)} does not support writing '{options.Format}' format.");
             }
@@ -156,6 +161,7 @@ namespace OpenAI.VectorStores
 
         VectorStoreFileCounts IPersistableModel<VectorStoreFileCounts>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual VectorStoreFileCounts PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileCounts>)this).GetFormatFromOptions(options) : options.Format;
@@ -172,21 +178,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<VectorStoreFileCounts>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(VectorStoreFileCounts vectorStoreFileCounts)
-        {
-            if (vectorStoreFileCounts == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(vectorStoreFileCounts, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator VectorStoreFileCounts(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreFileCounts(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

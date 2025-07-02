@@ -17,7 +17,7 @@ namespace OpenAI.VectorStores
             Removed = removed;
         }
 
-        internal FileFromStoreRemovalResult(string fileId, bool removed, InternalDeleteVectorStoreFileResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FileFromStoreRemovalResult(string fileId, bool removed, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             FileId = fileId;
             Removed = removed;

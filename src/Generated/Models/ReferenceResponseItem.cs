@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     public partial class ReferenceResponseItem : ResponseItem
     {
-        internal ReferenceResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, id, additionalBinaryDataProperties)
+        internal ReferenceResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, id, additionalBinaryDataProperties)
         {
         }
     }

@@ -1,3 +1,4 @@
+using System.ClientModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
@@ -15,4 +16,6 @@ public partial class ThreadModificationOptions
     /// <inheritdoc cref="ToolResources"/>
     [CodeGenMember("ToolResources")]
     public ToolResources ToolResources { get; set; }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

@@ -11,18 +11,18 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalFineTuningIntegration(string @type)
+        private protected InternalFineTuningIntegration(InternalFineTuningIntegrationType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal InternalFineTuningIntegration(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFineTuningIntegration(InternalFineTuningIntegrationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalFineTuningIntegrationType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

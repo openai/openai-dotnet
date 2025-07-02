@@ -7,7 +7,7 @@ namespace OpenAI.VectorStores;
 /// Represents the available timestamps to which the duration in a <see cref="VectorStoreExpirationPolicy"/> will apply.
 /// </summary>
 [Experimental("OPENAI001")]
-[CodeGenType("VectorStoreExpirationAfterAnchor")]
+[CodeGenType("VectorStoreExpirationAnchor")]
 public enum VectorStoreExpirationAnchor
 {
     /// <summary>

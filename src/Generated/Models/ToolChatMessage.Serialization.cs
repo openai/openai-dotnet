@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,10 +13,11 @@ namespace OpenAI.Chat
 {
     public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
     {
-        internal ToolChatMessage()
+        internal ToolChatMessage() : this(null, ChatMessageRole.Tool, null, null)
         {
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,6 +35,7 @@ namespace OpenAI.Chat
 
         ToolChatMessage IJsonModel<ToolChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ToolChatMessage)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -72,6 +74,7 @@ namespace OpenAI.Chat
                     toolCallId = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ToolChatMessage(content, role, additionalBinaryDataProperties, toolCallId);
@@ -79,13 +82,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ToolChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ToolChatMessage)} does not support writing '{options.Format}' format.");
             }
@@ -93,6 +97,7 @@ namespace OpenAI.Chat
 
         ToolChatMessage IPersistableModel<ToolChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (ToolChatMessage)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -109,21 +114,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ToolChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ToolChatMessage toolChatMessage)
-        {
-            if (toolChatMessage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(toolChatMessage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ToolChatMessage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeToolChatMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

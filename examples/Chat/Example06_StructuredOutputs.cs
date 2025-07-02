@@ -26,19 +26,19 @@ public partial class ChatExamples
                     {
                         "type": "object",
                         "properties": {
-                        "steps": {
-                            "type": "array",
-                            "items": {
-                            "type": "object",
-                            "properties": {
-                                "explanation": { "type": "string" },
-                                "output": { "type": "string" }
+                            "steps": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "explanation": { "type": "string" },
+                                        "output": { "type": "string" }
+                                    },
+                                    "required": ["explanation", "output"],
+                                    "additionalProperties": false
+                                }
                             },
-                            "required": ["explanation", "output"],
-                            "additionalProperties": false
-                            }
-                        },
-                        "final_answer": { "type": "string" }
+                            "final_answer": { "type": "string" }
                         },
                         "required": ["steps", "final_answer"],
                         "additionalProperties": false

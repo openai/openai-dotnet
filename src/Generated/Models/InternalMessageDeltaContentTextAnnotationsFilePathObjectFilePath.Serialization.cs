@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,6 +33,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -55,6 +57,7 @@ namespace OpenAI.Assistants
 
         InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath IJsonModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
@@ -81,6 +84,7 @@ namespace OpenAI.Assistants
                     fileId = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(fileId, additionalBinaryDataProperties);
@@ -88,13 +92,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support writing '{options.Format}' format.");
             }
@@ -102,6 +107,7 @@ namespace OpenAI.Assistants
 
         InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,21 +124,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath internalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)
-        {
-            if (internalMessageDeltaContentTextAnnotationsFilePathObjectFilePath == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalMessageDeltaContentTextAnnotationsFilePathObjectFilePath, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

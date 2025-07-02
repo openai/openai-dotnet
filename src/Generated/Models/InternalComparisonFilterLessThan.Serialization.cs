@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComparisonFilterLessThan : IJsonModel<InternalComparisonFilterLessThan>
     {
-        internal InternalComparisonFilterLessThan()
+        internal InternalComparisonFilterLessThan() : this(InternalComparisonFilterType.Lt, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterLessThan>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,6 +37,7 @@ namespace OpenAI.Responses
 
         InternalComparisonFilterLessThan IJsonModel<InternalComparisonFilterLessThan>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComparisonFilterLessThan)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalComparisonFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterLessThan>)this).GetFormatFromOptions(options) : options.Format;
@@ -53,7 +55,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalComparisonFilterType @type = default;
+            InternalComparisonFilterType kind = default;
             string key = default;
             BinaryData value = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -61,7 +63,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalComparisonFilterType(prop.Value.GetString());
+                    kind = new InternalComparisonFilterType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("key"u8))
@@ -74,20 +76,22 @@ namespace OpenAI.Responses
                     value = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalComparisonFilterLessThan(@type, key, value, additionalBinaryDataProperties);
+            return new InternalComparisonFilterLessThan(kind, key, value, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalComparisonFilterLessThan>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterLessThan>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalComparisonFilterLessThan)} does not support writing '{options.Format}' format.");
             }
@@ -95,6 +99,7 @@ namespace OpenAI.Responses
 
         InternalComparisonFilterLessThan IPersistableModel<InternalComparisonFilterLessThan>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComparisonFilterLessThan)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalComparisonFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterLessThan>)this).GetFormatFromOptions(options) : options.Format;
@@ -111,21 +116,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalComparisonFilterLessThan>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalComparisonFilterLessThan internalComparisonFilterLessThan)
-        {
-            if (internalComparisonFilterLessThan == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalComparisonFilterLessThan, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalComparisonFilterLessThan(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalComparisonFilterLessThan(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

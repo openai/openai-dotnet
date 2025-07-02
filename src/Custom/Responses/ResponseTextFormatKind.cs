@@ -1,6 +1,12 @@
-﻿namespace OpenAI.Responses;
+﻿using System.Diagnostics.CodeAnalysis;
 
-// CUSTOM: Plain enum type, with Unknown, to convert from an underlying extensible enum
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+// - Plain enum type, with Unknown, to convert from an underlying extensible enum
+[Experimental("OPENAI001")]
 public enum ResponseTextFormatKind
 {
     Unknown = 0,

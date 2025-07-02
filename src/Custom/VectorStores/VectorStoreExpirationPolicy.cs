@@ -10,6 +10,7 @@ namespace OpenAI.VectorStores;
 [Experimental("OPENAI001")]
 [CodeGenType("VectorStoreExpirationAfter")]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
+[CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int), typeof(VectorStoreExpirationAnchor))]
 public partial class VectorStoreExpirationPolicy
 {
     [CodeGenMember("Anchor")]

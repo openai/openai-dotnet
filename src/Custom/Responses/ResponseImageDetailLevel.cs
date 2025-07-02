@@ -1,6 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesInputContentImageDetail")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ItemContentInputImageDetail1")]
 public readonly partial struct ResponseImageDetailLevel
 {
 }

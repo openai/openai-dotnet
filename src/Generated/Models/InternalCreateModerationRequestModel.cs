@@ -23,13 +23,13 @@ namespace OpenAI.Moderations
             _value = value;
         }
 
-        public static InternalCreateModerationRequestModel OmniModerationLatest { get; } = new InternalCreateModerationRequestModel(OmniModerationLatestValue);
+        internal static InternalCreateModerationRequestModel OmniModerationLatest { get; } = new InternalCreateModerationRequestModel(OmniModerationLatestValue);
 
-        public static InternalCreateModerationRequestModel OmniModeration20240926 { get; } = new InternalCreateModerationRequestModel(OmniModeration20240926Value);
+        internal static InternalCreateModerationRequestModel OmniModeration20240926 { get; } = new InternalCreateModerationRequestModel(OmniModeration20240926Value);
 
-        public static InternalCreateModerationRequestModel TextModerationLatest { get; } = new InternalCreateModerationRequestModel(TextModerationLatestValue);
+        internal static InternalCreateModerationRequestModel TextModerationLatest { get; } = new InternalCreateModerationRequestModel(TextModerationLatestValue);
 
-        public static InternalCreateModerationRequestModel TextModerationStable { get; } = new InternalCreateModerationRequestModel(TextModerationStableValue);
+        internal static InternalCreateModerationRequestModel TextModerationStable { get; } = new InternalCreateModerationRequestModel(TextModerationStableValue);
 
         public static bool operator ==(InternalCreateModerationRequestModel left, InternalCreateModerationRequestModel right) => left.Equals(right);
 

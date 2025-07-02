@@ -12,14 +12,14 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalToolResourcesFileSearchIdsOnly()
+        public InternalToolResourcesFileSearchIdsOnly() : this(null, null)
         {
-            VectorStoreIds = new ChangeTrackingList<string>();
         }
 
         internal InternalToolResourcesFileSearchIdsOnly(IList<string> vectorStoreIds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            VectorStoreIds = vectorStoreIds;
+            // Plugin customization: ensure initialization of collections
+            VectorStoreIds = vectorStoreIds ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

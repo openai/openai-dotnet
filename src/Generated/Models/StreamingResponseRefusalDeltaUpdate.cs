@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseRefusalDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseRefusalDeltaUpdate(string itemId, int outputIndex, int contentIndex, string delta) : base(InternalResponsesResponseStreamEventType.ResponseRefusalDelta)
+        internal StreamingResponseRefusalDeltaUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string delta) : base(InternalResponseStreamEventType.ResponseRefusalDelta, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -17,7 +17,7 @@ namespace OpenAI.Responses
             Delta = delta;
         }
 
-        internal StreamingResponseRefusalDeltaUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string delta) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseRefusalDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

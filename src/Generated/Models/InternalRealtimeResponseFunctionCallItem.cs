@@ -5,9 +5,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeConversationResponseItem
+    internal partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem
     {
         internal InternalRealtimeResponseFunctionCallItem(string id, string name, string callId, string arguments, ConversationItemStatus status) : base(InternalRealtimeItemType.FunctionCall, id)
         {
@@ -17,7 +17,7 @@ namespace OpenAI.RealtimeConversation
             Status = status;
         }
 
-        internal InternalRealtimeResponseFunctionCallItem(InternalRealtimeConversationResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string callId, string arguments, ConversationItemStatus status) : base(@object, @type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseFunctionCallItem(string @object, InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string callId, string arguments, ConversationItemStatus status) : base(@object, kind, id, additionalBinaryDataProperties)
         {
             Name = name;
             CallId = callId;

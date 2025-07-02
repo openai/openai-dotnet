@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Chat;
 
-[CodeGenType("ChatCompletionToolType")]
+[CodeGenType("ChatToolKind")]
 public enum ChatToolKind
 {
     Function,

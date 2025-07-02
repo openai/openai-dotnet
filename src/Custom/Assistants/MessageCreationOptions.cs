@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -9,7 +10,8 @@ namespace OpenAI.Assistants;
 /// </summary>
 [Experimental("OPENAI001")]
 [CodeGenType("CreateMessageRequest")]
-[CodeGenSuppress("MessageCreationOptions", typeof(MessageRole), typeof(IEnumerable<MessageContent>))]
+[CodeGenVisibility(nameof(MessageCreationOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(MessageCreationOptions), typeof(MessageRole), typeof(IEnumerable<MessageContent>))]
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContent))]
 public partial class MessageCreationOptions
 {
@@ -24,20 +26,5 @@ public partial class MessageCreationOptions
     [CodeGenMember("Content")]
     internal IList<MessageContent> Content { get; }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="MessageCreationOptions"/>.
-    /// </summary>
-    public MessageCreationOptions()
-    : this(
-        new ChangeTrackingList<MessageCreationAttachment>(),
-        new ChangeTrackingDictionary<string, string>(),
-        MessageRole.User,
-        new ChangeTrackingList<MessageContent>(),
-        new ChangeTrackingDictionary<string, BinaryData>())
-    { }
-
-    internal MessageCreationOptions(IEnumerable<MessageContent> content) : this()
-    {
-        Content = [.. content];
-    }
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

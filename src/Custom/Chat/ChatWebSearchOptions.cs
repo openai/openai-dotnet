@@ -1,8 +1,10 @@
 using OpenAI.Internal;
-using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
+// CUSTOM: Added Experimental attribute.
+[Experimental("OPENAI001")]
 [CodeGenType("CreateChatCompletionRequestWebSearchOptions")]
 public partial class ChatWebSearchOptions
 {

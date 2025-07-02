@@ -11,20 +11,20 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseError(string code, string message)
+        internal ResponseError(ResponseErrorCode code, string message)
         {
             Code = code;
             Message = message;
         }
 
-        internal ResponseError(string code, string message, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseError(ResponseErrorCode code, string message, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Code { get; }
+        public ResponseErrorCode Code { get; }
 
         public string Message { get; }
 

@@ -12,16 +12,16 @@ namespace OpenAI.Batch
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalBatchRequestOutputResponse()
+        internal InternalBatchRequestOutputResponse() : this(default, null, null, null)
         {
-            Body = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
         internal InternalBatchRequestOutputResponse(int? statusCode, string requestId, IDictionary<string, BinaryData> body, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             StatusCode = statusCode;
             RequestId = requestId;
-            Body = body;
+            Body = body ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

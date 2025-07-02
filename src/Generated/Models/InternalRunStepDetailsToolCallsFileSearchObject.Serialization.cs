@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsFileSearchObject : IJsonModel<InternalRunStepDetailsToolCallsFileSearchObject>
     {
-        internal InternalRunStepDetailsToolCallsFileSearchObject()
+        internal InternalRunStepDetailsToolCallsFileSearchObject() : this(RunStepToolCallKind.FileSearch, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDetailsToolCallsFileSearchObject IJsonModel<InternalRunStepDetailsToolCallsFileSearchObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepDetailsToolCallsFileSearchObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepToolCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,20 +60,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string id = default;
             RunStepToolCallKind kind = default;
+            string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("id"u8))
-                {
-                    id = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToRunStepToolCallKind();
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_search"u8))
@@ -79,20 +81,22 @@ namespace OpenAI.Assistants
                     fileSearch = InternalRunStepDetailsToolCallsFileSearchObjectFileSearch.DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunStepDetailsToolCallsFileSearchObject(id, kind, additionalBinaryDataProperties, fileSearch);
+            return new InternalRunStepDetailsToolCallsFileSearchObject(kind, id, additionalBinaryDataProperties, fileSearch);
         }
 
         BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObject)} does not support writing '{options.Format}' format.");
             }
@@ -100,6 +104,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDetailsToolCallsFileSearchObject IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDetailsToolCallsFileSearchObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -116,21 +121,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDetailsToolCallsFileSearchObject internalRunStepDetailsToolCallsFileSearchObject)
-        {
-            if (internalRunStepDetailsToolCallsFileSearchObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDetailsToolCallsFileSearchObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDetailsToolCallsFileSearchObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDetailsToolCallsFileSearchObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

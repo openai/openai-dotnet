@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaObjectDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,6 +33,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("step_details"u8);
                 writer.WriteObjectValue(StepDetails, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -55,6 +57,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaObjectDelta IJsonModel<InternalRunStepDeltaObjectDelta>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRunStepDeltaObjectDelta JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaObjectDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -85,6 +88,7 @@ namespace OpenAI.Assistants
                     stepDetails = InternalRunStepDeltaStepDetails.DeserializeInternalRunStepDeltaStepDetails(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRunStepDeltaObjectDelta(stepDetails, additionalBinaryDataProperties);
@@ -92,13 +96,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalRunStepDeltaObjectDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaObjectDelta>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDeltaObjectDelta)} does not support writing '{options.Format}' format.");
             }
@@ -106,6 +111,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaObjectDelta IPersistableModel<InternalRunStepDeltaObjectDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRunStepDeltaObjectDelta PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaObjectDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -122,21 +128,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDeltaObjectDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDeltaObjectDelta internalRunStepDeltaObjectDelta)
-        {
-            if (internalRunStepDeltaObjectDelta == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDeltaObjectDelta, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDeltaObjectDelta(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaObjectDelta(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

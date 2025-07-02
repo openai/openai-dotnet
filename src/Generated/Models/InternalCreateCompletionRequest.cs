@@ -13,7 +13,7 @@ namespace OpenAI.LegacyCompletions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt)
+        internal InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt)
         {
             Model = model;
             Prompt = prompt;
@@ -22,12 +22,13 @@ namespace OpenAI.LegacyCompletions
 
         internal InternalCreateCompletionRequest(InternalCreateCompletionRequestModel model, BinaryData prompt, int? bestOf, bool? echo, float? frequencyPenalty, IDictionary<string, int> logitBias, int? logprobs, int? maxTokens, int? n, float? presencePenalty, long? seed, BinaryData stop, bool? stream, InternalChatCompletionStreamOptions streamOptions, string suffix, float? temperature, float? topP, string user, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Model = model;
             Prompt = prompt;
             BestOf = bestOf;
             Echo = echo;
             FrequencyPenalty = frequencyPenalty;
-            LogitBias = logitBias;
+            LogitBias = logitBias ?? new ChangeTrackingDictionary<string, int>();
             Logprobs = logprobs;
             MaxTokens = maxTokens;
             N = n;
@@ -43,7 +44,7 @@ namespace OpenAI.LegacyCompletions
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalCreateCompletionRequestModel Model { get; }
+        internal InternalCreateCompletionRequestModel Model { get; }
 
         public BinaryData Prompt { get; }
 
@@ -69,7 +70,7 @@ namespace OpenAI.LegacyCompletions
 
         public bool? Stream { get; set; }
 
-        public InternalChatCompletionStreamOptions StreamOptions { get; set; }
+        internal InternalChatCompletionStreamOptions StreamOptions { get; set; }
 
         public string Suffix { get; set; }
 

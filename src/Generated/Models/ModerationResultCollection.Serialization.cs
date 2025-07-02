@@ -3,8 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,6 +12,7 @@ namespace OpenAI.Moderations
 {
     public partial class ModerationResultCollection : IJsonModel<ModerationResultCollection>
     {
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
@@ -29,6 +30,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -52,6 +54,7 @@ namespace OpenAI.Moderations
 
         ModerationResultCollection IJsonModel<ModerationResultCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ModerationResultCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
@@ -65,13 +68,14 @@ namespace OpenAI.Moderations
 
         BinaryData IPersistableModel<ModerationResultCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ModerationResultCollection)} does not support writing '{options.Format}' format.");
             }
@@ -79,6 +83,7 @@ namespace OpenAI.Moderations
 
         ModerationResultCollection IPersistableModel<ModerationResultCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ModerationResultCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
@@ -95,21 +100,5 @@ namespace OpenAI.Moderations
         }
 
         string IPersistableModel<ModerationResultCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ModerationResultCollection moderationResultCollection)
-        {
-            if (moderationResultCollection == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(moderationResultCollection, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ModerationResultCollection(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

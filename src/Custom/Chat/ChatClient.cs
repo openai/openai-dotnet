@@ -1,8 +1,10 @@
+using OpenAI.Evals;
 using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,12 +18,19 @@ namespace OpenAI.Chat;
 /// <summary> The service client for OpenAI chat operations. </summary>
 [CodeGenType("Chat")]
 [CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
+[CodeGenSuppress("GetChatCompletionMessagesAsync", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
+[CodeGenSuppress("GetChatCompletions", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(IDictionary<string, string>), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetChatCompletionsAsync", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(IDictionary<string, string>), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("UpdateChatCompletion", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
+[CodeGenSuppress("UpdateChatCompletionAsync", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 public partial class ChatClient
 {
     private readonly string _model;
     private readonly OpenTelemetrySource _telemetry;
+    private static readonly InternalChatCompletionStreamOptions s_includeUsageStreamOptions = new(includeUsage: true, additionalBinaryDataProperties: null);
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
@@ -109,10 +118,10 @@ public partial class ChatClient
 
         try
         {
-            using BinaryContent content = options;
+            using BinaryContent content = options.ToBinaryContent();
 
             ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            ChatCompletion chatCompletion = (ChatCompletion)result;
+            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
         }
@@ -139,9 +148,9 @@ public partial class ChatClient
 
         try
         {
-            using BinaryContent content = options;
+            using BinaryContent content = options.ToBinaryContent();
             ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
-            ChatCompletion chatCompletion = (ChatCompletion)result;
+            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
 
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
@@ -187,7 +196,7 @@ public partial class ChatClient
         options ??= new();
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
             async () => await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -214,7 +223,7 @@ public partial class ChatClient
         options ??= new();
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
             () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -249,6 +258,54 @@ public partial class ChatClient
     public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages)
         => CompleteChatStreaming(messages, default(ChatCompletionOptions));
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+        ClientResult result = await GetChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+    }
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<ChatCompletion> GetChatCompletion(string completionId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+        ClientResult result = GetChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+    }
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<ChatCompletionDeletionResult>> DeleteChatCompletionAsync(string completionId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+        ClientResult result = await DeleteChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+    }
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<ChatCompletionDeletionResult> DeleteChatCompletion(string completionId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+        ClientResult result = DeleteChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+    }
+
     private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)
     {
         options.Messages = messages.ToList();
@@ -264,7 +321,4 @@ public partial class ChatClient
             options.StreamOptions = null;
         }
     }
-
-    private static readonly InternalChatCompletionStreamOptions s_includeUsageStreamOptions
-        = new(includeUsage: true, additionalBinaryDataProperties: null);
 }

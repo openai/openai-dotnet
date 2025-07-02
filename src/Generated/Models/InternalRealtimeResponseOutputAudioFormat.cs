@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal readonly partial struct InternalRealtimeResponseOutputAudioFormat : IEquatable<InternalRealtimeResponseOutputAudioFormat>
     {
@@ -22,11 +22,11 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static InternalRealtimeResponseOutputAudioFormat Pcm16 { get; } = new InternalRealtimeResponseOutputAudioFormat(Pcm16Value);
+        internal static InternalRealtimeResponseOutputAudioFormat Pcm16 { get; } = new InternalRealtimeResponseOutputAudioFormat(Pcm16Value);
 
-        public static InternalRealtimeResponseOutputAudioFormat G711Ulaw { get; } = new InternalRealtimeResponseOutputAudioFormat(G711UlawValue);
+        internal static InternalRealtimeResponseOutputAudioFormat G711Ulaw { get; } = new InternalRealtimeResponseOutputAudioFormat(G711UlawValue);
 
-        public static InternalRealtimeResponseOutputAudioFormat G711Alaw { get; } = new InternalRealtimeResponseOutputAudioFormat(G711AlawValue);
+        internal static InternalRealtimeResponseOutputAudioFormat G711Alaw { get; } = new InternalRealtimeResponseOutputAudioFormat(G711AlawValue);
 
         public static bool operator ==(InternalRealtimeResponseOutputAudioFormat left, InternalRealtimeResponseOutputAudioFormat right) => left.Equals(right);
 

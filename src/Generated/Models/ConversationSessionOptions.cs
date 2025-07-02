@@ -6,30 +6,30 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationSessionOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ConversationSessionOptions()
+        public ConversationSessionOptions() : this(null, default, default, null, default, default, default, null, null, null, null, null, null, null)
         {
-            Tools = new ChangeTrackingList<ConversationTool>();
-            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
         }
 
-        internal ConversationSessionOptions(string instructions, ConversationVoice? voice, ConversationAudioFormat? inputAudioFormat, ConversationAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, InternalRealtimeRequestSessionModel? model, ConversationTurnDetectionOptions turnDetectionOptions, ConversationInputTranscriptionOptions inputTranscriptionOptions, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationSessionOptions(string instructions, RealtimeAudioFormat? inputAudioFormat, RealtimeAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, ConversationVoice? voice, InternalRealtimeRequestSessionModel? model, TurnDetectionOptions turnDetectionOptions, InputTranscriptionOptions inputTranscriptionOptions, InputNoiseReductionOptions inputNoiseReductionOptions, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Instructions = instructions;
-            Voice = voice;
             InputAudioFormat = inputAudioFormat;
             OutputAudioFormat = outputAudioFormat;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             Temperature = temperature;
+            Voice = voice;
             Model = model;
             TurnDetectionOptions = turnDetectionOptions;
             InputTranscriptionOptions = inputTranscriptionOptions;
-            _internalModalities = internalModalities;
+            InputNoiseReductionOptions = inputNoiseReductionOptions;
+            _internalModalities = internalModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             _internalToolChoice = internalToolChoice;
             _maxResponseOutputTokens = maxResponseOutputTokens;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -37,11 +37,9 @@ namespace OpenAI.RealtimeConversation
 
         public string Instructions { get; set; }
 
-        public ConversationVoice? Voice { get; set; }
+        public RealtimeAudioFormat? InputAudioFormat { get; set; }
 
-        public ConversationAudioFormat? InputAudioFormat { get; set; }
-
-        public ConversationAudioFormat? OutputAudioFormat { get; set; }
+        public RealtimeAudioFormat? OutputAudioFormat { get; set; }
 
         public IList<ConversationTool> Tools { get; }
 

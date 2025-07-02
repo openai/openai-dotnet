@@ -13,6 +13,7 @@ namespace OpenAI.Audio
         private readonly string _value;
         private const string Tts1Value = "tts-1";
         private const string Tts1HdValue = "tts-1-hd";
+        private const string Gpt4oMiniTtsValue = "gpt-4o-mini-tts";
 
         public InternalCreateSpeechRequestModel(string value)
         {
@@ -21,9 +22,11 @@ namespace OpenAI.Audio
             _value = value;
         }
 
-        public static InternalCreateSpeechRequestModel Tts1 { get; } = new InternalCreateSpeechRequestModel(Tts1Value);
+        internal static InternalCreateSpeechRequestModel Tts1 { get; } = new InternalCreateSpeechRequestModel(Tts1Value);
 
-        public static InternalCreateSpeechRequestModel Tts1Hd { get; } = new InternalCreateSpeechRequestModel(Tts1HdValue);
+        internal static InternalCreateSpeechRequestModel Tts1Hd { get; } = new InternalCreateSpeechRequestModel(Tts1HdValue);
+
+        internal static InternalCreateSpeechRequestModel Gpt4oMiniTts { get; } = new InternalCreateSpeechRequestModel(Gpt4oMiniTtsValue);
 
         public static bool operator ==(InternalCreateSpeechRequestModel left, InternalCreateSpeechRequestModel right) => left.Equals(right);
 

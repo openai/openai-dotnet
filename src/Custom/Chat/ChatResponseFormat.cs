@@ -21,14 +21,14 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenType("ChatResponseFormat")]
+[CodeGenType("DotNetChatResponseFormat")]
 public partial class ChatResponseFormat
 {
     /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting plain text. </summary>
-    public static ChatResponseFormat CreateTextFormat() => new InternalChatResponseFormatText();
+    public static ChatResponseFormat CreateTextFormat() => new InternalDotNetChatResponseFormatText();
 
     /// <summary> Creates a new <see cref="ChatResponseFormat"/> requesting valid JSON, a.k.a. JSON mode. </summary>
-    public static ChatResponseFormat CreateJsonObjectFormat() => new InternalChatResponseFormatJsonObject();
+    public static ChatResponseFormat CreateJsonObjectFormat() => new InternalDotNetChatResponseFormatJsonObject();
 
     /// <summary>
     ///     Creates a new <see cref="ChatResponseFormat"/> requesting adherence to the specified JSON schema,
@@ -94,17 +94,13 @@ public partial class ChatResponseFormat
         Argument.AssertNotNullOrEmpty(jsonSchemaFormatName, nameof(jsonSchemaFormatName));
         Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
-        InternalResponseFormatJsonSchemaJsonSchema internalSchema = new(
+        InternalDotNetChatResponseFormatJsonSchemaJsonSchema internalSchema = new(
             jsonSchemaFormatDescription,
             jsonSchemaFormatName,
-            jsonSchemaIsStrict,
             schema: jsonSchema,
+            jsonSchemaIsStrict,
             additionalBinaryDataProperties: null);
 
-        return new InternalChatResponseFormatJsonSchema(internalSchema);
+        return new InternalDotNetChatResponseFormatJsonSchema(internalSchema);
     }
-
-    // CUSTOM: Made internal.
-    internal ChatResponseFormat()
-    { }
 }

@@ -97,7 +97,7 @@ internal class VectorStoreFileCollectionResult : CollectionResult<VectorStoreFil
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
-        using PipelineMessage message = _vectorStoreClient.CreateListVectorStoreFilesRequest(vectorStoreId, limit, order, after, before, filter, options);
+        using PipelineMessage message = _vectorStoreClient.CreateGetVectorStoreFilesRequest(vectorStoreId, limit, order, after, before, filter, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

@@ -3,17 +3,18 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
     public partial class StaticFileChunkingStrategy : IJsonModel<StaticFileChunkingStrategy>
     {
-        internal StaticFileChunkingStrategy()
+        internal StaticFileChunkingStrategy() : this(InternalDotNetCombinedChunkingStrategyParamType2.Static, null, null)
         {
         }
 
@@ -24,6 +25,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StaticFileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +43,7 @@ namespace OpenAI.VectorStores
 
         StaticFileChunkingStrategy IJsonModel<StaticFileChunkingStrategy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StaticFileChunkingStrategy)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override FileChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StaticFileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,35 +61,37 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            string @type = "static";
+            InternalDotNetCombinedChunkingStrategyParamType2 kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalStaticChunkingStrategyDetails internalDetails = default;
+            InternalStaticChunkingStrategy internalDetails = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalDotNetCombinedChunkingStrategyParamType2(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("static"u8))
                 {
-                    internalDetails = InternalStaticChunkingStrategyDetails.DeserializeInternalStaticChunkingStrategyDetails(prop.Value, options);
+                    internalDetails = InternalStaticChunkingStrategy.DeserializeInternalStaticChunkingStrategy(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StaticFileChunkingStrategy(@type, additionalBinaryDataProperties, internalDetails);
+            return new StaticFileChunkingStrategy(kind, additionalBinaryDataProperties, internalDetails);
         }
 
         BinaryData IPersistableModel<StaticFileChunkingStrategy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StaticFileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(StaticFileChunkingStrategy)} does not support writing '{options.Format}' format.");
             }
@@ -94,6 +99,7 @@ namespace OpenAI.VectorStores
 
         StaticFileChunkingStrategy IPersistableModel<StaticFileChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options) => (StaticFileChunkingStrategy)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override FileChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StaticFileChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
@@ -110,21 +116,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<StaticFileChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(StaticFileChunkingStrategy staticFileChunkingStrategy)
-        {
-            if (staticFileChunkingStrategy == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(staticFileChunkingStrategy, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator StaticFileChunkingStrategy(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeStaticFileChunkingStrategy(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

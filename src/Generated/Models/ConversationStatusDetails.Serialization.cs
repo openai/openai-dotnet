@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>
     {
@@ -20,12 +20,18 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{format}' format.");
+            }
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.Value.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
@@ -42,6 +48,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("error"u8);
                 writer.WriteObjectValue(Error, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -65,6 +72,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationStatusDetails IJsonModel<ConversationStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,12 +90,22 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
+            InternalRealtimeResponseStatusDetailsType? kind = default;
             ConversationStatus statusKind = default;
             ConversationIncompleteReason? incompleteReason = default;
             InternalRealtimeResponseStatusDetailsError error = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    kind = new InternalRealtimeResponseStatusDetailsType(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("type"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -115,20 +133,22 @@ namespace OpenAI.RealtimeConversation
                     error = InternalRealtimeResponseStatusDetailsError.DeserializeInternalRealtimeResponseStatusDetailsError(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ConversationStatusDetails(statusKind, incompleteReason, error, additionalBinaryDataProperties);
+            return new ConversationStatusDetails(kind, statusKind, incompleteReason, error, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{options.Format}' format.");
             }
@@ -136,6 +156,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationStatusDetails IPersistableModel<ConversationStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -152,21 +173,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationStatusDetails conversationStatusDetails)
-        {
-            if (conversationStatusDetails == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationStatusDetails, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationStatusDetails(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationStatusDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

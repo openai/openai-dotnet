@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Chat;
 
 /// <summary> A breakdown of the number of tokens used to generate the output as reported in <see cref="ChatTokenUsage.OutputTokenCount"/>. </summary>
@@ -15,9 +17,17 @@ public partial class ChatOutputTokenUsageDetails
     [CodeGenMember("AudioTokens")]
     public int AudioTokenCount { get; }
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("AcceptedPredictionTokens")]
     public int AcceptedPredictionTokenCount { get; }
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("RejectedPredictionTokens")]
     public int RejectedPredictionTokenCount { get; }
 }

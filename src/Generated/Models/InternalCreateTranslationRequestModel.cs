@@ -20,7 +20,7 @@ namespace OpenAI.Audio
             _value = value;
         }
 
-        public static InternalCreateTranslationRequestModel Whisper1 { get; } = new InternalCreateTranslationRequestModel(Whisper1Value);
+        internal static InternalCreateTranslationRequestModel Whisper1 { get; } = new InternalCreateTranslationRequestModel(Whisper1Value);
 
         public static bool operator ==(InternalCreateTranslationRequestModel left, InternalCreateTranslationRequestModel right) => left.Equals(right);
 

@@ -4,12 +4,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images
 {
     public partial class GeneratedImageCollection
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal IList<GeneratedImage> Data { get; }
+
+        [Experimental("OPENAI001")]
+        public ImageTokenUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

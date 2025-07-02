@@ -9,12 +9,12 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseIncompleteUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseIncompleteUpdate(OpenAIResponse response) : base(InternalResponsesResponseStreamEventType.ResponseIncomplete)
+        internal StreamingResponseIncompleteUpdate(int sequenceNumber, OpenAIResponse response) : base(InternalResponseStreamEventType.ResponseIncomplete, sequenceNumber)
         {
             Response = response;
         }
 
-        internal StreamingResponseIncompleteUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseIncompleteUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Response = response;
         }

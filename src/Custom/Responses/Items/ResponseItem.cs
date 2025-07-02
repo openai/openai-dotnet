@@ -1,13 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesItem")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ItemResource")]
 public partial class ResponseItem
 {
+    // CUSTOM: Specify read-only semantics for ID
+    [CodeGenMember("Id")]
+    public string Id { get; }
+
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
@@ -37,7 +44,7 @@ public partial class ResponseItem
     public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNull(contentParts, nameof(contentParts));
-        return new InternalResponsesSystemMessage(contentParts);
+        return new InternalResponsesSystemMessage(id: null, status: null, contentParts);
     }
 
     public static MessageResponseItem CreateSystemMessageItem(string inputTextContent)
@@ -62,41 +69,57 @@ public partial class ResponseItem
         return new InternalResponsesAssistantMessage(
             internalContent:
             [
-                new InternalResponsesOutputTextContentPart(annotations ?? [], outputTextContent),
+                new InternalItemContentOutputText(annotations ?? [], outputTextContent),
             ]);
     }
 
     [Experimental("OPENAICUA001")]
-    public static ResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
+    public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
     {
+        Argument.AssertNotNull(callId, nameof(callId));
         return new ComputerCallResponseItem(callId, action, pendingSafetyChecks);
     }
 
     [Experimental("OPENAICUA001")]
-    public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri)
+    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri)
     {
-        return new ComputerCallOutputResponseItem(
+        Argument.AssertNotNull(callId, nameof(callId));
+        ComputerCallOutputResponseItem item = new(
             callId,
-            acknowledgedSafetyChecks,
             ComputerOutput.CreateScreenshotOutput(screenshotImageUri));
+        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
+        {
+            item.AcknowledgedSafetyChecks.Add(safetyCheck);
+        }
+        return item;
     }
 
     [Experimental("OPENAICUA001")]
-    public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId)
+    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId)
     {
-        return new ComputerCallOutputResponseItem(
+        Argument.AssertNotNull(callId, nameof(callId));
+        ComputerCallOutputResponseItem item = new(
             callId,
-            acknowledgedSafetyChecks,
             ComputerOutput.CreateScreenshotOutput(screenshotImageFileId));
+        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
+        {
+            item.AcknowledgedSafetyChecks.Add(safetyCheck);
+        }
+        return item;
     }
 
     [Experimental("OPENAICUA001")]
-    public static ResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
+    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
     {
-        return new ComputerCallOutputResponseItem(
+        Argument.AssertNotNull(callId, nameof(callId));
+        ComputerCallOutputResponseItem item = new(
             callId,
-            acknowledgedSafetyChecks,
             ComputerOutput.CreateScreenshotOutput(screenshotImageBytes, screenshotImageBytesMediaType));
+        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
+        {
+            item.AcknowledgedSafetyChecks.Add(safetyCheck);
+        }
+        return item;
     }
 
     public static WebSearchCallResponseItem CreateWebSearchCallItem()
@@ -108,22 +131,36 @@ public partial class ResponseItem
         IEnumerable<string> queries,
         IEnumerable<FileSearchCallResult> results)
     {
+        Argument.AssertNotNullOrEmpty(queries, nameof(queries));
         return new FileSearchCallResponseItem(queries, results);
     }
 
     public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments)
     {
+        Argument.AssertNotNull(callId, nameof(callId));
+        Argument.AssertNotNull(functionName, nameof(functionName));
+        Argument.AssertNotNull(functionArguments, nameof(functionArguments));
+
         return new FunctionCallResponseItem(callId, functionName, functionArguments);
     }
 
     public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput)
     {
+        Argument.AssertNotNull(callId, nameof(callId));
+        Argument.AssertNotNull(functionOutput, nameof(functionOutput));
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }
 
-    public static ReasoningResponseItem CreateReasoningItem(IEnumerable<string> summaryTextParts)
+    public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts)
     {
-        return new ReasoningResponseItem(summaryTextParts);
+        Argument.AssertNotNullOrEmpty(summaryParts, nameof(summaryParts));
+        return new ReasoningResponseItem(summaryParts);
+    }
+
+    public static ReasoningResponseItem CreateReasoningItem(string summaryText)
+    {
+        Argument.AssertNotNull(summaryText, nameof(summaryText));
+        return new ReasoningResponseItem(summaryText);
     }
 
     public static ReferenceResponseItem CreateReferenceItem(string id)

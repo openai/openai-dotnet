@@ -22,11 +22,11 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalCreateThreadAndRunRequestToolChoice None { get; } = new InternalCreateThreadAndRunRequestToolChoice(NoneValue);
+        internal static InternalCreateThreadAndRunRequestToolChoice None { get; } = new InternalCreateThreadAndRunRequestToolChoice(NoneValue);
 
-        public static InternalCreateThreadAndRunRequestToolChoice Auto { get; } = new InternalCreateThreadAndRunRequestToolChoice(AutoValue);
+        internal static InternalCreateThreadAndRunRequestToolChoice Auto { get; } = new InternalCreateThreadAndRunRequestToolChoice(AutoValue);
 
-        public static InternalCreateThreadAndRunRequestToolChoice Required { get; } = new InternalCreateThreadAndRunRequestToolChoice(RequiredValue);
+        internal static InternalCreateThreadAndRunRequestToolChoice Required { get; } = new InternalCreateThreadAndRunRequestToolChoice(RequiredValue);
 
         public static bool operator ==(InternalCreateThreadAndRunRequestToolChoice left, InternalCreateThreadAndRunRequestToolChoice right) => left.Equals(right);
 

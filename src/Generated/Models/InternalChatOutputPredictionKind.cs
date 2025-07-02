@@ -11,7 +11,7 @@ namespace OpenAI.Chat
     internal readonly partial struct InternalChatOutputPredictionKind : IEquatable<InternalChatOutputPredictionKind>
     {
         private readonly string _value;
-        private const string ContentValue = "content";
+        private const string StaticContentValue = "content";
 
         public InternalChatOutputPredictionKind(string value)
         {
@@ -19,6 +19,8 @@ namespace OpenAI.Chat
 
             _value = value;
         }
+
+        internal static InternalChatOutputPredictionKind StaticContent { get; } = new InternalChatOutputPredictionKind(StaticContentValue);
 
         public static bool operator ==(InternalChatOutputPredictionKind left, InternalChatOutputPredictionKind right) => left.Equals(right);
 

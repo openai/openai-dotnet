@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -11,14 +12,18 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, null)
+        {
+        }
+
         internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, string refusal, ChatMessageRole? role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Audio = audio;
             FunctionCall = functionCall;
-            ToolCalls = toolCalls;
+            ToolCalls = toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>();
             Refusal = refusal;
             Role = role;
-            // Plugin customization: ensure initialization of collection
             Content = content ?? new ChatMessageContent();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

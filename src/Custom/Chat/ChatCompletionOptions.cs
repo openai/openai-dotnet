@@ -1,4 +1,6 @@
+using OpenAI.Internal;
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,7 +12,8 @@ namespace OpenAI.Chat;
 /// Request-level options for chat completion.
 /// </summary>
 [CodeGenType("CreateChatCompletionRequest")]
-[CodeGenSuppress("ChatCompletionOptions", typeof(IEnumerable<ChatMessage>), typeof(InternalCreateChatCompletionRequestModel?))]
+[CodeGenVisibility(nameof(ChatCompletionOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(ChatCompletionOptions), typeof(IEnumerable<ChatMessage>), typeof(string))]
 [CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
@@ -34,7 +37,7 @@ public partial class ChatCompletionOptions
     /// ID of the model to use. See the <see href="https://platform.openai.com/docs/models/model-endpoint-compatibility">model endpoint compatibility</see> table for details on which models work with the Chat API.
     /// </summary>
     [CodeGenMember("Model")]
-    internal InternalCreateChatCompletionRequestModel? Model { get; set; }
+    internal string Model { get; set; }
 
     // CUSTOM: Made internal. We only ever request a single choice.
     /// <summary> How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs. </summary>
@@ -49,19 +52,6 @@ public partial class ChatCompletionOptions
     /// <summary> Gets or sets the stream options. </summary>
     [CodeGenMember("StreamOptions")]
     internal InternalChatCompletionStreamOptions StreamOptions { get; set; }
-
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="ChatCompletionOptions"/> for deserialization. </summary>
-    public ChatCompletionOptions()
-    {
-        Messages = new ChangeTrackingList<ChatMessage>();
-        LogitBiases = new ChangeTrackingDictionary<int, int>();
-        StopSequences = new ChangeTrackingList<string>();
-        Tools = new ChangeTrackingList<ChatTool>();
-        Functions = new ChangeTrackingList<ChatFunction>();
-        InternalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
-        Metadata = new ChangeTrackingDictionary<string, string>();
-    }
 
     // CUSTOM: Renamed.
     /// <summary> Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the message content. </summary>
@@ -118,7 +108,7 @@ public partial class ChatCompletionOptions
     public bool? AllowParallelToolCalls { get; set; }
 
     [CodeGenMember("ServiceTier")]
-    internal InternalCreateChatCompletionRequestServiceTier? _serviceTier;
+    internal InternalServiceTier? _serviceTier;
 
     // CUSTOM: Renamed.
     /// <summary>
@@ -128,12 +118,6 @@ public partial class ChatCompletionOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    // CUSTOM: Added the Experimental attribute.
-    /// <summary>
-    /// If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same seed and parameters should return the same result.
-    /// </summary>
-    [Experimental("OPENAI001")]
-    public long? Seed { get; set; }
 
     // CUSTOM: Hide deprecated max_tokens and reroute to newer max_completion_tokens.
     [CodeGenMember("MaxTokens")]
@@ -167,12 +151,15 @@ public partial class ChatCompletionOptions
     [CodeGenMember("Store")]
     public bool? StoredOutputEnabled { get; set; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
     /// <summary>
     /// (o1 and newer reasoning models only) Constrains effort on reasoning for reasoning models.
     /// Currently supported values are <see cref="ChatReasoningEffortLevel.Low"/>, <see cref="ChatReasoningEffortLevel.Medium"/>, and <see cref="ChatReasoningEffortLevel.High"/>.
     /// Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response.
     /// </summary>
+    [Experimental("OPENAI001")]
     [CodeGenMember("ReasoningEffort")]
     public ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
@@ -189,6 +176,9 @@ public partial class ChatCompletionOptions
     }
     private IList<InternalCreateChatCompletionRequestModality> _internalModalities;
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
     /// <summary>
     /// Specifies the content types that the model should generate in its responses.
     /// </summary>
@@ -197,6 +187,7 @@ public partial class ChatCompletionOptions
     /// Some models like <c>gpt-4o-audio-preview</c> can also generate audio, and this can be requested by combining <c>["text","audio"]</c> via
     /// the flags <c><see cref="ChatResponseModalities.Text"/> | <see cref="ChatResponseModalities.Audio"/></c>.
     /// </remarks>
+    [Experimental("OPENAI001")]
     public ChatResponseModalities ResponseModalities
     {
         get => _responseModalities;
@@ -208,11 +199,23 @@ public partial class ChatCompletionOptions
     }
     private ChatResponseModalities _responseModalities;
 
-    // CUSTOM: Renamed.
+    // CUSTOM: Use scenario-specific type.
+    [CodeGenMember("ResponseFormat")]
+    public ChatResponseFormat ResponseFormat { get; set; }
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("Audio")]
     public ChatAudioOptions AudioOptions { get; set; }
 
-    // CUSTOM: rename.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("Prediction")]
     public ChatOutputPrediction OutputPrediction { get; set; }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

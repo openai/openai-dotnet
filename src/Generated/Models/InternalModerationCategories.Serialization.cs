@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Moderations
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationCategories>)this).GetFormatFromOptions(options) : options.Format;
@@ -96,6 +97,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("violence/graphic"u8);
                 writer.WriteBooleanValue(ViolenceGraphic);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -119,6 +121,7 @@ namespace OpenAI.Moderations
 
         InternalModerationCategories IJsonModel<InternalModerationCategories>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalModerationCategories JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationCategories>)this).GetFormatFromOptions(options) : options.Format;
@@ -217,6 +220,7 @@ namespace OpenAI.Moderations
                     violenceGraphic = prop.Value.GetBoolean();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalModerationCategories(
@@ -238,13 +242,14 @@ namespace OpenAI.Moderations
 
         BinaryData IPersistableModel<InternalModerationCategories>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationCategories>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalModerationCategories)} does not support writing '{options.Format}' format.");
             }
@@ -252,6 +257,7 @@ namespace OpenAI.Moderations
 
         InternalModerationCategories IPersistableModel<InternalModerationCategories>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalModerationCategories PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalModerationCategories>)this).GetFormatFromOptions(options) : options.Format;
@@ -268,21 +274,5 @@ namespace OpenAI.Moderations
         }
 
         string IPersistableModel<InternalModerationCategories>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalModerationCategories internalModerationCategories)
-        {
-            if (internalModerationCategories == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalModerationCategories, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalModerationCategories(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalModerationCategories(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

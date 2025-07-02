@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunStepFileSearchResult : IJsonModel<RunStepFileSearchResult>
     {
-        internal RunStepFileSearchResult()
+        internal RunStepFileSearchResult() : this(null, null, default, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,6 +47,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("score"u8);
                 writer.WriteNumberValue(Score);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
@@ -56,6 +58,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -79,6 +82,7 @@ namespace OpenAI.Assistants
 
         RunStepFileSearchResult IJsonModel<RunStepFileSearchResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual RunStepFileSearchResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -132,6 +136,7 @@ namespace OpenAI.Assistants
                     content = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunStepFileSearchResult(fileId, fileName, score, content ?? new ChangeTrackingList<RunStepFileSearchResultContent>(), additionalBinaryDataProperties);
@@ -139,13 +144,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<RunStepFileSearchResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResult>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(RunStepFileSearchResult)} does not support writing '{options.Format}' format.");
             }
@@ -153,6 +159,7 @@ namespace OpenAI.Assistants
 
         RunStepFileSearchResult IPersistableModel<RunStepFileSearchResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual RunStepFileSearchResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -169,21 +176,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<RunStepFileSearchResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(RunStepFileSearchResult runStepFileSearchResult)
-        {
-            if (runStepFileSearchResult == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(runStepFileSearchResult, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator RunStepFileSearchResult(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeRunStepFileSearchResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

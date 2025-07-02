@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Moderations
 {
@@ -31,19 +32,20 @@ namespace OpenAI.Moderations
 
         internal InternalCreateModerationResponseResultCategoryAppliedInputTypes(IReadOnlyList<string> hate, IReadOnlyList<string> hateThreatening, IReadOnlyList<string> harassment, IReadOnlyList<string> harassmentThreatening, IReadOnlyList<string> illicit, IReadOnlyList<string> illicitViolent, IReadOnlyList<string> selfHarm, IReadOnlyList<string> selfHarmIntent, IReadOnlyList<string> selfHarmInstructions, IReadOnlyList<string> sexual, IReadOnlyList<string> sexualMinors, IReadOnlyList<string> violence, IReadOnlyList<string> violenceGraphic, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Hate = hate;
-            HateThreatening = hateThreatening;
-            Harassment = harassment;
-            HarassmentThreatening = harassmentThreatening;
-            Illicit = illicit;
-            IllicitViolent = illicitViolent;
-            SelfHarm = selfHarm;
-            SelfHarmIntent = selfHarmIntent;
-            SelfHarmInstructions = selfHarmInstructions;
-            Sexual = sexual;
-            SexualMinors = sexualMinors;
-            Violence = violence;
-            ViolenceGraphic = violenceGraphic;
+            // Plugin customization: ensure initialization of collections
+            Hate = hate ?? new ChangeTrackingList<string>();
+            HateThreatening = hateThreatening ?? new ChangeTrackingList<string>();
+            Harassment = harassment ?? new ChangeTrackingList<string>();
+            HarassmentThreatening = harassmentThreatening ?? new ChangeTrackingList<string>();
+            Illicit = illicit ?? new ChangeTrackingList<string>();
+            IllicitViolent = illicitViolent ?? new ChangeTrackingList<string>();
+            SelfHarm = selfHarm ?? new ChangeTrackingList<string>();
+            SelfHarmIntent = selfHarmIntent ?? new ChangeTrackingList<string>();
+            SelfHarmInstructions = selfHarmInstructions ?? new ChangeTrackingList<string>();
+            Sexual = sexual ?? new ChangeTrackingList<string>();
+            SexualMinors = sexualMinors ?? new ChangeTrackingList<string>();
+            Violence = violence ?? new ChangeTrackingList<string>();
+            ViolenceGraphic = violenceGraphic ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

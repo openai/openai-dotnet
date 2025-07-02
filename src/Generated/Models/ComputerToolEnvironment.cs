@@ -13,6 +13,7 @@ namespace OpenAI.Responses
         private readonly string _value;
         private const string WindowsValue = "windows";
         private const string MacValue = "mac";
+        private const string LinuxValue = "linux";
         private const string UbuntuValue = "ubuntu";
         private const string BrowserValue = "browser";
 
@@ -26,6 +27,8 @@ namespace OpenAI.Responses
         public static ComputerToolEnvironment Windows { get; } = new ComputerToolEnvironment(WindowsValue);
 
         public static ComputerToolEnvironment Mac { get; } = new ComputerToolEnvironment(MacValue);
+
+        public static ComputerToolEnvironment Linux { get; } = new ComputerToolEnvironment(LinuxValue);
 
         public static ComputerToolEnvironment Ubuntu { get; } = new ComputerToolEnvironment(UbuntuValue);
 

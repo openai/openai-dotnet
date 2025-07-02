@@ -78,7 +78,8 @@ public partial class AudioClient
         Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
         using PipelineMessage message = CreateCreateTranscriptionRequest(content, contentType, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        PipelineResponse protocolResponse = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
+        return ClientResult.FromResponse(protocolResponse);
     }
 
     // CUSTOM:

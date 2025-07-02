@@ -26,19 +26,19 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult ListRuns(string threadId, int? limit = null, string order = null, string after = null, string before = null, RequestOptions options = null)
+        public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNull(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-            using PipelineMessage message = CreateListRunsRequest(threadId, limit, order, after, before, options);
+            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> ListRunsAsync(string threadId, int? limit = null, string order = null, string after = null, string before = null, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNull(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-            using PipelineMessage message = CreateListRunsRequest(threadId, limit, order, after, before, options);
+            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Batch
 {
     internal partial class InternalBatchJob : IJsonModel<InternalBatchJob>
     {
-        internal InternalBatchJob()
+        internal InternalBatchJob() : this(null, null, null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Batch
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
@@ -39,7 +40,7 @@ namespace OpenAI.Batch
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("endpoint") != true)
             {
@@ -149,6 +150,7 @@ namespace OpenAI.Batch
                     writer.WriteNull("metadata"u8);
                 }
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -172,6 +174,7 @@ namespace OpenAI.Batch
 
         InternalBatchJob IJsonModel<InternalBatchJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
@@ -190,7 +193,7 @@ namespace OpenAI.Batch
                 return null;
             }
             string id = default;
-            InternalBatchObject @object = default;
+            string @object = default;
             string endpoint = default;
             InternalBatchErrors errors = default;
             string inputFileId = default;
@@ -219,7 +222,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalBatchObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("endpoint"u8))
@@ -369,6 +372,7 @@ namespace OpenAI.Batch
                     metadata = dictionary;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchJob(
@@ -397,13 +401,14 @@ namespace OpenAI.Batch
 
         BinaryData IPersistableModel<InternalBatchJob>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{options.Format}' format.");
             }
@@ -411,6 +416,7 @@ namespace OpenAI.Batch
 
         InternalBatchJob IPersistableModel<InternalBatchJob>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
@@ -427,21 +433,5 @@ namespace OpenAI.Batch
         }
 
         string IPersistableModel<InternalBatchJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalBatchJob internalBatchJob)
-        {
-            if (internalBatchJob == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalBatchJob, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalBatchJob(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchJob(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

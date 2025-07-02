@@ -1,6 +1,9 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace OpenAI.Moderations;
 
@@ -44,5 +47,12 @@ public partial class ModerationResultCollection : ReadOnlyCollection<ModerationR
     internal ModerationResultCollection()
         : base([])
     {
+    }
+
+    internal static ModerationResultCollection FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

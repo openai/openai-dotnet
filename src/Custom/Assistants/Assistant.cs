@@ -1,4 +1,7 @@
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
@@ -6,10 +9,12 @@ namespace OpenAI.Assistants;
 [CodeGenType("AssistantObject")]
 public partial class Assistant
 {
+    private const string AssistantValue = "assistant";
+
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `assistant`. </summary>
     [CodeGenMember("Object")]
-    internal InternalAssistantObjectObject Object { get; } = InternalAssistantObjectObject.Assistant;
+    internal string Object { get; } = AssistantValue;
 
     /// <inheritdoc cref="AssistantResponseFormat"/>
     public AssistantResponseFormat ResponseFormat { get; }
@@ -21,4 +26,11 @@ public partial class Assistant
     /// </summary>
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; }
+
+    internal static Assistant FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeAssistant(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

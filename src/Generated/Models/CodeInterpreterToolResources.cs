@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -11,11 +12,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        public CodeInterpreterToolResources() : this(null, null)
+        {
+        }
+
         internal CodeInterpreterToolResources(IList<string> fileIds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            FileIds = fileIds;
+            // Plugin customization: ensure initialization of collections
+            FileIds = fileIds ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public IList<string> FileIds { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

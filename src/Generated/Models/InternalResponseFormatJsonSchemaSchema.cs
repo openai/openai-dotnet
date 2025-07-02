@@ -12,14 +12,14 @@ namespace OpenAI.Internal
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalResponseFormatJsonSchemaSchema()
+        public InternalResponseFormatJsonSchemaSchema() : this(null)
         {
-            _additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
         internal InternalResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties)
         {
-            _additionalBinaryDataProperties = additionalProperties;
+            // Plugin customization: ensure initialization of collections
+            _additionalBinaryDataProperties = additionalProperties ?? new ChangeTrackingDictionary<string, BinaryData>();
         }
 
         public IDictionary<string, BinaryData> AdditionalProperties => _additionalBinaryDataProperties;

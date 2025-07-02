@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -12,15 +13,16 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<InternalFineTuningJobCheckpoint> data, bool hasMore)
+        internal InternalListFineTuningJobCheckpointsResponse(IEnumerable<FineTuningCheckpoint> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
 
-        internal InternalListFineTuningJobCheckpointsResponse(IList<InternalFineTuningJobCheckpoint> data, InternalListFineTuningJobCheckpointsResponseObject @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListFineTuningJobCheckpointsResponse(IList<FineTuningCheckpoint> data, string @object, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Data = data;
+            // Plugin customization: ensure initialization of collections
+            Data = data ?? new ChangeTrackingList<FineTuningCheckpoint>();
             Object = @object;
             FirstId = firstId;
             LastId = lastId;
@@ -28,9 +30,9 @@ namespace OpenAI.FineTuning
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IList<InternalFineTuningJobCheckpoint> Data { get; }
+        public IList<FineTuningCheckpoint> Data { get; }
 
-        public InternalListFineTuningJobCheckpointsResponseObject Object { get; } = "list";
+        public string Object { get; } = "list";
 
         public string FirstId { get; }
 

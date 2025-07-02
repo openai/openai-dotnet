@@ -20,17 +20,18 @@ namespace OpenAI.Assistants
             HasMore = hasMore;
         }
 
-        internal InternalListAssistantsResponse(InternalListAssistantsResponseObject @object, IReadOnlyList<Assistant> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListAssistantsResponse(string @object, IReadOnlyList<Assistant> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data;
+            Data = data ?? new ChangeTrackingList<Assistant>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalListAssistantsResponseObject Object { get; } = "list";
+        public string Object { get; } = "list";
 
         public IReadOnlyList<Assistant> Data { get; }
 

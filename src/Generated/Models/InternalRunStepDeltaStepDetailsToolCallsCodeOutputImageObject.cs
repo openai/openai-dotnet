@@ -9,12 +9,12 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : RunStepUpdateCodeInterpreterOutput
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(int index) : base("image")
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(int index) : base(InternalRunStepDetailsCodeInterpreterOutputType.Image)
         {
             Index = index;
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage image) : base(@type, additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(InternalRunStepDetailsCodeInterpreterOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage image) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Image = image;
@@ -22,6 +22,6 @@ namespace OpenAI.Assistants
 
         public int Index { get; }
 
-        public InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage Image { get; }
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage Image { get; }
     }
 }

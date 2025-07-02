@@ -6,22 +6,22 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeToolChoiceFunctionObject : InternalRealtimeToolChoiceObject
     {
-        public InternalRealtimeToolChoiceFunctionObject(InternalRealtimeToolChoiceFunctionObjectFunction function) : base(ConversationToolKind.Function)
+        internal InternalRealtimeToolChoiceFunctionObject(InternalRealtimeToolChoiceFunctionObjectFunction function) : base(ConversationToolKind.Function)
         {
             Argument.AssertNotNull(function, nameof(function));
 
             Function = function;
         }
 
-        internal InternalRealtimeToolChoiceFunctionObject(ConversationToolKind @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeToolChoiceFunctionObjectFunction function) : base(@type, additionalBinaryDataProperties)
+        internal InternalRealtimeToolChoiceFunctionObject(ConversationToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeToolChoiceFunctionObjectFunction function) : base(kind, additionalBinaryDataProperties)
         {
             Function = function;
         }
 
-        public InternalRealtimeToolChoiceFunctionObjectFunction Function { get; set; }
+        internal InternalRealtimeToolChoiceFunctionObjectFunction Function { get; set; }
     }
 }

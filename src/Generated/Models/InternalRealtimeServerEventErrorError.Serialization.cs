@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerEventErrorError : IJsonModel<InternalRealtimeServerEventErrorError>
     {
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventErrorError>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,7 +35,7 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind);
             }
             if (Optional.IsDefined(Code) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
@@ -56,6 +57,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -79,6 +81,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeServerEventErrorError IJsonModel<InternalRealtimeServerEventErrorError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeServerEventErrorError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventErrorError>)this).GetFormatFromOptions(options) : options.Format;
@@ -96,7 +99,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            string @type = default;
+            string kind = default;
             string code = default;
             string message = default;
             string @param = default;
@@ -106,7 +109,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("code"u8))
@@ -144,10 +147,11 @@ namespace OpenAI.RealtimeConversation
                     eventId = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeServerEventErrorError(
-                @type,
+                kind,
                 code,
                 message,
                 @param,
@@ -157,13 +161,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeServerEventErrorError>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventErrorError>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeServerEventErrorError)} does not support writing '{options.Format}' format.");
             }
@@ -171,6 +176,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeServerEventErrorError IPersistableModel<InternalRealtimeServerEventErrorError>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeServerEventErrorError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventErrorError>)this).GetFormatFromOptions(options) : options.Format;
@@ -187,21 +193,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeServerEventErrorError>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeServerEventErrorError internalRealtimeServerEventErrorError)
-        {
-            if (internalRealtimeServerEventErrorError == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeServerEventErrorError, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeServerEventErrorError(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeServerEventErrorError(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

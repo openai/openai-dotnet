@@ -9,12 +9,12 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseInProgressUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseInProgressUpdate(OpenAIResponse response) : base(InternalResponsesResponseStreamEventType.ResponseInProgress)
+        internal StreamingResponseInProgressUpdate(int sequenceNumber, OpenAIResponse response) : base(InternalResponseStreamEventType.ResponseInProgress, sequenceNumber)
         {
             Response = response;
         }
 
-        internal StreamingResponseInProgressUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseInProgressUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             Response = response;
         }

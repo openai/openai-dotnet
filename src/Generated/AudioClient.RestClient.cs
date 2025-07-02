@@ -41,7 +41,7 @@ namespace OpenAI.Audio
             uri.Reset(_endpoint);
             uri.AppendPath("/audio/transcriptions", false);
             request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
+            request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Headers.Set("Content-Type", contentType);
             request.Content = content;
             message.Apply(options);

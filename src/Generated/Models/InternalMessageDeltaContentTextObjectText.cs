@@ -12,21 +12,21 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalMessageDeltaContentTextObjectText()
+        internal InternalMessageDeltaContentTextObjectText() : this(null, null, null)
         {
-            Annotations = new ChangeTrackingList<InternalMessageDeltaTextContentAnnotation>();
         }
 
         internal InternalMessageDeltaContentTextObjectText(string value, IList<InternalMessageDeltaTextContentAnnotation> annotations, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Value = value;
-            Annotations = annotations;
+            Annotations = annotations ?? new ChangeTrackingList<InternalMessageDeltaTextContentAnnotation>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Value { get; }
 
-        public IList<InternalMessageDeltaTextContentAnnotation> Annotations { get; }
+        internal IList<InternalMessageDeltaTextContentAnnotation> Annotations { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

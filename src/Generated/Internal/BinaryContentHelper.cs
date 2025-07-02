@@ -12,7 +12,7 @@ namespace OpenAI
     internal static partial class BinaryContentHelper
     {
         public static BinaryContent FromEnumerable<T>(IEnumerable<T> enumerable)
-            where T : notnull 
+            where T : notnull
         {
             Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartArray();
@@ -53,7 +53,7 @@ namespace OpenAI
         }
 
         public static BinaryContent FromEnumerable<T>(ReadOnlySpan<T> span)
-            where T : notnull 
+            where T : notnull
         {
             Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartArray();
@@ -68,7 +68,7 @@ namespace OpenAI
         }
 
         public static BinaryContent FromDictionary<TValue>(IDictionary<string, TValue> dictionary)
-            where TValue : notnull 
+            where TValue : notnull
         {
             Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartObject();

@@ -10,16 +10,16 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsObject : InternalRunStepDeltaStepDetails
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsObject() : base("tool_calls")
+        internal InternalRunStepDeltaStepDetailsToolCallsObject() : this(InternalRunStepDetailsType.ToolCalls, null, null)
         {
-            ToolCalls = new ChangeTrackingList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>();
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> toolCalls) : base(@type, additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetailsToolCallsObject(InternalRunStepDetailsType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> toolCalls) : base(kind, additionalBinaryDataProperties)
         {
-            ToolCalls = toolCalls;
+            // Plugin customization: ensure initialization of collections
+            ToolCalls = toolCalls ?? new ChangeTrackingList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>();
         }
 
-        public IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> ToolCalls { get; }
+        internal IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> ToolCalls { get; }
     }
 }

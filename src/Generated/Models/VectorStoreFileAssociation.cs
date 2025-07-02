@@ -23,8 +23,9 @@ namespace OpenAI.VectorStores
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, InternalVectorStoreFileObjectObject @object, string fileId, int size, IDictionary<string, BinaryData> attributes, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, string @object, string fileId, int size, IDictionary<string, BinaryData> attributes, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
@@ -32,7 +33,7 @@ namespace OpenAI.VectorStores
             Object = @object;
             FileId = fileId;
             Size = size;
-            Attributes = attributes;
+            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             ChunkingStrategy = chunkingStrategy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

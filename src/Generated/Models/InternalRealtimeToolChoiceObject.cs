@@ -5,24 +5,24 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal abstract partial class InternalRealtimeToolChoiceObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalRealtimeToolChoiceObject(ConversationToolKind @type)
+        private protected InternalRealtimeToolChoiceObject(ConversationToolKind kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal InternalRealtimeToolChoiceObject(ConversationToolKind @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeToolChoiceObject(ConversationToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal ConversationToolKind Type { get; set; }
+        internal ConversationToolKind Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

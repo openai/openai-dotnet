@@ -5,60 +5,57 @@ using System.Linq;
 
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesComputerCallItemAction")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
 [Experimental("OPENAICUA001")]
+[CodeGenType("ComputerAction")]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class ComputerCallAction
 {
-    // CUSTOM:
-    // - Renamed.
-    // - Made public.
-    // - Removed setter.
-    [CodeGenMember("Type")]
-    public ComputerCallActionKind Kind { get; }
-
     // CUSTOM: Exposed click action properties.
     public Point? ClickCoordinates => this switch
     {
-        InternalResponsesComputerCallClickAction click => new Point(click.X, click.Y),
+        InternalComputerActionClick click => new Point(click.X, click.Y),
         _ => null
     };
-    public ComputerCallActionMouseButton? ClickMouseButton => (this as InternalResponsesComputerCallClickAction)?.Button;
+    public ComputerCallActionMouseButton? ClickMouseButton => (this as InternalComputerActionClick)?.Button;
 
     // CUSTOM: Exposed double-click action properties.
     public Point? DoubleClickCoordinates => this switch
     {
-        InternalResponsesComputerCallDoubleClickAction doubleClick => new Point(doubleClick.X, doubleClick.Y),
+        InternalComputerActionDoubleClick doubleClick => new Point(doubleClick.X, doubleClick.Y),
         _ => null
     };
 
     // CUSTOM: Exposed drag action properties.
-    public IList<Point> DragPath => (this as InternalResponsesComputerCallDragAction)?.Path.Select(item => new Point(item.X, item.Y)).ToList();
+    public IList<Point> DragPath => (this as InternalComputerActionDrag)?.Path.Select(item => new Point(item.X, item.Y)).ToList();
 
     // CUSTOM: Exposed key press action properties.
-    public IList<string> KeyPressKeyCodes => (this as InternalResponsesComputerCallKeyPressAction)?.Keys;
+    public IList<string> KeyPressKeyCodes => (this as InternalComputerActionKeyPress)?.Keys;
 
     // CUSTOM: Exposed move action properties.
     public Point? MoveCoordinates => this switch
     {
-        InternalResponsesComputerCallMoveAction move => new Point(move.X, move.Y),
+        InternalComputerActionMove move => new Point(move.X, move.Y),
         _ => null
     };
 
     // CUSTOM: Exposed scroll action properties.
     public Point? ScrollCoordinates => this switch
     {
-        InternalResponsesComputerCallScrollAction scroll => new Point(scroll.X, scroll.Y),
+        InternalComputerActionScroll scroll => new Point(scroll.X, scroll.Y),
         _ => null
     };
-    public int? ScrollHorizontalOffset => (this as InternalResponsesComputerCallScrollAction)?.ScrollX;
-    public int? ScrollVerticalOffset => (this as InternalResponsesComputerCallScrollAction)?.ScrollY;
+    public int? ScrollHorizontalOffset => (this as InternalComputerActionScroll)?.ScrollX;
+    public int? ScrollVerticalOffset => (this as InternalComputerActionScroll)?.ScrollY;
 
     // CUSTOM: Exposed type action properties.
-    public string TypeText => (this as InternalResponsesComputerCallTypeAction)?.Text;
+    public string TypeText => (this as InternalComputerActionTypeKeys)?.Text;
 
     public static ComputerCallAction CreateClickAction(Point clickCoordinates, ComputerCallActionMouseButton clickMouseButton)
     {
-        return new InternalResponsesComputerCallClickAction(
+        return new InternalComputerActionClick(
             kind: ComputerCallActionKind.Click,
             additionalBinaryDataProperties: null,
             button: clickMouseButton,
@@ -68,7 +65,7 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateDoubleClickAction(Point doubleClickCoordinates, ComputerCallActionMouseButton doubleClickMouseButton)
     {
-        return new InternalResponsesComputerCallDoubleClickAction(
+        return new InternalComputerActionDoubleClick(
             kind: ComputerCallActionKind.DoubleClick,
             additionalBinaryDataProperties: null,
             x: doubleClickCoordinates.X,
@@ -77,15 +74,15 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateDragAction(IList<Point> dragPath)
     {
-        return new InternalResponsesComputerCallDragAction(
+        return new InternalComputerActionDrag(
             kind: ComputerCallActionKind.Drag,
             additionalBinaryDataProperties: null,
-            path: dragPath.Select(item => new InternalResponsesComputerCallDragActionPath(item.X, item.Y)).ToList());
+            path: dragPath.Select(item => new InternalCoordinate(item.X, item.Y)).ToList());
     }
 
     public static ComputerCallAction CreateKeyPressAction(IList<string> keyCodes)
     {
-        return new InternalResponsesComputerCallKeyPressAction(
+        return new InternalComputerActionKeyPress(
             kind: ComputerCallActionKind.KeyPress,
             additionalBinaryDataProperties: null,
             keys: keyCodes);
@@ -93,7 +90,7 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateMoveAction(Point moveCoordinates)
     {
-        return new InternalResponsesComputerCallMoveAction(
+        return new InternalComputerActionMove(
             kind: ComputerCallActionKind.Move,
             additionalBinaryDataProperties: null,
             x: moveCoordinates.X,
@@ -102,14 +99,14 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateScreenshotAction()
     {
-        return new InternalResponsesComputerCallScreenshotAction(
+        return new InternalComputerActionScreenshot(
             kind: ComputerCallActionKind.Screenshot,
             additionalBinaryDataProperties: null);
     }
 
     public static ComputerCallAction CreateScrollAction(Point scrollCoordinates, int horizontalOffset, int verticalOffset)
     {
-        return new InternalResponsesComputerCallScrollAction(
+        return new InternalComputerActionScroll(
             kind: ComputerCallActionKind.Scroll,
             additionalBinaryDataProperties: null,
             x: scrollCoordinates.X,
@@ -120,7 +117,7 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateTypeAction(string typeText)
     {
-        return new InternalResponsesComputerCallTypeAction(
+        return new InternalComputerActionTypeKeys(
             kind: ComputerCallActionKind.Type,
             additionalBinaryDataProperties: null,
             text: typeText);
@@ -128,7 +125,7 @@ public partial class ComputerCallAction
 
     public static ComputerCallAction CreateWaitAction()
     {
-        return new InternalResponsesComputerCallWaitAction(
+        return new InternalComputerActionWait(
             kind: ComputerCallActionKind.Wait,
             additionalBinaryDataProperties: null);
     }

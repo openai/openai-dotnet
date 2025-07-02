@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
@@ -42,6 +43,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -65,6 +67,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter IJsonModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
@@ -107,6 +110,7 @@ namespace OpenAI.Assistants
                     fileIds = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter(fileIds ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
@@ -114,13 +118,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter)} does not support writing '{options.Format}' format.");
             }
@@ -128,6 +133,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
@@ -144,21 +150,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter internalCreateThreadAndRunRequestToolResourcesCodeInterpreter)
-        {
-            if (internalCreateThreadAndRunRequestToolResourcesCodeInterpreter == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateThreadAndRunRequestToolResourcesCodeInterpreter, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateThreadAndRunRequestToolResourcesCodeInterpreter(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateThreadAndRunRequestToolResourcesCodeInterpreter(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

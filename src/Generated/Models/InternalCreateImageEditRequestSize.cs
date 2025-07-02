@@ -14,6 +14,9 @@ namespace OpenAI.Images
         private const string _256x256Value = "256x256";
         private const string _512x512Value = "512x512";
         private const string _1024x1024Value = "1024x1024";
+        private const string _1536x1024Value = "1536x1024";
+        private const string _1024x1536Value = "1024x1536";
+        private const string AutoValue = "auto";
 
         public InternalCreateImageEditRequestSize(string value)
         {
@@ -22,11 +25,17 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        public static InternalCreateImageEditRequestSize _256x256 { get; } = new InternalCreateImageEditRequestSize(_256x256Value);
+        internal static InternalCreateImageEditRequestSize _256x256 { get; } = new InternalCreateImageEditRequestSize(_256x256Value);
 
-        public static InternalCreateImageEditRequestSize _512x512 { get; } = new InternalCreateImageEditRequestSize(_512x512Value);
+        internal static InternalCreateImageEditRequestSize _512x512 { get; } = new InternalCreateImageEditRequestSize(_512x512Value);
 
-        public static InternalCreateImageEditRequestSize _1024x1024 { get; } = new InternalCreateImageEditRequestSize(_1024x1024Value);
+        internal static InternalCreateImageEditRequestSize _1024x1024 { get; } = new InternalCreateImageEditRequestSize(_1024x1024Value);
+
+        internal static InternalCreateImageEditRequestSize _1536x1024 { get; } = new InternalCreateImageEditRequestSize(_1536x1024Value);
+
+        internal static InternalCreateImageEditRequestSize _1024x1536 { get; } = new InternalCreateImageEditRequestSize(_1024x1536Value);
+
+        internal static InternalCreateImageEditRequestSize Auto { get; } = new InternalCreateImageEditRequestSize(AutoValue);
 
         public static bool operator ==(InternalCreateImageEditRequestSize left, InternalCreateImageEditRequestSize right) => left.Equals(right);
 

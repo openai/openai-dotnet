@@ -12,19 +12,19 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalMessageDeltaObjectDelta()
+        internal InternalMessageDeltaObjectDelta() : this(null, default, null)
         {
-            Content = new ChangeTrackingList<InternalMessageDeltaContent>();
         }
 
         internal InternalMessageDeltaObjectDelta(IList<InternalMessageDeltaContent> content, MessageRole? role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Content = content;
+            // Plugin customization: ensure initialization of collections
+            Content = content ?? new ChangeTrackingList<InternalMessageDeltaContent>();
             Role = role;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IList<InternalMessageDeltaContent> Content { get; }
+        internal IList<InternalMessageDeltaContent> Content { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

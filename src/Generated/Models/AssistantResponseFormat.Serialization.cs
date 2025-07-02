@@ -3,19 +3,21 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Assistants
 {
+    [PersistableModelProxy(typeof(InternalUnknownDotNetAssistantResponseFormat))]
     public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
     {
         internal AssistantResponseFormat()
         {
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,8 +28,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -49,6 +52,7 @@ namespace OpenAI.Assistants
             }
         }
 
+        [Experimental("OPENAI001")]
         protected virtual AssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -60,18 +64,20 @@ namespace OpenAI.Assistants
             return DeserializeAssistantResponseFormat(document.RootElement, options);
         }
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AssistantResponseFormat)} does not support writing '{options.Format}' format.");
             }
         }
 
+        [Experimental("OPENAI001")]
         protected virtual AssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -85,22 +91,6 @@ namespace OpenAI.Assistants
                 default:
                     throw new FormatException($"The model {nameof(AssistantResponseFormat)} does not support reading '{options.Format}' format.");
             }
-        }
-
-        public static implicit operator BinaryContent(AssistantResponseFormat assistantResponseFormat)
-        {
-            if (assistantResponseFormat == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(assistantResponseFormat, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AssistantResponseFormat(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistantResponseFormat(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

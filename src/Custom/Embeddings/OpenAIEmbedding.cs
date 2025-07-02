@@ -62,7 +62,7 @@ public partial class OpenAIEmbedding
 
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     /// <summary> The object type, which is always "embedding". </summary>
-    private InternalEmbeddingObject Object { get; } = InternalEmbeddingObject.Embedding;
+    private string Object { get; } = "embedding";
 
     // CUSTOM: Added logic to handle additional custom properties.
     /// <summary> Initializes a new instance of <see cref="OpenAIEmbedding"/>. </summary>
@@ -73,7 +73,7 @@ public partial class OpenAIEmbedding
     /// </param>
     /// <param name="object"> The object type, which is always "embedding". </param>
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal OpenAIEmbedding(int index, BinaryData embeddingProperty, InternalEmbeddingObject @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal OpenAIEmbedding(int index, BinaryData embeddingProperty, string @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         Index = index;
         EmbeddingProperty = embeddingProperty;
@@ -117,9 +117,10 @@ public partial class OpenAIEmbedding
         base64 = base64.Slice(1, base64.Length - 2);
 
         // Decode base64 string to bytes.
-        byte[] bytes = ArrayPool<byte>.Shared.Rent(Base64.GetMaxDecodedFromUtf8Length(base64.Length));
+        byte[] bytes = null;
         try
         {
+            bytes = ArrayPool<byte>.Shared.Rent(Base64.GetMaxDecodedFromUtf8Length(base64.Length));
             OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
             if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
             {
@@ -135,19 +136,24 @@ public partial class OpenAIEmbedding
 #if NET8_0_OR_GREATER
                 BinaryPrimitives.ReverseEndianness(ints, ints);
 #else
-            for (int i = 0; i < ints.Length; i++)
-            {
-                ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
-            }
+                for (int i = 0; i < ints.Length; i++)
+                {
+                    ints[i] = BinaryPrimitives.ReverseEndianness(ints[i]);
+                }
 #endif
             }
+
             return new ReadOnlyMemory<float>(vector);
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(bytes);
+            if (bytes is not null)
+            {
+                ArrayPool<byte>.Shared.Return(bytes);
+            }
         }
-    }
-    static void ThrowInvalidData() =>
+
+        static void ThrowInvalidData() =>
             throw new FormatException("The input is not a valid Base64 string of encoded floats.");
+    }
 }

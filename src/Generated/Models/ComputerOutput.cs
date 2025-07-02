@@ -11,18 +11,18 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ComputerOutput(InternalResponsesComputerCallOutputItemOutputType @type)
+        private protected ComputerOutput(InternalComputerUsePreviewToolCallOutputOutputType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal ComputerOutput(InternalResponsesComputerCallOutputItemOutputType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ComputerOutput(InternalComputerUsePreviewToolCallOutputOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalResponsesComputerCallOutputItemOutputType Type { get; set; }
+        internal InternalComputerUsePreviewToolCallOutputOutputType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

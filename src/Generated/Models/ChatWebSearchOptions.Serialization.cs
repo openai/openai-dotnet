@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Internal;
@@ -21,6 +21,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatWebSearchOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -38,6 +39,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("search_context_size"u8);
                 writer.WriteStringValue(SearchContextSize.Value.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -61,6 +63,7 @@ namespace OpenAI.Chat
 
         ChatWebSearchOptions IJsonModel<ChatWebSearchOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatWebSearchOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatWebSearchOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -102,6 +105,7 @@ namespace OpenAI.Chat
                     searchContextSize = new InternalWebSearchContextSize(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatWebSearchOptions(userLocation, searchContextSize, additionalBinaryDataProperties);
@@ -109,13 +113,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatWebSearchOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatWebSearchOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatWebSearchOptions)} does not support writing '{options.Format}' format.");
             }
@@ -123,6 +128,7 @@ namespace OpenAI.Chat
 
         ChatWebSearchOptions IPersistableModel<ChatWebSearchOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatWebSearchOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatWebSearchOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -139,21 +145,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatWebSearchOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatWebSearchOptions chatWebSearchOptions)
-        {
-            if (chatWebSearchOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatWebSearchOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatWebSearchOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatWebSearchOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

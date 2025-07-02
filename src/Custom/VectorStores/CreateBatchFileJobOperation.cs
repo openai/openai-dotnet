@@ -74,7 +74,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
 
         ClientResult result = await client.GetBatchFileJobAsync(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob job = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromClientResult(result);
 
         return client.CreateBatchFileJobOperation(ClientResult.FromValue(job, response));
     }
@@ -99,7 +99,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
 
         ClientResult result = client.GetBatchFileJob(token.VectorStoreId, token.BatchId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob job = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob job = VectorStoreBatchFileJob.FromClientResult(result);
 
         return client.CreateBatchFileJobOperation(ClientResult.FromValue(job, response));
     }
@@ -110,7 +110,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
         ClientResult result = await GetFileBatchAsync(options).ConfigureAwait(false);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -123,7 +123,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
         ClientResult result = GetFileBatch(options);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -171,7 +171,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
     {
         ClientResult result = await GetFileBatchAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -184,7 +184,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
     {
         ClientResult result = GetFileBatch(cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -197,7 +197,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
     {
         ClientResult result = await CancelAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -210,7 +210,7 @@ public partial class CreateBatchFileJobOperation : OperationResult
     {
         ClientResult result = Cancel(cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob) result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 }

@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestTextContentPart : ConversationContentPart
     {
@@ -17,12 +17,9 @@ namespace OpenAI.RealtimeConversation
             InternalTextValue = internalTextValue;
         }
 
-        internal InternalRealtimeRequestTextContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, string internalTextValue) : base(kind, additionalBinaryDataProperties)
+        internal InternalRealtimeRequestTextContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalTextValue) : base(kind, additionalBinaryDataProperties)
         {
-            Type = @type;
             InternalTextValue = internalTextValue;
         }
-
-        internal string Type { get; set; } = "input_text";
     }
 }

@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTurnDetection : ConversationTurnDetectionOptions
+    internal partial class UnknownRealtimeTurnDetection : TurnDetectionOptions
     {
-        internal UnknownRealtimeTurnDetection(ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+        internal UnknownRealtimeTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
         {
         }
     }

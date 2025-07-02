@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
+// CUSTOM: Added Experimental attribute.
 /// <summary>
 /// Represents a chat message of the <c>developer</c> role as supplied to a chat completion request. A developer message is
 /// generally supplied as the first message to a chat completion request and guides the model's behavior across future
 /// <c>assistant</c> role response messages. These messages may help control behavior, style, tone, and
 /// restrictions for a model-based assistant. Developer messages replace system messages for o1 models and newer.
 /// </summary>
+[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionRequestDeveloperMessage")]
+[CodeGenVisibility(nameof(DeveloperChatMessage), CodeGenVisibility.Internal)]
 [CodeGenSuppress("DeveloperChatMessage", typeof(ChatMessageContent))]
 public partial class DeveloperChatMessage : ChatMessage
 {
@@ -20,7 +24,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : base(ChatMessageRole.Developer, contentParts)
+        : this(new ChatMessageContent(contentParts), ChatMessageRole.Developer, null, null)
     { }
 
     /// <summary>
@@ -31,7 +35,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(params ChatMessageContentPart[] contentParts)
-        : base(ChatMessageRole.Developer, contentParts)
+        : this(new ChatMessageContent(contentParts), ChatMessageRole.Developer, null, null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -41,14 +45,9 @@ public partial class DeveloperChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public DeveloperChatMessage(string content)
-        : base(ChatMessageRole.Developer, content)
+        : this(new ChatMessageContent([content]), ChatMessageRole.Developer, null, null)
     {
         Argument.AssertNotNull(content, nameof(content));
-    }
-
-    // CUSTOM: Hide the default constructor.
-    internal DeveloperChatMessage()
-    {
     }
 
     /// <summary>

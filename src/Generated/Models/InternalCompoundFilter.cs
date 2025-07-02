@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -12,20 +13,21 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalCompoundFilter(InternalCompoundFilterType @type, IEnumerable<BinaryData> filters)
+        private protected InternalCompoundFilter(InternalCompoundFilterType kind, IEnumerable<BinaryData> filters)
         {
-            Type = @type;
+            Kind = kind;
             Filters = filters.ToList();
         }
 
-        internal InternalCompoundFilter(InternalCompoundFilterType @type, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
-            Filters = filters;
+            // Plugin customization: ensure initialization of collections
+            Kind = kind;
+            Filters = filters ?? new ChangeTrackingList<BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalCompoundFilterType Type { get; set; }
+        internal InternalCompoundFilterType Kind { get; set; }
 
         public IList<BinaryData> Filters { get; }
 

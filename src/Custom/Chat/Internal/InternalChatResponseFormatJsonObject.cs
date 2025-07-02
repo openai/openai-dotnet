@@ -1,6 +1,5 @@
 ﻿namespace OpenAI.Chat;
 
-[CodeGenType("ChatResponseFormatJsonObject")]
-internal partial class InternalChatResponseFormatJsonObject
-{
-}
+[CodeGenType("DotNetChatResponseFormatJsonObject")]
+internal partial class InternalDotNetChatResponseFormatJsonObject
+{ }

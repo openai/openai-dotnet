@@ -5,21 +5,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerEventErrorError
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRealtimeServerEventErrorError(string @type, string message)
+        internal InternalRealtimeServerEventErrorError(string kind, string message)
         {
-            Type = @type;
+            Kind = kind;
             Message = message;
         }
 
-        internal InternalRealtimeServerEventErrorError(string @type, string code, string message, string @param, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeServerEventErrorError(string kind, string code, string message, string @param, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Code = code;
             Message = message;
             Param = @param;
@@ -27,7 +27,7 @@ namespace OpenAI.RealtimeConversation
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Type { get; }
+        public string Kind { get; }
 
         public string Code { get; }
 

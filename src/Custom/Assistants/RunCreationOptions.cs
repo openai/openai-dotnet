@@ -1,4 +1,5 @@
 using OpenAI.Chat;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -12,7 +13,8 @@ namespace OpenAI.Assistants;
 /// </summary>
 [Experimental("OPENAI001")]
 [CodeGenType("CreateRunRequest")]
-[CodeGenSuppress("RunCreationOptions", typeof(string))]
+[CodeGenVisibility(nameof(RunCreationOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(RunCreationOptions), typeof(string))]
 [CodeGenSerialization(nameof(ToolConstraint), "tool_choice", SerializationValueHook = nameof(SerializeToolConstraint))]
 public partial class RunCreationOptions
 {
@@ -50,17 +52,18 @@ public partial class RunCreationOptions
     public string AdditionalInstructions { get; set; }
 
     /// <summary> Adds additional messages to the thread before creating the run. </summary>
-    public IList<ThreadInitializationMessage> AdditionalMessages { get; } = new ChangeTrackingList<ThreadInitializationMessage>();
+    public IList<ThreadInitializationMessage> AdditionalMessages { get; private set; }
 
     [CodeGenMember("AdditionalMessages")]
     internal IList<MessageCreationOptions> InternalMessages
     {
-        get => AdditionalMessages.Select(initializationMessage => initializationMessage as MessageCreationOptions).ToList();
+        get => AdditionalMessages?.Select(initializationMessage => initializationMessage as MessageCreationOptions).ToList();
         private set
         {
             // Note: this path is exclusively used in a test or deserialization case; here, we'll convert the
             //          underlying wire-friendly representation into the initialization message abstraction.
 
+            AdditionalMessages ??= new ChangeTrackingList<ThreadInitializationMessage>();
             AdditionalMessages.Clear();
             foreach (MessageCreationOptions baseMessageOptions in value)
             {
@@ -99,10 +102,10 @@ public partial class RunCreationOptions
     /// </para>
     /// </summary>
     [CodeGenMember("Tools")]
-    public IList<ToolDefinition> ToolsOverride { get; } = new ChangeTrackingList<ToolDefinition>();
+    public IList<ToolDefinition> ToolsOverride { get; }
 
     /// <summary> Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long. </summary>
-    public IDictionary<string, string> Metadata { get; } = new ChangeTrackingDictionary<string, string>();
+    public IDictionary<string, string> Metadata { get; }
 
     /// <summary> What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. </summary>
     public float? Temperature { get; set; }
@@ -136,12 +139,8 @@ public partial class RunCreationOptions
     [CodeGenMember("ReasoningEffort")]
     internal ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="RunCreationOptions"/>.
-    /// </summary>
-    public RunCreationOptions()
-    { }
-
     private void SerializeToolConstraint(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => writer.WriteObjectValue(ToolConstraint, options);
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

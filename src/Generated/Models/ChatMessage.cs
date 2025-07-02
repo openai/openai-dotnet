@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 
         internal ChatMessage(ChatMessageContent content, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            // Plugin customization: ensure initialization of collection
+            // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
             Role = role;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

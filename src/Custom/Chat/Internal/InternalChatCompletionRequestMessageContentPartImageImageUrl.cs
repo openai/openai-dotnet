@@ -8,68 +8,47 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("InternalChatCompletionRequestMessageContentPartImageImageUrl", typeof(string))]
 internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
 {
-#if NET8_0_OR_GREATER
-    [GeneratedRegex(@"^data:(?<type>.+?);base64,(?<data>.+)$")]
-    private static partial Regex ParseDataUriRegex();
-#else
-    private static Regex ParseDataUriRegex() => s_parseDataUriRegex;
-    private static readonly Regex s_parseDataUriRegex = new(@"^data:(?<type>.+?);base64,(?<data>.+)$", RegexOptions.Compiled);
-#endif
-
-    private readonly Uri _imageUri;
-    private readonly BinaryData _imageBytes;
-    private readonly string _imageBytesMediaType;
+    private Uri _imageUri;
+    private BinaryData _imageBytes;
+    private string _imageBytesMediaType;
 
     // CUSTOM: Changed type from Uri to string to be able to support data URIs properly.
     /// <summary> Either a URL of the image or the base64 encoded image data. </summary>
     [CodeGenMember("Url")]
-    internal string Url { get; }
+    internal string InternalUrl
+    {
+        get => _internalUrl;
+        set
+        {
+            _internalUrl = value;
+            if (value is not null && !DataEncodingHelpers.TryParseDataUri(value, out _imageBytes, out _imageBytesMediaType))
+            {
+                _imageUri = new Uri(value);
+            }
+        }
+    }
+    private string _internalUrl;
 
     /// <summary> Initializes a new instance of <see cref="InternalChatCompletionRequestMessageContentPartImageImageUrl"/>. </summary>
     /// <param name="uri"> Either a URL of the image or the base64 encoded image data. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="uri"/> is null. </exception>
-    public InternalChatCompletionRequestMessageContentPartImageImageUrl(Uri uri)
+    public InternalChatCompletionRequestMessageContentPartImageImageUrl(Uri uri, ChatImageDetailLevel? detailLevel = default)
+        : this(detailLevel, null, null)
     {
         Argument.AssertNotNull(uri, nameof(uri));
-
         _imageUri = uri;
-
-        Url = uri.ToString();
+        _internalUrl = uri.ToString();
     }
 
-    public InternalChatCompletionRequestMessageContentPartImageImageUrl(BinaryData imageBytes, string imageBytesMediaType)
+    public InternalChatCompletionRequestMessageContentPartImageImageUrl(BinaryData imageBytes, string imageBytesMediaType, ChatImageDetailLevel? detailLevel = default)
+        : this(detailLevel, null, null)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
         Argument.AssertNotNull(imageBytesMediaType, nameof(imageBytesMediaType));
 
         _imageBytes = imageBytes;
         _imageBytesMediaType = imageBytesMediaType;
-
-        string base64EncodedData = Convert.ToBase64String(_imageBytes.ToArray());
-        Url = $"data:{_imageBytesMediaType};base64,{base64EncodedData}";
-    }
-
-    /// <summary> Initializes a new instance of <see cref="InternalChatCompletionRequestMessageContentPartImageImageUrl"/>. </summary>
-    /// <param name="detail"> Specifies the detail level of the image. Learn more in the [Vision guide](/docs/guides/vision/low-or-high-fidelity-image-understanding). </param>
-    /// <param name="url"> Either a URL of the image or the base64 encoded image data. </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal InternalChatCompletionRequestMessageContentPartImageImageUrl(ChatImageDetailLevel? detail, string url, IDictionary<string, BinaryData> serializedAdditionalRawData)
-    {
-        Match parsedDataUri = ParseDataUriRegex().Match(url);
-
-        if (parsedDataUri.Success)
-        {
-            _imageBytes = BinaryData.FromBytes(Convert.FromBase64String(parsedDataUri.Groups["data"].Value));
-            _imageBytesMediaType = parsedDataUri.Groups["type"].Value;
-        }
-        else
-        {
-            _imageUri = new Uri(url);
-        }
-
-        Url = url;
-        Detail = detail;
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _internalUrl = DataEncodingHelpers.CreateDataUri(imageBytes, imageBytesMediaType);
     }
 
     public Uri ImageUri => _imageUri;

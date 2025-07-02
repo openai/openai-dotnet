@@ -4,16 +4,22 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : ChatMessage
     {
+        internal AssistantChatMessage() : this(null, ChatMessageRole.Assistant, null, null, null, null, null, null)
+        {
+        }
+
         internal AssistantChatMessage(ChatMessageContent content, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties, string refusal, string participantName, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall, ChatOutputAudioReference outputAudioReference) : base(content, role, additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Refusal = refusal;
             ParticipantName = participantName;
-            ToolCalls = toolCalls;
+            ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             FunctionCall = functionCall;
             OutputAudioReference = outputAudioReference;
         }

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Internal;
 
 namespace OpenAI.Assistants
 {
@@ -11,18 +12,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected AssistantResponseFormat(string @type)
+        private protected AssistantResponseFormat(InternalResponseFormatType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal AssistantResponseFormat(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantResponseFormat(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalResponseFormatType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

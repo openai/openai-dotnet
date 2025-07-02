@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownAssistantToolDefinition : ToolDefinition
     {
-        internal UnknownAssistantToolDefinition(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
+        internal UnknownAssistantToolDefinition(InternalAssistantToolDefinitionType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

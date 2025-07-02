@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class WeightsAndBiasesIntegration : IJsonModel<WeightsAndBiasesIntegration>
+    public partial class WeightsAndBiasesIntegration : IJsonModel<WeightsAndBiasesIntegration>
     {
-        internal WeightsAndBiasesIntegration()
+        internal WeightsAndBiasesIntegration() : this(InternalCreateFineTuningJobRequestIntegrationType.Wandb, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,12 +36,13 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("wandb") != true)
             {
                 writer.WritePropertyName("wandb"u8);
-                writer.WriteObjectValue(Wandb, options);
+                writer.WriteObjectValue(_innerWandb, options);
             }
         }
 
         WeightsAndBiasesIntegration IJsonModel<WeightsAndBiasesIntegration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WeightsAndBiasesIntegration)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override FineTuningIntegration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,35 +60,37 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            string @type = "wandb";
+            InternalCreateFineTuningJobRequestIntegrationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalCreateFineTuningJobRequestWandbIntegrationWandb wandb = default;
+            InternalCreateFineTuningJobRequestWandbIntegrationWandb innerWandb = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalCreateFineTuningJobRequestIntegrationType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("wandb"u8))
                 {
-                    wandb = InternalCreateFineTuningJobRequestWandbIntegrationWandb.DeserializeInternalCreateFineTuningJobRequestWandbIntegrationWandb(prop.Value, options);
+                    innerWandb = InternalCreateFineTuningJobRequestWandbIntegrationWandb.DeserializeInternalCreateFineTuningJobRequestWandbIntegrationWandb(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new WeightsAndBiasesIntegration(@type, additionalBinaryDataProperties, wandb);
+            return new WeightsAndBiasesIntegration(kind, additionalBinaryDataProperties, innerWandb);
         }
 
         BinaryData IPersistableModel<WeightsAndBiasesIntegration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support writing '{options.Format}' format.");
             }
@@ -94,6 +98,7 @@ namespace OpenAI.FineTuning
 
         WeightsAndBiasesIntegration IPersistableModel<WeightsAndBiasesIntegration>.Create(BinaryData data, ModelReaderWriterOptions options) => (WeightsAndBiasesIntegration)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override FineTuningIntegration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
@@ -110,21 +115,5 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<WeightsAndBiasesIntegration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(WeightsAndBiasesIntegration weightsAndBiasesIntegration)
-        {
-            if (weightsAndBiasesIntegration == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(weightsAndBiasesIntegration, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator WeightsAndBiasesIntegration(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeWeightsAndBiasesIntegration(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

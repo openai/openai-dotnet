@@ -22,11 +22,11 @@ namespace OpenAI.Internal
             _value = value;
         }
 
-        public static InternalWebSearchContextSize Low { get; } = new InternalWebSearchContextSize(LowValue);
+        internal static InternalWebSearchContextSize Low { get; } = new InternalWebSearchContextSize(LowValue);
 
-        public static InternalWebSearchContextSize Medium { get; } = new InternalWebSearchContextSize(MediumValue);
+        internal static InternalWebSearchContextSize Medium { get; } = new InternalWebSearchContextSize(MediumValue);
 
-        public static InternalWebSearchContextSize High { get; } = new InternalWebSearchContextSize(HighValue);
+        internal static InternalWebSearchContextSize High { get; } = new InternalWebSearchContextSize(HighValue);
 
         public static bool operator ==(InternalWebSearchContextSize left, InternalWebSearchContextSize right) => left.Equals(right);
 

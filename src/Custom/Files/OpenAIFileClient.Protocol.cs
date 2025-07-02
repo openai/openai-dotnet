@@ -85,7 +85,7 @@ public partial class OpenAIFileClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
     {
-        using PipelineMessage message = CreateListFilesRequest(purpose, options);
+        using PipelineMessage message = CreateGetFilesRequest(purpose, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -99,7 +99,7 @@ public partial class OpenAIFileClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetFiles(string purpose, RequestOptions options)
     {
-        using PipelineMessage message = CreateListFilesRequest(purpose, options);
+        using PipelineMessage message = CreateGetFilesRequest(purpose, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 

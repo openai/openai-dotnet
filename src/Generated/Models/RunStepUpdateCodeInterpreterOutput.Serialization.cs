@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Assistants
 {
+    [PersistableModelProxy(typeof(UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject))]
     public partial class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>
     {
         internal RunStepUpdateCodeInterpreterOutput()
@@ -23,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -33,8 +35,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.Assistants
 
         RunStepUpdateCodeInterpreterOutput IJsonModel<RunStepUpdateCodeInterpreterOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual RunStepUpdateCodeInterpreterOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,13 +94,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(RunStepUpdateCodeInterpreterOutput)} does not support writing '{options.Format}' format.");
             }
@@ -104,6 +109,7 @@ namespace OpenAI.Assistants
 
         RunStepUpdateCodeInterpreterOutput IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual RunStepUpdateCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -120,21 +126,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<RunStepUpdateCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(RunStepUpdateCodeInterpreterOutput runStepUpdateCodeInterpreterOutput)
-        {
-            if (runStepUpdateCodeInterpreterOutput == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(runStepUpdateCodeInterpreterOutput, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator RunStepUpdateCodeInterpreterOutput(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeRunStepUpdateCodeInterpreterOutput(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

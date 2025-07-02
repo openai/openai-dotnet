@@ -21,9 +21,9 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        public static InternalCreateImageVariationRequestResponseFormat Url { get; } = new InternalCreateImageVariationRequestResponseFormat(UrlValue);
+        internal static InternalCreateImageVariationRequestResponseFormat Url { get; } = new InternalCreateImageVariationRequestResponseFormat(UrlValue);
 
-        public static InternalCreateImageVariationRequestResponseFormat B64Json { get; } = new InternalCreateImageVariationRequestResponseFormat(B64JsonValue);
+        internal static InternalCreateImageVariationRequestResponseFormat B64Json { get; } = new InternalCreateImageVariationRequestResponseFormat(B64JsonValue);
 
         public static bool operator ==(InternalCreateImageVariationRequestResponseFormat left, InternalCreateImageVariationRequestResponseFormat right) => left.Equals(right);
 

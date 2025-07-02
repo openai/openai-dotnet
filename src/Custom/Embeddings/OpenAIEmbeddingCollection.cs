@@ -1,6 +1,9 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace OpenAI.Embeddings;
 
@@ -8,13 +11,13 @@ namespace OpenAI.Embeddings;
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection))]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage))]
-[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage),  typeof(InternalCreateEmbeddingResponseObject), typeof(IDictionary<string, BinaryData>))]
+[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage),  typeof(string), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     /// <summary> The object type, which is always "list". </summary>
     [CodeGenMember("Object")]
-    private InternalCreateEmbeddingResponseObject Object { get; } = InternalCreateEmbeddingResponseObject.List;
+    private string Object { get; } = "list";
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
     /// <summary> Initializes a new instance of <see cref="OpenAIEmbeddingCollection"/>. </summary>
@@ -40,7 +43,7 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
     /// <param name="object"> The object type, which is always "list". </param>
     /// <param name="usage"> The usage information for the request. </param>
     /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal OpenAIEmbeddingCollection(IReadOnlyList<OpenAIEmbedding> data, string model, InternalCreateEmbeddingResponseObject @object, EmbeddingTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal OpenAIEmbeddingCollection(IReadOnlyList<OpenAIEmbedding> data, string model, string @object, EmbeddingTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
         : base([.. data])
     {
         Model = model;
@@ -54,5 +57,12 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
     internal OpenAIEmbeddingCollection()
         : base([])
     {
+    }
+
+    internal static OpenAIEmbeddingCollection FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeOpenAIEmbeddingCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

@@ -66,7 +66,7 @@ public partial class CreateVectorStoreOperation : OperationResult
 
         ClientResult result = await client.GetVectorStoreAsync(token.VectorStoreId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStore vectorStore = (VectorStore)result;
+        VectorStore vectorStore = VectorStore.FromClientResult(result);
 
         return client.CreateCreateVectorStoreOperation(ClientResult.FromValue(vectorStore, response));
     }
@@ -91,7 +91,7 @@ public partial class CreateVectorStoreOperation : OperationResult
 
         ClientResult result = client.GetVectorStore(token.VectorStoreId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStore vectorStore = (VectorStore)result;
+        VectorStore vectorStore = VectorStore.FromClientResult(result);
 
         return client.CreateCreateVectorStoreOperation(ClientResult.FromValue(vectorStore, response));
     }
@@ -102,7 +102,7 @@ public partial class CreateVectorStoreOperation : OperationResult
         ClientResult result = await GetVectorStoreAsync(options).ConfigureAwait(false);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStore value = (VectorStore)result;
+        VectorStore value = VectorStore.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -115,7 +115,7 @@ public partial class CreateVectorStoreOperation : OperationResult
         ClientResult result = GetVectorStore(options);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStore value = (VectorStore)result;
+        VectorStore value = VectorStore.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -161,7 +161,7 @@ public partial class CreateVectorStoreOperation : OperationResult
         ClientResult result
             = await GetVectorStoreAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(
-            (VectorStore)result, result.GetRawResponse());
+            VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
@@ -172,6 +172,6 @@ public partial class CreateVectorStoreOperation : OperationResult
     public virtual ClientResult<VectorStore> GetVectorStore(CancellationToken cancellationToken = default)
     {
         ClientResult result = GetVectorStore(cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((VectorStore)result, result.GetRawResponse());
+        return ClientResult.FromValue(VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 }

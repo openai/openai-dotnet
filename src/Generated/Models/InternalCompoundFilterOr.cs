@@ -16,7 +16,7 @@ namespace OpenAI.Responses
 
         }
 
-        internal InternalCompoundFilterOr(InternalCompoundFilterType @type, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, filters, additionalBinaryDataProperties)
+        internal InternalCompoundFilterOr(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, filters, additionalBinaryDataProperties)
         {
         }
     }

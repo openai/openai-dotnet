@@ -20,11 +20,12 @@ namespace OpenAI.Assistants
             ToolResources = toolResources;
         }
 
-        internal AssistantThread(string id, DateTimeOffset createdAt, IReadOnlyDictionary<string, string> metadata, InternalThreadObjectObject @object, ToolResources toolResources, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantThread(string id, DateTimeOffset createdAt, IReadOnlyDictionary<string, string> metadata, string @object, ToolResources toolResources, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             CreatedAt = createdAt;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Object = @object;
             ToolResources = toolResources;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

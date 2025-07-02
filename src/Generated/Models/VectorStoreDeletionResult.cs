@@ -17,7 +17,7 @@ namespace OpenAI.VectorStores
             VectorStoreId = vectorStoreId;
         }
 
-        internal VectorStoreDeletionResult(bool deleted, string vectorStoreId, InternalDeleteVectorStoreResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreDeletionResult(bool deleted, string vectorStoreId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             VectorStoreId = vectorStoreId;

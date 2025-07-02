@@ -1,4 +1,5 @@
 using OpenAI.Chat;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -9,6 +10,7 @@ namespace OpenAI.Assistants;
 /// </summary>
 [Experimental("OPENAI001")]
 [CodeGenType("CreateAssistantRequest")]
+[CodeGenVisibility(nameof(AssistantCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
 {
@@ -22,7 +24,7 @@ public partial class AssistantCreationOptions
     /// There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
     /// </summary>
     [CodeGenMember("Tools")]
-    public IList<ToolDefinition> Tools { get; } = new ChangeTrackingList<ToolDefinition>();
+    public IList<ToolDefinition> Tools { get; }
 
     /// <inheritdoc cref="ToolResources"/>
     [CodeGenMember("ToolResources")]
@@ -44,12 +46,5 @@ public partial class AssistantCreationOptions
     [CodeGenMember("ReasoningEffort")]
     internal ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="AssistantCreationOptions"/>.
-    /// </summary>
-    public AssistantCreationOptions()
-    {
-        Metadata = new ChangeTrackingDictionary<string, string>();
-        Tools = new ChangeTrackingList<ToolDefinition>();
-    }
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

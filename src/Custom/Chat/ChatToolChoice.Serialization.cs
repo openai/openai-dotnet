@@ -48,7 +48,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
         }
         else
         {
-            InternalChatCompletionNamedToolChoiceType type = default;
+            string type = default;
             InternalChatCompletionNamedToolChoiceFunction function = default;
             IDictionary<string, BinaryData> serializedAdditionalRawData = default;
             Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -56,7 +56,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
             {
                 if (property.NameEquals("type"u8))
                 {
-                    type = new InternalChatCompletionNamedToolChoiceType(property.Value.GetString());
+                    type = property.Value.GetString();
                     continue;
                 }
                 if (property.NameEquals("function"u8))
@@ -73,7 +73,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
             return new ChatToolChoice(
                 predefined: false,
                 predefinedValue: null,
-                type: InternalChatCompletionNamedToolChoiceType.Function,
+                type: FunctionType,
                 function: new InternalChatCompletionNamedToolChoiceFunction(function.Name),
                 serializedAdditionalRawData: rawDataDictionary);
         }

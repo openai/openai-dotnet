@@ -12,23 +12,23 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceFunction function)
+        internal InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceFunction function)
         {
             Argument.AssertNotNull(function, nameof(function));
 
             Function = function;
         }
 
-        internal InternalChatCompletionNamedToolChoice(InternalChatCompletionNamedToolChoiceType @type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionNamedToolChoice(string kind, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Function = function;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalChatCompletionNamedToolChoiceType Type { get; } = "function";
+        public string Kind { get; } = "function";
 
-        public InternalChatCompletionNamedToolChoiceFunction Function { get; }
+        internal InternalChatCompletionNamedToolChoiceFunction Function { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

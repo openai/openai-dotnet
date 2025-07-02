@@ -25,17 +25,17 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static InternalComparisonFilterType Eq { get; } = new InternalComparisonFilterType(EqValue);
+        internal static InternalComparisonFilterType Eq { get; } = new InternalComparisonFilterType(EqValue);
 
-        public static InternalComparisonFilterType Ne { get; } = new InternalComparisonFilterType(NeValue);
+        internal static InternalComparisonFilterType Ne { get; } = new InternalComparisonFilterType(NeValue);
 
-        public static InternalComparisonFilterType Gt { get; } = new InternalComparisonFilterType(GtValue);
+        internal static InternalComparisonFilterType Gt { get; } = new InternalComparisonFilterType(GtValue);
 
-        public static InternalComparisonFilterType Gte { get; } = new InternalComparisonFilterType(GteValue);
+        internal static InternalComparisonFilterType Gte { get; } = new InternalComparisonFilterType(GteValue);
 
-        public static InternalComparisonFilterType Lt { get; } = new InternalComparisonFilterType(LtValue);
+        internal static InternalComparisonFilterType Lt { get; } = new InternalComparisonFilterType(LtValue);
 
-        public static InternalComparisonFilterType Lte { get; } = new InternalComparisonFilterType(LteValue);
+        internal static InternalComparisonFilterType Lte { get; } = new InternalComparisonFilterType(LteValue);
 
         public static bool operator ==(InternalComparisonFilterType left, InternalComparisonFilterType right) => left.Equals(right);
 

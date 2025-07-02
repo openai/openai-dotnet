@@ -40,8 +40,9 @@ namespace OpenAI.Assistants
             _internalRequiredAction = internalRequiredAction;
         }
 
-        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, RunTruncationStrategy truncationStrategy, InternalRunObjectObject @object, AssistantResponseFormat responseFormat, ToolConstraint toolConstraint, float? nucleusSamplingFactor, bool? allowParallelToolCalls, int? maxInputTokenCount, int? maxOutputTokenCount, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, RunTruncationStrategy truncationStrategy, string @object, AssistantResponseFormat responseFormat, ToolConstraint toolConstraint, float? nucleusSamplingFactor, bool? allowParallelToolCalls, int? maxInputTokenCount, int? maxOutputTokenCount, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             CreatedAt = createdAt;
             ThreadId = threadId;
@@ -56,8 +57,8 @@ namespace OpenAI.Assistants
             IncompleteDetails = incompleteDetails;
             Model = model;
             Instructions = instructions;
-            Tools = tools;
-            Metadata = metadata;
+            Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
             Temperature = temperature;
             TruncationStrategy = truncationStrategy;

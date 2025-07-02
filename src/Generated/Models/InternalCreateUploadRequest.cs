@@ -12,7 +12,7 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType)
+        internal InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType)
         {
             Argument.AssertNotNull(filename, nameof(filename));
             Argument.AssertNotNull(mimeType, nameof(mimeType));
@@ -34,7 +34,7 @@ namespace OpenAI.Files
 
         public string Filename { get; }
 
-        public InternalCreateUploadRequestPurpose Purpose { get; }
+        internal InternalCreateUploadRequestPurpose Purpose { get; }
 
         public int Bytes { get; }
 

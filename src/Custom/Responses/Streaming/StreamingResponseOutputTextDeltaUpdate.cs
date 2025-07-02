@@ -1,5 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesResponseStreamEventResponseOutputTextDelta")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ResponseTextDeltaEvent")]
 public partial class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate
-{ }
+{
+}

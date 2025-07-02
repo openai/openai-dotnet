@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Files;
@@ -15,7 +16,7 @@ public static partial class OpenAIFilesModelFactory
         return new FileDeletionResult(
             deleted,
             fileId,
-            InternalDeleteFileResponseObject.File,
+            "file",
             additionalBinaryDataProperties: null);
     }
 
@@ -23,7 +24,7 @@ public static partial class OpenAIFilesModelFactory
     public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails) =>
         OpenAIFileInfo(
             id: id,
-            sizeInBytes: sizeInBytes,
+            sizeInBytesLong: sizeInBytes,
             createdAt: createdAt,
             filename: filename,
             purpose: purpose,
@@ -31,7 +32,8 @@ public static partial class OpenAIFilesModelFactory
             statusDetails: statusDetails,
             expiresAt: default);
 
-    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null, DateTimeOffset? expiresAt = null)
+    [Experimental("OPENAI001")]
+    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null, DateTimeOffset? expiresAt = null, long? sizeInBytesLong = null)
     {
         return new OpenAIFile(
             id: id,
@@ -39,8 +41,8 @@ public static partial class OpenAIFilesModelFactory
             expiresAt: expiresAt,
             filename: filename,
             purpose: purpose,
-            @object: InternalOpenAIFileObject.File,
-            sizeInBytes: sizeInBytes,
+            @object: "file",
+            sizeInBytesLong: sizeInBytesLong ?? sizeInBytes,
             status: status,
             statusDetails: statusDetails,
             additionalBinaryDataProperties: null);

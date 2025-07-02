@@ -11,8 +11,10 @@ namespace OpenAI.Responses
         public static string ToSerialString(this ResponseStatus value) => value switch
         {
             ResponseStatus.Completed => "completed",
-            ResponseStatus.InProgress => "in_progress",
             ResponseStatus.Failed => "failed",
+            ResponseStatus.InProgress => "in_progress",
+            ResponseStatus.Cancelled => "cancelled",
+            ResponseStatus.Queued => "queued",
             ResponseStatus.Incomplete => "incomplete",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseStatus value.")
         };
@@ -23,13 +25,21 @@ namespace OpenAI.Responses
             {
                 return ResponseStatus.Completed;
             }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "failed"))
+            {
+                return ResponseStatus.Failed;
+            }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
             {
                 return ResponseStatus.InProgress;
             }
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "failed"))
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "cancelled"))
             {
-                return ResponseStatus.Failed;
+                return ResponseStatus.Cancelled;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "queued"))
+            {
+                return ResponseStatus.Queued;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "incomplete"))
             {

@@ -35,12 +35,10 @@ public partial class ToolChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts)
-        : base(ChatMessageRole.Tool, contentParts)
+        : this(new(contentParts), ChatMessageRole.Tool, null, toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
-
-        ToolCallId = toolCallId;
     }
 
     /// <summary>
@@ -54,12 +52,10 @@ public partial class ToolChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts)
-        : base(ChatMessageRole.Tool, contentParts)
+        : this(new(contentParts), ChatMessageRole.Tool, null, toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
-
-        ToolCallId = toolCallId;
     }
 
     /// <summary>
@@ -70,11 +66,9 @@ public partial class ToolChatMessage : ChatMessage
     /// </param>
     /// <param name="content"> The text content of the message. </param>
     public ToolChatMessage(string toolCallId, string content)
-        : base(ChatMessageRole.Tool, content)
+        : this(new([content]), ChatMessageRole.Tool, null, toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNull(content, nameof(content));
-
-        ToolCallId = toolCallId;
     }
 }

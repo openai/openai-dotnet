@@ -4,6 +4,8 @@ internal partial class InternalAssistantResponseFormatPlainTextNoObject : Assist
 {
     public string Value { get; set; }
 
+    internal InternalAssistantResponseFormatPlainTextNoObject() : base() { }
+
     public InternalAssistantResponseFormatPlainTextNoObject(string value)
     {
         Value = value;

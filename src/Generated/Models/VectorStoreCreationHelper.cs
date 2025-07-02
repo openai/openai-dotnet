@@ -13,16 +13,15 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public VectorStoreCreationHelper()
+        public VectorStoreCreationHelper() : this(null, null, null, null)
         {
-            FileIds = new ChangeTrackingList<string>();
-            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
         internal VectorStoreCreationHelper(IList<string> fileIds, IDictionary<string, string> metadata, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            FileIds = fileIds;
-            Metadata = metadata;
+            // Plugin customization: ensure initialization of collections
+            FileIds = fileIds ?? new ChangeTrackingList<string>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             ChunkingStrategy = chunkingStrategy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

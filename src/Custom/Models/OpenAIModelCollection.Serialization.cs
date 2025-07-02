@@ -42,7 +42,7 @@ public partial class OpenAIModelCollection : IJsonModel<OpenAIModelCollection>
         {
             return null;
         }
-        InternalListModelsResponseObject @object = default;
+        string @object = default;
         IReadOnlyList<OpenAIModel> data = default;
         IDictionary<string, BinaryData> serializedAdditionalRawData = default;
         Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -50,7 +50,7 @@ public partial class OpenAIModelCollection : IJsonModel<OpenAIModelCollection>
         {
             if (property.NameEquals("object"u8))
             {
-                @object = new InternalListModelsResponseObject(property.Value.GetString());
+                @object = property.Value.GetString();
                 continue;
             }
             if (property.NameEquals("data"u8))
