@@ -358,6 +358,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
+    [Ignore("Temporarily disabled awaiting org verification.")]
     [Test]
     public async Task ResponsesWithReasoning()
     {
