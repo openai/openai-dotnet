@@ -32,9 +32,9 @@ namespace OpenAI.Chat
 
         public int Index { get; }
 
-        public InternalChatCompletionResponseMessage Message { get; }
+        internal InternalChatCompletionResponseMessage Message { get; }
 
-        public InternalCreateChatCompletionResponseChoiceLogprobs Logprobs { get; }
+        internal InternalCreateChatCompletionResponseChoiceLogprobs Logprobs { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

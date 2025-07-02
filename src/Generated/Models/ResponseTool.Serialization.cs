@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownTool))]
     public partial class ResponseTool : IJsonModel<ResponseTool>
     {
         internal ResponseTool()
@@ -23,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -33,8 +35,9 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.Responses
 
         ResponseTool IJsonModel<ResponseTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -80,27 +84,36 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "function":
-                        return InternalResponsesFunctionTool.DeserializeInternalResponsesFunctionTool(element, options);
+                        return InternalFunctionTool.DeserializeInternalFunctionTool(element, options);
                     case "file_search":
-                        return InternalResponsesFileSearchTool.DeserializeInternalResponsesFileSearchTool(element, options);
-                    case "web_search_preview":
-                        return InternalResponsesWebSearchTool.DeserializeInternalResponsesWebSearchTool(element, options);
+                        return InternalFileSearchTool.DeserializeInternalFileSearchTool(element, options);
                     case "computer_use_preview":
-                        return InternalResponsesComputerTool.DeserializeInternalResponsesComputerTool(element, options);
+                        return InternalComputerUsePreviewTool.DeserializeInternalComputerUsePreviewTool(element, options);
+                    case "web_search_preview":
+                        return InternalWebSearchTool.DeserializeInternalWebSearchTool(element, options);
+                    case "code_interpreter":
+                        return InternalCodeInterpreterTool.DeserializeInternalCodeInterpreterTool(element, options);
+                    case "image_generation":
+                        return InternalImageGenTool.DeserializeInternalImageGenTool(element, options);
+                    case "local_shell":
+                        return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, options);
+                    case "mcp":
+                        return InternalMCPTool.DeserializeInternalMCPTool(element, options);
                 }
             }
-            return InternalUnknownResponsesTool.DeserializeInternalUnknownResponsesTool(element, options);
+            return InternalUnknownTool.DeserializeInternalUnknownTool(element, options);
         }
 
         BinaryData IPersistableModel<ResponseTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseTool)} does not support writing '{options.Format}' format.");
             }
@@ -108,6 +121,7 @@ namespace OpenAI.Responses
 
         ResponseTool IPersistableModel<ResponseTool>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -124,21 +138,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ResponseTool responseTool)
-        {
-            if (responseTool == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(responseTool, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ResponseTool(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeResponseTool(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatText : ResponseTextFormat
     {
-        public InternalResponsesTextFormatText() : base(InternalResponsesTextFormatType.Text)
+        public InternalResponsesTextFormatText() : this(InternalResponsesTextFormatType.Text, null)
         {
         }
 

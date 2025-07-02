@@ -11,22 +11,22 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalComparisonFilter(InternalComparisonFilterType @type, string key, BinaryData value)
+        private protected InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value)
         {
-            Type = @type;
+            Kind = kind;
             Key = key;
             Value = value;
         }
 
-        internal InternalComparisonFilter(InternalComparisonFilterType @type, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Key = key;
             Value = value;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalComparisonFilterType Type { get; set; }
+        internal InternalComparisonFilterType Kind { get; set; }
 
         public string Key { get; set; }
 

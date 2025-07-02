@@ -4,7 +4,7 @@
 
 using System;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal static partial class ConversationToolChoiceKindExtensions
     {

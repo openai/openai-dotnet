@@ -9,12 +9,16 @@ namespace OpenAI.Responses
 {
     public partial class MessageResponseItem : ResponseItem
     {
-        internal MessageResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(@type, id, additionalBinaryDataProperties)
+        internal MessageResponseItem(string id, InternalResponsesMessageRole internalRole, MessageStatus? status) : base(InternalItemType.Message, id)
         {
-            Status = status;
             InternalRole = internalRole;
+            Status = status;
         }
 
-        public MessageStatus? Status { get; }
+        internal MessageResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponsesMessageRole internalRole, MessageStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        {
+            InternalRole = internalRole;
+            Status = status;
+        }
     }
 }

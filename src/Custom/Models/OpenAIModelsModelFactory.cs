@@ -14,7 +14,7 @@ public static partial class OpenAIModelsModelFactory
         return new ModelDeletionResult(
             deleted,
             modelId,
-            InternalDeleteModelResponseObject.Model,
+            "model",
             additionalBinaryDataProperties: null);
     }
 
@@ -25,7 +25,7 @@ public static partial class OpenAIModelsModelFactory
         return new OpenAIModel(
             id,
             ownedBy,
-            InternalModelObject.Model,
+            "model",
             createdAt,
             additionalBinaryDataProperties: null);
     }
@@ -37,7 +37,7 @@ public static partial class OpenAIModelsModelFactory
         items ??= new List<OpenAIModel>();
 
         return new OpenAIModelCollection(
-            InternalListModelsResponseObject.List,
+            "list",
             items.ToList(),
             serializedAdditionalRawData: null);
     }

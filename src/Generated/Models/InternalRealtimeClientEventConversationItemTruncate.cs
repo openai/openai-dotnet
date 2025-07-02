@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventConversationItemTruncate : InternalRealtimeClientEvent
     {

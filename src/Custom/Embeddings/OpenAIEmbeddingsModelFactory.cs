@@ -26,7 +26,7 @@ public static partial class OpenAIEmbeddingsModelFactory
         return new OpenAIEmbeddingCollection(
             items.ToList(),
             model,
-            InternalCreateEmbeddingResponseObject.List,
+            "list",
             usage,
             serializedAdditionalRawData: null);
     }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,10 @@ namespace OpenAI.Responses
 {
     public partial class ReferenceResponseItem : IJsonModel<ReferenceResponseItem>
     {
+        internal ReferenceResponseItem() : this(InternalItemType.ItemReference, null, null)
+        {
+        }
+
         void IJsonModel<ReferenceResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReferenceResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,6 +37,7 @@ namespace OpenAI.Responses
 
         ReferenceResponseItem IJsonModel<ReferenceResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ReferenceResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReferenceResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -49,14 +55,14 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -64,20 +70,22 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ReferenceResponseItem(@type, id, additionalBinaryDataProperties);
+            return new ReferenceResponseItem(kind, id, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ReferenceResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReferenceResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ReferenceResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -85,6 +93,7 @@ namespace OpenAI.Responses
 
         ReferenceResponseItem IPersistableModel<ReferenceResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ReferenceResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReferenceResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -101,21 +110,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ReferenceResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ReferenceResponseItem referenceResponseItem)
-        {
-            if (referenceResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(referenceResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ReferenceResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeReferenceResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

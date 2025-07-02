@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownComputerToolCallOutputItemOutput))]
     public partial class ComputerOutput : IJsonModel<ComputerOutput>
     {
         internal ComputerOutput()
@@ -23,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -33,8 +35,9 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.Responses
 
         ComputerOutput IJsonModel<ComputerOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ComputerOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -80,21 +84,22 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "computer_screenshot":
-                        return InternalResponsesComputerCallOutputItemScreenshot.DeserializeInternalResponsesComputerCallOutputItemScreenshot(element, options);
+                        return InternalComputerToolCallOutputItemOutputComputerScreenshot.DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(element, options);
                 }
             }
-            return UnknownResponsesComputerCallOutputItemOutput.DeserializeUnknownResponsesComputerCallOutputItemOutput(element, options);
+            return InternalUnknownComputerToolCallOutputItemOutput.DeserializeInternalUnknownComputerToolCallOutputItemOutput(element, options);
         }
 
         BinaryData IPersistableModel<ComputerOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerOutput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ComputerOutput)} does not support writing '{options.Format}' format.");
             }
@@ -102,6 +107,7 @@ namespace OpenAI.Responses
 
         ComputerOutput IPersistableModel<ComputerOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ComputerOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,21 +124,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ComputerOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ComputerOutput computerOutput)
-        {
-            if (computerOutput == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(computerOutput, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ComputerOutput(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeComputerOutput(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

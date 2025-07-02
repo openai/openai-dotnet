@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownComparisonFilter : InternalComparisonFilter
     {
-        internal InternalUnknownComparisonFilter(InternalComparisonFilterType @type, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", key, value, additionalBinaryDataProperties)
+        internal InternalUnknownComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", key, value, additionalBinaryDataProperties)
         {
         }
     }

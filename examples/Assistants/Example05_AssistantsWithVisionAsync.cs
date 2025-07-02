@@ -8,13 +8,15 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
+// This example uses experimental APIs which are subject to change. To use experimental APIs,
+// please acknowledge their experimental status by suppressing the corresponding warning.
+#pragma warning disable OPENAI001
+
 public partial class AssistantExamples
 {
     [Test]
     public async Task Example05_AssistantsWithVisionAsync()
     {
-        // Assistants is a beta API and subject to change; acknowledge its experimental status by suppressing the matching warning.
-        #pragma warning disable OPENAI001
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -72,3 +74,5 @@ public partial class AssistantExamples
         _ = await assistantClient.DeleteAssistantAsync(assistant.Id);
     }
 }
+
+#pragma warning restore OPENAI001

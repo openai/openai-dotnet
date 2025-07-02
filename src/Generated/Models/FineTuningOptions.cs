@@ -8,51 +8,24 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class FineTuningOptions
+    public partial class FineTuningOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public FineTuningOptions(InternalCreateFineTuningJobRequestModel model, string trainingFile)
+        internal FineTuningOptions(string model, string trainingFile, HyperparameterOptions hyperparameters, string suffix, string validationFile, IList<FineTuningIntegration> integrations, int? seed, FineTuningTrainingMethod trainingMethod, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Argument.AssertNotNull(trainingFile, nameof(trainingFile));
-
-            Model = model;
-            TrainingFile = trainingFile;
-            Integrations = new ChangeTrackingList<FineTuningIntegration>();
-            Metadata = new ChangeTrackingDictionary<string, string>();
-        }
-
-        internal FineTuningOptions(InternalCreateFineTuningJobRequestModel model, string trainingFile, HyperparameterOptions hyperparameters, string suffix, string validationFile, IList<FineTuningIntegration> integrations, int? seed, InternalTodoFineTuneMethod @method, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
-        {
+            // Plugin customization: ensure initialization of collections
             Model = model;
             TrainingFile = trainingFile;
             Hyperparameters = hyperparameters;
             Suffix = suffix;
             ValidationFile = validationFile;
-            Integrations = integrations;
+            Integrations = integrations ?? new ChangeTrackingList<FineTuningIntegration>();
             Seed = seed;
-            Method = @method;
-            Metadata = metadata;
+            TrainingMethod = trainingMethod;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public InternalCreateFineTuningJobRequestModel Model { get; }
-
-        public string TrainingFile { get; }
-
-        public HyperparameterOptions Hyperparameters { get; set; }
-
-        public string Suffix { get; set; }
-
-        public string ValidationFile { get; set; }
-
-        public IList<FineTuningIntegration> Integrations { get; set; }
-
-        public int? Seed { get; set; }
-
-        public InternalTodoFineTuneMethod Method { get; set; }
-
-        public IDictionary<string, string> Metadata { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

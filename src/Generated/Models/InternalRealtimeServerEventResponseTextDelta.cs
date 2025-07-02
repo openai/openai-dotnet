@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseTextDelta : ConversationUpdate
+    internal partial class InternalRealtimeServerEventResponseTextDelta : RealtimeUpdate
     {
-        internal InternalRealtimeServerEventResponseTextDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, ConversationUpdateKind.ItemStreamingPartTextDelta)
+        internal InternalRealtimeServerEventResponseTextDelta(string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(RealtimeUpdateKind.ItemStreamingPartTextDelta)
         {
             ResponseId = responseId;
             ItemId = itemId;
@@ -18,7 +18,7 @@ namespace OpenAI.RealtimeConversation
             Delta = delta;
         }
 
-        internal InternalRealtimeServerEventResponseTextDelta(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(eventId, kind, additionalBinaryDataProperties)
+        internal InternalRealtimeServerEventResponseTextDelta(RealtimeUpdateKind kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(kind, eventId, additionalBinaryDataProperties)
         {
             ResponseId = responseId;
             ItemId = itemId;

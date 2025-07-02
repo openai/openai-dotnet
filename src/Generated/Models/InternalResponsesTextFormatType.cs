@@ -12,8 +12,8 @@ namespace OpenAI.Responses
     {
         private readonly string _value;
         private const string TextValue = "text";
-        private const string JsonObjectValue = "json_object";
         private const string JsonSchemaValue = "json_schema";
+        private const string JsonObjectValue = "json_object";
 
         public InternalResponsesTextFormatType(string value)
         {
@@ -22,11 +22,11 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static InternalResponsesTextFormatType Text { get; } = new InternalResponsesTextFormatType(TextValue);
+        internal static InternalResponsesTextFormatType Text { get; } = new InternalResponsesTextFormatType(TextValue);
 
-        public static InternalResponsesTextFormatType JsonObject { get; } = new InternalResponsesTextFormatType(JsonObjectValue);
+        internal static InternalResponsesTextFormatType JsonSchema { get; } = new InternalResponsesTextFormatType(JsonSchemaValue);
 
-        public static InternalResponsesTextFormatType JsonSchema { get; } = new InternalResponsesTextFormatType(JsonSchemaValue);
+        internal static InternalResponsesTextFormatType JsonObject { get; } = new InternalResponsesTextFormatType(JsonObjectValue);
 
         public static bool operator ==(InternalResponsesTextFormatType left, InternalResponsesTextFormatType right) => left.Equals(right);
 

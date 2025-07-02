@@ -4,30 +4,21 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantToolsFileSearch")]
-[CodeGenSuppress(nameof(FileSearchToolDefinition))]
 public partial class FileSearchToolDefinition : ToolDefinition
 {
     public int? MaxResults
     {
-        get => _fileSearch?.InternalMaxNumResults;
-        set => _fileSearch.InternalMaxNumResults = value;
+        get => FileSearch?.InternalMaxNumResults;
+        set => FileSearch.InternalMaxNumResults = value;
     }
 
     public FileSearchRankingOptions RankingOptions
     {
-        get => _fileSearch.RankingOptions;
-        set => _fileSearch.RankingOptions = value;
+        get => FileSearch.RankingOptions;
+        set => FileSearch.RankingOptions = value;
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="FileSearchToolDefinition"/>.
-    /// </summary>
-    public FileSearchToolDefinition()
-        : base("file_search")
-    {
-        _fileSearch = new InternalAssistantToolsFileSearchFileSearch();
-    }
-
-    [CodeGenMember("FileSearch")]
-    private readonly InternalAssistantToolsFileSearchFileSearch _fileSearch;
+    // CUSTOM: Ensure default constructor applies discriminator value and initializes inner object.
+    public FileSearchToolDefinition() : this(kind: InternalAssistantToolDefinitionType.FileSearch, additionalBinaryDataProperties: null, fileSearch: new())
+    { }
 }

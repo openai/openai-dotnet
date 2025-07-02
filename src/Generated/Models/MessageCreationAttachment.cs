@@ -24,8 +24,9 @@ namespace OpenAI.Assistants
 
         internal MessageCreationAttachment(string fileId, IReadOnlyList<ToolDefinition> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             FileId = fileId;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

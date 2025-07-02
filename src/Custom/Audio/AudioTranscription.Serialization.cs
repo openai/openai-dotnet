@@ -20,6 +20,7 @@ public partial class AudioTranscription
                 text: response.Content?.ToString(),
                 words: new ChangeTrackingList<TranscribedWord>(),
                 segments: new ChangeTrackingList<TranscribedSegment>(),
+                transcriptionTokenLogProbabilities: new ChangeTrackingList<AudioTokenLogProbabilityDetails>(),
                 additionalBinaryDataProperties: new Dictionary<string, BinaryData>());
         }
 

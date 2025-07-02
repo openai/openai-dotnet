@@ -18,7 +18,7 @@ namespace OpenAI.Models
             CreatedAt = createdAt;
         }
 
-        internal OpenAIModel(string id, string ownedBy, InternalModelObject @object, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIModel(string id, string ownedBy, string @object, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             OwnedBy = ownedBy;

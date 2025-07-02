@@ -3,12 +3,13 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
+using OpenAI.Evals;
 using OpenAI.Files;
 using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
-using OpenAI.RealtimeConversation;
+using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
 using System;
@@ -33,38 +34,44 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedAudioClient")]
 [CodeGenSuppress("_cachedBatchClient")]
 [CodeGenSuppress("_cachedChatClient")]
+[CodeGenSuppress("_cachedLegacyCompletionClient")]
+[CodeGenSuppress("_cachedContainerClient")]
 [CodeGenSuppress("_cachedEmbeddingClient")]
+[CodeGenSuppress("_cachedEvaluationClient")]
 [CodeGenSuppress("_cachedOpenAIFileClient")]
 [CodeGenSuppress("_cachedFineTuningClient")]
+[CodeGenSuppress("_cachedGraderClient")]
 [CodeGenSuppress("_cachedImageClient")]
+[CodeGenSuppress("_cachedOpenAIModelClient")]
+[CodeGenSuppress("_cachedModerationClient")]
+[CodeGenSuppress("_cachedRealtimeClient")]
+[CodeGenSuppress("_cachedOpenAIResponseClient")]
+[CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
 [CodeGenSuppress("_cachedInternalAssistantRunClient")]
 [CodeGenSuppress("_cachedInternalAssistantThreadClient")]
 [CodeGenSuppress("_cachedInternalUploadsClient")]
-[CodeGenSuppress("_cachedLegacyCompletionClient")]
-[CodeGenSuppress("_cachedOpenAIModelClient")]
-[CodeGenSuppress("_cachedModerationClient")]
-[CodeGenSuppress("_cachedRealtimeConversationClient")]
-[CodeGenSuppress("_cachedResponsesClient")]
-[CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("GetAssistantClient")]
 [CodeGenSuppress("GetAudioClient")]
 [CodeGenSuppress("GetBatchClient")]
 [CodeGenSuppress("GetChatClient")]
+[CodeGenSuppress("GetLegacyCompletionClient")]
+[CodeGenSuppress("GetContainerClient")]
 [CodeGenSuppress("GetEmbeddingClient")]
-[CodeGenSuppress("GetFileClient")]
+[CodeGenSuppress("GetEvaluationClient")]
+[CodeGenSuppress("GetOpenAIFileClient")]
 [CodeGenSuppress("GetFineTuningClient")]
+[CodeGenSuppress("GetGraderClient")]
 [CodeGenSuppress("GetImageClient")]
+[CodeGenSuppress("GetOpenAIModelClient")]
+[CodeGenSuppress("GetModerationClient")]
+[CodeGenSuppress("GetRealtimeClient")]
+[CodeGenSuppress("GetOpenAIResponseClient")]
+[CodeGenSuppress("GetVectorStoreClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
 [CodeGenSuppress("GetInternalAssistantRunClient")]
 [CodeGenSuppress("GetInternalAssistantThreadClient")]
 [CodeGenSuppress("GetInternalUploadsClient")]
-[CodeGenSuppress("GetLegacyCompletionClient")]
-[CodeGenSuppress("GetModelClient")]
-[CodeGenSuppress("GetModerationClient")]
-[CodeGenSuppress("GetRealtimeConversationClient")]
-[CodeGenSuppress("GetResponsesClient")]
-[CodeGenSuppress("GetVectorStoreClient")]
 public partial class OpenAIClient
 {
     private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
@@ -187,6 +194,14 @@ public partial class OpenAIClient
     public virtual EmbeddingClient GetEmbeddingClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
+    /// Gets a new instance of <see cref="EvaluationClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual EvaluationClient GetEvaluationClient() => new(Pipeline, _options);
+
+    /// <summary>
     /// Gets a new instance of <see cref="OpenAIFileClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
@@ -243,6 +258,23 @@ public partial class OpenAIClient
     public virtual ModerationClient GetModerationClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
+    /// Gets a new instance of <see cref="RealtimeClient"/>, used to initiate conversation and transcription sessions. 
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// In contrast to other clients, <see cref="RealtimeClient"/> does not manage input/output operations directly,
+    /// instead delegating stateful interaction to a child session object.
+    /// </para>
+    /// Create <see cref="IDisposable"/> instances of <see cref="RealtimeSession"/> using methods like
+    /// <see cref="RealtimeClient.StartConversationSessionAsync(string, System.Threading.CancellationToken)"/> and
+    /// <see cref="RealtimeClient.StartTranscriptionSessionAsync(System.Threading.CancellationToken)"/>
+    /// to access full <c>/realtime</c> functionality.
+    /// </remarks>
+    /// <returns></returns>
+    [Experimental("OPENAI002")]
+    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
+
+    /// <summary>
     /// Gets a new instance of <see cref="OpenAIResponseClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
@@ -251,6 +283,7 @@ public partial class OpenAIClient
     /// the same configuration details.
     /// </remarks>
     /// <returns> A new <see cref="OpenAIResponseClient"/>. </returns>
+    [Experimental("OPENAI001")]
     public virtual OpenAIResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
@@ -264,9 +297,6 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
-
-    [Experimental("OPENAI002")]
-    public virtual RealtimeConversationClient GetRealtimeConversationClient(string model) => new(model, _keyCredential, _options);
 
     internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
     {

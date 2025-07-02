@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
+// CUSTOM: Added Experimental attribute.
 /// <summary>
 /// Specifies the types of output content the model should generate for a chat completion request.
 /// </summary>
@@ -12,6 +14,7 @@ namespace OpenAI.Chat;
 /// <see cref="ChatResponseModalities.Text"/> | <see cref="ChatResponseModalities.Audio"/>.
 /// </c>
 /// </remarks>
+[Experimental("OPENAI001")]
 [Flags]
 public enum ChatResponseModalities : int
 {

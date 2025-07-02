@@ -48,7 +48,7 @@ You need an OpenAI API key to run the samples. Get one from [OpenAI's API platfo
 
 #### Temporary (Current Session Only)
 ```powershell
-$env:OPENAI_KEY = "your-api-key-here"
+$env:OPENAI_API_KEY = "your-api-key-here"
 ```
 
 #### Permanent Options
@@ -57,22 +57,22 @@ $env:OPENAI_KEY = "your-api-key-here"
 1. Press `Win + R`, type `sysdm.cpl`, press Enter
 2. Click "Environment Variables"
 3. Under "User variables", click "New"
-4. Variable name: `OPENAI_KEY`
+4. Variable name: `OPENAI_API_KEY`
 5. Variable value: Your API key
 
 **Option B: Using PowerShell (Permanent)**
 ```powershell
-[Environment]::SetEnvironmentVariable("OPENAI_KEY", "your-api-key-here", "User")
+[Environment]::SetEnvironmentVariable("OPENAI_API_KEY", "your-api-key-here", "User")
 ```
 
 **Option C: Using Command Prompt as Administrator**
 ```cmd
-setx OPENAI_KEY "your-api-key-here"
+setx OPENAI_API_KEY "your-api-key-here"
 ```
 
 ### 3. Verify Environment Variable
 ```powershell
-echo $env:OPENAI_KEY
+echo $env:OPENAI_API_KEY
 ```
 
 ## Running the Samples
@@ -147,7 +147,7 @@ using OpenAI.Chat;              // Regular C# code follows
 
 ### Problem: API errors
 - **Solution**: 
-  - Verify your `OPENAI_KEY` environment variable is set correctly
+  - Verify your `OPENAI_API_KEY` environment variable is set correctly
   - Check that your API key is valid and has sufficient credits
   - Ensure you're using a valid model name (e.g., "gpt-4", "gpt-3.5-turbo")
 

@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
@@ -13,5 +16,12 @@ public partial class MessageDeletionResult
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `thread.message.deleted`. </summary>
     [CodeGenMember("Object")]
-    internal InternalDeleteMessageResponseObject Object { get; } = InternalDeleteMessageResponseObject.ThreadMessageDeleted;
+    internal string Object { get; } = "thread.message.deleted";
+
+    internal static MessageDeletionResult FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeMessageDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

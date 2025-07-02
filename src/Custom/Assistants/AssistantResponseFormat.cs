@@ -1,4 +1,3 @@
-using OpenAI.Internal;
 using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
@@ -7,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
-[CodeGenType("AssistantResponseFormat")]
+[CodeGenType("DotNetAssistantResponseFormat")]
 public partial class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>
 {
     public static AssistantResponseFormat Auto { get; } = CreateAutoFormat();
@@ -17,9 +16,9 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
     public static AssistantResponseFormat CreateAutoFormat()
         => new InternalAssistantResponseFormatPlainTextNoObject("auto");
     public static AssistantResponseFormat CreateTextFormat()
-        => new InternalAssistantResponseFormatText();
+        => new InternalDotNetAssistantResponseFormatText();
     public static AssistantResponseFormat CreateJsonObjectFormat()
-        => new InternalAssistantResponseFormatJsonObject();
+        => new InternalDotNetAssistantResponseFormatJsonObject();
     public static AssistantResponseFormat CreateJsonSchemaFormat(
         string name,
         BinaryData jsonSchema,
@@ -29,13 +28,13 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
         Argument.AssertNotNullOrEmpty(name, nameof(name));
         Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
-        InternalResponseFormatJsonSchemaJsonSchema internalSchema = new(
+        InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema internalSchema = new(
             description,
             name,
-            strictSchemaEnabled,
             jsonSchema,
+            strictSchemaEnabled,
             null);
-        return new InternalAssistantResponseFormatJsonSchema(internalSchema);
+        return new InternalDotNetAssistantResponseFormatJsonSchema(internalSchema);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -83,10 +82,10 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
             (this is InternalAssistantResponseFormatPlainTextNoObject thisPlainText
                 && other is InternalAssistantResponseFormatPlainTextNoObject otherPlainText
                 && thisPlainText.Value.Equals(otherPlainText.Value))
-            || (this is InternalAssistantResponseFormatText && other is InternalAssistantResponseFormatText)
-            || (this is InternalAssistantResponseFormatJsonObject && other is InternalAssistantResponseFormatJsonObject)
-            || (this is InternalAssistantResponseFormatJsonSchema thisJsonSchema
-                && other is InternalAssistantResponseFormatJsonSchema otherJsonSchema
+            || (this is InternalDotNetAssistantResponseFormatText && other is InternalDotNetAssistantResponseFormatText)
+            || (this is InternalDotNetAssistantResponseFormatJsonObject && other is InternalDotNetAssistantResponseFormatJsonObject)
+            || (this is InternalDotNetAssistantResponseFormatJsonSchema thisJsonSchema
+                && other is InternalDotNetAssistantResponseFormatJsonSchema otherJsonSchema
                 && thisJsonSchema.JsonSchema.Name.Equals(otherJsonSchema.JsonSchema.Name));
     }
 

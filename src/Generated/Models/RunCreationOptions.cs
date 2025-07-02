@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 using OpenAI.Chat;
 
 namespace OpenAI.Assistants
@@ -14,16 +15,17 @@ namespace OpenAI.Assistants
 
         internal RunCreationOptions(string assistantId, bool? stream, AssistantResponseFormat responseFormat, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, bool? allowParallelToolCalls, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             AssistantId = assistantId;
             Stream = stream;
             ResponseFormat = responseFormat;
             ModelOverride = modelOverride;
             InstructionsOverride = instructionsOverride;
             AdditionalInstructions = additionalInstructions;
-            InternalMessages = internalMessages;
+            InternalMessages = internalMessages ?? new ChangeTrackingList<MessageCreationOptions>();
             AllowParallelToolCalls = allowParallelToolCalls;
-            ToolsOverride = toolsOverride;
-            Metadata = metadata;
+            ToolsOverride = toolsOverride ?? new ChangeTrackingList<ToolDefinition>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
             MaxInputTokenCount = maxInputTokenCount;

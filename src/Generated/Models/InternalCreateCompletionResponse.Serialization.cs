@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Chat;
@@ -14,7 +14,7 @@ namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionResponse : IJsonModel<InternalCreateCompletionResponse>
     {
-        internal InternalCreateCompletionResponse()
+        internal InternalCreateCompletionResponse() : this(null, null, default, null, null, null, null, null)
         {
         }
 
@@ -25,6 +25,7 @@ namespace OpenAI.LegacyCompletions
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -65,13 +66,14 @@ namespace OpenAI.LegacyCompletions
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -95,6 +97,7 @@ namespace OpenAI.LegacyCompletions
 
         InternalCreateCompletionResponse IJsonModel<InternalCreateCompletionResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateCompletionResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -117,7 +120,7 @@ namespace OpenAI.LegacyCompletions
             DateTimeOffset created = default;
             string model = default;
             string systemFingerprint = default;
-            InternalCreateCompletionResponseObject @object = default;
+            string @object = default;
             ChatTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -154,7 +157,7 @@ namespace OpenAI.LegacyCompletions
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalCreateCompletionResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -166,6 +169,7 @@ namespace OpenAI.LegacyCompletions
                     usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateCompletionResponse(
@@ -181,13 +185,14 @@ namespace OpenAI.LegacyCompletions
 
         BinaryData IPersistableModel<InternalCreateCompletionResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateCompletionResponse)} does not support writing '{options.Format}' format.");
             }
@@ -195,6 +200,7 @@ namespace OpenAI.LegacyCompletions
 
         InternalCreateCompletionResponse IPersistableModel<InternalCreateCompletionResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateCompletionResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -211,21 +217,5 @@ namespace OpenAI.LegacyCompletions
         }
 
         string IPersistableModel<InternalCreateCompletionResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateCompletionResponse internalCreateCompletionResponse)
-        {
-            if (internalCreateCompletionResponse == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateCompletionResponse, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateCompletionResponse(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Audio;
@@ -9,18 +11,27 @@ public static partial class OpenAIAudioModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.AudioTranscription"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Audio.AudioTranscription"/> instance for mocking. </returns>
-    public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static AudioTranscription AudioTranscription(string language, TimeSpan? duration, string text, IEnumerable<TranscribedWord> words, IEnumerable<TranscribedSegment> segments)
+        => AudioTranscription(language, duration, text, words, segments, null);
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Audio.AudioTranscription"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Audio.AudioTranscription"/> instance for mocking. </returns>
+    [Experimental("OPENAI001")]
+    public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = null)
     {
         words ??= new List<TranscribedWord>();
         segments ??= new List<TranscribedSegment>();
+        transcriptionTokenLogProbabilities ??= new List<AudioTokenLogProbabilityDetails>();
 
         return new AudioTranscription(
             language,
             text,
             words.ToList(),
             segments.ToList(),
-            InternalCreateTranscriptionResponseVerboseJsonTask.Transcribe,
+            "transcribe",
             duration,
+            transcriptionTokenLogProbabilities.ToList(),
             additionalBinaryDataProperties: null);
     }
 
@@ -34,7 +45,7 @@ public static partial class OpenAIAudioModelFactory
             language,
             text,
             segments: segments.ToList(),
-            task: InternalCreateTranslationResponseVerboseJsonTask.Translate,
+            task: "translate",
             duration,
             additionalBinaryDataProperties: null);
     }

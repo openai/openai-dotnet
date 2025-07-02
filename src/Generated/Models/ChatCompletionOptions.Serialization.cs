@@ -3,16 +3,21 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
+        public ChatCompletionOptions() : this(default, default, default, default, null, default, null, null, null, default, default, null, default, default, null, null, null, null, default, null, default, default, null, null, default, default, null, null, null, null, default, null)
+        {
+        }
+
         void IJsonModel<ChatCompletionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,6 +25,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -52,10 +58,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("web_search_options"u8);
                 writer.WriteObjectValue(WebSearchOptions, options);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteObjectValue(ResponseFormat, options);
+                writer.WritePropertyName("seed"u8);
+                writer.WriteNumberValue(Seed.Value);
             }
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
@@ -67,15 +73,17 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsCollectionDefined(Messages) && _additionalBinaryDataProperties?.ContainsKey("messages") != true)
             {
                 writer.WritePropertyName("messages"u8);
                 SerializeMessagesValue(writer, options);
             }
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
+                writer.WriteStringValue(Model);
             }
             if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
@@ -131,11 +139,6 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
-            }
-            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
-            {
-                writer.WritePropertyName("seed"u8);
-                writer.WriteNumberValue(Seed.Value);
             }
             if (Optional.IsDefined(_deprecatedMaxTokens) && _additionalBinaryDataProperties?.ContainsKey("max_tokens") != true)
             {
@@ -193,6 +196,11 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            {
+                writer.WritePropertyName("response_format"u8);
+                writer.WriteObjectValue(ResponseFormat, options);
+            }
             if (Optional.IsDefined(AudioOptions) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
@@ -208,6 +216,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("service_tier"u8);
                 writer.WriteStringValue(_serviceTier.Value.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -231,6 +240,7 @@ namespace OpenAI.Chat
 
         ChatCompletionOptions IJsonModel<ChatCompletionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatCompletionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -253,10 +263,10 @@ namespace OpenAI.Chat
             float? frequencyPenalty = default;
             float? presencePenalty = default;
             ChatWebSearchOptions webSearchOptions = default;
-            ChatResponseFormat responseFormat = default;
+            long? seed = default;
             IList<ChatTool> tools = default;
             IList<ChatMessage> messages = default;
-            InternalCreateChatCompletionRequestModel? model = default;
+            string model = default;
             int? n = default;
             bool? stream = default;
             InternalChatCompletionStreamOptions streamOptions = default;
@@ -268,7 +278,6 @@ namespace OpenAI.Chat
             ChatFunctionChoice functionChoice = default;
             bool? allowParallelToolCalls = default;
             string endUserId = default;
-            long? seed = default;
             int? deprecatedMaxTokens = default;
             int? maxOutputTokenCount = default;
             IList<ChatFunction> functions = default;
@@ -276,9 +285,10 @@ namespace OpenAI.Chat
             bool? storedOutputEnabled = default;
             ChatReasoningEffortLevel? reasoningEffortLevel = default;
             IList<InternalCreateChatCompletionRequestModality> internalModalities = default;
+            ChatResponseFormat responseFormat = default;
             ChatAudioOptions audioOptions = default;
             ChatOutputPrediction outputPrediction = default;
-            InternalCreateChatCompletionRequestServiceTier? serviceTier = default;
+            InternalServiceTier? serviceTier = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -331,13 +341,14 @@ namespace OpenAI.Chat
                     webSearchOptions = ChatWebSearchOptions.DeserializeChatWebSearchOptions(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("response_format"u8))
+                if (prop.NameEquals("seed"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        seed = null;
                         continue;
                     }
-                    responseFormat = ChatResponseFormat.DeserializeChatResponseFormat(prop.Value, options);
+                    seed = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -366,7 +377,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("model"u8))
                 {
-                    model = new InternalCreateChatCompletionRequestModel(prop.Value.GetString());
+                    model = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("n"u8))
@@ -461,16 +472,6 @@ namespace OpenAI.Chat
                     endUserId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("seed"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        seed = null;
-                        continue;
-                    }
-                    seed = prop.Value.GetInt64();
-                    continue;
-                }
                 if (prop.NameEquals("max_tokens"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -560,6 +561,15 @@ namespace OpenAI.Chat
                     internalModalities = array;
                     continue;
                 }
+                if (prop.NameEquals("response_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseFormat = ChatResponseFormat.DeserializeChatResponseFormat(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("audio"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -584,12 +594,12 @@ namespace OpenAI.Chat
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        serviceTier = null;
                         continue;
                     }
-                    serviceTier = new InternalCreateChatCompletionRequestServiceTier(prop.Value.GetString());
+                    serviceTier = new InternalServiceTier(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatCompletionOptions(
@@ -598,7 +608,7 @@ namespace OpenAI.Chat
                 frequencyPenalty,
                 presencePenalty,
                 webSearchOptions,
-                responseFormat,
+                seed,
                 tools ?? new ChangeTrackingList<ChatTool>(),
                 messages,
                 model,
@@ -613,7 +623,6 @@ namespace OpenAI.Chat
                 functionChoice,
                 allowParallelToolCalls,
                 endUserId,
-                seed,
                 deprecatedMaxTokens,
                 maxOutputTokenCount,
                 functions ?? new ChangeTrackingList<ChatFunction>(),
@@ -621,6 +630,7 @@ namespace OpenAI.Chat
                 storedOutputEnabled,
                 reasoningEffortLevel,
                 internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>(),
+                responseFormat,
                 audioOptions,
                 outputPrediction,
                 serviceTier,
@@ -629,13 +639,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatCompletionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletionOptions)} does not support writing '{options.Format}' format.");
             }
@@ -643,6 +654,7 @@ namespace OpenAI.Chat
 
         ChatCompletionOptions IPersistableModel<ChatCompletionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatCompletionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -659,21 +671,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatCompletionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatCompletionOptions chatCompletionOptions)
-        {
-            if (chatCompletionOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatCompletionOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatCompletionOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatCompletionOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

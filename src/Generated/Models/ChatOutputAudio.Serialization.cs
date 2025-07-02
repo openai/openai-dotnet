@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
@@ -51,6 +52,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.Chat
 
         ChatOutputAudio IJsonModel<ChatOutputAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatOutputAudio JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,6 +121,7 @@ namespace OpenAI.Chat
                     audioBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatOutputAudio(id, expiresAt, transcript, audioBytes, additionalBinaryDataProperties);
@@ -125,13 +129,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatOutputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatOutputAudio)} does not support writing '{options.Format}' format.");
             }
@@ -139,6 +144,7 @@ namespace OpenAI.Chat
 
         ChatOutputAudio IPersistableModel<ChatOutputAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatOutputAudio PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
@@ -155,21 +161,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatOutputAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatOutputAudio chatOutputAudio)
-        {
-            if (chatOutputAudio == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatOutputAudio, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatOutputAudio(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatOutputAudio(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

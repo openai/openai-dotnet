@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallResponseItem : IJsonModel<ComputerCallResponseItem>
     {
-        internal ComputerCallResponseItem()
+        internal ComputerCallResponseItem() : this(InternalItemType.ComputerCall, null, null, null, null, null, default)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -52,15 +53,17 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
         ComputerCallResponseItem IJsonModel<ComputerCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ComputerCallResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -78,18 +81,18 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string callId = default;
             ComputerCallAction action = default;
             IList<ComputerCallSafetyCheck> pendingSafetyChecks = default;
-            ComputerCallStatus status = default;
+            ComputerCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -122,10 +125,11 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToComputerCallStatus();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ComputerCallResponseItem(
-                @type,
+                kind,
                 id,
                 additionalBinaryDataProperties,
                 callId,
@@ -136,13 +140,14 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ComputerCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ComputerCallResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -150,6 +155,7 @@ namespace OpenAI.Responses
 
         ComputerCallResponseItem IPersistableModel<ComputerCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ComputerCallResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -166,21 +172,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ComputerCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ComputerCallResponseItem computerCallResponseItem)
-        {
-            if (computerCallResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(computerCallResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ComputerCallResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeComputerCallResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Moderations
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationRequestInput2>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,13 +35,14 @@ namespace OpenAI.Moderations
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("image_url") != true)
             {
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteObjectValue(ImageUrl, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -64,6 +66,7 @@ namespace OpenAI.Moderations
 
         InternalCreateModerationRequestInput2 IJsonModel<InternalCreateModerationRequestInput2>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateModerationRequestInput2 JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationRequestInput2>)this).GetFormatFromOptions(options) : options.Format;
@@ -81,14 +84,14 @@ namespace OpenAI.Moderations
             {
                 return null;
             }
-            InternalCreateModerationRequestInput2Type @type = default;
+            string kind = default;
             InternalCreateModerationRequestInputImageUrl imageUrl = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalCreateModerationRequestInput2Type(prop.Value.GetString());
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))
@@ -96,20 +99,22 @@ namespace OpenAI.Moderations
                     imageUrl = InternalCreateModerationRequestInputImageUrl.DeserializeInternalCreateModerationRequestInputImageUrl(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateModerationRequestInput2(@type, imageUrl, additionalBinaryDataProperties);
+            return new InternalCreateModerationRequestInput2(kind, imageUrl, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateModerationRequestInput2>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationRequestInput2>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateModerationRequestInput2)} does not support writing '{options.Format}' format.");
             }
@@ -117,6 +122,7 @@ namespace OpenAI.Moderations
 
         InternalCreateModerationRequestInput2 IPersistableModel<InternalCreateModerationRequestInput2>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateModerationRequestInput2 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationRequestInput2>)this).GetFormatFromOptions(options) : options.Format;
@@ -133,21 +139,5 @@ namespace OpenAI.Moderations
         }
 
         string IPersistableModel<InternalCreateModerationRequestInput2>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateModerationRequestInput2 internalCreateModerationRequestInput2)
-        {
-            if (internalCreateModerationRequestInput2 == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateModerationRequestInput2, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateModerationRequestInput2(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateModerationRequestInput2(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

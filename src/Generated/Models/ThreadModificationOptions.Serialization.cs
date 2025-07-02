@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ThreadModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -48,6 +49,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("tool_resources"u8);
                 writer.WriteObjectValue(ToolResources, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -71,6 +73,7 @@ namespace OpenAI.Assistants
 
         ThreadModificationOptions IJsonModel<ThreadModificationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ThreadModificationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ThreadModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -124,6 +127,7 @@ namespace OpenAI.Assistants
                     toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ThreadModificationOptions(metadata ?? new ChangeTrackingDictionary<string, string>(), toolResources, additionalBinaryDataProperties);
@@ -131,13 +135,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<ThreadModificationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ThreadModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ThreadModificationOptions)} does not support writing '{options.Format}' format.");
             }
@@ -145,6 +150,7 @@ namespace OpenAI.Assistants
 
         ThreadModificationOptions IPersistableModel<ThreadModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ThreadModificationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ThreadModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -161,21 +167,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<ThreadModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ThreadModificationOptions threadModificationOptions)
-        {
-            if (threadModificationOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(threadModificationOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ThreadModificationOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeThreadModificationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

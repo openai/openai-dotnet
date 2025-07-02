@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace OpenAI.Assistants;
 
@@ -12,14 +13,18 @@ public partial class ThreadInitializationMessage : MessageCreationOptions
     /// <param name="content">
     /// The content items that should be included in the message, added to the thread being created.
     /// </param>
-    public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content) : base(content)
+    public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content) : base(null, null, role, content?.ToList(), null)
     {
-        Role = role;
+        Argument.AssertNotNull(content, nameof(content));
     }
 
     internal ThreadInitializationMessage(MessageCreationOptions baseOptions)
         : base(baseOptions.Attachments, baseOptions.Metadata, baseOptions.Role, baseOptions.Content, null)
     { }
+
+    internal ThreadInitializationMessage() : this(default, null)
+    {
+    }
 
     /// <summary>
     /// Implicitly creates a new instance of <see cref="ThreadInitializationMessage"/> from a single item of plain text

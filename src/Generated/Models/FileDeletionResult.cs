@@ -17,7 +17,7 @@ namespace OpenAI.Files
             FileId = fileId;
         }
 
-        internal FileDeletionResult(bool deleted, string fileId, InternalDeleteFileResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FileDeletionResult(bool deleted, string fileId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             FileId = fileId;

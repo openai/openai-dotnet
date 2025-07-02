@@ -37,6 +37,10 @@ public partial class ClientExamples
         AudioClient whisperClient = client.GetAudioClient("whisper-1");
     }
 
+// This example uses experimental APIs which are subject to change. To use experimental APIs,
+// please acknowledge their experimental status by suppressing the corresponding warning.
+#pragma warning disable OPENAI001
+
     [Test]
     public void CreateAssistantAndFileClients()
     {
@@ -44,4 +48,7 @@ public partial class ClientExamples
         OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
         AssistantClient assistantClient = openAIClient.GetAssistantClient();
     }
+
+#pragma warning restore OPENAI001
+
 }

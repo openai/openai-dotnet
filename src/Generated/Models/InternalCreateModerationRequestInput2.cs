@@ -12,23 +12,23 @@ namespace OpenAI.Moderations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateModerationRequestInput2(InternalCreateModerationRequestInputImageUrl imageUrl)
+        internal InternalCreateModerationRequestInput2(InternalCreateModerationRequestInputImageUrl imageUrl)
         {
             Argument.AssertNotNull(imageUrl, nameof(imageUrl));
 
             ImageUrl = imageUrl;
         }
 
-        internal InternalCreateModerationRequestInput2(InternalCreateModerationRequestInput2Type @type, InternalCreateModerationRequestInputImageUrl imageUrl, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateModerationRequestInput2(string kind, InternalCreateModerationRequestInputImageUrl imageUrl, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             ImageUrl = imageUrl;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalCreateModerationRequestInput2Type Type { get; } = "image_url";
+        public string Kind { get; } = "image_url";
 
-        public InternalCreateModerationRequestInputImageUrl ImageUrl { get; }
+        internal InternalCreateModerationRequestInputImageUrl ImageUrl { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -5,7 +5,7 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantToolDefinition")]
-public abstract partial class ToolDefinition
+public partial class ToolDefinition
 {
     public static CodeInterpreterToolDefinition CreateCodeInterpreter()
         => new CodeInterpreterToolDefinition();
@@ -23,14 +23,4 @@ public abstract partial class ToolDefinition
             Parameters = parameters,
             StrictParameterSchemaEnabled = strictParameterSchemaEnabled,
         };
-
-    protected ToolDefinition(string type)
-    {
-        Type = type;
-    }
-
-    // Backcompat with the old codegen.
-    protected ToolDefinition()
-    {
-    }
 }

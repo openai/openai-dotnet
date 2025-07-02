@@ -9,7 +9,7 @@ using ModelContextProtocol.Client;
 using OpenAI.Chat;
 
 string mcpCommand = Environment.GetEnvironmentVariable("MCP_SERVER_COMMAND")!; // path to a stdio mcp server
-string key = Environment.GetEnvironmentVariable("OPENAI_KEY")!;
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 
 ChatClient chatClient = new("gpt-4.1", key);
 

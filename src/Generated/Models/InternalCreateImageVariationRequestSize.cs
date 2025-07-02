@@ -22,11 +22,11 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        public static InternalCreateImageVariationRequestSize _256x256 { get; } = new InternalCreateImageVariationRequestSize(_256x256Value);
+        internal static InternalCreateImageVariationRequestSize _256x256 { get; } = new InternalCreateImageVariationRequestSize(_256x256Value);
 
-        public static InternalCreateImageVariationRequestSize _512x512 { get; } = new InternalCreateImageVariationRequestSize(_512x512Value);
+        internal static InternalCreateImageVariationRequestSize _512x512 { get; } = new InternalCreateImageVariationRequestSize(_512x512Value);
 
-        public static InternalCreateImageVariationRequestSize _1024x1024 { get; } = new InternalCreateImageVariationRequestSize(_1024x1024Value);
+        internal static InternalCreateImageVariationRequestSize _1024x1024 { get; } = new InternalCreateImageVariationRequestSize(_1024x1024Value);
 
         public static bool operator ==(InternalCreateImageVariationRequestSize left, InternalCreateImageVariationRequestSize right) => left.Equals(right);
 

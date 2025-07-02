@@ -23,13 +23,13 @@ namespace OpenAI.Files
             _value = value;
         }
 
-        public static InternalUploadStatus Pending { get; } = new InternalUploadStatus(PendingValue);
+        internal static InternalUploadStatus Pending { get; } = new InternalUploadStatus(PendingValue);
 
-        public static InternalUploadStatus Completed { get; } = new InternalUploadStatus(CompletedValue);
+        internal static InternalUploadStatus Completed { get; } = new InternalUploadStatus(CompletedValue);
 
-        public static InternalUploadStatus Cancelled { get; } = new InternalUploadStatus(CancelledValue);
+        internal static InternalUploadStatus Cancelled { get; } = new InternalUploadStatus(CancelledValue);
 
-        public static InternalUploadStatus Expired { get; } = new InternalUploadStatus(ExpiredValue);
+        internal static InternalUploadStatus Expired { get; } = new InternalUploadStatus(ExpiredValue);
 
         public static bool operator ==(InternalUploadStatus left, InternalUploadStatus right) => left.Equals(right);
 

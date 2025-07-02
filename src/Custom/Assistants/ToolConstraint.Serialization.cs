@@ -33,7 +33,7 @@ public partial class ToolConstraint : IJsonModel<ToolConstraint>
         {
             writer.WriteStartObject();
             writer.WritePropertyName("type"u8);
-            writer.WriteStringValue(instance._objectType.ToString());
+            writer.WriteStringValue(instance.Kind.ToString());
             if (Optional.IsDefined(instance._objectFunctionName))
             {
                 writer.WritePropertyName("function"u8);

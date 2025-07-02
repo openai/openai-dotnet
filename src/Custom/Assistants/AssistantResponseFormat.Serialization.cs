@@ -25,10 +25,10 @@ public partial class AssistantResponseFormat : IJsonModel<AssistantResponseForma
             JsonValueKind.Object when element.TryGetProperty("type", out JsonElement discriminatorElement)
                 => discriminatorElement.GetString() switch
                 {
-                    "json_object" => InternalAssistantResponseFormatJsonObject.DeserializeInternalAssistantResponseFormatJsonObject(element, options),
-                    "json_schema" => InternalAssistantResponseFormatJsonSchema.DeserializeInternalAssistantResponseFormatJsonSchema(element, options),
-                    "text" => InternalAssistantResponseFormatText.DeserializeInternalAssistantResponseFormatText(element, options),
-                    _ => null,
+                    "json_object" => InternalDotNetAssistantResponseFormatJsonObject.DeserializeInternalDotNetAssistantResponseFormatJsonObject(element, options),
+                    "json_schema" => InternalDotNetAssistantResponseFormatJsonSchema.DeserializeInternalDotNetAssistantResponseFormatJsonSchema(element, options),
+                    "text" => InternalDotNetAssistantResponseFormatText.DeserializeInternalDotNetAssistantResponseFormatText(element, options),
+                    _ => InternalUnknownDotNetAssistantResponseFormat.DeserializeInternalUnknownDotNetAssistantResponseFormat(element, options),
                 },
             _ => null,
         };

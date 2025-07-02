@@ -11,16 +11,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesAssistantMessage : MessageResponseItem
     {
-        public InternalResponsesAssistantMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.Assistant)
+        internal InternalResponsesAssistantMessage(string id, MessageStatus? status, IEnumerable<ResponseContentPart> internalContent) : base(id, InternalResponsesMessageRole.Assistant, status)
         {
-            Argument.AssertNotNull(internalContent, nameof(internalContent));
-
             InternalContent = internalContent.ToList();
         }
 
-        internal InternalResponsesAssistantMessage(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(@type, id, additionalBinaryDataProperties, status, internalRole)
+        internal InternalResponsesAssistantMessage(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponsesMessageRole internalRole, MessageStatus? status, IList<ResponseContentPart> internalContent) : base(kind, id, additionalBinaryDataProperties, internalRole, status)
         {
-            // Plugin customization: ensure initialization of collection
+            // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();
         }
     }

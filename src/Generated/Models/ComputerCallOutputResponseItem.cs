@@ -4,38 +4,33 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     public partial class ComputerCallOutputResponseItem : ResponseItem
     {
-        public ComputerCallOutputResponseItem(string callId, IEnumerable<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output) : base(InternalResponsesItemType.ComputerCallOutput)
-        {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(acknowledgedSafetyChecks, nameof(acknowledgedSafetyChecks));
-            Argument.AssertNotNull(output, nameof(output));
-
-            CallId = callId;
-            AcknowledgedSafetyChecks = acknowledgedSafetyChecks.ToList();
-            Output = output;
-        }
-
-        internal ComputerCallOutputResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output, ComputerCallOutputStatus? status) : base(@type, id, additionalBinaryDataProperties)
+        internal ComputerCallOutputResponseItem(string id, string callId, ComputerOutput output, ComputerCallOutputStatus? status) : base(InternalItemType.ComputerCallOutput, id)
         {
             CallId = callId;
-            AcknowledgedSafetyChecks = acknowledgedSafetyChecks;
+            AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
             Status = status;
         }
 
-        public string CallId { get; set; }
+        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output, ComputerCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        {
+            // Plugin customization: ensure initialization of collections
+            CallId = callId;
+            AcknowledgedSafetyChecks = acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
+            Output = output;
+            Status = status;
+        }
+
+        public string CallId { get; }
 
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
 
-        public ComputerOutput Output { get; set; }
-
-        public ComputerCallOutputStatus? Status { get; }
+        public ComputerOutput Output { get; }
     }
 }

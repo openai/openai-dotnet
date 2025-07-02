@@ -1,6 +1,9 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace OpenAI.Images;
 
@@ -8,49 +11,41 @@ namespace OpenAI.Images;
 /// Represents an image generation response payload that contains information for multiple generated images.
 /// </summary>
 [CodeGenType("ImagesResponse")]
-[CodeGenSuppress("Data")]
-[CodeGenSuppress("Created")]
-[CodeGenSuppress(nameof(GeneratedImageCollection))]
 [CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset))]
-[CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset), typeof(IDictionary<string, BinaryData>))]
+[CodeGenVisibility(nameof(Data), CodeGenVisibility.Internal)]
 public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
 {
-    // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
+    // CUSTOM: Set the inherited Items property via the base constructor in favor of the intercepted Data property.
     /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/>. </summary>
-    /// <param name="created"></param>
     /// <param name="data"></param>
-    /// <exception cref="ArgumentNullException"> <paramref name="data"/> is null. </exception>
-    internal GeneratedImageCollection(DateTimeOffset created, IEnumerable<GeneratedImage> data)
+    /// <param name="usage"></param>
+    /// <param name="createdAt"></param>
+    /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
+    internal GeneratedImageCollection(IList<GeneratedImage> data, ImageTokenUsage usage, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         : base([.. data])
     {
-        Argument.AssertNotNull(data, nameof(data));
-
-        CreatedAt = created;
+        Usage = usage;
+        CreatedAt = createdAt;
+        SerializedAdditionalRawData = additionalBinaryDataProperties;
     }
 
-    // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
-    /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/>. </summary>
-    /// <param name="created"></param>
-    /// <param name="data"></param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal GeneratedImageCollection(DateTimeOffset created, IReadOnlyList<GeneratedImage> data, IDictionary<string, BinaryData> serializedAdditionalRawData)
-        : base([.. data])
-    {
-        CreatedAt = created;
-        SerializedAdditionalRawData = serializedAdditionalRawData;
-    }
-
-    // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
+    // CUSTOM: Set the inherited Items property via the base constructor in favor of the intercepted Data property.
     /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/> for deserialization. </summary>
-    internal GeneratedImageCollection()
-        : base([])
+    internal GeneratedImageCollection() : base([])
     {
     }
 
     // CUSTOM: Renamed.
     /// <summary>
-    /// The timestamp at which the result image was generated.
+    /// The timestamp at which the result images were generated.
     /// </summary>
     [CodeGenMember("Created")]
     public DateTimeOffset CreatedAt { get; }
+
+    internal static GeneratedImageCollection FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

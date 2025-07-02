@@ -12,18 +12,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRunObjectRequiredActionSubmitToolOutputs()
+        internal InternalRunObjectRequiredActionSubmitToolOutputs() : this(null, null)
         {
-            ToolCalls = new ChangeTrackingList<InternalRequiredFunctionToolCall>();
         }
 
         internal InternalRunObjectRequiredActionSubmitToolOutputs(IReadOnlyList<InternalRequiredFunctionToolCall> toolCalls, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            ToolCalls = toolCalls;
+            // Plugin customization: ensure initialization of collections
+            ToolCalls = toolCalls ?? new ChangeTrackingList<InternalRequiredFunctionToolCall>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IReadOnlyList<InternalRequiredFunctionToolCall> ToolCalls { get; }
+        internal IReadOnlyList<InternalRequiredFunctionToolCall> ToolCalls { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

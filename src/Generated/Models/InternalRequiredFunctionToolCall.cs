@@ -17,15 +17,17 @@ namespace OpenAI.Assistants
             _internalFunction = internalFunction;
         }
 
-        internal InternalRequiredFunctionToolCall(string id, object @type, InternalRunToolCallObjectFunction internalFunction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRequiredFunctionToolCall(string id, string kind, InternalRunToolCallObjectFunction internalFunction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            _type = @type;
+            Kind = kind;
             _internalFunction = internalFunction;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
+
+        public string Kind { get; } = "function";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

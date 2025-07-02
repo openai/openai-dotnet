@@ -62,7 +62,7 @@ internal class RunCollectionResult : CollectionResult<ThreadRun>
     }
 
     public ClientResult GetFirstPage()
-        => _runClient.ListRuns(_threadId, _limit, _order, _after, _before, _options);
+        => _runClient.GetRuns(_threadId, _limit, _order, _after, _before, _options);
 
     public ClientResult GetNextPage(ClientResult result)
     {
@@ -73,7 +73,7 @@ internal class RunCollectionResult : CollectionResult<ThreadRun>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return _runClient.ListRuns(_threadId, _limit, _order, lastId, _before, _options);
+        return _runClient.GetRuns(_threadId, _limit, _order, lastId, _before, _options);
     }
 
     public static bool HasNextPage(ClientResult result)

@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal readonly partial struct InternalRealtimeItemType : IEquatable<InternalRealtimeItemType>
     {
@@ -22,11 +22,11 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static InternalRealtimeItemType Message { get; } = new InternalRealtimeItemType(MessageValue);
+        internal static InternalRealtimeItemType Message { get; } = new InternalRealtimeItemType(MessageValue);
 
-        public static InternalRealtimeItemType FunctionCall { get; } = new InternalRealtimeItemType(FunctionCallValue);
+        internal static InternalRealtimeItemType FunctionCall { get; } = new InternalRealtimeItemType(FunctionCallValue);
 
-        public static InternalRealtimeItemType FunctionCallOutput { get; } = new InternalRealtimeItemType(FunctionCallOutputValue);
+        internal static InternalRealtimeItemType FunctionCallOutput { get; } = new InternalRealtimeItemType(FunctionCallOutputValue);
 
         public static bool operator ==(InternalRealtimeItemType left, InternalRealtimeItemType right) => left.Equals(right);
 

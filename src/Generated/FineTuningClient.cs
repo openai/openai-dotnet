@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -16,5 +19,89 @@ namespace OpenAI.FineTuning
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult GetFineTuningCheckpointPermissions(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+
+            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, after, limit, order, projectId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetFineTuningCheckpointPermissionsAsync(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+
+            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, after, limit, order, projectId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult CreateFineTuningCheckpointPermission(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateFineTuningCheckpointPermissionRequest(fineTunedModelCheckpoint, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateFineTuningCheckpointPermissionAsync(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateFineTuningCheckpointPermissionRequest(fineTunedModelCheckpoint, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteFineTuningCheckpointPermission(string fineTunedModelCheckpoint, string permissionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+            Argument.AssertNotNullOrEmpty(permissionId, nameof(permissionId));
+
+            using PipelineMessage message = CreateDeleteFineTuningCheckpointPermissionRequest(fineTunedModelCheckpoint, permissionId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteFineTuningCheckpointPermissionAsync(string fineTunedModelCheckpoint, string permissionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
+            Argument.AssertNotNullOrEmpty(permissionId, nameof(permissionId));
+
+            using PipelineMessage message = CreateDeleteFineTuningCheckpointPermissionRequest(fineTunedModelCheckpoint, permissionId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult PauseFineTuningJob(string fineTuningJobId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+
+            using PipelineMessage message = CreatePauseFineTuningJobRequest(fineTuningJobId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> PauseFineTuningJobAsync(string fineTuningJobId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+
+            using PipelineMessage message = CreatePauseFineTuningJobRequest(fineTuningJobId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult ResumeFineTuningJob(string fineTuningJobId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+
+            using PipelineMessage message = CreateResumeFineTuningJobRequest(fineTuningJobId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> ResumeFineTuningJobAsync(string fineTuningJobId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+
+            using PipelineMessage message = CreateResumeFineTuningJobRequest(fineTuningJobId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

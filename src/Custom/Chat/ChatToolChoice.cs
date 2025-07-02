@@ -27,9 +27,10 @@ namespace OpenAI.Chat;
 [CodeGenType("ChatCompletionToolChoice")]
 public partial class ChatToolChoice
 {
+    private const string FunctionType = "function";
     private readonly bool _predefined;
     private readonly string _predefinedValue;
-    private readonly InternalChatCompletionNamedToolChoiceType? _type;
+    private readonly string _type;
     private readonly InternalChatCompletionNamedToolChoiceFunction _function;
 
     private const string AutoValue = "auto";
@@ -42,7 +43,7 @@ public partial class ChatToolChoice
     }
 
     // CUSTOM: Added to support deserialization.
-    internal ChatToolChoice(bool predefined, string predefinedValue, InternalChatCompletionNamedToolChoiceType? type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    internal ChatToolChoice(bool predefined, string predefinedValue, string type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         _predefined = predefined;
         _predefinedValue = predefinedValue;
@@ -104,7 +105,7 @@ public partial class ChatToolChoice
         return new ChatToolChoice(
             predefined: false,
             predefinedValue: null,
-            type: InternalChatCompletionNamedToolChoiceType.Function,
+            type: FunctionType,
             function: new InternalChatCompletionNamedToolChoiceFunction(functionName),
             serializedAdditionalRawData: null);
     }

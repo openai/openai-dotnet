@@ -12,14 +12,14 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ThreadModificationOptions()
+        public ThreadModificationOptions() : this(null, null, null)
         {
-            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
         internal ThreadModificationOptions(IDictionary<string, string> metadata, ToolResources toolResources, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Metadata = metadata;
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             ToolResources = toolResources;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

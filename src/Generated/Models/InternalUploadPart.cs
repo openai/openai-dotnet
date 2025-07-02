@@ -18,7 +18,7 @@ namespace OpenAI.Files
             UploadId = uploadId;
         }
 
-        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId, InternalUploadPartObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -33,7 +33,7 @@ namespace OpenAI.Files
 
         public string UploadId { get; }
 
-        public InternalUploadPartObject Object { get; } = "upload.part";
+        public string Object { get; } = "upload.part";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

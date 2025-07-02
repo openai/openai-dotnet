@@ -9,6 +9,7 @@ namespace OpenAI.Chat;
 /// in either direct <c>assistant</c> message responses or in calls to supplied <c>tools</c> or <c>functions</c>.
 /// </summary>
 [CodeGenType("ChatCompletionRequestUserMessage")]
+[CodeGenVisibility(nameof(UserChatMessage), CodeGenVisibility.Internal)]
 [CodeGenSuppress("UserChatMessage", typeof(ChatMessageContent))]
 public partial class UserChatMessage : ChatMessage
 {
@@ -21,7 +22,7 @@ public partial class UserChatMessage : ChatMessage
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public UserChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : base(ChatMessageRole.User, contentParts)
+        : this(new(contentParts), ChatMessageRole.User, null, null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -35,23 +36,17 @@ public partial class UserChatMessage : ChatMessage
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public UserChatMessage(params ChatMessageContentPart[] contentParts)
-        : base(ChatMessageRole.User, contentParts)
-    {
-    }
+        : this(new(contentParts), ChatMessageRole.User, null, null)
+    { }
 
     /// <summary>
     /// Creates a new instance of <see cref="UserChatMessage"/> with ordinary text <c>content</c>.
     /// </summary>
     /// <param name="content"> The textual content associated with the message. </param>
     public UserChatMessage(string content)
-        : base(ChatMessageRole.User, content)
+        : this(new([content]), ChatMessageRole.User, null, null)
     {
         Argument.AssertNotNull(content, nameof(content));
-    }
-
-    // CUSTOM: Hide the default constructor.
-    internal UserChatMessage()
-    {
     }
 
     // CUSTOM: Rename.

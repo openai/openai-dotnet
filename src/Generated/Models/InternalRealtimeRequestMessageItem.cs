@@ -5,16 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestMessageItem : ConversationItem
+    internal partial class InternalRealtimeRequestMessageItem : RealtimeItem
     {
         public InternalRealtimeRequestMessageItem(ConversationMessageRole role) : base(InternalRealtimeItemType.Message)
         {
             Role = role;
         }
 
-        internal InternalRealtimeRequestMessageItem(InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status) : base(@type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeRequestMessageItem(InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status) : base(kind, id, additionalBinaryDataProperties)
         {
             Role = role;
             Status = status;

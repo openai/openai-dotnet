@@ -5,20 +5,17 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestAudioContentPart : ConversationContentPart
     {
-        public InternalRealtimeRequestAudioContentPart() : base(ConversationContentPartKind.InputAudio)
+        public InternalRealtimeRequestAudioContentPart() : this(ConversationContentPartKind.InputAudio, null, null)
         {
         }
 
-        internal InternalRealtimeRequestAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, string internalTranscriptValue) : base(kind, additionalBinaryDataProperties)
+        internal InternalRealtimeRequestAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalTranscriptValue) : base(kind, additionalBinaryDataProperties)
         {
-            Type = @type;
             InternalTranscriptValue = internalTranscriptValue;
         }
-
-        internal string Type { get; set; } = "input_audio";
     }
 }

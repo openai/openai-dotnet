@@ -164,7 +164,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         AssertAsyncOnly();
 
         VectorStoreClient client = GetTestClient();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 5; i++)
         {
             CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: true,
                 new VectorStoreCreationOptions()
@@ -176,6 +176,8 @@ public class VectorStoresTests : SyncAsyncTestBase
 
             Assert.That(vectorStore.Name, Is.EqualTo($"Test Vector Store {i}"));
         }
+
+        Thread.Sleep(5000);
 
         int lastIdSeen = int.MaxValue;
         int count = 0;

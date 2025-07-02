@@ -14,27 +14,35 @@ namespace OpenAI.VectorStores;
 /// </summary>
 [Experimental("OPENAI001")]
 [CodeGenType("VectorStores")]
-[CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("ListVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
+[CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("DeleteVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("DeleteVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
+[CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatch", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
+[CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
+[CodeGenSuppress("DeleteVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("DeleteVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RetrieveVectorStoreFileContent", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RetrieveVectorStoreFileContentAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("SearchVectorStore", typeof(string), typeof(BinaryData), typeof(bool?), typeof(int?), typeof(BinaryData), typeof(InternalVectorStoreSearchRequestRankingOptions), typeof(CancellationToken))]
+[CodeGenSuppress("SearchVectorStoreAsync", typeof(string), typeof(BinaryData), typeof(bool?), typeof(int?), typeof(BinaryData), typeof(InternalVectorStoreSearchRequestRankingOptions), typeof(CancellationToken))]
+[CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("ListFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("GetFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
+[CodeGenSuppress("GetFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 public partial class VectorStoreClient
 {
     // CUSTOM: Added as a convenience.
@@ -107,14 +115,14 @@ public partial class VectorStoreClient
     /// should return after the operation has been started and is still running
     /// on the service, or wait until the operation has completed to return.
     /// </param>
-    /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
+    /// <param name="options"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="options"/> is null. </exception>
     /// <returns> A <see cref="CreateVectorStoreOperation"/> that can be used to wait for
     /// the vector store creation to complete. </returns>
-    public virtual async Task<CreateVectorStoreOperation> CreateVectorStoreAsync(bool waitUntilCompleted, VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
+    public virtual async Task<CreateVectorStoreOperation> CreateVectorStoreAsync(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        using BinaryContent content = vectorStore;
+        using BinaryContent content = options?.ToBinaryContent();
         return await CreateVectorStoreAsync(content, waitUntilCompleted, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
@@ -123,14 +131,14 @@ public partial class VectorStoreClient
     /// should return after the operation has been started and is still running
     /// on the service, or wait until the operation has completed to return.
     /// </param>
-    /// <param name="vectorStore"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
+    /// <param name="options"> The <see cref="VectorStoreCreationOptions"/> to use. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStore"/> is null. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="options"/> is null. </exception>
     /// <returns> A <see cref="CreateVectorStoreOperation"/> that can be used to wait for
     /// the vector store creation to complete. </returns>
-    public virtual CreateVectorStoreOperation CreateVectorStore(bool waitUntilCompleted, VectorStoreCreationOptions vectorStore = null, CancellationToken cancellationToken = default)
+    public virtual CreateVectorStoreOperation CreateVectorStore(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        using BinaryContent content = vectorStore;
+        using BinaryContent content = options?.ToBinaryContent();
         return CreateVectorStore(content, waitUntilCompleted, cancellationToken.ToRequestOptions());
     }
 
@@ -147,7 +155,7 @@ public partial class VectorStoreClient
         ClientResult result
             = await GetVectorStoreAsync(vectorStoreId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(
-            (VectorStore)result, result.GetRawResponse());
+            VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
@@ -161,41 +169,41 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
         ClientResult result = GetVectorStore(vectorStoreId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((VectorStore)result, result.GetRawResponse());
+        return ClientResult.FromValue(VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
     /// Modifies an existing <see cref="VectorStore"/>.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the <see cref="VectorStore"/> to modify. </param>
-    /// <param name="vectorStore"> The new options to apply to the <see cref="VectorStore"/>. </param>
+    /// <param name="options"> The new options to apply to the <see cref="VectorStore"/>. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <returns> An updated representation of the modified <see cref="VectorStore"/>. </returns>
-    public virtual async Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions vectorStore, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNull(vectorStore, nameof(vectorStore));
+        Argument.AssertNotNull(options, nameof(options));
 
-        using BinaryContent content = vectorStore;
+        using BinaryContent content = options?.ToBinaryContent();
         ClientResult result = await ModifyVectorStoreAsync(vectorStoreId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((VectorStore)result, result.GetRawResponse());
+        return ClientResult.FromValue(VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
     /// Modifies an existing <see cref="VectorStore"/>.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the <see cref="VectorStore"/> to modify. </param>
-    /// <param name="vectorStore"> The new options to apply to the <see cref="VectorStore"/>. </param>
+    /// <param name="options"> The new options to apply to the <see cref="VectorStore"/>. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <returns> An updated representation of the modified <see cref="VectorStore"/>. </returns>
-    public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions vectorStore, CancellationToken cancellationToken = default)
+    public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNull(vectorStore, nameof(vectorStore));
+        Argument.AssertNotNull(options, nameof(options));
 
-        using BinaryContent content = vectorStore;
+        using BinaryContent content = options?.ToBinaryContent();
         ClientResult result = ModifyVectorStore(vectorStoreId, content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((VectorStore)result, result.GetRawResponse());
+        return ClientResult.FromValue(VectorStore.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
@@ -210,7 +218,7 @@ public partial class VectorStoreClient
 
         ClientResult protocolResult = await DeleteVectorStoreAsync(vectorStoreId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse rawProtocolResponse = protocolResult?.GetRawResponse();
-        VectorStoreDeletionResult value = (VectorStoreDeletionResult)protocolResult;
+        VectorStoreDeletionResult value = VectorStoreDeletionResult.FromClientResult(protocolResult);
         return ClientResult.FromValue(value, rawProtocolResponse);
     }
 
@@ -226,7 +234,7 @@ public partial class VectorStoreClient
 
         ClientResult protocolResult = DeleteVectorStore(vectorStoreId, cancellationToken.ToRequestOptions());
         PipelineResponse rawProtocolResponse = protocolResult?.GetRawResponse();
-        VectorStoreDeletionResult value = (VectorStoreDeletionResult)protocolResult;
+        VectorStoreDeletionResult value = VectorStoreDeletionResult.FromClientResult(protocolResult);
         return ClientResult.FromValue(value, rawProtocolResponse);
     }
 
@@ -311,7 +319,7 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        return await AddFileToVectorStoreAsync(vectorStoreId, internalRequest, waitUntilCompleted, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return await AddFileToVectorStoreAsync(vectorStoreId, internalRequest.ToBinaryContent(), waitUntilCompleted, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -333,7 +341,27 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
-        return AddFileToVectorStore(vectorStoreId, internalRequest, waitUntilCompleted, cancellationToken.ToRequestOptions());
+        return AddFileToVectorStore(vectorStoreId, internalRequest.ToBinaryContent(), waitUntilCompleted, cancellationToken.ToRequestOptions());
+    }
+
+    public virtual ClientResult<VectorStoreFileAssociation> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+        InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
+        ClientResult result = UpdateVectorStoreFileAttributes(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue(VectorStoreFileAssociation.FromClientResult(result), result.GetRawResponse());
+    }
+
+    public virtual async Task<ClientResult<VectorStoreFileAssociation>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+        Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+        InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
+        ClientResult result = await UpdateVectorStoreFileAttributesAsync(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        return ClientResult.FromValue(VectorStoreFileAssociation.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary>
@@ -430,7 +458,7 @@ public partial class VectorStoreClient
 
         ClientResult result = await GetFileAssociationAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -452,7 +480,7 @@ public partial class VectorStoreClient
 
         ClientResult result = GetFileAssociation(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -471,7 +499,7 @@ public partial class VectorStoreClient
     {
         ClientResult protocolResult = await RemoveFileFromStoreAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
-        FileFromStoreRemovalResult value = (FileFromStoreRemovalResult)protocolResult;
+        FileFromStoreRemovalResult value = FileFromStoreRemovalResult.FromClientResult(protocolResult);
         return ClientResult.FromValue(value, protocolResponse);
     }
 
@@ -490,7 +518,7 @@ public partial class VectorStoreClient
     {
         ClientResult protocolResult = RemoveFileFromStore(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
-        FileFromStoreRemovalResult value = (FileFromStoreRemovalResult)protocolResult;
+        FileFromStoreRemovalResult value = FileFromStoreRemovalResult.FromClientResult(protocolResult);
         return ClientResult.FromValue(value, protocolResponse);
     }
 
@@ -515,7 +543,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
-        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds);
+        var createFileBatchRequest = new InternalCreateVectorStoreFileBatchRequest(fileIds);
+        BinaryContent content = BinaryContent.Create(createFileBatchRequest, ModelSerializationExtensions.WireOptions);
         RequestOptions options = cancellationToken.ToRequestOptions();
 
         return await CreateBatchFileJobAsync(vectorStoreId, content, waitUntilCompleted, options).ConfigureAwait(false);
@@ -542,7 +571,8 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileIds, nameof(fileIds));
 
-        BinaryContent content = new InternalCreateVectorStoreFileBatchRequest(fileIds);
+        var createFileBatchRequest = new InternalCreateVectorStoreFileBatchRequest(fileIds);
+        BinaryContent content = BinaryContent.Create(createFileBatchRequest, ModelSerializationExtensions.WireOptions);
         RequestOptions options = cancellationToken.ToRequestOptions();
 
         return CreateBatchFileJob(vectorStoreId, content, waitUntilCompleted, options);
@@ -695,7 +725,7 @@ public partial class VectorStoreClient
 
         ClientResult result = await GetBatchFileJobAsync(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob)result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -713,7 +743,7 @@ public partial class VectorStoreClient
 
         ClientResult result = GetBatchFileJob(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob)result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -735,7 +765,7 @@ public partial class VectorStoreClient
 
         ClientResult result = await CancelBatchFileJobAsync(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob)result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -757,7 +787,7 @@ public partial class VectorStoreClient
 
         ClientResult result = CancelBatchFileJob(vectorStoreId, batchJobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreBatchFileJob value = (VectorStoreBatchFileJob)result;
+        VectorStoreBatchFileJob value = VectorStoreBatchFileJob.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 }

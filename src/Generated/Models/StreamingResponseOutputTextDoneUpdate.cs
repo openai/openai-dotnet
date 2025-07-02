@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseOutputTextDoneUpdate(string itemId, int outputIndex, int contentIndex, string text) : base(InternalResponsesResponseStreamEventType.ResponseOutputTextDone)
+        internal StreamingResponseOutputTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string text) : base(InternalResponseStreamEventType.ResponseOutputTextDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -17,7 +17,7 @@ namespace OpenAI.Responses
             Text = text;
         }
 
-        internal StreamingResponseOutputTextDoneUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string text) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseOutputTextDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string text) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

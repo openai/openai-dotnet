@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,47 +24,26 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudio)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
-            }
+            base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("input_audio") != true)
             {
                 writer.WritePropertyName("input_audio"u8);
                 writer.WriteObjectValue(InputAudio, options);
             }
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
         }
 
-        InternalChatCompletionRequestMessageContentPartAudio IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalChatCompletionRequestMessageContentPartAudio IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalChatCompletionRequestMessageContentPartAudio)JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalChatCompletionRequestMessageContentPartAudio JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override ChatMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -81,43 +60,40 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalChatCompletionRequestMessageContentPartAudioType @type = default;
-            InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("type"u8))
-                {
-                    @type = new InternalChatCompletionRequestMessageContentPartAudioType(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("input_audio"u8))
                 {
                     inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio.DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartAudio(@type, inputAudio, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartAudio(additionalBinaryDataProperties, inputAudio);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudio)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalChatCompletionRequestMessageContentPartAudio IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalChatCompletionRequestMessageContentPartAudio IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalChatCompletionRequestMessageContentPartAudio)PersistableModelCreateCore(data, options);
 
-        protected virtual InternalChatCompletionRequestMessageContentPartAudio PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override ChatMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -133,21 +109,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatCompletionRequestMessageContentPartAudio internalChatCompletionRequestMessageContentPartAudio)
-        {
-            if (internalChatCompletionRequestMessageContentPartAudio == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatCompletionRequestMessageContentPartAudio, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatCompletionRequestMessageContentPartAudio(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionRequestMessageContentPartAudio(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

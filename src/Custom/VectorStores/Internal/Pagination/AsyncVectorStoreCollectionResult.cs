@@ -83,7 +83,7 @@ internal class AsyncVectorStoreCollectionResult : AsyncCollectionResult<VectorSt
 
     internal virtual async Task<ClientResult> GetVectorStoresAsync(int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _vectorStoreClient.CreateListVectorStoresRequest(limit, order, after, before, options);
+        using PipelineMessage message = _vectorStoreClient.CreateGetVectorStoresRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 }

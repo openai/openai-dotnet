@@ -25,11 +25,9 @@ public partial class FunctionChatMessage : ChatMessage
     ///     restriction (e.g. JSON) imposed on this content.
     /// </param>
     public FunctionChatMessage(string functionName, string content)
-        : base(ChatMessageRole.Function, content)
+        : this(content is null ? null : new ChatMessageContent([content]), ChatMessageRole.Function, null, functionName)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
-
-        FunctionName = functionName;
 
         // FunctionChatMessage treats content as *required* but explicitly *nullable*. If null content was provided,
         // enforce manifestation of the (nullable) content collection via .Clear().

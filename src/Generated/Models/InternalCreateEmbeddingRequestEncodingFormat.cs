@@ -21,9 +21,9 @@ namespace OpenAI.Embeddings
             _value = value;
         }
 
-        public static InternalCreateEmbeddingRequestEncodingFormat Float { get; } = new InternalCreateEmbeddingRequestEncodingFormat(FloatValue);
+        internal static InternalCreateEmbeddingRequestEncodingFormat Float { get; } = new InternalCreateEmbeddingRequestEncodingFormat(FloatValue);
 
-        public static InternalCreateEmbeddingRequestEncodingFormat Base64 { get; } = new InternalCreateEmbeddingRequestEncodingFormat(Base64Value);
+        internal static InternalCreateEmbeddingRequestEncodingFormat Base64 { get; } = new InternalCreateEmbeddingRequestEncodingFormat(Base64Value);
 
         public static bool operator ==(InternalCreateEmbeddingRequestEncodingFormat left, InternalCreateEmbeddingRequestEncodingFormat right) => left.Equals(right);
 

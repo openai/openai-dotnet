@@ -2,8 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesComputerCallActionType")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
 [Experimental("OPENAICUA001")]
+[CodeGenType("ComputerActionType")]
 public enum ComputerCallActionKind
 {
     Click,

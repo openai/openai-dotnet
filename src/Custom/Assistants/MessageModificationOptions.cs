@@ -1,3 +1,4 @@
+using System.ClientModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
@@ -9,4 +10,5 @@ namespace OpenAI.Assistants;
 [CodeGenType("ModifyMessageRequest")]
 public partial class MessageModificationOptions
 {
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

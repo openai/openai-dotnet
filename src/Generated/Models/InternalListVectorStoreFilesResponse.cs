@@ -20,17 +20,18 @@ namespace OpenAI.VectorStores
             HasMore = hasMore;
         }
 
-        internal InternalListVectorStoreFilesResponse(InternalListVectorStoreFilesResponseObject @object, IReadOnlyList<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListVectorStoreFilesResponse(string @object, IReadOnlyList<VectorStoreFileAssociation> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data;
+            Data = data ?? new ChangeTrackingList<VectorStoreFileAssociation>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalListVectorStoreFilesResponseObject Object { get; } = "list";
+        public string Object { get; } = "list";
 
         public IReadOnlyList<VectorStoreFileAssociation> Data { get; }
 

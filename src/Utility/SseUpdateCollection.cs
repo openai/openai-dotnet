@@ -20,6 +20,8 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
+    public List<Action> AdditionalDisposalActions { get; } = [];
+
     public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
         Func<JsonElement, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
@@ -71,7 +73,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
     protected override IEnumerable<T> GetValuesFromPage(ClientResult page)
     {
-        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken);
+        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
         while (enumerator.MoveNext())
         {
             yield return enumerator.Current;
@@ -81,6 +83,8 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     private sealed class SseUpdateEnumerator<U> : IEnumerator<U>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
+
+        private List<Action> _additionalDisposalActions;
 
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
@@ -102,7 +106,8 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         public SseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> eventDeserializerFunc,
             ClientResult page,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            List<Action> additionalDisposalActions)
         {
             Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
             Argument.AssertNotNull(page, nameof(page));
@@ -110,6 +115,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             _eventDeserializerFunc = eventDeserializerFunc;
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
+            _additionalDisposalActions = additionalDisposalActions;
         }
 
         U IEnumerator<U>.Current => _current!;
@@ -186,6 +192,12 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 // Dispose the response so we don't leave the network connection open.
                 _response?.Dispose();
             }
+
+            foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
+            {
+                additionalDisposalAction?.Invoke();
+            }
+            _additionalDisposalActions?.Clear();
         }
     }
 }

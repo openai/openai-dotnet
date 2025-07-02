@@ -20,10 +20,11 @@ namespace OpenAI.FineTuning
 
         internal FineTuningIntegrationWandbWandb(string project, string name, string entity, IList<string> tags, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Project = project;
             Name = name;
             Entity = entity;
-            Tags = tags;
+            Tags = tags ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

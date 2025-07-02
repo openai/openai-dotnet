@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequest : IJsonModel<InternalCreateThreadAndRunRequest>
     {
-        internal InternalCreateThreadAndRunRequest()
+        internal InternalCreateThreadAndRunRequest() : this(null, null, null, null, null, default, default, default, default, default, null, default, null, null, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -127,6 +128,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue(ToolChoice, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -150,6 +152,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadAndRunRequest IJsonModel<InternalCreateThreadAndRunRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadAndRunRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -354,6 +357,7 @@ namespace OpenAI.Assistants
                     toolChoice = ToolConstraint.DeserializeToolConstraint(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateThreadAndRunRequest(
@@ -378,13 +382,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalCreateThreadAndRunRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequest)} does not support writing '{options.Format}' format.");
             }
@@ -392,6 +397,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadAndRunRequest IPersistableModel<InternalCreateThreadAndRunRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadAndRunRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -408,21 +414,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalCreateThreadAndRunRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateThreadAndRunRequest internalCreateThreadAndRunRequest)
-        {
-            if (internalCreateThreadAndRunRequest == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateThreadAndRunRequest, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateThreadAndRunRequest(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateThreadAndRunRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

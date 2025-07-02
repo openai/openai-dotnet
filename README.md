@@ -73,15 +73,15 @@ While you can pass your API key directly as a string, it is highly recommended t
 If you need to connect to an alternative API endpoint (for example, a proxy or self-hosted OpenAI-compatible LLM), you can specify a custom base URL and API key using the `ApiKeyCredential` and `OpenAIClientOptions`:
 
 ```csharp
-using OpenAI.Chat;
 using OpenAI;
+using OpenAI.Chat;
 
-var client = new ChatClient(
-    model: CHAT_MODEL,
-    credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("API_KEY") ?? ""),
-    options: new OpenAIClientOptions
-    {
-        Endpoint = new Uri(BASE_URL),
+ChatClient client = new(
+    model: "MODEL_NAME",
+    credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")),
+    options: new OpenAIClientOptions() 
+    { 
+        Endpoint = new Uri("BASE_URL")
     }
 );
 ```
@@ -92,20 +92,22 @@ Replace `CHAT_MODEL` with your model name and `BASE_URL` with your endpoint URI.
 
 The library is organized into namespaces by feature areas in the OpenAI REST API. Each namespace contains a corresponding client class.
 
-| Namespace                     | Client class                 | Notes                                                             |
-| ------------------------------|------------------------------|-------------------------------------------------------------------|
-| `OpenAI.Assistants`           | `AssistantClient`            | ![Experimental](https://img.shields.io/badge/experimental-purple) |
-| `OpenAI.Audio`                | `AudioClient`                |                                                                   |
-| `OpenAI.Batch`                | `BatchClient`                | ![Experimental](https://img.shields.io/badge/experimental-purple) |
-| `OpenAI.Chat`                 | `ChatClient`                 |                                                                   |
-| `OpenAI.Embeddings`           | `EmbeddingClient`            |                                                                   |
-| `OpenAI.FineTuning`           | `FineTuningClient`           | ![Experimental](https://img.shields.io/badge/experimental-purple) |
-| `OpenAI.Files`                | `OpenAIFileClient`           |                                                                   |
-| `OpenAI.Images`               | `ImageClient`                |                                                                   |
-| `OpenAI.Models`               | `OpenAIModelClient`          |                                                                   |
-| `OpenAI.Moderations`          | `ModerationClient`           |                                                                   |
-| `OpenAI.Responses`            | `OpenAIResponseClient`       |                                                                   |
-| `OpenAI.VectorStores`         | `VectorStoreClient`          | ![Experimental](https://img.shields.io/badge/experimental-purple) |
+| Namespace                     | Client class                 |
+| ------------------------------|------------------------------|
+| `OpenAI.Assistants`           | `AssistantClient`            |
+| `OpenAI.Audio`                | `AudioClient`                |
+| `OpenAI.Batch`                | `BatchClient`                |
+| `OpenAI.Chat`                 | `ChatClient`                 |
+| `OpenAI.Embeddings`           | `EmbeddingClient`            |
+| `OpenAI.Evals`                | `EvaluationClient`           |
+| `OpenAI.FineTuning`           | `FineTuningClient`           |
+| `OpenAI.Files`                | `OpenAIFileClient`           |
+| `OpenAI.Images`               | `ImageClient`                |
+| `OpenAI.Models`               | `OpenAIModelClient`          |
+| `OpenAI.Moderations`          | `ModerationClient`           |
+| `OpenAI.Realtime`             | `RealtimeClient`             |
+| `OpenAI.Responses`            | `OpenAIResponseClient`       |
+| `OpenAI.VectorStores`         | `VectorStoreClient`          |
 
 ### Using the async API
 

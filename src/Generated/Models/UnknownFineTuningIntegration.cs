@@ -9,7 +9,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class UnknownFineTuningIntegration : InternalFineTuningIntegration
     {
-        internal UnknownFineTuningIntegration(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
+        internal UnknownFineTuningIntegration(InternalFineTuningIntegrationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

@@ -22,7 +22,7 @@ namespace OpenAI.Files
             ExpiresAt = expiresAt;
         }
 
-        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt, InternalUploadObject? @object, OpenAIFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt, string @object, OpenAIFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -46,11 +46,11 @@ namespace OpenAI.Files
 
         public string Purpose { get; }
 
-        public InternalUploadStatus Status { get; }
+        internal InternalUploadStatus Status { get; }
 
         public DateTimeOffset ExpiresAt { get; }
 
-        public InternalUploadObject? Object { get; }
+        public string Object { get; }
 
         public OpenAIFile File { get; }
 

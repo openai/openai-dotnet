@@ -12,15 +12,15 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public VectorStoreModificationOptions()
+        public VectorStoreModificationOptions() : this(null, null, null, null)
         {
-            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
         internal VectorStoreModificationOptions(string name, IDictionary<string, string> metadata, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Name = name;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             ExpirationPolicy = expirationPolicy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

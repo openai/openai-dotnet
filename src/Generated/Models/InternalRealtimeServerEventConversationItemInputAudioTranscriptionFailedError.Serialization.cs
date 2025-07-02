@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError : IJsonModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>
     {
@@ -20,6 +20,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
@@ -27,10 +28,10 @@ namespace OpenAI.RealtimeConversation
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Type) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind);
             }
             if (Optional.IsDefined(Code) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
@@ -47,6 +48,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(Param);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -70,6 +72,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IJsonModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
@@ -87,7 +90,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            string @type = default;
+            string kind = default;
             string code = default;
             string message = default;
             string @param = default;
@@ -96,7 +99,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("code"u8))
@@ -114,20 +117,22 @@ namespace OpenAI.RealtimeConversation
                     @param = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(@type, code, message, @param, additionalBinaryDataProperties);
+            return new InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(kind, code, message, @param, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)} does not support writing '{options.Format}' format.");
             }
@@ -135,6 +140,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>)this).GetFormatFromOptions(options) : options.Format;
@@ -151,21 +157,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError)
-        {
-            if (internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

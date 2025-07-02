@@ -1,7 +1,10 @@
+using System.ClientModel;
+
 namespace OpenAI.Audio;
 
 /// <summary> The options to configure text-to-speech audio generation. </summary>
 [CodeGenType("CreateSpeechRequest")]
+[CodeGenVisibility(nameof(SpeechGenerationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress("SpeechGenerationOptions", typeof(InternalCreateSpeechRequestModel), typeof(string), typeof(GeneratedSpeechVoice))]
 public partial class SpeechGenerationOptions
 {
@@ -24,12 +27,6 @@ public partial class SpeechGenerationOptions
     [CodeGenMember("Voice")]
     internal GeneratedSpeechVoice Voice { get; set; }
 
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="SpeechGenerationOptions"/>. </summary>
-    public SpeechGenerationOptions()
-    {
-    }
-
     // CUSTOM: Renamed.
     /// <summary>
     ///     The speed of the generated audio expressed as a ratio between 0.5 and 2.0. The default is 1.0.
@@ -37,4 +34,6 @@ public partial class SpeechGenerationOptions
     [CodeGenMember("Speed")]
 
     public float? SpeedRatio { get; set; }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

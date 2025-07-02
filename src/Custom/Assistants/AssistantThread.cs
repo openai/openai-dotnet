@@ -1,4 +1,7 @@
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
@@ -9,7 +12,7 @@ public partial class AssistantThread
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `thread`. </summary>
     [CodeGenMember("Object")]
-    internal InternalThreadObjectObject Object { get; } = InternalThreadObjectObject.Thread;
+    internal string Object { get; } = "thread";
 
 
     /// <summary>
@@ -18,4 +21,11 @@ public partial class AssistantThread
     /// For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
     /// </summary>
     public ToolResources ToolResources { get; }
+
+    internal static AssistantThread FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeAssistantThread(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

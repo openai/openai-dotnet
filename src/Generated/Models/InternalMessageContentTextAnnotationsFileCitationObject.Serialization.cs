@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFileCitationObject : IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>
     {
-        internal InternalMessageContentTextAnnotationsFileCitationObject()
+        internal InternalMessageContentTextAnnotationsFileCitationObject() : this(InternalMessageContentTextAnnotationType.FileCitation, null, null, null, default, default)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -56,6 +57,7 @@ namespace OpenAI.Assistants
 
         InternalMessageContentTextAnnotationsFileCitationObject IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFileCitationObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageContentTextObjectAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -73,7 +75,7 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "file_citation";
+            InternalMessageContentTextAnnotationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation = default;
@@ -83,7 +85,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalMessageContentTextAnnotationType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -106,10 +108,11 @@ namespace OpenAI.Assistants
                     endIndex = prop.Value.GetInt32();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageContentTextAnnotationsFileCitationObject(
-                @type,
+                kind,
                 additionalBinaryDataProperties,
                 text,
                 fileCitation,
@@ -119,13 +122,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalMessageContentTextAnnotationsFileCitationObject)} does not support writing '{options.Format}' format.");
             }
@@ -133,6 +137,7 @@ namespace OpenAI.Assistants
 
         InternalMessageContentTextAnnotationsFileCitationObject IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFileCitationObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageContentTextObjectAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -149,21 +154,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalMessageContentTextAnnotationsFileCitationObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalMessageContentTextAnnotationsFileCitationObject internalMessageContentTextAnnotationsFileCitationObject)
-        {
-            if (internalMessageContentTextAnnotationsFileCitationObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalMessageContentTextAnnotationsFileCitationObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalMessageContentTextAnnotationsFileCitationObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageContentTextAnnotationsFileCitationObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -4,24 +4,26 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeConversationResponseItem
+    internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
     {
-        internal InternalRealtimeResponseMessageItem(string id, ConversationItemStatus status, ConversationMessageRole role) : base(InternalRealtimeItemType.Message, id)
+        internal InternalRealtimeResponseMessageItem(string id, ConversationItemStatus status, ConversationMessageRole role, IEnumerable<ConversationContentPart> content) : base(InternalRealtimeItemType.Message, id)
         {
             Status = status;
             Role = role;
-            Content = new ChangeTrackingList<ConversationContentPart>();
+            Content = content.ToList();
         }
 
-        internal InternalRealtimeResponseMessageItem(InternalRealtimeConversationResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationItemStatus status, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content) : base(@object, @type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseMessageItem(string @object, InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationItemStatus status, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content) : base(@object, kind, id, additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Status = status;
             Role = role;
-            Content = content;
+            Content = content ?? new ChangeTrackingList<ConversationContentPart>();
         }
 
         public ConversationItemStatus Status { get; }

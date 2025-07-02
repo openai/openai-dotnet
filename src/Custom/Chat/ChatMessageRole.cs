@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Chat;
 
 /// <summary>
@@ -105,6 +107,7 @@ public enum ChatMessageRole
     /// <remarks>
     /// <c>developer</c> replaces <c>system</c> when using o1 and newer models.
     /// </remarks>
+    [Experimental("OPENAI001")]
     [CodeGenMember("Developer")]
     Developer,
 }

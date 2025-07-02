@@ -12,21 +12,21 @@ namespace OpenAI.Batch
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalBatchErrors()
+        internal InternalBatchErrors() : this(null, null, null)
         {
-            Data = new ChangeTrackingList<InternalBatchError>();
         }
 
-        internal InternalBatchErrors(InternalBatchErrorsObject? @object, IList<InternalBatchError> data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalBatchErrors(string @object, IList<InternalBatchError> data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data;
+            Data = data ?? new ChangeTrackingList<InternalBatchError>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalBatchErrorsObject? Object { get; }
+        public string Object { get; }
 
-        public IList<InternalBatchError> Data { get; }
+        internal IList<InternalBatchError> Data { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

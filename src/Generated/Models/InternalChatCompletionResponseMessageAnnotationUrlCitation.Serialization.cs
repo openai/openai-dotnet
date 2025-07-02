@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
@@ -51,6 +52,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("title"u8);
                 writer.WriteStringValue(Title);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionResponseMessageAnnotationUrlCitation IJsonModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionResponseMessageAnnotationUrlCitation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,6 +121,7 @@ namespace OpenAI.Chat
                     title = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionResponseMessageAnnotationUrlCitation(endIndex, startIndex, url, title, additionalBinaryDataProperties);
@@ -125,13 +129,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support writing '{options.Format}' format.");
             }
@@ -139,6 +144,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionResponseMessageAnnotationUrlCitation IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionResponseMessageAnnotationUrlCitation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
@@ -155,21 +161,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatCompletionResponseMessageAnnotationUrlCitation internalChatCompletionResponseMessageAnnotationUrlCitation)
-        {
-            if (internalChatCompletionResponseMessageAnnotationUrlCitation == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatCompletionResponseMessageAnnotationUrlCitation, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatCompletionResponseMessageAnnotationUrlCitation(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

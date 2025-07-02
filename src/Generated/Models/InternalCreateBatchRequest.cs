@@ -19,20 +19,21 @@ namespace OpenAI.Batch
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, InternalBatchCompletionTimeframe completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateBatchRequest(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, string completionWindow, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             InputFileId = inputFileId;
             Endpoint = endpoint;
             CompletionWindow = completionWindow;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string InputFileId { get; }
 
-        public InternalCreateBatchRequestEndpoint Endpoint { get; }
+        internal InternalCreateBatchRequestEndpoint Endpoint { get; }
 
-        public InternalBatchCompletionTimeframe CompletionWindow { get; } = "24h";
+        public string CompletionWindow { get; } = "24h";
 
         public IDictionary<string, string> Metadata { get; }
 

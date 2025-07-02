@@ -22,3 +22,8 @@ internal readonly partial struct InternalCreateImageVariationRequestResponseForm
 
 [CodeGenType("CreateImageVariationRequestSize")]
 internal readonly partial struct InternalCreateImageVariationRequestSize { }
+
+[CodeGenType("CreateImageEditRequestQuality")]
+internal readonly partial struct InternalCreateImageEditRequestQuality { }
+
+[CodeGenType("CreateImageEditRequestBackground")] internal readonly partial struct InternalCreateImageEditRequestBackground {}

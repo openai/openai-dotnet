@@ -21,9 +21,9 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalMessageObjectRole User { get; } = new InternalMessageObjectRole(UserValue);
+        internal static InternalMessageObjectRole User { get; } = new InternalMessageObjectRole(UserValue);
 
-        public static InternalMessageObjectRole Assistant { get; } = new InternalMessageObjectRole(AssistantValue);
+        internal static InternalMessageObjectRole Assistant { get; } = new InternalMessageObjectRole(AssistantValue);
 
         public static bool operator ==(InternalMessageObjectRole left, InternalMessageObjectRole right) => left.Equals(right);
 

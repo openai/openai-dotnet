@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -11,18 +12,18 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ChatResponseFormat(string @type)
+        private protected ChatResponseFormat(InternalResponseFormatType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal ChatResponseFormat(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatResponseFormat(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalResponseFormatType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Batch
 {
     internal partial class InternalCreateBatchRequest : IJsonModel<InternalCreateBatchRequest>
     {
-        internal InternalCreateBatchRequest()
+        internal InternalCreateBatchRequest() : this(null, default, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Batch
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -44,7 +45,7 @@ namespace OpenAI.Batch
             if (_additionalBinaryDataProperties?.ContainsKey("completion_window") != true)
             {
                 writer.WritePropertyName("completion_window"u8);
-                writer.WriteStringValue(CompletionWindow.ToString());
+                writer.WriteStringValue(CompletionWindow);
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -62,6 +63,7 @@ namespace OpenAI.Batch
                 }
                 writer.WriteEndObject();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -85,6 +87,7 @@ namespace OpenAI.Batch
 
         InternalCreateBatchRequest IJsonModel<InternalCreateBatchRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateBatchRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -104,7 +107,7 @@ namespace OpenAI.Batch
             }
             string inputFileId = default;
             InternalCreateBatchRequestEndpoint endpoint = default;
-            InternalBatchCompletionTimeframe completionWindow = default;
+            string completionWindow = default;
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -121,7 +124,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("completion_window"u8))
                 {
-                    completionWindow = new InternalBatchCompletionTimeframe(prop.Value.GetString());
+                    completionWindow = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -145,6 +148,7 @@ namespace OpenAI.Batch
                     metadata = dictionary;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateBatchRequest(inputFileId, endpoint, completionWindow, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
@@ -152,13 +156,14 @@ namespace OpenAI.Batch
 
         BinaryData IPersistableModel<InternalCreateBatchRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateBatchRequest)} does not support writing '{options.Format}' format.");
             }
@@ -166,6 +171,7 @@ namespace OpenAI.Batch
 
         InternalCreateBatchRequest IPersistableModel<InternalCreateBatchRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateBatchRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -182,21 +188,5 @@ namespace OpenAI.Batch
         }
 
         string IPersistableModel<InternalCreateBatchRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateBatchRequest internalCreateBatchRequest)
-        {
-            if (internalCreateBatchRequest == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateBatchRequest, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateBatchRequest(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateBatchRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

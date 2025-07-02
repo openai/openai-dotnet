@@ -16,10 +16,9 @@ namespace OpenAI.Chat
             UrlCitation = urlCitation;
         }
 
-        internal ChatMessageAnnotation(InternalChatCompletionResponseMessageAnnotationUrlCitation urlCitation, InternalChatCompletionResponseMessageAnnotationType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatMessageAnnotation(InternalChatCompletionResponseMessageAnnotationUrlCitation urlCitation, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             UrlCitation = urlCitation;
-            Type = @type;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

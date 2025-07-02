@@ -9,14 +9,14 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseFunctionCallArgumentsDoneUpdate(string itemId, int outputIndex, string arguments) : base(InternalResponsesResponseStreamEventType.ResponseFunctionCallArgumentsDone)
+        internal StreamingResponseFunctionCallArgumentsDoneUpdate(int sequenceNumber, string itemId, int outputIndex, string arguments) : base(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             Arguments = arguments;
         }
 
-        internal StreamingResponseFunctionCallArgumentsDoneUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, string arguments) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseFunctionCallArgumentsDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, string arguments) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

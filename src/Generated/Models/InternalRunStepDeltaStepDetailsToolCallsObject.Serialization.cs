@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -42,6 +43,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsObject IJsonModel<InternalRunStepDeltaStepDetailsToolCallsObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRunStepDeltaStepDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -59,14 +61,14 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "tool_calls";
+            InternalRunStepDetailsType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject> toolCalls = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalRunStepDetailsType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("tool_calls"u8))
@@ -83,20 +85,22 @@ namespace OpenAI.Assistants
                     toolCalls = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunStepDeltaStepDetailsToolCallsObject(@type, additionalBinaryDataProperties, toolCalls ?? new ChangeTrackingList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>());
+            return new InternalRunStepDeltaStepDetailsToolCallsObject(kind, additionalBinaryDataProperties, toolCalls ?? new ChangeTrackingList<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>());
         }
 
         BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsObject)} does not support writing '{options.Format}' format.");
             }
@@ -104,6 +108,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsObject IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRunStepDeltaStepDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -120,21 +125,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDeltaStepDetailsToolCallsObject internalRunStepDeltaStepDetailsToolCallsObject)
-        {
-            if (internalRunStepDeltaStepDetailsToolCallsObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDeltaStepDetailsToolCallsObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDeltaStepDetailsToolCallsObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaStepDetailsToolCallsObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

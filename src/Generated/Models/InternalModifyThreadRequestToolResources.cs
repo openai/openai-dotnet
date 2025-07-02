@@ -22,9 +22,9 @@ namespace OpenAI.Assistants
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalModifyThreadRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
+        internal InternalModifyThreadRequestToolResourcesCodeInterpreter CodeInterpreter { get; set; }
 
-        public InternalToolResourcesFileSearchIdsOnly FileSearch { get; set; }
+        internal InternalToolResourcesFileSearchIdsOnly FileSearch { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

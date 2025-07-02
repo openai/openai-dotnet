@@ -3,16 +3,16 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestMessageItem : IJsonModel<InternalRealtimeRequestMessageItem>
     {
-        internal InternalRealtimeRequestMessageItem()
+        internal InternalRealtimeRequestMessageItem() : this(InternalRealtimeItemType.Message, null, null, default, default)
         {
         }
 
@@ -23,6 +23,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestMessageItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -45,7 +46,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestMessageItem IJsonModel<InternalRealtimeRequestMessageItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeRequestMessageItem)JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -79,13 +81,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeRequestMessageItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeRequestMessageItem)} does not support writing '{options.Format}' format.");
             }
@@ -93,7 +96,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestMessageItem IPersistableModel<InternalRealtimeRequestMessageItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeRequestMessageItem)PersistableModelCreateCore(data, options);
 
-        protected override ConversationItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -109,21 +113,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeRequestMessageItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeRequestMessageItem internalRealtimeRequestMessageItem)
-        {
-            if (internalRealtimeRequestMessageItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeRequestMessageItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeRequestMessageItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeRequestMessageItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

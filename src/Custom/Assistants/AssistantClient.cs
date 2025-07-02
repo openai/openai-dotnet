@@ -22,8 +22,8 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyAssistant", typeof(string), typeof(AssistantModificationOptions))]
 [CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
 [CodeGenSuppress("DeleteAssistant", typeof(string))]
-[CodeGenSuppress("ListAssistantsAsync", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListAssistants", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetAssistants", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 public partial class AssistantClient
 {
     private readonly InternalAssistantMessageClient _messageSubClient;
@@ -98,8 +98,8 @@ public partial class AssistantClient
         options ??= new();
         options.Model = model;
 
-        ClientResult protocolResult = await CreateAssistantAsync(options, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+         ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary> Creates a new assistant. </summary>
@@ -113,8 +113,8 @@ public partial class AssistantClient
         options ??= new();
         options.Model = model;
 
-        ClientResult protocolResult = CreateAssistant(options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+         return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = await GetAssistantAsync(assistantId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -228,7 +228,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = GetAssistant(assistantId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -243,10 +243,10 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
         Argument.AssertNotNull(options, nameof(options));
 
-        using BinaryContent content = options;
+        using BinaryContent content = options?.ToBinaryContent();
         ClientResult protocolResult
             = await ModifyAssistantAsync(assistantId, content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -261,9 +261,9 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
         Argument.AssertNotNull(options, nameof(options));
 
-        using BinaryContent content = options;
+        using BinaryContent content = options?.ToBinaryContent();
         ClientResult protocolResult = ModifyAssistant(assistantId, content, null);
-        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(Assistant.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = await DeleteAssistantAsync(assistantId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(AssistantDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -291,7 +291,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
 
         ClientResult protocolResult = DeleteAssistant(assistantId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((AssistantDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(AssistantDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -302,8 +302,8 @@ public partial class AssistantClient
     /// <returns> A new thread. </returns>
     public virtual async Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await CreateThreadAsync(options, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = await CreateThreadAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());;
     }
 
     /// <summary>
@@ -314,8 +314,8 @@ public partial class AssistantClient
     /// <returns> A new thread. </returns>
     public virtual ClientResult<AssistantThread> CreateThread(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = CreateThread(options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = CreateThread(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = await GetThreadAsync(threadId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -343,7 +343,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = GetThread(threadId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -358,8 +358,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = await ModifyThreadAsync(threadId, options, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = await ModifyThreadAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -374,8 +374,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = ModifyThread(threadId, options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = ModifyThread(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(AssistantThread.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -389,7 +389,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = await DeleteThreadAsync(threadId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -403,7 +403,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
         ClientResult protocolResult = DeleteThread(threadId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -431,9 +431,9 @@ public partial class AssistantClient
             options.Content.Add(contentItem);
         }
 
-        ClientResult protocolResult = await CreateMessageAsync(threadId, options, cancellationToken.ToRequestOptions())
+        ClientResult protocolResult = await CreateMessageAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -461,8 +461,8 @@ public partial class AssistantClient
             options.Content.Add(contentItem);
         }
 
-        ClientResult protocolResult = CreateMessage(threadId, options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = CreateMessage(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -573,7 +573,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = await GetMessageAsync(threadId, messageId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -589,7 +589,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = GetMessage(threadId, messageId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -606,9 +606,9 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = await ModifyMessageAsync(threadId, messageId, options, cancellationToken.ToRequestOptions())
+        ClientResult protocolResult = await ModifyMessageAsync(threadId, messageId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -625,8 +625,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult protocolResult = ModifyMessage(threadId, messageId, options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadMessage)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = ModifyMessage(threadId, messageId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(ThreadMessage.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -642,7 +642,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = await DeleteMessageAsync(threadId, messageId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((MessageDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(MessageDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -658,7 +658,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(messageId, nameof(messageId));
 
         ClientResult protocolResult = DeleteMessage(threadId, messageId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((MessageDeletionResult)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(MessageDeletionResult.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -678,9 +678,9 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = null;
 
-        ClientResult protocolResult = await CreateRunAsync(threadId, options, cancellationToken.ToRequestOptions())
+        ClientResult protocolResult = await CreateRunAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -700,8 +700,8 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = null;
 
-        ClientResult protocolResult = CreateRun(threadId, options, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        ClientResult protocolResult = CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
+       return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -726,7 +726,7 @@ public partial class AssistantClient
         options.Stream = true;
 
         return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await CreateRunAsync(threadId, options, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await CreateRunAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -753,7 +753,7 @@ public partial class AssistantClient
         options.Stream = true;
 
         return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateRun(threadId, options, cancellationToken.ToRequestOptions(streaming: true)),
+            () => CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -776,7 +776,7 @@ public partial class AssistantClient
         runOptions.Stream = null;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
         ClientResult protocolResult = await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -797,7 +797,7 @@ public partial class AssistantClient
         runOptions.Stream = null;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
         ClientResult protocolResult = CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -957,7 +957,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         ClientResult protocolResult = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -973,7 +973,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         ClientResult protocolResult = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -995,10 +995,11 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs);
+        var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs);
+        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
         ClientResult protocolResult = await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions())
             .ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -1020,9 +1021,10 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs);
+        var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs);
+        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
         ClientResult protocolResult = SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -1043,7 +1045,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
+        var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
+        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
 
         return new AsyncSseUpdateCollection<StreamingUpdate>(
             async () => await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
@@ -1069,7 +1072,8 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-        BinaryContent content = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
+        var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
+        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
 
         return new SseUpdateCollection<StreamingUpdate>(
             () => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)),
@@ -1090,7 +1094,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         ClientResult protocolResult = await CancelRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -1106,7 +1110,7 @@ public partial class AssistantClient
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
         ClientResult protocolResult = CancelRun(threadId, runId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(ThreadRun.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -1214,7 +1218,7 @@ public partial class AssistantClient
     public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = await GetRunStepAsync(threadId, runId, stepId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((RunStep)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(RunStep.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -1228,7 +1232,7 @@ public partial class AssistantClient
     public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = GetRunStep(threadId, runId, stepId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((RunStep)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue(RunStep.FromClientResult(protocolResult), protocolResult.GetRawResponse());
     }
 
     private static BinaryContent CreateThreadAndRunProtocolContent(
@@ -1256,7 +1260,7 @@ public partial class AssistantClient
             runOptions.ResponseFormat,
             runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);
-        return internalRequest;
+        return BinaryContent.Create(internalRequest, ModelSerializationExtensions.WireOptions);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

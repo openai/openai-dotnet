@@ -1,5 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesResponseStreamEventResponseWebSearchCallInProgress")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ResponseWebSearchCallInProgressEvent")]
 public partial class StreamingResponseWebSearchCallInProgressUpdate
-{ }
+{
+}

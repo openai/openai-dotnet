@@ -6,41 +6,36 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationResponseOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ConversationResponseOptions()
+        public ConversationResponseOptions() : this(null, default, null, default, null, default, null, null, default, null, null, null)
         {
-            Tools = new ChangeTrackingList<ConversationTool>();
-            Metadata = new ChangeTrackingDictionary<string, string>();
-            OverrideItems = new ChangeTrackingList<ConversationItem>();
-            _internalModalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
         }
 
-        internal ConversationResponseOptions(string instructions, ConversationVoice? voice, ConversationAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, IDictionary<string, string> metadata, ResponseConversationSelection? conversationSelection, ConversationMaxTokensChoice maxOutputTokens, IList<ConversationItem> overrideItems, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationResponseOptions(string instructions, RealtimeAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, IDictionary<string, string> metadata, ResponseConversationSelection? conversationSelection, ConversationMaxTokensChoice maxOutputTokens, IList<RealtimeItem> overrideItems, ConversationVoice? voice, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Instructions = instructions;
-            Voice = voice;
             OutputAudioFormat = outputAudioFormat;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             Temperature = temperature;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             ConversationSelection = conversationSelection;
             MaxOutputTokens = maxOutputTokens;
-            OverrideItems = overrideItems;
-            _internalModalities = internalModalities;
+            OverrideItems = overrideItems ?? new ChangeTrackingList<RealtimeItem>();
+            Voice = voice;
+            _internalModalities = internalModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             _internalToolChoice = internalToolChoice;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Instructions { get; set; }
 
-        public ConversationVoice? Voice { get; set; }
-
-        public ConversationAudioFormat? OutputAudioFormat { get; set; }
+        public RealtimeAudioFormat? OutputAudioFormat { get; set; }
 
         public IList<ConversationTool> Tools { get; }
 

@@ -13,8 +13,8 @@ namespace OpenAI.Files;
 /// <summary> The service client for OpenAI file operations. </summary>
 [CodeGenType("Files")]
 [CodeGenSuppress("OpenAIFileClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("ListFilesAsync", typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("ListFiles", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFilesAsync", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFiles", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveFileAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveFile", typeof(string), typeof(CancellationToken))]
 public partial class OpenAIFileClient
@@ -98,7 +98,7 @@ public partial class OpenAIFileClient
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -125,7 +125,7 @@ public partial class OpenAIFileClient
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -207,7 +207,7 @@ public partial class OpenAIFileClient
     public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetFilesAsync(null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -215,7 +215,7 @@ public partial class OpenAIFileClient
     public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default)
     {
         ClientResult result = GetFiles(null, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -224,7 +224,7 @@ public partial class OpenAIFileClient
     public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetFilesAsync(purpose.ToSerialString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -233,7 +233,7 @@ public partial class OpenAIFileClient
     public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
         ClientResult result = GetFiles(purpose.ToSerialString(), cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified file. </summary>
@@ -246,7 +246,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = await GetFileAsync(fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified file. </summary>
@@ -259,7 +259,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = GetFile(fileId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified file. </summary>
@@ -272,7 +272,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = await DeleteFileAsync(fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((FileDeletionResult)result, result.GetRawResponse());
+        return ClientResult.FromValue(FileDeletionResult.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified file. </summary>
@@ -285,7 +285,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = DeleteFile(fileId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((FileDeletionResult)result, result.GetRawResponse());
+        return ClientResult.FromValue(FileDeletionResult.FromClientResult(result), result.GetRawResponse());
     }
 
     /// <summary> Downloads the content of the specified file. </summary>

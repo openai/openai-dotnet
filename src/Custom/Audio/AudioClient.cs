@@ -1,6 +1,8 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -106,7 +108,7 @@ public partial class AudioClient
         options ??= new();
         CreateSpeechGenerationOptions(text, voice, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
@@ -129,7 +131,7 @@ public partial class AudioClient
         options ??= new();
         CreateSpeechGenerationOptions(text, voice, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateSpeech(content, cancellationToken.ToRequestOptions()); ;
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
@@ -154,10 +156,10 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
-        options ??= new();
-        CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
+        using MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options)
+                .ToMultipartContent(audio, audioFilename);
 
-        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
@@ -178,10 +180,10 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
-        options ??= new();
-        CreateAudioTranscriptionOptions(audio, audioFilename, ref options);
+        using MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options)
+                .ToMultipartContent(audio, audioFilename);
 
-        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(audio, audioFilename);
         ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
     }
@@ -218,6 +220,80 @@ public partial class AudioClient
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
         return TranscribeAudio(audioStream, audioFilePath, options);
+    }
+
+    // CUSTOM: Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(audio, nameof(audio));
+        Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options, stream: true)
+                .ToMultipartContent(audio, audioFilename);
+
+        return new AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate>(
+            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+            cancellationToken);
+    }
+
+    // CUSTOM: Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        FileStream inputStream = File.OpenRead(audioFilePath);
+
+        MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options, stream: true)
+                .ToMultipartContent(inputStream, audioFilePath);
+
+        AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
+            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+            cancellationToken);
+        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
+        return result;
+    }
+
+    // CUSTOM: Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(audio, nameof(audio));
+        Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options, stream: true)
+                .ToMultipartContent(audio, audioFilename);
+
+        return new SseUpdateCollection<StreamingAudioTranscriptionUpdate>(
+            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+            cancellationToken);
+    }
+
+    // CUSTOM: Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        FileStream inputStream = File.OpenRead(audioFilePath);
+
+        MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options, stream: true)
+                .ToMultipartContent(inputStream, audioFilePath);
+
+        SseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
+            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+            cancellationToken);
+        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
+        return result;
     }
 
     #endregion
@@ -315,9 +391,18 @@ public partial class AudioClient
         options.Model = _model;
     }
 
-    private void CreateAudioTranscriptionOptions(Stream audio, string audioFilename, ref AudioTranscriptionOptions options)
+    internal virtual AudioTranscriptionOptions CreatePerCallTranscriptionOptions(AudioTranscriptionOptions userOptions, bool stream = false)
     {
-        options.Model = _model;
+        AudioTranscriptionOptions copiedOptions = userOptions is null ? new() : userOptions.GetClone();
+
+        copiedOptions.Model = _model;
+
+        if (stream)
+        {
+            copiedOptions.Stream = true;
+        }
+
+        return copiedOptions;
     }
 
     private void CreateAudioTranslationOptions(Stream audio, string audioFilename, ref AudioTranslationOptions options)

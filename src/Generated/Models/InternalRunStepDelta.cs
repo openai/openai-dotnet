@@ -27,7 +27,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public InternalRunStepDeltaObjectDelta Delta { get; }
+        internal InternalRunStepDeltaObjectDelta Delta { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

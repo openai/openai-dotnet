@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalCreateTranscriptionResponseJson : IJsonModel<InternalCreateTranscriptionResponseJson>
     {
-        internal InternalCreateTranscriptionResponseJson()
+        internal InternalCreateTranscriptionResponseJson() : this(null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseJson>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,6 +37,17 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            if (Optional.IsCollectionDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            {
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteStartArray();
+                foreach (InternalCreateTranscriptionResponseJsonLogprob item in Logprobs)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -59,6 +71,7 @@ namespace OpenAI.Audio
 
         InternalCreateTranscriptionResponseJson IJsonModel<InternalCreateTranscriptionResponseJson>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateTranscriptionResponseJson JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseJson>)this).GetFormatFromOptions(options) : options.Format;
@@ -77,6 +90,7 @@ namespace OpenAI.Audio
                 return null;
             }
             string text = default;
+            IList<InternalCreateTranscriptionResponseJsonLogprob> logprobs = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -85,20 +99,36 @@ namespace OpenAI.Audio
                     text = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<InternalCreateTranscriptionResponseJsonLogprob> array = new List<InternalCreateTranscriptionResponseJsonLogprob>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(InternalCreateTranscriptionResponseJsonLogprob.DeserializeInternalCreateTranscriptionResponseJsonLogprob(item, options));
+                    }
+                    logprobs = array;
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateTranscriptionResponseJson(text, additionalBinaryDataProperties);
+            return new InternalCreateTranscriptionResponseJson(text, logprobs ?? new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateTranscriptionResponseJson>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseJson>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateTranscriptionResponseJson)} does not support writing '{options.Format}' format.");
             }
@@ -106,6 +136,7 @@ namespace OpenAI.Audio
 
         InternalCreateTranscriptionResponseJson IPersistableModel<InternalCreateTranscriptionResponseJson>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateTranscriptionResponseJson PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseJson>)this).GetFormatFromOptions(options) : options.Format;
@@ -122,21 +153,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<InternalCreateTranscriptionResponseJson>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateTranscriptionResponseJson internalCreateTranscriptionResponseJson)
-        {
-            if (internalCreateTranscriptionResponseJson == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateTranscriptionResponseJson, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateTranscriptionResponseJson(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateTranscriptionResponseJson(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

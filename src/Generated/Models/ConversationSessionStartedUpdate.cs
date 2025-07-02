@@ -5,16 +5,16 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    public partial class ConversationSessionStartedUpdate : ConversationUpdate
+    public partial class ConversationSessionStartedUpdate : RealtimeUpdate
     {
-        internal ConversationSessionStartedUpdate(string eventId, InternalRealtimeResponseSession internalSession) : base(eventId, ConversationUpdateKind.SessionStarted)
+        internal ConversationSessionStartedUpdate(InternalRealtimeResponseSession internalSession) : base(RealtimeUpdateKind.SessionStarted)
         {
             _internalSession = internalSession;
         }
 
-        internal ConversationSessionStartedUpdate(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeResponseSession internalSession) : base(eventId, kind, additionalBinaryDataProperties)
+        internal ConversationSessionStartedUpdate(RealtimeUpdateKind kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeResponseSession internalSession) : base(kind, eventId, additionalBinaryDataProperties)
         {
             _internalSession = internalSession;
         }

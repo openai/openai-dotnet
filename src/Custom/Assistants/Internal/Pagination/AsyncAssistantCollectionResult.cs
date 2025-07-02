@@ -89,7 +89,7 @@ internal class AsyncAssistantCollectionResult : AsyncCollectionResult<Assistant>
 
     internal virtual async Task<ClientResult> GetAssistantsAsync(int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _assistantClient.CreateListAssistantsRequest(limit, order, after, before, options);
+        using PipelineMessage message = _assistantClient.CreateGetAssistantsRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 }

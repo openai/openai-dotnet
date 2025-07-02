@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseTextContentPart : IJsonModel<InternalRealtimeResponseTextContentPart>
     {
-        internal InternalRealtimeResponseTextContentPart()
+        internal InternalRealtimeResponseTextContentPart() : this(ConversationContentPartKind.OutputText, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,11 +33,6 @@ namespace OpenAI.RealtimeConversation
                 throw new FormatException($"The model {nameof(InternalRealtimeResponseTextContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
                 writer.WritePropertyName("text"u8);
@@ -46,6 +42,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseTextContentPart IJsonModel<InternalRealtimeResponseTextContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeResponseTextContentPart)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ConversationContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -65,7 +62,6 @@ namespace OpenAI.RealtimeConversation
             }
             ConversationContentPartKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string @type = "text";
             string internalTextValue = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -74,30 +70,27 @@ namespace OpenAI.RealtimeConversation
                     kind = new ConversationContentPartKind(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("type"u8))
-                {
-                    @type = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("text"u8))
                 {
                     internalTextValue = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRealtimeResponseTextContentPart(kind, additionalBinaryDataProperties, @type, internalTextValue);
+            return new InternalRealtimeResponseTextContentPart(kind, additionalBinaryDataProperties, internalTextValue);
         }
 
         BinaryData IPersistableModel<InternalRealtimeResponseTextContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeResponseTextContentPart)} does not support writing '{options.Format}' format.");
             }
@@ -105,6 +98,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseTextContentPart IPersistableModel<InternalRealtimeResponseTextContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeResponseTextContentPart)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ConversationContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseTextContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -121,21 +115,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeResponseTextContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeResponseTextContentPart internalRealtimeResponseTextContentPart)
-        {
-            if (internalRealtimeResponseTextContentPart == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeResponseTextContentPart, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeResponseTextContentPart(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeResponseTextContentPart(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

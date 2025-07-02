@@ -5,19 +5,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
     {
-        internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls) : base("tool_calls")
+        internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls) : base(InternalRunStepDetailsType.ToolCalls)
         {
             InternalToolCalls = internalToolCalls.ToList();
         }
 
-        internal InternalRunStepDetailsToolCallsObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(@type, additionalBinaryDataProperties)
+        internal InternalRunStepDetailsToolCallsObject(InternalRunStepDetailsType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IReadOnlyList<RunStepToolCall> internalToolCalls) : base(kind, additionalBinaryDataProperties)
         {
-            InternalToolCalls = internalToolCalls;
+            // Plugin customization: ensure initialization of collections
+            InternalToolCalls = internalToolCalls ?? new ChangeTrackingList<RunStepToolCall>();
         }
     }
 }

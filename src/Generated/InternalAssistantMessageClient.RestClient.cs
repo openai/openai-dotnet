@@ -34,7 +34,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
-        internal virtual PipelineMessage CreateListMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

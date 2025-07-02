@@ -8,32 +8,20 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartImage
+    internal partial class InternalChatCompletionRequestMessageContentPartImage : ChatMessageContentPart
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
-
-        public InternalChatCompletionRequestMessageContentPartImage(InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl)
+        internal InternalChatCompletionRequestMessageContentPartImage(InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl)
         {
             Argument.AssertNotNull(imageUrl, nameof(imageUrl));
 
             ImageUrl = imageUrl;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartImage(InternalChatCompletionRequestMessageContentPartImageType @type, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionRequestMessageContentPartImage(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl) : base(additionalBinaryDataProperties)
         {
-            Type = @type;
             ImageUrl = imageUrl;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalChatCompletionRequestMessageContentPartImageType Type { get; } = "image_url";
-
-        public InternalChatCompletionRequestMessageContentPartImageImageUrl ImageUrl { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        internal InternalChatCompletionRequestMessageContentPartImageImageUrl ImageUrl { get; }
     }
 }

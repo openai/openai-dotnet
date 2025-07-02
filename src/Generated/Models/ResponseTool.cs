@@ -11,16 +11,18 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ResponseTool(InternalResponsesToolType @type)
+        private protected ResponseTool(InternalToolType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal ResponseTool(InternalResponsesToolType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        internal InternalToolType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

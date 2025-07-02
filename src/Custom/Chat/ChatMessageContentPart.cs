@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -25,8 +26,7 @@ namespace OpenAI.Chat;
 ///         </item>
 ///     </list>
 /// </summary>
-[CodeGenType("ChatMessageContentPart")]
-[CodeGenSuppress("ChatMessageContentPart", typeof(IDictionary<string, BinaryData>))]
+[CodeGenType("ChatCompletionRequestMessageContentPart")]
 public partial class ChatMessageContentPart
 {
     private readonly ChatMessageContentPartKind _kind;
@@ -83,6 +83,9 @@ public partial class ChatMessageContentPart
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.Image"/>. </remarks>
     public string ImageBytesMediaType => _imageUri?.ImageBytesMediaType;
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary>
     /// The encoded binary audio payload associated with the content part.
     /// </summary>
@@ -90,8 +93,12 @@ public partial class ChatMessageContentPart
     /// Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.InputAudio"/>. The content part
     /// represents user role audio input.
     /// </remarks>
+    [Experimental("OPENAI001")]
     public BinaryData InputAudioBytes => _inputAudio?.Data;
 
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary>
     /// The encoding format that the audio data provided in <see cref="InputAudioBytes"/> should be interpreted with.
     /// </summary>
@@ -99,26 +106,39 @@ public partial class ChatMessageContentPart
     /// Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.InputAudio"/>. The content part
     /// represents user role audio input.
     /// </remarks>
+    [Experimental("OPENAI001")]
     public ChatInputAudioFormat? InputAudioFormat => _inputAudio?.Format;
 
-    // CUSTOM: Spread.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary> The ID of the previously uploaded file that the content part represents. </summary>
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content part refers to a previously uploaded file. </remarks>
+    [Experimental("OPENAI001")]
     public string FileId => _fileFile?.FileId;
 
-    // CUSTOM: Spread.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary> The binary file content of the file content part. </summary>
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    [Experimental("OPENAI001")]
     public BinaryData FileBytes => _fileFile?.FileBytes;
 
-    // CUSTOM: Spread.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary> The MIME type of the file, e.g., <c>application/pdf</c>. </summary>
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    [Experimental("OPENAI001")]
     public string FileBytesMediaType => _fileFile?.FileBytesMediaType;
 
-    // CUSTOM: Spread.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Spread.
     /// <summary> The filename for the new file content creation that the content part encapsulates. </summary>
     /// <remarks> Present when <see cref="Kind"/> is <see cref="ChatMessageContentPartKind.File"/> and the content refers to data for a new file. </remarks>
+    [Experimental("OPENAI001")]
     public string Filename => _fileFile?.Filename;
 
     // CUSTOM: Spread.
@@ -157,7 +177,7 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.Image,
-            imageUri: new(imageUri) { Detail = imageDetailLevel });
+            imageUri: new(imageUri, imageDetailLevel));
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates an image. </summary>
@@ -176,7 +196,7 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.Image,
-            imageUri: new(imageBytes, imageBytesMediaType) { Detail = imageDetailLevel });
+            imageUri: new(imageBytes, imageBytesMediaType, imageDetailLevel));
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates a refusal coming from the model. </summary>
@@ -198,6 +218,7 @@ public partial class ChatMessageContentPart
     /// </remarks>
     /// <param name="inputAudioBytes"> The audio data. </param>
     /// <param name="inputAudioFormat"> The format of the audio data. </param>
+    [Experimental("OPENAI001")]
     public static ChatMessageContentPart CreateInputAudioPart(BinaryData inputAudioBytes, ChatInputAudioFormat inputAudioFormat)
     {
         Argument.AssertNotNull(inputAudioBytes, nameof(inputAudioBytes));
@@ -209,6 +230,7 @@ public partial class ChatMessageContentPart
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that represents a previously uploaded file. </summary>
     /// <exception cref="ArgumentException"> <paramref name="fileId"/> is null or empty. </exception>
+    [Experimental("OPENAI001")]
     public static ChatMessageContentPart CreateFilePart(string fileId)
     {
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -227,6 +249,7 @@ public partial class ChatMessageContentPart
     /// <param name="filename"> The filename to use for the file that will be created. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="fileBytes"/> or <paramref name="fileBytesMediaType"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="fileBytesMediaType"/> or <paramref name="filename"/>> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
     public static ChatMessageContentPart CreateFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename)
     {
         Argument.AssertNotNull(fileBytes, nameof(fileBytes));
@@ -235,10 +258,7 @@ public partial class ChatMessageContentPart
 
         return new ChatMessageContentPart(
             kind: ChatMessageContentPartKind.File,
-            fileFile: new(fileBytes, fileBytesMediaType)
-            {
-                Filename = filename,
-            });
+            fileFile: new(fileBytes, fileBytesMediaType, filename));
     }
 
     /// <summary>

@@ -9,13 +9,13 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base("file_search")
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(int index, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(RunStepToolCallKind.FileSearch)
         {
             Index = index;
             FileSearch = fileSearch;
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(@type, additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Id = id;

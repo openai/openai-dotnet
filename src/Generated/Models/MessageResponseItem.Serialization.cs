@@ -3,8 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class MessageResponseItem : IJsonModel<MessageResponseItem>
     {
-        internal MessageResponseItem()
+        internal MessageResponseItem() : this(InternalItemType.Message, null, null, default, default)
         {
         }
 
@@ -23,6 +23,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<MessageResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -31,20 +32,22 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(MessageResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(InternalRole.ToString());
             }
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
+            }
         }
 
         MessageResponseItem IJsonModel<MessageResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (MessageResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<MessageResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -76,18 +79,19 @@ namespace OpenAI.Responses
                         return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, options);
                 }
             }
-            return InternalUnknownResponsesMessage.DeserializeInternalUnknownResponsesMessage(element, options);
+            return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, options);
         }
 
         BinaryData IPersistableModel<MessageResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<MessageResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(MessageResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -95,6 +99,7 @@ namespace OpenAI.Responses
 
         MessageResponseItem IPersistableModel<MessageResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (MessageResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<MessageResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -111,21 +116,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<MessageResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(MessageResponseItem messageResponseItem)
-        {
-            if (messageResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(messageResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator MessageResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeMessageResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

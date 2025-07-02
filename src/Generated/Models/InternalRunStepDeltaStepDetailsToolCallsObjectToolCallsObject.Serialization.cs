@@ -3,8 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,8 +35,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToSerialString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -59,6 +61,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject IJsonModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -93,13 +96,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject)} does not support writing '{options.Format}' format.");
             }
@@ -107,6 +111,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -123,21 +128,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject internalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject)
-        {
-            if (internalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

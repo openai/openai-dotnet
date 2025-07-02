@@ -1,53 +1,52 @@
-
-using OpenAI.Assistants;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
 public partial class ResponseToolChoice
 {
     public ResponseToolChoiceKind Kind
-        => _toolChoiceObject?.Kind
-        ?? _toolChoiceOption?.Kind
+        => _toolChoiceOption?.ToResponseToolChoiceKind()
+        ?? _toolChoiceObject?.Kind.ToResponseToolChoiceKind()
         ?? ResponseToolChoiceKind.Unknown;
 
     public string FunctionName
-        => (_toolChoiceObject as InternalResponsesToolChoiceObjectFunction)?.Name;
+        => (_toolChoiceObject as InternalToolChoiceObjectFunction)?.Name;
 
-    private readonly InternalResponsesToolChoiceObject _toolChoiceObject;
-    private readonly InternalResponsesToolChoiceOption? _toolChoiceOption;
+    private readonly InternalToolChoiceObject _toolChoiceObject;
+    private readonly InternalToolChoiceOptions? _toolChoiceOption;
 
     public static ResponseToolChoice CreateFunctionChoice(string functionName)
-        => new(new InternalResponsesToolChoiceObjectFunction(functionName));
+        => new(new InternalToolChoiceObjectFunction(functionName));
 
     public static ResponseToolChoice CreateFileSearchChoice()
-        => new(new InternalResponsesToolChoiceObjectFileSearch());
+        => new(new InternalToolChoiceObjectFileSearch());
 
     public static ResponseToolChoice CreateWebSearchChoice()
-        => new(new InternalResponsesToolChoiceObjectWebSearch());
+        => new(new InternalToolChoiceObjectWebSearch());
 
     [Experimental("OPENAICUA001")]
     public static ResponseToolChoice CreateComputerChoice()
-        => new(new InternalResponsesToolChoiceObjectComputer());
+        => new(new InternalToolChoiceObjectComputer());
 
     public static ResponseToolChoice CreateAutoChoice()
-        => new(InternalResponsesToolChoiceOption.Auto);
+        => new(InternalToolChoiceOptions.Auto);
 
     public static ResponseToolChoice CreateNoneChoice()
-        => new(InternalResponsesToolChoiceOption.None);
+        => new(InternalToolChoiceOptions.None);
 
     public static ResponseToolChoice CreateRequiredChoice()
-        => new(InternalResponsesToolChoiceOption.Required);
+        => new(InternalToolChoiceOptions.Required);
 
-    internal ResponseToolChoice(InternalResponsesToolChoiceObject toolChoiceObject)
+    internal ResponseToolChoice(InternalToolChoiceObject toolChoiceObject)
     {
         _toolChoiceObject = toolChoiceObject;
     }
 
-    internal ResponseToolChoice(InternalResponsesToolChoiceOption toolChoiceOption)
+    internal ResponseToolChoice(InternalToolChoiceOptions toolChoiceOption)
     {
         _toolChoiceOption = toolChoiceOption;
     }

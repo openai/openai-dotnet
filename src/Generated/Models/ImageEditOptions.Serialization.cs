@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,10 @@ namespace OpenAI.Images
 {
     public partial class ImageEditOptions : IJsonModel<ImageEditOptions>
     {
+        public ImageEditOptions()
+        {
+        }
+
         void IJsonModel<ImageEditOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,12 +24,23 @@ namespace OpenAI.Images
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageEditOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ImageEditOptions)} does not support writing '{format}' format.");
+            }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
+            }
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.Value.ToString());
             }
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
@@ -35,7 +50,14 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
             {
                 writer.WritePropertyName("image"u8);
-                writer.WriteBase64StringValue(Image.ToArray(), "D");
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Image);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Image))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
             {
@@ -67,6 +89,7 @@ namespace OpenAI.Images
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -90,6 +113,7 @@ namespace OpenAI.Images
 
         ImageEditOptions IJsonModel<ImageEditOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ImageEditOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageEditOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -107,6 +131,8 @@ namespace OpenAI.Images
             {
                 return null;
             }
+            InternalCreateImageEditRequestBackground? background = default;
+            InternalCreateImageEditRequestQuality? quality = default;
             InternalCreateImageEditRequestModel? model = default;
             BinaryData image = default;
             string prompt = default;
@@ -118,6 +144,26 @@ namespace OpenAI.Images
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = new InternalCreateImageEditRequestBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("quality"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        quality = null;
+                        continue;
+                    }
+                    quality = new InternalCreateImageEditRequestQuality(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("model"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -130,7 +176,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("image"u8))
                 {
-                    image = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    image = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("prompt"u8))
@@ -182,9 +228,12 @@ namespace OpenAI.Images
                     endUserId = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageEditOptions(
+                background,
+                quality,
                 model,
                 image,
                 prompt,
@@ -198,13 +247,14 @@ namespace OpenAI.Images
 
         BinaryData IPersistableModel<ImageEditOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageEditOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ImageEditOptions)} does not support writing '{options.Format}' format.");
             }
@@ -212,6 +262,7 @@ namespace OpenAI.Images
 
         ImageEditOptions IPersistableModel<ImageEditOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ImageEditOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageEditOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -228,21 +279,5 @@ namespace OpenAI.Images
         }
 
         string IPersistableModel<ImageEditOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ImageEditOptions imageEditOptions)
-        {
-            if (imageEditOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(imageEditOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ImageEditOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeImageEditOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

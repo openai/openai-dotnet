@@ -6,6 +6,10 @@ using System.IO;
 
 namespace OpenAI.Examples;
 
+// This example uses experimental APIs which are subject to change. To use experimental APIs,
+// please acknowledge their experimental status by suppressing the corresponding warning.
+#pragma warning disable OPENAI001
+
 public partial class ChatExamples
 {
     [Test]
@@ -61,3 +65,5 @@ public partial class ChatExamples
         PrintAudioContent();
     }
 }
+
+#pragma warning restore OPENAI001

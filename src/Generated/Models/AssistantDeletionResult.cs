@@ -17,7 +17,7 @@ namespace OpenAI.Assistants
             AssistantId = assistantId;
         }
 
-        internal AssistantDeletionResult(bool deleted, string assistantId, InternalDeleteAssistantResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantDeletionResult(bool deleted, string assistantId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             AssistantId = assistantId;

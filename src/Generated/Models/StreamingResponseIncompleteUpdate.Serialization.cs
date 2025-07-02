@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseIncompleteUpdate : IJsonModel<StreamingResponseIncompleteUpdate>
     {
-        internal StreamingResponseIncompleteUpdate()
+        internal StreamingResponseIncompleteUpdate() : this(InternalResponseStreamEventType.ResponseIncomplete, default, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Responses
 
         StreamingResponseIncompleteUpdate IJsonModel<StreamingResponseIncompleteUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseIncompleteUpdate)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,14 +60,20 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesResponseStreamEventType @type = default;
+            InternalResponseStreamEventType kind = default;
+            int sequenceNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             OpenAIResponse response = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesResponseStreamEventType(prop.Value.GetString());
+                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("sequence_number"u8))
+                {
+                    sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("response"u8))
@@ -73,20 +81,22 @@ namespace OpenAI.Responses
                     response = OpenAIResponse.DeserializeOpenAIResponse(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseIncompleteUpdate(@type, additionalBinaryDataProperties, response);
+            return new StreamingResponseIncompleteUpdate(kind, sequenceNumber, additionalBinaryDataProperties, response);
         }
 
         BinaryData IPersistableModel<StreamingResponseIncompleteUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseIncompleteUpdate)} does not support writing '{options.Format}' format.");
             }
@@ -94,6 +104,7 @@ namespace OpenAI.Responses
 
         StreamingResponseIncompleteUpdate IPersistableModel<StreamingResponseIncompleteUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseIncompleteUpdate)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -110,21 +121,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<StreamingResponseIncompleteUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(StreamingResponseIncompleteUpdate streamingResponseIncompleteUpdate)
-        {
-            if (streamingResponseIncompleteUpdate == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(streamingResponseIncompleteUpdate, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator StreamingResponseIncompleteUpdate(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeStreamingResponseIncompleteUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -27,9 +27,9 @@ namespace OpenAI.Chat
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalChatCompletionStreamResponseDelta Delta { get; }
+        internal InternalChatCompletionStreamResponseDelta Delta { get; }
 
-        public InternalCreateChatCompletionStreamResponseChoiceLogprobs Logprobs { get; }
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs Logprobs { get; }
 
         public int Index { get; }
 

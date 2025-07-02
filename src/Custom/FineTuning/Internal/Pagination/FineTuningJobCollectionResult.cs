@@ -1,6 +1,7 @@
 ﻿using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
@@ -8,7 +9,8 @@ using System.Text.Json;
 
 namespace OpenAI.FineTuning;
 
-internal class FineTuningJobCollectionResult : CollectionResult
+[Experimental("OPENAI001")]
+internal class FineTuningJobCollectionResult : CollectionResult<FineTuningJob>
 {
     private readonly FineTuningClient _fineTuningClient;
     private readonly ClientPipeline _pipeline;
@@ -46,7 +48,7 @@ internal class FineTuningJobCollectionResult : CollectionResult
     {
         Argument.AssertNotNull(page, nameof(page));
 
-        return FineTuningJobCollectionPageToken.FromResponse(page, _limit);
+        return FineTuningCollectionPageToken.FromResponse(page, _limit);
     }
 
     public ClientResult GetFirstPage()
@@ -82,7 +84,15 @@ internal class FineTuningJobCollectionResult : CollectionResult
 
     internal virtual ClientResult GetJobs(string? after, int? limit, RequestOptions? options)
     {
-        using PipelineMessage message = _fineTuningClient.CreateGetPaginatedFineTuningJobsRequest(after, limit, options);
+        using PipelineMessage message = _fineTuningClient.GetJobsPipelineMessage(after, limit, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
+    }
+
+    protected override IEnumerable<FineTuningJob> GetValuesFromPage(ClientResult page)
+    {
+        Argument.AssertNotNull(page, nameof(page));
+
+        PipelineResponse response = page.GetRawResponse();
+        return _fineTuningClient.CreateJobsFromPageResponse(response);
     }
 }

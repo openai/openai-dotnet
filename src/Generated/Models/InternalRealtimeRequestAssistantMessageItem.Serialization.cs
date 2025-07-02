@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestAssistantMessageItem : IJsonModel<InternalRealtimeRequestAssistantMessageItem>
     {
-        internal InternalRealtimeRequestAssistantMessageItem()
+        internal InternalRealtimeRequestAssistantMessageItem() : this(default, null, null, ConversationMessageRole.Assistant, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestAssistantMessageItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,7 +47,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestAssistantMessageItem IJsonModel<InternalRealtimeRequestAssistantMessageItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeRequestAssistantMessageItem)JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestAssistantMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -63,7 +65,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeItemType @type = default;
+            InternalRealtimeItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             ConversationMessageRole role = default;
@@ -73,7 +75,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalRealtimeItemType(prop.Value.GetString());
+                    kind = new InternalRealtimeItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -105,10 +107,11 @@ namespace OpenAI.RealtimeConversation
                     content = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeRequestAssistantMessageItem(
-                @type,
+                kind,
                 id,
                 additionalBinaryDataProperties,
                 role,
@@ -118,13 +121,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeRequestAssistantMessageItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestAssistantMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeRequestAssistantMessageItem)} does not support writing '{options.Format}' format.");
             }
@@ -132,7 +136,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestAssistantMessageItem IPersistableModel<InternalRealtimeRequestAssistantMessageItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeRequestAssistantMessageItem)PersistableModelCreateCore(data, options);
 
-        protected override ConversationItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestAssistantMessageItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -148,21 +153,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeRequestAssistantMessageItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeRequestAssistantMessageItem internalRealtimeRequestAssistantMessageItem)
-        {
-            if (internalRealtimeRequestAssistantMessageItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeRequestAssistantMessageItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeRequestAssistantMessageItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeRequestAssistantMessageItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

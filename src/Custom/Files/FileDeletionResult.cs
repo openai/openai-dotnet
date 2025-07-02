@@ -1,4 +1,8 @@
-﻿namespace OpenAI.Files;
+﻿using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Text.Json;
+
+namespace OpenAI.Files;
 
 [CodeGenType("DeleteFileResponse")]
 public partial class FileDeletionResult
@@ -10,5 +14,12 @@ public partial class FileDeletionResult
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `file`. </summary>
     [CodeGenMember("Object")]
-    internal InternalDeleteFileResponseObject Object { get; } = InternalDeleteFileResponseObject.File;
+    internal string Object { get; } = "file";
+
+    internal static FileDeletionResult FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeFileDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

@@ -37,7 +37,7 @@ namespace OpenAI.Chat;
 /// </item>
 /// </list>
 /// </summary>
-[CodeGenType("CreateChatCompletionResponseChoiceFinishReason1")]
+[CodeGenType("CreateChatCompletionResponseChoiceFinishReason")]
 public enum ChatFinishReason
 {
     /// <summary>

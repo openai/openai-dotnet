@@ -1,6 +1,115 @@
 # Release History
 
+## 2.2.0 (Unreleased)
+
+### Features Added
+
+- OpenAI.Audio:
+  - Enabled support for streaming audio transcriptions:
+    - Added new methods to `AudioClient`:
+      - `TranscribeAudioStreaming` and `TranscribeAudioStreamingAsync`
+    - Added new types of `StreamingAudioTranscriptionUpdate` to work with streaming transcriptions:
+      - `StreamingAudioTranscriptionTextDeltaUpdate`
+      - `StreamingAudioTranscriptionTextDoneUpdate`
+  - Added the `TranscriptionTokenLogProbabilities` property to `AudioTranscription` to represent token-level log probability information.
+  - Added the `AudioTranscriptionIncludes` enum and `Includes` property to `AudioTranscriptionOptions` to request additional information in the transcription response.
+  - Added new voices to `GeneratedSpeechVoice`.
+  - Added the `Instructions` property to `SpeechGenerationOptions` to control the voice of the generated audio with additional instructions.
+- OpenAI.Batch:
+  - Added new `Rehydrate` method overloads that receive a batch ID instead of rehydration token.
+- OpenAI.Chat:
+  - Added new methods to `ChatClient`:
+    - `DeleteChatCompletion` and `DeleteChatCompletionAsync`
+    - `GetChatCompletion` and `GetChatCompletionAsync`
+  - Added `Aac` format to `ChatOutputAudioFormat`.
+  - Added new voices to `ChatOutputAudioVoice`.
+- OpenAI.Evals:
+  - Introduced the new `EvaluationClient` to support the Evaluations API with protocol methods for the following operations:
+    - `CreateEvaluation` and `CreateEvaluationAsync`
+    - `GetEvaluation` and `GetEvaluationAsync`
+    - `GetEvaluations` and `GetEvaluationsAsync`
+    - `UpdateEvaluation` and `UpdateEvaluationAsync`
+    - `DeleteEvaluation` and `DeleteEvaluationAsync`
+    - `CreateEvaluatinRun` and `CreateEvaluationRunAsync`
+    - `GetEvaluationRun` and `GetEvaluationRunAsync`
+    - `GetEvaluationRuns` and `GetEvaluationRunsAsync`
+    - `CancelEvaluationRun` and `CancelEvaluationRunAsync`
+    - `DeleteEvaluationRun` and `DeleteEvaluationRunAsync`
+    - `GetEvaluationRunOutputItem` and `GetEvaluationRunOutputItemAsync`
+    - `GetEvaluationRunOutputItems` and `GetEvaluationRunOutputItemsAsync`
+- OpenAI.FineTuning:
+  - Added new methods to `FineTuningClient`:
+    - `GetFineTuningCheckpointPermissions` and `GetFineTuningCheckpointPermissionsAsync`
+    - `CreateFineTuningCheckpointPermission` and `CreateFineTuningCheckpointPermissionAsync`
+    - `DeleteFineTuningCheckpointPermission` and `DeleteFineTuningCheckpointPermission`
+    - `PauseFineTuningJob` and `PauseFineTuningJobAsync`
+    - `ResumeFineTuningJob` and `ResumeFineTuningJobAsync`
+  - Added new experimental types to support fine-tuning workflows.
+- OpenAI.Images:
+  - Added the `Usage` property to `GeneratedImageCollection` to represent image token usage information.
+  - Added the `Background` property to `ImageGenerationOptions` to set transparency for the background of the generated image(s).
+  - Added the `ModerationLevel` property to `ImageGenerationOptions` to control the content-moderation level for generated image(s).
+  - Added the `OutputCompressionFactor` property to `ImageGenerationOptions` to set the compression level (0-100%) for the generated images.
+  - Added the `OutputFileFormat` property to `ImageGenerationOptions` to set the file format in which the generated images are returned.
+  - Added support for new values to the `GeneratedImageSize` enum.
+- OpenAI.Responses:
+  - Added new methods to the `OpenAIResponseClient`:
+    - `CancelResponse` and `CancelResponseAsync`
+    - `GetResponseStreaming` and `GetResponseStreamingAsync`.
+  - Added `Linux` property to `ComputerToolEnvironment`.
+  - Added `Background` property to `ResponseCreationOptions` to support background mode.
+  - Added `SequenceNumber` property to `StreamingResponseUpdate` to support background mode while streaming.
+  - Added `InputTokenDetails` property to `ResponseTokenUsage` to represent token usage information.
+  - Added `EncryptedContent` property to `ReasoningResponseItem` to represent the encrypted content of the reasoning item.
+- OpenAI.VectorStores:
+  - Added new methods to `VectorStoreClient`:
+    - `RetrieveVectorStoreFileContent` and `RetrieveVectorStoreFileContentAsync`
+    - `SearchVectorStore` and `SearchVectorStoreAsync`
+    - `UpdateVectorStoreFileAttributes` and `UpdateVectorStoreFileAttributes`
+
+### Bugs fixed
+
+- OpenAI.Files:
+  - Added a `SizeInBytesLong` property to `OpenAIFile` to correctly represent the size of a file.
+- OpenAI.Responses:
+  - Fixed an issue where setting the `ReasoningSummaryVerbosity` property of `ResponseReasoningOptions` was sending the wrong property to the service.
+  - Fixed an issue with the `CreateInputFilePart` method of `ResponseContentPart` not being able to send files as `BinaryData`.
+
+### Breaking changes in Preview APIs
+
+- Removed the implicit operator from all models that converts a model to `BinaryContent`.
+- Removed the explicit operator from all models that converts a `ClientResult` to a model.
+- OpenAI:
+  - Renamed the `GetRealtimeConversationClient` method from `OpenAIClient` to `GetRealtimeClient`.
+- OpenAI.FineTuning:
+  - Renamed the `FineTuningJobOperation` class to `FineTuningJob`.
+  - Removed protocol methods for `CreateFineTuningJob`, `GetJob`, and `GetJobs` and added convenience methods for them.
+- OpenAI.Realtime:
+  - Updated namespace from `OpenAI.Conversations` to `OpenAI.Realtime`. All APIs and types related to real-time conversations have been moved to the new `OpenAI.Realtime` namespace.
+- OpenAI.Responses:
+  - Removed the `SummaryTextParts` property of `ReasoningResponseItem` in favor a new property called `SummaryParts`.
+  - Removed the following public constructors:
+    - `FileSearchCallResponseItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results)`
+    - `FunctionCallOutputResponseItem(string callId, string functionOutput)`
+    - `FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments)`
+  - Made several properties read-only that were previously settable:
+    - `CallId` and `Output` in `ComputerCallOutputResponseItem`
+    - `Action`, `CallId`, and `Status` in `ComputerCallResponseItem`
+    - `Results` and `Status` in `FileSearchCallResponseItem`
+    - `CallId` in `FunctionCallOutputResponseItem`
+    - `CallId` in `FunctionCallResponseItem`
+  - Changed the following property types:
+    - `Attributes` in `FileSearchCallResult` is now `IReadOnlyDictionary<string, BinaryData>` instead of `IDictionary<string, BinaryData>`.
+    - `Status` properties are now nullable in multiple response item types.
+    - `Code` in `ResponseError` is now `ResponseErrorCode` instead of `string`.
+  - Renamed the `WebSearchToolContextSize` extensible enum to `WebSearchContextSize`.
+  - Renamed the `WebSearchToolLocation` class to `WebSearchUserLocation`.
+- OpenAI.VectorStores:
+  - Renamed method parameters from `vectorStore` to `options` in `CreateVectorStore` and `ModifyVectorStore` methods in `VectorStoreClient`.
+
 ## 2.2.0-beta.4 (2025-03-18)
+
+### Features Added
 
 - OpenAI.Chat:
   - Enabled support for file inputs. When using models with vision capabilities, you can now also provide PDF files as inputs, either as a file ID or as base64-encoded data. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
