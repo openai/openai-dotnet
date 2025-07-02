@@ -496,6 +496,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response, Is.Not.Null);
     }
 
+    [Ignore("Temporarily disabled due to service instability.")]
     [Test]
     public async Task ImageInputWorks()
     {
@@ -512,6 +513,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
                         ResponseContentPart.CreateInputImagePart(imageBytes, "image/png", ResponseImageDetailLevel.Low),
                     ]),
             ]);
+
+        Console.WriteLine(response.GetOutputText());
+        Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
     [Test]
