@@ -1,6 +1,6 @@
 # Release History
 
-## 2.2.0 (Unreleased)
+## 2.2.0 (2025-07-02)
 
 ### Features Added
 
@@ -67,7 +67,7 @@
     - `SearchVectorStore` and `SearchVectorStoreAsync`
     - `UpdateVectorStoreFileAttributes` and `UpdateVectorStoreFileAttributes`
 
-### Bugs fixed
+### Bugs Fixed
 
 - OpenAI.Files:
   - Added a `SizeInBytesLong` property to `OpenAIFile` to correctly represent the size of a file.
@@ -75,7 +75,7 @@
   - Fixed an issue where setting the `ReasoningSummaryVerbosity` property of `ResponseReasoningOptions` was sending the wrong property to the service.
   - Fixed an issue with the `CreateInputFilePart` method of `ResponseContentPart` not being able to send files as `BinaryData`.
 
-### Breaking changes in Preview APIs
+### Breaking Changes in Preview APIs
 
 - Removed the implicit operator from all models that converts a model to `BinaryContent`.
 - Removed the explicit operator from all models that converts a `ClientResult` to a model.
@@ -117,7 +117,7 @@
 - OpenAI.Responses:
   - Added the `ResponseToolChoice` class to help specify which tool the model should select when generating a response. ([aaa924e](https://github.com/openai/openai-dotnet/commit/aaa924ecde1b2281257f26824fea038a3b1efe35))
 
-### Breaking changes in Preview APIs
+### Breaking Changes in Preview APIs
 
 - OpenAI.Assistants:
   - Removed the default constructor and the use of the `required` keyword from the `FileSearchRankingOptions` and `FunctionToolDefinition` classes to align with the rest of the library. ([86407c8](https://github.com/openai/openai-dotnet/commit/86407c80b35271713b2d92c87943a0c7e025d28f))
@@ -149,7 +149,7 @@
 
 ## 2.2.0-beta.2 (2025-02-18)
 
-### Bugs fixed
+### Bugs Fixed
 
 - OpenAI.Chat:
   - Fixed an issue that caused calls to the `CompleteChatStreaming` and `CompleteChatStreamingAsync` methods to fail with audio-enabled models unless provided a `ChatCompletionOptions` instance that had previously been used in a non-streaming `CompleteChat` or `CompleteChatAsync` method call. ([d6615ab](https://github.com/openai/openai-dotnet/commit/d6615abe2d04d8d09fbe150941cd8d3c118117d2))
@@ -158,7 +158,7 @@
 
 ## 2.2.0-beta.1 (2025-02-07)
 
-### Features added
+### Features Added
 
 - OpenAI.Audio:
   - Added explicit support for new values of `GeneratedSpeechVoice`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
@@ -189,7 +189,7 @@
 - OpenAI.RealtimeConversation:
   - Added explicit support for new values of `ConversationVoice`. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
 
-### Breaking changes in Preview APIs
+### Breaking Changes in Preview APIs
 
 - OpenAI.Assistants:
   - Removed the setters of the `IDictionary<string, string> Metadata` properties of the "options" classes (e.g., `AssistantCreationOptions`) to be able to guarantee that the collections are always initialized. ([0e0c460](https://github.com/openai/openai-dotnet/commit/0e0c460c88424fc2241956ed5ead6dd5ed7638ec))
@@ -210,7 +210,7 @@
 
 ## 2.1.0 (2024-12-04)
 
-### Features added
+### Features Added
 
 - OpenAI.Assistants:
   - Added a `Content` property to `RunStepFileSearchResult` ([`step_details.tool_calls.file_search.results.content` in the REST API](https://platform.openai.com/docs/api-reference/run-steps/step-object)). ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
@@ -229,7 +229,7 @@
   - Renamed the `ToolKind` property of `RunStepToolCall` to `Kind`. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
   - Replaced the `FileSearchRanker` and `FileSearchScoreThreshold` properties of `RunStepToolCall` with a new `FileSearchRankingOptions` property that contains both values to make it clearer how they are related. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
 
-### Bugs fixed
+### Bugs Fixed
 
 - OpenAI.RealtimeConversation:
   - Fixed serialization issues with `ConversationItem` creation of system and assistant messages. ([bf3f0ed](https://github.com/openai/openai-dotnet/commit/bf3f0eddeda1957a998491e36d7fb551e99be916))
@@ -237,7 +237,7 @@
 
 ## 2.1.0-beta.2 (2024-11-04)
 
-### Features added
+### Features Added
 
 - OpenAI.Chat:
   - Added a `StoredOutputEnabled` property to `ChatCompletionOptions` ([`store` in the REST API](https://platform.openai.com/docs/api-reference/chat/create#chat-create-store)). ([b0f9e5c](https://github.com/openai/openai-dotnet/commit/b0f9e5c3b9708a802afa6ce7489636d2084e7d61))

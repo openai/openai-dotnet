@@ -344,6 +344,7 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(secondResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("isosceles"));
     }
 
+    [Ignore("Temporarily disabled due to service instability.")]
     [Test]
     public async Task ChatWithVision()
     {
