@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseMCPCallCompletedEvent : IJsonModel<InternalResponseMCPCallCompletedEvent>
+	public partial class InternalResponseMCPCallCompletedEvent : IJsonModel<InternalResponseMCPCallCompletedEvent>
     {
         internal InternalResponseMCPCallCompletedEvent() : this(InternalResponseStreamEventType.ResponseMcpCallCompleted, default, null)
         {

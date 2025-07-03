@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningSummaryPartAddedEvent : StreamingResponseUpdate
+	public partial class InternalResponseReasoningSummaryPartAddedEvent : StreamingResponseUpdate
     {
         internal InternalResponseReasoningSummaryPartAddedEvent(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, ReasoningSummaryPart part) : base(InternalResponseStreamEventType.ResponseReasoningSummaryPartAdded, sequenceNumber)
         {
