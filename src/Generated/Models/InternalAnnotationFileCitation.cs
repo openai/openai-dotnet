@@ -16,20 +16,20 @@ namespace OpenAI.Responses
 
             FileId = fileId;
             Index = index;
-			FileName = fileName;
-		}
+            FileName = fileName;
+        }
 
-		internal InternalAnnotationFileCitation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index, string fileName) : base(kind, additionalBinaryDataProperties)
+        internal InternalAnnotationFileCitation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index, string fileName) : base(kind, additionalBinaryDataProperties)
         {
             FileId = fileId;
             Index = index;
             FileName = fileName;
 
-		}
+        }
 
-		public string FileId { get; set; }
+        public string FileId { get; set; }
 
-		public string FileName { get; set; }
-		public int Index { get; set; }
+        public string FileName { get; set; }
+        public int Index { get; set; }
     }
 }

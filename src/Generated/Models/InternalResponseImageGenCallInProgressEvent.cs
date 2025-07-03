@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseImageGenCallInProgressEvent : StreamingResponseUpdate
+    public partial class InternalResponseImageGenCallInProgressEvent : StreamingResponseUpdate
     {
         internal InternalResponseImageGenCallInProgressEvent(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseImageGenerationCallInProgress, sequenceNumber)
         {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseMCPCallFailedEvent : StreamingResponseUpdate
+    public partial class InternalResponseMCPCallFailedEvent : StreamingResponseUpdate
     {
         internal InternalResponseMCPCallFailedEvent(int sequenceNumber) : base(InternalResponseStreamEventType.ResponseMcpCallFailed, sequenceNumber)
         {

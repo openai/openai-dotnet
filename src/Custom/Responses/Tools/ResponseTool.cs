@@ -46,15 +46,15 @@ public partial class ResponseTool
         };
     }
 
-	public static ResponseTool CreateCodeInterpreterTool(string type = "auto", IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
-	{
+    public static ResponseTool CreateCodeInterpreterTool(string type = "auto", IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
+    {
         return new InternalCodeInterpreterTool(
             kind: InternalToolType.CodeInterpreter,
             additionalBinaryDataProperties: additionalBinaryDataProperties,
             container: new CodeInterpreterToolDefinition(kind: type, additionalBinaryDataProperties:null)
             );
-	}
+    }
 
-	/* </GP> CUSTOM: Added code interpreter tool.                               *
-	 ****************************************************************************/
+    /* </GP> CUSTOM: Added code interpreter tool.                               *
+     ****************************************************************************/
 }

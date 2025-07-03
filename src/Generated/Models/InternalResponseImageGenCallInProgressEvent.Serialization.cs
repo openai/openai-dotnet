@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseImageGenCallInProgressEvent : IJsonModel<InternalResponseImageGenCallInProgressEvent>
+    public partial class InternalResponseImageGenCallInProgressEvent : IJsonModel<InternalResponseImageGenCallInProgressEvent>
     {
         internal InternalResponseImageGenCallInProgressEvent() : this(InternalResponseStreamEventType.ResponseImageGenerationCallInProgress, default, null, default, null)
         {

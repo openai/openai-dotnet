@@ -33,17 +33,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalAnnotationFileCitation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-			if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-			{
-				writer.WritePropertyName("file_id"u8);
-				writer.WriteStringValue(FileId);
-			}
-			if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
-			{
-				writer.WritePropertyName("filename"u8);
-				writer.WriteStringValue(FileName);
-			}
-			if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(FileName);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
@@ -76,24 +76,24 @@ namespace OpenAI.Responses
             int index = default;
             string fileName = default;
 
-			foreach (var prop in element.EnumerateObject())
+            foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToResponseMessageAnnotationKind();
                     continue;
                 }
-				if (prop.NameEquals("file_id"u8))
-				{
-					fileId = prop.Value.GetString();
-					continue;
-				}
-				if (prop.NameEquals("filename"u8))
-				{
-					fileName = prop.Value.GetString();
-					continue;
-				}
-				if (prop.NameEquals("index"u8))
+                if (prop.NameEquals("file_id"u8))
+                {
+                    fileId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("filename"u8))
+                {
+                    fileName = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("index"u8))
                 {
                     index = prop.Value.GetInt32();
                     continue;

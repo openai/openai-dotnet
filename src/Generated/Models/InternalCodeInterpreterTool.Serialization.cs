@@ -38,9 +38,9 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("container") != true)
             {
                 writer.WritePropertyName("container"u8);
-				IJsonModel<CodeInterpreterToolDefinition>  model = Container;
+                IJsonModel<CodeInterpreterToolDefinition>  model = Container;
                 model.Write(writer, options);
-			}
+            }
         }
 
         InternalCodeInterpreterTool IJsonModel<InternalCodeInterpreterTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalCodeInterpreterTool)JsonModelCreateCore(ref reader, options);
@@ -65,7 +65,7 @@ namespace OpenAI.Responses
             }
             InternalToolType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-			CodeInterpreterToolDefinition container = default;
+            CodeInterpreterToolDefinition container = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseReasoningSummaryDeltaEvent : StreamingResponseUpdate
+    public partial class InternalResponseReasoningSummaryDeltaEvent : StreamingResponseUpdate
     {
         internal InternalResponseReasoningSummaryDeltaEvent(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, BinaryData delta) : base(InternalResponseStreamEventType.ResponseReasoningSummaryDelta, sequenceNumber)
         {

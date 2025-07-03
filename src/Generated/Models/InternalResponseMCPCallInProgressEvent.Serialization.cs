@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseMCPCallInProgressEvent : IJsonModel<InternalResponseMCPCallInProgressEvent>
+    public partial class InternalResponseMCPCallInProgressEvent : IJsonModel<InternalResponseMCPCallInProgressEvent>
     {
         internal InternalResponseMCPCallInProgressEvent() : this(InternalResponseStreamEventType.ResponseMcpCallInProgress, default, null, default, null)
         {

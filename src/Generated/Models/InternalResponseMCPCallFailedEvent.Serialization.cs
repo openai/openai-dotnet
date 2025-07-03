@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponseMCPCallFailedEvent : IJsonModel<InternalResponseMCPCallFailedEvent>
+    public partial class InternalResponseMCPCallFailedEvent : IJsonModel<InternalResponseMCPCallFailedEvent>
     {
         internal InternalResponseMCPCallFailedEvent() : this(InternalResponseStreamEventType.ResponseMcpCallFailed, default, null)
         {
