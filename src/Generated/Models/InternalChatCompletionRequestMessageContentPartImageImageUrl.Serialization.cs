@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
@@ -39,8 +40,9 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
-                writer.WriteStringValue(Url);
+                writer.WriteStringValue(InternalUrl);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -64,6 +66,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionRequestMessageContentPartImageImageUrl IJsonModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionRequestMessageContentPartImageImageUrl JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,7 +85,7 @@ namespace OpenAI.Chat
                 return null;
             }
             ChatImageDetailLevel? detail = default;
-            string url = default;
+            string internalUrl = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -97,23 +100,25 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    url = prop.Value.GetString();
+                    internalUrl = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartImageImageUrl(detail, url, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartImageImageUrl(detail, internalUrl, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support writing '{options.Format}' format.");
             }
@@ -121,6 +126,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionRequestMessageContentPartImageImageUrl IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionRequestMessageContentPartImageImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
@@ -137,21 +143,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatCompletionRequestMessageContentPartImageImageUrl internalChatCompletionRequestMessageContentPartImageImageUrl)
-        {
-            if (internalChatCompletionRequestMessageContentPartImageImageUrl == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatCompletionRequestMessageContentPartImageImageUrl, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatCompletionRequestMessageContentPartImageImageUrl(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

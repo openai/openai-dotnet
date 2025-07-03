@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
@@ -27,40 +28,29 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support writing '{format}' format.");
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
-                if (options.Format != "W" && Optional.IsCollectionDefined(Content))
+                writer.WritePropertyName("content"u8);
+                writer.WriteStartArray();
+                foreach (ChatTokenLogProbabilityDetails item in Content)
                 {
-                    writer.WritePropertyName("content"u8);
-                    writer.WriteStartArray();
-                    foreach (ChatTokenLogProbabilityDetails item in Content)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("content"u8);
-                }
+                writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
-                if (options.Format != "W" && Optional.IsCollectionDefined(Refusal))
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStartArray();
+                foreach (ChatTokenLogProbabilityDetails item in Refusal)
                 {
-                    writer.WritePropertyName("refusal"u8);
-                    writer.WriteStartArray();
-                    foreach (ChatTokenLogProbabilityDetails item in Refusal)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("refusal"u8);
-                }
+                writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -84,6 +74,7 @@ namespace OpenAI.Chat
 
         InternalCreateChatCompletionResponseChoiceLogprobs IJsonModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateChatCompletionResponseChoiceLogprobs JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
@@ -136,6 +127,7 @@ namespace OpenAI.Chat
                     refusal = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateChatCompletionResponseChoiceLogprobs(content, refusal, additionalBinaryDataProperties);
@@ -143,13 +135,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support writing '{options.Format}' format.");
             }
@@ -157,6 +150,7 @@ namespace OpenAI.Chat
 
         InternalCreateChatCompletionResponseChoiceLogprobs IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateChatCompletionResponseChoiceLogprobs PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>)this).GetFormatFromOptions(options) : options.Format;
@@ -173,21 +167,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateChatCompletionResponseChoiceLogprobs internalCreateChatCompletionResponseChoiceLogprobs)
-        {
-            if (internalCreateChatCompletionResponseChoiceLogprobs == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateChatCompletionResponseChoiceLogprobs, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateChatCompletionResponseChoiceLogprobs(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

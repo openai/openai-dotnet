@@ -344,6 +344,7 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(secondResult.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("isosceles"));
     }
 
+    [Ignore("Temporarily disabled due to service instability.")]
     [Test]
     public async Task ChatWithVision()
     {
@@ -1112,6 +1113,39 @@ public class ChatTests : SyncAsyncTestBase
             ]);
         Assert.That(completion?.Content, Is.Not.Null.And.Not.Empty);
         Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
+    }
+
+    [Test]
+    public async Task StoredChatCompletionsWork()
+    {
+        ChatClient client = GetTestClient();
+
+        ChatCompletionOptions options = new()
+        {
+            StoredOutputEnabled = true
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            [new UserChatMessage("Say `this is a test`.")],
+            options);
+
+        Thread.Sleep(5000);
+
+        ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
+
+        Assert.That(storedCompletion.Id, Is.EqualTo(completion.Id));
+        Assert.That(storedCompletion.Content[0].Text, Is.EqualTo(completion.Content[0].Text));
+
+        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(completion.Id);
+
+        Assert.That(deletionResult.Deleted, Is.True);
+
+        Thread.Sleep(5000);
+
+        Assert.ThrowsAsync<ClientResultException>(async () =>
+        {
+            ChatCompletion deletedCompletion = await client.GetChatCompletionAsync(completion.Id);
+        });
     }
 
     private List<string> FileIdsToDelete = [];

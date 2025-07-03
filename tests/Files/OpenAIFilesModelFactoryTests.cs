@@ -78,7 +78,7 @@ public class OpenAIFilesModelFactoryTests
     public void OpenAIFileInfoWithSizeInBytesWorks()
     {
         int sizeInBytes = 1025;
-        OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(sizeInBytes: sizeInBytes);
+        OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(sizeInBytesLong: sizeInBytes);
 
         Assert.That(openAIFile.Id, Is.Null);
         Assert.That(openAIFile.SizeInBytes, Is.EqualTo(sizeInBytes));

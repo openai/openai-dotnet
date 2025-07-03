@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonObject : ResponseTextFormat
     {
-        public InternalResponsesTextFormatJsonObject() : base(InternalResponsesTextFormatType.JsonObject)
+        public InternalResponsesTextFormatJsonObject() : this(InternalResponsesTextFormatType.JsonObject, null)
         {
         }
 

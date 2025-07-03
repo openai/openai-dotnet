@@ -1,28 +1,24 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.FineTuning;
 
 [CodeGenSuppress("CreateFineTuningJobAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateFineTuningJob", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("ListPaginatedFineTuningJobsAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("ListPaginatedFineTuningJobs", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetPaginatedFineTuningJobsAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetPaginatedFineTuningJobs", typeof(string), typeof(int?), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFineTuningJobAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("RetrieveFineTuningJob", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelFineTuningJobAsync", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelFineTuningJob", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListFineTuningEventsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("ListFineTuningEvents", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("ListFineTuningJobCheckpointsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("ListFineTuningJobCheckpoints", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetFineTuningEventsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetFineTuningEvents", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetFineTuningJobCheckpointsAsync", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetFineTuningJobCheckpoints", typeof(string), typeof(string), typeof(int?), typeof(RequestOptions))]
 public partial class FineTuningClient
 {
-    // CUSTOM:
-    // - Renamed.
-    // - Edited doc comment.
     /// <summary>
     /// [Protocol Method] Creates a fine-tuning job which begins the process of creating a new model from a given dataset.
     ///
@@ -31,150 +27,117 @@ public partial class FineTuningClient
     /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
     /// </summary>
     /// <param name="waitUntilCompleted"> Value indicating whether the method
-    /// should return after the operation has been started and is still running
-    /// on the service, or wait until the operation has completed to return.
+    /// should return after the LRO has been started and is still running
+    /// on the service, or wait until the job has completed to return.
     /// </param>
     /// <param name="content"> The content to send as the body of the request. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A <see cref="FineTuningJobOperation"/> that can be used to wait for 
-    /// the operation to complete, get information about the fine tuning job, or 
-    /// cancel the operation. </returns>
-    public virtual async Task<FineTuningJobOperation> CreateFineTuningJobAsync(
+    /// <returns> A <see cref="FineTuningJob"/> that can be used to wait for 
+    /// the LRO to complete, get information about the fine tuning job, or 
+    /// cancel the job. </returns>
+    public virtual async Task<FineTuningJob> FineTuneAsync(
         BinaryContent content,
         bool waitUntilCompleted,
-        RequestOptions options = null)
+        RequestOptions options)
     {
         Argument.AssertNotNull(content, nameof(content));
 
-        using PipelineMessage message = CreateCreateFineTuningJobRequest(content, options);
+        using PipelineMessage message = PostJobPipelineMessage(content, options);
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string jobId = doc.RootElement.GetProperty("id"u8).GetString();
-        string status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        FineTuningJobOperation operation = this.CreateCreateJobOperation(jobId, status, response);
-        return await operation.WaitUntilAsync(waitUntilCompleted, options).ConfigureAwait(false);
+        FineTuningJob job = this.CreateJobFromResponse(response);
+        return await job.WaitUntilAsync(waitUntilCompleted, options).ConfigureAwait(false);
     }
 
-    // CUSTOM:
-    // - Renamed.
-    // - Edited doc comment.
-    /// <summary>
-    /// [Protocol Method] Creates a fine-tuning job which begins the process of creating a new model from a given dataset.
-    ///
-    /// Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
-    ///
-    /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
-    /// </summary>
-    /// <param name="waitUntilCompleted"> Value indicating whether the method
-    /// should return after the operation has been started and is still running
-    /// on the service, or wait until the operation has completed to return.
-    /// </param>
-    /// <param name="content"> The content to send as the body of the request. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A <see cref="FineTuningJobOperation"/> that can be used to wait for 
-    /// the operation to complete, get information about the fine tuning job, or 
-    /// cancel the operation. </returns>
-    public virtual FineTuningJobOperation CreateFineTuningJob(
+    /// <inheritdoc cref="FineTuneAsync(BinaryContent, bool, RequestOptions)"/>
+    public virtual FineTuningJob FineTune(
         BinaryContent content,
         bool waitUntilCompleted,
-        RequestOptions options = null)
+        RequestOptions options)
     {
         Argument.AssertNotNull(content, nameof(content));
 
-        using PipelineMessage message = CreateCreateFineTuningJobRequest(content, options);
+        using PipelineMessage message = PostJobPipelineMessage(content, options);
         PipelineResponse response = Pipeline.ProcessMessage(message, options);
 
-        using JsonDocument doc = JsonDocument.Parse(response.Content);
-        string jobId = doc.RootElement.GetProperty("id"u8).GetString();
-        string status = doc.RootElement.GetProperty("status"u8).GetString();
-
-        FineTuningJobOperation operation = this.CreateCreateJobOperation(jobId, status, response);
-        return operation.WaitUntil(waitUntilCompleted, options);
+        FineTuningJob job = this.CreateJobFromResponse(response);
+        return job.WaitUntil(waitUntilCompleted, options);
     }
 
     // CUSTOM:
     // - Renamed.
     // - Edited doc comment.
     /// <summary>
-    /// [Protocol Method] List your organization's fine-tuning jobs
+    /// [Protocol Method] List all of your organization's fine-tuning jobs
     /// </summary>
-    /// <param name="after"> Identifier for the last job from the previous pagination request. </param>
-    /// <param name="limit"> Number of fine-tuning jobs to retrieve. </param>
+    /// <param name="afterJobId"> Identifier for the last job from the previous pagination request. </param>
+    /// <param name="pageSize"> Number of fine-tuning jobs to retrieve at a time. Collection will iterate until _all_ jobs are fetched. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual AsyncCollectionResult GetJobsAsync(string after, int? limit, RequestOptions options)
+    internal virtual AsyncCollectionResult GetJobsAsync(string afterJobId, int? pageSize, RequestOptions options)
     {
-        return new AsyncFineTuningJobCollectionResult(this, Pipeline, options, limit, after);
+        return new AsyncFineTuningJobCollectionResult(this, Pipeline, options, pageSize, afterJobId);
     }
+
 
     // CUSTOM:
     // - Renamed.
     // - Edited doc comment.
     /// <summary>
-    /// [Protocol Method] List your organization's fine-tuning jobs
+    /// [Protocol Method] List all of your your organization's fine-tuning jobs
     /// </summary>
     /// <param name="after"> Identifier for the last job from the previous pagination request. </param>
-    /// <param name="limit"> Number of fine-tuning jobs to retrieve. </param>
+    /// <param name="pageSize"> Number of fine-tuning jobs to retrieve at a time. Collection will iterate until _all_ jobs are fetched. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual CollectionResult GetJobs(string after, int? limit, RequestOptions options)
+    internal virtual CollectionResult GetJobs(string after, int? pageSize, RequestOptions options)
     {
-        return new FineTuningJobCollectionResult(this, Pipeline, options, limit, after);
+        return new FineTuningJobCollectionResult(this, Pipeline, options, pageSize, after);
     }
 
-    // CUSTOM:
-    // - Renamed.
-    // - Edited doc comment.
     /// <summary>
     /// [Protocol Method] Get info about a fine-tuning job.
     ///
     /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
     /// </summary>
-    /// <param name="fineTuningJobId"> The ID of the fine-tuning job. </param>
+    /// <param name="JobId"> The ID of the fine-tuning job. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="fineTuningJobId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="fineTuningJobId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="JobId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="JobId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetJobAsync(string fineTuningJobId, RequestOptions options)
+    internal async Task<ClientResult> GetJobAsync(string JobId, RequestOptions options)
     {
-        Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+        Argument.AssertNotNullOrEmpty(JobId, nameof(JobId));
 
-        using PipelineMessage message = CreateRetrieveFineTuningJobRequest(fineTuningJobId, options);
+        using PipelineMessage message = GetJobPipelineMessage(Pipeline, _endpoint, JobId, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    // CUSTOM:
-    // - Renamed.
-    // - Edited doc comment.
     /// <summary>
     /// [Protocol Method] Get info about a fine-tuning job.
     ///
     /// [Learn more about fine-tuning](/docs/guides/fine-tuning)
     /// </summary>
-    /// <param name="fineTuningJobId"> The ID of the fine-tuning job. </param>
+    /// <param name="JobId"> The ID of the fine-tuning job. </param>
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="fineTuningJobId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="fineTuningJobId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ArgumentNullException"> <paramref name="JobId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="JobId"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetJob(string fineTuningJobId, RequestOptions options)
+    internal ClientResult GetJob(string JobId, RequestOptions options)
     {
-        Argument.AssertNotNullOrEmpty(fineTuningJobId, nameof(fineTuningJobId));
+        Argument.AssertNotNullOrEmpty(JobId, nameof(JobId));
 
-        using PipelineMessage message = CreateRetrieveFineTuningJobRequest(fineTuningJobId, options);
+        using PipelineMessage message = GetJobPipelineMessage(Pipeline, _endpoint, JobId, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
-    internal virtual PipelineMessage CreateCreateFineTuningJobRequest(BinaryContent content, RequestOptions options)
+    internal virtual PipelineMessage PostJobPipelineMessage(BinaryContent content, RequestOptions options)
     {
         var message = Pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
@@ -191,7 +154,7 @@ public partial class FineTuningClient
         return message;
     }
 
-    internal virtual PipelineMessage CreateGetPaginatedFineTuningJobsRequest(string after, int? limit, RequestOptions options)
+    internal virtual PipelineMessage GetJobsPipelineMessage(string after, int? limit, RequestOptions options)
     {
         var message = Pipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
@@ -214,16 +177,18 @@ public partial class FineTuningClient
         return message;
     }
 
-    internal virtual PipelineMessage CreateRetrieveFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
+    internal static PipelineMessage GetJobPipelineMessage(ClientPipeline clientPipeline, Uri endpoint, string JobId, RequestOptions options)
     {
-        var message = Pipeline.CreateMessage();
+        // This is referenced by client.GetJobAsync and client.GetJob, and job.GetJobAsync and job.GetJob.
+        // It is static so that FineTuningJob can use it as well.
+        var message = clientPipeline.CreateMessage();
         message.ResponseClassifier = PipelineMessageClassifier200;
         var request = message.Request;
         request.Method = "GET";
         var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
+        uri.Reset(endpoint);
         uri.AppendPath("/fine_tuning/jobs/", false);
-        uri.AppendPath(fineTuningJobId, true);
+        uri.AppendPath(JobId, true);
         request.Uri = uri.ToUri();
         request.Headers.Set("Accept", "application/json");
         message.Apply(options);

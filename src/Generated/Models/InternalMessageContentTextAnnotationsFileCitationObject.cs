@@ -10,7 +10,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation
     {
-        public InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base("file_citation")
+        internal InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(InternalMessageContentTextAnnotationType.FileCitation)
         {
             Argument.AssertNotNull(text, nameof(text));
             Argument.AssertNotNull(fileCitation, nameof(fileCitation));
@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
             EndIndex = endIndex;
         }
 
-        internal InternalMessageContentTextAnnotationsFileCitationObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(@type, additionalBinaryDataProperties)
+        internal InternalMessageContentTextAnnotationsFileCitationObject(InternalMessageContentTextAnnotationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(kind, additionalBinaryDataProperties)
         {
             Text = text;
             FileCitation = fileCitation;
@@ -31,7 +31,7 @@ namespace OpenAI.Assistants
 
         public string Text { get; set; }
 
-        public InternalMessageContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; set; }
+        internal InternalMessageContentTextAnnotationsFileCitationObjectFileCitation FileCitation { get; set; }
 
         public int StartIndex { get; set; }
 

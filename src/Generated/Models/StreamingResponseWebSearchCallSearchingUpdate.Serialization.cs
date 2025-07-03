@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseWebSearchCallSearchingUpdate : IJsonModel<StreamingResponseWebSearchCallSearchingUpdate>
     {
-        internal StreamingResponseWebSearchCallSearchingUpdate()
+        internal StreamingResponseWebSearchCallSearchingUpdate() : this(InternalResponseStreamEventType.ResponseWebSearchCallSearching, default, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,20 +33,21 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseWebSearchCallSearchingUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
-            {
-                writer.WritePropertyName("item_id"u8);
-                writer.WriteStringValue(ItemId);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+            {
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
+            }
         }
 
         StreamingResponseWebSearchCallSearchingUpdate IJsonModel<StreamingResponseWebSearchCallSearchingUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseWebSearchCallSearchingUpdate)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -63,20 +65,21 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesResponseStreamEventType @type = default;
+            InternalResponseStreamEventType kind = default;
+            int sequenceNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string itemId = default;
             int outputIndex = default;
+            string itemId = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesResponseStreamEventType(prop.Value.GetString());
+                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("item_id"u8))
+                if (prop.NameEquals("sequence_number"u8))
                 {
-                    itemId = prop.Value.GetString();
+                    sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("output_index"u8))
@@ -84,20 +87,27 @@ namespace OpenAI.Responses
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("item_id"u8))
+                {
+                    itemId = prop.Value.GetString();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseWebSearchCallSearchingUpdate(@type, additionalBinaryDataProperties, itemId, outputIndex);
+            return new StreamingResponseWebSearchCallSearchingUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, itemId);
         }
 
         BinaryData IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseWebSearchCallSearchingUpdate)} does not support writing '{options.Format}' format.");
             }
@@ -105,6 +115,7 @@ namespace OpenAI.Responses
 
         StreamingResponseWebSearchCallSearchingUpdate IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseWebSearchCallSearchingUpdate)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -121,21 +132,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(StreamingResponseWebSearchCallSearchingUpdate streamingResponseWebSearchCallSearchingUpdate)
-        {
-            if (streamingResponseWebSearchCallSearchingUpdate == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(streamingResponseWebSearchCallSearchingUpdate, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator StreamingResponseWebSearchCallSearchingUpdate(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeStreamingResponseWebSearchCallSearchingUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

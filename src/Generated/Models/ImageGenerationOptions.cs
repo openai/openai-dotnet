@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images
 {
@@ -11,16 +12,20 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ImageGenerationOptions(GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageStyle? style, InternalCreateImageRequestModel? model, string prompt, long? n, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageGenerationOptions(GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageSize? size, GeneratedImageBackground? background, GeneratedImageStyle? style, InternalCreateImageRequestModel? model, string prompt, long? n, string endUserId, int? outputCompressionFactor, GeneratedImageFileFormat? outputFileFormat, GeneratedImageModerationLevel? moderationLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Quality = quality;
             ResponseFormat = responseFormat;
             Size = size;
+            Background = background;
             Style = style;
             Model = model;
             Prompt = prompt;
             N = n;
             EndUserId = endUserId;
+            OutputCompressionFactor = outputCompressionFactor;
+            OutputFileFormat = outputFileFormat;
+            ModerationLevel = moderationLevel;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -29,6 +34,9 @@ namespace OpenAI.Images
         public GeneratedImageFormat? ResponseFormat { get; set; }
 
         public GeneratedImageSize? Size { get; set; }
+
+        [Experimental("OPENAI001")]
+        public GeneratedImageBackground? Background { get; set; }
 
         public GeneratedImageStyle? Style { get; set; }
 

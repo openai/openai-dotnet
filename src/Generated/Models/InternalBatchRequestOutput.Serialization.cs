@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Batch
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -47,6 +48,7 @@ namespace OpenAI.Batch
                 writer.WritePropertyName("error"u8);
                 writer.WriteObjectValue(Error, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -70,6 +72,7 @@ namespace OpenAI.Batch
 
         InternalBatchRequestOutput IJsonModel<InternalBatchRequestOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchRequestOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -124,6 +127,7 @@ namespace OpenAI.Batch
                     error = InternalBatchRequestOutputError.DeserializeInternalBatchRequestOutputError(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchRequestOutput(id, customId, response, error, additionalBinaryDataProperties);
@@ -131,13 +135,14 @@ namespace OpenAI.Batch
 
         BinaryData IPersistableModel<InternalBatchRequestOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalBatchRequestOutput)} does not support writing '{options.Format}' format.");
             }
@@ -145,6 +150,7 @@ namespace OpenAI.Batch
 
         InternalBatchRequestOutput IPersistableModel<InternalBatchRequestOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchRequestOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestOutput>)this).GetFormatFromOptions(options) : options.Format;
@@ -161,21 +167,5 @@ namespace OpenAI.Batch
         }
 
         string IPersistableModel<InternalBatchRequestOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalBatchRequestOutput internalBatchRequestOutput)
-        {
-            if (internalBatchRequestOutput == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalBatchRequestOutput, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalBatchRequestOutput(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchRequestOutput(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

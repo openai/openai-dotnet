@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseAudioContentPart : ConversationContentPart
     {
@@ -14,12 +14,9 @@ namespace OpenAI.RealtimeConversation
             InternalTranscriptValue = internalTranscriptValue;
         }
 
-        internal InternalRealtimeResponseAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, string internalTranscriptValue) : base(kind, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseAudioContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalTranscriptValue) : base(kind, additionalBinaryDataProperties)
         {
-            Type = @type;
             InternalTranscriptValue = internalTranscriptValue;
         }
-
-        internal string Type { get; set; } = "audio";
     }
 }

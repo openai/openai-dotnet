@@ -63,7 +63,7 @@ internal class MessageCollectionResult : CollectionResult<ThreadMessage>
     }
 
     public ClientResult GetFirstPage()
-        => _messageClient.ListMessages(_threadId, _limit, _order, _after, _before, _options);
+        => _messageClient.GetMessages(_threadId, _limit, _order, _after, _before, _options);
 
     public ClientResult GetNextPage(ClientResult result)
     {
@@ -74,7 +74,7 @@ internal class MessageCollectionResult : CollectionResult<ThreadMessage>
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string lastId = doc.RootElement.GetProperty("last_id"u8).GetString()!;
 
-        return _messageClient.ListMessages(_threadId, _limit, _order, lastId, _before, _options);
+        return _messageClient.GetMessages(_threadId, _limit, _order, lastId, _before, _options);
     }
 
     public static bool HasNextPage(ClientResult result)

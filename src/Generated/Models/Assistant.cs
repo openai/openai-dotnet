@@ -24,17 +24,18 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, InternalAssistantObjectObject @object, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, string @object, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             CreatedAt = createdAt;
             Name = name;
             Description = description;
             Model = model;
             Instructions = instructions;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             Object = @object;
             ResponseFormat = responseFormat;

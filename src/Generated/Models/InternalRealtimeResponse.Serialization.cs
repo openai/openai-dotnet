@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponse : IJsonModel<InternalRealtimeResponse>
     {
-        internal InternalRealtimeResponse()
+        internal InternalRealtimeResponse() : this(null, null, default, null, null, null, null, default, null, null, null, default, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -39,7 +40,7 @@ namespace OpenAI.RealtimeConversation
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.Value.ToString());
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -105,7 +106,7 @@ namespace OpenAI.RealtimeConversation
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
-                foreach (ConversationItem item in Output)
+                foreach (RealtimeItem item in Output)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -131,6 +132,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("output_audio_format"u8);
                 writer.WriteStringValue(OutputAudioFormat.Value.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -154,6 +156,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponse IJsonModel<InternalRealtimeResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -172,7 +175,7 @@ namespace OpenAI.RealtimeConversation
                 return null;
             }
             string id = default;
-            InternalRealtimeResponseObject? @object = default;
+            string @object = default;
             ConversationStatus? status = default;
             ConversationStatusDetails statusDetails = default;
             IDictionary<string, string> metadata = default;
@@ -180,10 +183,10 @@ namespace OpenAI.RealtimeConversation
             string conversationId = default;
             float? temperature = default;
             BinaryData maxOutputTokens = default;
-            IReadOnlyList<ConversationItem> output = default;
+            IReadOnlyList<RealtimeItem> output = default;
             IReadOnlyList<InternalRealtimeResponseModality> modalities = default;
             ConversationVoice? voice = default;
-            ConversationAudioFormat? outputAudioFormat = default;
+            RealtimeAudioFormat? outputAudioFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -194,11 +197,7 @@ namespace OpenAI.RealtimeConversation
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    @object = new InternalRealtimeResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -279,10 +278,10 @@ namespace OpenAI.RealtimeConversation
                     {
                         continue;
                     }
-                    List<ConversationItem> array = new List<ConversationItem>();
+                    List<RealtimeItem> array = new List<RealtimeItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ConversationItem.DeserializeConversationItem(item, options));
+                        array.Add(RealtimeItem.DeserializeRealtimeItem(item, options));
                     }
                     output = array;
                     continue;
@@ -316,9 +315,10 @@ namespace OpenAI.RealtimeConversation
                     {
                         continue;
                     }
-                    outputAudioFormat = new ConversationAudioFormat(prop.Value.GetString());
+                    outputAudioFormat = new RealtimeAudioFormat(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeResponse(
@@ -331,7 +331,7 @@ namespace OpenAI.RealtimeConversation
                 conversationId,
                 temperature,
                 maxOutputTokens,
-                output ?? new ChangeTrackingList<ConversationItem>(),
+                output ?? new ChangeTrackingList<RealtimeItem>(),
                 modalities ?? new ChangeTrackingList<InternalRealtimeResponseModality>(),
                 voice,
                 outputAudioFormat,
@@ -340,13 +340,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeResponse)} does not support writing '{options.Format}' format.");
             }
@@ -354,6 +355,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponse IPersistableModel<InternalRealtimeResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -370,21 +372,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeResponse internalRealtimeResponse)
-        {
-            if (internalRealtimeResponse == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeResponse, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeResponse(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

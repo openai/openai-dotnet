@@ -1,14 +1,21 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace OpenAI.Responses;
 
-[CodeGenSuppress("CreateResponse", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("CreateResponseAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("CreateResponse", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
+[CodeGenSuppress("CreateResponseAsync", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
+[CodeGenSuppress("GetResponse", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetResponseAsync", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("GetInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("CancelResponse", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("CancelResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
 public partial class OpenAIResponseClient
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -16,11 +23,7 @@ public partial class OpenAIResponseClient
     {
         Argument.AssertNotNull(content, nameof(content));
 
-        string acceptHeaderValue = options?.BufferResponse == false
-            ? AcceptHeaderValue.TextEventStream.ToString()
-            : AcceptHeaderValue.ApplicationJson.ToString();
-
-        using PipelineMessage message = CreateCreateResponseRequest(content, acceptHeaderValue, options);
+        using PipelineMessage message = CreateCreateResponseRequest(content, options);
         PipelineResponse protocolResponse = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
         return ClientResult.FromResponse(protocolResponse);
     }
@@ -30,32 +33,28 @@ public partial class OpenAIResponseClient
     {
         Argument.AssertNotNull(content, nameof(content));
 
-        string acceptHeaderValue = options?.BufferResponse == false
-            ? AcceptHeaderValue.TextEventStream.ToString()
-            : AcceptHeaderValue.ApplicationJson.ToString();
-
-        using PipelineMessage message = CreateCreateResponseRequest(content, acceptHeaderValue, options);
+        using PipelineMessage message = CreateCreateResponseRequest(content, options);
         PipelineResponse protocolResponse = Pipeline.ProcessMessage(message, options);
         return ClientResult.FromResponse(protocolResponse);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual async Task<ClientResult> GetResponseAsync(string responseId, RequestOptions options)
+    public virtual async Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseRequest(responseId, [], options);
+        using PipelineMessage message = CreateGetResponseRequest(responseId, [], stream, startingAfter, options);
 
         PipelineResponse protocolResponse = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
         return ClientResult.FromResponse(protocolResponse);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual ClientResult GetResponse(string responseId, RequestOptions options)
+    public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseRequest(responseId, [], options);
+        using PipelineMessage message = CreateGetResponseRequest(responseId, [], stream, startingAfter, options);
         PipelineResponse protocolResponse = Pipeline.ProcessMessage(message, options);
         return ClientResult.FromResponse(protocolResponse);
     }

@@ -23,11 +23,12 @@ namespace OpenAI.Assistants
 
         internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string instructions, IList<ToolDefinition> tools, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, bool? parallelToolCalls, string model, ToolResources toolResources, AssistantResponseFormat responseFormat, ToolConstraint toolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             AssistantId = assistantId;
             Thread = thread;
             Instructions = instructions;
-            Tools = tools;
-            Metadata = metadata;
+            Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
             Stream = stream;

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,6 +37,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -59,6 +61,7 @@ namespace OpenAI.Assistants
 
         InternalAssistantsNamedToolChoiceFunction IJsonModel<InternalAssistantsNamedToolChoiceFunction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalAssistantsNamedToolChoiceFunction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
@@ -85,6 +88,7 @@ namespace OpenAI.Assistants
                     name = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalAssistantsNamedToolChoiceFunction(name, additionalBinaryDataProperties);
@@ -92,13 +96,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalAssistantsNamedToolChoiceFunction)} does not support writing '{options.Format}' format.");
             }
@@ -106,6 +111,7 @@ namespace OpenAI.Assistants
 
         InternalAssistantsNamedToolChoiceFunction IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalAssistantsNamedToolChoiceFunction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
@@ -122,21 +128,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalAssistantsNamedToolChoiceFunction internalAssistantsNamedToolChoiceFunction)
-        {
-            if (internalAssistantsNamedToolChoiceFunction == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalAssistantsNamedToolChoiceFunction, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalAssistantsNamedToolChoiceFunction(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalAssistantsNamedToolChoiceFunction(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

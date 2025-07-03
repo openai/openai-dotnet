@@ -3,15 +3,21 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
+    [PersistableModelProxy(typeof(InternalUnknownChatResponseFormat))]
     public partial class ChatResponseFormat : IJsonModel<ChatResponseFormat>
     {
+        internal ChatResponseFormat()
+        {
+        }
+
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -22,8 +28,9 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -47,6 +54,7 @@ namespace OpenAI.Chat
 
         ChatResponseFormat IJsonModel<ChatResponseFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -69,11 +77,11 @@ namespace OpenAI.Chat
                 switch (discriminator.GetString())
                 {
                     case "text":
-                        return InternalChatResponseFormatText.DeserializeInternalChatResponseFormatText(element, options);
+                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, options);
                     case "json_object":
-                        return InternalChatResponseFormatJsonObject.DeserializeInternalChatResponseFormatJsonObject(element, options);
+                        return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, options);
                     case "json_schema":
-                        return InternalChatResponseFormatJsonSchema.DeserializeInternalChatResponseFormatJsonSchema(element, options);
+                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, options);
                 }
             }
             return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, options);
@@ -81,13 +89,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatResponseFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support writing '{options.Format}' format.");
             }
@@ -95,6 +104,7 @@ namespace OpenAI.Chat
 
         ChatResponseFormat IPersistableModel<ChatResponseFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatResponseFormat>)this).GetFormatFromOptions(options) : options.Format;
@@ -111,21 +121,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatResponseFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatResponseFormat chatResponseFormat)
-        {
-            if (chatResponseFormat == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatResponseFormat, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatResponseFormat(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatResponseFormat(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

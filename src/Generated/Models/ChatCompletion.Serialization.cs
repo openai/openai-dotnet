@@ -3,17 +3,18 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion()
+        internal ChatCompletion() : this(null, null, null, null, null, default, null, default, null)
         {
         }
 
@@ -24,6 +25,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletion>)this).GetFormatFromOptions(options) : options.Format;
@@ -54,7 +56,7 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
             {
@@ -76,6 +78,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -99,6 +102,7 @@ namespace OpenAI.Chat
 
         ChatCompletion IJsonModel<ChatCompletion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatCompletion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletion>)this).GetFormatFromOptions(options) : options.Format;
@@ -120,8 +124,8 @@ namespace OpenAI.Chat
             string model = default;
             string systemFingerprint = default;
             ChatTokenUsage usage = default;
-            InternalCreateChatCompletionResponseObject @object = default;
-            InternalCreateChatCompletionResponseServiceTier? serviceTier = default;
+            string @object = default;
+            InternalServiceTier? serviceTier = default;
             IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = default;
             DateTimeOffset createdAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -153,7 +157,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalCreateChatCompletionResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("service_tier"u8))
@@ -163,7 +167,7 @@ namespace OpenAI.Chat
                         serviceTier = null;
                         continue;
                     }
-                    serviceTier = new InternalCreateChatCompletionResponseServiceTier(prop.Value.GetString());
+                    serviceTier = new InternalServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("choices"u8))
@@ -181,6 +185,7 @@ namespace OpenAI.Chat
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatCompletion(
@@ -197,13 +202,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatCompletion>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletion>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletion)} does not support writing '{options.Format}' format.");
             }
@@ -211,6 +217,7 @@ namespace OpenAI.Chat
 
         ChatCompletion IPersistableModel<ChatCompletion>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatCompletion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatCompletion>)this).GetFormatFromOptions(options) : options.Format;
@@ -227,21 +234,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatCompletion>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatCompletion chatCompletion)
-        {
-            if (chatCompletion == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatCompletion, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatCompletion(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatCompletion(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

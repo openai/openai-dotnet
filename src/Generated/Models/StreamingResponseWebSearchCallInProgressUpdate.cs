@@ -9,20 +9,20 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseWebSearchCallInProgressUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseWebSearchCallInProgressUpdate(string itemId, int outputIndex) : base(InternalResponsesResponseStreamEventType.ResponseWebSearchCallInProgress)
+        internal StreamingResponseWebSearchCallInProgressUpdate(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseWebSearchCallInProgress, sequenceNumber)
         {
-            ItemId = itemId;
             OutputIndex = outputIndex;
+            ItemId = itemId;
         }
 
-        internal StreamingResponseWebSearchCallInProgressUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseWebSearchCallInProgressUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
-            ItemId = itemId;
             OutputIndex = outputIndex;
+            ItemId = itemId;
         }
-
-        public string ItemId { get; }
 
         public int OutputIndex { get; }
+
+        public string ItemId { get; }
     }
 }

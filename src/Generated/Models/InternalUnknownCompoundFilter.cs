@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownCompoundFilter : InternalCompoundFilter
     {
-        internal InternalUnknownCompoundFilter(InternalCompoundFilterType @type, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", filters, additionalBinaryDataProperties)
+        internal InternalUnknownCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", filters, additionalBinaryDataProperties)
         {
         }
     }

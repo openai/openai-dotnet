@@ -11,6 +11,7 @@ namespace OpenAI.Responses
     public readonly partial struct ResponseReasoningSummaryVerbosity : IEquatable<ResponseReasoningSummaryVerbosity>
     {
         private readonly string _value;
+        private const string AutoValue = "auto";
         private const string ConciseValue = "concise";
         private const string DetailedValue = "detailed";
 
@@ -20,6 +21,8 @@ namespace OpenAI.Responses
 
             _value = value;
         }
+
+        public static ResponseReasoningSummaryVerbosity Auto { get; } = new ResponseReasoningSummaryVerbosity(AutoValue);
 
         public static ResponseReasoningSummaryVerbosity Concise { get; } = new ResponseReasoningSummaryVerbosity(ConciseValue);
 

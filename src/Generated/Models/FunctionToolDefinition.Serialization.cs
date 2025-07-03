@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,10 +13,14 @@ namespace OpenAI.Assistants
 {
     public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
     {
-        internal FunctionToolDefinition()
+        void IJsonModel<FunctionToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -28,12 +32,13 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
                 writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue(_internalFunction, options);
+                writer.WriteObjectValue(Function, options);
             }
         }
 
         FunctionToolDefinition IJsonModel<FunctionToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FunctionToolDefinition)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -51,35 +56,37 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "function";
+            InternalAssistantToolDefinitionType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalFunctionDefinition internalFunction = default;
+            InternalFunctionDefinition function = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalAssistantToolDefinitionType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("function"u8))
                 {
-                    internalFunction = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
+                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new FunctionToolDefinition(@type, additionalBinaryDataProperties, internalFunction);
+            return new FunctionToolDefinition(kind, additionalBinaryDataProperties, function);
         }
 
         BinaryData IPersistableModel<FunctionToolDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FunctionToolDefinition)} does not support writing '{options.Format}' format.");
             }
@@ -87,6 +94,7 @@ namespace OpenAI.Assistants
 
         FunctionToolDefinition IPersistableModel<FunctionToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options) => (FunctionToolDefinition)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -103,21 +111,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<FunctionToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(FunctionToolDefinition functionToolDefinition)
-        {
-            if (functionToolDefinition == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(functionToolDefinition, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator FunctionToolDefinition(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeFunctionToolDefinition(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

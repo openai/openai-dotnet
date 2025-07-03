@@ -9,12 +9,12 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentTextObject : InternalMessageDeltaContent
     {
-        internal InternalMessageDeltaContentTextObject(int index) : base("text")
+        internal InternalMessageDeltaContentTextObject(int index) : base(InternalMessageContentType.Text)
         {
             Index = index;
         }
 
-        internal InternalMessageDeltaContentTextObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, InternalMessageDeltaContentTextObjectText text) : base(@type, additionalBinaryDataProperties)
+        internal InternalMessageDeltaContentTextObject(InternalMessageContentType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, InternalMessageDeltaContentTextObjectText text) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Text = text;
@@ -22,6 +22,6 @@ namespace OpenAI.Assistants
 
         public int Index { get; }
 
-        public InternalMessageDeltaContentTextObjectText Text { get; }
+        internal InternalMessageDeltaContentTextObjectText Text { get; }
     }
 }

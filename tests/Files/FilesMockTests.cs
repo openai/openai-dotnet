@@ -241,6 +241,22 @@ public class FilesMockTests : SyncAsyncTestBase
 #pragma warning restore CS0618
 
     [Test]
+    public async Task UploadFileDeserializesBigSizes()
+    {
+        long bigSize = (long)int.MaxValue + (long)int.MaxValue / 2;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, $$"""
+        {
+            "bytes": {{bigSize}}
+        }
+        """);
+        OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, FileSourceKind.UsingFilePath);
+
+        Assert.That(fileInfo.SizeInBytesLong, Is.EqualTo(bigSize));
+        Assert.Throws<OverflowException>(() => _ = fileInfo.SizeInBytes);
+    }
+
+    [Test]
     public void UploadFileRespectsTheCancellationToken()
     {
         OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);

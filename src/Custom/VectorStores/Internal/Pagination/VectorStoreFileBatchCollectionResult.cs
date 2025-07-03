@@ -100,7 +100,7 @@ internal class VectorStoreFileBatchCollectionResult : CollectionResult<VectorSto
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-        using PipelineMessage message = _vectorStoreClient.CreateListFilesInVectorStoreBatchRequest(vectorStoreId, batchId, limit, order, after, before, filter, options);
+        using PipelineMessage message = _vectorStoreClient.CreateGetFilesInVectorStoreBatchRequest(vectorStoreId, batchId, limit, order, after, before, filter, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

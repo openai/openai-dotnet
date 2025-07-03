@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranslation : IJsonModel<AudioTranslation>
     {
-        internal AudioTranslation()
+        internal AudioTranslation() : this(null, null, null, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranslation>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Segments) && _additionalBinaryDataProperties?.ContainsKey("segments") != true)
             {
                 writer.WritePropertyName("segments"u8);
@@ -54,13 +56,14 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
             {
                 writer.WritePropertyName("task"u8);
-                writer.WriteStringValue(Task.ToString());
+                writer.WriteStringValue(Task);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
                 writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -84,6 +87,7 @@ namespace OpenAI.Audio
 
         AudioTranslation IJsonModel<AudioTranslation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranslation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranslation>)this).GetFormatFromOptions(options) : options.Format;
@@ -104,7 +108,7 @@ namespace OpenAI.Audio
             string language = default;
             string text = default;
             IReadOnlyList<TranscribedSegment> segments = default;
-            InternalCreateTranslationResponseVerboseJsonTask task = default;
+            string task = default;
             TimeSpan? duration = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -135,7 +139,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("task"u8))
                 {
-                    task = new InternalCreateTranslationResponseVerboseJsonTask(prop.Value.GetString());
+                    task = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("duration"u8))
@@ -143,6 +147,7 @@ namespace OpenAI.Audio
                     duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranslation(
@@ -156,13 +161,14 @@ namespace OpenAI.Audio
 
         BinaryData IPersistableModel<AudioTranslation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranslation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AudioTranslation)} does not support writing '{options.Format}' format.");
             }
@@ -170,6 +176,7 @@ namespace OpenAI.Audio
 
         AudioTranslation IPersistableModel<AudioTranslation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranslation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranslation>)this).GetFormatFromOptions(options) : options.Format;
@@ -186,21 +193,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<AudioTranslation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(AudioTranslation audioTranslation)
-        {
-            if (audioTranslation == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(audioTranslation, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AudioTranslation(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAudioTranslation(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

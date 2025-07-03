@@ -12,16 +12,15 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs()
+        internal InternalCreateChatCompletionStreamResponseChoiceLogprobs() : this(null, null, null)
         {
-            Content = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
-            Refusal = new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
         }
 
         internal InternalCreateChatCompletionStreamResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Content = content;
-            Refusal = refusal;
+            // Plugin customization: ensure initialization of collections
+            Content = content ?? new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
+            Refusal = refusal ?? new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

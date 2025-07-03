@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OpenAI.Audio;
 
 [CodeGenType("CreateTranslationRequest")]
-[CodeGenSuppress("AudioTranslationOptions", typeof(BinaryData), typeof(InternalCreateTranslationRequestModel))]
+[CodeGenVisibility(nameof(AudioTranslationOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(AudioTranslationOptions), typeof(BinaryData), typeof(InternalCreateTranslationRequestModel))]
 public partial class AudioTranslationOptions
 {
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
@@ -14,12 +16,6 @@ public partial class AudioTranslationOptions
     // - Made internal. The model is specified by the client.
     // - Added setter.
     internal InternalCreateTranslationRequestModel Model { get; set; }
-
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="AudioTranslationOptions"/>. </summary>
-    public AudioTranslationOptions()
-    {
-    }
 
     internal MultiPartFormDataBinaryContent ToMultipartContent(Stream audio, string audioFilename)
     {
@@ -39,5 +35,21 @@ public partial class AudioTranslationOptions
         }
 
         return content;
+    }
+
+    internal AudioTranslationOptions GetClone()
+    {
+        AudioTranslationOptions copiedOptions = (AudioTranslationOptions)this.MemberwiseClone();
+
+        if (SerializedAdditionalRawData is not null)
+        {
+            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
+            {
+                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
+            }
+        }
+
+        return copiedOptions;
     }
 }

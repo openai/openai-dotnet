@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
+            }
+            if (Optional.IsDefined(Score) && _additionalBinaryDataProperties?.ContainsKey("score") != true)
+            {
+                writer.WritePropertyName("score"u8);
+                writer.WriteNumberValue(Score.Value);
             }
             if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
@@ -65,11 +71,7 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Score) && _additionalBinaryDataProperties?.ContainsKey("score") != true)
-            {
-                writer.WritePropertyName("score"u8);
-                writer.WriteNumberValue(Score.Value);
-            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -93,6 +95,7 @@ namespace OpenAI.Responses
 
         FileSearchCallResult IJsonModel<FileSearchCallResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual FileSearchCallResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -113,8 +116,8 @@ namespace OpenAI.Responses
             string fileId = default;
             string text = default;
             string filename = default;
-            IDictionary<string, BinaryData> attributes = default;
             float? score = default;
+            IReadOnlyDictionary<string, BinaryData> attributes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -131,6 +134,15 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("filename"u8))
                 {
                     filename = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("score"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    score = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("attributes"u8))
@@ -154,35 +166,28 @@ namespace OpenAI.Responses
                     attributes = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("score"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    score = prop.Value.GetSingle();
-                    continue;
-                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FileSearchCallResult(
                 fileId,
                 text,
                 filename,
-                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 score,
+                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<FileSearchCallResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FileSearchCallResult)} does not support writing '{options.Format}' format.");
             }
@@ -190,6 +195,7 @@ namespace OpenAI.Responses
 
         FileSearchCallResult IPersistableModel<FileSearchCallResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual FileSearchCallResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -206,21 +212,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<FileSearchCallResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(FileSearchCallResult fileSearchCallResult)
-        {
-            if (fileSearchCallResult == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(fileSearchCallResult, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator FileSearchCallResult(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeFileSearchCallResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

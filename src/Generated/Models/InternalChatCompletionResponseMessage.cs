@@ -12,23 +12,24 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionResponseMessage(string refusal, ChatMessageContent content)
+        internal InternalChatCompletionResponseMessage(string refusal, ChatMessageRole role, ChatMessageContent content)
         {
+            // Plugin customization: ensure initialization of collections
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            // Plugin customization: ensure initialization of collection
+            Role = role;
             Content = content ?? new ChatMessageContent();
         }
 
         internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, ChatOutputAudio audio, ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Refusal = refusal;
-            ToolCalls = toolCalls;
-            Annotations = annotations;
+            ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
+            Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Audio = audio;
             Role = role;
-            // Plugin customization: ensure initialization of collection
             Content = content ?? new ChatMessageContent();
             FunctionCall = functionCall;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

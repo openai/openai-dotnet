@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeResponseItem : InternalRealtimeConversationResponseItem
+    internal partial class UnknownRealtimeResponseItem : InternalRealtimeResponseItem
     {
-        internal UnknownRealtimeResponseItem(InternalRealtimeConversationResponseItemObject @object, InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@object, @type != default ? @type : "unknown", id, additionalBinaryDataProperties)
+        internal UnknownRealtimeResponseItem(string @object, InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@object, kind != default ? kind : "unknown", id, additionalBinaryDataProperties)
         {
         }
     }

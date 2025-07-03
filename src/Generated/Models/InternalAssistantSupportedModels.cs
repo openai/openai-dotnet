@@ -11,6 +11,12 @@ namespace OpenAI.Assistants
     internal readonly partial struct InternalAssistantSupportedModels : IEquatable<InternalAssistantSupportedModels>
     {
         private readonly string _value;
+        private const string Gpt41Value = "gpt-4.1";
+        private const string Gpt41MiniValue = "gpt-4.1-mini";
+        private const string Gpt41NanoValue = "gpt-4.1-nano";
+        private const string Gpt4120250414Value = "gpt-4.1-2025-04-14";
+        private const string Gpt41Mini20250414Value = "gpt-4.1-mini-2025-04-14";
+        private const string Gpt41Nano20250414Value = "gpt-4.1-nano-2025-04-14";
         private const string O3MiniValue = "o3-mini";
         private const string O3Mini20250131Value = "o3-mini-2025-01-31";
         private const string O1Value = "o1";
@@ -49,65 +55,77 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalAssistantSupportedModels O3Mini { get; } = new InternalAssistantSupportedModels(O3MiniValue);
+        internal static InternalAssistantSupportedModels Gpt41 { get; } = new InternalAssistantSupportedModels(Gpt41Value);
 
-        public static InternalAssistantSupportedModels O3Mini20250131 { get; } = new InternalAssistantSupportedModels(O3Mini20250131Value);
+        internal static InternalAssistantSupportedModels Gpt41Mini { get; } = new InternalAssistantSupportedModels(Gpt41MiniValue);
 
-        public static InternalAssistantSupportedModels O1 { get; } = new InternalAssistantSupportedModels(O1Value);
+        internal static InternalAssistantSupportedModels Gpt41Nano { get; } = new InternalAssistantSupportedModels(Gpt41NanoValue);
 
-        public static InternalAssistantSupportedModels O120241217 { get; } = new InternalAssistantSupportedModels(O120241217Value);
+        internal static InternalAssistantSupportedModels Gpt4120250414 { get; } = new InternalAssistantSupportedModels(Gpt4120250414Value);
 
-        public static InternalAssistantSupportedModels Gpt4o { get; } = new InternalAssistantSupportedModels(Gpt4oValue);
+        internal static InternalAssistantSupportedModels Gpt41Mini20250414 { get; } = new InternalAssistantSupportedModels(Gpt41Mini20250414Value);
 
-        public static InternalAssistantSupportedModels Gpt4o20241120 { get; } = new InternalAssistantSupportedModels(Gpt4o20241120Value);
+        internal static InternalAssistantSupportedModels Gpt41Nano20250414 { get; } = new InternalAssistantSupportedModels(Gpt41Nano20250414Value);
 
-        public static InternalAssistantSupportedModels Gpt4o20240806 { get; } = new InternalAssistantSupportedModels(Gpt4o20240806Value);
+        internal static InternalAssistantSupportedModels O3Mini { get; } = new InternalAssistantSupportedModels(O3MiniValue);
 
-        public static InternalAssistantSupportedModels Gpt4o20240513 { get; } = new InternalAssistantSupportedModels(Gpt4o20240513Value);
+        internal static InternalAssistantSupportedModels O3Mini20250131 { get; } = new InternalAssistantSupportedModels(O3Mini20250131Value);
 
-        public static InternalAssistantSupportedModels Gpt4oMini { get; } = new InternalAssistantSupportedModels(Gpt4oMiniValue);
+        internal static InternalAssistantSupportedModels O1 { get; } = new InternalAssistantSupportedModels(O1Value);
 
-        public static InternalAssistantSupportedModels Gpt4oMini20240718 { get; } = new InternalAssistantSupportedModels(Gpt4oMini20240718Value);
+        internal static InternalAssistantSupportedModels O120241217 { get; } = new InternalAssistantSupportedModels(O120241217Value);
 
-        public static InternalAssistantSupportedModels Gpt45Preview { get; } = new InternalAssistantSupportedModels(Gpt45PreviewValue);
+        internal static InternalAssistantSupportedModels Gpt4o { get; } = new InternalAssistantSupportedModels(Gpt4oValue);
 
-        public static InternalAssistantSupportedModels Gpt45Preview20250227 { get; } = new InternalAssistantSupportedModels(Gpt45Preview20250227Value);
+        internal static InternalAssistantSupportedModels Gpt4o20241120 { get; } = new InternalAssistantSupportedModels(Gpt4o20241120Value);
 
-        public static InternalAssistantSupportedModels Gpt4Turbo { get; } = new InternalAssistantSupportedModels(Gpt4TurboValue);
+        internal static InternalAssistantSupportedModels Gpt4o20240806 { get; } = new InternalAssistantSupportedModels(Gpt4o20240806Value);
 
-        public static InternalAssistantSupportedModels Gpt4Turbo20240409 { get; } = new InternalAssistantSupportedModels(Gpt4Turbo20240409Value);
+        internal static InternalAssistantSupportedModels Gpt4o20240513 { get; } = new InternalAssistantSupportedModels(Gpt4o20240513Value);
 
-        public static InternalAssistantSupportedModels Gpt40125Preview { get; } = new InternalAssistantSupportedModels(Gpt40125PreviewValue);
+        internal static InternalAssistantSupportedModels Gpt4oMini { get; } = new InternalAssistantSupportedModels(Gpt4oMiniValue);
 
-        public static InternalAssistantSupportedModels Gpt4TurboPreview { get; } = new InternalAssistantSupportedModels(Gpt4TurboPreviewValue);
+        internal static InternalAssistantSupportedModels Gpt4oMini20240718 { get; } = new InternalAssistantSupportedModels(Gpt4oMini20240718Value);
 
-        public static InternalAssistantSupportedModels Gpt41106Preview { get; } = new InternalAssistantSupportedModels(Gpt41106PreviewValue);
+        internal static InternalAssistantSupportedModels Gpt45Preview { get; } = new InternalAssistantSupportedModels(Gpt45PreviewValue);
 
-        public static InternalAssistantSupportedModels Gpt4VisionPreview { get; } = new InternalAssistantSupportedModels(Gpt4VisionPreviewValue);
+        internal static InternalAssistantSupportedModels Gpt45Preview20250227 { get; } = new InternalAssistantSupportedModels(Gpt45Preview20250227Value);
 
-        public static InternalAssistantSupportedModels Gpt4 { get; } = new InternalAssistantSupportedModels(Gpt4Value);
+        internal static InternalAssistantSupportedModels Gpt4Turbo { get; } = new InternalAssistantSupportedModels(Gpt4TurboValue);
 
-        public static InternalAssistantSupportedModels Gpt40314 { get; } = new InternalAssistantSupportedModels(Gpt40314Value);
+        internal static InternalAssistantSupportedModels Gpt4Turbo20240409 { get; } = new InternalAssistantSupportedModels(Gpt4Turbo20240409Value);
 
-        public static InternalAssistantSupportedModels Gpt40613 { get; } = new InternalAssistantSupportedModels(Gpt40613Value);
+        internal static InternalAssistantSupportedModels Gpt40125Preview { get; } = new InternalAssistantSupportedModels(Gpt40125PreviewValue);
 
-        public static InternalAssistantSupportedModels Gpt432k { get; } = new InternalAssistantSupportedModels(Gpt432kValue);
+        internal static InternalAssistantSupportedModels Gpt4TurboPreview { get; } = new InternalAssistantSupportedModels(Gpt4TurboPreviewValue);
 
-        public static InternalAssistantSupportedModels Gpt432k0314 { get; } = new InternalAssistantSupportedModels(Gpt432k0314Value);
+        internal static InternalAssistantSupportedModels Gpt41106Preview { get; } = new InternalAssistantSupportedModels(Gpt41106PreviewValue);
 
-        public static InternalAssistantSupportedModels Gpt432k0613 { get; } = new InternalAssistantSupportedModels(Gpt432k0613Value);
+        internal static InternalAssistantSupportedModels Gpt4VisionPreview { get; } = new InternalAssistantSupportedModels(Gpt4VisionPreviewValue);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo { get; } = new InternalAssistantSupportedModels(Gpt35TurboValue);
+        internal static InternalAssistantSupportedModels Gpt4 { get; } = new InternalAssistantSupportedModels(Gpt4Value);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo16k { get; } = new InternalAssistantSupportedModels(Gpt35Turbo16kValue);
+        internal static InternalAssistantSupportedModels Gpt40314 { get; } = new InternalAssistantSupportedModels(Gpt40314Value);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo0613 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo0613Value);
+        internal static InternalAssistantSupportedModels Gpt40613 { get; } = new InternalAssistantSupportedModels(Gpt40613Value);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo1106 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo1106Value);
+        internal static InternalAssistantSupportedModels Gpt432k { get; } = new InternalAssistantSupportedModels(Gpt432kValue);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo0125 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo0125Value);
+        internal static InternalAssistantSupportedModels Gpt432k0314 { get; } = new InternalAssistantSupportedModels(Gpt432k0314Value);
 
-        public static InternalAssistantSupportedModels Gpt35Turbo16k0613 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo16k0613Value);
+        internal static InternalAssistantSupportedModels Gpt432k0613 { get; } = new InternalAssistantSupportedModels(Gpt432k0613Value);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo { get; } = new InternalAssistantSupportedModels(Gpt35TurboValue);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo16k { get; } = new InternalAssistantSupportedModels(Gpt35Turbo16kValue);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo0613 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo0613Value);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo1106 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo1106Value);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo0125 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo0125Value);
+
+        internal static InternalAssistantSupportedModels Gpt35Turbo16k0613 { get; } = new InternalAssistantSupportedModels(Gpt35Turbo16k0613Value);
 
         public static bool operator ==(InternalAssistantSupportedModels left, InternalAssistantSupportedModels right) => left.Equals(right);
 

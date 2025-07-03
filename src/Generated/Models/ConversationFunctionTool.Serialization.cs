@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationFunctionTool : IJsonModel<ConversationFunctionTool>
     {
-        internal ConversationFunctionTool()
+        internal ConversationFunctionTool() : this(ConversationToolKind.Function, null, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,6 +59,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationFunctionTool IJsonModel<ConversationFunctionTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ConversationFunctionTool)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ConversationTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -106,6 +108,7 @@ namespace OpenAI.RealtimeConversation
                     parameters = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationFunctionTool(kind, additionalBinaryDataProperties, name, description, parameters);
@@ -113,13 +116,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<ConversationFunctionTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationFunctionTool)} does not support writing '{options.Format}' format.");
             }
@@ -127,6 +131,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationFunctionTool IPersistableModel<ConversationFunctionTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (ConversationFunctionTool)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ConversationTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -143,21 +148,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationFunctionTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationFunctionTool conversationFunctionTool)
-        {
-            if (conversationFunctionTool == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationFunctionTool, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationFunctionTool(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationFunctionTool(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

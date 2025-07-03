@@ -11,18 +11,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalRunStepDeltaStepDetails(string @type)
+        private protected InternalRunStepDeltaStepDetails(InternalRunStepDetailsType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal InternalRunStepDeltaStepDetails(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetails(InternalRunStepDetailsType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalRunStepDetailsType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

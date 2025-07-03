@@ -6,6 +6,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using static OpenAI.Tests.TestHelpers;
@@ -197,6 +198,58 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task IncludesWork()
+    {
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        string filename = "audio_hello_world.mp3";
+        string path = Path.Combine("Assets", filename);
+
+        AudioTranscription transcription = await client.TranscribeAudioAsync(path, new AudioTranscriptionOptions()
+        {
+            Includes = AudioTranscriptionIncludes.Logprobs,
+        });
+
+        Assert.That(transcription.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].LogProbability, Is.Not.EqualTo(0));
+        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task StreamingIncludesWork()
+    {
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        string filename = "audio_hello_world.mp3";
+        string path = Path.Combine("Assets", filename);
+
+        List<AudioTokenLogProbabilityDetails> streamedDeltaLogProbs = [];
+
+        await foreach (StreamingAudioTranscriptionUpdate update
+            in client.TranscribeAudioStreamingAsync(
+                path,
+                new AudioTranscriptionOptions()
+                {
+                    Includes = AudioTranscriptionIncludes.Logprobs,
+                }))
+        {
+            if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
+            {
+                Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Is.Not.Null);
+                streamedDeltaLogProbs.AddRange(deltaUpdate.TranscriptionTokenLogProbabilities);
+            }
+            else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+            {
+                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities.Count, Is.EqualTo(streamedDeltaLogProbs.Count));
+                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.EqualTo(streamedDeltaLogProbs[0].Token));
+            }
+        }
+
+        Assert.That(streamedDeltaLogProbs, Has.Count.GreaterThan(0));
+    }
+
+    [Test]
     public async Task BadTranscriptionRequest()
     {
         AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
@@ -223,5 +276,50 @@ public partial class TranscriptionTests : SyncAsyncTestBase
 
         Assert.That(caughtException, Is.InstanceOf<ClientResultException>());
         Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
+    }
+
+    [Test]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        string filename = "audio_hello_world.mp3";
+        string path = Path.Combine("Assets", filename);
+
+        FileStream inputStream = null;
+
+        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            inputStream = File.OpenRead(path);
+            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename);
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            streamingUpdates = client.TranscribeAudioStreamingAsync(path);
+        }
+
+        StringBuilder deltaBuilder = new();
+
+        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+        {
+            if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
+            {
+                deltaBuilder.Append(deltaUpdate.Delta);
+                Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+            }
+            else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+            {
+                Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);
+                Assert.That(doneUpdate.Text, Is.EqualTo(deltaBuilder.ToString()));
+                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+            }
+        }
+
+        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("hello world"));
+
+        inputStream?.Dispose();
     }
 }

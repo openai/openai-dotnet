@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -11,12 +12,19 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        public FileSearchToolResources() : this(null, null, null)
+        {
+        }
+
         internal FileSearchToolResources(IList<string> vectorStoreIds, IList<VectorStoreCreationHelper> newVectorStores, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            VectorStoreIds = vectorStoreIds;
-            NewVectorStores = newVectorStores;
+            // Plugin customization: ensure initialization of collections
+            VectorStoreIds = vectorStoreIds ?? new ChangeTrackingList<string>();
+            NewVectorStores = newVectorStores ?? new ChangeTrackingList<VectorStoreCreationHelper>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public IList<string> VectorStoreIds { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

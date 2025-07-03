@@ -22,11 +22,11 @@ namespace OpenAI.Embeddings
             _value = value;
         }
 
-        public static InternalCreateEmbeddingRequestModel TextEmbeddingAda002 { get; } = new InternalCreateEmbeddingRequestModel(TextEmbeddingAda002Value);
+        internal static InternalCreateEmbeddingRequestModel TextEmbeddingAda002 { get; } = new InternalCreateEmbeddingRequestModel(TextEmbeddingAda002Value);
 
-        public static InternalCreateEmbeddingRequestModel TextEmbedding3Small { get; } = new InternalCreateEmbeddingRequestModel(TextEmbedding3SmallValue);
+        internal static InternalCreateEmbeddingRequestModel TextEmbedding3Small { get; } = new InternalCreateEmbeddingRequestModel(TextEmbedding3SmallValue);
 
-        public static InternalCreateEmbeddingRequestModel TextEmbedding3Large { get; } = new InternalCreateEmbeddingRequestModel(TextEmbedding3LargeValue);
+        internal static InternalCreateEmbeddingRequestModel TextEmbedding3Large { get; } = new InternalCreateEmbeddingRequestModel(TextEmbedding3LargeValue);
 
         public static bool operator ==(InternalCreateEmbeddingRequestModel left, InternalCreateEmbeddingRequestModel right) => left.Equals(right);
 

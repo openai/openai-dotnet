@@ -3,16 +3,21 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
     public partial class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>
     {
+        public ResponseCreationOptions() : this(null, default, default, default, null, default, null, null, null, null, default, null, null, default, null, default, default, default, null, null, null)
+        {
+        }
+
         void IJsonModel<ResponseCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,6 +25,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -53,10 +59,20 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
             if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
             {
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
+            }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteBooleanValue(Background.Value);
             }
             if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
@@ -67,16 +83,16 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
-                foreach (InternalCreateResponsesRequestIncludable item in Include)
+                foreach (InternalIncludable item in Include)
                 {
                     writer.WriteStringValue(item.ToString());
                 }
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
+                writer.WriteStringValue(Model);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
@@ -143,6 +159,7 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -166,6 +183,7 @@ namespace OpenAI.Responses
 
         ResponseCreationOptions IJsonModel<ResponseCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseCreationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -186,10 +204,12 @@ namespace OpenAI.Responses
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? topP = default;
+            InternalServiceTier? serviceTier = default;
             string previousResponseId = default;
+            bool? background = default;
             string instructions = default;
-            IList<InternalCreateResponsesRequestIncludable> include = default;
-            InternalCreateResponsesRequestModel model = default;
+            IList<InternalIncludable> include = default;
+            string model = default;
             IList<ResponseItem> input = default;
             bool? stream = default;
             string endUserId = default;
@@ -245,6 +265,15 @@ namespace OpenAI.Responses
                     topP = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new InternalServiceTier(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("previous_response_id"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -253,6 +282,16 @@ namespace OpenAI.Responses
                         continue;
                     }
                     previousResponseId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -271,17 +310,17 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<InternalCreateResponsesRequestIncludable> array = new List<InternalCreateResponsesRequestIncludable>();
+                    List<InternalIncludable> array = new List<InternalIncludable>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(new InternalCreateResponsesRequestIncludable(item.GetString()));
+                        array.Add(new InternalIncludable(item.GetString()));
                     }
                     include = array;
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
                 {
-                    model = new InternalCreateResponsesRequestModel(prop.Value.GetString());
+                    model = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("input"u8))
@@ -313,6 +352,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        reasoningOptions = null;
                         continue;
                     }
                     reasoningOptions = ResponseReasoningOptions.DeserializeResponseReasoningOptions(prop.Value, options);
@@ -390,15 +430,18 @@ namespace OpenAI.Responses
                     tools = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ResponseCreationOptions(
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 topP,
+                serviceTier,
                 previousResponseId,
+                background,
                 instructions,
-                include ?? new ChangeTrackingList<InternalCreateResponsesRequestIncludable>(),
+                include ?? new ChangeTrackingList<InternalIncludable>(),
                 model,
                 input,
                 stream,
@@ -416,13 +459,14 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ResponseCreationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseCreationOptions)} does not support writing '{options.Format}' format.");
             }
@@ -430,6 +474,7 @@ namespace OpenAI.Responses
 
         ResponseCreationOptions IPersistableModel<ResponseCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -446,21 +491,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ResponseCreationOptions responseCreationOptions)
-        {
-            if (responseCreationOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(responseCreationOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ResponseCreationOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeResponseCreationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

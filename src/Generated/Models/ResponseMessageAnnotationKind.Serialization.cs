@@ -13,6 +13,7 @@ namespace OpenAI.Responses
             ResponseMessageAnnotationKind.FileCitation => "file_citation",
             ResponseMessageAnnotationKind.UriCitation => "url_citation",
             ResponseMessageAnnotationKind.FilePath => "file_path",
+            ResponseMessageAnnotationKind.ContainerFileCitation => "container_file_citation",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseMessageAnnotationKind value.")
         };
 
@@ -29,6 +30,10 @@ namespace OpenAI.Responses
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "file_path"))
             {
                 return ResponseMessageAnnotationKind.FilePath;
+            }
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "container_file_citation"))
+            {
+                return ResponseMessageAnnotationKind.ContainerFileCitation;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseMessageAnnotationKind value.");
         }

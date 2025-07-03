@@ -22,11 +22,11 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalAssistantsNamedToolChoiceType Function { get; } = new InternalAssistantsNamedToolChoiceType(FunctionValue);
+        internal static InternalAssistantsNamedToolChoiceType Function { get; } = new InternalAssistantsNamedToolChoiceType(FunctionValue);
 
-        public static InternalAssistantsNamedToolChoiceType CodeInterpreter { get; } = new InternalAssistantsNamedToolChoiceType(CodeInterpreterValue);
+        internal static InternalAssistantsNamedToolChoiceType CodeInterpreter { get; } = new InternalAssistantsNamedToolChoiceType(CodeInterpreterValue);
 
-        public static InternalAssistantsNamedToolChoiceType FileSearch { get; } = new InternalAssistantsNamedToolChoiceType(FileSearchValue);
+        internal static InternalAssistantsNamedToolChoiceType FileSearch { get; } = new InternalAssistantsNamedToolChoiceType(FileSearchValue);
 
         public static bool operator ==(InternalAssistantsNamedToolChoiceType left, InternalAssistantsNamedToolChoiceType right) => left.Equals(right);
 

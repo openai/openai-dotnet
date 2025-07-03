@@ -21,9 +21,9 @@ namespace OpenAI.FineTuning
             _value = value;
         }
 
-        public static InternalFineTuneChatCompletionRequestAssistantMessageWeight _0 { get; } = new InternalFineTuneChatCompletionRequestAssistantMessageWeight(_0Value);
+        internal static InternalFineTuneChatCompletionRequestAssistantMessageWeight _0 { get; } = new InternalFineTuneChatCompletionRequestAssistantMessageWeight(_0Value);
 
-        public static InternalFineTuneChatCompletionRequestAssistantMessageWeight _1 { get; } = new InternalFineTuneChatCompletionRequestAssistantMessageWeight(_1Value);
+        internal static InternalFineTuneChatCompletionRequestAssistantMessageWeight _1 { get; } = new InternalFineTuneChatCompletionRequestAssistantMessageWeight(_1Value);
 
         public static bool operator ==(InternalFineTuneChatCompletionRequestAssistantMessageWeight left, InternalFineTuneChatCompletionRequestAssistantMessageWeight right) => left.Equals(right);
 

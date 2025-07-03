@@ -1,17 +1,20 @@
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 
 namespace OpenAI.Responses;
 
-// CUSTOM: Renamed.
-[CodeGenType("ResponsesResponse")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("Response")]
+[CodeGenSuppress("OutputText")]
 public partial class OpenAIResponse
 {
-    // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
-    [CodeGenMember("Object")]
-    internal InternalCreateResponsesResponseObject Object { get; } = "response";
-
     // CUSTOM: Renamed.
     [CodeGenMember("User")]
     public string EndUserId { get; }
@@ -48,6 +51,13 @@ public partial class OpenAIResponse
     [CodeGenMember("ToolChoice")]
     public ResponseToolChoice ToolChoice { get; }
 
+    // CUSTOM: Use a plain string.
+    [CodeGenMember("Model")]
+    public string Model { get; }
+
+    // CUSTOM: Made internal
+    internal string Object { get; } = "response";
+
     public string GetOutputText()
     {
         IEnumerable<string> outputTextSegments = OutputItems.Where(item => item is MessageResponseItem)
@@ -55,5 +65,12 @@ public partial class OpenAIResponse
             .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
                 .Select(outputTextPart => outputTextPart.Text));
         return outputTextSegments.Any() ? string.Join(string.Empty, outputTextSegments) : null;
+    }
+
+    internal static OpenAIResponse FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeOpenAIResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

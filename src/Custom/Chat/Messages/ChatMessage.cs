@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -53,46 +54,24 @@ namespace OpenAI.Chat;
 /// </list>
 /// </remarks>
 [CodeGenType("ChatCompletionRequestMessage")]
+[CodeGenSuppress("_content")]
+[CodeGenVisibility(nameof(ChatMessage), CodeGenVisibility.Internal)]
 public partial class ChatMessage
 {
     /// <summary>
     /// The content associated with the message. The interpretation of this content will vary depending on the message type.
     /// </summary>
-    public ChatMessageContent Content { get; } = new ChatMessageContent();
+    public ChatMessageContent Content { get; }
 
     // CUSTOM: Changed type from string to ChatMessageRole.
     [CodeGenMember("Role")]
     internal ChatMessageRole Role { get; set; }
 
     // CUSTOM: Made internal.
-    internal ChatMessage()
-    {
-    }
-
     internal ChatMessage(ChatMessageRole role)
-    {
-        Role = role;
-    }
-
-    internal ChatMessage(ChatMessageRole role, IEnumerable<ChatMessageContentPart> contentParts) : this(role)
-    {
-        if (contentParts != null)
-        {
-            foreach (ChatMessageContentPart contentPart in contentParts)
-            {
-                Content.Add(contentPart);
-            }
-        }
-    }
-
-    internal ChatMessage(ChatMessageRole role, string content = null) : this(role)
-    {
-        if (content != null)
-        {
-            Content.Add(ChatMessageContentPart.CreateTextPart(content));
-        }
-    }
-
+        : this(null, role, null)
+    { }
+ 
     #region SystemChatMessage
     /// <inheritdoc cref="SystemChatMessage(string)"/>
     public static SystemChatMessage CreateSystemMessage(string content) => new(content);
@@ -106,12 +85,15 @@ public partial class ChatMessage
 
     #region DeveloperChatMessage
     /// <inheritdoc cref="DeveloperChatMessage(string)"/>
+    [Experimental("OPENAI001")]
     public static DeveloperChatMessage CreateDeveloperMessage(string content) => new(content);
 
     /// <inheritdoc cref="DeveloperChatMessage(IEnumerable{ChatMessageContentPart})"/>
+    [Experimental("OPENAI001")]
     public static DeveloperChatMessage CreateDeveloperMessage(IEnumerable<ChatMessageContentPart> contentParts) => new(contentParts);
 
     /// <inheritdoc cref="DeveloperChatMessage(ChatMessageContentPart[])"/>
+    [Experimental("OPENAI001")]
     public static DeveloperChatMessage CreateDeveloperMessage(params ChatMessageContentPart[] contentParts) => new(contentParts);
     #endregion
 
@@ -146,6 +128,7 @@ public partial class ChatMessage
     public static AssistantChatMessage CreateAssistantMessage(ChatCompletion chatCompletion) => new(chatCompletion);
 
     /// <inheritdoc cref="AssistantChatMessage(ChatOutputAudioReference)"/>
+    [Experimental("OPENAI001")]
     public static AssistantChatMessage CreateAssistantMessage(ChatOutputAudioReference outputAudioReference) => new(outputAudioReference);
 
     #endregion

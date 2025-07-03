@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Images
@@ -13,10 +14,9 @@ namespace OpenAI.Images
         private readonly string _value;
         private const string StandardValue = "standard";
         private const string HdValue = "hd";
-
-        private const string HighValue = "high";
-        private const string MediumValue = "medium";
         private const string LowValue = "low";
+        private const string MediumValue = "medium";
+        private const string HighValue = "high";
         private const string AutoValue = "auto";
 
         public GeneratedImageQuality(string value)
@@ -27,6 +27,15 @@ namespace OpenAI.Images
         }
 
         public static GeneratedImageQuality Standard { get; } = new GeneratedImageQuality(StandardValue);
+
+        [Experimental("OPENAI001")]
+        public static GeneratedImageQuality Low { get; } = new GeneratedImageQuality(LowValue);
+
+        [Experimental("OPENAI001")]
+        public static GeneratedImageQuality Medium { get; } = new GeneratedImageQuality(MediumValue);
+
+        [Experimental("OPENAI001")]
+        public static GeneratedImageQuality Auto { get; } = new GeneratedImageQuality(AutoValue);
 
         public static bool operator ==(GeneratedImageQuality left, GeneratedImageQuality right) => left.Equals(right);
 

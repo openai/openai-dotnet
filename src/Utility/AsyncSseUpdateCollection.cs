@@ -21,6 +21,8 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
+    public List<Action> AdditionalDisposalActions { get; } = [];
+
     public AsyncSseUpdateCollection(
         Func<Task<ClientResult>> sendRequestAsync,
         Func<JsonElement, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
@@ -71,7 +73,8 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     protected async override IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
     {
-        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken);
+        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
+        
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             yield return enumerator.Current;
@@ -98,6 +101,8 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
+        private List<Action> _additionalDisposalActions;
+
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
 
@@ -118,13 +123,15 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         public AsyncSseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> deserializerFunc,
             ClientResult page,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            List<Action> additionalDisposalActions)
         {
             Argument.AssertNotNull(page, nameof(page));
 
             _deserializerFunc = deserializerFunc;
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
+            _additionalDisposalActions = additionalDisposalActions;
         }
 
         U IAsyncEnumerator<U>.Current => _current!;
@@ -197,6 +204,12 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 // Dispose the response so we don't leave the network connection open.
                 _response?.Dispose();
             }
+
+            foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
+            {
+                additionalDisposalAction.Invoke();
+            }
+            _additionalDisposalActions?.Clear();
         }
     }
 }

@@ -22,10 +22,11 @@ namespace OpenAI.Assistants
 
         internal RunStepFileSearchResult(string fileId, string fileName, float score, IReadOnlyList<RunStepFileSearchResultContent> content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             FileId = fileId;
             FileName = fileName;
             Score = score;
-            Content = content;
+            Content = content ?? new ChangeTrackingList<RunStepFileSearchResultContent>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

@@ -5,7 +5,7 @@
 
 using OpenAI.Responses; 
 
-string key = Environment.GetEnvironmentVariable("OPENAI_KEY")!;
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 OpenAIResponseClient client = new("gpt-4.1", key);
 OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateDeveloperMessageItem("Talk like a pirate."),

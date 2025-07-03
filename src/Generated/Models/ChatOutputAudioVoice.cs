@@ -16,6 +16,9 @@ namespace OpenAI.Chat
         private const string BalladValue = "ballad";
         private const string CoralValue = "coral";
         private const string EchoValue = "echo";
+        private const string FableValue = "fable";
+        private const string OnyxValue = "onyx";
+        private const string NovaValue = "nova";
         private const string SageValue = "sage";
         private const string ShimmerValue = "shimmer";
         private const string VerseValue = "verse";
@@ -36,6 +39,12 @@ namespace OpenAI.Chat
         public static ChatOutputAudioVoice Coral { get; } = new ChatOutputAudioVoice(CoralValue);
 
         public static ChatOutputAudioVoice Echo { get; } = new ChatOutputAudioVoice(EchoValue);
+
+        public static ChatOutputAudioVoice Fable { get; } = new ChatOutputAudioVoice(FableValue);
+
+        public static ChatOutputAudioVoice Onyx { get; } = new ChatOutputAudioVoice(OnyxValue);
+
+        public static ChatOutputAudioVoice Nova { get; } = new ChatOutputAudioVoice(NovaValue);
 
         public static ChatOutputAudioVoice Sage { get; } = new ChatOutputAudioVoice(SageValue);
 

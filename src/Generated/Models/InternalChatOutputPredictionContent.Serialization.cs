@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatOutputPredictionContent : IJsonModel<InternalChatOutputPredictionContent>
     {
-        internal InternalChatOutputPredictionContent()
+        internal InternalChatOutputPredictionContent() : this(InternalChatOutputPredictionKind.StaticContent, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Chat
 
         InternalChatOutputPredictionContent IJsonModel<InternalChatOutputPredictionContent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalChatOutputPredictionContent)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatOutputPrediction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,14 +60,14 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalChatOutputPredictionKind @type = default;
+            InternalChatOutputPredictionKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             ChatMessageContent content = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalChatOutputPredictionKind(prop.Value.GetString());
+                    kind = new InternalChatOutputPredictionKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -73,20 +75,22 @@ namespace OpenAI.Chat
                     DeserializeContentValue(prop, ref content);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatOutputPredictionContent(@type, additionalBinaryDataProperties, content);
+            return new InternalChatOutputPredictionContent(kind, additionalBinaryDataProperties, content);
         }
 
         BinaryData IPersistableModel<InternalChatOutputPredictionContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatOutputPredictionContent)} does not support writing '{options.Format}' format.");
             }
@@ -94,6 +98,7 @@ namespace OpenAI.Chat
 
         InternalChatOutputPredictionContent IPersistableModel<InternalChatOutputPredictionContent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalChatOutputPredictionContent)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatOutputPrediction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
@@ -110,21 +115,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatOutputPredictionContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatOutputPredictionContent internalChatOutputPredictionContent)
-        {
-            if (internalChatOutputPredictionContent == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatOutputPredictionContent, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatOutputPredictionContent(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatOutputPredictionContent(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

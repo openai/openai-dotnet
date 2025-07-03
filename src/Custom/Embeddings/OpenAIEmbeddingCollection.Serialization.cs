@@ -45,7 +45,7 @@ public partial class OpenAIEmbeddingCollection : IJsonModel<OpenAIEmbeddingColle
         }
         IReadOnlyList<OpenAIEmbedding> data = default;
         string model = default;
-        InternalCreateEmbeddingResponseObject @object = default;
+        string @object = default;
         EmbeddingTokenUsage usage = default;
         IDictionary<string, BinaryData> serializedAdditionalRawData = default;
         Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
@@ -68,7 +68,7 @@ public partial class OpenAIEmbeddingCollection : IJsonModel<OpenAIEmbeddingColle
             }
             if (property.NameEquals("object"u8))
             {
-                @object = new InternalCreateEmbeddingResponseObject(property.Value.GetString());
+                @object = property.Value.GetString();
                 continue;
             }
             if (property.NameEquals("usage"u8))

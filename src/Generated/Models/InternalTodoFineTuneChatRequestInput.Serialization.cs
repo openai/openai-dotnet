@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Chat;
@@ -21,6 +21,7 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -75,6 +76,7 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -98,6 +100,7 @@ namespace OpenAI.FineTuning
 
         InternalTodoFineTuneChatRequestInput IJsonModel<InternalTodoFineTuneChatRequestInput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalTodoFineTuneChatRequestInput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -180,6 +183,7 @@ namespace OpenAI.FineTuning
                     functions = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalTodoFineTuneChatRequestInput(messages ?? new ChangeTrackingList<BinaryData>(), tools ?? new ChangeTrackingList<ChatTool>(), parallelToolCalls, functions ?? new ChangeTrackingList<ChatFunction>(), additionalBinaryDataProperties);
@@ -187,13 +191,14 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<InternalTodoFineTuneChatRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support writing '{options.Format}' format.");
             }
@@ -201,6 +206,7 @@ namespace OpenAI.FineTuning
 
         InternalTodoFineTuneChatRequestInput IPersistableModel<InternalTodoFineTuneChatRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalTodoFineTuneChatRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -217,21 +223,5 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<InternalTodoFineTuneChatRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalTodoFineTuneChatRequestInput internalTodoFineTuneChatRequestInput)
-        {
-            if (internalTodoFineTuneChatRequestInput == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalTodoFineTuneChatRequestInput, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalTodoFineTuneChatRequestInput(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalTodoFineTuneChatRequestInput(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

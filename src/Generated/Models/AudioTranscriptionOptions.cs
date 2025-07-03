@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
+using OpenAI.Realtime;
 
 namespace OpenAI.Audio
 {
@@ -11,15 +13,19 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionOptions(string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, BinaryData @file, InternalCreateTranscriptionRequestModel model, IList<BinaryData> internalTimestampGranularities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionOptions(string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, InternalVadConfig chunkingStrategy, BinaryData @file, InternalCreateTranscriptionRequestModel model, IList<BinaryData> internalTimestampGranularities, bool? stream, IList<InternalTranscriptionInclude> internalInclude, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Language = language;
             Prompt = prompt;
             ResponseFormat = responseFormat;
             Temperature = temperature;
+            ChunkingStrategy = chunkingStrategy;
             File = @file;
             Model = model;
-            InternalTimestampGranularities = internalTimestampGranularities;
+            InternalTimestampGranularities = internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>();
+            Stream = stream;
+            InternalInclude = internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -30,6 +36,8 @@ namespace OpenAI.Audio
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
 
         public float? Temperature { get; set; }
+
+        internal InternalVadConfig ChunkingStrategy { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

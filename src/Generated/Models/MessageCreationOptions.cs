@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -13,10 +14,11 @@ namespace OpenAI.Assistants
 
         internal MessageCreationOptions(IList<MessageCreationAttachment> attachments, IDictionary<string, string> metadata, MessageRole role, IList<MessageContent> content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Attachments = attachments;
-            Metadata = metadata;
+            // Plugin customization: ensure initialization of collections
+            Attachments = attachments ?? new ChangeTrackingList<MessageCreationAttachment>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Role = role;
-            Content = content;
+            Content = content ?? new ChangeTrackingList<MessageContent>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

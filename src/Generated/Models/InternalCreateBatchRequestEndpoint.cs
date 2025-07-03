@@ -21,9 +21,9 @@ namespace OpenAI.Batch
             _value = value;
         }
 
-        public static InternalCreateBatchRequestEndpoint V1ChatCompletions { get; } = new InternalCreateBatchRequestEndpoint(V1ChatCompletionsValue);
+        internal static InternalCreateBatchRequestEndpoint V1ChatCompletions { get; } = new InternalCreateBatchRequestEndpoint(V1ChatCompletionsValue);
 
-        public static InternalCreateBatchRequestEndpoint V1Embeddings { get; } = new InternalCreateBatchRequestEndpoint(V1EmbeddingsValue);
+        internal static InternalCreateBatchRequestEndpoint V1Embeddings { get; } = new InternalCreateBatchRequestEndpoint(V1EmbeddingsValue);
 
         public static bool operator ==(InternalCreateBatchRequestEndpoint left, InternalCreateBatchRequestEndpoint right) => left.Equals(right);
 

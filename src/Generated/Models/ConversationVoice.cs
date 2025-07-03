@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public readonly partial struct ConversationVoice : IEquatable<ConversationVoice>
     {
@@ -16,6 +16,9 @@ namespace OpenAI.RealtimeConversation
         private const string BalladValue = "ballad";
         private const string CoralValue = "coral";
         private const string EchoValue = "echo";
+        private const string FableValue = "fable";
+        private const string OnyxValue = "onyx";
+        private const string NovaValue = "nova";
         private const string SageValue = "sage";
         private const string ShimmerValue = "shimmer";
         private const string VerseValue = "verse";
@@ -36,6 +39,12 @@ namespace OpenAI.RealtimeConversation
         public static ConversationVoice Coral { get; } = new ConversationVoice(CoralValue);
 
         public static ConversationVoice Echo { get; } = new ConversationVoice(EchoValue);
+
+        public static ConversationVoice Fable { get; } = new ConversationVoice(FableValue);
+
+        public static ConversationVoice Onyx { get; } = new ConversationVoice(OnyxValue);
+
+        public static ConversationVoice Nova { get; } = new ConversationVoice(NovaValue);
 
         public static ConversationVoice Sage { get; } = new ConversationVoice(SageValue);
 

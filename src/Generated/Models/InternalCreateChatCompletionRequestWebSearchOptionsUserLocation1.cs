@@ -13,23 +13,23 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalWebSearchLocation approximate)
+        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalWebSearchLocation approximate)
         {
             Argument.AssertNotNull(approximate, nameof(approximate));
 
             Approximate = approximate;
         }
 
-        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1Type @type, InternalWebSearchLocation approximate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(string kind, InternalWebSearchLocation approximate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Approximate = approximate;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1Type Type { get; } = "approximate";
+        public string Kind { get; } = "approximate";
 
-        public InternalWebSearchLocation Approximate { get; }
+        internal InternalWebSearchLocation Approximate { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

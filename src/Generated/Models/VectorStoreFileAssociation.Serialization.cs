@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>
     {
-        internal VectorStoreFileAssociation()
+        internal VectorStoreFileAssociation() : this(default, null, default, null, null, null, default, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
@@ -61,7 +62,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -101,6 +102,7 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -124,6 +126,7 @@ namespace OpenAI.VectorStores
 
         VectorStoreFileAssociation IJsonModel<VectorStoreFileAssociation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual VectorStoreFileAssociation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
@@ -145,7 +148,7 @@ namespace OpenAI.VectorStores
             string vectorStoreId = default;
             VectorStoreFileAssociationStatus status = default;
             VectorStoreFileAssociationError lastError = default;
-            InternalVectorStoreFileObjectObject @object = default;
+            string @object = default;
             string fileId = default;
             int size = default;
             IDictionary<string, BinaryData> attributes = default;
@@ -180,7 +183,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalVectorStoreFileObjectObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -223,6 +226,7 @@ namespace OpenAI.VectorStores
                     chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreFileAssociation(
@@ -240,13 +244,14 @@ namespace OpenAI.VectorStores
 
         BinaryData IPersistableModel<VectorStoreFileAssociation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(VectorStoreFileAssociation)} does not support writing '{options.Format}' format.");
             }
@@ -254,6 +259,7 @@ namespace OpenAI.VectorStores
 
         VectorStoreFileAssociation IPersistableModel<VectorStoreFileAssociation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual VectorStoreFileAssociation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFileAssociation>)this).GetFormatFromOptions(options) : options.Format;
@@ -270,21 +276,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<VectorStoreFileAssociation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(VectorStoreFileAssociation vectorStoreFileAssociation)
-        {
-            if (vectorStoreFileAssociation == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(vectorStoreFileAssociation, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator VectorStoreFileAssociation(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeVectorStoreFileAssociation(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

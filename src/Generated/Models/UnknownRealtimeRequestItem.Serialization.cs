@@ -5,45 +5,48 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeRequestItem : IJsonModel<ConversationItem>
+    internal partial class UnknownRealtimeRequestItem : IJsonModel<RealtimeItem>
     {
-        internal UnknownRealtimeRequestItem()
+        internal UnknownRealtimeRequestItem() : this(default, null, null)
         {
         }
 
-        void IJsonModel<ConversationItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationItem)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
         }
 
-        ConversationItem IJsonModel<ConversationItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeItem IJsonModel<RealtimeItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationItem)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeConversationItem(document.RootElement, options);
+            return DeserializeRealtimeItem(document.RootElement, options);
         }
 
         internal static UnknownRealtimeRequestItem DeserializeUnknownRealtimeRequestItem(JsonElement element, ModelReaderWriterOptions options)
@@ -52,14 +55,14 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeItemType @type = default;
+            InternalRealtimeItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalRealtimeItemType(prop.Value.GetString());
+                    kind = new InternalRealtimeItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -67,42 +70,45 @@ namespace OpenAI.RealtimeConversation
                     id = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new UnknownRealtimeRequestItem(@type, id, additionalBinaryDataProperties);
+            return new UnknownRealtimeRequestItem(kind, id, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ConversationItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ConversationItem)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeItem)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ConversationItem IPersistableModel<ConversationItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeItem IPersistableModel<RealtimeItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override ConversationItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationItem>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeConversationItem(document.RootElement, options);
+                        return DeserializeRealtimeItem(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ConversationItem)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ConversationItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

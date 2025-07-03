@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownMessageDeltaTextContentAnnotation : IJsonModel<InternalMessageDeltaTextContentAnnotation>
     {
-        internal UnknownMessageDeltaTextContentAnnotation()
+        internal UnknownMessageDeltaTextContentAnnotation() : this(default, null)
         {
         }
 
@@ -23,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,6 +37,7 @@ namespace OpenAI.Assistants
 
         InternalMessageDeltaTextContentAnnotation IJsonModel<InternalMessageDeltaTextContentAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageDeltaTextContentAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -52,29 +55,31 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "unknown";
+            InternalMessageContentTextAnnotationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalMessageContentTextAnnotationType(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new UnknownMessageDeltaTextContentAnnotation(@type, additionalBinaryDataProperties);
+            return new UnknownMessageDeltaTextContentAnnotation(kind, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalMessageDeltaTextContentAnnotation)} does not support writing '{options.Format}' format.");
             }
@@ -82,6 +87,7 @@ namespace OpenAI.Assistants
 
         InternalMessageDeltaTextContentAnnotation IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageDeltaTextContentAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;

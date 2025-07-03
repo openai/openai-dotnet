@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,10 @@ namespace OpenAI.Audio
 {
     public partial class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>
     {
+        public SpeechGenerationOptions()
+        {
+        }
+
         void IJsonModel<SpeechGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,12 +24,18 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support writing '{format}' format.");
+            }
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
             }
             if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
@@ -52,6 +62,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -75,6 +86,7 @@ namespace OpenAI.Audio
 
         SpeechGenerationOptions IJsonModel<SpeechGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual SpeechGenerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -92,6 +104,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
+            string instructions = default;
             GeneratedSpeechFormat? responseFormat = default;
             InternalCreateSpeechRequestModel model = default;
             string input = default;
@@ -100,6 +113,11 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("instructions"u8))
+                {
+                    instructions = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("response_format"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -133,9 +151,11 @@ namespace OpenAI.Audio
                     speedRatio = prop.Value.GetSingle();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new SpeechGenerationOptions(
+                instructions,
                 responseFormat,
                 model,
                 input,
@@ -146,13 +166,14 @@ namespace OpenAI.Audio
 
         BinaryData IPersistableModel<SpeechGenerationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support writing '{options.Format}' format.");
             }
@@ -160,6 +181,7 @@ namespace OpenAI.Audio
 
         SpeechGenerationOptions IPersistableModel<SpeechGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual SpeechGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -176,21 +198,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<SpeechGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(SpeechGenerationOptions speechGenerationOptions)
-        {
-            if (speechGenerationOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(speechGenerationOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator SpeechGenerationOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeSpeechGenerationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

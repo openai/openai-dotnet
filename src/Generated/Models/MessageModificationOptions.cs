@@ -12,14 +12,14 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public MessageModificationOptions()
+        public MessageModificationOptions() : this(null, null)
         {
-            Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
         internal MessageModificationOptions(IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Metadata = metadata;
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

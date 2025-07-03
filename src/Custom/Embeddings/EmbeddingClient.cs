@@ -103,9 +103,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(input, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(((OpenAIEmbeddingCollection)result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify generating a single embedding from a string input.
@@ -122,9 +122,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(input, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(((OpenAIEmbeddingCollection)result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of strings instead of BinaryData.
@@ -141,9 +141,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(inputs, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
 
     }
 
@@ -161,9 +161,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(inputs, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory tokens instead of BinaryData.
@@ -180,9 +180,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(inputs, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory of tokens instead of BinaryData.
@@ -199,9 +199,9 @@ public partial class EmbeddingClient
         options ??= new();
         CreateEmbeddingGenerationOptions(inputs, ref options);
 
-        using BinaryContent content = options;
+        using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
     }
 
     private void CreateEmbeddingGenerationOptions(string input, ref EmbeddingGenerationOptions options)

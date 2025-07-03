@@ -7,7 +7,7 @@ namespace OpenAI.Assistants;
 [CodeGenType("RunStepDetailsToolCallsFileSearchResultObjectContent")]
 public partial class RunStepFileSearchResultContent
 {
-    // CUSTOM: Renamed.
+    // CUSTOM: Apply typed discriminator value.
     [CodeGenMember("Type")]
     public RunStepFileSearchResultContentKind Kind { get; } = RunStepFileSearchResultContentKind.Text;
 }

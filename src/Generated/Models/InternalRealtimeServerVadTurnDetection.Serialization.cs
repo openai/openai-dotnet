@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerVadTurnDetection : IJsonModel<InternalRealtimeServerVadTurnDetection>
     {
@@ -20,6 +20,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
@@ -43,16 +44,12 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("silence_duration_ms"u8);
                 SerializeSilenceDurationMs(writer, options);
             }
-            if (Optional.IsDefined(CreateResponse) && _additionalBinaryDataProperties?.ContainsKey("create_response") != true)
-            {
-                writer.WritePropertyName("create_response"u8);
-                writer.WriteBooleanValue(CreateResponse.Value);
-            }
         }
 
         InternalRealtimeServerVadTurnDetection IJsonModel<InternalRealtimeServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationTurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override TurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -69,17 +66,36 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            ConversationTurnDetectionKind kind = default;
+            TurnDetectionKind kind = default;
+            bool? responseCreationEnabled = default;
+            bool? responseInterruptionEnabled = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             float? threshold = default;
             TimeSpan? prefixPaddingMs = default;
             TimeSpan? silenceDurationMs = default;
-            bool? createResponse = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToConversationTurnDetectionKind();
+                    kind = prop.Value.GetString().ToTurnDetectionKind();
+                    continue;
+                }
+                if (prop.NameEquals("create_response"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseCreationEnabled = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("interrupt_response"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseInterruptionEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("threshold"u8))
@@ -101,35 +117,29 @@ namespace OpenAI.RealtimeConversation
                     DeserializeMillisecondDuration(prop, ref silenceDurationMs);
                     continue;
                 }
-                if (prop.NameEquals("create_response"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    createResponse = prop.Value.GetBoolean();
-                    continue;
-                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeServerVadTurnDetection(
                 kind,
+                responseCreationEnabled,
+                responseInterruptionEnabled,
                 additionalBinaryDataProperties,
                 threshold,
                 prefixPaddingMs,
-                silenceDurationMs,
-                createResponse);
+                silenceDurationMs);
         }
 
         BinaryData IPersistableModel<InternalRealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeServerVadTurnDetection)} does not support writing '{options.Format}' format.");
             }
@@ -137,7 +147,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeServerVadTurnDetection IPersistableModel<InternalRealtimeServerVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeServerVadTurnDetection)PersistableModelCreateCore(data, options);
 
-        protected override ConversationTurnDetectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override TurnDetectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -153,21 +164,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeServerVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeServerVadTurnDetection internalRealtimeServerVadTurnDetection)
-        {
-            if (internalRealtimeServerVadTurnDetection == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeServerVadTurnDetection, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeServerVadTurnDetection(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeServerVadTurnDetection(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

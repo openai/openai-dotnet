@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -960,5 +961,75 @@ public class ChatSmokeTests : SyncAsyncTestBase
 
         string reserializedOptionsText = reserializedOptions.ToString();
         Assert.That(serializedOptions.ToString(), Is.EqualTo(reserializedOptionsText));
+    }
+
+    [Test]
+    public void StableImageContentPartSerialization()
+    {
+        string base64HelloWorld = Convert.ToBase64String(Encoding.UTF8.GetBytes("hello world"));
+
+        void AssertExpectedImagePart(ChatMessageContentPart imagePart)
+        {
+            Assert.That(imagePart.Kind, Is.EqualTo(ChatMessageContentPartKind.Image));
+            Assert.That(imagePart.ImageBytesMediaType, Is.EqualTo("image/png"));
+            Assert.That(imagePart.ImageDetailLevel, Is.EqualTo(ChatImageDetailLevel.High));
+            Assert.That(Convert.FromBase64String(Convert.ToBase64String(imagePart.ImageBytes.ToArray())), Is.EqualTo("hello world"));
+        }
+
+        ChatMessageContentPart imagePart = ChatMessageContentPart.CreateImagePart(
+            BinaryData.FromBytes(Encoding.UTF8.GetBytes("hello world")),
+            "image/png",
+            ChatImageDetailLevel.High);
+
+        AssertExpectedImagePart(imagePart);
+
+        BinaryData serializedImagePart = ModelReaderWriter.Write(imagePart);
+        Assert.That(serializedImagePart, Is.Not.Null);
+
+        ChatMessageContentPart deserializedImagePart = ModelReaderWriter.Read<ChatMessageContentPart>(serializedImagePart);
+
+        AssertExpectedImagePart(deserializedImagePart);
+
+        ChatMessageContentPart nonDataImagePart = ChatMessageContentPart.CreateImagePart(
+            new Uri("https://test.openai.com/image.png"),
+            ChatImageDetailLevel.High);
+
+        Assert.That(nonDataImagePart.Kind, Is.EqualTo(ChatMessageContentPartKind.Image));
+        Assert.That(nonDataImagePart.ImageUri?.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+
+        serializedImagePart = ModelReaderWriter.Write(nonDataImagePart);
+        Assert.That(serializedImagePart, Is.Not.Null);
+
+        deserializedImagePart = ModelReaderWriter.Read<ChatMessageContentPart>(serializedImagePart);
+        Assert.That(deserializedImagePart.Kind, Is.EqualTo(ChatMessageContentPartKind.Image));
+        Assert.That(deserializedImagePart.ImageUri?.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+    }
+
+    [Test]
+    public void StableFileContentPartSerialization()
+    {
+        string base64HelloWorld = Convert.ToBase64String(Encoding.UTF8.GetBytes("hello world"));
+
+        void AssertExpectedFilePart(ChatMessageContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ChatMessageContentPartKind.File));
+            Assert.That(filePart.FileBytesMediaType, Is.EqualTo("text/plain"));
+            Assert.That(filePart.Filename, Is.EqualTo("test_content_part.txt"));
+            Assert.That(Convert.FromBase64String(Convert.ToBase64String(filePart.FileBytes.ToArray())), Is.EqualTo("hello world"));
+        }
+
+        ChatMessageContentPart filePart = ChatMessageContentPart.CreateFilePart(
+            BinaryData.FromBytes(Encoding.UTF8.GetBytes("hello world")),
+            "text/plain",
+            "test_content_part.txt");
+
+        AssertExpectedFilePart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ChatMessageContentPart deserializedFilePart = ModelReaderWriter.Read<ChatMessageContentPart>(serializedFilePart);
+
+        AssertExpectedFilePart(deserializedFilePart);
     }
 }

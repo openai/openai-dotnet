@@ -11,20 +11,20 @@ namespace OpenAI.Internal
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIError(string code, string message, string @param, string @type)
+        internal OpenAIError(string code, string message, string @param, string kind)
         {
             Code = code;
             Message = message;
             Param = @param;
-            Type = @type;
+            Kind = kind;
         }
 
-        internal OpenAIError(string code, string message, string @param, string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIError(string code, string message, string @param, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
             Param = @param;
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -34,7 +34,7 @@ namespace OpenAI.Internal
 
         public string Param { get; }
 
-        public string Type { get; }
+        public string Kind { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

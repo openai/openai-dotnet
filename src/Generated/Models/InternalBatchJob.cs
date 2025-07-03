@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
@@ -13,17 +14,19 @@ namespace OpenAI.Batch
 
         internal InternalBatchJob(string id, string endpoint, string inputFileId, string completionWindow, InternalBatchStatus status, DateTimeOffset createdAt, IDictionary<string, string> metadata)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             Endpoint = endpoint;
             InputFileId = inputFileId;
             CompletionWindow = completionWindow;
             Status = status;
             CreatedAt = createdAt;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalBatchJob(string id, InternalBatchObject @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdAt, DateTimeOffset? inProgressAt, DateTimeOffset? expiresAt, DateTimeOffset? finalizingAt, DateTimeOffset? completedAt, DateTimeOffset? failedAt, DateTimeOffset? expiredAt, DateTimeOffset? cancellingAt, DateTimeOffset? cancelledAt, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalBatchJob(string id, string @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdAt, DateTimeOffset? inProgressAt, DateTimeOffset? expiresAt, DateTimeOffset? finalizingAt, DateTimeOffset? completedAt, DateTimeOffset? failedAt, DateTimeOffset? expiredAt, DateTimeOffset? cancellingAt, DateTimeOffset? cancelledAt, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Endpoint = endpoint;
@@ -43,23 +46,23 @@ namespace OpenAI.Batch
             CancellingAt = cancellingAt;
             CancelledAt = cancelledAt;
             RequestCounts = requestCounts;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
 
-        public InternalBatchObject Object { get; } = "batch";
+        public string Object { get; } = "batch";
 
         public string Endpoint { get; }
 
-        public InternalBatchErrors Errors { get; }
+        internal InternalBatchErrors Errors { get; }
 
         public string InputFileId { get; }
 
         public string CompletionWindow { get; }
 
-        public InternalBatchStatus Status { get; }
+        internal InternalBatchStatus Status { get; }
 
         public string OutputFileId { get; }
 
@@ -83,7 +86,7 @@ namespace OpenAI.Batch
 
         public DateTimeOffset? CancelledAt { get; }
 
-        public InternalBatchRequestCounts RequestCounts { get; }
+        internal InternalBatchRequestCounts RequestCounts { get; }
 
         public IDictionary<string, string> Metadata { get; }
 

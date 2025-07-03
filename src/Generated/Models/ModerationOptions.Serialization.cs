@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Moderations
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -44,6 +45,7 @@ namespace OpenAI.Moderations
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -67,6 +69,7 @@ namespace OpenAI.Moderations
 
         ModerationOptions IJsonModel<ModerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ModerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -103,6 +106,7 @@ namespace OpenAI.Moderations
                     model = new InternalCreateModerationRequestModel(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ModerationOptions(input, model, additionalBinaryDataProperties);
@@ -110,13 +114,14 @@ namespace OpenAI.Moderations
 
         BinaryData IPersistableModel<ModerationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ModerationOptions)} does not support writing '{options.Format}' format.");
             }
@@ -124,6 +129,7 @@ namespace OpenAI.Moderations
 
         ModerationOptions IPersistableModel<ModerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ModerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -140,21 +146,5 @@ namespace OpenAI.Moderations
         }
 
         string IPersistableModel<ModerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ModerationOptions moderationOptions)
-        {
-            if (moderationOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(moderationOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ModerationOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeModerationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

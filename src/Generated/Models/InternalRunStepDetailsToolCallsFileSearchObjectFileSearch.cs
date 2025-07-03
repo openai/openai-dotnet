@@ -12,14 +12,14 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch()
+        internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch() : this(null, null, null)
         {
-            Results = new ChangeTrackingList<RunStepFileSearchResult>();
         }
 
         internal InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(IReadOnlyList<RunStepFileSearchResult> results, FileSearchRankingOptions rankingOptions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Results = results;
+            // Plugin customization: ensure initialization of collections
+            Results = results ?? new ChangeTrackingList<RunStepFileSearchResult>();
             RankingOptions = rankingOptions;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

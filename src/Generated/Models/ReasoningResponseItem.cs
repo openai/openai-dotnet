@@ -4,17 +4,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : ResponseItem
     {
-        internal ReasoningResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ReasoningStatus? status, IList<InternalResponsesReasoningItemSummaryElement> summary) : base(@type, id, additionalBinaryDataProperties)
+        internal ReasoningResponseItem(string id, IEnumerable<ReasoningSummaryPart> summaryParts) : base(InternalItemType.Reasoning, id)
         {
-            Status = status;
-            Summary = summary;
+            SummaryParts = summaryParts.ToList();
         }
 
-        public ReasoningStatus? Status { get; }
+        internal ReasoningResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string encryptedContent, IReadOnlyList<ReasoningSummaryPart> summaryParts) : base(kind, id, additionalBinaryDataProperties)
+        {
+            // Plugin customization: ensure initialization of collections
+            EncryptedContent = encryptedContent;
+            SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
+        }
+
+        public string EncryptedContent { get; }
     }
 }

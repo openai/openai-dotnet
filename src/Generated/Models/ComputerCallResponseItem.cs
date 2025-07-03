@@ -11,31 +11,27 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallResponseItem : ResponseItem
     {
-        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalResponsesItemType.ComputerCall)
+        internal ComputerCallResponseItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus? status) : base(InternalItemType.ComputerCall, id)
         {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(action, nameof(action));
-            Argument.AssertNotNull(pendingSafetyChecks, nameof(pendingSafetyChecks));
-
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();
-        }
-
-        internal ComputerCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus status) : base(@type, id, additionalBinaryDataProperties)
-        {
-            CallId = callId;
-            Action = action;
-            PendingSafetyChecks = pendingSafetyChecks;
             Status = status;
         }
 
-        public string CallId { get; set; }
+        internal ComputerCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        {
+            // Plugin customization: ensure initialization of collections
+            CallId = callId;
+            Action = action;
+            PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
+            Status = status;
+        }
 
-        public ComputerCallAction Action { get; set; }
+        public string CallId { get; }
+
+        public ComputerCallAction Action { get; }
 
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
-
-        public ComputerCallStatus Status { get; }
     }
 }

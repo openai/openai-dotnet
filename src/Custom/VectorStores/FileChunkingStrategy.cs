@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.VectorStores;
 
 [Experimental("OPENAI001")]
-[CodeGenType("FileChunkingStrategyResponseParam")]
+[CodeGenType("DotNetCombinedChunkingStrategyParam")]
 public abstract partial class FileChunkingStrategy
 {
     /// <summary>
@@ -22,7 +22,7 @@ public abstract partial class FileChunkingStrategy
     /// This value is present on responses when no chunking strategy could be found. This is typically only true for
     /// vector stores created earlier than file chunking strategy availability.
     /// </remarks>
-    public static FileChunkingStrategy Unknown => _unknownValue ??= new();
+    public static FileChunkingStrategy Unknown => _otherValue ??= new();
 
     /// <inheritdoc cref="StaticFileChunkingStrategy.StaticFileChunkingStrategy(int,int)"/>
     public static FileChunkingStrategy CreateStaticStrategy(
@@ -34,6 +34,6 @@ public abstract partial class FileChunkingStrategy
                 overlappingTokenCount);
     }
 
-    private static InternalAutoChunkingStrategy _autoValue;
-    private static InternalUnknownChunkingStrategy _unknownValue;
+    private static InternalDotNetCombinedAutoChunkingStrategyParam _autoValue;
+    private static InternalDotNetCombinedOtherChunkingStrategyParam _otherValue;
 }

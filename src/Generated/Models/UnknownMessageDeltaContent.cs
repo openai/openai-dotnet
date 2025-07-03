@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownMessageDeltaContent : InternalMessageDeltaContent
     {
-        internal UnknownMessageDeltaContent(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
+        internal UnknownMessageDeltaContent(InternalMessageContentType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

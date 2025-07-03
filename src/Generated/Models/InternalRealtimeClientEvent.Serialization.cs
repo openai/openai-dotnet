@@ -3,12 +3,12 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     [PersistableModelProxy(typeof(UnknownRealtimeClientEvent))]
     internal abstract partial class InternalRealtimeClientEvent : IJsonModel<InternalRealtimeClientEvent>
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEvent>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("event_id"u8);
                 writer.WriteStringValue(EventId);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -64,6 +66,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEvent IJsonModel<InternalRealtimeClientEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeClientEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEvent>)this).GetFormatFromOptions(options) : options.Format;
@@ -93,6 +96,8 @@ namespace OpenAI.RealtimeConversation
                         return InternalRealtimeClientEventInputAudioBufferCommit.DeserializeInternalRealtimeClientEventInputAudioBufferCommit(element, options);
                     case "input_audio_buffer.clear":
                         return InternalRealtimeClientEventInputAudioBufferClear.DeserializeInternalRealtimeClientEventInputAudioBufferClear(element, options);
+                    case "output_audio_buffer.clear":
+                        return InternalRealtimeClientEventOutputAudioBufferClear.DeserializeInternalRealtimeClientEventOutputAudioBufferClear(element, options);
                     case "conversation.item.create":
                         return InternalRealtimeClientEventConversationItemCreate.DeserializeInternalRealtimeClientEventConversationItemCreate(element, options);
                     case "conversation.item.truncate":
@@ -103,6 +108,10 @@ namespace OpenAI.RealtimeConversation
                         return InternalRealtimeClientEventResponseCreate.DeserializeInternalRealtimeClientEventResponseCreate(element, options);
                     case "response.cancel":
                         return InternalRealtimeClientEventResponseCancel.DeserializeInternalRealtimeClientEventResponseCancel(element, options);
+                    case "conversation.item.retrieve":
+                        return InternalRealtimeClientEventConversationItemRetrieve.DeserializeInternalRealtimeClientEventConversationItemRetrieve(element, options);
+                    case "transcription_session.update":
+                        return InternalRealtimeClientEventTranscriptionSessionUpdate.DeserializeInternalRealtimeClientEventTranscriptionSessionUpdate(element, options);
                 }
             }
             return UnknownRealtimeClientEvent.DeserializeUnknownRealtimeClientEvent(element, options);
@@ -110,13 +119,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeClientEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEvent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeClientEvent)} does not support writing '{options.Format}' format.");
             }
@@ -124,6 +134,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEvent IPersistableModel<InternalRealtimeClientEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeClientEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEvent>)this).GetFormatFromOptions(options) : options.Format;
@@ -140,21 +151,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeClientEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeClientEvent internalRealtimeClientEvent)
-        {
-            if (internalRealtimeClientEvent == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeClientEvent, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeClientEvent(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeClientEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -7,7 +7,8 @@ namespace OpenAI.Images;
 /// Represents additional options available to control the behavior of an image generation operation.
 /// </summary>
 [CodeGenType("CreateImageEditRequest")]
-[CodeGenSuppress("ImageEditOptions", typeof(BinaryData), typeof(string))]
+[CodeGenVisibility(nameof(ImageEditOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(ImageEditOptions), typeof(BinaryData), typeof(string))]
 public partial class ImageEditOptions
 {
     // CUSTOM: Made internal. The model is specified by the client.
@@ -67,40 +68,10 @@ public partial class ImageEditOptions
     /// <summary> The number of images to generate. Must be between 1 and 10. </summary>
     internal long? N { get; set; }
 
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="ImageEditOptions"/>. </summary>
-    public ImageEditOptions()
-    {
-    }
-
-    // CUSTOM: Changed property type and updated documentation.
-    /// <summary> 
-    /// The size of the generated images. 
-    /// <para>
-    /// For gpt-image-1, must be one of 1024x1024, 1536x1024 (landscape), 1024x1536 (portrait), or auto (default value).
-    /// </para>
-    /// <para>
-    /// For dall-e-2, must be one of 256x256, 512x512, or 1024x1024.
-    /// </para>
-    /// </summary>
+    // CUSTOM: Changed property type.
+    /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>
     [CodeGenMember("Size")]
     public GeneratedImageSize? Size { get; set; }
-
-    // CUSTOM: Added Quality property
-    /// <summary> 
-    /// Quality of the image that will be generated.
-    /// <para>
-    /// High, medium and low are only supported for gpt-image-1.
-    /// </para>
-    /// <para>
-    /// dall-e-2 only supports standard quality.
-    /// </para>
-    /// <para>
-    /// Defaults to auto.
-    /// </para>
-    /// </summary>
-    [CodeGenMember("Quality")]
-    public GeneratedImageQuality? Quality { get; set; }
 
     // CUSTOM: Changed property type.
     /// <summary> The format in which the generated images are returned. Must be one of `url` or `b64_json`. </summary>
@@ -141,11 +112,6 @@ public partial class ImageEditOptions
         if (Size is not null)
         {
             content.Add(Size.ToString(), "size");
-        }
-
-        if (Quality is not null)
-        {
-            content.Add(Quality.ToString(), "quality");
         }
 
         if (EndUserId is not null)

@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
@@ -12,74 +14,77 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseError error, string instructions, string model, string previousResponseId, float temperature, IEnumerable<ResponseTool> tools, float topP, IDictionary<string, string> metadata, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string id, DateTimeOffset createdAt, ResponseError error, string endUserId, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled)
         {
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            Temperature = temperature;
+            TopP = topP;
+            Tools = new ChangeTrackingList<ResponseTool>();
             Id = id;
             CreatedAt = createdAt;
             Error = error;
-            Instructions = instructions;
-            Model = model;
-            PreviousResponseId = previousResponseId;
-            Temperature = temperature;
-            Tools = tools.ToList();
-            TopP = topP;
-            Metadata = metadata;
+            EndUserId = endUserId;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems.ToList();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
-            ToolChoice = toolChoice;
         }
 
-        internal OpenAIResponse(string id, DateTimeOffset createdAt, ResponseStatus? status, ResponseError error, string instructions, string model, string previousResponseId, float temperature, IList<ResponseTool> tools, float topP, ResponseTokenUsage usage, IDictionary<string, string> metadata, InternalCreateResponsesResponseObject @object, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<ResponseTool> tools, string id, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseTokenUsage usage, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, string model, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Id = id;
-            CreatedAt = createdAt;
-            Status = status;
-            Error = error;
-            Instructions = instructions;
-            Model = model;
-            PreviousResponseId = previousResponseId;
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
-            Tools = tools;
             TopP = topP;
+            ServiceTier = serviceTier;
+            PreviousResponseId = previousResponseId;
+            Background = background;
+            Instructions = instructions;
+            Tools = tools ?? new ChangeTrackingList<ResponseTool>();
+            Id = id;
+            Status = status;
+            CreatedAt = createdAt;
+            Error = error;
             Usage = usage;
-            Metadata = metadata;
-            Object = @object;
             EndUserId = endUserId;
             ReasoningOptions = reasoningOptions;
             MaxOutputTokenCount = maxOutputTokenCount;
             TextOptions = textOptions;
             TruncationMode = truncationMode;
             IncompleteStatusDetails = incompleteStatusDetails;
-            OutputItems = outputItems;
+            OutputItems = outputItems ?? new ChangeTrackingList<ResponseItem>();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             ToolChoice = toolChoice;
+            Model = model;
+            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Id { get; }
+        public IDictionary<string, string> Metadata { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public float? Temperature { get; }
 
-        public ResponseStatus? Status { get; }
+        public float? TopP { get; }
 
-        public ResponseError Error { get; }
-
-        public string Instructions { get; }
-
-        public string Model { get; }
+        internal InternalServiceTier? ServiceTier { get; }
 
         public string PreviousResponseId { get; }
 
-        public float Temperature { get; }
+        public bool? Background { get; }
+
+        public string Instructions { get; }
 
         public IList<ResponseTool> Tools { get; }
 
-        public float TopP { get; }
+        public string Id { get; }
+
+        public ResponseStatus? Status { get; }
+
+        public DateTimeOffset CreatedAt { get; }
+
+        public ResponseError Error { get; }
 
         public ResponseTokenUsage Usage { get; }
-
-        public IDictionary<string, string> Metadata { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

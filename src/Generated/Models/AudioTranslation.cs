@@ -20,11 +20,12 @@ namespace OpenAI.Audio
             Duration = duration;
         }
 
-        internal AudioTranslation(string language, string text, IReadOnlyList<TranscribedSegment> segments, InternalCreateTranslationResponseVerboseJsonTask task, TimeSpan? duration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranslation(string language, string text, IReadOnlyList<TranscribedSegment> segments, string task, TimeSpan? duration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Language = language;
             Text = text;
-            Segments = segments;
+            Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
             Task = task;
             Duration = duration;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

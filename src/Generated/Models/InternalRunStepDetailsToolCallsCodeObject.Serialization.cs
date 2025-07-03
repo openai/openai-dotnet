@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsCodeObject : IJsonModel<InternalRunStepDetailsToolCallsCodeObject>
     {
-        internal InternalRunStepDetailsToolCallsCodeObject()
+        internal InternalRunStepDetailsToolCallsCodeObject() : this(RunStepToolCallKind.CodeInterpreter, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDetailsToolCallsCodeObject IJsonModel<InternalRunStepDetailsToolCallsCodeObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepDetailsToolCallsCodeObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepToolCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,20 +60,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string id = default;
             RunStepToolCallKind kind = default;
+            string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("id"u8))
-                {
-                    id = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToRunStepToolCallKind();
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("code_interpreter"u8))
@@ -79,20 +81,22 @@ namespace OpenAI.Assistants
                     codeInterpreter = InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter.DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunStepDetailsToolCallsCodeObject(id, kind, additionalBinaryDataProperties, codeInterpreter);
+            return new InternalRunStepDetailsToolCallsCodeObject(kind, id, additionalBinaryDataProperties, codeInterpreter);
         }
 
         BinaryData IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObject)} does not support writing '{options.Format}' format.");
             }
@@ -100,6 +104,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDetailsToolCallsCodeObject IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDetailsToolCallsCodeObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -116,21 +121,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDetailsToolCallsCodeObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDetailsToolCallsCodeObject internalRunStepDetailsToolCallsCodeObject)
-        {
-            if (internalRunStepDetailsToolCallsCodeObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDetailsToolCallsCodeObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDetailsToolCallsCodeObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDetailsToolCallsCodeObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

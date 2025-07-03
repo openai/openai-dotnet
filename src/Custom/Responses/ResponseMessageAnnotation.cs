@@ -1,27 +1,27 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesOutputTextAnnotation")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("Annotation")]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class ResponseMessageAnnotation
 {
-    // CUSTOM:
-    // - Renamed.
-    // - Made public.
-    // - Removed setter.
-    [CodeGenMember("Type")]
-    public ResponseMessageAnnotationKind Kind { get; }
-
-	// CUSTOM: Exposed file citation properties.
-	public string FileCitationFileId => (this as InternalResponsesMessageAnnotationFileCitation)?.FileId;
-	public string FileCitationFileName => (this as InternalResponsesMessageAnnotationFileCitation)?.FileName;
-	public int? FileCitationIndex => (this as InternalResponsesMessageAnnotationFileCitation)?.Index;
+    // CUSTOM: Exposed file citation properties.
+    public string FileCitationFileId => (this as InternalAnnotationFileCitation)?.FileId;
+    public int? FileCitationIndex => (this as InternalAnnotationFileCitation)?.Index;
 
     // CUSTOM: Exposed URL citation properties.
-    public string UriCitationUri => (this as InternalResponsesMessageAnnotationUrlCitation)?.Url;
-    public string UriCitationTitle => (this as InternalResponsesMessageAnnotationUrlCitation)?.Title;
-    public int? UriCitationStartIndex => (this as InternalResponsesMessageAnnotationUrlCitation)?.StartIndex;
-    public int? UriCitationEndIndex => (this as InternalResponsesMessageAnnotationUrlCitation)?.EndIndex;
+    public Uri UriCitationUri => (this as InternalAnnotationUrlCitation)?.Url;
+    public string UriCitationTitle => (this as InternalAnnotationUrlCitation)?.Title;
+    public int? UriCitationStartIndex => (this as InternalAnnotationUrlCitation)?.StartIndex;
+    public int? UriCitationEndIndex => (this as InternalAnnotationUrlCitation)?.EndIndex;
 
     // CUSTOM: Exposed file path properties.
-    public string FilePathFileId => (this as InternalResponsesMessageAnnotationFilePath)?.FileId;
-    public int? FilePathIndex => (this as InternalResponsesMessageAnnotationFilePath)?.Index;
+    public string FilePathFileId => (this as InternalAnnotationFilePath)?.FileId;
+    public int? FilePathIndex => (this as InternalAnnotationFilePath)?.Index;
 }

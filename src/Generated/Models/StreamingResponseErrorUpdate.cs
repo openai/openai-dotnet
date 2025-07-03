@@ -9,23 +9,23 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseErrorUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseErrorUpdate(string message, string code, string @param) : base(InternalResponsesResponseStreamEventType.Error)
+        internal StreamingResponseErrorUpdate(int sequenceNumber, string code, string message, string @param) : base(InternalResponseStreamEventType.Error, sequenceNumber)
         {
-            Message = message;
             Code = code;
+            Message = message;
             Param = @param;
         }
 
-        internal StreamingResponseErrorUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string message, string code, string @param) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseErrorUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string code, string message, string @param) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
-            Message = message;
             Code = code;
+            Message = message;
             Param = @param;
         }
-
-        public string Message { get; }
 
         public string Code { get; }
+
+        public string Message { get; }
 
         public string Param { get; }
     }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,10 +13,11 @@ namespace OpenAI.Chat
 {
     public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
     {
-        internal FunctionChatMessage()
+        internal FunctionChatMessage() : this(null, ChatMessageRole.Function, null, null)
         {
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,6 +35,7 @@ namespace OpenAI.Chat
 
         FunctionChatMessage IJsonModel<FunctionChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FunctionChatMessage)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -72,6 +74,7 @@ namespace OpenAI.Chat
                     functionName = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FunctionChatMessage(content, role, additionalBinaryDataProperties, functionName);
@@ -79,13 +82,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<FunctionChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FunctionChatMessage)} does not support writing '{options.Format}' format.");
             }
@@ -93,6 +97,7 @@ namespace OpenAI.Chat
 
         FunctionChatMessage IPersistableModel<FunctionChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (FunctionChatMessage)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -109,21 +114,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<FunctionChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(FunctionChatMessage functionChatMessage)
-        {
-            if (functionChatMessage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(functionChatMessage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator FunctionChatMessage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeFunctionChatMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

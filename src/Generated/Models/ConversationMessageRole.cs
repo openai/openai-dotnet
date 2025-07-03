@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole>
     {

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -12,25 +13,26 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalListPaginatedFineTuningJobsResponse(IEnumerable<FineTuningJob> data, bool hasMore)
+        internal InternalListPaginatedFineTuningJobsResponse(IEnumerable<InternalFineTuningJob> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
 
-        internal InternalListPaginatedFineTuningJobsResponse(IList<FineTuningJob> data, bool hasMore, InternalListPaginatedFineTuningJobsResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListPaginatedFineTuningJobsResponse(IList<InternalFineTuningJob> data, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Data = data;
+            // Plugin customization: ensure initialization of collections
+            Data = data ?? new ChangeTrackingList<InternalFineTuningJob>();
             HasMore = hasMore;
             Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IList<FineTuningJob> Data { get; }
+        internal IList<InternalFineTuningJob> Data { get; }
 
         public bool HasMore { get; }
 
-        public InternalListPaginatedFineTuningJobsResponseObject Object { get; } = "list";
+        public string Object { get; } = "list";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

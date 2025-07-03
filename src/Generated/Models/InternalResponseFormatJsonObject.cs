@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatJsonObject : InternalOmniTypedResponseFormat
+    internal partial class InternalResponseFormatJsonObject : InternalResponseFormat
     {
-        public InternalResponseFormatJsonObject() : base("json_object")
+        public InternalResponseFormatJsonObject() : this(InternalResponseFormatType.JsonObject, null)
         {
         }
 
-        internal InternalResponseFormatJsonObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
+        internal InternalResponseFormatJsonObject(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
     }

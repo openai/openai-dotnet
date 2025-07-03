@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
@@ -37,6 +38,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("file_search"u8);
                 writer.WriteObjectValue(FileSearch, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -60,6 +62,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadRequestToolResources IJsonModel<InternalCreateThreadRequestToolResources>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadRequestToolResources JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
@@ -100,6 +103,7 @@ namespace OpenAI.Assistants
                     fileSearch = FileSearchToolResources.DeserializeFileSearchToolResources(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateThreadRequestToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
@@ -107,13 +111,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalCreateThreadRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateThreadRequestToolResources)} does not support writing '{options.Format}' format.");
             }
@@ -121,6 +126,7 @@ namespace OpenAI.Assistants
 
         InternalCreateThreadRequestToolResources IPersistableModel<InternalCreateThreadRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateThreadRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
@@ -137,21 +143,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalCreateThreadRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateThreadRequestToolResources internalCreateThreadRequestToolResources)
-        {
-            if (internalCreateThreadRequestToolResources == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateThreadRequestToolResources, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateThreadRequestToolResources(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateThreadRequestToolResources(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

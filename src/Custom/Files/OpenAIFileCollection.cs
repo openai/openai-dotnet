@@ -1,6 +1,9 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace OpenAI.Files;
 
@@ -8,12 +11,12 @@ namespace OpenAI.Files;
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIFileCollection))]
 [CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(bool))]
-[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(InternalListFilesResponseObject), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
+[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
     [CodeGenMember("Object")]
-    private InternalListFilesResponseObject Object { get; } = InternalListFilesResponseObject.List;
+    private string Object { get; } = "list";
 
     // CUSTOM: Internalizing pending stanardized pagination representation for the list operation.
     [CodeGenMember("FirstId")]
@@ -55,5 +58,12 @@ public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
     internal OpenAIFileCollection()
         : base([])
     {
+    }
+
+    internal static OpenAIFileCollection FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeOpenAIFileCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

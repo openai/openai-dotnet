@@ -5,7 +5,7 @@
 
 using OpenAI.Chat; 
 
-string key = Environment.GetEnvironmentVariable("OPENAI_KEY")!;
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ChatClient client = new("gpt-4.1", key);
 ChatCompletion acompletion = client.CompleteChat([
     ChatMessage.CreateDeveloperMessage("Talk like a pirate."),

@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseTextContentPart : ConversationContentPart
     {
@@ -14,12 +14,9 @@ namespace OpenAI.RealtimeConversation
             InternalTextValue = internalTextValue;
         }
 
-        internal InternalRealtimeResponseTextContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string @type, string internalTextValue) : base(kind, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseTextContentPart(ConversationContentPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalTextValue) : base(kind, additionalBinaryDataProperties)
         {
-            Type = @type;
             InternalTextValue = internalTextValue;
         }
-
-        internal string Type { get; set; } = "text";
     }
 }

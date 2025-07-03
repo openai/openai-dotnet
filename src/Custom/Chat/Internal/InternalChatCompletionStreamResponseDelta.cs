@@ -3,7 +3,6 @@
 namespace OpenAI.Chat;
 
 [CodeGenType("ChatCompletionStreamResponseDelta")]
-[CodeGenSuppress("InternalChatCompletionStreamResponseDelta")]
 internal partial class InternalChatCompletionStreamResponseDelta
 {
     // CUSTOM: Changed type from string.

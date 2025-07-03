@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
@@ -18,9 +19,10 @@ namespace OpenAI.Batch
             HasMore = hasMore;
         }
 
-        internal InternalListBatchesResponse(IList<InternalBatchJob> data, string firstId, string lastId, bool hasMore, InternalListBatchesResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListBatchesResponse(IList<InternalBatchJob> data, string firstId, string lastId, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Data = data;
+            // Plugin customization: ensure initialization of collections
+            Data = data ?? new ChangeTrackingList<InternalBatchJob>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
@@ -28,7 +30,7 @@ namespace OpenAI.Batch
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public IList<InternalBatchJob> Data { get; }
+        internal IList<InternalBatchJob> Data { get; }
 
         public string FirstId { get; }
 
@@ -36,7 +38,7 @@ namespace OpenAI.Batch
 
         public bool HasMore { get; }
 
-        public InternalListBatchesResponseObject Object { get; } = "list";
+        public string Object { get; } = "list";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalUnknownChatOutputPrediction : ChatOutputPrediction
     {
-        internal InternalUnknownChatOutputPrediction(InternalChatOutputPredictionKind @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type != default ? @type : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownChatOutputPrediction(InternalChatOutputPredictionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

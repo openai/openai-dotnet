@@ -16,14 +16,17 @@ namespace OpenAI.Assistants
             SubmitToolOutputs = submitToolOutputs;
         }
 
-        internal InternalRunRequiredAction(InternalRunObjectRequiredActionSubmitToolOutputs submitToolOutputs, object @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRunRequiredAction(string kind, InternalRunObjectRequiredActionSubmitToolOutputs submitToolOutputs, object @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Kind = kind;
             SubmitToolOutputs = submitToolOutputs;
             Type = @type;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalRunObjectRequiredActionSubmitToolOutputs SubmitToolOutputs { get; }
+        public string Kind { get; } = "submit_tool_outputs";
+
+        internal InternalRunObjectRequiredActionSubmitToolOutputs SubmitToolOutputs { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

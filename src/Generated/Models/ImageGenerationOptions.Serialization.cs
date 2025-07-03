@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,10 @@ namespace OpenAI.Images
 {
     public partial class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>
     {
+        public ImageGenerationOptions()
+        {
+        }
+
         void IJsonModel<ImageGenerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,6 +24,7 @@ namespace OpenAI.Images
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +46,11 @@ namespace OpenAI.Images
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
+            }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
             }
             if (Optional.IsDefined(Style) && _additionalBinaryDataProperties?.ContainsKey("style") != true)
             {
@@ -67,6 +77,22 @@ namespace OpenAI.Images
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
+            {
+                writer.WritePropertyName("output_compression"u8);
+                writer.WriteNumberValue(OutputCompressionFactor.Value);
+            }
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
+            {
+                writer.WritePropertyName("moderation"u8);
+                writer.WriteStringValue(ModerationLevel.Value.ToString());
+            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -90,6 +116,7 @@ namespace OpenAI.Images
 
         ImageGenerationOptions IJsonModel<ImageGenerationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ImageGenerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -110,11 +137,15 @@ namespace OpenAI.Images
             GeneratedImageQuality? quality = default;
             GeneratedImageFormat? responseFormat = default;
             GeneratedImageSize? size = default;
+            GeneratedImageBackground? background = default;
             GeneratedImageStyle? style = default;
             InternalCreateImageRequestModel? model = default;
             string prompt = default;
             long? n = default;
             string endUserId = default;
+            int? outputCompressionFactor = default;
+            GeneratedImageFileFormat? outputFileFormat = default;
+            GeneratedImageModerationLevel? moderationLevel = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -122,6 +153,7 @@ namespace OpenAI.Images
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        quality = null;
                         continue;
                     }
                     quality = new GeneratedImageQuality(prop.Value.GetString());
@@ -145,6 +177,16 @@ namespace OpenAI.Images
                         continue;
                     }
                     size = new GeneratedImageSize(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = new GeneratedImageBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("style"u8))
@@ -187,29 +229,65 @@ namespace OpenAI.Images
                     endUserId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("output_compression"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputCompressionFactor = null;
+                        continue;
+                    }
+                    outputCompressionFactor = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("output_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputFileFormat = null;
+                        continue;
+                    }
+                    outputFileFormat = new GeneratedImageFileFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("moderation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        moderationLevel = null;
+                        continue;
+                    }
+                    moderationLevel = new GeneratedImageModerationLevel(prop.Value.GetString());
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageGenerationOptions(
                 quality,
                 responseFormat,
                 size,
+                background,
                 style,
                 model,
                 prompt,
                 n,
                 endUserId,
+                outputCompressionFactor,
+                outputFileFormat,
+                moderationLevel,
                 additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ImageGenerationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ImageGenerationOptions)} does not support writing '{options.Format}' format.");
             }
@@ -217,6 +295,7 @@ namespace OpenAI.Images
 
         ImageGenerationOptions IPersistableModel<ImageGenerationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ImageGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -233,21 +312,5 @@ namespace OpenAI.Images
         }
 
         string IPersistableModel<ImageGenerationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ImageGenerationOptions imageGenerationOptions)
-        {
-            if (imageGenerationOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(imageGenerationOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ImageGenerationOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeImageGenerationOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

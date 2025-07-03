@@ -17,7 +17,7 @@ namespace OpenAI.Responses
 
         }
 
-        internal InternalComparisonFilterGreaterThan(InternalComparisonFilterType @type, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, key, value, additionalBinaryDataProperties)
+        internal InternalComparisonFilterGreaterThan(InternalComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, key, value, additionalBinaryDataProperties)
         {
         }
     }

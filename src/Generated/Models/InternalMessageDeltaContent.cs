@@ -11,18 +11,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalMessageDeltaContent(string @type)
+        private protected InternalMessageDeltaContent(InternalMessageContentType kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal InternalMessageDeltaContent(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalMessageDeltaContent(InternalMessageContentType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalMessageContentType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

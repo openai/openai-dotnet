@@ -21,7 +21,7 @@ namespace OpenAI.Assistants
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalRunStepDeltaStepDetails StepDetails { get; }
+        internal InternalRunStepDeltaStepDetails StepDetails { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

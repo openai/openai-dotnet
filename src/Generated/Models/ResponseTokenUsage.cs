@@ -11,24 +11,23 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails, ResponseInputTokenDetails inputTokenDetails)
+        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseInputTokenUsageDetails inputTokenDetails, ResponseOutputTokenUsageDetails outputTokenDetails)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
-            OutputTokenDetails = outputTokenDetails;
             InputTokenDetails = inputTokenDetails;
+            OutputTokenDetails = outputTokenDetails;
+        }
 
-		}
-
-        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseOutputTokenUsageDetails outputTokenDetails, ResponseInputTokenDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ResponseInputTokenUsageDetails inputTokenDetails, ResponseOutputTokenUsageDetails outputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
+            InputTokenDetails = inputTokenDetails;
             OutputTokenDetails = outputTokenDetails;
-			InputTokenDetails = inputTokenDetails;
-			_additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData

@@ -12,14 +12,14 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalModifyAssistantRequestToolResourcesCodeInterpreter()
+        public InternalModifyAssistantRequestToolResourcesCodeInterpreter() : this(null, null)
         {
-            FileIds = new ChangeTrackingList<string>();
         }
 
         internal InternalModifyAssistantRequestToolResourcesCodeInterpreter(IList<string> fileIds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            FileIds = fileIds;
+            // Plugin customization: ensure initialization of collections
+            FileIds = fileIds ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

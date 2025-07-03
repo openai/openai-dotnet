@@ -3,15 +3,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesComputerCallOutputItemOutput")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
 [Experimental("OPENAICUA001")]
+[CodeGenType("ComputerToolCallOutputItemOutput")]
 public partial class ComputerOutput
 {
     public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri)
     {
         Argument.AssertNotNull(screenshotImageUri, nameof(screenshotImageUri));
 
-        return new InternalResponsesComputerCallOutputItemScreenshot()
+        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
         {
             ImageUrl = screenshotImageUri.AbsoluteUri,
         };
@@ -21,7 +24,7 @@ public partial class ComputerOutput
     {
         Argument.AssertNotNull(screenshotImageFileId, nameof(screenshotImageFileId));
 
-        return new InternalResponsesComputerCallOutputItemScreenshot()
+        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
         {
             FileId = screenshotImageFileId,
         };
@@ -35,7 +38,7 @@ public partial class ComputerOutput
         string base64EncodedData = Convert.ToBase64String(screenshotImageBytes.ToArray());
         string dataUri = $"data:{screenshotImageBytesMediaType};base64,{base64EncodedData}";
 
-        return new InternalResponsesComputerCallOutputItemScreenshot()
+        return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
         {
             ImageUrl = dataUri,
         };

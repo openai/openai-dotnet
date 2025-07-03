@@ -15,13 +15,13 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal InternalAssistantToolsFileSearchTypeOnly(InternalAssistantToolsFileSearchTypeOnlyType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalAssistantToolsFileSearchTypeOnly(string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalAssistantToolsFileSearchTypeOnlyType Type { get; } = "file_search";
+        public string Kind { get; } = "file_search";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

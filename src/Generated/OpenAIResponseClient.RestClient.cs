@@ -15,7 +15,7 @@ namespace OpenAI.Responses
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateCreateResponseRequest(BinaryContent content, string accept, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateResponseRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -25,14 +25,14 @@ namespace OpenAI.Responses
             uri.Reset(_endpoint);
             uri.AppendPath("/responses", false);
             request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", accept);
+            request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<InternalCreateResponsesRequestIncludable> includables, RequestOptions options)
+        internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<InternalIncludable> includables, bool? stream, int? startingAfter, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -42,20 +42,61 @@ namespace OpenAI.Responses
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
             uri.AppendPath(responseId, true);
-            if (includables != null && !(includables is ChangeTrackingList<InternalCreateResponsesRequestIncludable> changeTrackingList && changeTrackingList.IsUndefined))
+            if (includables != null && !(includables is ChangeTrackingList<InternalIncludable> changeTrackingList && changeTrackingList.IsUndefined))
             {
                 foreach (var @param in includables)
                 {
                     uri.AppendQuery("include[]", @param, true);
                 }
             }
+            if (stream != null)
+            {
+                uri.AppendQuery("stream", TypeFormatters.ConvertToString(stream, null), true);
+            }
+            if (startingAfter != null)
+            {
+                uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter, null), true);
+            }
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json, text/event-stream");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateDeleteResponseRequest(string responseId, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "DELETE";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/responses/", false);
+            uri.AppendPath(responseId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateListInputItemsRequest(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelResponseRequest(string responseId, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "POST";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/responses/", false);
+            uri.AppendPath(responseId, true);
+            uri.AppendPath("/cancel", false);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateGetInputItemsRequest(string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -82,22 +123,6 @@ namespace OpenAI.Responses
             {
                 uri.AppendQuery("before", before, true);
             }
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
-        internal virtual PipelineMessage CreateDeleteResponseRequest(string responseId, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/responses/", false);
-            uri.AppendPath(responseId, true);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);

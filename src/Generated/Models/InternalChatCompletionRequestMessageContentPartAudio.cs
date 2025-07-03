@@ -8,32 +8,20 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartAudio
+    internal partial class InternalChatCompletionRequestMessageContentPartAudio : ChatMessageContentPart
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
-
-        public InternalChatCompletionRequestMessageContentPartAudio(InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio)
+        internal InternalChatCompletionRequestMessageContentPartAudio(InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio)
         {
             Argument.AssertNotNull(inputAudio, nameof(inputAudio));
 
             InputAudio = inputAudio;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartAudio(InternalChatCompletionRequestMessageContentPartAudioType @type, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionRequestMessageContentPartAudio(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio) : base(additionalBinaryDataProperties)
         {
-            Type = @type;
             InputAudio = inputAudio;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalChatCompletionRequestMessageContentPartAudioType Type { get; } = "input_audio";
-
-        public InternalChatCompletionRequestMessageContentPartAudioInputAudio InputAudio { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio InputAudio { get; }
     }
 }

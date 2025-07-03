@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Files
 {
     internal partial class InternalCompleteUploadRequest : IJsonModel<InternalCompleteUploadRequest>
     {
-        internal InternalCompleteUploadRequest()
+        internal InternalCompleteUploadRequest() : this(null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Files
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompleteUploadRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -51,6 +52,7 @@ namespace OpenAI.Files
                 writer.WritePropertyName("md5"u8);
                 writer.WriteStringValue(Md5);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.Files
 
         InternalCompleteUploadRequest IJsonModel<InternalCompleteUploadRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCompleteUploadRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompleteUploadRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,6 +121,7 @@ namespace OpenAI.Files
                     md5 = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCompleteUploadRequest(partIds, md5, additionalBinaryDataProperties);
@@ -125,13 +129,14 @@ namespace OpenAI.Files
 
         BinaryData IPersistableModel<InternalCompleteUploadRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompleteUploadRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCompleteUploadRequest)} does not support writing '{options.Format}' format.");
             }
@@ -139,6 +144,7 @@ namespace OpenAI.Files
 
         InternalCompleteUploadRequest IPersistableModel<InternalCompleteUploadRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCompleteUploadRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompleteUploadRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -155,21 +161,5 @@ namespace OpenAI.Files
         }
 
         string IPersistableModel<InternalCompleteUploadRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCompleteUploadRequest internalCompleteUploadRequest)
-        {
-            if (internalCompleteUploadRequest == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCompleteUploadRequest, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCompleteUploadRequest(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCompleteUploadRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

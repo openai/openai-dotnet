@@ -22,7 +22,7 @@ namespace OpenAI.Internal
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public OpenAIError Error { get; }
+        internal OpenAIError Error { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

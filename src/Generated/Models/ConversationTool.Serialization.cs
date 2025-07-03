@@ -3,15 +3,15 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     [PersistableModelProxy(typeof(UnknownRealtimeTool))]
-    public abstract partial class ConversationTool : IJsonModel<ConversationTool>
+    public partial class ConversationTool : IJsonModel<ConversationTool>
     {
         internal ConversationTool()
         {
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,6 +37,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -59,6 +61,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationTool IJsonModel<ConversationTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -89,13 +92,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<ConversationTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationTool)} does not support writing '{options.Format}' format.");
             }
@@ -103,6 +107,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationTool IPersistableModel<ConversationTool>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTool>)this).GetFormatFromOptions(options) : options.Format;
@@ -119,21 +124,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationTool conversationTool)
-        {
-            if (conversationTool == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationTool, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationTool(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationTool(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

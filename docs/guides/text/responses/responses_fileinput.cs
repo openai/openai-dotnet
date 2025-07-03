@@ -7,7 +7,7 @@ using OpenAI.Responses;
 using OpenAI.Files;
 using System.ClientModel;
 
-string key = Environment.GetEnvironmentVariable("OPENAI_KEY")!;
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 OpenAIResponseClient client = new("gpt-4.1", key);
 
 // Upload a PDF we will reference in the variables

@@ -6,17 +6,11 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantObjectToolResources1")]
-[CodeGenSerialization(nameof(FileSearch), "file_search", SerializationValueHook = nameof(SerializeFileSearch))]
+[CodeGenVisibility(nameof(ToolResources), CodeGenVisibility.Public)]
 public partial class ToolResources
 {
     /// <summary> Gets the code interpreter. </summary>
     public CodeInterpreterToolResources CodeInterpreter { get; set; }
     /// <summary> Gets the file search. </summary>
     public FileSearchToolResources FileSearch { get; set; }
-
-    public ToolResources()
-    { }
-
-    private void SerializeFileSearch(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => writer.WriteObjectValue(FileSearch, options);
 }

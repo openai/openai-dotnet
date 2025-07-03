@@ -1,4 +1,3 @@
-
 using System;
 using System.ClientModel.Primitives;
 using System.Text.Json;
@@ -43,13 +42,13 @@ public partial class ResponseToolChoice : IJsonModel<ResponseToolChoice>
         if (element.ValueKind == JsonValueKind.String)
         {
             return new ResponseToolChoice(
-                new InternalResponsesToolChoiceOption(element.GetString()));
+                new InternalToolChoiceOptions(element.GetString()));
         }
         else if (element.ValueKind == JsonValueKind.Object)
         {
             return new ResponseToolChoice(
-                InternalResponsesToolChoiceObject
-                    .DeserializeInternalResponsesToolChoiceObject(
+                InternalToolChoiceObject
+                    .DeserializeInternalToolChoiceObject(
                         element,
                         options));
         }

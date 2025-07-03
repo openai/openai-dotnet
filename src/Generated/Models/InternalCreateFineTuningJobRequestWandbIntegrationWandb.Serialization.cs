@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalCreateFineTuningJobRequestWandbIntegrationWandb : IJsonModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>
     {
-        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb()
+        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb() : this(null, null, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
@@ -61,6 +62,7 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("project"u8);
                 writer.WriteStringValue(Project);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -84,6 +86,7 @@ namespace OpenAI.FineTuning
 
         InternalCreateFineTuningJobRequestWandbIntegrationWandb IJsonModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateFineTuningJobRequestWandbIntegrationWandb JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
@@ -154,6 +157,7 @@ namespace OpenAI.FineTuning
                     project = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(name, entity, tags ?? new ChangeTrackingList<string>(), project, additionalBinaryDataProperties);
@@ -161,13 +165,14 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support writing '{options.Format}' format.");
             }
@@ -175,6 +180,7 @@ namespace OpenAI.FineTuning
 
         InternalCreateFineTuningJobRequestWandbIntegrationWandb IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateFineTuningJobRequestWandbIntegrationWandb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
@@ -191,21 +197,5 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateFineTuningJobRequestWandbIntegrationWandb internalCreateFineTuningJobRequestWandbIntegrationWandb)
-        {
-            if (internalCreateFineTuningJobRequestWandbIntegrationWandb == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateFineTuningJobRequestWandbIntegrationWandb, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateFineTuningJobRequestWandbIntegrationWandb(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateFineTuningJobRequestWandbIntegrationWandb(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

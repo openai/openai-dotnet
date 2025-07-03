@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -22,10 +23,11 @@ namespace OpenAI.Chat
 
         internal ChatTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ChatTokenTopLogProbabilityDetails> topLogProbabilities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Token = token;
             LogProbability = logProbability;
             Utf8Bytes = utf8Bytes;
-            TopLogProbabilities = topLogProbabilities;
+            TopLogProbabilities = topLogProbabilities ?? new ChangeTrackingList<ChatTokenTopLogProbabilityDetails>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

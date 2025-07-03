@@ -1,4 +1,4 @@
 namespace OpenAI;
 
-[CodeGenType("CreateResponseRequestAccept")]
+[CodeGenType("CreateThreadAndRunRequestAccept")]
 internal readonly partial struct AcceptHeaderValue { }

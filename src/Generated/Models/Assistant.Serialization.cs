@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class Assistant : IJsonModel<Assistant>
     {
-        internal Assistant()
+        internal Assistant() : this(null, default, null, null, null, null, null, null, null, default, null, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,6 +83,7 @@ namespace OpenAI.Assistants
                     writer.WriteNull("instructions"u8);
                 }
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
@@ -97,28 +99,22 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("tool_resources"u8);
                 writer.WriteObjectValue(ToolResources, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                if (options.Format != "W" && Optional.IsCollectionDefined(Metadata))
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
                 {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
                     {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-                        writer.WriteStringValue(item.Value);
+                        writer.WriteNullValue();
+                        continue;
                     }
-                    writer.WriteEndObject();
+                    writer.WriteStringValue(item.Value);
                 }
-                else
-                {
-                    writer.WriteNull("metadata"u8);
-                }
+                writer.WriteEndObject();
             }
             if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
@@ -128,7 +124,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
@@ -140,6 +136,7 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -163,6 +160,7 @@ namespace OpenAI.Assistants
 
         Assistant IJsonModel<Assistant>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual Assistant JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
@@ -190,7 +188,7 @@ namespace OpenAI.Assistants
             ToolResources toolResources = default;
             IReadOnlyDictionary<string, string> metadata = default;
             float? temperature = default;
-            InternalAssistantObjectObject @object = default;
+            string @object = default;
             AssistantResponseFormat responseFormat = default;
             float? nucleusSamplingFactor = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -295,7 +293,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalAssistantObjectObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("response_format"u8))
@@ -318,6 +316,7 @@ namespace OpenAI.Assistants
                     nucleusSamplingFactor = prop.Value.GetSingle();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new Assistant(
@@ -339,13 +338,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<Assistant>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(Assistant)} does not support writing '{options.Format}' format.");
             }
@@ -353,6 +353,7 @@ namespace OpenAI.Assistants
 
         Assistant IPersistableModel<Assistant>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual Assistant PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<Assistant>)this).GetFormatFromOptions(options) : options.Format;
@@ -369,21 +370,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<Assistant>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(Assistant assistant)
-        {
-            if (assistant == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(assistant, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator Assistant(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistant(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

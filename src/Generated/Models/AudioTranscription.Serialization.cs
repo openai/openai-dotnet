@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscription : IJsonModel<AudioTranscription>
     {
-        internal AudioTranscription()
+        internal AudioTranscription() : this(null, null, null, null, null, default, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Words) && _additionalBinaryDataProperties?.ContainsKey("words") != true)
             {
                 writer.WritePropertyName("words"u8);
@@ -51,6 +53,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Segments) && _additionalBinaryDataProperties?.ContainsKey("segments") != true)
             {
                 writer.WritePropertyName("segments"u8);
@@ -64,13 +67,24 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
             {
                 writer.WritePropertyName("task"u8);
-                writer.WriteStringValue(Task.ToString());
+                writer.WriteStringValue(Task);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
                 writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
             }
+            if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            {
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteStartArray();
+                foreach (AudioTokenLogProbabilityDetails item in TranscriptionTokenLogProbabilities)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -94,6 +108,7 @@ namespace OpenAI.Audio
 
         AudioTranscription IJsonModel<AudioTranscription>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
@@ -115,8 +130,9 @@ namespace OpenAI.Audio
             string text = default;
             IReadOnlyList<TranscribedWord> words = default;
             IReadOnlyList<TranscribedSegment> segments = default;
-            InternalCreateTranscriptionResponseVerboseJsonTask task = default;
+            string task = default;
             TimeSpan? duration = default;
+            IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -160,7 +176,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("task"u8))
                 {
-                    task = new InternalCreateTranscriptionResponseVerboseJsonTask(prop.Value.GetString());
+                    task = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("duration"u8))
@@ -168,6 +184,21 @@ namespace OpenAI.Audio
                     duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
+                if (prop.NameEquals("logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<AudioTokenLogProbabilityDetails> array = new List<AudioTokenLogProbabilityDetails>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(AudioTokenLogProbabilityDetails.DeserializeAudioTokenLogProbabilityDetails(item, options));
+                    }
+                    transcriptionTokenLogProbabilities = array;
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranscription(
@@ -177,18 +208,20 @@ namespace OpenAI.Audio
                 segments ?? new ChangeTrackingList<TranscribedSegment>(),
                 task,
                 duration,
+                transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(),
                 additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<AudioTranscription>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AudioTranscription)} does not support writing '{options.Format}' format.");
             }
@@ -196,6 +229,7 @@ namespace OpenAI.Audio
 
         AudioTranscription IPersistableModel<AudioTranscription>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
@@ -212,21 +246,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<AudioTranscription>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(AudioTranscription audioTranscription)
-        {
-            if (audioTranscription == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(audioTranscription, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AudioTranscription(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAudioTranscription(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -14,25 +14,7 @@ namespace OpenAI.Assistants
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateCreateAssistantRequest(BinaryContent content, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/assistants", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("OpenAI-Beta", "assistants=v2");
-            request.Headers.Set("Content-Type", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal virtual PipelineMessage CreateListAssistantsRequest(int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetAssistantsRequest(int? limit, string order, string after, string before, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -60,6 +42,24 @@ namespace OpenAI.Assistants
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("OpenAI-Beta", "assistants=v2");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateCreateAssistantRequest(BinaryContent content, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "POST";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/assistants", false);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            request.Headers.Set("OpenAI-Beta", "assistants=v2");
+            request.Headers.Set("Content-Type", "application/json");
+            request.Content = content;
             message.Apply(options);
             return message;
         }

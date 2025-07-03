@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Audio
@@ -13,6 +14,7 @@ namespace OpenAI.Audio
         private readonly string _value;
         private const string AlloyValue = "alloy";
         private const string AshValue = "ash";
+        private const string BalladValue = "ballad";
         private const string CoralValue = "coral";
         private const string EchoValue = "echo";
         private const string FableValue = "fable";
@@ -20,6 +22,7 @@ namespace OpenAI.Audio
         private const string NovaValue = "nova";
         private const string SageValue = "sage";
         private const string ShimmerValue = "shimmer";
+        private const string VerseValue = "verse";
 
         public GeneratedSpeechVoice(string value)
         {
@@ -30,8 +33,13 @@ namespace OpenAI.Audio
 
         public static GeneratedSpeechVoice Alloy { get; } = new GeneratedSpeechVoice(AlloyValue);
 
+        [Experimental("OPENAI001")]
         public static GeneratedSpeechVoice Ash { get; } = new GeneratedSpeechVoice(AshValue);
 
+        [Experimental("OPENAI001")]
+        public static GeneratedSpeechVoice Ballad { get; } = new GeneratedSpeechVoice(BalladValue);
+
+        [Experimental("OPENAI001")]
         public static GeneratedSpeechVoice Coral { get; } = new GeneratedSpeechVoice(CoralValue);
 
         public static GeneratedSpeechVoice Echo { get; } = new GeneratedSpeechVoice(EchoValue);
@@ -42,9 +50,13 @@ namespace OpenAI.Audio
 
         public static GeneratedSpeechVoice Nova { get; } = new GeneratedSpeechVoice(NovaValue);
 
+        [Experimental("OPENAI001")]
         public static GeneratedSpeechVoice Sage { get; } = new GeneratedSpeechVoice(SageValue);
 
         public static GeneratedSpeechVoice Shimmer { get; } = new GeneratedSpeechVoice(ShimmerValue);
+
+        [Experimental("OPENAI001")]
+        public static GeneratedSpeechVoice Verse { get; } = new GeneratedSpeechVoice(VerseValue);
 
         public static bool operator ==(GeneratedSpeechVoice left, GeneratedSpeechVoice right) => left.Equals(right);
 

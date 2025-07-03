@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponse
     {
@@ -14,24 +14,26 @@ namespace OpenAI.RealtimeConversation
 
         internal InternalRealtimeResponse(IDictionary<string, string> metadata)
         {
-            Metadata = metadata;
-            Output = new ChangeTrackingList<ConversationItem>();
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            Output = new ChangeTrackingList<RealtimeItem>();
             Modalities = new ChangeTrackingList<InternalRealtimeResponseModality>();
         }
 
-        internal InternalRealtimeResponse(string id, InternalRealtimeResponseObject? @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, float? temperature, BinaryData maxOutputTokens, IReadOnlyList<ConversationItem> output, IReadOnlyList<InternalRealtimeResponseModality> modalities, ConversationVoice? voice, ConversationAudioFormat? outputAudioFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponse(string id, string @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, float? temperature, BinaryData maxOutputTokens, IReadOnlyList<RealtimeItem> output, IReadOnlyList<InternalRealtimeResponseModality> modalities, ConversationVoice? voice, RealtimeAudioFormat? outputAudioFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Status = status;
             StatusDetails = statusDetails;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
             ConversationId = conversationId;
             Temperature = temperature;
             MaxOutputTokens = maxOutputTokens;
-            Output = output;
-            Modalities = modalities;
+            Output = output ?? new ChangeTrackingList<RealtimeItem>();
+            Modalities = modalities ?? new ChangeTrackingList<InternalRealtimeResponseModality>();
             Voice = voice;
             OutputAudioFormat = outputAudioFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -39,7 +41,7 @@ namespace OpenAI.RealtimeConversation
 
         public string Id { get; }
 
-        public InternalRealtimeResponseObject? Object { get; }
+        public string Object { get; }
 
         public ConversationStatus? Status { get; }
 

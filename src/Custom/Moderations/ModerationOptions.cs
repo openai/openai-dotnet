@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
 
 namespace OpenAI.Moderations;
@@ -22,4 +23,6 @@ internal partial class ModerationOptions
     public ModerationOptions()
     {
     }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

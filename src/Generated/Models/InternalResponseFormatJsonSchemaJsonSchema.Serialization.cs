@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Internal
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -58,6 +59,7 @@ namespace OpenAI.Internal
                 }
 #endif
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -81,6 +83,7 @@ namespace OpenAI.Internal
 
         InternalResponseFormatJsonSchemaJsonSchema IJsonModel<InternalResponseFormatJsonSchemaJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalResponseFormatJsonSchemaJsonSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -134,6 +137,7 @@ namespace OpenAI.Internal
                     schema = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalResponseFormatJsonSchemaJsonSchema(description, name, strict, schema, additionalBinaryDataProperties);
@@ -141,13 +145,14 @@ namespace OpenAI.Internal
 
         BinaryData IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchemaJsonSchema)} does not support writing '{options.Format}' format.");
             }
@@ -155,6 +160,7 @@ namespace OpenAI.Internal
 
         InternalResponseFormatJsonSchemaJsonSchema IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalResponseFormatJsonSchemaJsonSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -171,21 +177,5 @@ namespace OpenAI.Internal
         }
 
         string IPersistableModel<InternalResponseFormatJsonSchemaJsonSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalResponseFormatJsonSchemaJsonSchema internalResponseFormatJsonSchemaJsonSchema)
-        {
-            if (internalResponseFormatJsonSchemaJsonSchema == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalResponseFormatJsonSchemaJsonSchema, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalResponseFormatJsonSchemaJsonSchema(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponseFormatJsonSchemaJsonSchema(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

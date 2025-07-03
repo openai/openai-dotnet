@@ -6,18 +6,18 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventConversationItemCreate : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventConversationItemCreate(ConversationItem item) : base(InternalRealtimeClientEventType.ConversationItemCreate)
+        public InternalRealtimeClientEventConversationItemCreate(RealtimeItem item) : base(InternalRealtimeClientEventType.ConversationItemCreate)
         {
             Argument.AssertNotNull(item, nameof(item));
 
             Item = item;
         }
 
-        internal InternalRealtimeClientEventConversationItemCreate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, string previousItemId, ConversationItem item) : base(kind, eventId, additionalBinaryDataProperties)
+        internal InternalRealtimeClientEventConversationItemCreate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, string previousItemId, RealtimeItem item) : base(kind, eventId, additionalBinaryDataProperties)
         {
             PreviousItemId = previousItemId;
             Item = item;
@@ -25,6 +25,6 @@ namespace OpenAI.RealtimeConversation
 
         public string PreviousItemId { get; set; }
 
-        public ConversationItem Item { get; }
+        public RealtimeItem Item { get; }
     }
 }

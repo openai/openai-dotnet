@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamResponseDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -37,6 +38,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
             {
                 writer.WritePropertyName("tool_calls"u8);
@@ -57,11 +59,13 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
+            // Plugin customization: add Content.IsInnerCollectionDefined() check
             if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -85,6 +89,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionStreamResponseDelta IJsonModel<InternalChatCompletionStreamResponseDelta>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionStreamResponseDelta JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamResponseDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -167,6 +172,7 @@ namespace OpenAI.Chat
                     DeserializeContentValue(prop, ref content);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionStreamResponseDelta(
@@ -181,13 +187,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<InternalChatCompletionStreamResponseDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamResponseDelta>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionStreamResponseDelta)} does not support writing '{options.Format}' format.");
             }
@@ -195,6 +202,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionStreamResponseDelta IPersistableModel<InternalChatCompletionStreamResponseDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionStreamResponseDelta PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionStreamResponseDelta>)this).GetFormatFromOptions(options) : options.Format;
@@ -211,21 +219,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionStreamResponseDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatCompletionStreamResponseDelta internalChatCompletionStreamResponseDelta)
-        {
-            if (internalChatCompletionStreamResponseDelta == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatCompletionStreamResponseDelta, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatCompletionStreamResponseDelta(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

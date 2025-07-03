@@ -14,7 +14,7 @@ namespace OpenAI.Responses
             ComputerCallActionMouseButton.Right => "right",
             ComputerCallActionMouseButton.Wheel => "wheel",
             ComputerCallActionMouseButton.Back => "back",
-            ComputerCallActionMouseButton.Forward => "forward,",
+            ComputerCallActionMouseButton.Forward => "forward",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ComputerCallActionMouseButton value.")
         };
 
@@ -36,7 +36,7 @@ namespace OpenAI.Responses
             {
                 return ComputerCallActionMouseButton.Back;
             }
-            if (StringComparer.OrdinalIgnoreCase.Equals(value, "forward,"))
+            if (StringComparer.OrdinalIgnoreCase.Equals(value, "forward"))
             {
                 return ComputerCallActionMouseButton.Forward;
             }

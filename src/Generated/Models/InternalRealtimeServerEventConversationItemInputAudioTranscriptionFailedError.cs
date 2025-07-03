@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError
     {
@@ -15,16 +15,16 @@ namespace OpenAI.RealtimeConversation
         {
         }
 
-        internal InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(string @type, string code, string message, string @param, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError(string kind, string code, string message, string @param, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Code = code;
             Message = message;
             Param = @param;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Type { get; }
+        public string Kind { get; }
 
         public string Code { get; }
 

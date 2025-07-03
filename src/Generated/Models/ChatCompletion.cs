@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -20,15 +22,16 @@ namespace OpenAI.Chat
             CreatedAt = createdAt;
         }
 
-        internal ChatCompletion(string id, string model, string systemFingerprint, ChatTokenUsage usage, InternalCreateChatCompletionResponseObject @object, InternalCreateChatCompletionResponseServiceTier? serviceTier, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletion(string id, string model, string systemFingerprint, ChatTokenUsage usage, string @object, InternalServiceTier? serviceTier, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             Model = model;
             SystemFingerprint = systemFingerprint;
             Usage = usage;
             Object = @object;
             ServiceTier = serviceTier;
-            Choices = choices;
+            Choices = choices ?? new ChangeTrackingList<InternalCreateChatCompletionResponseChoice>();
             CreatedAt = createdAt;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

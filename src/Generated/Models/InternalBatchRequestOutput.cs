@@ -28,9 +28,9 @@ namespace OpenAI.Batch
 
         public string CustomId { get; }
 
-        public InternalBatchRequestOutputResponse Response { get; }
+        internal InternalBatchRequestOutputResponse Response { get; }
 
-        public InternalBatchRequestOutputError Error { get; }
+        internal InternalBatchRequestOutputError Error { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

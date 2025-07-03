@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeServerEvent : ConversationUpdate
+    internal partial class UnknownRealtimeServerEvent : RealtimeUpdate
     {
-        internal UnknownRealtimeServerEvent(string eventId, ConversationUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(eventId, kind, additionalBinaryDataProperties)
+        internal UnknownRealtimeServerEvent(RealtimeUpdateKind kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, eventId, additionalBinaryDataProperties)
         {
         }
     }

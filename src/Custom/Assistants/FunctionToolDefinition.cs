@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
@@ -7,44 +6,44 @@ namespace OpenAI.Assistants;
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantToolsFunction")]
 [CodeGenSuppress(nameof(FunctionToolDefinition), typeof(InternalFunctionDefinition))]
-public partial class FunctionToolDefinition : ToolDefinition
+public partial class FunctionToolDefinition
 {
     // CUSTOM: the visibility of the underlying function object is hidden to simplify the structure of the tool.
-
-    [CodeGenMember("Function")]
-    private readonly InternalFunctionDefinition _internalFunction;
 
     /// <inheritdoc cref="InternalFunctionDefinition.Name"/>
     public string FunctionName
     {
-        get => _internalFunction.Name;
-        set => _internalFunction.Name = value;
+        get => Function.Name;
+        set => Function.Name = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Description"/>
     public string Description
     {
-        get => _internalFunction.Description;
-        set => _internalFunction.Description = value;
+        get => Function.Description;
+        set => Function.Description = value;
     }
 
     /// <inheritdoc cref="InternalFunctionDefinition.Parameters"/>
     public BinaryData Parameters
     {
-        get => _internalFunction.Parameters;
-        set => _internalFunction.Parameters = value;
+        get => Function.Parameters;
+        set => Function.Parameters = value;
     }
 
     public bool? StrictParameterSchemaEnabled
     {
-        get => _internalFunction.Strict;
-        set => _internalFunction.Strict = value;
+        get => Function.Strict;
+        set => Function.Strict = value;
     }
 
     public FunctionToolDefinition(string name)
-        : base("function")
+        : this(kind: InternalAssistantToolDefinitionType.Function, null, new(name: name))
     {
         Argument.AssertNotNullOrEmpty(name, nameof(name));
-        _internalFunction = new(null, name, null, null, null);
     }
+
+    // CUSTOM: Ensure default constructor initializes discriminator value and inner type.
+    public FunctionToolDefinition() : this(kind: InternalAssistantToolDefinitionType.Function, additionalBinaryDataProperties: null, function: new())
+    { }
 }

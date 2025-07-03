@@ -1,7 +1,12 @@
-﻿namespace OpenAI.Responses;
+﻿using System.Diagnostics.CodeAnalysis;
 
-// CUSTOM: Renamed.
-[CodeGenType("ResponsesReasoningItemStatus")]
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ReasoningItemStatus")]
 public enum ReasoningStatus
 {
     InProgress,

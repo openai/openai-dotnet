@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
@@ -11,18 +12,18 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected FileChunkingStrategy(string @type)
+        private protected FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind)
         {
-            Type = @type;
+            Kind = kind;
         }
 
-        internal FileChunkingStrategy(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalDotNetCombinedChunkingStrategyParamType2 Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

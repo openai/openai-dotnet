@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files
 {
@@ -11,17 +12,17 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIFile(string id, DateTimeOffset createdAt, string filename, FilePurpose purpose, int? sizeInBytes, FileStatus status)
+        internal OpenAIFile(string id, DateTimeOffset createdAt, string filename, FilePurpose purpose, long? sizeInBytesLong, FileStatus status)
         {
             Id = id;
             CreatedAt = createdAt;
             Filename = filename;
             Purpose = purpose;
-            SizeInBytes = sizeInBytes;
+            SizeInBytesLong = sizeInBytesLong;
             Status = status;
         }
 
-        internal OpenAIFile(string id, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, FilePurpose purpose, InternalOpenAIFileObject @object, int? sizeInBytes, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, FilePurpose purpose, string @object, long? sizeInBytesLong, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -29,7 +30,7 @@ namespace OpenAI.Files
             Filename = filename;
             Purpose = purpose;
             Object = @object;
-            SizeInBytes = sizeInBytes;
+            SizeInBytesLong = sizeInBytesLong;
             Status = status;
             StatusDetails = statusDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -39,6 +40,7 @@ namespace OpenAI.Files
 
         public DateTimeOffset CreatedAt { get; }
 
+        [Experimental("OPENAI001")]
         public DateTimeOffset? ExpiresAt { get; }
 
         public string Filename { get; }

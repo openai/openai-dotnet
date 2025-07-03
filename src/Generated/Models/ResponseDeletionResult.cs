@@ -16,7 +16,7 @@ namespace OpenAI.Responses
             Id = id;
         }
 
-        internal ResponseDeletionResult(string id, bool deleted, InternalDeleteResponseResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseDeletionResult(string id, bool deleted, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             Deleted = deleted;

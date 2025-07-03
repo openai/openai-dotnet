@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseRefusalDoneUpdate(string itemId, int outputIndex, int contentIndex, string refusal) : base(InternalResponsesResponseStreamEventType.ResponseRefusalDone)
+        internal StreamingResponseRefusalDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string refusal) : base(InternalResponseStreamEventType.ResponseRefusalDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -17,7 +17,7 @@ namespace OpenAI.Responses
             Refusal = refusal;
         }
 
-        internal StreamingResponseRefusalDoneUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string refusal) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseRefusalDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, string refusal) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

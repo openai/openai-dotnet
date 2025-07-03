@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseStatusDetailsError : IJsonModel<InternalRealtimeResponseStatusDetailsError>
     {
@@ -20,6 +20,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetailsError>)this).GetFormatFromOptions(options) : options.Format;
@@ -27,16 +28,17 @@ namespace OpenAI.RealtimeConversation
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetailsError)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Type) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
+            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type);
+                writer.WriteStringValue(Kind);
             }
             if (Optional.IsDefined(Code) && _additionalBinaryDataProperties?.ContainsKey("code") != true)
             {
                 writer.WritePropertyName("code"u8);
                 writer.WriteStringValue(Code);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -60,6 +62,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseStatusDetailsError IJsonModel<InternalRealtimeResponseStatusDetailsError>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeResponseStatusDetailsError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetailsError>)this).GetFormatFromOptions(options) : options.Format;
@@ -77,14 +80,14 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            string @type = default;
+            string kind = default;
             string code = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("code"u8))
@@ -92,20 +95,22 @@ namespace OpenAI.RealtimeConversation
                     code = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRealtimeResponseStatusDetailsError(@type, code, additionalBinaryDataProperties);
+            return new InternalRealtimeResponseStatusDetailsError(kind, code, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalRealtimeResponseStatusDetailsError>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetailsError>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeResponseStatusDetailsError)} does not support writing '{options.Format}' format.");
             }
@@ -113,6 +118,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeResponseStatusDetailsError IPersistableModel<InternalRealtimeResponseStatusDetailsError>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeResponseStatusDetailsError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeResponseStatusDetailsError>)this).GetFormatFromOptions(options) : options.Format;
@@ -129,21 +135,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeResponseStatusDetailsError>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeResponseStatusDetailsError internalRealtimeResponseStatusDetailsError)
-        {
-            if (internalRealtimeResponseStatusDetailsError == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeResponseStatusDetailsError, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeResponseStatusDetailsError(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeResponseStatusDetailsError(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationSessionConfiguredUpdate : IJsonModel<ConversationSessionConfiguredUpdate>
     {
-        internal ConversationSessionConfiguredUpdate()
+        internal ConversationSessionConfiguredUpdate() : this(RealtimeUpdateKind.SessionConfigured, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationSessionConfiguredUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,7 +42,8 @@ namespace OpenAI.RealtimeConversation
 
         ConversationSessionConfiguredUpdate IJsonModel<ConversationSessionConfiguredUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ConversationSessionConfiguredUpdate)JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationSessionConfiguredUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -58,20 +60,20 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
+            RealtimeUpdateKind kind = default;
             string eventId = default;
-            ConversationUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalRealtimeResponseSession internalSession = default;
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString().ToRealtimeUpdateKind();
+                    continue;
+                }
                 if (prop.NameEquals("event_id"u8))
                 {
                     eventId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("type"u8))
-                {
-                    kind = prop.Value.GetString().ToConversationUpdateKind();
                     continue;
                 }
                 if (prop.NameEquals("session"u8))
@@ -79,20 +81,22 @@ namespace OpenAI.RealtimeConversation
                     internalSession = InternalRealtimeResponseSession.DeserializeInternalRealtimeResponseSession(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ConversationSessionConfiguredUpdate(eventId, kind, additionalBinaryDataProperties, internalSession);
+            return new ConversationSessionConfiguredUpdate(kind, eventId, additionalBinaryDataProperties, internalSession);
         }
 
         BinaryData IPersistableModel<ConversationSessionConfiguredUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationSessionConfiguredUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationSessionConfiguredUpdate)} does not support writing '{options.Format}' format.");
             }
@@ -100,7 +104,8 @@ namespace OpenAI.RealtimeConversation
 
         ConversationSessionConfiguredUpdate IPersistableModel<ConversationSessionConfiguredUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (ConversationSessionConfiguredUpdate)PersistableModelCreateCore(data, options);
 
-        protected override ConversationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationSessionConfiguredUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -116,21 +121,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationSessionConfiguredUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationSessionConfiguredUpdate conversationSessionConfiguredUpdate)
-        {
-            if (conversationSessionConfiguredUpdate == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationSessionConfiguredUpdate, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationSessionConfiguredUpdate(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationSessionConfiguredUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }
