@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalAnnotationFileCitation : IJsonModel<InternalAnnotationFileCitation>
     {
-        internal InternalAnnotationFileCitation() : this(ResponseMessageAnnotationKind.FileCitation, null, null, default)
+        internal InternalAnnotationFileCitation() : this(ResponseMessageAnnotationKind.FileCitation, null, null, default, default)
         {
         }
 
@@ -33,12 +33,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalAnnotationFileCitation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
+			if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+			{
+				writer.WritePropertyName("file_id"u8);
+				writer.WriteStringValue(FileId);
+			}
+			if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+			{
+				writer.WritePropertyName("filename"u8);
+				writer.WriteStringValue(FileName);
+			}
+			if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
@@ -69,19 +74,26 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string fileId = default;
             int index = default;
-            foreach (var prop in element.EnumerateObject())
+            string fileName = default;
+
+			foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToResponseMessageAnnotationKind();
                     continue;
                 }
-                if (prop.NameEquals("file_id"u8))
-                {
-                    fileId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("index"u8))
+				if (prop.NameEquals("file_id"u8))
+				{
+					fileId = prop.Value.GetString();
+					continue;
+				}
+				if (prop.NameEquals("filename"u8))
+				{
+					fileName = prop.Value.GetString();
+					continue;
+				}
+				if (prop.NameEquals("index"u8))
                 {
                     index = prop.Value.GetInt32();
                     continue;
@@ -89,7 +101,7 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalAnnotationFileCitation(kind, additionalBinaryDataProperties, fileId, index);
+            return new InternalAnnotationFileCitation(kind, additionalBinaryDataProperties, fileId, index, fileName);
         }
 
         BinaryData IPersistableModel<InternalAnnotationFileCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
