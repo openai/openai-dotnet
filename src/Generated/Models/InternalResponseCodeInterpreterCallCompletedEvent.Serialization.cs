@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseCodeInterpreterCallCompletedEvent : IJsonModel<InternalResponseCodeInterpreterCallCompletedEvent>
+    public partial class InternalResponseCodeInterpreterCallCompletedEvent : IJsonModel<InternalResponseCodeInterpreterCallCompletedEvent>
     {
         internal InternalResponseCodeInterpreterCallCompletedEvent() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, default, null, default, null)
         {

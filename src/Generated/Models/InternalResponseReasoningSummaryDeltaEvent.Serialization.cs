@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningSummaryDeltaEvent : IJsonModel<InternalResponseReasoningSummaryDeltaEvent>
+	public partial class InternalResponseReasoningSummaryDeltaEvent : IJsonModel<InternalResponseReasoningSummaryDeltaEvent>
     {
         internal InternalResponseReasoningSummaryDeltaEvent() : this(InternalResponseStreamEventType.ResponseReasoningSummaryDelta, default, null, null, default, default, null)
         {
