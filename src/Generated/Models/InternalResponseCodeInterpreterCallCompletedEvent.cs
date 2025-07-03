@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseCodeInterpreterCallCompletedEvent : StreamingResponseUpdate
+    public partial class InternalResponseCodeInterpreterCallCompletedEvent : StreamingResponseUpdate
     {
         internal InternalResponseCodeInterpreterCallCompletedEvent(int sequenceNumber, int outputIndex, InternalCodeInterpreterToolCallItemResource codeInterpreterCall) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, sequenceNumber)
         {

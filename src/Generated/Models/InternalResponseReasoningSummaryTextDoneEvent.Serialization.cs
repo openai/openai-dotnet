@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningSummaryTextDoneEvent : IJsonModel<InternalResponseReasoningSummaryTextDoneEvent>
+    public partial class InternalResponseReasoningSummaryTextDoneEvent : IJsonModel<InternalResponseReasoningSummaryTextDoneEvent>
     {
         internal InternalResponseReasoningSummaryTextDoneEvent() : this(InternalResponseStreamEventType.ResponseReasoningSummaryTextDone, default, null, null, default, default, null)
         {
