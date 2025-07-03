@@ -2,12 +2,14 @@
 
 #nullable disable
 
+using OpenAI;
+using OpenAI.Assistants;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -36,14 +38,8 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("container") != true)
             {
                 writer.WritePropertyName("container"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Container);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Container))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                IJsonModel<CodeInterpreterToolDefinition>  model = Container;
+                model.Write(writer, options);
             }
         }
 
@@ -69,7 +65,7 @@ namespace OpenAI.Responses
             }
             InternalToolType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            BinaryData container = default;
+            CodeInterpreterToolDefinition container = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -79,7 +75,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("container"u8))
                 {
-                    container = BinaryData.FromString(prop.Value.GetRawText());
+                    container = CodeInterpreterToolDefinition.DeserializeCodeInterpreterToolDefinition(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

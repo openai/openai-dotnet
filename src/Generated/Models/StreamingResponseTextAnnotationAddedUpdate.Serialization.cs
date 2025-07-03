@@ -11,13 +11,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class InternalResponseReasoningDoneEvent : IJsonModel<InternalResponseReasoningDoneEvent>
+    public partial class StreamingResponseTextAnnotationAddedUpdate : IJsonModel<StreamingResponseTextAnnotationAddedUpdate>
     {
-        internal InternalResponseReasoningDoneEvent() : this(InternalResponseStreamEventType.ResponseReasoningDone, default, null, null, default, default, null)
+        internal StreamingResponseTextAnnotationAddedUpdate() : this(InternalResponseStreamEventType.ResponseOutputTextAnnotationAdded, default, null, null, default, default, default, null)
         {
         }
 
-        void IJsonModel<InternalResponseReasoningDoneEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseTextAnnotationAddedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -27,10 +27,10 @@ namespace OpenAI.Responses
         [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
@@ -48,28 +48,34 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("content_index"u8);
                 writer.WriteNumberValue(ContentIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("annotation_index") != true)
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
+                writer.WritePropertyName("annotation_index"u8);
+                writer.WriteNumberValue(AnnotationIndex);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("annotation") != true)
+            {
+                writer.WritePropertyName("annotation"u8);
+                IJsonModel<ResponseMessageAnnotation> jsonAnnotation = Annotation;
+				jsonAnnotation.Write(writer, options);
             }
         }
 
-        InternalResponseReasoningDoneEvent IJsonModel<InternalResponseReasoningDoneEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseReasoningDoneEvent)JsonModelCreateCore(ref reader, options);
+        StreamingResponseTextAnnotationAddedUpdate IJsonModel<StreamingResponseTextAnnotationAddedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseTextAnnotationAddedUpdate)JsonModelCreateCore(ref reader, options);
 
         [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseReasoningDoneEvent(document.RootElement, options);
+            return DeserializeStreamingResponseTextAnnotationAddedUpdate(document.RootElement, options);
         }
 
-        internal static InternalResponseReasoningDoneEvent DeserializeInternalResponseReasoningDoneEvent(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseTextAnnotationAddedUpdate DeserializeStreamingResponseTextAnnotationAddedUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -81,7 +87,8 @@ namespace OpenAI.Responses
             string itemId = default;
             int outputIndex = default;
             int contentIndex = default;
-            string text = default;
+            int annotationIndex = default;
+			ResponseMessageAnnotation annotation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -109,57 +116,63 @@ namespace OpenAI.Responses
                     contentIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("text"u8))
+                if (prop.NameEquals("annotation_index"u8))
                 {
-                    text = prop.Value.GetString();
+                    annotationIndex = prop.Value.GetInt32();
                     continue;
+                }
+                if (prop.NameEquals("annotation"u8))
+                {
+					annotation = ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(prop.Value, options);
+					continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponseReasoningDoneEvent(
+            return new StreamingResponseTextAnnotationAddedUpdate(
                 kind,
                 sequenceNumber,
                 additionalBinaryDataProperties,
                 itemId,
                 outputIndex,
                 contentIndex,
-                text);
+                annotationIndex,
+                annotation);
         }
 
-        BinaryData IPersistableModel<InternalResponseReasoningDoneEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalResponseReasoningDoneEvent IPersistableModel<InternalResponseReasoningDoneEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseReasoningDoneEvent)PersistableModelCreateCore(data, options);
+        StreamingResponseTextAnnotationAddedUpdate IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseTextAnnotationAddedUpdate)PersistableModelCreateCore(data, options);
 
         [Experimental("OPENAI001")]
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponseReasoningDoneEvent(document.RootElement, options);
+                        return DeserializeStreamingResponseTextAnnotationAddedUpdate(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalResponseReasoningDoneEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -5,23 +5,24 @@
 using System;
 using System.Collections.Generic;
 using OpenAI;
+using OpenAI.Assistants;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalCodeInterpreterTool : ResponseTool
     {
-        public InternalCodeInterpreterTool(BinaryData container) : base(InternalToolType.CodeInterpreter)
+        public InternalCodeInterpreterTool(CodeInterpreterToolDefinition container) : base(InternalToolType.CodeInterpreter)
         {
             Argument.AssertNotNull(container, nameof(container));
 
             Container = container;
         }
 
-        internal InternalCodeInterpreterTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData container) : base(kind, additionalBinaryDataProperties)
+        internal InternalCodeInterpreterTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterToolDefinition container) : base(kind, additionalBinaryDataProperties)
         {
             Container = container;
         }
 
-        public BinaryData Container { get; set; }
+        public CodeInterpreterToolDefinition Container { get; set; }
     }
 }

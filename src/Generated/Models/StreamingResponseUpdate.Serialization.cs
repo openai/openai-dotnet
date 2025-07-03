@@ -10,6 +10,27 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
+	/**************************************************************************
+    /* <GP> Added generic event handling for unsupported events               */
+	public class JsonResponsesResponseStreamEvent : StreamingResponseUpdate
+	{
+        internal JsonResponsesResponseStreamEvent() : this(string.Empty, default, ModelReaderWriterOptions.Json)
+        { }
+
+		public JsonResponsesResponseStreamEvent(string type, JsonElement element, ModelReaderWriterOptions options)
+		{
+			EventType = type;
+			Element = element.Clone();
+			Options = options;
+		}
+		public String EventType { get; }
+
+		public JsonElement Element { get; }
+		public ModelReaderWriterOptions Options { get; }
+	}
+	/* </GP> Added generic event handling for unsupported events              *
+     **************************************************************************/
+
     [PersistableModelProxy(typeof(UnknownResponseStreamEvent))]
     public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
@@ -164,6 +185,8 @@ namespace OpenAI.Responses
                         return InternalResponseMCPListToolsFailedEvent.DeserializeInternalResponseMCPListToolsFailedEvent(element, options);
                     case "response.mcp_list_tools.in_progress":
                         return InternalResponseMCPListToolsInProgressEvent.DeserializeInternalResponseMCPListToolsInProgressEvent(element, options);
+                    case "response.output_text.annotation.added":
+                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, options);
                     case "response.queued":
                         return StreamingResponseQueuedUpdate.DeserializeStreamingResponseQueuedUpdate(element, options);
                     case "response.reasoning.delta":
@@ -184,6 +207,18 @@ namespace OpenAI.Responses
                         return InternalResponseCodeInterpreterCallInProgressEvent.DeserializeInternalResponseCodeInterpreterCallInProgressEvent(element, options);
                     case "response.code_interpreter_call.interpreting":
                         return InternalResponseCodeInterpreterCallInterpretingEvent.DeserializeInternalResponseCodeInterpreterCallInterpretingEvent(element, options);
+					/**************************************************************************
+					 * <GP> Added generic event handling for unsupported events               *
+                     * The strings are intentionally handled to generate a compile time error *
+                     * once officially supported above.                                       */
+					case "response.mcp_call.arguments.delta":
+					case "response.mcp_call.arguments.done":
+					case "response.mcp_list_tools.completed:":
+					case "response.output_text_annotation.added":
+					default:
+						return new JsonResponsesResponseStreamEvent(discriminator.GetString(), element, options);
+					/* </GP> Added generic event handling for unsupported events              *
+						**************************************************************************/
                 }
             }
             return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, options);

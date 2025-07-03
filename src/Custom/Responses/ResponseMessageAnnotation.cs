@@ -13,6 +13,7 @@ public partial class ResponseMessageAnnotation
 {
     // CUSTOM: Exposed file citation properties.
     public string FileCitationFileId => (this as InternalAnnotationFileCitation)?.FileId;
+    public string FileCitationFileName => (this as InternalAnnotationFileCitation)?.FileName;
     public int? FileCitationIndex => (this as InternalAnnotationFileCitation)?.Index;
 
     // CUSTOM: Exposed URL citation properties.
