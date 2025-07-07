@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentTextAnnotationsFilePathObject : IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
     {
-        internal InternalMessageContentTextAnnotationsFilePathObject()
+        internal InternalMessageContentTextAnnotationsFilePathObject() : this(InternalMessageContentTextAnnotationType.FilePath, null, null, null, default, default)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -56,6 +57,7 @@ namespace OpenAI.Assistants
 
         InternalMessageContentTextAnnotationsFilePathObject IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFilePathObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageContentTextObjectAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -73,7 +75,7 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "file_path";
+            InternalMessageContentTextAnnotationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             InternalMessageContentTextAnnotationsFilePathObjectFilePath filePath = default;
@@ -83,7 +85,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalMessageContentTextAnnotationType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -106,10 +108,11 @@ namespace OpenAI.Assistants
                     endIndex = prop.Value.GetInt32();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalMessageContentTextAnnotationsFilePathObject(
-                @type,
+                kind,
                 additionalBinaryDataProperties,
                 text,
                 filePath,
@@ -119,13 +122,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalMessageContentTextAnnotationsFilePathObject)} does not support writing '{options.Format}' format.");
             }
@@ -133,6 +137,7 @@ namespace OpenAI.Assistants
 
         InternalMessageContentTextAnnotationsFilePathObject IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentTextAnnotationsFilePathObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalMessageContentTextObjectAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -149,21 +154,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalMessageContentTextAnnotationsFilePathObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalMessageContentTextAnnotationsFilePathObject internalMessageContentTextAnnotationsFilePathObject)
-        {
-            if (internalMessageContentTextAnnotationsFilePathObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalMessageContentTextAnnotationsFilePathObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalMessageContentTextAnnotationsFilePathObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

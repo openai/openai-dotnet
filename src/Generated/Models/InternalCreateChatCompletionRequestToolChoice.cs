@@ -22,11 +22,11 @@ namespace OpenAI.Chat
             _value = value;
         }
 
-        public static InternalCreateChatCompletionRequestToolChoice None { get; } = new InternalCreateChatCompletionRequestToolChoice(NoneValue);
+        internal static InternalCreateChatCompletionRequestToolChoice None { get; } = new InternalCreateChatCompletionRequestToolChoice(NoneValue);
 
-        public static InternalCreateChatCompletionRequestToolChoice Auto { get; } = new InternalCreateChatCompletionRequestToolChoice(AutoValue);
+        internal static InternalCreateChatCompletionRequestToolChoice Auto { get; } = new InternalCreateChatCompletionRequestToolChoice(AutoValue);
 
-        public static InternalCreateChatCompletionRequestToolChoice Required { get; } = new InternalCreateChatCompletionRequestToolChoice(RequiredValue);
+        internal static InternalCreateChatCompletionRequestToolChoice Required { get; } = new InternalCreateChatCompletionRequestToolChoice(RequiredValue);
 
         public static bool operator ==(InternalCreateChatCompletionRequestToolChoice left, InternalCreateChatCompletionRequestToolChoice right) => left.Equals(right);
 

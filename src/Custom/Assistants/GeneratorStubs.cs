@@ -8,7 +8,7 @@ namespace OpenAI.Assistants;
  */
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantToolsCode")]
-public partial class CodeInterpreterToolDefinition : ToolDefinition { }
+public partial class CodeInterpreterToolDefinition { }
 
 [Experimental("OPENAI001")]
 [CodeGenType("MessageObjectStatus")]

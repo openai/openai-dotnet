@@ -1,9 +1,11 @@
 using System;
+using System.ClientModel;
 
 namespace OpenAI.Embeddings;
 
 [CodeGenType("CreateEmbeddingRequest")]
-[CodeGenSuppress("EmbeddingGenerationOptions", typeof(BinaryData), typeof(InternalCreateEmbeddingRequestModel))]
+[CodeGenVisibility(nameof(EmbeddingGenerationOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(EmbeddingGenerationOptions), typeof(BinaryData), typeof(InternalCreateEmbeddingRequestModel))]
 public partial class EmbeddingGenerationOptions
 {
     // CUSTOM:
@@ -22,12 +24,6 @@ public partial class EmbeddingGenerationOptions
     [CodeGenMember("EncodingFormat")]
     internal InternalCreateEmbeddingRequestEncodingFormat? EncodingFormat { get; set; }
 
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="EmbeddingGenerationOptions"/>. </summary>
-    public EmbeddingGenerationOptions()
-    {
-    }
-
     // CUSTOM: Renamed.
     /// <summary>
     ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.
@@ -35,4 +31,6 @@ public partial class EmbeddingGenerationOptions
     /// </summary>
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

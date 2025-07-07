@@ -3,20 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.VectorStores;
 
 [Experimental("OPENAI001")]
-[CodeGenType("StaticChunkingStrategyResponseParam")]
+[CodeGenType("DotNetCombinedStaticChunkingStrategyParam")]
 public partial class StaticFileChunkingStrategy : FileChunkingStrategy
 {
     [CodeGenMember("Static")]
-    private InternalStaticChunkingStrategyDetails _internalDetails;
+    private InternalStaticChunkingStrategy _internalDetails;
 
-    // CUSTOM: Made internal.
-    internal StaticFileChunkingStrategy(InternalStaticChunkingStrategyDetails internalDetails)
-    {
-        Argument.AssertNotNull(internalDetails, nameof(internalDetails));
-
-        Type = "static";
-        _internalDetails = internalDetails;
-    }
 
     /// <summary>
     /// Creates a new instance of <see cref="StaticFileChunkingStrategy"/>, which allows for direct specification of
@@ -25,7 +17,7 @@ public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     /// <param name="maxTokensPerChunk"></param>
     /// <param name="overlappingTokenCount"></param>
     public StaticFileChunkingStrategy(int maxTokensPerChunk, int overlappingTokenCount)
-        : this(new InternalStaticChunkingStrategyDetails(maxTokensPerChunk, overlappingTokenCount))
+        : this(new InternalStaticChunkingStrategy(maxTokensPerChunk, overlappingTokenCount))
     {
     }
 
@@ -36,6 +28,7 @@ public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     /// If not otherwise specified, a default of <c>800</c> will be used.
     /// </remarks>
     public int MaxTokensPerChunk => _internalDetails.MaxChunkSizeTokens;
+
     /// <summary>
     /// The number of shared, overlapping tokens allowed between chunks.
     /// </summary>

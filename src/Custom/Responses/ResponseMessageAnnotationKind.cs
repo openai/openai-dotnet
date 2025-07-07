@@ -1,6 +1,12 @@
-﻿namespace OpenAI.Responses;
+﻿using System.Diagnostics.CodeAnalysis;
 
-[CodeGenType("ResponseOutputTextAnnotationType")]
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("AnnotationType")]
 public enum ResponseMessageAnnotationKind
 {
     FileCitation,
@@ -8,5 +14,7 @@ public enum ResponseMessageAnnotationKind
     [CodeGenMember("UrlCitation")]
     UriCitation,
 
-    FilePath
+    FilePath,
+
+    ContainerFileCitation
 }

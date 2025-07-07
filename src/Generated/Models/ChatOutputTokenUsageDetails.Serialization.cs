@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -47,6 +48,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("rejected_prediction_tokens"u8);
                 writer.WriteNumberValue(RejectedPredictionTokenCount);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -70,6 +72,7 @@ namespace OpenAI.Chat
 
         ChatOutputTokenUsageDetails IJsonModel<ChatOutputTokenUsageDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -130,6 +133,7 @@ namespace OpenAI.Chat
                     rejectedPredictionTokenCount = prop.Value.GetInt32();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatOutputTokenUsageDetails(reasoningTokenCount, audioTokenCount, acceptedPredictionTokenCount, rejectedPredictionTokenCount, additionalBinaryDataProperties);
@@ -137,13 +141,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<ChatOutputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support writing '{options.Format}' format.");
             }
@@ -151,6 +156,7 @@ namespace OpenAI.Chat
 
         ChatOutputTokenUsageDetails IPersistableModel<ChatOutputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ChatOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatOutputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -167,21 +173,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatOutputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ChatOutputTokenUsageDetails chatOutputTokenUsageDetails)
-        {
-            if (chatOutputTokenUsageDetails == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(chatOutputTokenUsageDetails, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ChatOutputTokenUsageDetails(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatOutputTokenUsageDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

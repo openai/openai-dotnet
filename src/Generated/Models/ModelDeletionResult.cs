@@ -17,7 +17,7 @@ namespace OpenAI.Models
             ModelId = modelId;
         }
 
-        internal ModelDeletionResult(bool deleted, string modelId, InternalDeleteModelResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ModelDeletionResult(bool deleted, string modelId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             ModelId = modelId;

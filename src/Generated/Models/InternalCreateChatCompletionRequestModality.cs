@@ -21,9 +21,9 @@ namespace OpenAI.Chat
             _value = value;
         }
 
-        public static InternalCreateChatCompletionRequestModality Text { get; } = new InternalCreateChatCompletionRequestModality(TextValue);
+        internal static InternalCreateChatCompletionRequestModality Text { get; } = new InternalCreateChatCompletionRequestModality(TextValue);
 
-        public static InternalCreateChatCompletionRequestModality Audio { get; } = new InternalCreateChatCompletionRequestModality(AudioValue);
+        internal static InternalCreateChatCompletionRequestModality Audio { get; } = new InternalCreateChatCompletionRequestModality(AudioValue);
 
         public static bool operator ==(InternalCreateChatCompletionRequestModality left, InternalCreateChatCompletionRequestModality right) => left.Equals(right);
 

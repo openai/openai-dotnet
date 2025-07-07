@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesAssistantMessage : IJsonModel<InternalResponsesAssistantMessage>
     {
-        internal InternalResponsesAssistantMessage()
+        internal InternalResponsesAssistantMessage() : this(default, null, null, default, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,6 +47,7 @@ namespace OpenAI.Responses
 
         InternalResponsesAssistantMessage IJsonModel<InternalResponsesAssistantMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesAssistantMessage)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -63,17 +65,17 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            MessageStatus? status = default;
             InternalResponsesMessageRole internalRole = default;
+            MessageStatus? status = default;
             IList<ResponseContentPart> internalContent = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -81,18 +83,14 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    status = prop.Value.GetString().ToMessageStatus();
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToMessageStatus();
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -105,26 +103,28 @@ namespace OpenAI.Responses
                     internalContent = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalResponsesAssistantMessage(
-                @type,
+                kind,
                 id,
                 additionalBinaryDataProperties,
-                status,
                 internalRole,
+                status,
                 internalContent);
         }
 
         BinaryData IPersistableModel<InternalResponsesAssistantMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalResponsesAssistantMessage)} does not support writing '{options.Format}' format.");
             }
@@ -132,6 +132,7 @@ namespace OpenAI.Responses
 
         InternalResponsesAssistantMessage IPersistableModel<InternalResponsesAssistantMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponsesAssistantMessage)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesAssistantMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -148,21 +149,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalResponsesAssistantMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalResponsesAssistantMessage internalResponsesAssistantMessage)
-        {
-            if (internalResponsesAssistantMessage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalResponsesAssistantMessage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalResponsesAssistantMessage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponsesAssistantMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

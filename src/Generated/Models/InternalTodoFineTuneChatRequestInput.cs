@@ -13,19 +13,17 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalTodoFineTuneChatRequestInput()
+        public InternalTodoFineTuneChatRequestInput() : this(null, null, default, null, null)
         {
-            Messages = new ChangeTrackingList<BinaryData>();
-            Tools = new ChangeTrackingList<ChatTool>();
-            Functions = new ChangeTrackingList<ChatFunction>();
         }
 
         internal InternalTodoFineTuneChatRequestInput(IList<BinaryData> messages, IList<ChatTool> tools, bool? parallelToolCalls, IList<ChatFunction> functions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Messages = messages;
-            Tools = tools;
+            // Plugin customization: ensure initialization of collections
+            Messages = messages ?? new ChangeTrackingList<BinaryData>();
+            Tools = tools ?? new ChangeTrackingList<ChatTool>();
             ParallelToolCalls = parallelToolCalls;
-            Functions = functions;
+            Functions = functions ?? new ChangeTrackingList<ChatFunction>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

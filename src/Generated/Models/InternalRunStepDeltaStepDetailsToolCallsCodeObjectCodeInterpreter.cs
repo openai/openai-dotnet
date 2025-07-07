@@ -12,15 +12,15 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter()
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter() : this(null, null, null)
         {
-            Outputs = new ChangeTrackingList<RunStepUpdateCodeInterpreterOutput>();
         }
 
         internal InternalRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepUpdateCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Input = input;
-            Outputs = outputs;
+            Outputs = outputs ?? new ChangeTrackingList<RunStepUpdateCodeInterpreterOutput>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

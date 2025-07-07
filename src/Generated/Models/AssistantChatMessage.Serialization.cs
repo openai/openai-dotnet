@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
     {
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -55,6 +56,7 @@ namespace OpenAI.Chat
 
         AssistantChatMessage IJsonModel<AssistantChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (AssistantChatMessage)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -141,6 +143,7 @@ namespace OpenAI.Chat
                     outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantChatMessage(
@@ -156,13 +159,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support writing '{options.Format}' format.");
             }
@@ -170,6 +174,7 @@ namespace OpenAI.Chat
 
         AssistantChatMessage IPersistableModel<AssistantChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (AssistantChatMessage)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -186,21 +191,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<AssistantChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(AssistantChatMessage assistantChatMessage)
-        {
-            if (assistantChatMessage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(assistantChatMessage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AssistantChatMessage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistantChatMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -17,7 +17,7 @@ namespace OpenAI.Assistants
             MessageId = messageId;
         }
 
-        internal MessageDeletionResult(bool deleted, string messageId, InternalDeleteMessageResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal MessageDeletionResult(bool deleted, string messageId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             MessageId = messageId;

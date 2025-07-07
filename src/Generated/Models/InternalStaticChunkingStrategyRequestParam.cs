@@ -8,20 +8,20 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalStaticChunkingStrategyRequestParam : InternalFileChunkingStrategyRequestParam
+    internal partial class InternalStaticChunkingStrategyRequestParam : InternalChunkingStrategyRequestParam
     {
-        public InternalStaticChunkingStrategyRequestParam(InternalStaticChunkingStrategyDetails @static) : base("static")
+        internal InternalStaticChunkingStrategyRequestParam(InternalStaticChunkingStrategy @static) : base(InternalChunkingStrategyRequestParamType.Static)
         {
             Argument.AssertNotNull(@static, nameof(@static));
 
             Static = @static;
         }
 
-        internal InternalStaticChunkingStrategyRequestParam(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalStaticChunkingStrategyDetails @static) : base(@type, additionalBinaryDataProperties)
+        internal InternalStaticChunkingStrategyRequestParam(InternalChunkingStrategyRequestParamType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalStaticChunkingStrategy @static) : base(kind, additionalBinaryDataProperties)
         {
             Static = @static;
         }
 
-        public InternalStaticChunkingStrategyDetails Static { get; }
+        internal InternalStaticChunkingStrategy Static { get; }
     }
 }

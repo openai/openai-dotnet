@@ -1,7 +1,10 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OpenAI.VectorStores;
 
@@ -15,7 +18,7 @@ public partial class VectorStoreFileAssociation
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `vector_store.file`. </summary>
     [CodeGenMember("Object")]
-    internal InternalVectorStoreFileObjectObject Object { get; } = InternalVectorStoreFileObjectObject.VectorStoreFile;
+    internal string Object { get; } = "vector_store.file";
 
     /// <summary>
     /// The ID of the file that is associated with the vector store.
@@ -32,8 +35,15 @@ public partial class VectorStoreFileAssociation
 
     // CUSTOM: Changed type.
     [CodeGenMember("Attributes")]
-    public IDictionary<string, BinaryData> Attributes { get; } = new ChangeTrackingDictionary<string, BinaryData>();
+    public IDictionary<string, BinaryData> Attributes { get; }
 
     [CodeGenMember("ChunkingStrategy")]
     public FileChunkingStrategy ChunkingStrategy { get; }
+
+    internal static VectorStoreFileAssociation FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeVectorStoreFileAssociation(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

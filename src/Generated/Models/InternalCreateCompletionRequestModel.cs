@@ -22,11 +22,11 @@ namespace OpenAI.LegacyCompletions
             _value = value;
         }
 
-        public static InternalCreateCompletionRequestModel Gpt35TurboInstruct { get; } = new InternalCreateCompletionRequestModel(Gpt35TurboInstructValue);
+        internal static InternalCreateCompletionRequestModel Gpt35TurboInstruct { get; } = new InternalCreateCompletionRequestModel(Gpt35TurboInstructValue);
 
-        public static InternalCreateCompletionRequestModel Davinci002 { get; } = new InternalCreateCompletionRequestModel(Davinci002Value);
+        internal static InternalCreateCompletionRequestModel Davinci002 { get; } = new InternalCreateCompletionRequestModel(Davinci002Value);
 
-        public static InternalCreateCompletionRequestModel Babbage002 { get; } = new InternalCreateCompletionRequestModel(Babbage002Value);
+        internal static InternalCreateCompletionRequestModel Babbage002 { get; } = new InternalCreateCompletionRequestModel(Babbage002Value);
 
         public static bool operator ==(InternalCreateCompletionRequestModel left, InternalCreateCompletionRequestModel right) => left.Equals(right);
 

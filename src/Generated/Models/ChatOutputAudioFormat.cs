@@ -12,6 +12,7 @@ namespace OpenAI.Chat
     {
         private readonly string _value;
         private const string WavValue = "wav";
+        private const string AacValue = "aac";
         private const string Mp3Value = "mp3";
         private const string FlacValue = "flac";
         private const string OpusValue = "opus";
@@ -25,6 +26,8 @@ namespace OpenAI.Chat
         }
 
         public static ChatOutputAudioFormat Wav { get; } = new ChatOutputAudioFormat(WavValue);
+
+        public static ChatOutputAudioFormat Aac { get; } = new ChatOutputAudioFormat(AacValue);
 
         public static ChatOutputAudioFormat Mp3 { get; } = new ChatOutputAudioFormat(Mp3Value);
 

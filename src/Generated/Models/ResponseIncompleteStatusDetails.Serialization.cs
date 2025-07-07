@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseIncompleteStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,6 +33,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("reason"u8);
                 writer.WriteStringValue(Reason.Value.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -55,6 +57,7 @@ namespace OpenAI.Responses
 
         ResponseIncompleteStatusDetails IJsonModel<ResponseIncompleteStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseIncompleteStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseIncompleteStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -85,6 +88,7 @@ namespace OpenAI.Responses
                     reason = new ResponseIncompleteStatusReason(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties);
@@ -92,13 +96,14 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<ResponseIncompleteStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseIncompleteStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseIncompleteStatusDetails)} does not support writing '{options.Format}' format.");
             }
@@ -106,6 +111,7 @@ namespace OpenAI.Responses
 
         ResponseIncompleteStatusDetails IPersistableModel<ResponseIncompleteStatusDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseIncompleteStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseIncompleteStatusDetails>)this).GetFormatFromOptions(options) : options.Format;
@@ -122,21 +128,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseIncompleteStatusDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ResponseIncompleteStatusDetails responseIncompleteStatusDetails)
-        {
-            if (responseIncompleteStatusDetails == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(responseIncompleteStatusDetails, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ResponseIncompleteStatusDetails(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeResponseIncompleteStatusDetails(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

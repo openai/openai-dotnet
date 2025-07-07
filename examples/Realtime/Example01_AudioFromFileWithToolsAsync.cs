@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using OpenAI.Images;
-using OpenAI.RealtimeConversation;
+using OpenAI.Realtime;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -17,10 +17,10 @@ public partial class RealtimeExamples
     [Test]
     public async Task Example01_AudioFromFileWithToolsAsync()
     {
-        RealtimeConversationClient client = new(
-            model: "gpt-4o-realtime-preview",
+        RealtimeClient client = new(
             credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
-        using RealtimeConversationSession session = await client.StartConversationSessionAsync();
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: "gpt-4o-realtime-preview");
 
         // Session options control connection-wide behavior shared across all conversations,
         // including audio input format and voice activity detection settings.
@@ -31,8 +31,8 @@ public partial class RealtimeExamples
                 + "Prefer to call tools whenever applicable.",
             Voice = ConversationVoice.Alloy,
             Tools = { CreateSampleWeatherTool() },
-            InputAudioFormat = ConversationAudioFormat.Pcm16,
-            OutputAudioFormat = ConversationAudioFormat.Pcm16,
+            InputAudioFormat = RealtimeAudioFormat.Pcm16,
+            OutputAudioFormat = RealtimeAudioFormat.Pcm16,
             // Input transcription options must be provided to enable transcribed feedback for input audio
             InputTranscriptionOptions = new()
             {
@@ -40,12 +40,12 @@ public partial class RealtimeExamples
             },
         };
 
-        await session.ConfigureSessionAsync(sessionOptions);
+        await session.ConfigureConversationSessionAsync(sessionOptions);
 
         // Conversation history or text input are provided by adding messages to the conversation.
         // Adding a message will not automatically begin a response turn.
         await session.AddItemAsync(
-            ConversationItem.CreateUserMessage(["I'm trying to decide what to wear on my trip."]));
+            RealtimeItem.CreateUserMessage(["I'm trying to decide what to wear on my trip."]));
 
         string inputAudioPath = FindFile("Assets\\realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using Stream inputAudioStream = File.OpenRead(inputAudioPath);
@@ -53,7 +53,7 @@ public partial class RealtimeExamples
 
         Dictionary<string, Stream> outputAudioStreamsById = [];
 
-        await foreach (ConversationUpdate update in session.ReceiveUpdatesAsync())
+        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync())
         {
             if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
             {
@@ -61,13 +61,13 @@ public partial class RealtimeExamples
                 Console.WriteLine();
             }
 
-            if (update is ConversationInputSpeechStartedUpdate speechStartedUpdate)
+            if (update is InputAudioSpeechStartedUpdate speechStartedUpdate)
             {
                 Console.WriteLine(
                     $"  -- Voice activity detection started at {speechStartedUpdate.AudioStartTime}");
             }
 
-            if (update is ConversationInputSpeechFinishedUpdate speechFinishedUpdate)
+            if (update is InputAudioSpeechFinishedUpdate speechFinishedUpdate)
             {
                 Console.WriteLine(
                     $"  -- Voice activity detection ended at {speechFinishedUpdate.AudioEndTime}");
@@ -75,7 +75,7 @@ public partial class RealtimeExamples
 
             // Item started updates notify that the model generation process will insert a new item into
             // the conversation and begin streaming its content via content updates.
-            if (update is ConversationItemStreamingStartedUpdate itemStreamingStartedUpdate)
+            if (update is OutputStreamingStartedUpdate itemStreamingStartedUpdate)
             {
                 Console.WriteLine($"  -- Begin streaming of new item");
                 if (!string.IsNullOrEmpty(itemStreamingStartedUpdate.FunctionName))
@@ -84,7 +84,7 @@ public partial class RealtimeExamples
                 }
             }
 
-            if (update is ConversationItemStreamingPartDeltaUpdate deltaUpdate)
+            if (update is OutputDeltaUpdate deltaUpdate)
             {
                 // With audio output enabled, the audio transcript of the delta update contains an approximation of
                 // the words spoken by the model. Without audio output, the text of the delta update will contain
@@ -108,7 +108,7 @@ public partial class RealtimeExamples
             // Item finished updates arrive when all streamed data for an item has arrived and the
             // accumulated results are available. In the case of function calls, this is the point
             // where all arguments are expected to be present.
-            if (update is ConversationItemStreamingFinishedUpdate itemStreamingFinishedUpdate)
+            if (update is OutputStreamingFinishedUpdate itemStreamingFinishedUpdate)
             {
                 Console.WriteLine();
                 Console.WriteLine($"  -- Item streaming finished, item_id={itemStreamingFinishedUpdate.ItemId}");
@@ -116,7 +116,7 @@ public partial class RealtimeExamples
                 if (itemStreamingFinishedUpdate.FunctionCallId is not null)
                 {
                     Console.WriteLine($"    + Responding to tool invoked by item: {itemStreamingFinishedUpdate.FunctionName}");
-                    ConversationItem functionOutputItem = ConversationItem.CreateFunctionCallOutput(
+                    RealtimeItem functionOutputItem = RealtimeItem.CreateFunctionCallOutput(
                         callId: itemStreamingFinishedUpdate.FunctionCallId,
                         output: "70 degrees Fahrenheit and sunny");
                     await session.AddItemAsync(functionOutputItem);
@@ -132,14 +132,14 @@ public partial class RealtimeExamples
                 }
             }
 
-            if (update is ConversationInputTranscriptionFinishedUpdate transcriptionCompletedUpdate)
+            if (update is InputAudioTranscriptionFinishedUpdate transcriptionCompletedUpdate)
             {
                 Console.WriteLine();
                 Console.WriteLine($"  -- User audio transcript: {transcriptionCompletedUpdate.Transcript}");
                 Console.WriteLine();
             }
 
-            if (update is ConversationResponseFinishedUpdate turnFinishedUpdate)
+            if (update is ResponseFinishedUpdate turnFinishedUpdate)
             {
                 Console.WriteLine($"  -- Model turn generation finished. Status: {turnFinishedUpdate.Status}");
 
@@ -157,7 +157,7 @@ public partial class RealtimeExamples
                 }
             }
 
-            if (update is ConversationErrorUpdate errorUpdate)
+            if (update is RealtimeErrorUpdate errorUpdate)
             {
                 Console.WriteLine();
                 Console.WriteLine($"ERROR: {errorUpdate.Message}");
@@ -212,3 +212,5 @@ public partial class RealtimeExamples
         throw new FileNotFoundException($"File '{fileName}' not found.");
     }
 }
+
+#pragma warning restore OPENAI002

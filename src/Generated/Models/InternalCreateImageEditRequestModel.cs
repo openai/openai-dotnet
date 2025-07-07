@@ -12,6 +12,7 @@ namespace OpenAI.Images
     {
         private readonly string _value;
         private const string DallE2Value = "dall-e-2";
+        private const string GptImage1Value = "gpt-image-1";
 
         public InternalCreateImageEditRequestModel(string value)
         {
@@ -20,7 +21,9 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        public static InternalCreateImageEditRequestModel DallE2 { get; } = new InternalCreateImageEditRequestModel(DallE2Value);
+        internal static InternalCreateImageEditRequestModel DallE2 { get; } = new InternalCreateImageEditRequestModel(DallE2Value);
+
+        internal static InternalCreateImageEditRequestModel GptImage1 { get; } = new InternalCreateImageEditRequestModel(GptImage1Value);
 
         public static bool operator ==(InternalCreateImageEditRequestModel left, InternalCreateImageEditRequestModel right) => left.Equals(right);
 

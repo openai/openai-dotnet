@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalListPaginatedFineTuningJobsResponse : IJsonModel<InternalListPaginatedFineTuningJobsResponse>
     {
-        internal InternalListPaginatedFineTuningJobsResponse()
+        internal InternalListPaginatedFineTuningJobsResponse() : this(null, default, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListPaginatedFineTuningJobsResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,7 +36,7 @@ namespace OpenAI.FineTuning
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (FineTuningJob item in Data)
+                foreach (InternalFineTuningJob item in Data)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -49,8 +50,9 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.FineTuning
 
         InternalListPaginatedFineTuningJobsResponse IJsonModel<InternalListPaginatedFineTuningJobsResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalListPaginatedFineTuningJobsResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListPaginatedFineTuningJobsResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -91,18 +94,18 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IList<FineTuningJob> data = default;
+            IList<InternalFineTuningJob> data = default;
             bool hasMore = default;
-            InternalListPaginatedFineTuningJobsResponseObject @object = default;
+            string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("data"u8))
                 {
-                    List<FineTuningJob> array = new List<FineTuningJob>();
+                    List<InternalFineTuningJob> array = new List<InternalFineTuningJob>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(FineTuningJob.DeserializeFineTuningJob(item, options));
+                        array.Add(InternalFineTuningJob.DeserializeInternalFineTuningJob(item, options));
                     }
                     data = array;
                     continue;
@@ -114,9 +117,10 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalListPaginatedFineTuningJobsResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalListPaginatedFineTuningJobsResponse(data, hasMore, @object, additionalBinaryDataProperties);
@@ -124,13 +128,14 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<InternalListPaginatedFineTuningJobsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListPaginatedFineTuningJobsResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalListPaginatedFineTuningJobsResponse)} does not support writing '{options.Format}' format.");
             }
@@ -138,6 +143,7 @@ namespace OpenAI.FineTuning
 
         InternalListPaginatedFineTuningJobsResponse IPersistableModel<InternalListPaginatedFineTuningJobsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalListPaginatedFineTuningJobsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListPaginatedFineTuningJobsResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -154,21 +160,5 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<InternalListPaginatedFineTuningJobsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalListPaginatedFineTuningJobsResponse internalListPaginatedFineTuningJobsResponse)
-        {
-            if (internalListPaginatedFineTuningJobsResponse == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalListPaginatedFineTuningJobsResponse, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalListPaginatedFineTuningJobsResponse(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalListPaginatedFineTuningJobsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

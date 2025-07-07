@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
@@ -11,8 +12,9 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal SpeechGenerationOptions(GeneratedSpeechFormat? responseFormat, InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, float? speedRatio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal SpeechGenerationOptions(string instructions, GeneratedSpeechFormat? responseFormat, InternalCreateSpeechRequestModel model, string input, GeneratedSpeechVoice voice, float? speedRatio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Instructions = instructions;
             ResponseFormat = responseFormat;
             Model = model;
             Input = input;
@@ -20,6 +22,9 @@ namespace OpenAI.Audio
             SpeedRatio = speedRatio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        [Experimental("OPENAI001")]
+        public string Instructions { get; set; }
 
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
 

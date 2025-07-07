@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseStatusDetailsError
     {
@@ -15,14 +15,14 @@ namespace OpenAI.RealtimeConversation
         {
         }
 
-        internal InternalRealtimeResponseStatusDetailsError(string @type, string code, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponseStatusDetailsError(string kind, string code, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Code = code;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Type { get; }
+        public string Kind { get; }
 
         public string Code { get; }
 

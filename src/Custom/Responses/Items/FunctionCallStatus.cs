@@ -1,7 +1,12 @@
-﻿namespace OpenAI.Responses;
+﻿using System.Diagnostics.CodeAnalysis;
 
-// CUSTOM: Renamed.
-[CodeGenType("ResponsesFunctionCallItemStatus")]
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("FunctionToolCallItemResourceStatus")]
 public enum FunctionCallStatus
 {
     InProgress,

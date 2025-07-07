@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Files;
 
 [CodeGenType("OpenAIFilePurpose")]
@@ -17,7 +19,9 @@ public enum FilePurpose
 
     Vision,
 
+    [Experimental("OPENAI001")]
     UserData,
 
+    [Experimental("OPENAI001")]
     Evaluations,
 }

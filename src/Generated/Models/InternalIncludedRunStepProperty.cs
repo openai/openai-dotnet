@@ -20,7 +20,7 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalIncludedRunStepProperty FileSearchResultContent { get; } = new InternalIncludedRunStepProperty(FileSearchResultContentValue);
+        internal static InternalIncludedRunStepProperty FileSearchResultContent { get; } = new InternalIncludedRunStepProperty(FileSearchResultContentValue);
 
         public static bool operator ==(InternalIncludedRunStepProperty left, InternalIncludedRunStepProperty right) => left.Equals(right);
 

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonSchema : IJsonModel<InternalResponsesTextFormatJsonSchema>
     {
-        internal InternalResponsesTextFormatJsonSchema()
+        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, null, null, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,10 +33,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            {
+                writer.WritePropertyName("description"u8);
+                writer.WriteStringValue(Description);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
+            }
+            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            {
+                writer.WritePropertyName("strict"u8);
+                writer.WriteBooleanValue(Strict.Value);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
@@ -49,20 +60,11 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
-            {
-                writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(Description);
-            }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
-            {
-                writer.WritePropertyName("strict"u8);
-                writer.WriteBooleanValue(Strict.Value);
-            }
         }
 
         InternalResponsesTextFormatJsonSchema IJsonModel<InternalResponsesTextFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesTextFormatJsonSchema)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseTextFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,10 +84,10 @@ namespace OpenAI.Responses
             }
             InternalResponsesTextFormatType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string name = default;
-            BinaryData schema = default;
             string description = default;
+            string name = default;
             bool? strict = default;
+            BinaryData schema = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -93,19 +95,14 @@ namespace OpenAI.Responses
                     internalType = new InternalResponsesTextFormatType(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("name"u8))
-                {
-                    name = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("schema"u8))
-                {
-                    schema = BinaryData.FromString(prop.Value.GetRawText());
-                    continue;
-                }
                 if (prop.NameEquals("description"u8))
                 {
                     description = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("name"u8))
+                {
+                    name = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))
@@ -118,26 +115,33 @@ namespace OpenAI.Responses
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("schema"u8))
+                {
+                    schema = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalResponsesTextFormatJsonSchema(
                 internalType,
                 additionalBinaryDataProperties,
-                name,
-                schema,
                 description,
-                strict);
+                name,
+                strict,
+                schema);
         }
 
         BinaryData IPersistableModel<InternalResponsesTextFormatJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonSchema)} does not support writing '{options.Format}' format.");
             }
@@ -145,6 +149,7 @@ namespace OpenAI.Responses
 
         InternalResponsesTextFormatJsonSchema IPersistableModel<InternalResponsesTextFormatJsonSchema>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponsesTextFormatJsonSchema)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseTextFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesTextFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
@@ -161,21 +166,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalResponsesTextFormatJsonSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalResponsesTextFormatJsonSchema internalResponsesTextFormatJsonSchema)
-        {
-            if (internalResponsesTextFormatJsonSchema == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalResponsesTextFormatJsonSchema, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalResponsesTextFormatJsonSchema(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponsesTextFormatJsonSchema(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Models
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIModel>)this).GetFormatFromOptions(options) : options.Format;
@@ -44,13 +45,14 @@ namespace OpenAI.Models
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
             {
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.Models
 
         OpenAIModel IJsonModel<OpenAIModel>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual OpenAIModel JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIModel>)this).GetFormatFromOptions(options) : options.Format;
@@ -93,7 +96,7 @@ namespace OpenAI.Models
             }
             string id = default;
             string ownedBy = default;
-            InternalModelObject @object = default;
+            string @object = default;
             DateTimeOffset createdAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -110,7 +113,7 @@ namespace OpenAI.Models
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalModelObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created"u8))
@@ -118,6 +121,7 @@ namespace OpenAI.Models
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new OpenAIModel(id, ownedBy, @object, createdAt, additionalBinaryDataProperties);
@@ -125,13 +129,14 @@ namespace OpenAI.Models
 
         BinaryData IPersistableModel<OpenAIModel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIModel>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(OpenAIModel)} does not support writing '{options.Format}' format.");
             }
@@ -139,6 +144,7 @@ namespace OpenAI.Models
 
         OpenAIModel IPersistableModel<OpenAIModel>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual OpenAIModel PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIModel>)this).GetFormatFromOptions(options) : options.Format;
@@ -155,21 +161,5 @@ namespace OpenAI.Models
         }
 
         string IPersistableModel<OpenAIModel>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(OpenAIModel openAIModel)
-        {
-            if (openAIModel == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(openAIModel, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator OpenAIModel(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeOpenAIModel(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

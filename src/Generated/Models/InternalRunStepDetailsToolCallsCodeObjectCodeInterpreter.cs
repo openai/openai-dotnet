@@ -20,8 +20,9 @@ namespace OpenAI.Assistants
 
         internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(string input, IReadOnlyList<RunStepCodeInterpreterOutput> outputs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Input = input;
-            Outputs = outputs;
+            Outputs = outputs ?? new ChangeTrackingList<RunStepCodeInterpreterOutput>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

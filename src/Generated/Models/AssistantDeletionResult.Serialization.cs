@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -44,8 +45,9 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -69,6 +71,7 @@ namespace OpenAI.Assistants
 
         AssistantDeletionResult IJsonModel<AssistantDeletionResult>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AssistantDeletionResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -88,7 +91,7 @@ namespace OpenAI.Assistants
             }
             bool deleted = default;
             string assistantId = default;
-            InternalDeleteAssistantResponseObject @object = default;
+            string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -104,9 +107,10 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalDeleteAssistantResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantDeletionResult(deleted, assistantId, @object, additionalBinaryDataProperties);
@@ -114,13 +118,14 @@ namespace OpenAI.Assistants
 
         BinaryData IPersistableModel<AssistantDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AssistantDeletionResult)} does not support writing '{options.Format}' format.");
             }
@@ -128,6 +133,7 @@ namespace OpenAI.Assistants
 
         AssistantDeletionResult IPersistableModel<AssistantDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AssistantDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AssistantDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -144,21 +150,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<AssistantDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(AssistantDeletionResult assistantDeletionResult)
-        {
-            if (assistantDeletionResult == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(assistantDeletionResult, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AssistantDeletionResult(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAssistantDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

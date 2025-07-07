@@ -71,7 +71,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
 
         ClientResult result = await client.GetFileAssociationAsync(token.VectorStoreId, token.FileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
 
         return client.CreateAddFileToVectorStoreOperation(ClientResult.FromValue(value, response));
     }
@@ -96,7 +96,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
 
         ClientResult result = client.GetFileAssociation(token.VectorStoreId, token.FileId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
 
         return client.CreateAddFileToVectorStoreOperation(ClientResult.FromValue(value, response));
     }
@@ -107,7 +107,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
         ClientResult result = await GetFileAssociationAsync(options).ConfigureAwait(false);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -120,7 +120,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
         ClientResult result = GetFileAssociation(options);
 
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
 
         ApplyUpdate(response, value);
 
@@ -167,7 +167,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
     {
         ClientResult result = await GetFileAssociationAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 
@@ -181,7 +181,7 @@ public partial class AddFileToVectorStoreOperation : OperationResult
     {
         ClientResult result = GetFileAssociation(cancellationToken.ToRequestOptions());
         PipelineResponse response = result.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFileAssociation value = VectorStoreFileAssociation.FromClientResult(result);
         return ClientResult.FromValue(value, response);
     }
 }

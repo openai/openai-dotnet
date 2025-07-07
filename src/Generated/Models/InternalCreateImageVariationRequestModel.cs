@@ -20,7 +20,7 @@ namespace OpenAI.Images
             _value = value;
         }
 
-        public static InternalCreateImageVariationRequestModel DallE2 { get; } = new InternalCreateImageVariationRequestModel(DallE2Value);
+        internal static InternalCreateImageVariationRequestModel DallE2 { get; } = new InternalCreateImageVariationRequestModel(DallE2Value);
 
         public static bool operator ==(InternalCreateImageVariationRequestModel left, InternalCreateImageVariationRequestModel right) => left.Equals(right);
 

@@ -9,12 +9,12 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsFunctionObject(int index) : base("function")
+        internal InternalRunStepDeltaStepDetailsToolCallsFunctionObject(int index) : base(RunStepToolCallKind.Function)
         {
             Index = index;
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsFunctionObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction function) : base(@type, additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetailsToolCallsFunctionObject(RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction function) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Id = id;
@@ -25,6 +25,6 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction Function { get; }
+        internal InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction Function { get; }
     }
 }

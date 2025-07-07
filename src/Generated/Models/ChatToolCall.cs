@@ -4,12 +4,23 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class ChatToolCall
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal ChatToolCall(string id, InternalChatCompletionMessageToolCallFunction function, ChatToolCallKind kind)
+        {
+            Argument.AssertNotNull(id, nameof(id));
+            Argument.AssertNotNull(function, nameof(function));
+
+            Id = id;
+            Function = function;
+            Kind = kind;
+        }
 
         internal ChatToolCall(string id, InternalChatCompletionMessageToolCallFunction function, ChatToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {

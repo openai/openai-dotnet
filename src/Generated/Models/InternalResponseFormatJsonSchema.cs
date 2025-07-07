@@ -8,20 +8,20 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatJsonSchema : InternalOmniTypedResponseFormat
+    internal partial class InternalResponseFormatJsonSchema : InternalResponseFormat
     {
-        public InternalResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base("json_schema")
+        internal InternalResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {
             Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
             JsonSchema = jsonSchema;
         }
 
-        internal InternalResponseFormatJsonSchema(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(@type, additionalBinaryDataProperties)
+        internal InternalResponseFormatJsonSchema(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, additionalBinaryDataProperties)
         {
             JsonSchema = jsonSchema;
         }
 
-        public InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
+        internal InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
     }
 }

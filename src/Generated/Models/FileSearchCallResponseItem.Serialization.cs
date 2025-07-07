@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : IJsonModel<FileSearchCallResponseItem>
     {
-        internal FileSearchCallResponseItem()
+        internal FileSearchCallResponseItem() : this(InternalItemType.FileSearchCall, null, null, null, null, default)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,11 +33,6 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FileSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("queries") != true)
             {
                 writer.WritePropertyName("queries"u8);
@@ -52,27 +48,27 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("results") != true)
+            if (Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
             {
-                if (Optional.IsCollectionDefined(Results))
+                writer.WritePropertyName("results"u8);
+                writer.WriteStartArray();
+                foreach (FileSearchCallResult item in Results)
                 {
-                    writer.WritePropertyName("results"u8);
-                    writer.WriteStartArray();
-                    foreach (FileSearchCallResult item in Results)
-                    {
-                        writer.WriteObjectValue(item, options);
-                    }
-                    writer.WriteEndArray();
+                    writer.WriteObjectValue(item, options);
                 }
-                else
-                {
-                    writer.WriteNull("results"u8);
-                }
+                writer.WriteEndArray();
+            }
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
         FileSearchCallResponseItem IJsonModel<FileSearchCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FileSearchCallResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,27 +86,22 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            FileSearchCallStatus status = default;
             IList<string> queries = default;
             IList<FileSearchCallResult> results = default;
+            FileSearchCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = prop.Value.GetString().ToFileSearchCallStatus();
                     continue;
                 }
                 if (prop.NameEquals("queries"u8))
@@ -134,7 +125,6 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        results = new ChangeTrackingList<FileSearchCallResult>();
                         continue;
                     }
                     List<FileSearchCallResult> array = new List<FileSearchCallResult>();
@@ -145,26 +135,33 @@ namespace OpenAI.Responses
                     results = array;
                     continue;
                 }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToFileSearchCallStatus();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FileSearchCallResponseItem(
-                @type,
+                kind,
                 id,
                 additionalBinaryDataProperties,
-                status,
                 queries,
-                results);
+                results ?? new ChangeTrackingList<FileSearchCallResult>(),
+                status);
         }
 
         BinaryData IPersistableModel<FileSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FileSearchCallResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -172,6 +169,7 @@ namespace OpenAI.Responses
 
         FileSearchCallResponseItem IPersistableModel<FileSearchCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (FileSearchCallResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -188,21 +186,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<FileSearchCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(FileSearchCallResponseItem fileSearchCallResponseItem)
-        {
-            if (fileSearchCallResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(fileSearchCallResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator FileSearchCallResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeFileSearchCallResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

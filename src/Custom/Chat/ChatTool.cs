@@ -25,8 +25,7 @@ public partial class ChatTool
 
         Function = function;
     }
-
-    // CUSTOM: Renamed.
+    // CUSTOM: Public type applied.
     /// <summary> The kind of tool. </summary>
     [CodeGenMember("Type")]
     public ChatToolKind Kind { get; } = ChatToolKind.Function;
@@ -121,16 +120,14 @@ public partial class ChatTool
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
-        InternalFunctionDefinition function = new(functionName)
-        {
-            Description = functionDescription,
-            Parameters = functionParameters,
-            Strict = functionSchemaIsStrict,
-        };
-
         return new(
+            function: new(
+                description: functionDescription,
+                name: functionName,
+                strict: functionSchemaIsStrict,
+                parameters: functionParameters,
+                additionalBinaryDataProperties: null),
             kind: ChatToolKind.Function,
-            function: function,
             additionalBinaryDataProperties: null);
     }
 }

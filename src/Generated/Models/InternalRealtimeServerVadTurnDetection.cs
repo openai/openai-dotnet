@@ -5,20 +5,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerVadTurnDetection : ConversationTurnDetectionOptions
+    internal partial class InternalRealtimeServerVadTurnDetection : TurnDetectionOptions
     {
-        public InternalRealtimeServerVadTurnDetection() : base(ConversationTurnDetectionKind.ServerVoiceActivityDetection)
+        public InternalRealtimeServerVadTurnDetection() : this(TurnDetectionKind.ServerVoiceActivityDetection, default, default, null, default, default, default)
         {
         }
 
-        internal InternalRealtimeServerVadTurnDetection(ConversationTurnDetectionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, float? threshold, TimeSpan? prefixPaddingMs, TimeSpan? silenceDurationMs, bool? createResponse) : base(kind, additionalBinaryDataProperties)
+        internal InternalRealtimeServerVadTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties, float? threshold, TimeSpan? prefixPaddingMs, TimeSpan? silenceDurationMs) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
         {
             Threshold = threshold;
             PrefixPaddingMs = prefixPaddingMs;
             SilenceDurationMs = silenceDurationMs;
-            CreateResponse = createResponse;
         }
 
         public float? Threshold { get; set; }
@@ -26,7 +25,5 @@ namespace OpenAI.RealtimeConversation
         public TimeSpan? PrefixPaddingMs { get; set; }
 
         public TimeSpan? SilenceDurationMs { get; set; }
-
-        public bool? CreateResponse { get; set; }
     }
 }

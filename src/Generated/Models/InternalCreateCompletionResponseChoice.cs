@@ -28,11 +28,11 @@ namespace OpenAI.LegacyCompletions
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalCreateCompletionResponseChoiceFinishReason FinishReason { get; }
+        internal InternalCreateCompletionResponseChoiceFinishReason FinishReason { get; }
 
         public int Index { get; }
 
-        public InternalCreateCompletionResponseChoiceLogprobs Logprobs { get; }
+        internal InternalCreateCompletionResponseChoiceLogprobs Logprobs { get; }
 
         public string Text { get; }
 

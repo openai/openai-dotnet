@@ -9,6 +9,7 @@ namespace OpenAI.Chat;
 /// restrictions for a model-based assistant. Developer messages replace system messages for o1 models and newer.
 /// </summary>
 [CodeGenType("ChatCompletionRequestSystemMessage")]
+[CodeGenVisibility(nameof(SystemChatMessage), CodeGenVisibility.Internal)]
 [CodeGenSuppress("SystemChatMessage", typeof(ChatMessageContent))]
 public partial class SystemChatMessage : ChatMessage
 {
@@ -20,7 +21,7 @@ public partial class SystemChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public SystemChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : base(ChatMessageRole.System, contentParts)
+        : this(new(contentParts), ChatMessageRole.System, null, null)
     { }
 
     /// <summary>
@@ -31,7 +32,7 @@ public partial class SystemChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public SystemChatMessage(params ChatMessageContentPart[] contentParts)
-        : base(ChatMessageRole.System, contentParts)
+        : this(new(contentParts), ChatMessageRole.System, null, null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -41,14 +42,9 @@ public partial class SystemChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public SystemChatMessage(string content)
-        : base(ChatMessageRole.System, content)
+        : this(new([content]), ChatMessageRole.System, null, null)
     {
         Argument.AssertNotNull(content, nameof(content));
-    }
-
-    // CUSTOM: Hide the default constructor.
-    internal SystemChatMessage()
-    {
     }
 
     /// <summary>

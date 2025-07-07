@@ -11,10 +11,18 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal MessageContent(IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        private protected MessageContent(InternalMessageContentType kind)
         {
+            Kind = kind;
+        }
+
+        internal MessageContent(InternalMessageContentType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        internal InternalMessageContentType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -3,17 +3,18 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
     public partial class OpenAIResponse : IJsonModel<OpenAIResponse>
     {
-        internal OpenAIResponse()
+        internal OpenAIResponse() : this(null, default, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, default, null, null, default, null, null, null, null)
         {
         }
 
@@ -24,93 +25,13 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIResponse>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(OpenAIResponse)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
-            {
-                if (Optional.IsDefined(Error))
-                {
-                    writer.WritePropertyName("error"u8);
-                    writer.WriteObjectValue(Error, options);
-                }
-                else
-                {
-                    writer.WriteNull("error"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("instructions") != true)
-            {
-                if (Optional.IsDefined(Instructions))
-                {
-                    writer.WritePropertyName("instructions"u8);
-                    writer.WriteStringValue(Instructions);
-                }
-                else
-                {
-                    writer.WriteNull("instructions"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
-            {
-                if (Optional.IsDefined(PreviousResponseId))
-                {
-                    writer.WritePropertyName("previous_response_id"u8);
-                    writer.WriteStringValue(PreviousResponseId);
-                }
-                else
-                {
-                    writer.WriteNull("previous_response_id"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
-            {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
-            {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ResponseTool item in Tools)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("top_p") != true)
-            {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP);
-            }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
-            {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -135,15 +56,103 @@ namespace OpenAI.Responses
                     writer.WriteNull("metadata"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                if (Optional.IsDefined(Temperature))
+                {
+                    writer.WritePropertyName("temperature"u8);
+                    writer.WriteNumberValue(Temperature.Value);
+                }
+                else
+                {
+                    writer.WriteNull("temperature"u8);
+                }
             }
-            if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(EndUserId);
+                if (Optional.IsDefined(TopP))
+                {
+                    writer.WritePropertyName("top_p"u8);
+                    writer.WriteNumberValue(TopP.Value);
+                }
+                else
+                {
+                    writer.WriteNull("top_p"u8);
+                }
+            }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
+            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
+            {
+                writer.WritePropertyName("previous_response_id"u8);
+                writer.WriteStringValue(PreviousResponseId);
+            }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteBooleanValue(Background.Value);
+            }
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
+            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            {
+                writer.WritePropertyName("tools"u8);
+                writer.WriteStartArray();
+                foreach (ResponseTool item in Tools)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            {
+                writer.WritePropertyName("created_at"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
+            {
+                if (Optional.IsDefined(Error))
+                {
+                    writer.WritePropertyName("error"u8);
+                    writer.WriteObjectValue(Error, options);
+                }
+                else
+                {
+                    writer.WriteNull("error"u8);
+                }
+            }
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("user") != true)
+            {
+                if (Optional.IsDefined(EndUserId))
+                {
+                    writer.WritePropertyName("user"u8);
+                    writer.WriteStringValue(EndUserId);
+                }
+                else
+                {
+                    writer.WriteNull("user"u8);
+                }
             }
             if (Optional.IsDefined(ReasoningOptions) && _additionalBinaryDataProperties?.ContainsKey("reasoning") != true)
             {
@@ -192,11 +201,22 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCallsEnabled);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue(ToolChoice, options);
             }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -220,6 +240,7 @@ namespace OpenAI.Responses
 
         OpenAIResponse IJsonModel<OpenAIResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual OpenAIResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -237,19 +258,19 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            string id = default;
-            DateTimeOffset createdAt = default;
-            ResponseStatus? status = default;
-            ResponseError error = default;
-            string instructions = default;
-            string model = default;
-            string previousResponseId = default;
-            float temperature = default;
-            IList<ResponseTool> tools = default;
-            float topP = default;
-            ResponseTokenUsage usage = default;
             IDictionary<string, string> metadata = default;
-            InternalCreateResponsesResponseObject @object = default;
+            float? temperature = default;
+            float? topP = default;
+            InternalServiceTier? serviceTier = default;
+            string previousResponseId = default;
+            bool? background = default;
+            string instructions = default;
+            IList<ResponseTool> tools = default;
+            string id = default;
+            ResponseStatus? status = default;
+            DateTimeOffset createdAt = default;
+            ResponseError error = default;
+            ResponseTokenUsage usage = default;
             string endUserId = default;
             ResponseReasoningOptions reasoningOptions = default;
             int? maxOutputTokenCount = default;
@@ -259,92 +280,11 @@ namespace OpenAI.Responses
             IList<ResponseItem> outputItems = default;
             bool parallelToolCallsEnabled = default;
             ResponseToolChoice toolChoice = default;
+            string model = default;
+            string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("id"u8))
-                {
-                    id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
-                if (prop.NameEquals("status"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    status = prop.Value.GetString().ToResponseStatus();
-                    continue;
-                }
-                if (prop.NameEquals("error"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        error = null;
-                        continue;
-                    }
-                    error = ResponseError.DeserializeResponseError(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("instructions"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        instructions = null;
-                        continue;
-                    }
-                    instructions = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    model = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("previous_response_id"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        previousResponseId = null;
-                        continue;
-                    }
-                    previousResponseId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("temperature"u8))
-                {
-                    temperature = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("tools"u8))
-                {
-                    List<ResponseTool> array = new List<ResponseTool>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
-                    }
-                    tools = array;
-                    continue;
-                }
-                if (prop.NameEquals("top_p"u8))
-                {
-                    topP = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("usage"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    usage = ResponseTokenUsage.DeserializeResponseTokenUsage(prop.Value, options);
-                    continue;
-                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -367,13 +307,124 @@ namespace OpenAI.Responses
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
+                if (prop.NameEquals("temperature"u8))
                 {
-                    @object = new InternalCreateResponsesResponseObject(prop.Value.GetString());
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        temperature = null;
+                        continue;
+                    }
+                    temperature = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("top_p"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        topP = null;
+                        continue;
+                    }
+                    topP = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new InternalServiceTier(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("previous_response_id"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        previousResponseId = null;
+                        continue;
+                    }
+                    previousResponseId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("instructions"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        instructions = null;
+                        continue;
+                    }
+                    instructions = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("tools"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ResponseTool> array = new List<ResponseTool>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
+                    }
+                    tools = array;
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("status"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    status = prop.Value.GetString().ToResponseStatus();
+                    continue;
+                }
+                if (prop.NameEquals("created_at"u8))
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
+                if (prop.NameEquals("error"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        error = null;
+                        continue;
+                    }
+                    error = ResponseError.DeserializeResponseError(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("usage"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    usage = ResponseTokenUsage.DeserializeResponseTokenUsage(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("user"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        endUserId = null;
+                        continue;
+                    }
                     endUserId = prop.Value.GetString();
                     continue;
                 }
@@ -443,25 +494,40 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tool_choice"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new OpenAIResponse(
-                id,
-                createdAt,
-                status,
-                error,
-                instructions,
-                model,
-                previousResponseId,
-                temperature,
-                tools,
-                topP,
-                usage,
                 metadata,
-                @object,
+                temperature,
+                topP,
+                serviceTier,
+                previousResponseId,
+                background,
+                instructions,
+                tools ?? new ChangeTrackingList<ResponseTool>(),
+                id,
+                status,
+                createdAt,
+                error,
+                usage,
                 endUserId,
                 reasoningOptions,
                 maxOutputTokenCount,
@@ -471,18 +537,21 @@ namespace OpenAI.Responses
                 outputItems,
                 parallelToolCallsEnabled,
                 toolChoice,
+                model,
+                @object,
                 additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<OpenAIResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(OpenAIResponse)} does not support writing '{options.Format}' format.");
             }
@@ -490,6 +559,7 @@ namespace OpenAI.Responses
 
         OpenAIResponse IPersistableModel<OpenAIResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual OpenAIResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -506,21 +576,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<OpenAIResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(OpenAIResponse openAIResponse)
-        {
-            if (openAIResponse == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(openAIResponse, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator OpenAIResponse(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeOpenAIResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

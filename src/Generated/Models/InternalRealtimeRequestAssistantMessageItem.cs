@@ -4,14 +4,16 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestAssistantMessageItem : InternalRealtimeRequestMessageItem
     {
-        internal InternalRealtimeRequestAssistantMessageItem(InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status, IList<ConversationContentPart> content) : base(@type, id, additionalBinaryDataProperties, role, status)
+        internal InternalRealtimeRequestAssistantMessageItem(InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status, IList<ConversationContentPart> content) : base(kind, id, additionalBinaryDataProperties, role, status)
         {
-            Content = content;
+            // Plugin customization: ensure initialization of collections
+            Content = content ?? new ChangeTrackingList<ConversationContentPart>();
         }
     }
 }

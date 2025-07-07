@@ -5,6 +5,7 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("RunStepDetailsToolCallsObjectToolCallsObject")]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RunStepToolCall
 {
     private IReadOnlyList<RunStepCodeInterpreterOutput> _codeInterpreterOutputs;
@@ -22,12 +23,6 @@ public partial class RunStepToolCall
 
         Id = id;
     }
-
-    // CUSTOM:
-    // - Made public.
-    // - Made setter internal.
-    [CodeGenMember("Kind")]
-    public RunStepToolCallKind Kind { get; internal set; }
 
     #region Code Interpreter
 

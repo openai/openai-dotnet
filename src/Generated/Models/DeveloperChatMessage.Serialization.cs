@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class DeveloperChatMessage : IJsonModel<DeveloperChatMessage>
     {
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Chat
 
         DeveloperChatMessage IJsonModel<DeveloperChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (DeveloperChatMessage)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -68,6 +70,7 @@ namespace OpenAI.Chat
                     participantName = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new DeveloperChatMessage(content, role, additionalBinaryDataProperties, participantName);
@@ -75,13 +78,14 @@ namespace OpenAI.Chat
 
         BinaryData IPersistableModel<DeveloperChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(DeveloperChatMessage)} does not support writing '{options.Format}' format.");
             }
@@ -89,6 +93,7 @@ namespace OpenAI.Chat
 
         DeveloperChatMessage IPersistableModel<DeveloperChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (DeveloperChatMessage)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -105,21 +110,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<DeveloperChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(DeveloperChatMessage developerChatMessage)
-        {
-            if (developerChatMessage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(developerChatMessage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator DeveloperChatMessage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeDeveloperChatMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

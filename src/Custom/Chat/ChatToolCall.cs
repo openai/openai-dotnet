@@ -19,7 +19,7 @@ public partial class ChatToolCall
     [CodeGenMember("Function")]
     internal InternalChatCompletionMessageToolCallFunction Function { get; set; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM: Public type applied..
     /// <summary> The kind of tool call. </summary>
     [CodeGenMember("Type")]
     public ChatToolCallKind Kind { get; } = ChatToolCallKind.Function;

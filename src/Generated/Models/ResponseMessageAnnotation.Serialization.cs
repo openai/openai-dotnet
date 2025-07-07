@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownAnnotation))]
     public partial class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>
     {
         internal ResponseMessageAnnotation()
@@ -23,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,6 +37,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.Responses
 
         ResponseMessageAnnotation IJsonModel<ResponseMessageAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -80,25 +84,26 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "file_citation":
-                        return InternalResponsesMessageAnnotationFileCitation.DeserializeInternalResponsesMessageAnnotationFileCitation(element, options);
+                        return InternalAnnotationFileCitation.DeserializeInternalAnnotationFileCitation(element, options);
                     case "url_citation":
-                        return InternalResponsesMessageAnnotationUrlCitation.DeserializeInternalResponsesMessageAnnotationUrlCitation(element, options);
+                        return InternalAnnotationUrlCitation.DeserializeInternalAnnotationUrlCitation(element, options);
                     case "file_path":
-                        return InternalResponsesMessageAnnotationFilePath.DeserializeInternalResponsesMessageAnnotationFilePath(element, options);
+                        return InternalAnnotationFilePath.DeserializeInternalAnnotationFilePath(element, options);
                 }
             }
-            return InternalUnknownResponsesOutputTextAnnotation.DeserializeInternalUnknownResponsesOutputTextAnnotation(element, options);
+            return InternalUnknownAnnotation.DeserializeInternalUnknownAnnotation(element, options);
         }
 
         BinaryData IPersistableModel<ResponseMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseMessageAnnotation)} does not support writing '{options.Format}' format.");
             }
@@ -106,6 +111,7 @@ namespace OpenAI.Responses
 
         ResponseMessageAnnotation IPersistableModel<ResponseMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
@@ -122,21 +128,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ResponseMessageAnnotation responseMessageAnnotation)
-        {
-            if (responseMessageAnnotation == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(responseMessageAnnotation, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ResponseMessageAnnotation(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeResponseMessageAnnotation(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

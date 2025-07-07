@@ -30,8 +30,9 @@ namespace OpenAI.Assistants
             Attachments = attachments.ToList();
         }
 
-        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyDictionary<string, string> metadata, InternalMessageObjectObject @object, MessageRole role, IReadOnlyList<MessageCreationAttachment> attachments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyDictionary<string, string> metadata, string @object, MessageRole role, IReadOnlyList<MessageCreationAttachment> attachments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             CreatedAt = createdAt;
             ThreadId = threadId;
@@ -39,13 +40,13 @@ namespace OpenAI.Assistants
             IncompleteDetails = incompleteDetails;
             CompletedAt = completedAt;
             IncompleteAt = incompleteAt;
-            Content = content;
+            Content = content ?? new ChangeTrackingList<MessageContent>();
             AssistantId = assistantId;
             RunId = runId;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Object = @object;
             Role = role;
-            Attachments = attachments;
+            Attachments = attachments ?? new ChangeTrackingList<MessageCreationAttachment>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

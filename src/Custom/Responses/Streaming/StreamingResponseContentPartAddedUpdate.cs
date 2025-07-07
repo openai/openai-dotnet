@@ -1,6 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponsesResponseStreamEventResponseContentPartAdded")]
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ResponseContentPartAddedEvent")]
 public partial class StreamingResponseContentPartAddedUpdate
 {
     // CUSTOM: Apply generalized content type.

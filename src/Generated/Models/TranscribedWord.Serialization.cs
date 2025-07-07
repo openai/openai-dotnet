@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         private void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,6 +47,7 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("end"u8);
                 writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -69,6 +71,7 @@ namespace OpenAI.Audio
 
         TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         private TranscribedWord JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
@@ -107,6 +110,7 @@ namespace OpenAI.Audio
                     endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties);
@@ -114,13 +118,14 @@ namespace OpenAI.Audio
 
         BinaryData IPersistableModel<TranscribedWord>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         private BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(TranscribedWord)} does not support writing '{options.Format}' format.");
             }
@@ -128,6 +133,7 @@ namespace OpenAI.Audio
 
         TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         private TranscribedWord PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
@@ -144,18 +150,6 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<TranscribedWord>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(TranscribedWord transcribedWord)
-        {
-            return BinaryContent.Create(transcribedWord, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator TranscribedWord(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeTranscribedWord(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
 
         void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<TranscribedWord>)this).Write(writer, options);
 

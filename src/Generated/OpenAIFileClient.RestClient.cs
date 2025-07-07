@@ -14,24 +14,7 @@ namespace OpenAI.Files
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateCreateFileRequest(BinaryContent content, string contentType, RequestOptions options)
-        {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/files", false);
-            request.Uri = uri.ToUri();
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("Content-Type", contentType);
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal virtual PipelineMessage CreateListFilesRequest(string purpose, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFilesRequest(string purpose, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -50,18 +33,19 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveFileRequest(string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateFileRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
             PipelineRequest request = message.Request;
-            request.Method = "GET";
+            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/files/", false);
-            uri.AppendPath(fileId, true);
+            uri.AppendPath("/files", false);
             request.Uri = uri.ToUri();
             request.Headers.Set("Accept", "application/json");
+            request.Headers.Set("Content-Type", contentType);
+            request.Content = content;
             message.Apply(options);
             return message;
         }
@@ -72,6 +56,22 @@ namespace OpenAI.Files
             message.ResponseClassifier = PipelineMessageClassifier200;
             PipelineRequest request = message.Request;
             request.Method = "DELETE";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/files/", false);
+            uri.AppendPath(fileId, true);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateRetrieveFileRequest(string fileId, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/files/", false);

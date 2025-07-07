@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownMessageContentTextObjectAnnotation : InternalMessageContentTextObjectAnnotation
     {
-        internal UnknownMessageContentTextObjectAnnotation(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
+        internal UnknownMessageContentTextObjectAnnotation(InternalMessageContentTextAnnotationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

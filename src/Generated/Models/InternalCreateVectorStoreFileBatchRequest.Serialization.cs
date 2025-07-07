@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalCreateVectorStoreFileBatchRequest : IJsonModel<InternalCreateVectorStoreFileBatchRequest>
     {
-        internal InternalCreateVectorStoreFileBatchRequest()
+        internal InternalCreateVectorStoreFileBatchRequest() : this(null, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -49,20 +50,32 @@ namespace OpenAI.VectorStores
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ChunkingStrategy);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ChunkingStrategy))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
-            if (Optional.IsDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
                 writer.WritePropertyName("attributes"u8);
-                writer.WriteObjectValue(Attributes, options);
+                writer.WriteStartObject();
+                foreach (var item in Attributes)
+                {
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+                writer.WriteEndObject();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -86,6 +99,7 @@ namespace OpenAI.VectorStores
 
         InternalCreateVectorStoreFileBatchRequest IJsonModel<InternalCreateVectorStoreFileBatchRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateVectorStoreFileBatchRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -104,8 +118,8 @@ namespace OpenAI.VectorStores
                 return null;
             }
             IList<string> fileIds = default;
-            BinaryData chunkingStrategy = default;
-            InternalVectorStoreFileAttributes attributes = default;
+            InternalChunkingStrategyRequestParam chunkingStrategy = default;
+            IDictionary<string, BinaryData> attributes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -132,33 +146,46 @@ namespace OpenAI.VectorStores
                     {
                         continue;
                     }
-                    chunkingStrategy = BinaryData.FromString(prop.Value.GetRawText());
+                    chunkingStrategy = InternalChunkingStrategyRequestParam.DeserializeInternalChunkingStrategyRequestParam(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("attributes"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        attributes = null;
                         continue;
                     }
-                    attributes = InternalVectorStoreFileAttributes.DeserializeInternalVectorStoreFileAttributes(prop.Value, options);
+                    Dictionary<string, BinaryData> dictionary = new Dictionary<string, BinaryData>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
+                        }
+                    }
+                    attributes = dictionary;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateVectorStoreFileBatchRequest(fileIds, chunkingStrategy, attributes, additionalBinaryDataProperties);
+            return new InternalCreateVectorStoreFileBatchRequest(fileIds, chunkingStrategy, attributes ?? new ChangeTrackingDictionary<string, BinaryData>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateVectorStoreFileBatchRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileBatchRequest)} does not support writing '{options.Format}' format.");
             }
@@ -166,6 +193,7 @@ namespace OpenAI.VectorStores
 
         InternalCreateVectorStoreFileBatchRequest IPersistableModel<InternalCreateVectorStoreFileBatchRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateVectorStoreFileBatchRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateVectorStoreFileBatchRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -182,21 +210,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<InternalCreateVectorStoreFileBatchRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateVectorStoreFileBatchRequest internalCreateVectorStoreFileBatchRequest)
-        {
-            if (internalCreateVectorStoreFileBatchRequest == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateVectorStoreFileBatchRequest, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateVectorStoreFileBatchRequest(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateVectorStoreFileBatchRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

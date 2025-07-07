@@ -9,7 +9,7 @@ using OpenAI.FineTuning;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
-using OpenAI.RealtimeConversation;
+using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
 using System;
@@ -18,6 +18,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 
 [assembly: LevelOfParallelism(8)]
@@ -31,6 +32,7 @@ internal static class TestHelpers
         Assistants,
         Audio_TTS,
         Audio_Whisper,
+        Audio_Gpt_4o_Mini_Transcribe,
         Batch,
         Chat,
         Embeddings,
@@ -40,43 +42,69 @@ internal static class TestHelpers
         LegacyCompletions,
         Models,
         Moderations,
-        RealtimeConversation,
+        Realtime,
         Responses,
         VectorStores,
         TopLevel,
     }
 
+    public static string GetModelForScenario(TestScenario testScenario) => testScenario switch
+    {
+        TestScenario.Assistants => null,
+        TestScenario.Audio_TTS => "tts-1",
+        TestScenario.Audio_Whisper => "whisper-1",
+        TestScenario.Audio_Gpt_4o_Mini_Transcribe => "gpt-4o-mini-transcribe",
+        TestScenario.Batch => null,
+        TestScenario.Chat => "gpt-4o-mini",
+        TestScenario.Embeddings => "text-embedding-3-small",
+        TestScenario.Files => null,
+        TestScenario.FineTuning => null,
+        TestScenario.Images => "gpt-image-1",
+        TestScenario.Models => null,
+        TestScenario.Moderations => "text-moderation-stable",
+        TestScenario.VectorStores => null,
+        TestScenario.TopLevel => null,
+        TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
+        TestScenario.Responses => "gpt-4o-mini",
+        _ => throw new NotImplementedException(),
+    };
+
     public static OpenAIClient GetTestTopLevelClient() => GetTestClient<OpenAIClient>(TestScenario.TopLevel);
+
+    public static ApiKeyCredential GetTestApiKeyCredential()
+        => new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
     public static T GetTestClient<T>(TestScenario scenario, string overrideModel = null, OpenAIClientOptions options = default)
     {
         options ??= new();
-        ApiKeyCredential credential = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ApiKeyCredential credential = GetTestApiKeyCredential();
         options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+        string model = overrideModel ?? GetModelForScenario(scenario);
         object clientObject = scenario switch
         {
 #pragma warning disable OPENAI001
             TestScenario.Assistants => new AssistantClient(credential, options),
 #pragma warning restore OPENAI001
-            TestScenario.Audio_TTS => new AudioClient(overrideModel ?? "tts-1", credential, options),
-            TestScenario.Audio_Whisper => new AudioClient(overrideModel ?? "whisper-1", credential, options),
+            TestScenario.Audio_TTS => new AudioClient(model, credential, options),
+            TestScenario.Audio_Whisper => new AudioClient(model, credential, options),
+            TestScenario.Audio_Gpt_4o_Mini_Transcribe => new AudioClient(model, credential, options),
             TestScenario.Batch => new BatchClient(credential, options),
-            TestScenario.Chat => new ChatClient(overrideModel ?? "gpt-4o-mini", credential, options),
-            TestScenario.Embeddings => new EmbeddingClient(overrideModel ?? "text-embedding-3-small", credential, options),
+            TestScenario.Chat => new ChatClient(model, credential, options),
+            TestScenario.Embeddings => new EmbeddingClient(model, credential, options),
             TestScenario.Files => new OpenAIFileClient(credential, options),
             TestScenario.FineTuning => new FineTuningClient(credential, options),
-            TestScenario.Images => new ImageClient(overrideModel ?? "dall-e-3", credential, options),
+            TestScenario.Images => new ImageClient(model, credential, options),
             TestScenario.Models => new OpenAIModelClient(credential, options),
-            TestScenario.Moderations => new ModerationClient(overrideModel ?? "text-moderation-stable", credential, options),
+            TestScenario.Moderations => new ModerationClient(model, credential, options),
 #pragma warning disable OPENAI001
             TestScenario.VectorStores => new VectorStoreClient(credential, options),
 #pragma warning restore OPENAI001
             TestScenario.TopLevel => new OpenAIClient(credential, options),
 #pragma warning disable OPENAI002
-            TestScenario.RealtimeConversation => new RealtimeConversationClient(overrideModel ?? "gpt-4o-realtime-preview-2024-10-01", credential, options),
+            TestScenario.Realtime => new RealtimeClient(credential, options),
 #pragma warning restore
 #pragma warning disable OPENAI003
-            TestScenario.Responses => new OpenAIResponseClient(overrideModel ?? "gpt-4o-mini", credential, options),
+            TestScenario.Responses => new OpenAIResponseClient(model, credential, options),
 #pragma warning restore
             _ => throw new NotImplementedException(),
         };
@@ -105,6 +133,7 @@ internal static class TestHelpers
                         stream.Position = 0;
                         using StreamReader reader = new(stream);
                         string requestDump = reader.ReadToEnd();
+                        stream.Position = 0;
                         requestDump = Regex.Replace(requestDump, @"""data"":[\\w\\r\\n]*""[^""]*""", @"""data"":""...""");
                         Console.WriteLine(requestDump);
                     }

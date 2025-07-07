@@ -1,24 +1,29 @@
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
 // CUSTOM:
+// - Added Experimental attribute.
 // - Renamed.
 // - Suppressed constructor in favor of custom default constructor.
-[CodeGenType("CreateResponsesRequest")]
-[CodeGenSuppress(nameof(ResponseCreationOptions), typeof(InternalCreateResponsesRequestModel), typeof(IEnumerable<ResponseItem>))]
+[Experimental("OPENAI001")]
+[CodeGenType("CreateResponse")]
+[CodeGenVisibility(nameof(ResponseCreationOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(ResponseCreationOptions), typeof(IEnumerable<ResponseItem>))]
 public partial class ResponseCreationOptions
 {
     // CUSTOM: Temporarily made internal.
     [CodeGenMember("Include")]
-    internal IList<InternalCreateResponsesRequestIncludable> Include { get; set; }
+    internal IList<InternalIncludable> Include { get; set; }
 
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
     [CodeGenMember("Model")]
-    internal InternalCreateResponsesRequestModel Model { get; set; }
+    internal string Model { get; set; }
 
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
@@ -28,15 +33,6 @@ public partial class ResponseCreationOptions
 
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     internal bool? Stream { get; set; }
-
-    // CUSTOM: Added public default constructor now that there are no required properties.
-    public ResponseCreationOptions()
-    {
-        Input =  new ChangeTrackingList<ResponseItem>();
-        Metadata = new ChangeTrackingDictionary<string, string>();
-        Tools = new ChangeTrackingList<ResponseTool>();
-        Include = new ChangeTrackingList<InternalCreateResponsesRequestIncludable>();
-    }
 
     // CUSTOM: Renamed.
     [CodeGenMember("User")]
@@ -89,4 +85,6 @@ public partial class ResponseCreationOptions
 
         return copiedOptions;
     }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

@@ -24,7 +24,7 @@ public partial class OpenAIModelClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetModelsAsync(RequestOptions options)
     {
-        using PipelineMessage message = CreateListModelsRequest(options);
+        using PipelineMessage message = CreateGetModelsRequest(options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -38,7 +38,7 @@ public partial class OpenAIModelClient
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetModels(RequestOptions options)
     {
-        using PipelineMessage message = CreateListModelsRequest(options);
+        using PipelineMessage message = CreateGetModelsRequest(options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 

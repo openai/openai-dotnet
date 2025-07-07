@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class UnknownRealtimeRequestMessageItem : InternalRealtimeRequestMessageItem
     {
-        internal UnknownRealtimeRequestMessageItem(InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status) : base(@type != default ? @type : "unknown", id, additionalBinaryDataProperties, role != default ? role : "unknown", status)
+        internal UnknownRealtimeRequestMessageItem(InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status) : base(kind != default ? kind : "unknown", id, additionalBinaryDataProperties, role != default ? role : "unknown", status)
         {
         }
     }

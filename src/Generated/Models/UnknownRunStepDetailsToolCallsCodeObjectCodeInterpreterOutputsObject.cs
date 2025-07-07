@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject : RunStepCodeInterpreterOutput
     {
-        internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type ?? "unknown", additionalBinaryDataProperties)
+        internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(InternalRunStepDetailsCodeInterpreterOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

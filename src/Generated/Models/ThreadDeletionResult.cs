@@ -17,7 +17,7 @@ namespace OpenAI.Assistants
             ThreadId = threadId;
         }
 
-        internal ThreadDeletionResult(bool deleted, string threadId, InternalDeleteThreadResponseObject @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadDeletionResult(bool deleted, string threadId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Deleted = deleted;
             ThreadId = threadId;

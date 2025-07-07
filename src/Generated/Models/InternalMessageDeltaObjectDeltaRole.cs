@@ -21,9 +21,9 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalMessageDeltaObjectDeltaRole User { get; } = new InternalMessageDeltaObjectDeltaRole(UserValue);
+        internal static InternalMessageDeltaObjectDeltaRole User { get; } = new InternalMessageDeltaObjectDeltaRole(UserValue);
 
-        public static InternalMessageDeltaObjectDeltaRole Assistant { get; } = new InternalMessageDeltaObjectDeltaRole(AssistantValue);
+        internal static InternalMessageDeltaObjectDeltaRole Assistant { get; } = new InternalMessageDeltaObjectDeltaRole(AssistantValue);
 
         public static bool operator ==(InternalMessageDeltaObjectDeltaRole left, InternalMessageDeltaObjectDeltaRole right) => left.Equals(right);
 

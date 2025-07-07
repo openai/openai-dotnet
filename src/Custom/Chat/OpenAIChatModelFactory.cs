@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -44,6 +45,7 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletion"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatCompletion"/> instance for mocking. </returns>
+    [Experimental("OPENAI001")]
     public static ChatCompletion ChatCompletion(
         string id = null,
         ChatFinishReason finishReason = default,
@@ -96,7 +98,7 @@ public static partial class OpenAIChatModelFactory
             model,
             systemFingerprint,
             usage,
-            InternalCreateChatCompletionResponseObject.ChatCompletion,
+            "chat.completion",
             serviceTier: null,
             choices,
             createdAt,
@@ -110,7 +112,8 @@ public static partial class OpenAIChatModelFactory
     /// <param name="endIndex"></param>
     /// <param name="webResourceUri"></param>
     /// <param name="webResourceTitle"></param>
-    /// <returns></returns>
+    /// <returns>A new <see cref="OpenAI.Chat.ChatMessageAnnotation"/> instance for mocking.</returns>
+    [Experimental("OPENAI001")]
     public static ChatMessageAnnotation ChatMessageAnnotation(
         int startIndex = default,
         int endIndex = default,
@@ -204,6 +207,7 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenusageDetails"/> instance for mocking. </returns>
+    [Experimental("OPENAI001")]
     public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int reasoningTokenCount = default, int audioTokenCount = default, int acceptedPredictionTokenCount = default, int rejectedPredictionTokenCount = default)
     {
         return new ChatOutputTokenUsageDetails(
@@ -214,6 +218,7 @@ public static partial class OpenAIChatModelFactory
             additionalBinaryDataProperties: null);
     }
 
+    [Experimental("OPENAI001")]
     public static ChatOutputAudio ChatOutputAudio(BinaryData audioBytes, string id = null, string transcript = null, DateTimeOffset expiresAt = default)
     {
         return new ChatOutputAudio(
@@ -259,6 +264,7 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/> instance for mocking. </returns>
+    [Experimental("OPENAI001")]
     public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(
         string completionId = null,
         ChatMessageContent contentUpdate = null,
@@ -306,7 +312,7 @@ public static partial class OpenAIChatModelFactory
         return new StreamingChatCompletionUpdate(
             model,
             systemFingerprint,
-            InternalCreateChatCompletionStreamResponseObject.ChatCompletionChunk,
+            "chat.completion.chunk",
             completionId,
             serviceTier: null,
             choices,
@@ -333,7 +339,8 @@ public static partial class OpenAIChatModelFactory
     /// <param name="expiresAt"></param>
     /// <param name="transcriptUpdate"></param>
     /// <param name="audioBytesUpdate"></param>
-    /// <returns></returns>
+    /// <returns>A new <see cref="OpenAI.Chat.StreamingChatOutputAudioUpdate"/> instance for mocking.</returns>
+    [Experimental("OPENAI001")]
     public static StreamingChatOutputAudioUpdate StreamingChatOutputAudioUpdate(
         string id = null,
         DateTimeOffset? expiresAt = null,

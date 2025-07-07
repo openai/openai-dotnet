@@ -3,11 +3,12 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Realtime;
 
 namespace OpenAI.Audio
 {
@@ -20,6 +21,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,6 +48,11 @@ namespace OpenAI.Audio
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
+            }
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
+            {
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
@@ -79,6 +86,22 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            {
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
+            }
+            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include[]") != true)
+            {
+                writer.WritePropertyName("include[]"u8);
+                writer.WriteStartArray();
+                foreach (InternalTranscriptionInclude item in InternalInclude)
+                {
+                    writer.WriteStringValue(item.ToString());
+                }
+                writer.WriteEndArray();
+            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -102,6 +125,7 @@ namespace OpenAI.Audio
 
         AudioTranscriptionOptions IJsonModel<AudioTranscriptionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranscriptionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -123,9 +147,12 @@ namespace OpenAI.Audio
             string prompt = default;
             AudioTranscriptionFormat? responseFormat = default;
             float? temperature = default;
+            InternalVadConfig chunkingStrategy = default;
             BinaryData @file = default;
             InternalCreateTranscriptionRequestModel model = default;
             IList<BinaryData> internalTimestampGranularities = default;
+            bool? stream = default;
+            IList<InternalTranscriptionInclude> internalInclude = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -155,6 +182,16 @@ namespace OpenAI.Audio
                         continue;
                     }
                     temperature = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("chunking_strategy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        chunkingStrategy = null;
+                        continue;
+                    }
+                    chunkingStrategy = InternalVadConfig.DeserializeInternalVadConfig(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("file"u8))
@@ -188,6 +225,31 @@ namespace OpenAI.Audio
                     internalTimestampGranularities = array;
                     continue;
                 }
+                if (prop.NameEquals("stream"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        stream = null;
+                        continue;
+                    }
+                    stream = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("include[]"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<InternalTranscriptionInclude> array = new List<InternalTranscriptionInclude>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(new InternalTranscriptionInclude(item.GetString()));
+                    }
+                    internalInclude = array;
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranscriptionOptions(
@@ -195,21 +257,25 @@ namespace OpenAI.Audio
                 prompt,
                 responseFormat,
                 temperature,
+                chunkingStrategy,
                 @file,
                 model,
                 internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>(),
+                stream,
+                internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>(),
                 additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<AudioTranscriptionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support writing '{options.Format}' format.");
             }
@@ -217,6 +283,7 @@ namespace OpenAI.Audio
 
         AudioTranscriptionOptions IPersistableModel<AudioTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual AudioTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -233,21 +300,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<AudioTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(AudioTranscriptionOptions audioTranscriptionOptions)
-        {
-            if (audioTranscriptionOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(audioTranscriptionOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator AudioTranscriptionOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeAudioTranscriptionOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

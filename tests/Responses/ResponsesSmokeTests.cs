@@ -2,6 +2,7 @@
 using OpenAI.Responses;
 using System;
 using System.ClientModel.Primitives;
+using System.Text;
 
 namespace OpenAI.Tests.Responses;
 
@@ -39,7 +40,7 @@ public partial class ResponsesSmokeTests
             ResponseItem.CreateFileSearchCallItem(["query1"], []),
             ResponseItem.CreateFunctionCallItem("call_abcd", "function_name", BinaryData.Empty),
             ResponseItem.CreateFunctionCallOutputItem("call_abcd", "functionOutput"),
-            ResponseItem.CreateReasoningItem(["summary goes here"]),
+            ResponseItem.CreateReasoningItem("summary goes here"),
             ResponseItem.CreateReferenceItem("msg_1234"),
             ResponseItem.CreateAssistantMessageItem("Goodbye!", []),
             ResponseItem.CreateDeveloperMessageItem("Talk like a pirate"),
@@ -137,6 +138,34 @@ public partial class ResponsesSmokeTests
         AssertSerializationRoundTrip<ResponseTextFormat>(
             @"{""type"":""text""}",
             textFormat => Assert.That(textFormat.Kind == ResponseTextFormatKind.Text));
+    }
+
+    [Test]
+    public void StableInputFileContentPartSerialization()
+    {
+        string base64HelloWorld = Convert.ToBase64String(Encoding.UTF8.GetBytes("hello world"));
+
+        static void AssertExpectedFilePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(filePart.InputFileBytesMediaType, Is.EqualTo("text/plain"));
+            Assert.That(filePart.InputFilename, Is.EqualTo("test_content_part.txt"));
+            Assert.That(Convert.FromBase64String(Convert.ToBase64String(filePart.InputFileBytes.ToArray())), Is.EqualTo("hello world"));
+        }
+
+        ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart(
+            BinaryData.FromBytes(Encoding.UTF8.GetBytes("hello world")),
+            "text/plain",
+            "test_content_part.txt");
+
+        AssertExpectedFilePart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedFilePart(deserializedFilePart);
     }
 
     private static void AssertSerializationRoundTrip<T>(

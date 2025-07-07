@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal readonly partial struct InternalRealtimeResponseStatusDetailsType : IEquatable<InternalRealtimeResponseStatusDetailsType>
     {
@@ -23,13 +23,13 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static InternalRealtimeResponseStatusDetailsType Completed { get; } = new InternalRealtimeResponseStatusDetailsType(CompletedValue);
+        internal static InternalRealtimeResponseStatusDetailsType Completed { get; } = new InternalRealtimeResponseStatusDetailsType(CompletedValue);
 
-        public static InternalRealtimeResponseStatusDetailsType Cancelled { get; } = new InternalRealtimeResponseStatusDetailsType(CancelledValue);
+        internal static InternalRealtimeResponseStatusDetailsType Cancelled { get; } = new InternalRealtimeResponseStatusDetailsType(CancelledValue);
 
-        public static InternalRealtimeResponseStatusDetailsType Failed { get; } = new InternalRealtimeResponseStatusDetailsType(FailedValue);
+        internal static InternalRealtimeResponseStatusDetailsType Failed { get; } = new InternalRealtimeResponseStatusDetailsType(FailedValue);
 
-        public static InternalRealtimeResponseStatusDetailsType Incomplete { get; } = new InternalRealtimeResponseStatusDetailsType(IncompleteValue);
+        internal static InternalRealtimeResponseStatusDetailsType Incomplete { get; } = new InternalRealtimeResponseStatusDetailsType(IncompleteValue);
 
         public static bool operator ==(InternalRealtimeResponseStatusDetailsType left, InternalRealtimeResponseStatusDetailsType right) => left.Equals(right);
 

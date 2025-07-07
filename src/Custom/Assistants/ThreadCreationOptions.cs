@@ -1,3 +1,4 @@
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -26,9 +27,7 @@ public partial class ThreadCreationOptions
         get => InitialMessages.Select(initializationMessage => initializationMessage as MessageCreationOptions).ToList();
         private set
         {
-            // Note: this path is exclusively used in a test or deserialization case; here, we'll convert the
-            //          underlying wire-friendly representation into the initialization message abstraction.
-
+            InitialMessages ??= new ChangeTrackingList<ThreadInitializationMessage>();
             InitialMessages.Clear();
             foreach (MessageCreationOptions baseMessageOptions in value)
             {
@@ -49,5 +48,7 @@ public partial class ThreadCreationOptions
     /// }
     /// </code></para>
     /// </remarks>
-    public IList<ThreadInitializationMessage> InitialMessages { get; } = new ChangeTrackingList<ThreadInitializationMessage>();
+    public IList<ThreadInitializationMessage> InitialMessages { get; private set; }
+
+    internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

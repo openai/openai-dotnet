@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
+    [PersistableModelProxy(typeof(UnknownRealtimeContentPart))]
     public partial class ConversationContentPart : IJsonModel<ConversationContentPart>
     {
         internal ConversationContentPart()
@@ -23,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,6 +37,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationContentPart IJsonModel<ConversationContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -94,13 +98,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<ConversationContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationContentPart)} does not support writing '{options.Format}' format.");
             }
@@ -108,6 +113,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationContentPart IPersistableModel<ConversationContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -124,21 +130,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationContentPart conversationContentPart)
-        {
-            if (conversationContentPart == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationContentPart, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationContentPart(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationContentPart(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

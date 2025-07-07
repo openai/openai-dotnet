@@ -19,14 +19,14 @@ namespace OpenAI.Moderations
             Text = text;
         }
 
-        internal InternalCreateModerationRequestInput3(InternalCreateModerationRequestInput3Type @type, string text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateModerationRequestInput3(string kind, string text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Type = @type;
+            Kind = kind;
             Text = text;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalCreateModerationRequestInput3Type Type { get; } = "text";
+        public string Kind { get; } = "text";
 
         public string Text { get; }
 

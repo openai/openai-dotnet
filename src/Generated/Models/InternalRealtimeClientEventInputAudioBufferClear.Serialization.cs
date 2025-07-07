@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventInputAudioBufferClear : IJsonModel<InternalRealtimeClientEventInputAudioBufferClear>
     {
@@ -20,6 +20,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,6 +33,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEventInputAudioBufferClear IJsonModel<InternalRealtimeClientEventInputAudioBufferClear>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeClientEventInputAudioBufferClear)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRealtimeClientEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
@@ -64,6 +66,7 @@ namespace OpenAI.RealtimeConversation
                     eventId = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeClientEventInputAudioBufferClear(kind, eventId, additionalBinaryDataProperties);
@@ -71,13 +74,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeClientEventInputAudioBufferClear)} does not support writing '{options.Format}' format.");
             }
@@ -85,6 +89,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEventInputAudioBufferClear IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeClientEventInputAudioBufferClear)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRealtimeClientEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
@@ -101,21 +106,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeClientEventInputAudioBufferClear>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeClientEventInputAudioBufferClear internalRealtimeClientEventInputAudioBufferClear)
-        {
-            if (internalRealtimeClientEventInputAudioBufferClear == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeClientEventInputAudioBufferClear, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeClientEventInputAudioBufferClear(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeClientEventInputAudioBufferClear(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

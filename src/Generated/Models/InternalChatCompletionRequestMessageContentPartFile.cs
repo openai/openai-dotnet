@@ -8,32 +8,20 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartFile
+    internal partial class InternalChatCompletionRequestMessageContentPartFile : ChatMessageContentPart
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
-
-        public InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileFile @file)
+        internal InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileFile @file)
         {
             Argument.AssertNotNull(@file, nameof(@file));
 
             File = @file;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileType @type, InternalChatCompletionRequestMessageContentPartFileFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionRequestMessageContentPartFile(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartFileFile @file) : base(additionalBinaryDataProperties)
         {
-            Type = @type;
             File = @file;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalChatCompletionRequestMessageContentPartFileType Type { get; } = "file";
-
-        public InternalChatCompletionRequestMessageContentPartFileFile File { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        internal InternalChatCompletionRequestMessageContentPartFileFile File { get; }
     }
 }

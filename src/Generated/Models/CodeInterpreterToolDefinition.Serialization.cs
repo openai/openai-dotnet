@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,14 @@ namespace OpenAI.Assistants
 {
     public partial class CodeInterpreterToolDefinition : IJsonModel<CodeInterpreterToolDefinition>
     {
+        void IJsonModel<CodeInterpreterToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -25,6 +33,7 @@ namespace OpenAI.Assistants
 
         CodeInterpreterToolDefinition IJsonModel<CodeInterpreterToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterToolDefinition)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -42,29 +51,31 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "code_interpreter";
+            InternalAssistantToolDefinitionType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalAssistantToolDefinitionType(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CodeInterpreterToolDefinition(@type, additionalBinaryDataProperties);
+            return new CodeInterpreterToolDefinition(kind, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<CodeInterpreterToolDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterToolDefinition)} does not support writing '{options.Format}' format.");
             }
@@ -72,6 +83,7 @@ namespace OpenAI.Assistants
 
         CodeInterpreterToolDefinition IPersistableModel<CodeInterpreterToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterToolDefinition)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -88,21 +100,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<CodeInterpreterToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(CodeInterpreterToolDefinition codeInterpreterToolDefinition)
-        {
-            if (codeInterpreterToolDefinition == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(codeInterpreterToolDefinition, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator CodeInterpreterToolDefinition(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeCodeInterpreterToolDefinition(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

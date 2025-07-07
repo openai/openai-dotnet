@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -37,11 +38,12 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
-            if (Optional.IsDefined(FileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
+            if (Optional.IsDefined(InternalFileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
             {
                 writer.WritePropertyName("file_data"u8);
-                writer.WriteStringValue(FileData);
+                writer.WriteStringValue(InternalFileData);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -65,6 +67,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionRequestMessageContentPartFileFile IJsonModel<InternalChatCompletionRequestMessageContentPartFileFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionRequestMessageContentPartFileFile JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -84,7 +87,7 @@ namespace OpenAI.Chat
             }
             string filename = default;
             string fileId = default;
-            string fileData = default;
+            string internalFileData = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -100,23 +103,25 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("file_data"u8))
                 {
-                    fileData = prop.Value.GetString();
+                    internalFileData = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileId, fileData, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileId, internalFileData, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartFileFile)} does not support writing '{options.Format}' format.");
             }
@@ -124,6 +129,7 @@ namespace OpenAI.Chat
 
         InternalChatCompletionRequestMessageContentPartFileFile IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalChatCompletionRequestMessageContentPartFileFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>)this).GetFormatFromOptions(options) : options.Format;
@@ -140,21 +146,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalChatCompletionRequestMessageContentPartFileFile internalChatCompletionRequestMessageContentPartFileFile)
-        {
-            if (internalChatCompletionRequestMessageContentPartFileFile == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalChatCompletionRequestMessageContentPartFileFile, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalChatCompletionRequestMessageContentPartFileFile(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionRequestMessageContentPartFileFile(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

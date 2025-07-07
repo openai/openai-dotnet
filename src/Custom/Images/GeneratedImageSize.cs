@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images;
 
@@ -75,4 +76,16 @@ public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSiz
     /// </summary>
     [CodeGenMember("_1024x1792")]
     public static readonly GeneratedImageSize W1792xH1024 = new(1792, 1024);
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("_1024x1536")]
+    public static readonly GeneratedImageSize W1024xH1536 = new(1024, 1536);
+
+    // CUSTOM:
+    // - Added Experimental attribute.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("_1536x1024")]
+    public static readonly GeneratedImageSize W1536xH1024 = new(1536, 1024);
 }

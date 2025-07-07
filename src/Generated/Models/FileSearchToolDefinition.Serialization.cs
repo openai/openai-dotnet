@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,14 @@ namespace OpenAI.Assistants
 {
     public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinition>
     {
+        void IJsonModel<FileSearchToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -21,15 +29,16 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(_fileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
+            if (Optional.IsDefined(FileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
             {
                 writer.WritePropertyName("file_search"u8);
-                writer.WriteObjectValue(_fileSearch, options);
+                writer.WriteObjectValue(FileSearch, options);
             }
         }
 
         FileSearchToolDefinition IJsonModel<FileSearchToolDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FileSearchToolDefinition)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -47,14 +56,14 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "file_search";
+            InternalAssistantToolDefinitionType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalAssistantToolsFileSearchFileSearch fileSearch = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalAssistantToolDefinitionType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_search"u8))
@@ -66,20 +75,22 @@ namespace OpenAI.Assistants
                     fileSearch = InternalAssistantToolsFileSearchFileSearch.DeserializeInternalAssistantToolsFileSearchFileSearch(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new FileSearchToolDefinition(@type, additionalBinaryDataProperties, fileSearch);
+            return new FileSearchToolDefinition(kind, additionalBinaryDataProperties, fileSearch);
         }
 
         BinaryData IPersistableModel<FileSearchToolDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FileSearchToolDefinition)} does not support writing '{options.Format}' format.");
             }
@@ -87,6 +98,7 @@ namespace OpenAI.Assistants
 
         FileSearchToolDefinition IPersistableModel<FileSearchToolDefinition>.Create(BinaryData data, ModelReaderWriterOptions options) => (FileSearchToolDefinition)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchToolDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -103,21 +115,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<FileSearchToolDefinition>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(FileSearchToolDefinition fileSearchToolDefinition)
-        {
-            if (fileSearchToolDefinition == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(fileSearchToolDefinition, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator FileSearchToolDefinition(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeFileSearchToolDefinition(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

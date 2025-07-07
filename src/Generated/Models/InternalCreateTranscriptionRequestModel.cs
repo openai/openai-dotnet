@@ -12,6 +12,8 @@ namespace OpenAI.Audio
     {
         private readonly string _value;
         private const string Whisper1Value = "whisper-1";
+        private const string Gpt4oTranscribeValue = "gpt-4o-transcribe";
+        private const string Gpt4oMiniTranscribeValue = "gpt-4o-mini-transcribe";
 
         public InternalCreateTranscriptionRequestModel(string value)
         {
@@ -20,7 +22,11 @@ namespace OpenAI.Audio
             _value = value;
         }
 
-        public static InternalCreateTranscriptionRequestModel Whisper1 { get; } = new InternalCreateTranscriptionRequestModel(Whisper1Value);
+        internal static InternalCreateTranscriptionRequestModel Whisper1 { get; } = new InternalCreateTranscriptionRequestModel(Whisper1Value);
+
+        internal static InternalCreateTranscriptionRequestModel Gpt4oTranscribe { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oTranscribeValue);
+
+        internal static InternalCreateTranscriptionRequestModel Gpt4oMiniTranscribe { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oMiniTranscribeValue);
 
         public static bool operator ==(InternalCreateTranscriptionRequestModel left, InternalCreateTranscriptionRequestModel right) => left.Equals(right);
 

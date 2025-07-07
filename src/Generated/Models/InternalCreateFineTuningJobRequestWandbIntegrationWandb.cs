@@ -22,9 +22,10 @@ namespace OpenAI.FineTuning
 
         internal InternalCreateFineTuningJobRequestWandbIntegrationWandb(string name, string entity, IList<string> tags, string project, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Name = name;
             Entity = entity;
-            Tags = tags;
+            Tags = tags ?? new ChangeTrackingList<string>();
             Project = project;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

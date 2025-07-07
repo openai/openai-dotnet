@@ -11,6 +11,11 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        internal ChatMessageContentPart(IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;

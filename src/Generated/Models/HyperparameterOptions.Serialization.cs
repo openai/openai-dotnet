@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparameterOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -27,42 +28,22 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(HyperparameterOptions)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(EpochCount) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            {
+                writer.WritePropertyName("n_epochs"u8);
+                writer.WriteObjectValue(EpochCount, options);
+            }
             if (Optional.IsDefined(BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
             {
                 writer.WritePropertyName("batch_size"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(BatchSize);
-#else
-                using (JsonDocument document = JsonDocument.Parse(BatchSize))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(BatchSize, options);
             }
-            if (Optional.IsDefined(LearningRateMultiplier) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
+            if (Optional.IsDefined(LearningRate) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(LearningRateMultiplier);
-#else
-                using (JsonDocument document = JsonDocument.Parse(LearningRateMultiplier))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(LearningRate, options);
             }
-            if (Optional.IsDefined(NEpochs) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
-            {
-                writer.WritePropertyName("n_epochs"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(NEpochs);
-#else
-                using (JsonDocument document = JsonDocument.Parse(NEpochs))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -86,6 +67,7 @@ namespace OpenAI.FineTuning
 
         HyperparameterOptions IJsonModel<HyperparameterOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual HyperparameterOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparameterOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -103,19 +85,28 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            BinaryData batchSize = default;
-            BinaryData learningRateMultiplier = default;
-            BinaryData nEpochs = default;
+            HyperparameterEpochCount epochCount = default;
+            HyperparameterBatchSize batchSize = default;
+            HyperparameterLearningRate learningRate = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("n_epochs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    epochCount = HyperparameterEpochCount.DeserializeHyperparameterEpochCount(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("batch_size"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    batchSize = BinaryData.FromString(prop.Value.GetRawText());
+                    batchSize = HyperparameterBatchSize.DeserializeHyperparameterBatchSize(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("learning_rate_multiplier"u8))
@@ -124,32 +115,25 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
+                    learningRate = HyperparameterLearningRate.DeserializeHyperparameterLearningRate(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("n_epochs"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    nEpochs = BinaryData.FromString(prop.Value.GetRawText());
-                    continue;
-                }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new HyperparameterOptions(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties);
+            return new HyperparameterOptions(epochCount, batchSize, learningRate, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<HyperparameterOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparameterOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(HyperparameterOptions)} does not support writing '{options.Format}' format.");
             }
@@ -157,6 +141,7 @@ namespace OpenAI.FineTuning
 
         HyperparameterOptions IPersistableModel<HyperparameterOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual HyperparameterOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparameterOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -173,21 +158,5 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<HyperparameterOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(HyperparameterOptions hyperparameterOptions)
-        {
-            if (hyperparameterOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(hyperparameterOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator HyperparameterOptions(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeHyperparameterOptions(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

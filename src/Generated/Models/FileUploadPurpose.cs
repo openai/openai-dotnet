@@ -33,8 +33,6 @@ namespace OpenAI.Files
 
         public static FileUploadPurpose Vision { get; } = new FileUploadPurpose(VisionValue);
 
-        public static FileUploadPurpose UserData { get; } = new FileUploadPurpose(UserDataValue);
-
         public static bool operator ==(FileUploadPurpose left, FileUploadPurpose right) => left.Equals(right);
 
         public static bool operator !=(FileUploadPurpose left, FileUploadPurpose right) => !left.Equals(right);

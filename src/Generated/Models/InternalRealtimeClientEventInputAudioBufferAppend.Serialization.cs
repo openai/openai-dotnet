@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventInputAudioBufferAppend : IJsonModel<InternalRealtimeClientEventInputAudioBufferAppend>
     {
-        internal InternalRealtimeClientEventInputAudioBufferAppend()
+        internal InternalRealtimeClientEventInputAudioBufferAppend() : this(InternalRealtimeClientEventType.InputAudioBufferAppend, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,6 +42,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEventInputAudioBufferAppend IJsonModel<InternalRealtimeClientEventInputAudioBufferAppend>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeClientEventInputAudioBufferAppend)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRealtimeClientEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>)this).GetFormatFromOptions(options) : options.Format;
@@ -79,6 +81,7 @@ namespace OpenAI.RealtimeConversation
                     audio = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeClientEventInputAudioBufferAppend(kind, eventId, additionalBinaryDataProperties, audio);
@@ -86,13 +89,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeClientEventInputAudioBufferAppend)} does not support writing '{options.Format}' format.");
             }
@@ -100,6 +104,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeClientEventInputAudioBufferAppend IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeClientEventInputAudioBufferAppend)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalRealtimeClientEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>)this).GetFormatFromOptions(options) : options.Format;
@@ -116,21 +121,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeClientEventInputAudioBufferAppend>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeClientEventInputAudioBufferAppend internalRealtimeClientEventInputAudioBufferAppend)
-        {
-            if (internalRealtimeClientEventInputAudioBufferAppend == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeClientEventInputAudioBufferAppend, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeClientEventInputAudioBufferAppend(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeClientEventInputAudioBufferAppend(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

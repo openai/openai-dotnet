@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 using OpenAI.Chat;
 
 namespace OpenAI.Assistants
@@ -14,13 +15,14 @@ namespace OpenAI.Assistants
 
         internal AssistantCreationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> tools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Name = name;
             Description = description;
             Instructions = instructions;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             Model = model;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
             ResponseFormat = responseFormat;
             NucleusSamplingFactor = nucleusSamplingFactor;

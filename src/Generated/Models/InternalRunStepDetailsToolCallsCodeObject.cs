@@ -9,16 +9,16 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsCodeObject : RunStepToolCall
     {
-        internal InternalRunStepDetailsToolCallsCodeObject(string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(id, RunStepToolCallKind.CodeInterpreter)
+        internal InternalRunStepDetailsToolCallsCodeObject(string id, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(RunStepToolCallKind.CodeInterpreter, id)
         {
             CodeInterpreter = codeInterpreter;
         }
 
-        internal InternalRunStepDetailsToolCallsCodeObject(string id, RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(id, kind, additionalBinaryDataProperties)
+        internal InternalRunStepDetailsToolCallsCodeObject(RunStepToolCallKind kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter codeInterpreter) : base(kind, id, additionalBinaryDataProperties)
         {
             CodeInterpreter = codeInterpreter;
         }
 
-        public InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter CodeInterpreter { get; }
+        internal InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter CodeInterpreter { get; }
     }
 }

@@ -3,12 +3,12 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     [PersistableModelProxy(typeof(UnknownRealtimeToolChoiceObject))]
     internal abstract partial class InternalRealtimeToolChoiceObject : IJsonModel<InternalRealtimeToolChoiceObject>
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeToolChoiceObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,8 +35,9 @@ namespace OpenAI.RealtimeConversation
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -59,6 +61,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeToolChoiceObject IJsonModel<InternalRealtimeToolChoiceObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeToolChoiceObject JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeToolChoiceObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -89,13 +92,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeToolChoiceObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeToolChoiceObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeToolChoiceObject)} does not support writing '{options.Format}' format.");
             }
@@ -103,6 +107,7 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeToolChoiceObject IPersistableModel<InternalRealtimeToolChoiceObject>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalRealtimeToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeToolChoiceObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -119,21 +124,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeToolChoiceObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeToolChoiceObject internalRealtimeToolChoiceObject)
-        {
-            if (internalRealtimeToolChoiceObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeToolChoiceObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeToolChoiceObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeToolChoiceObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

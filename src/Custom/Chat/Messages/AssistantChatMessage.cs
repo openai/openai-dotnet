@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -10,13 +10,9 @@ namespace OpenAI.Chat;
 /// represent chat history or example interactions to guide model behavior.
 /// </summary>
 [CodeGenType("ChatCompletionRequestAssistantMessage")]
+[CodeGenVisibility(nameof(AssistantChatMessage), CodeGenVisibility.Internal)]
 public partial class AssistantChatMessage : ChatMessage
 {
-    // CUSTOM: Made internal.
-    internal AssistantChatMessage()
-    {
-    }
-
     /// <summary>
     /// Creates a new instance of <see cref="AssistantChatMessage"/> using a collection of content items.
     /// For <c>assistant</c> messages, this can be one or more of type <c>text</c> or exactly one of type <c>refusal</c>.
@@ -25,7 +21,7 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public AssistantChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : base(ChatMessageRole.Assistant, contentParts)
+        : this(new ChatMessageContent(contentParts), ChatMessageRole.Assistant, null, null, null, null, null, null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -38,7 +34,7 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public AssistantChatMessage(params ChatMessageContentPart[] contentParts)
-        : base(ChatMessageRole.Assistant, contentParts)
+        : this(new ChatMessageContent(contentParts), ChatMessageRole.Assistant, null, null, null, null, null, null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -49,7 +45,7 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public AssistantChatMessage(string content)
-        : base(ChatMessageRole.Assistant, content)
+        : this(new ChatMessageContent([content]), ChatMessageRole.Assistant, null, null, null, null, null, null)
     {
         Argument.AssertNotNull(content, nameof(content));
     }
@@ -60,7 +56,7 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <param name="toolCalls"> The <c>tool_calls</c> made by the model. </param>
     public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls)
-        : base(ChatMessageRole.Assistant)
+        : this(null, ChatMessageRole.Assistant, null, null, null, null, null, null)
     {
         Argument.AssertNotNullOrEmpty(toolCalls, nameof(toolCalls));
 
@@ -77,11 +73,9 @@ public partial class AssistantChatMessage : ChatMessage
     /// <param name="functionCall"> The <c>function_call</c> made by the model. </param>
     [Obsolete($"This constructor is obsolete. Please use the constructor that takes an IEnumerable<ChatToolCall> parameter instead.")]
     public AssistantChatMessage(ChatFunctionCall functionCall)
-        : base(ChatMessageRole.Assistant)
+        : this(null, ChatMessageRole.Assistant, null, null, null, null, functionCall, null)
     {
         Argument.AssertNotNull(functionCall, nameof(functionCall));
-
-        FunctionCall = functionCall;
     }
 
     /// <summary>
@@ -89,11 +83,11 @@ public partial class AssistantChatMessage : ChatMessage
     /// that included audio with a correlation ID.
     /// </summary>
     /// <param name="outputAudioReference"> The <c>audio</c> reference with an <c>id</c>, produced by the model. </param>
+    [Experimental("OPENAI001")]
     public AssistantChatMessage(ChatOutputAudioReference outputAudioReference)
+        : this(null, ChatMessageRole.Assistant, null, null, null, null, null, outputAudioReference)
     {
         Argument.AssertNotNull(outputAudioReference, nameof(outputAudioReference));
-
-        OutputAudioReference = outputAudioReference;
     }
 
     /// <summary>
@@ -111,7 +105,17 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The <c>role</c> of the provided chat completion response was not <see cref="ChatMessageRole.Assistant"/>.
     /// </exception>
     public AssistantChatMessage(ChatCompletion chatCompletion)
-        : base(ChatMessageRole.Assistant, chatCompletion?.Content)
+        : this(
+              chatCompletion?.Content,
+              ChatMessageRole.Assistant,
+              null,
+              chatCompletion?.Refusal,
+              null,
+              null,
+              chatCompletion?.FunctionCall,
+              outputAudioReference: chatCompletion?.OutputAudio is not null
+                ? new(chatCompletion.OutputAudio.Id)
+                : null)
     {
         Argument.AssertNotNull(chatCompletion, nameof(chatCompletion));
 
@@ -120,12 +124,6 @@ public partial class AssistantChatMessage : ChatMessage
             throw new NotSupportedException($"Cannot instantiate an {nameof(AssistantChatMessage)} from a {nameof(ChatCompletion)} with role: {chatCompletion.Role}.");
         }
 
-        Refusal = chatCompletion.Refusal;
-        FunctionCall = chatCompletion.FunctionCall;
-        if (chatCompletion.OutputAudio is not null)
-        {
-            OutputAudioReference = new(chatCompletion.OutputAudio.Id);
-        }
         foreach (ChatToolCall toolCall in chatCompletion.ToolCalls ?? [])
         {
             ToolCalls.Add(toolCall);
@@ -142,12 +140,15 @@ public partial class AssistantChatMessage : ChatMessage
 
     // CUSTOM: Common initialization for input model collection property.
     [CodeGenMember("ToolCalls")]
-    public IList<ChatToolCall> ToolCalls { get; } = new ChangeTrackingList<ChatToolCall>();
+    public IList<ChatToolCall> ToolCalls { get; }
 
     [Obsolete($"This property is obsolete. Please use {nameof(ToolCalls)} instead.")]
     public ChatFunctionCall FunctionCall { get; set; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM:
+    // - Added Experimental attribute.
+    // - Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("Audio")]
     public ChatOutputAudioReference OutputAudioReference { get; set; }
 }

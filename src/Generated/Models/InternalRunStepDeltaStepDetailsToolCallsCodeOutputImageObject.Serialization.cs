@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>
     {
-        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject()
+        internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject() : this(InternalRunStepDetailsCodeInterpreterOutputType.Image, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Assistants
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -46,6 +47,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepUpdateCodeInterpreterOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -63,7 +65,7 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string @type = "image";
+            InternalRunStepDetailsCodeInterpreterOutputType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int index = default;
             InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage image = default;
@@ -71,7 +73,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalRunStepDetailsCodeInterpreterOutputType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("index"u8))
@@ -88,20 +90,22 @@ namespace OpenAI.Assistants
                     image = InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(@type, additionalBinaryDataProperties, index, image);
+            return new InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(kind, additionalBinaryDataProperties, index, image);
         }
 
         BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject)} does not support writing '{options.Format}' format.");
             }
@@ -109,6 +113,7 @@ namespace OpenAI.Assistants
 
         InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override RunStepUpdateCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>)this).GetFormatFromOptions(options) : options.Format;
@@ -125,21 +130,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject internalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject)
-        {
-            if (internalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

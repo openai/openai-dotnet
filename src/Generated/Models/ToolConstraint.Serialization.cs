@@ -3,8 +3,8 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -16,6 +16,7 @@ namespace OpenAI.Assistants
         {
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
@@ -23,16 +24,17 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(ToolConstraint)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.Value.ToString());
+            }
             if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
                 writer.WritePropertyName("function"u8);
                 writer.WriteObjectValue(Function, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(_objectType);
-            }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -54,6 +56,7 @@ namespace OpenAI.Assistants
             }
         }
 
+        [Experimental("OPENAI001")]
         protected virtual ToolConstraint JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
@@ -65,18 +68,20 @@ namespace OpenAI.Assistants
             return DeserializeToolConstraint(document.RootElement, options);
         }
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ToolConstraint)} does not support writing '{options.Format}' format.");
             }
         }
 
+        [Experimental("OPENAI001")]
         protected virtual ToolConstraint PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ToolConstraint>)this).GetFormatFromOptions(options) : options.Format;
@@ -93,21 +98,5 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<ToolConstraint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ToolConstraint toolConstraint)
-        {
-            if (toolConstraint == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(toolConstraint, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ToolConstraint(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeToolConstraint(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

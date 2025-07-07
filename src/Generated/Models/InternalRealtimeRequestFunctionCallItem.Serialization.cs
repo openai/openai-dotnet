@@ -3,17 +3,17 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeRequestFunctionCallItem : IJsonModel<InternalRealtimeRequestFunctionCallItem>
     {
-        internal InternalRealtimeRequestFunctionCallItem()
+        internal InternalRealtimeRequestFunctionCallItem() : this(InternalRealtimeItemType.FunctionCall, null, null, null, null, null, default)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -56,7 +57,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestFunctionCallItem IJsonModel<InternalRealtimeRequestFunctionCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeRequestFunctionCallItem)JsonModelCreateCore(ref reader, options);
 
-        protected override ConversationItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -73,7 +75,7 @@ namespace OpenAI.RealtimeConversation
             {
                 return null;
             }
-            InternalRealtimeItemType @type = default;
+            InternalRealtimeItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string name = default;
@@ -84,7 +86,7 @@ namespace OpenAI.RealtimeConversation
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalRealtimeItemType(prop.Value.GetString());
+                    kind = new InternalRealtimeItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -116,10 +118,11 @@ namespace OpenAI.RealtimeConversation
                     status = new ConversationItemStatus(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeRequestFunctionCallItem(
-                @type,
+                kind,
                 id,
                 additionalBinaryDataProperties,
                 name,
@@ -130,13 +133,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<InternalRealtimeRequestFunctionCallItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalRealtimeRequestFunctionCallItem)} does not support writing '{options.Format}' format.");
             }
@@ -144,7 +148,8 @@ namespace OpenAI.RealtimeConversation
 
         InternalRealtimeRequestFunctionCallItem IPersistableModel<InternalRealtimeRequestFunctionCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRealtimeRequestFunctionCallItem)PersistableModelCreateCore(data, options);
 
-        protected override ConversationItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeRequestFunctionCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -160,21 +165,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<InternalRealtimeRequestFunctionCallItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalRealtimeRequestFunctionCallItem internalRealtimeRequestFunctionCallItem)
-        {
-            if (internalRealtimeRequestFunctionCallItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalRealtimeRequestFunctionCallItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalRealtimeRequestFunctionCallItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalRealtimeRequestFunctionCallItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

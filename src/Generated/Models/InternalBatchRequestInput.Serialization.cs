@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Batch
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,13 +36,14 @@ namespace OpenAI.Batch
             if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
             {
                 writer.WritePropertyName("method"u8);
-                writer.WriteStringValue(Method.Value.ToString());
+                writer.WriteStringValue(Method);
             }
             if (Optional.IsDefined(Url) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(Url.AbsoluteUri);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -65,6 +67,7 @@ namespace OpenAI.Batch
 
         InternalBatchRequestInput IJsonModel<InternalBatchRequestInput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchRequestInput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -83,7 +86,7 @@ namespace OpenAI.Batch
                 return null;
             }
             string customId = default;
-            InternalBatchRequestInputMethod? @method = default;
+            string @method = default;
             Uri url = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -95,11 +98,7 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("method"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    @method = new InternalBatchRequestInputMethod(prop.Value.GetString());
+                    @method = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("url"u8))
@@ -111,6 +110,7 @@ namespace OpenAI.Batch
                     url = new Uri(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalBatchRequestInput(customId, @method, url, additionalBinaryDataProperties);
@@ -118,13 +118,14 @@ namespace OpenAI.Batch
 
         BinaryData IPersistableModel<InternalBatchRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalBatchRequestInput)} does not support writing '{options.Format}' format.");
             }
@@ -132,6 +133,7 @@ namespace OpenAI.Batch
 
         InternalBatchRequestInput IPersistableModel<InternalBatchRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalBatchRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
@@ -148,21 +150,5 @@ namespace OpenAI.Batch
         }
 
         string IPersistableModel<InternalBatchRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalBatchRequestInput internalBatchRequestInput)
-        {
-            if (internalBatchRequestInput == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalBatchRequestInput, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalBatchRequestInput(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchRequestInput(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

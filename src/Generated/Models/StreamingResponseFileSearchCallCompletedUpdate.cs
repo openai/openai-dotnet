@@ -9,20 +9,20 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFileSearchCallCompletedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseFileSearchCallCompletedUpdate(string itemId, int outputIndex) : base(InternalResponsesResponseStreamEventType.ResponseFileSearchCallCompleted)
+        internal StreamingResponseFileSearchCallCompletedUpdate(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseFileSearchCallCompleted, sequenceNumber)
         {
-            ItemId = itemId;
             OutputIndex = outputIndex;
+            ItemId = itemId;
         }
 
-        internal StreamingResponseFileSearchCallCompletedUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseFileSearchCallCompletedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
-            ItemId = itemId;
             OutputIndex = outputIndex;
+            ItemId = itemId;
         }
-
-        public string ItemId { get; }
 
         public int OutputIndex { get; }
+
+        public string ItemId { get; }
     }
 }

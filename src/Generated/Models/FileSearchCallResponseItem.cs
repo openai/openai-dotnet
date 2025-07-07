@@ -11,25 +11,23 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : ResponseItem
     {
-        public FileSearchCallResponseItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results) : base(InternalResponsesItemType.FileSearchCall)
+        internal FileSearchCallResponseItem(string id, IEnumerable<string> queries, FileSearchCallStatus? status) : base(InternalItemType.FileSearchCall, id)
         {
-            Argument.AssertNotNull(queries, nameof(queries));
-
             Queries = queries.ToList();
-            Results = results?.ToList();
-        }
-
-        internal FileSearchCallResponseItem(InternalResponsesItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FileSearchCallStatus status, IList<string> queries, IList<FileSearchCallResult> results) : base(@type, id, additionalBinaryDataProperties)
-        {
+            Results = new ChangeTrackingList<FileSearchCallResult>();
             Status = status;
-            Queries = queries;
-            Results = results;
         }
 
-        public FileSearchCallStatus Status { get; }
+        internal FileSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> queries, IList<FileSearchCallResult> results, FileSearchCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        {
+            // Plugin customization: ensure initialization of collections
+            Queries = queries ?? new ChangeTrackingList<string>();
+            Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
+            Status = status;
+        }
 
         public IList<string> Queries { get; }
 
-        public IList<FileSearchCallResult> Results { get; set; }
+        public IList<FileSearchCallResult> Results { get; }
     }
 }

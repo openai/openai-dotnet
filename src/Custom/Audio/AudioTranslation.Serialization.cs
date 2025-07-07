@@ -1,6 +1,5 @@
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Audio;
@@ -13,13 +12,7 @@ public partial class AudioTranslation
         if (response?.Headers?.TryGetValue("Content-Type", out string contentType) == true &&
             contentType.StartsWith("text/plain", StringComparison.Ordinal))
         {
-            return new AudioTranslation(
-                task: default,
-                language: null,
-                duration: null,
-                text: response.Content?.ToString(),
-                segments: new ChangeTrackingList<TranscribedSegment>(),
-                additionalBinaryDataProperties: new Dictionary<string, BinaryData>());
+            return new AudioTranslation(null, text: response.Content?.ToString(), null, task: default, null, null);
         }
 
         using var document = JsonDocument.Parse(response.Content);

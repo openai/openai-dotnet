@@ -129,7 +129,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
         OpenAIResponseClient client = GetTestClient("computer-use-preview-2025-03-11");
-        ResponseTool computerTool = ResponseTool.CreateComputerTool(1024, 768, ComputerToolEnvironment.Windows);
+        ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { computerTool },
@@ -200,7 +200,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 Tools =
                 {
                     ResponseTool.CreateWebSearchTool()
-                }
+                },
+                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
             });
 
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
@@ -226,8 +227,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
             Tools =
             {
                 ResponseTool.CreateWebSearchTool(
-                    WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
-                    WebSearchToolContextSize.Low)
+                    WebSearchUserLocation.CreateApproximateLocation(city: "San Francisco"),
+                    WebSearchContextSize.Low)
             }
         };
 
@@ -274,14 +275,12 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 }
             }
         }
-        Assert.Multiple(() =>
-        {
-            Assert.That(gotFinishedSearchItem, Is.True);
-            Assert.That(searchingCount, Is.EqualTo(1));
-            Assert.That(inProgressCount, Is.EqualTo(1));
-            Assert.That(completedCount, Is.EqualTo(1));
-            Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
-        });
+
+        Assert.That(gotFinishedSearchItem, Is.True);
+        Assert.That(searchingCount, Is.EqualTo(1));
+        Assert.That(inProgressCount, Is.EqualTo(1));
+        Assert.That(completedCount, Is.EqualTo(1));
+        Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
     [Test]
@@ -359,6 +358,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
+    [Ignore("Temporarily disabled awaiting org verification.")]
     [Test]
     public async Task ResponsesWithReasoning()
     {
@@ -368,6 +368,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         {
             ReasoningOptions = new()
             {
+                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
             },
             Metadata =
@@ -392,7 +393,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
         ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
         MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
-        Assert.That(reasoningItem.SummaryTextParts, Is.Not.Null);
+        Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
+        Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
     }
@@ -495,6 +497,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(response, Is.Not.Null);
     }
 
+    [Ignore("Temporarily disabled due to service instability.")]
     [Test]
     public async Task ImageInputWorks()
     {
@@ -511,6 +514,53 @@ public partial class ResponsesTests : SyncAsyncTestBase
                         ResponseContentPart.CreateInputImagePart(imageBytes, "image/png", ResponseImageDetailLevel.Low),
                     ]),
             ]);
+
+        Console.WriteLine(response.GetOutputText());
+        Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
+    }
+
+    [Test]
+    public async Task FileInputFromIdWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+
+        OpenAIFile newFileToUse = await fileClient.UploadFileAsync(
+            BinaryData.FromBytes(File.ReadAllBytes(filePath)),
+            "test_favorite_foods.pdf",
+            FileUploadPurpose.UserData);
+                Validate(newFileToUse);
+
+        ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
+            [
+                ResponseContentPart.CreateInputTextPart("Based on this file, what food should I order for whom?"),
+                ResponseContentPart.CreateInputFilePart(newFileToUse.Id),
+            ]);
+
+        OpenAIResponse response = await client.CreateResponseAsync([messageItem]);
+
+        Assert.That(response?.GetOutputText()?.ToLower(), Does.Contain("pizza"));
+    }
+
+    [Test]
+    public async Task FileInputFromBinaryWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+        Stream fileStream = File.OpenRead(filePath);
+        BinaryData fileBytes = await BinaryData.FromStreamAsync(fileStream);
+
+        ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
+            [
+                ResponseContentPart.CreateInputTextPart("Based on this file, what food should I order for whom?"),
+                ResponseContentPart.CreateInputFilePart(fileBytes, "application/pdf", "test_favorite_foods.pdf"),
+            ]);
+
+        OpenAIResponse response = await client.CreateResponseAsync([messageItem]);
+
+        Assert.That(response?.GetOutputText()?.ToLower(), Does.Contain("pizza"));
     }
 
     public enum ResponsesTestInstructionMethod
@@ -699,6 +749,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(turn2Message!.Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(turn2Message.Content, Has.Count.EqualTo(1));
         Assert.That(turn2Message.Content[0].Text, Does.Contain("22"));
+
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(turn2Response.Id))
+        { }
     }
 
     [Test]
@@ -731,14 +784,11 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 "What should I wear for the weather in San Francisco right now?",
                 new ResponseCreationOptions() { Tools = { s_GetWeatherAtLocationTool } }))
         {
-            Console.WriteLine(ModelReaderWriter.Write(update).ToString());
             if (update is StreamingResponseCreatedUpdate responseCreatedUpdate)
             {
-                Console.WriteLine($"response.created: {responseCreatedUpdate.Response.Id}");
             }
             else if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
             {
-                Console.Write(functionCallArgumentsDeltaUpdate.Delta);
             }
         }
     }
@@ -770,6 +820,69 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
     }
 
+    [Test]
+    public async Task CanUseStreamingBackgroundResponses()
+    {
+        OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
+
+        string queuedResponseId = null;
+
+        await foreach (StreamingResponseUpdate update
+            in client.CreateResponseStreamingAsync(
+                "Hello, model!",
+                new ResponseCreationOptions()
+                {
+                    Background = true,
+                }))
+        {
+            if (update is StreamingResponseQueuedUpdate queuedUpdate)
+            {
+                queuedResponseId = queuedUpdate.Response.Id;
+                break;
+            }
+        }
+
+        Assert.That(queuedResponseId, Is.Not.Null.And.Not.Empty);
+
+        OpenAIResponse retrievedResponse = await client.GetResponseAsync(queuedResponseId);
+        Assert.That(retrievedResponse?.Id, Is.EqualTo(queuedResponseId));
+
+        OpenAIResponse finalStreamedResponse = null;
+
+        await foreach (StreamingResponseUpdate update
+            in client.GetResponseStreamingAsync(queuedResponseId, startingAfter: 2))
+        {
+            Assert.That(update.SequenceNumber, Is.GreaterThan(2));
+
+            if (update is StreamingResponseCompletedUpdate completedUpdate)
+            {
+                finalStreamedResponse = completedUpdate.Response;
+            }
+        }
+
+        Assert.That(finalStreamedResponse?.Id, Is.EqualTo(queuedResponseId));
+        Assert.That(finalStreamedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
+    }
+
+    [Test]
+    public async Task CanCancelBackgroundResponses()
+    {
+        OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Hello, model!",
+            new ResponseCreationOptions()
+            {
+                Background = true,
+            });
+        Assert.That(response?.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response?.Status, Is.EqualTo(ResponseStatus.Queued));
+
+        OpenAIResponse cancelledResponse = await client.CancelResponseAsync(response.Id);
+        Assert.That(cancelledResponse.Id, Is.EqualTo(response.Id));
+        Assert.That(cancelledResponse.Status, Is.EqualTo(ResponseStatus.Cancelled));
+    }
+
     private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
     private static readonly ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(
             s_GetWeatherAtLocationToolName,
@@ -791,6 +904,5 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 """),
             false);
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null)
-        => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }

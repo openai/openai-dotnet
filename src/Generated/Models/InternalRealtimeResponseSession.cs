@@ -7,69 +7,72 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseSession
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRealtimeResponseSession(string id, string model, IEnumerable<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, ConversationAudioFormat inputAudioFormat, ConversationAudioFormat outputAudioFormat, ConversationInputTranscriptionOptions inputAudioTranscription, ConversationTurnDetectionOptions turnDetection, BinaryData toolChoice, float temperature, BinaryData maxResponseOutputTokens)
+        internal InternalRealtimeResponseSession(string id, string model, IEnumerable<InternalRealtimeRequestSessionModality> modalities, string instructions, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, IEnumerable<ConversationTool> tools, BinaryData toolChoice, float temperature, ConversationVoice voice, BinaryData maxResponseOutputTokens)
         {
             Id = id;
             Model = model;
             Modalities = modalities.ToList();
             Instructions = instructions;
-            Voice = voice;
             InputAudioFormat = inputAudioFormat;
             OutputAudioFormat = outputAudioFormat;
             InputAudioTranscription = inputAudioTranscription;
             TurnDetection = turnDetection;
-            Tools = new ChangeTrackingList<ConversationTool>();
+            InputAudioNoiseReduction = inputAudioNoiseReduction;
+            Tools = tools.ToList();
             ToolChoice = toolChoice;
             Temperature = temperature;
+            Voice = voice;
             _maxResponseOutputTokens = maxResponseOutputTokens;
         }
 
-        internal InternalRealtimeResponseSession(InternalRealtimeResponseSessionObject @object, string id, string model, IList<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, ConversationAudioFormat inputAudioFormat, ConversationAudioFormat outputAudioFormat, ConversationInputTranscriptionOptions inputAudioTranscription, ConversationTurnDetectionOptions turnDetection, IReadOnlyList<ConversationTool> tools, BinaryData toolChoice, float temperature, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponseSession(string @object, string id, string model, IList<InternalRealtimeRequestSessionModality> modalities, string instructions, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, IList<ConversationTool> tools, BinaryData toolChoice, float temperature, ConversationVoice voice, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Object = @object;
             Id = id;
             Model = model;
-            Modalities = modalities;
+            Modalities = modalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             Instructions = instructions;
-            Voice = voice;
             InputAudioFormat = inputAudioFormat;
             OutputAudioFormat = outputAudioFormat;
             InputAudioTranscription = inputAudioTranscription;
             TurnDetection = turnDetection;
-            Tools = tools;
+            InputAudioNoiseReduction = inputAudioNoiseReduction;
+            Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             ToolChoice = toolChoice;
             Temperature = temperature;
+            Voice = voice;
             _maxResponseOutputTokens = maxResponseOutputTokens;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public InternalRealtimeResponseSessionObject Object { get; } = "realtime.session";
+        public string Object { get; } = "realtime.session";
 
         public string Id { get; }
 
         public string Model { get; }
 
-        public IList<InternalRealtimeRequestSessionModality> Modalities { get; }
+        internal IList<InternalRealtimeRequestSessionModality> Modalities { get; }
 
         public string Instructions { get; }
 
-        public ConversationVoice Voice { get; }
+        public RealtimeAudioFormat InputAudioFormat { get; }
 
-        public ConversationAudioFormat InputAudioFormat { get; }
+        public RealtimeAudioFormat OutputAudioFormat { get; }
 
-        public ConversationAudioFormat OutputAudioFormat { get; }
+        public InputTranscriptionOptions InputAudioTranscription { get; }
 
-        public ConversationInputTranscriptionOptions InputAudioTranscription { get; }
+        public TurnDetectionOptions TurnDetection { get; }
 
-        public ConversationTurnDetectionOptions TurnDetection { get; }
+        public InputNoiseReductionOptions InputAudioNoiseReduction { get; }
 
-        public IReadOnlyList<ConversationTool> Tools { get; }
+        public IList<ConversationTool> Tools { get; }
 
         public BinaryData ToolChoice { get; }
 

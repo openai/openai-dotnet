@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalStaticChunkingStrategyRequestParam : IJsonModel<InternalStaticChunkingStrategyRequestParam>
     {
-        internal InternalStaticChunkingStrategyRequestParam()
+        internal InternalStaticChunkingStrategyRequestParam() : this(InternalChunkingStrategyRequestParamType.Static, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -41,7 +42,8 @@ namespace OpenAI.VectorStores
 
         InternalStaticChunkingStrategyRequestParam IJsonModel<InternalStaticChunkingStrategyRequestParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalStaticChunkingStrategyRequestParam)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalFileChunkingStrategyRequestParam JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalChunkingStrategyRequestParam JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -58,35 +60,37 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            string @type = "static";
+            InternalChunkingStrategyRequestParamType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalStaticChunkingStrategyDetails @static = default;
+            InternalStaticChunkingStrategy @static = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalChunkingStrategyRequestParamType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("static"u8))
                 {
-                    @static = InternalStaticChunkingStrategyDetails.DeserializeInternalStaticChunkingStrategyDetails(prop.Value, options);
+                    @static = InternalStaticChunkingStrategy.DeserializeInternalStaticChunkingStrategy(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalStaticChunkingStrategyRequestParam(@type, additionalBinaryDataProperties, @static);
+            return new InternalStaticChunkingStrategyRequestParam(kind, additionalBinaryDataProperties, @static);
         }
 
         BinaryData IPersistableModel<InternalStaticChunkingStrategyRequestParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalStaticChunkingStrategyRequestParam)} does not support writing '{options.Format}' format.");
             }
@@ -94,7 +98,8 @@ namespace OpenAI.VectorStores
 
         InternalStaticChunkingStrategyRequestParam IPersistableModel<InternalStaticChunkingStrategyRequestParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalStaticChunkingStrategyRequestParam)PersistableModelCreateCore(data, options);
 
-        protected override InternalFileChunkingStrategyRequestParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalChunkingStrategyRequestParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -110,21 +115,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<InternalStaticChunkingStrategyRequestParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalStaticChunkingStrategyRequestParam internalStaticChunkingStrategyRequestParam)
-        {
-            if (internalStaticChunkingStrategyRequestParam == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalStaticChunkingStrategyRequestParam, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalStaticChunkingStrategyRequestParam(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalStaticChunkingStrategyRequestParam(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

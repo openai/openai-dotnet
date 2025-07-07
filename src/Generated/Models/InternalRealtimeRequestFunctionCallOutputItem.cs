@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestFunctionCallOutputItem : ConversationItem
+    internal partial class InternalRealtimeRequestFunctionCallOutputItem : RealtimeItem
     {
         public InternalRealtimeRequestFunctionCallOutputItem(string callId, string output) : base(InternalRealtimeItemType.FunctionCallOutput)
         {
@@ -19,7 +19,7 @@ namespace OpenAI.RealtimeConversation
             Output = output;
         }
 
-        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeItemType @type, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(@type, id, additionalBinaryDataProperties)
+        internal InternalRealtimeRequestFunctionCallOutputItem(InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(kind, id, additionalBinaryDataProperties)
         {
             CallId = callId;
             Output = output;

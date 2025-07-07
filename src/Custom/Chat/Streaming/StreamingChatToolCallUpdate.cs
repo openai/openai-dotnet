@@ -10,10 +10,8 @@ public partial class StreamingChatToolCallUpdate
     // CUSTOM: Made internal.
     [CodeGenMember("Function")]
     internal InternalChatCompletionMessageToolCallChunkFunction Function { get; }
-
     // CUSTOM:
-    // - Renamed.
-    // - Changed type from string.
+    // - Changed type to match public type.
     /// <summary> The kind of tool.Currently, only<see cref="ChatToolCallKind.Function"/> is supported. </summary>
     [CodeGenMember("Type")]
     public ChatToolCallKind Kind { get; } = ChatToolCallKind.Function;

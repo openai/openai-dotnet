@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventResponseCancel : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventResponseCancel() : base(InternalRealtimeClientEventType.ResponseCancel)
+        public InternalRealtimeClientEventResponseCancel() : this(InternalRealtimeClientEventType.ResponseCancel, null, null, null)
         {
         }
 

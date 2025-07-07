@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatText : InternalOmniTypedResponseFormat
+    internal partial class InternalResponseFormatText : InternalResponseFormat
     {
-        public InternalResponseFormatText() : base("text")
+        public InternalResponseFormatText() : this(InternalResponseFormatType.Text, null)
         {
         }
 
-        internal InternalResponseFormatText(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(@type, additionalBinaryDataProperties)
+        internal InternalResponseFormatText(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
     }

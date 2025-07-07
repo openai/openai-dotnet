@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.Internal
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,7 +33,8 @@ namespace OpenAI.Internal
 
         InternalResponseFormatText IJsonModel<InternalResponseFormatText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseFormatText)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalOmniTypedResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -49,29 +51,31 @@ namespace OpenAI.Internal
             {
                 return null;
             }
-            string @type = "text";
+            InternalResponseFormatType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalResponseFormatType(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponseFormatText(@type, additionalBinaryDataProperties);
+            return new InternalResponseFormatText(kind, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalResponseFormatText>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseFormatText)} does not support writing '{options.Format}' format.");
             }
@@ -79,7 +83,8 @@ namespace OpenAI.Internal
 
         InternalResponseFormatText IPersistableModel<InternalResponseFormatText>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseFormatText)PersistableModelCreateCore(data, options);
 
-        protected override InternalOmniTypedResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalResponseFormatText>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -95,21 +100,5 @@ namespace OpenAI.Internal
         }
 
         string IPersistableModel<InternalResponseFormatText>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalResponseFormatText internalResponseFormatText)
-        {
-            if (internalResponseFormatText == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalResponseFormatText, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalResponseFormatText(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalResponseFormatText(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

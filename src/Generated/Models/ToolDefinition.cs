@@ -7,17 +7,22 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    public abstract partial class ToolDefinition
+    public partial class ToolDefinition
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ToolDefinition(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        private protected ToolDefinition(InternalAssistantToolDefinitionType kind)
         {
-            Type = @type;
+            Kind = kind;
+        }
+
+        internal ToolDefinition(InternalAssistantToolDefinitionType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Type { get; set; }
+        internal InternalAssistantToolDefinitionType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

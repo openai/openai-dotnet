@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,6 +13,10 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchCallResponseItem : IJsonModel<WebSearchCallResponseItem>
     {
+        internal WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, null, default)
+        {
+        }
+
         void IJsonModel<WebSearchCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -20,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -28,15 +33,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
         WebSearchCallResponseItem IJsonModel<WebSearchCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchCallResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -54,15 +61,15 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            WebSearchCallStatus status = default;
+            WebSearchCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -75,20 +82,22 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToWebSearchCallStatus();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new WebSearchCallResponseItem(@type, id, additionalBinaryDataProperties, status);
+            return new WebSearchCallResponseItem(kind, id, additionalBinaryDataProperties, status);
         }
 
         BinaryData IPersistableModel<WebSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -96,6 +105,7 @@ namespace OpenAI.Responses
 
         WebSearchCallResponseItem IPersistableModel<WebSearchCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchCallResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -112,21 +122,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<WebSearchCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(WebSearchCallResponseItem webSearchCallResponseItem)
-        {
-            if (webSearchCallResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(webSearchCallResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator WebSearchCallResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeWebSearchCallResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

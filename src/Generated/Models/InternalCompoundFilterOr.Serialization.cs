@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCompoundFilterOr : IJsonModel<InternalCompoundFilterOr>
     {
-        internal InternalCompoundFilterOr()
+        internal InternalCompoundFilterOr() : this(InternalCompoundFilterType.Or, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
@@ -36,6 +37,7 @@ namespace OpenAI.Responses
 
         InternalCompoundFilterOr IJsonModel<InternalCompoundFilterOr>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalCompoundFilterOr)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalCompoundFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
@@ -53,14 +55,14 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalCompoundFilterType @type = default;
+            InternalCompoundFilterType kind = default;
             IList<BinaryData> filters = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalCompoundFilterType(prop.Value.GetString());
+                    kind = new InternalCompoundFilterType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("filters"u8))
@@ -80,20 +82,22 @@ namespace OpenAI.Responses
                     filters = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCompoundFilterOr(@type, filters, additionalBinaryDataProperties);
+            return new InternalCompoundFilterOr(kind, filters, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCompoundFilterOr>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCompoundFilterOr)} does not support writing '{options.Format}' format.");
             }
@@ -101,6 +105,7 @@ namespace OpenAI.Responses
 
         InternalCompoundFilterOr IPersistableModel<InternalCompoundFilterOr>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalCompoundFilterOr)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override InternalCompoundFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
@@ -117,21 +122,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalCompoundFilterOr>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCompoundFilterOr internalCompoundFilterOr)
-        {
-            if (internalCompoundFilterOr == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCompoundFilterOr, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCompoundFilterOr(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCompoundFilterOr(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

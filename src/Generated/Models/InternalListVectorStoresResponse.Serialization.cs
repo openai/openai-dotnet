@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalListVectorStoresResponse : IJsonModel<InternalListVectorStoresResponse>
     {
-        internal InternalListVectorStoresResponse()
+        internal InternalListVectorStoresResponse() : this(null, null, null, null, default, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoresResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -34,8 +35,9 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.ToString());
+                writer.WriteStringValue(Object);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
@@ -61,6 +63,7 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("has_more"u8);
                 writer.WriteBooleanValue(HasMore);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -84,6 +87,7 @@ namespace OpenAI.VectorStores
 
         InternalListVectorStoresResponse IJsonModel<InternalListVectorStoresResponse>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalListVectorStoresResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoresResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -101,7 +105,7 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            InternalListVectorStoresResponseObject @object = default;
+            string @object = default;
             IReadOnlyList<VectorStore> data = default;
             string firstId = default;
             string lastId = default;
@@ -111,7 +115,7 @@ namespace OpenAI.VectorStores
             {
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = new InternalListVectorStoresResponseObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("data"u8))
@@ -139,6 +143,7 @@ namespace OpenAI.VectorStores
                     hasMore = prop.Value.GetBoolean();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalListVectorStoresResponse(
@@ -152,13 +157,14 @@ namespace OpenAI.VectorStores
 
         BinaryData IPersistableModel<InternalListVectorStoresResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoresResponse>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalListVectorStoresResponse)} does not support writing '{options.Format}' format.");
             }
@@ -166,6 +172,7 @@ namespace OpenAI.VectorStores
 
         InternalListVectorStoresResponse IPersistableModel<InternalListVectorStoresResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalListVectorStoresResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalListVectorStoresResponse>)this).GetFormatFromOptions(options) : options.Format;
@@ -182,21 +189,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<InternalListVectorStoresResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalListVectorStoresResponse internalListVectorStoresResponse)
-        {
-            if (internalListVectorStoresResponse == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalListVectorStoresResponse, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalListVectorStoresResponse(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalListVectorStoresResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

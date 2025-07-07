@@ -5,9 +5,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
-    public abstract partial class ConversationTool
+    public partial class ConversationTool
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

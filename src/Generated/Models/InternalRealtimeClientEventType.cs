@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal readonly partial struct InternalRealtimeClientEventType : IEquatable<InternalRealtimeClientEventType>
     {
@@ -15,11 +15,14 @@ namespace OpenAI.RealtimeConversation
         private const string InputAudioBufferAppendValue = "input_audio_buffer.append";
         private const string InputAudioBufferCommitValue = "input_audio_buffer.commit";
         private const string InputAudioBufferClearValue = "input_audio_buffer.clear";
+        private const string OutputAudioBufferClearValue = "output_audio_buffer.clear";
         private const string ConversationItemCreateValue = "conversation.item.create";
-        private const string ConversationItemDeleteValue = "conversation.item.delete";
+        private const string ConversationItemRetrieveValue = "conversation.item.retrieve";
         private const string ConversationItemTruncateValue = "conversation.item.truncate";
+        private const string ConversationItemDeleteValue = "conversation.item.delete";
         private const string ResponseCreateValue = "response.create";
         private const string ResponseCancelValue = "response.cancel";
+        private const string TranscriptionSessionUpdateValue = "transcription_session.update";
 
         public InternalRealtimeClientEventType(string value)
         {
@@ -28,23 +31,29 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static InternalRealtimeClientEventType SessionUpdate { get; } = new InternalRealtimeClientEventType(SessionUpdateValue);
+        internal static InternalRealtimeClientEventType SessionUpdate { get; } = new InternalRealtimeClientEventType(SessionUpdateValue);
 
-        public static InternalRealtimeClientEventType InputAudioBufferAppend { get; } = new InternalRealtimeClientEventType(InputAudioBufferAppendValue);
+        internal static InternalRealtimeClientEventType InputAudioBufferAppend { get; } = new InternalRealtimeClientEventType(InputAudioBufferAppendValue);
 
-        public static InternalRealtimeClientEventType InputAudioBufferCommit { get; } = new InternalRealtimeClientEventType(InputAudioBufferCommitValue);
+        internal static InternalRealtimeClientEventType InputAudioBufferCommit { get; } = new InternalRealtimeClientEventType(InputAudioBufferCommitValue);
 
-        public static InternalRealtimeClientEventType InputAudioBufferClear { get; } = new InternalRealtimeClientEventType(InputAudioBufferClearValue);
+        internal static InternalRealtimeClientEventType InputAudioBufferClear { get; } = new InternalRealtimeClientEventType(InputAudioBufferClearValue);
 
-        public static InternalRealtimeClientEventType ConversationItemCreate { get; } = new InternalRealtimeClientEventType(ConversationItemCreateValue);
+        internal static InternalRealtimeClientEventType OutputAudioBufferClear { get; } = new InternalRealtimeClientEventType(OutputAudioBufferClearValue);
 
-        public static InternalRealtimeClientEventType ConversationItemDelete { get; } = new InternalRealtimeClientEventType(ConversationItemDeleteValue);
+        internal static InternalRealtimeClientEventType ConversationItemCreate { get; } = new InternalRealtimeClientEventType(ConversationItemCreateValue);
 
-        public static InternalRealtimeClientEventType ConversationItemTruncate { get; } = new InternalRealtimeClientEventType(ConversationItemTruncateValue);
+        internal static InternalRealtimeClientEventType ConversationItemRetrieve { get; } = new InternalRealtimeClientEventType(ConversationItemRetrieveValue);
 
-        public static InternalRealtimeClientEventType ResponseCreate { get; } = new InternalRealtimeClientEventType(ResponseCreateValue);
+        internal static InternalRealtimeClientEventType ConversationItemTruncate { get; } = new InternalRealtimeClientEventType(ConversationItemTruncateValue);
 
-        public static InternalRealtimeClientEventType ResponseCancel { get; } = new InternalRealtimeClientEventType(ResponseCancelValue);
+        internal static InternalRealtimeClientEventType ConversationItemDelete { get; } = new InternalRealtimeClientEventType(ConversationItemDeleteValue);
+
+        internal static InternalRealtimeClientEventType ResponseCreate { get; } = new InternalRealtimeClientEventType(ResponseCreateValue);
+
+        internal static InternalRealtimeClientEventType ResponseCancel { get; } = new InternalRealtimeClientEventType(ResponseCancelValue);
+
+        internal static InternalRealtimeClientEventType TranscriptionSessionUpdate { get; } = new InternalRealtimeClientEventType(TranscriptionSessionUpdateValue);
 
         public static bool operator ==(InternalRealtimeClientEventType left, InternalRealtimeClientEventType right) => left.Equals(right);
 

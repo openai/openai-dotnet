@@ -9,13 +9,13 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseOutputItemAddedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseOutputItemAddedUpdate(int outputIndex, ResponseItem item) : base(InternalResponsesResponseStreamEventType.ResponseOutputItemAdded)
+        internal StreamingResponseOutputItemAddedUpdate(int sequenceNumber, int outputIndex, ResponseItem item) : base(InternalResponseStreamEventType.ResponseOutputItemAdded, sequenceNumber)
         {
             OutputIndex = outputIndex;
             Item = item;
         }
 
-        internal StreamingResponseOutputItemAddedUpdate(InternalResponsesResponseStreamEventType @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, ResponseItem item) : base(@type, additionalBinaryDataProperties)
+        internal StreamingResponseOutputItemAddedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, ResponseItem item) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
             Item = item;

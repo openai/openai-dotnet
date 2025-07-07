@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal readonly partial struct InternalRealtimeRequestSessionModality : IEquatable<InternalRealtimeRequestSessionModality>
     {
@@ -21,9 +21,9 @@ namespace OpenAI.RealtimeConversation
             _value = value;
         }
 
-        public static InternalRealtimeRequestSessionModality Text { get; } = new InternalRealtimeRequestSessionModality(TextValue);
+        internal static InternalRealtimeRequestSessionModality Text { get; } = new InternalRealtimeRequestSessionModality(TextValue);
 
-        public static InternalRealtimeRequestSessionModality Audio { get; } = new InternalRealtimeRequestSessionModality(AudioValue);
+        internal static InternalRealtimeRequestSessionModality Audio { get; } = new InternalRealtimeRequestSessionModality(AudioValue);
 
         public static bool operator ==(InternalRealtimeRequestSessionModality left, InternalRealtimeRequestSessionModality right) => left.Equals(right);
 

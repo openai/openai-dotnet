@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Chat;
@@ -14,7 +14,7 @@ namespace OpenAI.LegacyCompletions
 {
     internal partial class InternalCreateCompletionRequest : IJsonModel<InternalCreateCompletionRequest>
     {
-        internal InternalCreateCompletionRequest()
+        internal InternalCreateCompletionRequest() : this(default, null, default, default, default, null, default, default, default, default, default, null, default, null, null, default, default, null, null)
         {
         }
 
@@ -25,6 +25,7 @@ namespace OpenAI.LegacyCompletions
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -149,6 +150,7 @@ namespace OpenAI.LegacyCompletions
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(User);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -172,6 +174,7 @@ namespace OpenAI.LegacyCompletions
 
         InternalCreateCompletionRequest IJsonModel<InternalCreateCompletionRequest>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateCompletionRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -384,6 +387,7 @@ namespace OpenAI.LegacyCompletions
                     user = prop.Value.GetString();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateCompletionRequest(
@@ -410,13 +414,14 @@ namespace OpenAI.LegacyCompletions
 
         BinaryData IPersistableModel<InternalCreateCompletionRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateCompletionRequest)} does not support writing '{options.Format}' format.");
             }
@@ -424,6 +429,7 @@ namespace OpenAI.LegacyCompletions
 
         InternalCreateCompletionRequest IPersistableModel<InternalCreateCompletionRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateCompletionRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateCompletionRequest>)this).GetFormatFromOptions(options) : options.Format;
@@ -440,21 +446,5 @@ namespace OpenAI.LegacyCompletions
         }
 
         string IPersistableModel<InternalCreateCompletionRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateCompletionRequest internalCreateCompletionRequest)
-        {
-            if (internalCreateCompletionRequest == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateCompletionRequest, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateCompletionRequest(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateCompletionRequest(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

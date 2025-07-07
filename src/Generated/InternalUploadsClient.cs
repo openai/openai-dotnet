@@ -61,7 +61,7 @@ namespace OpenAI.Files
 
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateAddUploadPartRequest(uploadId, content, contentType, options);
@@ -70,7 +70,7 @@ namespace OpenAI.Files
 
         public virtual async Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateAddUploadPartRequest(uploadId, content, contentType, options);
@@ -79,7 +79,7 @@ namespace OpenAI.Files
 
         public virtual ClientResult CompleteUpload(string uploadId, BinaryContent content, RequestOptions options = null)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCompleteUploadRequest(uploadId, content, options);
@@ -88,7 +88,7 @@ namespace OpenAI.Files
 
         public virtual async Task<ClientResult> CompleteUploadAsync(string uploadId, BinaryContent content, RequestOptions options = null)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCompleteUploadRequest(uploadId, content, options);
@@ -97,7 +97,7 @@ namespace OpenAI.Files
 
         public virtual ClientResult<InternalUpload> CompleteUpload(string uploadId, InternalCompleteUploadRequest requestBody, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(requestBody, nameof(requestBody));
 
             ClientResult result = CompleteUpload(uploadId, requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
@@ -106,7 +106,7 @@ namespace OpenAI.Files
 
         public virtual async Task<ClientResult<InternalUpload>> CompleteUploadAsync(string uploadId, InternalCompleteUploadRequest requestBody, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
             Argument.AssertNotNull(requestBody, nameof(requestBody));
 
             ClientResult result = await CompleteUploadAsync(uploadId, requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
@@ -115,7 +115,7 @@ namespace OpenAI.Files
 
         public virtual ClientResult CancelUpload(string uploadId, RequestOptions options)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
 
             using PipelineMessage message = CreateCancelUploadRequest(uploadId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -123,7 +123,7 @@ namespace OpenAI.Files
 
         public virtual async Task<ClientResult> CancelUploadAsync(string uploadId, RequestOptions options)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
 
             using PipelineMessage message = CreateCancelUploadRequest(uploadId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
@@ -131,7 +131,7 @@ namespace OpenAI.Files
 
         public virtual ClientResult<InternalUpload> CancelUpload(string uploadId, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
 
             ClientResult result = CancelUpload(uploadId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
             return ClientResult.FromValue((InternalUpload)result, result.GetRawResponse());
@@ -139,7 +139,7 @@ namespace OpenAI.Files
 
         public virtual async Task<ClientResult<InternalUpload>> CancelUploadAsync(string uploadId, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(uploadId, nameof(uploadId));
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
 
             ClientResult result = await CancelUploadAsync(uploadId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
             return ClientResult.FromValue((InternalUpload)result, result.GetRawResponse());

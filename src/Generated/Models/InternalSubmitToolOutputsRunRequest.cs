@@ -22,7 +22,8 @@ namespace OpenAI.Assistants
 
         internal InternalSubmitToolOutputsRunRequest(IList<ToolOutput> toolOutputs, bool? stream, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            ToolOutputs = toolOutputs;
+            // Plugin customization: ensure initialization of collections
+            ToolOutputs = toolOutputs ?? new ChangeTrackingList<ToolOutput>();
             Stream = stream;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

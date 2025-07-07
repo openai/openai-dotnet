@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>
     {
@@ -24,6 +24,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -51,6 +52,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("reset_seconds"u8);
                 writer.WriteNumberValue(Convert.ToDouble(TimeUntilReset.ToString("s\\.FFF")));
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -74,6 +76,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationRateLimitDetailsItem IJsonModel<ConversationRateLimitDetailsItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationRateLimitDetailsItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -118,6 +121,7 @@ namespace OpenAI.RealtimeConversation
                     timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationRateLimitDetailsItem(name, maximumCount, remainingCount, timeUntilReset, additionalBinaryDataProperties);
@@ -125,13 +129,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<ConversationRateLimitDetailsItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationRateLimitDetailsItem)} does not support writing '{options.Format}' format.");
             }
@@ -139,6 +144,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationRateLimitDetailsItem IPersistableModel<ConversationRateLimitDetailsItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationRateLimitDetailsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationRateLimitDetailsItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -155,21 +161,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationRateLimitDetailsItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationRateLimitDetailsItem conversationRateLimitDetailsItem)
-        {
-            if (conversationRateLimitDetailsItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationRateLimitDetailsItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationRateLimitDetailsItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationRateLimitDetailsItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -20,6 +20,7 @@ namespace OpenAI.VectorStores
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAutoChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,7 +33,8 @@ namespace OpenAI.VectorStores
 
         InternalAutoChunkingStrategyRequestParam IJsonModel<InternalAutoChunkingStrategyRequestParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalAutoChunkingStrategyRequestParam)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalFileChunkingStrategyRequestParam JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalChunkingStrategyRequestParam JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAutoChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -49,29 +51,31 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            string @type = "auto";
+            InternalChunkingStrategyRequestParamType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = prop.Value.GetString();
+                    kind = new InternalChunkingStrategyRequestParamType(prop.Value.GetString());
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalAutoChunkingStrategyRequestParam(@type, additionalBinaryDataProperties);
+            return new InternalAutoChunkingStrategyRequestParam(kind, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalAutoChunkingStrategyRequestParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAutoChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalAutoChunkingStrategyRequestParam)} does not support writing '{options.Format}' format.");
             }
@@ -79,7 +83,8 @@ namespace OpenAI.VectorStores
 
         InternalAutoChunkingStrategyRequestParam IPersistableModel<InternalAutoChunkingStrategyRequestParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalAutoChunkingStrategyRequestParam)PersistableModelCreateCore(data, options);
 
-        protected override InternalFileChunkingStrategyRequestParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        [Experimental("OPENAI001")]
+        protected override InternalChunkingStrategyRequestParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalAutoChunkingStrategyRequestParam>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -95,21 +100,5 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<InternalAutoChunkingStrategyRequestParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalAutoChunkingStrategyRequestParam internalAutoChunkingStrategyRequestParam)
-        {
-            if (internalAutoChunkingStrategyRequestParam == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalAutoChunkingStrategyRequestParam, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalAutoChunkingStrategyRequestParam(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalAutoChunkingStrategyRequestParam(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

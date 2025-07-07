@@ -3,13 +3,14 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [PersistableModelProxy(typeof(InternalUnknownItemContent))]
     public partial class ResponseContentPart : IJsonModel<ResponseContentPart>
     {
         internal ResponseContentPart()
@@ -23,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,6 +37,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(InternalType.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -58,6 +61,7 @@ namespace OpenAI.Responses
 
         ResponseContentPart IJsonModel<ResponseContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -79,30 +83,35 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "input_text":
-                        return InternalResponsesInputTextContentPart.DeserializeInternalResponsesInputTextContentPart(element, options);
-                    case "input_image":
-                        return InternalResponsesInputImageContentPart.DeserializeInternalResponsesInputImageContentPart(element, options);
-                    case "input_file":
-                        return InternalResponsesInputFileContentPart.DeserializeInternalResponsesInputFileContentPart(element, options);
-                    case "output_text":
-                        return InternalResponsesOutputTextContentPart.DeserializeInternalResponsesOutputTextContentPart(element, options);
+                    case "input_audio":
+                        return InternalItemContentInputAudio.DeserializeInternalItemContentInputAudio(element, options);
+                    case "output_audio":
+                        return InternalItemContentOutputAudio.DeserializeInternalItemContentOutputAudio(element, options);
                     case "refusal":
-                        return InternalResponsesOutputRefusalContentPart.DeserializeInternalResponsesOutputRefusalContentPart(element, options);
+                        return InternalItemContentRefusal.DeserializeInternalItemContentRefusal(element, options);
+                    case "input_text":
+                        return InternalItemContentInputText.DeserializeInternalItemContentInputText(element, options);
+                    case "input_image":
+                        return InternalItemContentInputImage.DeserializeInternalItemContentInputImage(element, options);
+                    case "input_file":
+                        return InternalItemContentInputFile.DeserializeInternalItemContentInputFile(element, options);
+                    case "output_text":
+                        return InternalItemContentOutputText.DeserializeInternalItemContentOutputText(element, options);
                 }
             }
-            return InternalUnknownResponsesContent.DeserializeInternalUnknownResponsesContent(element, options);
+            return InternalUnknownItemContent.DeserializeInternalUnknownItemContent(element, options);
         }
 
         BinaryData IPersistableModel<ResponseContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseContentPart)} does not support writing '{options.Format}' format.");
             }
@@ -110,6 +119,7 @@ namespace OpenAI.Responses
 
         ResponseContentPart IPersistableModel<ResponseContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
@@ -126,21 +136,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ResponseContentPart responseContentPart)
-        {
-            if (responseContentPart == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(responseContentPart, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ResponseContentPart(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeResponseContentPart(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

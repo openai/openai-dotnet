@@ -12,15 +12,15 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalMessageObjectAttachment()
+        internal InternalMessageObjectAttachment() : this(null, null, null)
         {
-            Tools = new ChangeTrackingList<BinaryData>();
         }
 
         internal InternalMessageObjectAttachment(string fileId, IList<BinaryData> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             FileId = fileId;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

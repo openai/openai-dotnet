@@ -3,13 +3,13 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     public partial class ConversationTokenUsage : IJsonModel<ConversationTokenUsage>
     {
@@ -20,6 +20,7 @@ namespace OpenAI.RealtimeConversation
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -52,6 +53,7 @@ namespace OpenAI.RealtimeConversation
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokenCount);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -75,6 +77,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationTokenUsage IJsonModel<ConversationTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -145,6 +148,7 @@ namespace OpenAI.RealtimeConversation
                     totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationTokenUsage(
@@ -158,13 +162,14 @@ namespace OpenAI.RealtimeConversation
 
         BinaryData IPersistableModel<ConversationTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ConversationTokenUsage)} does not support writing '{options.Format}' format.");
             }
@@ -172,6 +177,7 @@ namespace OpenAI.RealtimeConversation
 
         ConversationTokenUsage IPersistableModel<ConversationTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual ConversationTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -188,21 +194,5 @@ namespace OpenAI.RealtimeConversation
         }
 
         string IPersistableModel<ConversationTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ConversationTokenUsage conversationTokenUsage)
-        {
-            if (conversationTokenUsage == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(conversationTokenUsage, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ConversationTokenUsage(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeConversationTokenUsage(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

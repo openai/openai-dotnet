@@ -1,7 +1,10 @@
 using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
@@ -16,48 +19,10 @@ public partial class ThreadRun
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `thread.run`. </summary>
     [CodeGenMember("Object")]
-    internal InternalRunObjectObject Object { get; } = InternalRunObjectObject.ThreadRun;
-
+    internal string Object { get; } = "thread.run";
 
     [CodeGenMember("RequiredAction")]
     internal readonly InternalRunRequiredAction _internalRequiredAction;
-
-    // CUSTOM: Removed null check for `toolConstraint` and `responseFormat`.
-    internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, InternalRunRequiredAction internalRequiredAction, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IEnumerable<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat)
-    {
-        Argument.AssertNotNull(id, nameof(id));
-        Argument.AssertNotNull(threadId, nameof(threadId));
-        Argument.AssertNotNull(assistantId, nameof(assistantId));
-        Argument.AssertNotNull(model, nameof(model));
-        Argument.AssertNotNull(instructions, nameof(instructions));
-        Argument.AssertNotNull(tools, nameof(tools));
-
-        Id = id;
-        CreatedAt = createdAt;
-        ThreadId = threadId;
-        AssistantId = assistantId;
-        Status = status;
-        _internalRequiredAction = internalRequiredAction;
-        LastError = lastError;
-        ExpiresAt = expiresAt;
-        StartedAt = startedAt;
-        CancelledAt = cancelledAt;
-        FailedAt = failedAt;
-        CompletedAt = completedAt;
-        IncompleteDetails = incompleteDetails;
-        Model = model;
-        Instructions = instructions;
-        Tools = tools.ToList();
-        Metadata = metadata;
-        Usage = usage;
-        MaxInputTokenCount = maxInputTokenCount;
-        MaxOutputTokenCount = maxOutputTokenCount;
-        TruncationStrategy = truncationStrategy;
-        ToolConstraint = toolConstraint;
-        AllowParallelToolCalls = allowParallelToolCalls;
-        ResponseFormat = responseFormat;
-    }
-
 
     /// <summary>
     /// The list of required actions that must have their results submitted for the run to continue.
@@ -102,4 +67,11 @@ public partial class ThreadRun
     // CUSTOM: Renamed.
     [CodeGenMember("MaxCompletionTokens")]
     public int? MaxOutputTokenCount { get; }
+
+    internal static ThreadRun FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeThreadRun(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

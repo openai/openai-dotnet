@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -24,6 +24,7 @@ namespace OpenAI.Files
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
@@ -69,13 +70,14 @@ namespace OpenAI.Files
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object.Value.ToString());
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
                 writer.WritePropertyName("file"u8);
                 writer.WriteObjectValue(File, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -99,6 +101,7 @@ namespace OpenAI.Files
 
         InternalUpload IJsonModel<InternalUpload>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalUpload JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
@@ -123,7 +126,7 @@ namespace OpenAI.Files
             string purpose = default;
             InternalUploadStatus status = default;
             DateTimeOffset expiresAt = default;
-            InternalUploadObject? @object = default;
+            string @object = default;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -165,11 +168,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    @object = new InternalUploadObject(prop.Value.GetString());
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file"u8))
@@ -182,6 +181,7 @@ namespace OpenAI.Files
                     @file = OpenAIFile.DeserializeOpenAIFile(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalUpload(
@@ -199,13 +199,14 @@ namespace OpenAI.Files
 
         BinaryData IPersistableModel<InternalUpload>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalUpload)} does not support writing '{options.Format}' format.");
             }
@@ -213,6 +214,7 @@ namespace OpenAI.Files
 
         InternalUpload IPersistableModel<InternalUpload>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalUpload PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
@@ -229,21 +231,5 @@ namespace OpenAI.Files
         }
 
         string IPersistableModel<InternalUpload>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalUpload internalUpload)
-        {
-            if (internalUpload == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalUpload, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalUpload(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalUpload(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

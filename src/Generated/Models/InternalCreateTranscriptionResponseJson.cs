@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Audio
 {
@@ -14,15 +15,20 @@ namespace OpenAI.Audio
         internal InternalCreateTranscriptionResponseJson(string text)
         {
             Text = text;
+            Logprobs = new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>();
         }
 
-        internal InternalCreateTranscriptionResponseJson(string text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateTranscriptionResponseJson(string text, IList<InternalCreateTranscriptionResponseJsonLogprob> logprobs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Text = text;
+            Logprobs = logprobs ?? new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Text { get; }
+
+        internal IList<InternalCreateTranscriptionResponseJsonLogprob> Logprobs { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

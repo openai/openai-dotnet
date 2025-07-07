@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Internal;
@@ -25,6 +25,7 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
@@ -35,13 +36,14 @@ namespace OpenAI.Chat
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Type.ToString());
+                writer.WriteStringValue(Kind);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("approximate") != true)
             {
                 writer.WritePropertyName("approximate"u8);
                 writer.WriteObjectValue(Approximate, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
                 foreach (var item in _additionalBinaryDataProperties)
@@ -65,6 +67,7 @@ namespace OpenAI.Chat
 
         InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 IJsonModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,14 +85,14 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1Type @type = default;
+            string kind = default;
             InternalWebSearchLocation approximate = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1Type(prop.Value.GetString());
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("approximate"u8))
@@ -97,20 +100,22 @@ namespace OpenAI.Chat
                     approximate = InternalWebSearchLocation.DeserializeInternalWebSearchLocation(prop.Value, options);
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(@type, approximate, additionalBinaryDataProperties);
+            return new InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(kind, approximate, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1)} does not support writing '{options.Format}' format.");
             }
@@ -118,6 +123,7 @@ namespace OpenAI.Chat
 
         InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected virtual InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
@@ -134,21 +140,5 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 internalCreateChatCompletionRequestWebSearchOptionsUserLocation1)
-        {
-            if (internalCreateChatCompletionRequestWebSearchOptionsUserLocation1 == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(internalCreateChatCompletionRequestWebSearchOptionsUserLocation1, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

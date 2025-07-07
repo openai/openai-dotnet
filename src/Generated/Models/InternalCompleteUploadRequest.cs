@@ -22,7 +22,8 @@ namespace OpenAI.Files
 
         internal InternalCompleteUploadRequest(IList<string> partIds, string md5, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            PartIds = partIds;
+            // Plugin customization: ensure initialization of collections
+            PartIds = partIds ?? new ChangeTrackingList<string>();
             Md5 = md5;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

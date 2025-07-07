@@ -3,9 +3,9 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : IJsonModel<ReasoningResponseItem>
     {
-        internal ReasoningResponseItem()
+        internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, null, null)
         {
         }
 
@@ -24,6 +24,7 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,16 +33,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ReasoningResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (Optional.IsDefined(EncryptedContent) && _additionalBinaryDataProperties?.ContainsKey("encrypted_content") != true)
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WritePropertyName("encrypted_content"u8);
+                writer.WriteStringValue(EncryptedContent);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("summary") != true)
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStartArray();
-                foreach (InternalResponsesReasoningItemSummaryElement item in Summary)
+                foreach (ReasoningSummaryPart item in SummaryParts)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -51,6 +52,7 @@ namespace OpenAI.Responses
 
         ReasoningResponseItem IJsonModel<ReasoningResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ReasoningResponseItem)JsonModelCreateCore(ref reader, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -68,16 +70,16 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesItemType @type = default;
+            InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            ReasoningStatus? status = default;
-            IList<InternalResponsesReasoningItemSummaryElement> summary = default;
+            string encryptedContent = default;
+            IReadOnlyList<ReasoningSummaryPart> summaryParts = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    @type = new InternalResponsesItemType(prop.Value.GetString());
+                    kind = new InternalItemType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -85,39 +87,42 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
+                if (prop.NameEquals("encrypted_content"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        encryptedContent = null;
                         continue;
                     }
-                    status = prop.Value.GetString().ToReasoningStatus();
+                    encryptedContent = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("summary"u8))
                 {
-                    List<InternalResponsesReasoningItemSummaryElement> array = new List<InternalResponsesReasoningItemSummaryElement>();
+                    List<ReasoningSummaryPart> array = new List<ReasoningSummaryPart>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalResponsesReasoningItemSummaryElement.DeserializeInternalResponsesReasoningItemSummaryElement(item, options));
+                        array.Add(ReasoningSummaryPart.DeserializeReasoningSummaryPart(item, options));
                     }
-                    summary = array;
+                    summaryParts = array;
                     continue;
                 }
+                // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ReasoningResponseItem(@type, id, additionalBinaryDataProperties, status, summary);
+            return new ReasoningResponseItem(kind, id, additionalBinaryDataProperties, encryptedContent, summaryParts);
         }
 
         BinaryData IPersistableModel<ReasoningResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+        [Experimental("OPENAI001")]
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options);
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ReasoningResponseItem)} does not support writing '{options.Format}' format.");
             }
@@ -125,6 +130,7 @@ namespace OpenAI.Responses
 
         ReasoningResponseItem IPersistableModel<ReasoningResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ReasoningResponseItem)PersistableModelCreateCore(data, options);
 
+        [Experimental("OPENAI001")]
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -141,21 +147,5 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ReasoningResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(ReasoningResponseItem reasoningResponseItem)
-        {
-            if (reasoningResponseItem == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(reasoningResponseItem, ModelSerializationExtensions.WireOptions);
-        }
-
-        public static explicit operator ReasoningResponseItem(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeReasoningResponseItem(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

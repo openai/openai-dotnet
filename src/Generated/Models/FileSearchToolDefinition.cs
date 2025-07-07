@@ -9,9 +9,11 @@ namespace OpenAI.Assistants
 {
     public partial class FileSearchToolDefinition : ToolDefinition
     {
-        internal FileSearchToolDefinition(string @type, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalAssistantToolsFileSearchFileSearch fileSearch) : base(@type, additionalBinaryDataProperties)
+        internal FileSearchToolDefinition(InternalAssistantToolDefinitionType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalAssistantToolsFileSearchFileSearch fileSearch) : base(kind, additionalBinaryDataProperties)
         {
-            _fileSearch = fileSearch;
+            FileSearch = fileSearch;
         }
+
+        internal InternalAssistantToolsFileSearchFileSearch FileSearch { get; set; }
     }
 }

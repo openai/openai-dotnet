@@ -7,7 +7,8 @@ namespace OpenAI.Images;
 /// Represents additional options available to control the behavior of an image generation operation.
 /// </summary>
 [CodeGenType("CreateImageEditRequest")]
-[CodeGenSuppress("ImageEditOptions", typeof(BinaryData), typeof(string))]
+[CodeGenVisibility(nameof(ImageEditOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(ImageEditOptions), typeof(BinaryData), typeof(string))]
 public partial class ImageEditOptions
 {
     // CUSTOM: Made internal. The model is specified by the client.
@@ -66,12 +67,6 @@ public partial class ImageEditOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     /// <summary> The number of images to generate. Must be between 1 and 10. </summary>
     internal long? N { get; set; }
-
-    // CUSTOM: Made public now that there are no required properties.
-    /// <summary> Initializes a new instance of <see cref="ImageEditOptions"/>. </summary>
-    public ImageEditOptions()
-    {
-    }
 
     // CUSTOM: Changed property type.
     /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>

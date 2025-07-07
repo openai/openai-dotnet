@@ -90,7 +90,7 @@ internal class VectorStoreCollectionResult : CollectionResult<VectorStore>
 
     internal virtual ClientResult GetVectorStores(int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _vectorStoreClient.CreateListVectorStoresRequest(limit, order, after, before, options);
+        using PipelineMessage message = _vectorStoreClient.CreateGetVectorStoresRequest(limit, order, after, before, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 }

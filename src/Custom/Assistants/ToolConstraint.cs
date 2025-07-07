@@ -6,12 +6,15 @@ namespace OpenAI.Assistants;
 
 [Experimental("OPENAI001")]
 [CodeGenType("AssistantsNamedToolChoice")]
+[CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalAssistantsNamedToolChoiceType))]
 public partial class ToolConstraint
 {
     private readonly string _plainTextValue;
-    [CodeGenMember("Type")]
-    private readonly string _objectType;
     private readonly string _objectFunctionName;
+
+    // CUSTOM: Discriminator made nullable to facilitate combination with literal variants
+    [CodeGenMember("Type")]
+    internal InternalAssistantsNamedToolChoiceType? Kind { get; set; }
 
     // CUSTOM: Made internal.
     /// <summary> Gets or sets the function. </summary>
@@ -27,13 +30,13 @@ public partial class ToolConstraint
         switch (toolDefinition)
         {
             case CodeInterpreterToolDefinition:
-                _objectType = "code_interpreter";
+                Kind = "code_interpreter";
                 break;
             case FileSearchToolDefinition:
-                _objectType = "file_search";
+                Kind = "file_search";
                 break;
             case FunctionToolDefinition functionTool:
-                _objectType = "function";
+                Kind = "function";
                 _objectFunctionName = functionTool.FunctionName;
                 break;
             default:
@@ -49,7 +52,7 @@ public partial class ToolConstraint
     internal ToolConstraint(string plainTextValue, string objectType, string objectFunctionName, IDictionary<string, BinaryData> serializedAdditionalRawData)
     {
         _plainTextValue = plainTextValue;
-        _objectType = objectType;
+        Kind = objectType is null ? null : new(objectType);
         _objectFunctionName = objectFunctionName;
         SerializedAdditionalRawData = serializedAdditionalRawData ?? new ChangeTrackingDictionary<string, BinaryData>();
     }

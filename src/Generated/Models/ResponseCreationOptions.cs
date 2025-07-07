@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
+using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
@@ -11,16 +13,19 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string previousResponseId, string instructions, IList<InternalCreateResponsesRequestIncludable> include, InternalCreateResponsesRequestModel model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<InternalIncludable> include, string model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Metadata = metadata;
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
+            ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
+            Background = background;
             Instructions = instructions;
-            Include = include;
+            Include = include ?? new ChangeTrackingList<InternalIncludable>();
             Model = model;
-            Input = input;
+            Input = input ?? new ChangeTrackingList<ResponseItem>();
             Stream = stream;
             EndUserId = endUserId;
             ReasoningOptions = reasoningOptions;
@@ -30,7 +35,7 @@ namespace OpenAI.Responses
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
             ToolChoice = toolChoice;
-            Tools = tools;
+            Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -40,7 +45,11 @@ namespace OpenAI.Responses
 
         public float? TopP { get; set; }
 
+        internal InternalServiceTier? ServiceTier { get; set; }
+
         public string PreviousResponseId { get; set; }
+
+        public bool? Background { get; set; }
 
         public string Instructions { get; set; }
 

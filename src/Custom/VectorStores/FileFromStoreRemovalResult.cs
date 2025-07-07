@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 
 namespace OpenAI.VectorStores;
 
@@ -17,5 +20,12 @@ public partial class FileFromStoreRemovalResult
     // CUSTOM: Made internal.
     /// <summary> The object type, which is always `vector_store.file.deleted`. </summary>
     [CodeGenMember("Object")]
-    internal InternalDeleteVectorStoreFileResponseObject Object { get; } = InternalDeleteVectorStoreFileResponseObject.VectorStoreFileDeleted;
+    internal string Object { get; } = "vector_store.file.deleted";
+
+    internal static FileFromStoreRemovalResult FromClientResult(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeFileFromStoreRemovalResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+    }
 }

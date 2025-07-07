@@ -1,6 +1,12 @@
-﻿namespace OpenAI.Responses;
+﻿using System.Diagnostics.CodeAnalysis;
 
-[CodeGenType("ResponsesReasoningConfigurationEffort")]
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("DotNetResponseReasoningEffortLevel")]
 public readonly partial struct ResponseReasoningEffortLevel
 {
 }

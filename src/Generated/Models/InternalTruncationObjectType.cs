@@ -21,9 +21,9 @@ namespace OpenAI.Assistants
             _value = value;
         }
 
-        public static InternalTruncationObjectType Auto { get; } = new InternalTruncationObjectType(AutoValue);
+        internal static InternalTruncationObjectType Auto { get; } = new InternalTruncationObjectType(AutoValue);
 
-        public static InternalTruncationObjectType LastMessages { get; } = new InternalTruncationObjectType(LastMessagesValue);
+        internal static InternalTruncationObjectType LastMessages { get; } = new InternalTruncationObjectType(LastMessagesValue);
 
         public static bool operator ==(InternalTruncationObjectType left, InternalTruncationObjectType right) => left.Equals(right);
 

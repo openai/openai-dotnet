@@ -5,11 +5,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.RealtimeConversation
+namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventInputAudioBufferClear : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventInputAudioBufferClear() : base(InternalRealtimeClientEventType.InputAudioBufferClear)
+        public InternalRealtimeClientEventInputAudioBufferClear() : this(InternalRealtimeClientEventType.InputAudioBufferClear, null, null)
         {
         }
 

@@ -20,14 +20,8 @@ internal readonly partial struct InternalChatCompletionNamedToolChoiceType { }
 [CodeGenType("ChatCompletionRequestMessageContentPartImage")]
 internal partial class InternalChatCompletionRequestMessageContentPartImage { }
 
-[CodeGenType("ChatCompletionRequestMessageContentPartImageType")]
-internal readonly partial struct InternalChatCompletionRequestMessageContentPartImageType { }
-
 [CodeGenType("ChatCompletionRequestMessageContentPartText")]
 internal partial class InternalChatCompletionRequestMessageContentPartText { }
-
-[CodeGenType("ChatCompletionRequestMessageContentPartTextType")]
-internal readonly partial struct InternalChatCompletionRequestMessageContentPartTextType { }
 
 [CodeGenType("ChatCompletionResponseMessageFunctionCall")]
 internal partial class InternalChatCompletionResponseMessageFunctionCall { }
@@ -37,9 +31,6 @@ internal readonly partial struct InternalChatCompletionResponseMessageRole { }
 
 [CodeGenType("ChatCompletionStreamOptions")]
 internal partial class InternalChatCompletionStreamOptions { }
-
-[CodeGenType("ChatCompletionStreamResponseDeltaRole3")]
-internal readonly partial struct InternalChatCompletionStreamResponseDeltaRole { }
 
 [CodeGenType("CreateChatCompletionFunctionResponse")]
 internal partial class InternalCreateChatCompletionFunctionResponse { }
@@ -56,14 +47,8 @@ internal readonly partial struct InternalCreateChatCompletionFunctionResponseObj
 [CodeGenType("ChatCompletionRequestMessageContentPartRefusal")]
 internal partial class InternalChatCompletionRequestMessageContentPartRefusal { }
 
-[CodeGenType("ChatCompletionRequestMessageContentPartRefusalType")]
-internal readonly partial struct InternalChatCompletionRequestMessageContentPartRefusalType { }
-
 [CodeGenType("CreateChatCompletionRequestModel")]
 internal readonly partial struct InternalCreateChatCompletionRequestModel { }
-
-[CodeGenType("CreateChatCompletionRequestServiceTier")]
-internal readonly partial struct InternalCreateChatCompletionRequestServiceTier { }
 
 [CodeGenType("CreateChatCompletionRequestToolChoice")]
 internal readonly partial struct InternalCreateChatCompletionRequestToolChoice { }
@@ -98,20 +83,17 @@ internal partial class InternalCreateChatCompletionStreamResponseUsage { }
 [CodeGenType("CreateChatCompletionRequestModality")]
 internal readonly partial struct InternalCreateChatCompletionRequestModality { }
 
-[CodeGenType("ChatCompletionRequestMessageContentPartAudioType")]
-internal readonly partial struct InternalChatCompletionRequestMessageContentPartAudioType { }
-
 [CodeGenType("ChatCompletionRequestMessageContentPartAudio")]
 internal partial class InternalChatCompletionRequestMessageContentPartAudio { }
 
 [CodeGenType("ChatCompletionRequestMessageContentPartAudioInputAudio")]
 internal partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio { }
 
+[CodeGenType("ChatOutputPredictionType")]
+internal readonly partial struct InternalChatOutputPredictionKind { }
+
 [CodeGenType("UnknownChatOutputPrediction")]
 internal partial class InternalUnknownChatOutputPrediction { }
-
-[CodeGenType("ChatCompletionRequestMessageContentPartFileType")]
-internal readonly partial struct InternalChatCompletionRequestMessageContentPartFileType { }
 
 [CodeGenType("CreateChatCompletionRequestWebSearchOptionsUserLocation1Type")]
 internal readonly partial struct InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1Type { }
@@ -128,5 +110,14 @@ internal partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLo
 [CodeGenType("ChatCompletionResponseMessageAnnotationUrlCitation")]
 internal partial class InternalChatCompletionResponseMessageAnnotationUrlCitation { }
 
-[CodeGenType("CreateChatCompletionStreamResponseChoiceFinishReason1")]
-internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason1 { }
+[CodeGenType("DotNetChatResponseFormatJsonSchemaJsonSchema")]
+internal partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema { }
+
+[CodeGenType("UnknownChatCompletionRequestMessageContentPart")]
+internal partial class InternalUnknownChatCompletionRequestMessageContentPart { }
+
+[CodeGenType("ChatCompletionListObject")] internal readonly partial struct InternalChatCompletionListObject {}
+[CodeGenType("ChatCompletionDeletedObject")] internal readonly partial struct InternalChatCompletionDeletedObject {}
+[CodeGenType("ChatCompletionMessageListObject")] internal readonly partial struct InternalChatCompletionMessageListObject {}
+[CodeGenType("ChatCompletionList")] internal partial class InternalChatCompletionList {}
+[CodeGenType("ChatCompletionMessageList")] internal partial class InternalChatCompletionMessageList {}
