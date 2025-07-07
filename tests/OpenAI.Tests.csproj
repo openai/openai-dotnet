@@ -9,7 +9,7 @@
     <NoWarn>$(NoWarn);OPENAI001;</NoWarn>
 
     <LangVersion>latest</LangVersion>
-  </PropertyGroup> 
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />
   </ItemGroup>
