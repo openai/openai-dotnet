@@ -1,5 +1,5 @@
 # This workflow is triggered by new releases and on a daily schedule.
-# It builds, unit tests, live tests and published the Open AI nuget package.
+# It builds, unit tests, live tests and publishes the Open AI NuGet package.
 # For daily runs, the package is published to the GitHub package registry.
 # For releases, the package is published to the NuGet package registry.
 name: Release package
@@ -11,6 +11,10 @@ on:
     # run every day at 00:00
     - cron: '0 0 * * *'
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     name: Build
@@ -18,11 +22,13 @@ jobs:
     environment: Live Testing
     env:
       version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
-    permissions:
-      packages: write
-      contents: write
     steps:
       - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
+
+      - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.x'
@@ -30,7 +36,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Pack the client nuget package and include url back to the repository and release tag
+      # Pack the client NuGet package and include URL back to the repository and release tag
       - name: Build and Pack
         run: dotnet pack
           --configuration Release
@@ -81,6 +87,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Update GitHub release notes to point to the changelog
+        if: github.event_name == 'release'
+        run: |
+          gh release edit "${{ github.event.release.tag_name }}" \
+            --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
+
       - name: NuGet authenticate
         run: dotnet nuget add source
           "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
@@ -91,7 +103,7 @@ jobs:
 
       - name: Publish package to local feed
         run: dotnet nuget push
-            ${{github.workspace}}/build-artifacts/packages/*.nupkg
+            ${{ github.workspace }}/build-artifacts/packages/*.nupkg
             --source "github"
             --api-key ${{ secrets.GITHUB_TOKEN }}
             --skip-duplicate
@@ -99,7 +111,7 @@ jobs:
       - name: Publish package to nuget.org
         if: github.event_name == 'release'
         run: dotnet nuget push
-            ${{github.workspace}}/build-artifacts/packages/*.nupkg
+            ${{ github.workspace }}/build-artifacts/packages/*.nupkg
             --source https://api.nuget.org/v3/index.json
             --api-key ${{ secrets.NUGET_API_KEY }}
             --skip-duplicate
