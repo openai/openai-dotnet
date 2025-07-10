@@ -30,7 +30,6 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
         {
             ArrayPool<byte>.Shared.Return(toReturn);
         }
-        _webSocket?.Dispose();
         return default;
     }
 
