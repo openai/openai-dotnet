@@ -292,4 +292,58 @@ public partial class ChatModelFactoryTests
         Assert.That(update.FunctionName, Is.EqualTo(functionName));
         Assert.That(update.FunctionArgumentsUpdate, Is.EqualTo(functionArgumentsUpdate));
     }
+
+    [Test]
+    public void ChatMessageAnnotationWorks()
+    {
+        int startIndex = 5;
+        int endIndex = 10;
+        Uri webResourceUri = new Uri("https://example.com");
+        string webResourceTitle = "Example Resource";
+
+        ChatMessageAnnotation annotation = ChatModelFactory.ChatMessageAnnotation(
+            startIndex: startIndex,
+            endIndex: endIndex,
+            webResourceUri: webResourceUri,
+            webResourceTitle: webResourceTitle);
+
+        Assert.That(annotation.StartIndex, Is.EqualTo(startIndex));
+        Assert.That(annotation.EndIndex, Is.EqualTo(endIndex));
+        Assert.That(annotation.WebResourceUri, Is.EqualTo(webResourceUri));
+        Assert.That(annotation.WebResourceTitle, Is.EqualTo(webResourceTitle));
+    }
+
+    [Test]
+    public void ChatInputTokenUsageDetailsWorks()
+    {
+        int audioTokenCount = 25;
+        int cachedTokenCount = 75;
+
+        ChatInputTokenUsageDetails details = ChatModelFactory.ChatInputTokenUsageDetails(
+            audioTokenCount: audioTokenCount,
+            cachedTokenCount: cachedTokenCount);
+
+        Assert.That(details.AudioTokenCount, Is.EqualTo(audioTokenCount));
+        Assert.That(details.CachedTokenCount, Is.EqualTo(cachedTokenCount));
+    }
+
+    [Test]
+    public void ChatOutputTokenUsageDetailsWorks()
+    {
+        int reasoningTokenCount = 30;
+        int audioTokenCount = 15;
+        int acceptedPredictionTokenCount = 5;
+        int rejectedPredictionTokenCount = 2;
+
+        ChatOutputTokenUsageDetails details = ChatModelFactory.ChatOutputTokenUsageDetails(
+            reasoningTokenCount: reasoningTokenCount,
+            audioTokenCount: audioTokenCount,
+            acceptedPredictionTokenCount: acceptedPredictionTokenCount,
+            rejectedPredictionTokenCount: rejectedPredictionTokenCount);
+
+        Assert.That(details.ReasoningTokenCount, Is.EqualTo(reasoningTokenCount));
+        Assert.That(details.AudioTokenCount, Is.EqualTo(audioTokenCount));
+        Assert.That(details.AcceptedPredictionTokenCount, Is.EqualTo(acceptedPredictionTokenCount));
+        Assert.That(details.RejectedPredictionTokenCount, Is.EqualTo(rejectedPredictionTokenCount));
+    }
 }

@@ -209,4 +209,45 @@ public static partial class ChatModelFactory
             functionName: functionName,
             functionArgumentsUpdate: functionArgumentsUpdate);
     }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatMessageAnnotation"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatMessageAnnotation"/> instance for mocking. </returns>
+    public static ChatMessageAnnotation ChatMessageAnnotation(
+        int startIndex = default,
+        int endIndex = default,
+        Uri webResourceUri = default,
+        string webResourceTitle = default)
+    {
+        return OpenAI.Chat.OpenAIChatModelFactory.ChatMessageAnnotation(
+            startIndex: startIndex,
+            endIndex: endIndex,
+            webResourceUri: webResourceUri,
+            webResourceTitle: webResourceTitle);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatInputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatInputTokenUsageDetails"/> instance for mocking. </returns>
+    public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(
+        int audioTokenCount = default, 
+        int cachedTokenCount = default)
+    {
+        return OpenAI.Chat.OpenAIChatModelFactory.ChatInputTokenUsageDetails(
+            audioTokenCount: audioTokenCount,
+            cachedTokenCount: cachedTokenCount);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/> instance for mocking. </returns>
+    public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(
+        int reasoningTokenCount = default, 
+        int audioTokenCount = default, 
+        int acceptedPredictionTokenCount = default, 
+        int rejectedPredictionTokenCount = default)
+    {
+        return OpenAI.Chat.OpenAIChatModelFactory.ChatOutputTokenUsageDetails(
+            reasoningTokenCount: reasoningTokenCount,
+            audioTokenCount: audioTokenCount,
+            acceptedPredictionTokenCount: acceptedPredictionTokenCount,
+            rejectedPredictionTokenCount: rejectedPredictionTokenCount);
+    }
 }
