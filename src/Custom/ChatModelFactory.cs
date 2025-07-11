@@ -87,70 +87,7 @@ public static partial class ChatModelFactory
             additionalBinaryDataProperties: null);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.UserChatMessage"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Chat.UserChatMessage"/> instance for mocking. </returns>
-    public static UserChatMessage UserChatMessage(
-        string content = null,
-        string participantName = null)
-    {
-        content ??= "User message content";
-        var message = new UserChatMessage(content);
-        if (participantName != null)
-        {
-            message.ParticipantName = participantName;
-        }
-        return message;
-    }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.AssistantChatMessage"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Chat.AssistantChatMessage"/> instance for mocking. </returns>
-    public static AssistantChatMessage AssistantChatMessage(
-        string content = null,
-        IEnumerable<ChatToolCall> toolCalls = null,
-        string participantName = null)
-    {
-        AssistantChatMessage message;
-        if (toolCalls != null)
-        {
-            message = new AssistantChatMessage(toolCalls);
-        }
-        else
-        {
-            content ??= "Assistant message content";
-            message = new AssistantChatMessage(content);
-        }
-        
-        if (participantName != null)
-        {
-            message.ParticipantName = participantName;
-        }
-        return message;
-    }
-
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.SystemChatMessage"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Chat.SystemChatMessage"/> instance for mocking. </returns>
-    public static SystemChatMessage SystemChatMessage(
-        string content = null,
-        string participantName = null)
-    {
-        content ??= "System message content";
-        var message = new SystemChatMessage(content);
-        if (participantName != null)
-        {
-            message.ParticipantName = participantName;
-        }
-        return message;
-    }
-
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ToolChatMessage"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Chat.ToolChatMessage"/> instance for mocking. </returns>
-    public static ToolChatMessage ToolChatMessage(
-        string toolCallId = "tool_call_id",
-        string content = null)
-    {
-        content ??= "Tool message content";
-        return new ToolChatMessage(toolCallId, content);
-    }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenUsage"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatTokenUsage"/> instance for mocking. </returns>

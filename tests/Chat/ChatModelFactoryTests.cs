@@ -146,77 +146,7 @@ public partial class ChatModelFactoryTests
         Assert.That(result.ChatCompletionId, Is.EqualTo(chatCompletionId));
     }
 
-    [Test]
-    public void UserChatMessageWorks()
-    {
-        string content = "Hello, assistant!";
-        string participantName = "user1";
 
-        UserChatMessage message = ChatModelFactory.UserChatMessage(
-            content: content,
-            participantName: participantName);
-
-        Assert.That(message.Content[0].Text, Is.EqualTo(content));
-        Assert.That(message.ParticipantName, Is.EqualTo(participantName));
-        Assert.That(message.Role, Is.EqualTo(ChatMessageRole.User));
-    }
-
-    [Test]
-    public void AssistantChatMessageWorks()
-    {
-        string content = "Hello, user!";
-        IEnumerable<ChatToolCall> toolCalls = [
-            ChatToolCall.CreateFunctionToolCall("id1", "get_weather", BinaryData.FromString("{}"))
-        ];
-        string participantName = "assistant1";
-
-        AssistantChatMessage message = ChatModelFactory.AssistantChatMessage(
-            content: content,
-            participantName: participantName);
-
-        Assert.That(message.Content[0].Text, Is.EqualTo(content));
-        Assert.That(message.ParticipantName, Is.EqualTo(participantName));
-        Assert.That(message.Role, Is.EqualTo(ChatMessageRole.Assistant));
-
-        // Test with tool calls
-        AssistantChatMessage messageWithToolCalls = ChatModelFactory.AssistantChatMessage(
-            toolCalls: toolCalls,
-            participantName: participantName);
-
-        Assert.That(messageWithToolCalls.ToolCalls.SequenceEqual(toolCalls), Is.True);
-        Assert.That(messageWithToolCalls.ParticipantName, Is.EqualTo(participantName));
-        Assert.That(messageWithToolCalls.Role, Is.EqualTo(ChatMessageRole.Assistant));
-    }
-
-    [Test]
-    public void SystemChatMessageWorks()
-    {
-        string content = "You are a helpful assistant";
-        string participantName = "system";
-
-        SystemChatMessage message = ChatModelFactory.SystemChatMessage(
-            content: content,
-            participantName: participantName);
-
-        Assert.That(message.Content[0].Text, Is.EqualTo(content));
-        Assert.That(message.ParticipantName, Is.EqualTo(participantName));
-        Assert.That(message.Role, Is.EqualTo(ChatMessageRole.System));
-    }
-
-    [Test]
-    public void ToolChatMessageWorks()
-    {
-        string toolCallId = "tool_call_id";
-        string content = "Weather is sunny";
-
-        ToolChatMessage message = ChatModelFactory.ToolChatMessage(
-            toolCallId: toolCallId,
-            content: content);
-
-        Assert.That(message.Content[0].Text, Is.EqualTo(content));
-        Assert.That(message.ToolCallId, Is.EqualTo(toolCallId));
-        Assert.That(message.Role, Is.EqualTo(ChatMessageRole.Tool));
-    }
 
     [Test]
     public void ChatTokenUsageWorks()
