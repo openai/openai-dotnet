@@ -55,6 +55,19 @@ public partial class ResponseTool
             );
     }
 
-    /* </GP> CUSTOM: Added code interpreter tool.                               *
+	public static ResponseTool CreateMCPServerTool(string serverLabel, string serverUrl, Dictionary<string, string> headers, List<string> allowedTools, string requireApproval, IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
+	{
+        return new InternalMCPTool(
+            kind: InternalToolType.Mcp,
+            additionalBinaryDataProperties: additionalBinaryDataProperties,
+            serverLabel: serverLabel,
+            serverUrl: serverUrl,
+            headers: headers,
+            allowedTools: BinaryData.FromString("[" + string.Join(",", allowedTools.Select(t => "\"" + t + "\"").ToList()) + "]"),
+            requireApproval: BinaryData.FromString("\"" + requireApproval + "\"")
+        );
+	}
+
+	/* </GP> CUSTOM: Added code interpreter tool.                               *
      ****************************************************************************/
 }

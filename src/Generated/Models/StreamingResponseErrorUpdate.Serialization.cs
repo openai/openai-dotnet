@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseErrorUpdate : IJsonModel<StreamingResponseErrorUpdate>
     {
-        internal StreamingResponseErrorUpdate() : this(InternalResponseStreamEventType.Error, default, null, null, null, null)
+        internal StreamingResponseErrorUpdate() : this(InternalResponseStreamEventType.Error, default, null, null, null, null, null)
         {
         }
 
@@ -90,6 +90,7 @@ namespace OpenAI.Responses
             string code = default;
             string message = default;
             string @param = default;
+            string errorType = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -127,14 +128,58 @@ namespace OpenAI.Responses
                     @param = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+				if (prop.NameEquals("error"u8))
+				{
+                    JsonElement errorElem = prop.Value;
+					foreach (var errorProp in errorElem.EnumerateObject())
+                    {
+						if (errorProp.NameEquals("type"u8))
+						{
+							if (errorProp.Value.ValueKind == JsonValueKind.Null)
+							{
+								errorType = null;
+								continue;
+							}
+							errorType = errorProp.Value.GetString();
+							continue;
+						}
+						if (errorProp.NameEquals("code"u8))
+						{
+							if (errorProp.Value.ValueKind == JsonValueKind.Null)
+							{
+								code = null;
+								continue;
+							}
+							code = errorProp.Value.GetString();
+							continue;
+						}
+						if (errorProp.NameEquals("message"u8))
+						{
+							message = errorProp.Value.GetString();
+							continue;
+						}
+						if (errorProp.NameEquals("param"u8))
+						{
+							if (errorProp.Value.ValueKind == JsonValueKind.Null)
+							{
+								@param = null;
+								continue;
+							}
+							@param = errorProp.Value.GetString();
+							continue;
+						}
+					}
+					continue;
+				}
+				// Plugin customization: remove options.Format != "W" check
+				additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new StreamingResponseErrorUpdate(
                 kind,
-                sequenceNumber,
+				sequenceNumber,
                 additionalBinaryDataProperties,
-                code,
+				errorType,
+				code,
                 message,
                 @param);
         }
