@@ -7,6 +7,7 @@
 using ModelContextProtocol;
 using ModelContextProtocol.Client;
 using OpenAI.Chat;
+using System.Text.Json;
 
 string mcpCommand = Environment.GetEnvironmentVariable("MCP_SERVER_COMMAND")!; // path to a stdio mcp server
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -23,9 +24,9 @@ IMcpClient mcpClient = await McpClientFactory.CreateAsync(new StdioClientTranspo
 
 // get avaliable tools and add them to completion options
 ChatCompletionOptions options = new();
-await foreach (McpClientTool chatTool in mcpClient.EnumerateToolsAsync())
+await foreach (McpClientTool tool in mcpClient.EnumerateToolsAsync())
 {
-    options.Tools.Add(chatTool.AsOpenAIChatTool());
+    options.Tools.Add(ChatTool.CreateFunctionTool(tool.Name, tool.Description, BinaryData.FromString(tool.JsonSchema.GetRawText())));
 }
 
 // conversation thread
@@ -40,15 +41,14 @@ conversation.Add(ChatMessage.CreateAssistantMessage(chatCompletion));
 switch (chatCompletion.FinishReason)
 {
     case ChatFinishReason.ToolCalls:
-        foreach(var call in chatCompletion.ToolCalls)
+        foreach (var call in chatCompletion.ToolCalls)
         {
             var mcpArguments = call.FunctionArguments.ToObjectFromJson<Dictionary<string, object>>();
             Console.WriteLine("Tool call detected, calling MCP server...");
-            ModelContextProtocol.Protocol.CallToolResult result = await mcpClient.CallToolAsync(call.FunctionName, mcpArguments!);
-            Console.WriteLine($"tool call result {result.Content[0]}");
-            ChatMessage message = call.ToMessage(result.Content.ToAIContents());
-            conversation.Add(message);
-        }     
+            var result = await mcpClient.CallToolAsync(call.FunctionName, mcpArguments!);
+            Console.WriteLine($"Tool call result {result.Content[0]}");
+            conversation.Add(ChatMessage.CreateToolMessage(call.Id, JsonSerializer.Serialize(result)));
+        }
         goto start;
     case ChatFinishReason.Stop:
         Console.WriteLine(chatCompletion.Content[0].Text);
@@ -56,34 +56,3 @@ switch (chatCompletion.FinishReason)
     default:
         throw new NotImplementedException();
 }
-
-#region TEMPORARY
-// this is temporary. all these APIs will endup being in one of the packages used here. 
-public static class TemporaryExtensions
-{
-    // this needs to be in the adapter package
-    public static ChatMessage ToMessage(this ChatToolCall openaiCall, IEnumerable<Microsoft.Extensions.AI.AIContent> contents)
-    {
-        List<ChatMessageContentPart> parts = new();
-        foreach (Microsoft.Extensions.AI.AIContent content in contents)
-        {
-            string serialized = System.Text.Json.JsonSerializer.Serialize(content.RawRepresentation);
-            using System.Text.Json.JsonDocument json = System.Text.Json.JsonDocument.Parse(serialized);
-            System.Text.Json.JsonElement text = json.RootElement.GetProperty("text");
-            string textValue = text.GetString() ?? string.Empty;
-            parts.Add(ChatMessageContentPart.CreateTextPart(textValue));
-        }
-        ToolChatMessage message = ChatMessage.CreateToolMessage(openaiCall.Id, parts);
-        return message;
-    }
-
-    // this is in the adapter package
-    public static ChatTool AsOpenAIChatTool(this Microsoft.Extensions.AI.AIFunction mcpTool)
-    {
-        return ChatTool.CreateFunctionTool(
-            mcpTool.Name,
-            mcpTool.Description,
-            BinaryData.FromString(mcpTool.JsonSchema.GetRawText()));
-    }
-}
-#endregion
