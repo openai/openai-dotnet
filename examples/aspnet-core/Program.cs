@@ -52,5 +52,22 @@ public class ChatHttpHandler
     }
 }
 
-public record ChatRequest(string Message);
-public record ChatResponse(string Response);
+public class ChatRequest
+{
+    public string Message { get; set; }
+    
+    public ChatRequest(string message)
+    {
+        Message = message;
+    }
+}
+
+public class ChatResponse
+{
+    public string Response { get; set; }
+    
+    public ChatResponse(string response)
+    {
+        Response = response;
+    }
+}
