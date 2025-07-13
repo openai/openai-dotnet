@@ -104,7 +104,7 @@ app.MapPost("/chat/complete", async (ChatRequest request, ChatClient client) =>
 
 ## Why Singleton?
 
-- **Thread-Safe**: ChatClient is thread-safe and can handle concurrent requests
+- **Thread-Safe**: `ChatClient` is thread-safe and can handle concurrent requests
 - **Resource Efficient**: Reuses HTTP connections and avoids creating multiple instances
 - **Performance**: Reduces object allocation overhead
 - **Stateless**: Clients don't maintain per-request state
