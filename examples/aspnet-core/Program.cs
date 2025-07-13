@@ -54,5 +54,3 @@ public class ChatHttpHandler
 
 public record ChatRequest(string Message);
 public record ChatResponse(string Response);
-public record EmbeddingRequest(string Text);
-public record EmbeddingResponse(float[] Vector);
