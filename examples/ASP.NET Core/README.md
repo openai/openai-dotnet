@@ -1,6 +1,6 @@
 # OpenAI ASP.NET Core Example
 
-This example demonstrates how to use the OpenAI .NET client library with ASP.NET Core's dependency injection container, registering a ChatClient as a singleton for optimal performance and resource usage.
+This example demonstrates how to use the OpenAI .NET client library with ASP.NET Core's dependency injection container, registering a `ChatClient` as a singleton for optimal performance and resource usage.
 
 ## Features
 
