@@ -12,6 +12,7 @@ builder.Services.AddSingleton<ChatClient>(serviceProvider => new ChatClient(buil
         ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY")
         ?? throw new InvalidOperationException("OpenAI API key not found")))
 );
+builder.Services.AddScoped<ChatHttpHandler>();
 
 
 var app = builder.Build();
@@ -25,17 +26,33 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Chat completion endpoint using injected ChatClient client
-app.MapPost("/chat/complete", async (ChatRequest request, ChatClient client) =>
-{
-    var completion = await client.CompleteChatAsync(request.Message);
+var chatHandler = app.Services.GetRequiredService<ChatHttpHandler>();
 
-    return new ChatResponse(completion.Value.Content[0].Text);
-});
+app.MapPost("/chat/complete", chatHandler.HandleChatRequest);
 
 app.Run();
 
-record ChatRequest(string Message);
-record ChatResponse(string Response);
-record EmbeddingRequest(string Text);
-record EmbeddingResponse(float[] Vector);
+public class ChatHttpHandler
+{
+    private readonly ChatClient _client;
+    private readonly ILogger<ChatHttpHandler> _logger;
+
+    // Chat completion endpoint using injected ChatClient client
+    public ChatHttpHandler(ChatClient client, ILogger<ChatHttpHandler> logger)
+    {
+        _client = client;
+        _logger = logger;
+    }
+
+    public async Task<ChatResponse> HandleChatRequest(ChatRequest request)
+    {
+        _logger.LogInformation("Handling chat request: {Message}", request.Message);
+        var completion = await _client.CompleteChatAsync(request.Message);
+        return new ChatResponse(completion.Value.Content[0].Text);
+    }
+}
+
+public record ChatRequest(string Message);
+public record ChatResponse(string Response);
+public record EmbeddingRequest(string Text);
+public record EmbeddingResponse(float[] Vector);

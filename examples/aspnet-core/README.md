@@ -20,8 +20,8 @@ This example demonstrates how to use the OpenAI .NET client library with ASP.NET
 
    **Environment Variable (Recommended):**
 
-   ```bash
-   export OPENAI_API_KEY="your-api-key-here"
+   ```powershell
+   $env:OPENAI_API_KEY = "your-api-key-here"
    ```
 
    **Configuration (appsettings.json):**
@@ -37,13 +37,13 @@ This example demonstrates how to use the OpenAI .NET client library with ASP.NET
 
 2. **Install dependencies:**
 
-   ```bash
+   ```powershell
    dotnet restore
    ```
 
 3. **Run the application:**
 
-   ```bash
+   ```powershell
    dotnet run
    ```
 
@@ -68,14 +68,15 @@ This example demonstrates how to use the OpenAI .NET client library with ASP.NET
   }
   ```
 
-## Testing with cURL
+## Testing with PowerShell
 
 **Chat Completion:**
 
-```bash
-curl -X POST "https://localhost:7071/chat/complete" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "What is the capital of France?"}'
+```powershell
+Invoke-RestMethod -Uri "https://localhost:5000/chat/complete" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"message": "What is the capital of France?"}'
 ```
 
 ## Key Implementation Details
