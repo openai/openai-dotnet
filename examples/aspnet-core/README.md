@@ -117,3 +117,9 @@ When running in development mode, you can access the Swagger UI at:
 - `https://localhost:7071/swagger`
 
 This provides an interactive interface to test the API endpoints.
+
+## Additional Resources
+
+- [Tutorial: Create a minimal API with ASP.NET Core](https://learn.microsoft.com/aspnet/core/tutorials/min-web-api)
+- [.NET dependency injection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection)
+- [Logging in C# and .NET](https://learn.microsoft.com/dotnet/core/extensions/logging)
