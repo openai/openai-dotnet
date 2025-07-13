@@ -15,6 +15,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
   - [Namespace organization](#namespace-organization)
   - [Using the async API](#using-the-async-api)
   - [Using the `OpenAIClient` class](#using-the-openaiclient-class)
+- [How to use dependency injection](#how-to-use-dependency-injection)
 - [How to use chat completions with streaming](#how-to-use-chat-completions-with-streaming)
 - [How to use chat completions with tools and function calling](#how-to-use-chat-completions-with-tools-and-function-calling)
 - [How to use chat completions with structured outputs](#how-to-use-chat-completions-with-structured-outputs)
