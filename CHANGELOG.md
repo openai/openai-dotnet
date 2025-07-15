@@ -1,5 +1,11 @@
 # Release History
 
+## 2.3.0-beta.1 (Unreleased)
+
+### Other changes
+
+- Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses. 
+
 ## 2.2.0 (2025-07-02)
 
 ### Features Added
