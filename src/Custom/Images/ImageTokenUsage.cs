@@ -5,7 +5,6 @@ namespace OpenAI.Images;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("ImagesResponseUsage")]
 public partial class ImageTokenUsage
 {

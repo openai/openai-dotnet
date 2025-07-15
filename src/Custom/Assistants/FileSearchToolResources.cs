@@ -5,7 +5,6 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("ToolResourcesFileSearch")]
 [CodeGenVisibility(nameof(FileSearchToolResources), CodeGenVisibility.Public)]
 [CodeGenSerialization(nameof(NewVectorStores), "vector_stores", SerializationValueHook = nameof(SerializeNewVectorStores))]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +7,6 @@ namespace OpenAI.FineTuning;
 /// <summary>
 /// Settings for fine tuning integration with Weights and Biases (https://wandb.ai).
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestWandbIntegration")]
 [CodeGenSuppress(nameof(WeightsAndBiasesIntegration), typeof(InternalCreateFineTuningJobRequestWandbIntegrationWandb))]
 [CodeGenSuppress(nameof(WeightsAndBiasesIntegration), typeof(string), typeof(IDictionary<string, BinaryData>), typeof(InternalCreateFineTuningJobRequestWandbIntegrationWandb))]

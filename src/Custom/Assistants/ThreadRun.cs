@@ -12,7 +12,6 @@ namespace OpenAI.Assistants;
 //  - Required actions are abstracted into a forward-compatible, strongly-typed conceptual
 //    hierarchy and formatted into a more intuitive collection for the consumer.
 
-[Experimental("OPENAI001")]
 [CodeGenType("RunObject")]
 public partial class ThreadRun
 {

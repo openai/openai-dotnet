@@ -13,7 +13,6 @@ namespace OpenAI.Realtime;
 /// <see cref="InputTranscriptionOptions"/> (<c>input_audio_transcription</c> in <c>session.update</c>)
 /// settings.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionDelta")]
 public partial class InputAudioTranscriptionDeltaUpdate
 {

@@ -11,7 +11,6 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// Represents additional options available when creating a new <see cref="ThreadRun"/>.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("CreateRunRequest")]
 [CodeGenVisibility(nameof(RunCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(RunCreationOptions), typeof(string))]

@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -16,5 +19,21 @@ namespace OpenAI.Chat
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCompleteChatRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CompleteChatAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCompleteChatRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

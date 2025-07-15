@@ -31,7 +31,6 @@ public partial class CreateBatchFileJobOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetFileBatchAsync(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
@@ -44,7 +43,6 @@ public partial class CreateBatchFileJobOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetFileBatch(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
@@ -57,10 +55,9 @@ public partial class CreateBatchFileJobOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> CancelAsync(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        using PipelineMessage message = _parentClient.CreateCancelBatchFileJobRequest(_vectorStoreId, _batchId, options);
         return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -70,10 +67,9 @@ public partial class CreateBatchFileJobOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult Cancel(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateCancelVectorStoreFileBatchRequest(_vectorStoreId, _batchId, options);
+        using PipelineMessage message = _parentClient.CreateCancelBatchFileJobRequest(_vectorStoreId, _batchId, options);
         return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 

@@ -56,7 +56,7 @@ namespace OpenAI.Chat
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateChatCompletionRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCompleteChatRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

@@ -9,7 +9,6 @@ namespace OpenAI.Realtime;
 /// The update (response command) of type <c>rate_limits_updated</c>, which is received during a response and provides
 /// the most recent information about configured rate limits.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventRateLimitsUpdated")]
 public partial class RateLimitsUpdate
 {

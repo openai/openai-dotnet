@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("ToolResourcesFileSearchVectorStore")]
 public partial class VectorStoreCreationHelper
 {

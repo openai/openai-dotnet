@@ -1,4 +1,4 @@
-﻿using System.ClientModel;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -6,7 +6,6 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 // CUSTOM: Added Experimental attribute.
-[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionDeleted")]
 public partial class ChatCompletionDeletionResult
 {

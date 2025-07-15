@@ -12,10 +12,9 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// The service client for OpenAI vector store operations.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("VectorStores")]
-[CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelBatchFileJob", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelBatchFileJobAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
@@ -27,10 +26,10 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatch", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
-[CodeGenSuppress("DeleteVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("DeleteVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RemoveFileFromStore", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RemoveFileFromStoreAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFileAssociation", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFileAssociationAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveVectorStoreFileContent", typeof(string), typeof(string), typeof(CancellationToken))]
@@ -39,8 +38,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("SearchVectorStoreAsync", typeof(string), typeof(BinaryData), typeof(bool?), typeof(int?), typeof(BinaryData), typeof(InternalVectorStoreSearchRequestRankingOptions), typeof(CancellationToken))]
 [CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("CancelVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelBatchFileJobAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("CancelBatchFileJob", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("GetFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 public partial class VectorStoreClient

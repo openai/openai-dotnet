@@ -5,11 +5,13 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
+    [Experimental("OPENAI001")]
     public partial class OpenAIResponseClient
     {
         private readonly Uri _endpoint;
@@ -25,6 +27,38 @@ namespace OpenAI.Responses
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateResponseRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateResponseRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteResponse(string responseId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateDeleteResponseRequest(responseId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateDeleteResponseRequest(responseId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
 
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options)
         {

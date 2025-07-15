@@ -10,7 +10,6 @@ namespace OpenAI.Realtime;
 /// is preceded by a <see cref="OutputStreamingStartedUpdate"/> and some number of <c>*delta</c> commands as
 /// represented by <see cref="OutputDeltaUpdate"/>.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseOutputItemDone")]
 public partial class OutputStreamingFinishedUpdate
 {

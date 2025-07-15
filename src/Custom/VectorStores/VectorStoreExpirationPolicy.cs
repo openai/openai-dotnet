@@ -7,7 +7,6 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// Represents the the configuration that controls when a vector store will be automatically deleted.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("VectorStoreExpirationAfter")]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int))]
 [CodeGenSuppress(nameof(VectorStoreExpirationPolicy), typeof(int), typeof(VectorStoreExpirationAnchor))]

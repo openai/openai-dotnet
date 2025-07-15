@@ -8,7 +8,6 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// A representation of a file storage and indexing container used by the <c>file_search</c> tool for assistants.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("VectorStoreObject")]
 public partial class VectorStore
 {

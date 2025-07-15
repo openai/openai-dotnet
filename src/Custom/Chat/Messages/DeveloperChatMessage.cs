@@ -10,7 +10,6 @@ namespace OpenAI.Chat;
 /// <c>assistant</c> role response messages. These messages may help control behavior, style, tone, and
 /// restrictions for a model-based assistant. Developer messages replace system messages for o1 models and newer.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionRequestDeveloperMessage")]
 [CodeGenVisibility(nameof(DeveloperChatMessage), CodeGenVisibility.Internal)]
 [CodeGenSuppress("DeveloperChatMessage", typeof(ChatMessageContent))]

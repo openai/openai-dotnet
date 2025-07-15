@@ -149,7 +149,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateCancelVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelBatchFileJobRequest(string vectorStoreId, string batchId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -263,7 +263,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetVectorStoreFileRequest(string vectorStoreId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFileAssociationRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -281,7 +281,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateDeleteVectorStoreFileRequest(string vectorStoreId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateRemoveFileFromStoreRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

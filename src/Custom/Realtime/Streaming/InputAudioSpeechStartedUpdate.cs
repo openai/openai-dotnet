@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// <c>server_vad</c> <c>turn_detection</c> (including the default) processes the end of evaluated human speech
 /// within the input audio buffer.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventInputAudioBufferSpeechStarted")]
 public partial class InputAudioSpeechStartedUpdate
 {

@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("DotNetAssistantResponseFormat")]
 public partial class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>
 {

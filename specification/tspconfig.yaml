@@ -1,0 +1,15 @@
+emit:
+  - "@open-ai/plugin"
+options:
+  "@typespec/http-client-csharp":
+    emitter-output-dir: "{project-root}/.."
+    unreferenced-types-handling: keepAll
+    disable-xml-docs: true
+    enable-internal-raw-data: true
+    save-inputs: true
+    generate-model-factory: false
+  "@open-ai/plugin":
+    emitter-output-dir: "{project-root}/.."
+    unreferenced-types-handling: keepAll
+    disable-xml-docs: true
+    save-inputs: true

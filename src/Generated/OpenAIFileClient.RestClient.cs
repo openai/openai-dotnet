@@ -33,7 +33,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateFileRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateUploadFileRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -66,7 +66,7 @@ namespace OpenAI.Files
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveFileRequest(string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFileRequest(string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

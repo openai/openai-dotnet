@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// command
 /// (<see cref="RealtimeSession.ConfigureConversationSessionAsync(OpenAI.Realtime.ConversationSessionOptions, System.Threading.CancellationToken)"/>).
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventSessionCreated")]
 public partial class ConversationSessionStartedUpdate
 {

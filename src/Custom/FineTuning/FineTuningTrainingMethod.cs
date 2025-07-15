@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.FineTuning;
 
-[Experimental("OPENAI001")]
 [CodeGenType("FineTuneMethod")]
 public partial class FineTuningTrainingMethod
 {

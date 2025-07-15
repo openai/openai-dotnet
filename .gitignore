@@ -181,3 +181,11 @@ TempTypeSpecFiles/
 # Artifacts from the generator
 tspCodeModel.json
 Configuration.json
+
+# Base specification files
+specification/base/
+
+# Generator default TypeSpec output
+codegen/tsp-output/
+codegen/temp/
+codegen/emitter/temp/tsconfig.tsbuildinfo

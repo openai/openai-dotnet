@@ -18,8 +18,8 @@ namespace OpenAI.Chat;
 /// <summary> The service client for OpenAI chat operations. </summary>
 [CodeGenType("Chat")]
 [CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateChatCompletion", typeof(ChatCompletionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateChatCompletionAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CompleteChat", typeof(ChatCompletionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("CompleteChatAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletionMessagesAsync", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletions", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(IDictionary<string, string>), typeof(string), typeof(CancellationToken))]

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("MessageContent")]
 public partial class MessageContent
 {

@@ -12,7 +12,6 @@ namespace OpenAI.Realtime;
 /// (<see cref="RealtimeSession.ClearInputAudioAsync(System.Threading.CancellationToken)"/> has completed
 /// purging the user audio input buffer.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventInputAudioBufferCleared")]
 public partial class InputAudioClearedUpdate
 { }

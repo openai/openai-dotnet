@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 /// <summary>
 /// Represents an audio update in a streaming chat response.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionMessageAudioChunk")]
 public partial class StreamingChatOutputAudioUpdate
 {

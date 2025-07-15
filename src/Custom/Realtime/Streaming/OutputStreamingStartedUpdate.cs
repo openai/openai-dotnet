@@ -9,7 +9,6 @@ namespace OpenAI.Realtime;
 /// has begun generation of a new conversation item. This new item will have content streamed via <c>*delta</c>
 /// commands and paired with an ending <c>response.output_item.done</c> update.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseOutputItemAdded")]
 public partial class OutputStreamingStartedUpdate
 {

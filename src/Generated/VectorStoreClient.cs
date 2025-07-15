@@ -5,11 +5,13 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using OpenAI;
 
 namespace OpenAI.VectorStores
 {
+    [Experimental("OPENAI001")]
     public partial class VectorStoreClient
     {
         private readonly Uri _endpoint;
@@ -33,6 +35,94 @@ namespace OpenAI.VectorStores
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCreateVectorStoreRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateModifyVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> ModifyVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateModifyVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteVectorStore(string vectorStoreId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            using PipelineMessage message = CreateDeleteVectorStoreRequest(vectorStoreId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteVectorStoreAsync(string vectorStoreId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            using PipelineMessage message = CreateDeleteVectorStoreRequest(vectorStoreId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            using PipelineMessage message = CreateCancelBatchFileJobRequest(vectorStoreId, batchId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CancelBatchFileJobAsync(string vectorStoreId, string batchId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            using PipelineMessage message = CreateCancelBatchFileJobRequest(vectorStoreId, batchId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateGetFileAssociationRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateGetFileAssociationRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

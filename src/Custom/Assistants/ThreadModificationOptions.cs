@@ -6,7 +6,6 @@ namespace OpenAI.Assistants;
 /// <summary>
 /// Represents additional options available when modifying an existing <see cref="AssistantThread"/>.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("ModifyThreadRequest")]
 public partial class ThreadModificationOptions
 {

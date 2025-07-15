@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeConversationRequestItem")]
 public partial class RealtimeItem
 {

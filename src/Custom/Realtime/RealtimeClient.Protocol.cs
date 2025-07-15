@@ -18,7 +18,6 @@ public partial class RealtimeClient
     /// <param name="model"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<RealtimeSession> StartConversationSessionAsync(string model, RequestOptions options)
     {
         Argument.AssertNotNull(model, nameof(model));
@@ -31,7 +30,6 @@ public partial class RealtimeClient
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RequestOptions options)
         => StartSessionAsync(model: null, intent: "transcription", options);
 
@@ -43,7 +41,6 @@ public partial class RealtimeClient
     /// <param name="intent"></param>
     /// <param name="options"></param>
     /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<RealtimeSession> StartSessionAsync(string model, string intent, RequestOptions options)
     {
         Uri fullEndpoint = BuildSessionEndpoint(_baseEndpoint, model, intent);

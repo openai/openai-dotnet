@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -13,7 +13,6 @@ namespace OpenAI.Chat;
 /// responses, respectively. The <see cref="AssistantChatMessage(ChatCompletion)"/> constructor overload can also be
 /// used to automatically populate the appropriate properties from a <see cref="ChatCompletion"/> instance.
 /// </remarks>
-[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionRequestAssistantMessageAudio1")]
 public partial class ChatOutputAudioReference
 {

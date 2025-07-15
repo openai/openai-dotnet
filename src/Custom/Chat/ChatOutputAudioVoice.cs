@@ -6,7 +6,6 @@ namespace OpenAI.Chat;
 /// <summary>
 /// Specifies the available voices that the model can use when generating output audio as part of a chat completion.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("DotNetChatVoiceIds")]
 public readonly partial struct ChatOutputAudioVoice
 {

@@ -58,152 +58,106 @@ namespace OpenAI.Assistants {
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
         public ClientPipeline Pipeline { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options);
         public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CancelRunAsync(string threadId, string runId, RequestOptions options);
         public virtual Task<ClientResult<ThreadRun>> CancelRunAsync(string threadId, string runId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateAssistant(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<Assistant> CreateAssistant(string model, AssistantCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateAssistantAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Assistant>> CreateAssistantAsync(string model, AssistantCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<ThreadMessage> CreateMessage(string threadId, MessageRole role, IEnumerable<MessageContent> content, MessageCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateMessage(string threadId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadMessage>> CreateMessageAsync(string threadId, MessageRole role, IEnumerable<MessageContent> content, MessageCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateMessageAsync(string threadId, BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ThreadRun> CreateRun(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> CreateRunAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(string threadId, string assistantId, RunCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AssistantThread> CreateThread(ThreadCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateThread(BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ThreadRun> CreateThreadAndRun(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateThreadAndRunAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> CreateThreadAndRunAsync(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(string assistantId, ThreadCreationOptions threadOptions = null, RunCreationOptions runOptions = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteAssistant(string assistantId, RequestOptions options);
         public virtual ClientResult<AssistantDeletionResult> DeleteAssistant(string assistantId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteAssistantAsync(string assistantId, RequestOptions options);
         public virtual Task<ClientResult<AssistantDeletionResult>> DeleteAssistantAsync(string assistantId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteMessage(string threadId, string messageId, RequestOptions options);
         public virtual ClientResult<MessageDeletionResult> DeleteMessage(string threadId, string messageId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteMessageAsync(string threadId, string messageId, RequestOptions options);
         public virtual Task<ClientResult<MessageDeletionResult>> DeleteMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteThread(string threadId, RequestOptions options);
         public virtual ClientResult<ThreadDeletionResult> DeleteThread(string threadId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteThreadAsync(string threadId, RequestOptions options);
         public virtual Task<ClientResult<ThreadDeletionResult>> DeleteThreadAsync(string threadId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetAssistant(string assistantId, RequestOptions options);
         public virtual ClientResult<Assistant> GetAssistant(string assistantId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetAssistantAsync(string assistantId, RequestOptions options);
         public virtual Task<ClientResult<Assistant>> GetAssistantAsync(string assistantId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Assistant> GetAssistants(AssistantCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Assistant> GetAssistants(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(AssistantCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetMessage(string threadId, string messageId, RequestOptions options);
         public virtual ClientResult<ThreadMessage> GetMessage(string threadId, string messageId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options);
         public virtual Task<ClientResult<ThreadMessage>> GetMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ThreadMessage> GetMessages(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options);
         public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options);
         public virtual Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ThreadRun> GetRuns(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ThreadRun> GetRuns(string threadId, RunCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(string threadId, RunCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions options);
         public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options);
         public virtual Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<RunStep> GetRunSteps(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<RunStep> GetRunSteps(string threadId, string runId, RunStepCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(string threadId, string runId, RunStepCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetThread(string threadId, RequestOptions options);
         public virtual ClientResult<AssistantThread> GetThread(string threadId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetThreadAsync(string threadId, RequestOptions options);
         public virtual Task<ClientResult<AssistantThread>> GetThreadAsync(string threadId, CancellationToken cancellationToken = default);
         public virtual ClientResult<Assistant> ModifyAssistant(string assistantId, AssistantModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ModifyAssistant(string assistantId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Assistant>> ModifyAssistantAsync(string assistantId, AssistantModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ModifyAssistantAsync(string assistantId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ThreadMessage> ModifyMessage(string threadId, string messageId, MessageModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ModifyMessage(string threadId, string messageId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadMessage>> ModifyMessageAsync(string threadId, string messageId, MessageModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ModifyMessageAsync(string threadId, string messageId, BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ModifyRun(string threadId, string runId, BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<AssistantThread> ModifyThread(string threadId, ThreadModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ModifyThread(string threadId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<AssistantThread>> ModifyThreadAsync(string threadId, ThreadModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ModifyThreadAsync(string threadId, BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ThreadRun> SubmitToolOutputsToRun(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> SubmitToolOutputsToRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ThreadRun>> SubmitToolOutputsToRunAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
@@ -1012,17 +966,13 @@ namespace OpenAI.Audio {
         public AudioClient(string model, ApiKeyCredential credential);
         public AudioClient(string model, string apiKey);
         public ClientPipeline Pipeline { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
@@ -1258,6 +1208,8 @@ namespace OpenAI.Batch {
         public ClientPipeline Pipeline { get; }
         public virtual CreateBatchOperation CreateBatch(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
+        public virtual ClientResult GetBatch(string batchId, RequestOptions options);
+        public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
         public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
@@ -1314,11 +1266,9 @@ namespace OpenAI.Chat {
         public ChatClient(string model, string apiKey);
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ChatCompletion> CompleteChat(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(params ChatMessage[] messages);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CompleteChatAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(params ChatMessage[] messages);
@@ -1876,11 +1826,9 @@ namespace OpenAI.Embeddings {
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateEmbeddings(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIEmbeddingCollection> GenerateEmbeddings(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GenerateEmbeddingsAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2034,39 +1982,29 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult> CompleteUploadAsync(string uploadId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateUpload(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateUploadAsync(BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteFile(string fileId, RequestOptions options);
         public virtual ClientResult<FileDeletionResult> DeleteFile(string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteFileAsync(string fileId, RequestOptions options);
         public virtual Task<ClientResult<FileDeletionResult>> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DownloadFile(string fileId, RequestOptions options);
         public virtual ClientResult<BinaryData> DownloadFile(string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DownloadFileAsync(string fileId, RequestOptions options);
         public virtual Task<ClientResult<BinaryData>> DownloadFileAsync(string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetFile(string fileId, RequestOptions options);
         public virtual ClientResult<OpenAIFile> GetFile(string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetFileAsync(string fileId, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFile>> GetFileAsync(string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetFiles(string purpose, RequestOptions options);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<OpenAIFile> UploadFile(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> UploadFileAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
@@ -2533,33 +2471,27 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateImageEdits(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateImages(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GenerateImagesAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageVariationOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GenerateImageVariations(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, int imageCount, ImageVariationOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GenerateImageVariationsAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
@@ -2647,22 +2579,16 @@ namespace OpenAI.Models {
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         public ClientPipeline Pipeline { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteModel(string model, RequestOptions options);
         public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteModelAsync(string model, RequestOptions options);
         public virtual Task<ClientResult<ModelDeletionResult>> DeleteModelAsync(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetModel(string model, RequestOptions options);
         public virtual ClientResult<OpenAIModel> GetModel(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetModelAsync(string model, RequestOptions options);
         public virtual Task<ClientResult<OpenAIModel>> GetModelAsync(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetModels(RequestOptions options);
         public virtual ClientResult<OpenAIModelCollection> GetModels(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetModelsAsync(RequestOptions options);
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
@@ -2690,11 +2616,9 @@ namespace OpenAI.Moderations {
         public ModerationClient(string model, ApiKeyCredential credential);
         public ModerationClient(string model, string apiKey);
         public ClientPipeline Pipeline { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual ClientResult<ModerationResult> ClassifyText(string input, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
@@ -3279,13 +3203,10 @@ namespace OpenAI.Realtime {
         public virtual ClientResult CreateEphemeralTranscriptionToken(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateEphemeralTranscriptionTokenAsync(BinaryContent content, RequestOptions options = null);
         public RealtimeSession StartConversationSession(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RequestOptions options);
         public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RequestOptions options);
         public RealtimeSession StartTranscriptionSession(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RequestOptions options);
         public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(CancellationToken cancellationToken = default);
     }
@@ -3339,26 +3260,20 @@ namespace OpenAI.Realtime {
         public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal virtual void Connect(RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         protected internal virtual Task ConnectAsync(RequestOptions options);
         public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
         public virtual void InterruptResponse(CancellationToken cancellationToken = default);
         public virtual Task InterruptResponseAsync(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
         public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
         public virtual IAsyncEnumerable<RealtimeUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
         public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
         public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual void SendCommand(BinaryData data, RequestOptions options);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
         public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
@@ -3744,11 +3659,9 @@ namespace OpenAI.Responses {
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<OpenAIResponse>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
@@ -3756,23 +3669,17 @@ namespace OpenAI.Responses {
         public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
@@ -4411,10 +4318,8 @@ namespace OpenAI.VectorStores {
         public VectorStoreFileAssociationStatus? Status { get; }
         public VectorStoreFileAssociation? Value { get; }
         public string VectorStoreId { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetFileAssociation(RequestOptions? options);
         public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetFileAssociationAsync(RequestOptions? options);
         public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(CancellationToken cancellationToken = default);
         public static AddFileToVectorStoreOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
@@ -4428,16 +4333,12 @@ namespace OpenAI.VectorStores {
         public VectorStoreBatchFileJobStatus? Status { get; }
         public VectorStoreBatchFileJob? Value { get; }
         public string VectorStoreId { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult Cancel(RequestOptions? options);
         public virtual ClientResult<VectorStoreBatchFileJob> Cancel(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CancelAsync(RequestOptions? options);
         public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelAsync(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetFileBatch(RequestOptions? options);
         public virtual ClientResult<VectorStoreBatchFileJob> GetFileBatch(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetFileBatchAsync(RequestOptions? options);
         public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetFileBatchAsync(CancellationToken cancellationToken = default);
         public static CreateBatchFileJobOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
@@ -4450,10 +4351,8 @@ namespace OpenAI.VectorStores {
         public VectorStoreStatus? Status { get; }
         public VectorStore? Value { get; }
         public string VectorStoreId { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetVectorStore(RequestOptions? options);
         public virtual ClientResult<VectorStore> GetVectorStore(CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetVectorStoreAsync(RequestOptions? options);
         public virtual Task<ClientResult<VectorStore>> GetVectorStoreAsync(CancellationToken cancellationToken = default);
         public static CreateVectorStoreOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
@@ -4537,81 +4436,59 @@ namespace OpenAI.VectorStores {
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
         public ClientPipeline Pipeline { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<AddFileToVectorStoreOperation> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<AddFileToVectorStoreOperation> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options);
         public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> CancelBatchFileJobAsync(string vectorStoreId, string batchId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CreateBatchFileJobOperation CreateBatchFileJob(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual CreateBatchFileJobOperation CreateBatchFileJob(string vectorStoreId, IEnumerable<string> fileIds, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<CreateBatchFileJobOperation> CreateBatchFileJobAsync(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<CreateBatchFileJobOperation> CreateBatchFileJobAsync(string vectorStoreId, IEnumerable<string> fileIds, bool waitUntilCompleted, CancellationToken cancellationToken = default);
         public virtual CreateVectorStoreOperation CreateVectorStore(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CreateVectorStoreOperation CreateVectorStore(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null);
         public virtual Task<CreateVectorStoreOperation> CreateVectorStoreAsync(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<CreateVectorStoreOperation> CreateVectorStoreAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<ClientResult> CreateVectorStoreAsync(BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult DeleteVectorStore(string vectorStoreId, RequestOptions options);
         public virtual ClientResult<VectorStoreDeletionResult> DeleteVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> DeleteVectorStoreAsync(string vectorStoreId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreDeletionResult>> DeleteVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
         public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options);
         public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStore> GetVectorStores(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> ModifyVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options);
         public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public virtual Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveVectorStoreFileContent(string vectorStoreId, string fileId, RequestOptions options);

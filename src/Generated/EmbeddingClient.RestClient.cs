@@ -14,7 +14,7 @@ namespace OpenAI.Embeddings
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateCreateEmbeddingRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateGenerateEmbeddingsRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

@@ -21,7 +21,6 @@ public partial class RealtimeSession
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal virtual async Task ConnectAsync(RequestOptions options)
     {
         WebSocket?.Dispose();
@@ -37,13 +36,11 @@ public partial class RealtimeSession
         WebSocket = clientWebSocket;
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal virtual void Connect(RequestOptions options)
     {
         ConnectAsync(options).Wait();
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task SendCommandAsync(BinaryData data, RequestOptions options)
     {
         Argument.AssertNotNull(data, nameof(data));
@@ -70,14 +67,12 @@ public partial class RealtimeSession
         }
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual void SendCommand(BinaryData data, RequestOptions options)
     {
         // ClientWebSocket does **not** include a synchronous Send()
         SendCommandAsync(data, options).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options)
     {
         lock (_singleReceiveLock)
@@ -95,7 +90,6 @@ public partial class RealtimeSession
         }
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options)
     {
         throw new NotImplementedException();

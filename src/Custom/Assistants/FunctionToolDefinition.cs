@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("AssistantToolsFunction")]
 [CodeGenSuppress(nameof(FunctionToolDefinition), typeof(InternalFunctionDefinition))]
 public partial class FunctionToolDefinition

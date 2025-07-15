@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("RunStepDetailsToolCallsObjectToolCallsObject")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RunStepToolCall

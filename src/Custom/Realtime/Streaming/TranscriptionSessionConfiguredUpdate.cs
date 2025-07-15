@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// has been applied to the session. New session configuration related to response generation will not take effect
 /// until the next response; shared session configuration, such as input audio format, will apply immediately.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventTranscriptionSessionUpdated")]
 public partial class TranscriptionSessionConfiguredUpdate
 {

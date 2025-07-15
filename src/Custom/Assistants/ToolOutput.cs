@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("SubmitToolOutputsRunRequestToolOutput")]
 public partial class ToolOutput
 {

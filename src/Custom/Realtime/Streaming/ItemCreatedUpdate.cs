@@ -12,7 +12,6 @@ namespace OpenAI.Realtime;
 /// content streamed via <c>*delta</c> commands before finalization via a
 /// <see cref="OutputStreamingFinishedUpdate"/> (<c>response.output_item.done</c>).
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemCreated")]
 public partial class ItemCreatedUpdate
 {

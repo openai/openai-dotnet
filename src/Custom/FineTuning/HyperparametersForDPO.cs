@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.FineTuning;
 
 
-[Experimental("OPENAI001")]
 [CodeGenType("FineTuneDPOHyperparameters")]
 public partial class HyperparametersForDPO : MethodHyperparameters
 {

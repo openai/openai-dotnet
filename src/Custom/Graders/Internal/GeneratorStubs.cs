@@ -8,7 +8,7 @@ namespace OpenAI.Graders;
 
 [Experimental("OPENAI002")][CodeGenType("GraderStringCheckOperation")] internal readonly partial struct InternalGraderStringCheckOperation {}
 [Experimental("OPENAI002")][CodeGenType("GraderType")] internal readonly partial struct InternalGraderType {}
-[Experimental("OPENAI002")][CodeGenType("EvalGraderTextSimilarityResourceEvaluationMetric")] internal readonly partial struct InternalEvalGraderTextSimilarityResourceEvaluationMetric {}
+[Experimental("OPENAI002")][CodeGenType("GraderTextSimilarityEvaluationMetric")] internal readonly partial struct InternalGraderTextSimilarityEvaluationMetric {}
 [CodeGenType("GraderStringCheck")] internal partial class InternalGraderStringCheck {}
 [CodeGenType("Grader")] internal partial class InternalGrader {}
 [CodeGenType("UnknownGrader")] internal partial class InternalUnknownGrader {}
@@ -17,7 +17,8 @@ namespace OpenAI.Graders;
 [CodeGenType("GraderPython")] internal partial class InternalGraderPython {}
 [CodeGenType("GraderScoreModel")] internal partial class InternalGraderScoreModel {}
 [CodeGenType("GraderMulti")] internal partial class InternalGraderMulti {}
-[CodeGenType("FineTuneReinforcementHyperparameters")] internal partial class InternalFineTuneReinforcementHyperparameters {}
+[CodeGenType("FineTuneReinforcementHyperparameters")] internal partial class InternalFineTuneReinforcementHyperparameters { }
+
 [CodeGenType("RunGraderRequest")]
 internal partial class InternalRunGraderRequest
 {

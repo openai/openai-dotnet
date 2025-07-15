@@ -2,7 +2,9 @@
 
 #nullable disable
 
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
@@ -11,5 +13,78 @@ namespace OpenAI.Batch
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+
+        internal virtual PipelineMessage CreateCreateBatchRequest(BinaryContent content, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "POST";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/batches", false);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            request.Headers.Set("Content-Type", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateGetBatchesRequest(string after, int? limit, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "GET";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/batches", false);
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+            }
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateGetBatchRequest(string batchId, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "GET";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/batches/", false);
+            uri.AppendPath(batchId, true);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateCancelBatchRequest(string batchId, RequestOptions options)
+        {
+            PipelineMessage message = Pipeline.CreateMessage();
+            message.ResponseClassifier = PipelineMessageClassifier200;
+            PipelineRequest request = message.Request;
+            request.Method = "POST";
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/batches/", false);
+            uri.AppendPath(batchId, true);
+            uri.AppendPath("/cancel", false);
+            request.Uri = uri.ToUri();
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
     }
 }

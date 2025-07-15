@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 namespace OpenAI.Assistants;
 
 /// <summary> The service client for OpenAI assistants operations. </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("Assistants")]
 [CodeGenSuppress("AssistantClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateAssistantAsync", typeof(AssistantCreationOptions), typeof(CancellationToken))]

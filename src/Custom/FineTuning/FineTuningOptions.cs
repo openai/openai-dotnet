@@ -1,4 +1,4 @@
-﻿using System.ClientModel;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -7,7 +7,6 @@ namespace OpenAI.FineTuning;
 /// <summary>
 /// Represents additional options available when creating a <see cref="InternalFineTuningJob"/>.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequest")]
 public partial class FineTuningOptions
 {

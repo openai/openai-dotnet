@@ -15,8 +15,8 @@ namespace OpenAI.Files;
 [CodeGenSuppress("OpenAIFileClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("GetFilesAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetFiles", typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("RetrieveFileAsync", typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("RetrieveFile", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFileAsync", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetFile", typeof(string), typeof(CancellationToken))]
 public partial class OpenAIFileClient
 {
     private InternalUploadsClient _internalUploadsClient;

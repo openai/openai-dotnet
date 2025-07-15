@@ -4,9 +4,11 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Evals
 {
+    [Experimental("OPENAI001")]
     public partial class EvaluationClient
     {
         private readonly Uri _endpoint;

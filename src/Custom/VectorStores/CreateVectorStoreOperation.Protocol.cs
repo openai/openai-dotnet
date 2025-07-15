@@ -24,7 +24,6 @@ public partial class CreateVectorStoreOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetVectorStoreAsync(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetVectorStoreRequest(_vectorStoreId, options);
@@ -37,7 +36,6 @@ public partial class CreateVectorStoreOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetVectorStore(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetVectorStoreRequest(_vectorStoreId, options);

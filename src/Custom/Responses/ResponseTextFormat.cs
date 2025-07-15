@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
@@ -6,7 +6,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("ResponseTextFormatConfiguration")]
 public partial class ResponseTextFormat
 {

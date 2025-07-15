@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI
@@ -23,7 +22,6 @@ namespace OpenAI
             writer.WriteEndObject();
         }
 
-        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFunctionDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -82,7 +80,6 @@ namespace OpenAI
 
         InternalFunctionDefinition IJsonModel<InternalFunctionDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        [Experimental("OPENAI001")]
         protected virtual InternalFunctionDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFunctionDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -144,7 +141,6 @@ namespace OpenAI
 
         BinaryData IPersistableModel<InternalFunctionDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFunctionDefinition>)this).GetFormatFromOptions(options) : options.Format;
@@ -159,7 +155,6 @@ namespace OpenAI
 
         InternalFunctionDefinition IPersistableModel<InternalFunctionDefinition>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        [Experimental("OPENAI001")]
         protected virtual InternalFunctionDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFunctionDefinition>)this).GetFormatFromOptions(options) : options.Format;

@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace OpenAI.FineTuning;
 
-[Experimental("OPENAI001")]
 [CodeGenType("FineTuningJobHyperparameters")]
 [StructLayout(LayoutKind.Auto)]
 public readonly partial struct FineTuningHyperparameters

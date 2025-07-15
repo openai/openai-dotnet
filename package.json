@@ -1,0 +1,14 @@
+{
+  "name": "openai-tsp",
+  "workspaces": [
+    "codegen"
+  ],
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@typespec/openapi3": "^1.0.0",
+    "@open-ai/plugin": "file:codegen",
+    "openai-tsp": "file:"
+  },
+  "private": true
+}

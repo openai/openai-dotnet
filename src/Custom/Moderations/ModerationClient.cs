@@ -17,8 +17,8 @@ namespace OpenAI.Moderations;
 /// <summary> The service client for OpenAI moderation operations. </summary>
 [CodeGenType("Moderations")]
 [CodeGenSuppress("ModerationClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateModerationAsync", typeof(ModerationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateModeration", typeof(ModerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("ClassifyTextAsync", typeof(ModerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("ClassifyText", typeof(ModerationOptions), typeof(CancellationToken))]
 public partial class ModerationClient
 {
     private readonly string _model;

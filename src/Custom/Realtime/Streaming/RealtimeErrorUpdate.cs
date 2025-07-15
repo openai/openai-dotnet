@@ -10,7 +10,6 @@ namespace OpenAI.Realtime;
 /// The update (response command) of type <c>error</c>, which is received when a problem is encountered while
 /// processing a request command or generating another response command.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventError")]
 public partial class RealtimeErrorUpdate
 {

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeContentPartType")]
 public readonly partial struct ConversationContentPartKind
 {

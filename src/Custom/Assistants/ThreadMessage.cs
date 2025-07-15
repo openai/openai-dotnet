@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("MessageObject")]
 public partial class ThreadMessage
 {
