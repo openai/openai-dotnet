@@ -229,10 +229,7 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
-        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
-        }
+        EnsureModelSupportsStreaming();
 
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
@@ -250,10 +247,7 @@ public partial class AudioClient
     {
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
-        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
-        }
+        EnsureModelSupportsStreaming();
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
@@ -276,10 +270,7 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
-        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
-        }
+        EnsureModelSupportsStreaming();
 
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
@@ -297,10 +288,7 @@ public partial class AudioClient
     {
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
-        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
-        {
-            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
-        }
+        EnsureModelSupportsStreaming();
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
@@ -314,6 +302,20 @@ public partial class AudioClient
             cancellationToken);
         result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
         return result;
+    }
+
+    private void EnsureModelSupportsStreaming()
+    {
+        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
+        {
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_WHISPER_1_STREAMING");
+            if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new NotSupportedException(
+                    "The selected model 'whisper-1' does not support streaming transcription. " +
+                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_WHISPER_1_STREAMING=true' to bypass this check.");
+            }
+        }
     }
 
     #endregion
