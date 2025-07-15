@@ -322,4 +322,30 @@ public partial class TranscriptionTests : SyncAsyncTestBase
 
         inputStream?.Dispose();
     }
+
+    [Test]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        string filename = "audio_hello_world.mp3";
+        string path = Path.Combine("Assets", filename);
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            using FileStream inputStream = File.OpenRead(path);
+            Assert.Throws<NotSupportedException>(() =>
+            {
+                _ = client.TranscribeAudioStreamingAsync(inputStream, filename);
+            });
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            Assert.Throws<NotSupportedException>(() =>
+            {
+                _ = client.TranscribeAudioStreamingAsync(path);
+            });
+        }
+    }
 }
