@@ -164,6 +164,8 @@ namespace OpenAI.Responses
                         return InternalResponseMCPListToolsFailedEvent.DeserializeInternalResponseMCPListToolsFailedEvent(element, options);
                     case "response.mcp_list_tools.in_progress":
                         return InternalResponseMCPListToolsInProgressEvent.DeserializeInternalResponseMCPListToolsInProgressEvent(element, options);
+                    case "response.output_text.annotation.added":
+                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, options);
                     case "response.queued":
                         return StreamingResponseQueuedUpdate.DeserializeStreamingResponseQueuedUpdate(element, options);
                     case "response.reasoning.delta":
