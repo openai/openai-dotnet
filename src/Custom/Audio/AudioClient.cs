@@ -229,6 +229,11 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
+        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
+        }
+
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
@@ -244,6 +249,11 @@ public partial class AudioClient
     public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
+        }
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
@@ -266,6 +276,11 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
+        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
+        }
+
         MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
@@ -281,6 +296,11 @@ public partial class AudioClient
     public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"The selected model {_model} does not support streaming transcription. Please use a compatible model.");
+        }
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
