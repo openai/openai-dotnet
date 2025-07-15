@@ -193,7 +193,7 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual async Task<ClientResult> GetBatchAsync(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateRetrieveBatchRequest(_batchId, options);
+        using PipelineMessage message = _parentClient.CreateGetBatchRequest(_batchId, options);
         return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -205,7 +205,7 @@ public class CreateBatchOperation : OperationResult
     /// <returns> The response returned from the service. </returns>
     public virtual ClientResult GetBatch(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateRetrieveBatchRequest(_batchId, options);
+        using PipelineMessage message = _parentClient.CreateGetBatchRequest(_batchId, options);
         return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 

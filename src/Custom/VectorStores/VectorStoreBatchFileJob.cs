@@ -8,7 +8,6 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// Represents information about a bulk ingestion job of files into a vector store.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("VectorStoreFileBatchObject")]
 public partial class VectorStoreBatchFileJob
 {

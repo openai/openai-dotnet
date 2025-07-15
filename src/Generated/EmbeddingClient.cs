@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Embeddings
 {
@@ -16,5 +19,21 @@ namespace OpenAI.Embeddings
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult GenerateEmbeddings(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateGenerateEmbeddingsRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GenerateEmbeddingsAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateGenerateEmbeddingsRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

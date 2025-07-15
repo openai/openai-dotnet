@@ -17,8 +17,8 @@ namespace OpenAI.Embeddings;
 /// <summary> The service client for OpenAI embedding operations. </summary>
 [CodeGenType("Embeddings")]
 [CodeGenSuppress("EmbeddingClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateEmbeddingAsync", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEmbedding", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateEmbeddingsAsync", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateEmbeddings", typeof(EmbeddingGenerationOptions), typeof(CancellationToken))]
 public partial class EmbeddingClient
 {
     private readonly string _model;

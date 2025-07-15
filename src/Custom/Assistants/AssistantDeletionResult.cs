@@ -1,11 +1,10 @@
-﻿using System.ClientModel;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("DeleteAssistantResponse")]
 public partial class AssistantDeletionResult
 {

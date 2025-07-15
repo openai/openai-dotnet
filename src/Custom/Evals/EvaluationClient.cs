@@ -10,7 +10,6 @@ namespace OpenAI.Evals;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed convenience methods for now.
 /// <summary> The service client for OpenAI Evaluation operations. </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("Evals")]
 [CodeGenSuppress("CreateEval", typeof(InternalCreateEvalRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateEvalAsync", typeof(InternalCreateEvalRequest), typeof(CancellationToken))]

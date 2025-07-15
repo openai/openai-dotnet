@@ -8,7 +8,6 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 // - Customized serialization of the BinaryData-as-string FunctionArguments.
-[Experimental("OPENAI001")]
 [CodeGenType("FunctionToolCallItemResource")]
 [CodeGenSerialization(nameof(FunctionArguments), SerializationValueHook = nameof(SerializeFunctionArgumentsValue), DeserializationValueHook = nameof(DeserializeFunctionArgumentsValue))]
 public partial class FunctionCallResponseItem

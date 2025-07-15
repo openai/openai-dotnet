@@ -5,8 +5,7 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ItemContentInputImageDetail1")]
+[CodeGenType("ItemContentInputImageDetail")]
 public readonly partial struct ResponseImageDetailLevel
 {
 }

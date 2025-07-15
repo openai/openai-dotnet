@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeResponseUsageInputTokenDetails")]
 public partial class ConversationInputTokenUsageDetails
 {

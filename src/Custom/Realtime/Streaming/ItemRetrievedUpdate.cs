@@ -9,7 +9,6 @@ namespace OpenAI.Realtime;
 /// <c>conversation.item.retrieve</c> client command sent via
 /// <see cref="RealtimeSession.RequestItemRetrieval(string, System.Threading.CancellationToken)"/>.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemRetrieved")]
 public partial class ItemRetrievedUpdate
 {

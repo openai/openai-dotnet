@@ -10,7 +10,6 @@ namespace OpenAI.Realtime;
 /// initiated <c>response.create</c>
 /// (<see cref="RealtimeSession.StartResponseAsync(System.Threading.CancellationToken)"/>).
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseCreated")]
 public partial class ResponseStartedUpdate
 {

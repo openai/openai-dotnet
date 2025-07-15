@@ -22,59 +22,6 @@ namespace OpenAI
 {
     internal static partial class OpenAIModelFactory
     {
-        public static TranscribedWord TranscribedWord(string word = default, TimeSpan startTime = default, TimeSpan endTime = default)
-        {
-            return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties: null);
-        }
-
-        public static TranscribedSegment TranscribedSegment(int id = default, string text = default, float temperature = default, float compressionRatio = default, TimeSpan startTime = default, TimeSpan endTime = default, int seekOffset = default, ReadOnlyMemory<int> tokenIds = default, float averageLogProbability = default, float noSpeechProbability = default)
-        {
-            return new TranscribedSegment(
-                id,
-                text,
-                temperature,
-                compressionRatio,
-                startTime,
-                endTime,
-                seekOffset,
-                tokenIds,
-                averageLogProbability,
-                noSpeechProbability,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
-        {
-            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities?.ToList());
-        }
-
-        public static StreamingAudioTranscriptionTextDoneUpdate StreamingAudioTranscriptionTextDoneUpdate(string text = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, additionalBinaryDataProperties: null, text, transcriptionTokenLogProbabilities?.ToList());
-        }
-
-        public static AudioTranslation AudioTranslation(string language = default, string text = default, IEnumerable<TranscribedSegment> segments = default, string task = default, TimeSpan? duration = default)
-        {
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-
-            return new AudioTranslation(
-                language,
-                text,
-                segments?.ToList(),
-                task,
-                duration,
-                additionalBinaryDataProperties: null);
-        }
-
         public static Assistant Assistant(string id = default, DateTimeOffset createdAt = default, string name = default, string description = default, string model = default, string instructions = default, IEnumerable<ToolDefinition> tools = default, ToolResources toolResources = default, IReadOnlyDictionary<string, string> metadata = default, float? temperature = default, string @object = default, AssistantResponseFormat responseFormat = default, float? nucleusSamplingFactor = default)
         {
             tools ??= new ChangeTrackingList<ToolDefinition>();
@@ -173,6 +120,59 @@ namespace OpenAI
         public static AssistantDeletionResult AssistantDeletionResult(bool deleted = default, string assistantId = default, string @object = default)
         {
             return new AssistantDeletionResult(deleted, assistantId, @object, additionalBinaryDataProperties: null);
+        }
+
+        public static TranscribedWord TranscribedWord(string word = default, TimeSpan startTime = default, TimeSpan endTime = default)
+        {
+            return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties: null);
+        }
+
+        public static TranscribedSegment TranscribedSegment(int id = default, string text = default, float temperature = default, float compressionRatio = default, TimeSpan startTime = default, TimeSpan endTime = default, int seekOffset = default, ReadOnlyMemory<int> tokenIds = default, float averageLogProbability = default, float noSpeechProbability = default)
+        {
+            return new TranscribedSegment(
+                id,
+                text,
+                temperature,
+                compressionRatio,
+                startTime,
+                endTime,
+                seekOffset,
+                tokenIds,
+                averageLogProbability,
+                noSpeechProbability,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
+        {
+            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities?.ToList());
+        }
+
+        public static StreamingAudioTranscriptionTextDoneUpdate StreamingAudioTranscriptionTextDoneUpdate(string text = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, additionalBinaryDataProperties: null, text, transcriptionTokenLogProbabilities?.ToList());
+        }
+
+        public static AudioTranslation AudioTranslation(string language = default, string text = default, IEnumerable<TranscribedSegment> segments = default, string task = default, TimeSpan? duration = default)
+        {
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+
+            return new AudioTranslation(
+                language,
+                text,
+                segments?.ToList(),
+                task,
+                duration,
+                additionalBinaryDataProperties: null);
         }
 
         public static ChatOutputAudio ChatOutputAudio(string id = default, DateTimeOffset expiresAt = default, string transcript = default, BinaryData audioBytes = default)
@@ -315,80 +315,6 @@ namespace OpenAI
             return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
         }
 
-        public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
-        {
-            return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
-        {
-            return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
-        {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
-        }
-
-        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, float? score = default, IReadOnlyDictionary<string, BinaryData> attributes = default)
-        {
-            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new FileSearchCallResult(
-                fileId,
-                text,
-                filename,
-                score,
-                attributes,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ComputerCallAction ComputerCallAction(string kind = default)
-        {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), additionalBinaryDataProperties: null);
-        }
-
-        public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
-        {
-            return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
-        {
-            return new ResponseError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = default)
-        {
-            return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default, ResponseInputTokenUsageDetails inputTokenDetails = default, ResponseOutputTokenUsageDetails outputTokenDetails = default)
-        {
-            return new ResponseTokenUsage(
-                inputTokenCount,
-                outputTokenCount,
-                totalTokenCount,
-                inputTokenDetails,
-                outputTokenDetails,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default)
-        {
-            return new ResponseInputTokenUsageDetails(cachedTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
-        {
-            return new ResponseOutputTokenUsageDetails(reasoningTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseDeletionResult ResponseDeletionResult(string id = default, bool deleted = default, string @object = default)
-        {
-            return new ResponseDeletionResult(id, deleted, @object, additionalBinaryDataProperties: null);
-        }
-
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
         {
             data ??= new ChangeTrackingList<OpenAIFile>();
@@ -479,6 +405,80 @@ namespace OpenAI
                 level,
                 @object,
                 additionalBinaryDataProperties: null);
+        }
+
+        public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
+        {
+            return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
+        {
+            return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
+        {
+            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
+        }
+
+        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, float? score = default, IReadOnlyDictionary<string, BinaryData> attributes = default)
+        {
+            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new FileSearchCallResult(
+                fileId,
+                text,
+                filename,
+                score,
+                attributes,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ComputerCallAction ComputerCallAction(string kind = default)
+        {
+            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), additionalBinaryDataProperties: null);
+        }
+
+        public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
+        {
+            return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
+        {
+            return new ResponseError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = default)
+        {
+            return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default, ResponseInputTokenUsageDetails inputTokenDetails = default, ResponseOutputTokenUsageDetails outputTokenDetails = default)
+        {
+            return new ResponseTokenUsage(
+                inputTokenCount,
+                outputTokenCount,
+                totalTokenCount,
+                inputTokenDetails,
+                outputTokenDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default)
+        {
+            return new ResponseInputTokenUsageDetails(cachedTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
+        {
+            return new ResponseOutputTokenUsageDetails(reasoningTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseDeletionResult ResponseDeletionResult(string id = default, bool deleted = default, string @object = default)
+        {
+            return new ResponseDeletionResult(id, deleted, @object, additionalBinaryDataProperties: null);
         }
 
         public static ImageGenerationOptions ImageGenerationOptions(GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageSize? size = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, InternalCreateImageRequestModel? model = default, string prompt = default, long? n = default, string endUserId = default, int? outputCompressionFactor = default, GeneratedImageFileFormat? outputFileFormat = default, GeneratedImageModerationLevel? moderationLevel = default)
@@ -590,6 +590,256 @@ namespace OpenAI
             return new MessageDeletionResult(deleted, messageId, @object, additionalBinaryDataProperties: null);
         }
 
+        public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
+        {
+            results ??= new ChangeTrackingList<ModerationResult>();
+
+            return new ModerationResultCollection(id, model, results?.ToList());
+        }
+
+        public static ModerationResult ModerationResult(bool flagged = default)
+        {
+            return new ModerationResult(flagged, additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadCreationOptions ThreadCreationOptions(IDictionary<string, string> metadata = default, ToolResources toolResources = default, IEnumerable<MessageCreationOptions> internalMessages = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
+
+            return new ThreadCreationOptions(metadata, toolResources, internalMessages?.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static RunError RunError(RunErrorCode code = default, string message = default)
+        {
+            return new RunError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static RunIncompleteDetails RunIncompleteDetails(RunIncompleteReason? reason = default)
+        {
+            return new RunIncompleteDetails(reason, additionalBinaryDataProperties: null);
+        }
+
+        public static RunTokenUsage RunTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new RunTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static RunCreationOptions RunCreationOptions(string assistantId = default, bool? stream = default, AssistantResponseFormat responseFormat = default, string modelOverride = default, string instructionsOverride = default, string additionalInstructions = default, IEnumerable<MessageCreationOptions> internalMessages = default, bool? allowParallelToolCalls = default, IEnumerable<ToolDefinition> toolsOverride = default, IDictionary<string, string> metadata = default, float? temperature = default, float? nucleusSamplingFactor = default, int? maxInputTokenCount = default, int? maxOutputTokenCount = default, RunTruncationStrategy truncationStrategy = default, ToolConstraint toolConstraint = default, ChatReasoningEffortLevel? reasoningEffortLevel = default)
+        {
+            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
+            toolsOverride ??= new ChangeTrackingList<ToolDefinition>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunCreationOptions(
+                assistantId,
+                stream,
+                responseFormat,
+                modelOverride,
+                instructionsOverride,
+                additionalInstructions,
+                internalMessages?.ToList(),
+                allowParallelToolCalls,
+                toolsOverride?.ToList(),
+                metadata,
+                temperature,
+                nucleusSamplingFactor,
+                maxInputTokenCount,
+                maxOutputTokenCount,
+                truncationStrategy,
+                toolConstraint,
+                reasoningEffortLevel,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunModificationOptions RunModificationOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunModificationOptions(metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static ToolOutput ToolOutput(string toolCallId = default, string output = default)
+        {
+            return new ToolOutput(toolCallId, output, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStep RunStep(string id = default, DateTimeOffset createdAt = default, string assistantId = default, string threadId = default, string runId = default, RunStepKind kind = default, RunStepStatus status = default, RunStepError lastError = default, DateTimeOffset? expiredAt = default, DateTimeOffset? cancelledAt = default, DateTimeOffset? failedAt = default, DateTimeOffset? completedAt = default, IReadOnlyDictionary<string, string> metadata = default, RunStepTokenUsage usage = default, string @object = default, RunStepDetails details = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunStep(
+                id,
+                createdAt,
+                assistantId,
+                threadId,
+                runId,
+                kind,
+                status,
+                lastError,
+                expiredAt,
+                cancelledAt,
+                failedAt,
+                completedAt,
+                metadata,
+                usage,
+                @object,
+                details,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
+        {
+            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepFileSearchResult RunStepFileSearchResult(string fileId = default, string fileName = default, float score = default, IEnumerable<RunStepFileSearchResultContent> content = default)
+        {
+            content ??= new ChangeTrackingList<RunStepFileSearchResultContent>();
+
+            return new RunStepFileSearchResult(fileId, fileName, score, content?.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default, RunStepFileSearchResultContentKind kind = default)
+        {
+            return new RunStepFileSearchResultContent(text, kind, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
+        {
+            return new RunStepError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepTokenUsage RunStepTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new RunStepTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static AssistantThread AssistantThread(string id = default, DateTimeOffset createdAt = default, IReadOnlyDictionary<string, string> metadata = default, string @object = default, ToolResources toolResources = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new AssistantThread(
+                id,
+                createdAt,
+                metadata,
+                @object,
+                toolResources,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadModificationOptions ThreadModificationOptions(IDictionary<string, string> metadata = default, ToolResources toolResources = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ThreadModificationOptions(metadata, toolResources, additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadDeletionResult ThreadDeletionResult(bool deleted = default, string threadId = default, string @object = default)
+        {
+            return new ThreadDeletionResult(deleted, threadId, @object, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStore VectorStore(string id = default, DateTimeOffset createdAt = default, string name = default, int usageBytes = default, VectorStoreFileCounts fileCounts = default, VectorStoreStatus status = default, DateTimeOffset? expiresAt = default, DateTimeOffset? lastActiveAt = default, IReadOnlyDictionary<string, string> metadata = default, string @object = default, VectorStoreExpirationPolicy expirationPolicy = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStore(
+                id,
+                createdAt,
+                name,
+                usageBytes,
+                fileCounts,
+                status,
+                expiresAt,
+                lastActiveAt,
+                metadata,
+                @object,
+                expirationPolicy,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileCounts VectorStoreFileCounts(int inProgress = default, int completed = default, int failed = default, int cancelled = default, int total = default)
+        {
+            return new VectorStoreFileCounts(
+                inProgress,
+                completed,
+                failed,
+                cancelled,
+                total,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(int days = default, VectorStoreExpirationAnchor anchor = default)
+        {
+            return new VectorStoreExpirationPolicy(days, anchor, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreCreationOptions VectorStoreCreationOptions(IEnumerable<string> fileIds = default, string name = default, IDictionary<string, string> metadata = default, VectorStoreExpirationPolicy expirationPolicy = default, FileChunkingStrategy chunkingStrategy = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStoreCreationOptions(
+                fileIds?.ToList(),
+                name,
+                metadata,
+                expirationPolicy,
+                chunkingStrategy,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreModificationOptions VectorStoreModificationOptions(string name = default, IDictionary<string, string> metadata = default, VectorStoreExpirationPolicy expirationPolicy = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStoreModificationOptions(name, metadata, expirationPolicy, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreDeletionResult VectorStoreDeletionResult(bool deleted = default, string vectorStoreId = default, string @object = default)
+        {
+            return new VectorStoreDeletionResult(deleted, vectorStoreId, @object, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreBatchFileJob VectorStoreBatchFileJob(DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreBatchFileJobStatus status = default, string batchId = default, VectorStoreFileCounts fileCounts = default, object @object = default)
+        {
+            return new VectorStoreBatchFileJob(
+                createdAt,
+                vectorStoreId,
+                status,
+                batchId,
+                fileCounts,
+                @object,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileAssociation VectorStoreFileAssociation(DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileAssociationStatus status = default, VectorStoreFileAssociationError lastError = default, string @object = default, string fileId = default, int size = default, IDictionary<string, BinaryData> attributes = default, FileChunkingStrategy chunkingStrategy = default)
+        {
+            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new VectorStoreFileAssociation(
+                createdAt,
+                vectorStoreId,
+                status,
+                lastError,
+                @object,
+                fileId,
+                size,
+                attributes,
+                chunkingStrategy,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileAssociationError VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code = default, string message = default)
+        {
+            return new VectorStoreFileAssociationError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default, string @object = default)
+        {
+            return new FileFromStoreRemovalResult(fileId, removed, @object, additionalBinaryDataProperties: null);
+        }
+
         public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> data = default)
         {
             data ??= new ChangeTrackingList<OpenAIModel>();
@@ -605,18 +855,6 @@ namespace OpenAI
         public static ModelDeletionResult ModelDeletionResult(bool deleted = default, string modelId = default, string @object = default)
         {
             return new ModelDeletionResult(deleted, modelId, @object, additionalBinaryDataProperties: null);
-        }
-
-        public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
-        {
-            results ??= new ChangeTrackingList<ModerationResult>();
-
-            return new ModerationResultCollection(id, model, results?.ToList());
-        }
-
-        public static ModerationResult ModerationResult(bool flagged = default)
-        {
-            return new ModerationResult(flagged, additionalBinaryDataProperties: null);
         }
 
         public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
@@ -766,242 +1004,14 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
-        public static ThreadCreationOptions ThreadCreationOptions(IDictionary<string, string> metadata = default, ToolResources toolResources = default, IEnumerable<MessageCreationOptions> internalMessages = default)
+        public static ChatFunctionChoice ChatFunctionChoice(string predefinedFunctionChoice = default)
         {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
-
-            return new ThreadCreationOptions(metadata, toolResources, internalMessages?.ToList(), additionalBinaryDataProperties: null);
+            return new ChatFunctionChoice(predefinedFunctionChoice);
         }
 
-        public static AssistantThread AssistantThread(string id = default, DateTimeOffset createdAt = default, IReadOnlyDictionary<string, string> metadata = default, string @object = default, ToolResources toolResources = default)
+        public static ChatToolChoice ChatToolChoice()
         {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new AssistantThread(
-                id,
-                createdAt,
-                metadata,
-                @object,
-                toolResources,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadModificationOptions ThreadModificationOptions(IDictionary<string, string> metadata = default, ToolResources toolResources = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ThreadModificationOptions(metadata, toolResources, additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadDeletionResult ThreadDeletionResult(bool deleted = default, string threadId = default, string @object = default)
-        {
-            return new ThreadDeletionResult(deleted, threadId, @object, additionalBinaryDataProperties: null);
-        }
-
-        public static RunError RunError(RunErrorCode code = default, string message = default)
-        {
-            return new RunError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static RunIncompleteDetails RunIncompleteDetails(RunIncompleteReason? reason = default)
-        {
-            return new RunIncompleteDetails(reason, additionalBinaryDataProperties: null);
-        }
-
-        public static RunTokenUsage RunTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new RunTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static RunCreationOptions RunCreationOptions(string assistantId = default, bool? stream = default, AssistantResponseFormat responseFormat = default, string modelOverride = default, string instructionsOverride = default, string additionalInstructions = default, IEnumerable<MessageCreationOptions> internalMessages = default, bool? allowParallelToolCalls = default, IEnumerable<ToolDefinition> toolsOverride = default, IDictionary<string, string> metadata = default, float? temperature = default, float? nucleusSamplingFactor = default, int? maxInputTokenCount = default, int? maxOutputTokenCount = default, RunTruncationStrategy truncationStrategy = default, ToolConstraint toolConstraint = default, ChatReasoningEffortLevel? reasoningEffortLevel = default)
-        {
-            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
-            toolsOverride ??= new ChangeTrackingList<ToolDefinition>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunCreationOptions(
-                assistantId,
-                stream,
-                responseFormat,
-                modelOverride,
-                instructionsOverride,
-                additionalInstructions,
-                internalMessages?.ToList(),
-                allowParallelToolCalls,
-                toolsOverride?.ToList(),
-                metadata,
-                temperature,
-                nucleusSamplingFactor,
-                maxInputTokenCount,
-                maxOutputTokenCount,
-                truncationStrategy,
-                toolConstraint,
-                reasoningEffortLevel,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunModificationOptions RunModificationOptions(IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunModificationOptions(metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static ToolOutput ToolOutput(string toolCallId = default, string output = default)
-        {
-            return new ToolOutput(toolCallId, output, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStep RunStep(string id = default, DateTimeOffset createdAt = default, string assistantId = default, string threadId = default, string runId = default, RunStepKind kind = default, RunStepStatus status = default, RunStepError lastError = default, DateTimeOffset? expiredAt = default, DateTimeOffset? cancelledAt = default, DateTimeOffset? failedAt = default, DateTimeOffset? completedAt = default, IReadOnlyDictionary<string, string> metadata = default, RunStepTokenUsage usage = default, string @object = default, RunStepDetails details = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunStep(
-                id,
-                createdAt,
-                assistantId,
-                threadId,
-                runId,
-                kind,
-                status,
-                lastError,
-                expiredAt,
-                cancelledAt,
-                failedAt,
-                completedAt,
-                metadata,
-                usage,
-                @object,
-                details,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
-        {
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepFileSearchResult RunStepFileSearchResult(string fileId = default, string fileName = default, float score = default, IEnumerable<RunStepFileSearchResultContent> content = default)
-        {
-            content ??= new ChangeTrackingList<RunStepFileSearchResultContent>();
-
-            return new RunStepFileSearchResult(fileId, fileName, score, content?.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default, RunStepFileSearchResultContentKind kind = default)
-        {
-            return new RunStepFileSearchResultContent(text, kind, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
-        {
-            return new RunStepError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepTokenUsage RunStepTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new RunStepTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStore VectorStore(string id = default, DateTimeOffset createdAt = default, string name = default, int usageBytes = default, VectorStoreFileCounts fileCounts = default, VectorStoreStatus status = default, DateTimeOffset? expiresAt = default, DateTimeOffset? lastActiveAt = default, IReadOnlyDictionary<string, string> metadata = default, string @object = default, VectorStoreExpirationPolicy expirationPolicy = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStore(
-                id,
-                createdAt,
-                name,
-                usageBytes,
-                fileCounts,
-                status,
-                expiresAt,
-                lastActiveAt,
-                metadata,
-                @object,
-                expirationPolicy,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileCounts VectorStoreFileCounts(int inProgress = default, int completed = default, int failed = default, int cancelled = default, int total = default)
-        {
-            return new VectorStoreFileCounts(
-                inProgress,
-                completed,
-                failed,
-                cancelled,
-                total,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(int days = default, VectorStoreExpirationAnchor anchor = default)
-        {
-            return new VectorStoreExpirationPolicy(days, anchor, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreCreationOptions VectorStoreCreationOptions(IEnumerable<string> fileIds = default, string name = default, IDictionary<string, string> metadata = default, VectorStoreExpirationPolicy expirationPolicy = default, FileChunkingStrategy chunkingStrategy = default)
-        {
-            fileIds ??= new ChangeTrackingList<string>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStoreCreationOptions(
-                fileIds?.ToList(),
-                name,
-                metadata,
-                expirationPolicy,
-                chunkingStrategy,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreModificationOptions VectorStoreModificationOptions(string name = default, IDictionary<string, string> metadata = default, VectorStoreExpirationPolicy expirationPolicy = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStoreModificationOptions(name, metadata, expirationPolicy, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreDeletionResult VectorStoreDeletionResult(bool deleted = default, string vectorStoreId = default, string @object = default)
-        {
-            return new VectorStoreDeletionResult(deleted, vectorStoreId, @object, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreBatchFileJob VectorStoreBatchFileJob(DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreBatchFileJobStatus status = default, string batchId = default, VectorStoreFileCounts fileCounts = default, object @object = default)
-        {
-            return new VectorStoreBatchFileJob(
-                createdAt,
-                vectorStoreId,
-                status,
-                batchId,
-                fileCounts,
-                @object,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileAssociation VectorStoreFileAssociation(DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileAssociationStatus status = default, VectorStoreFileAssociationError lastError = default, string @object = default, string fileId = default, int size = default, IDictionary<string, BinaryData> attributes = default, FileChunkingStrategy chunkingStrategy = default)
-        {
-            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new VectorStoreFileAssociation(
-                createdAt,
-                vectorStoreId,
-                status,
-                lastError,
-                @object,
-                fileId,
-                size,
-                attributes,
-                chunkingStrategy,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileAssociationError VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code = default, string message = default)
-        {
-            return new VectorStoreFileAssociationError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default, string @object = default)
-        {
-            return new FileFromStoreRemovalResult(fileId, removed, @object, additionalBinaryDataProperties: null);
+            return new ChatToolChoice(additionalBinaryDataProperties: null);
         }
 
         public static AudioTranscription AudioTranscription(string language = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, string task = default, TimeSpan? duration = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
@@ -1024,16 +1034,6 @@ namespace OpenAI
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
-        }
-
-        public static ChatFunctionChoice ChatFunctionChoice(string predefinedFunctionChoice = default)
-        {
-            return new ChatFunctionChoice(predefinedFunctionChoice);
-        }
-
-        public static ChatToolChoice ChatToolChoice()
-        {
-            return new ChatToolChoice(additionalBinaryDataProperties: null);
         }
     }
 }

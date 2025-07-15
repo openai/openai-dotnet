@@ -14,7 +14,7 @@ namespace OpenAI.Images
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateCreateImageRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateGenerateImagesRequest(BinaryContent content, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -31,7 +31,7 @@ namespace OpenAI.Images
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateImageEditRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateGenerateImageEditsRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -48,7 +48,7 @@ namespace OpenAI.Images
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateImageVariationRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateGenerateImageVariationsRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeTurnDetection")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class TurnDetectionOptions

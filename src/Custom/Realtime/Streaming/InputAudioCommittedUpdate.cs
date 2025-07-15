@@ -12,7 +12,6 @@ namespace OpenAI.Realtime;
 /// (<see cref="RealtimeSession.CommitPendingAudioAsync(System.Threading.CancellationToken)"/> has
 /// completed submission of the user audio input buffer.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventInputAudioBufferCommitted")]
 public partial class InputAudioCommittedUpdate
 { }

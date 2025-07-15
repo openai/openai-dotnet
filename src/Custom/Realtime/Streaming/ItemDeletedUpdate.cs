@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// <c>conversation.item.delete</c> request command
 /// (<see cref="RealtimeSession.DeleteItemAsync(string, System.Threading.CancellationToken)"/>).
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemDeleted")]
 public partial class ItemDeletedUpdate
 { }

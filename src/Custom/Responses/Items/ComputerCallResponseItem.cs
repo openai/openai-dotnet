@@ -7,7 +7,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAICUA001")]
 [CodeGenType("ComputerToolCallItemResource")]
 public partial class ComputerCallResponseItem
 {

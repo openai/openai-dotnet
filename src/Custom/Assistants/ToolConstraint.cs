@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("AssistantsNamedToolChoice")]
 [CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalAssistantsNamedToolChoiceType))]
 public partial class ToolConstraint

@@ -9,7 +9,6 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 // - Suppressed constructor in favor of custom default constructor.
-[Experimental("OPENAI001")]
 [CodeGenType("CreateResponse")]
 [CodeGenVisibility(nameof(ResponseCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(ResponseCreationOptions), typeof(IEnumerable<ResponseItem>))]

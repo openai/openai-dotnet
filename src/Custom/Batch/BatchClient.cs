@@ -12,15 +12,14 @@ namespace OpenAI.Batch;
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
 // - Suppressed convenience methods for now.
 /// <summary> The service client for OpenAI batch operations. </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("Batches")]
 [CodeGenSuppress("BatchClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 [CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 [CodeGenSuppress("CreateBatch", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateBatchAsync", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("RetrieveBatch", typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("RetrieveBatchAsync", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetBatch", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetBatchAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatch", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatchAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatch", typeof(string), typeof(RequestOptions))]

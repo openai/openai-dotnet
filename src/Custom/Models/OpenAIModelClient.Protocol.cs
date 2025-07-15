@@ -21,7 +21,6 @@ public partial class OpenAIModelClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetModelsAsync(RequestOptions options)
     {
         using PipelineMessage message = CreateGetModelsRequest(options);
@@ -35,7 +34,6 @@ public partial class OpenAIModelClient
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetModels(RequestOptions options)
     {
         using PipelineMessage message = CreateGetModelsRequest(options);
@@ -52,7 +50,6 @@ public partial class OpenAIModelClient
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetModelAsync(string model, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
@@ -71,7 +68,6 @@ public partial class OpenAIModelClient
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetModel(string model, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
@@ -89,7 +85,6 @@ public partial class OpenAIModelClient
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> DeleteModelAsync(string model, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
@@ -107,7 +102,6 @@ public partial class OpenAIModelClient
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult DeleteModel(string model, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));

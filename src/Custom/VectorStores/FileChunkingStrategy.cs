@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.VectorStores;
 
-[Experimental("OPENAI001")]
 [CodeGenType("DotNetCombinedChunkingStrategyParam")]
 public abstract partial class FileChunkingStrategy
 {

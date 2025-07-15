@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEvent")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RealtimeUpdate

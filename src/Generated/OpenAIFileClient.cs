@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Files
 {
@@ -16,5 +19,81 @@ namespace OpenAI.Files
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult GetFiles(string purpose, RequestOptions options)
+        {
+            using PipelineMessage message = CreateGetFilesRequest(purpose, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
+        {
+            using PipelineMessage message = CreateGetFilesRequest(purpose, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUploadFileRequest(content, contentType, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> UploadFileAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUploadFileRequest(content, contentType, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteFile(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateDeleteFileRequest(fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteFileAsync(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateDeleteFileRequest(fileId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetFile(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateGetFileRequest(fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetFileAsync(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateGetFileRequest(fileId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DownloadFile(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateDownloadFileRequest(fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DownloadFileAsync(string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateDownloadFileRequest(fileId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

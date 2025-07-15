@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// <c>conversation.item.truncate</c> request command
 /// (<see cref="RealtimeSession.TruncateItemAsync(string, int, TimeSpan, System.Threading.CancellationToken)"/>).
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemTruncated")]
 public partial class ItemTruncatedUpdate
 { }

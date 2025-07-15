@@ -10,7 +10,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
 public partial class OpenAIResponse

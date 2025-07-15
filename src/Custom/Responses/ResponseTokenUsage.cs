@@ -5,7 +5,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("ResponseUsage")]
 public partial class ResponseTokenUsage
 {

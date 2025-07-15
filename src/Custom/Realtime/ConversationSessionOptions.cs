@@ -6,7 +6,6 @@ using OpenAI.Internal;
 
 namespace OpenAI.Realtime;
 
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeRequestSession")]
 public partial class ConversationSessionOptions
 {

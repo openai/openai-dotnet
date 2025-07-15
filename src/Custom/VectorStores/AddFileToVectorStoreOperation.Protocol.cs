@@ -25,10 +25,9 @@ public partial class AddFileToVectorStoreOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual async Task<ClientResult> GetFileAssociationAsync(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateGetVectorStoreFileRequest(_vectorStoreId, _fileId, options);
+        using PipelineMessage message = _parentClient.CreateGetFileAssociationRequest(_vectorStoreId, _fileId, options);
         return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
@@ -38,10 +37,9 @@ public partial class AddFileToVectorStoreOperation : OperationResult
     /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> The response returned from the service. </returns>
-    [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual ClientResult GetFileAssociation(RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateGetVectorStoreFileRequest(_vectorStoreId, _fileId, options);
+        using PipelineMessage message = _parentClient.CreateGetFileAssociationRequest(_vectorStoreId, _fileId, options);
         return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 

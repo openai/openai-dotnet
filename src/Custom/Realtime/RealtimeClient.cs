@@ -15,7 +15,6 @@ namespace OpenAI.Realtime;
 [CodeGenSuppress("CreateEphemeralTranscriptionTokenAsync", typeof(TranscriptionSessionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
 [CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
-[Experimental("OPENAI002")]
 public partial class RealtimeClient
 {
     public event EventHandler<BinaryData> OnSendingCommand;

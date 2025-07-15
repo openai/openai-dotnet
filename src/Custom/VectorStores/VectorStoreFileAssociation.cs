@@ -11,7 +11,6 @@ namespace OpenAI.VectorStores;
 /// <summary>
 /// A representation of a file association between an uploaded file and a vector store.
 /// </summary>
-[Experimental("OPENAI001")]
 [CodeGenType("VectorStoreFileObject")]
 public partial class VectorStoreFileAssociation
 {

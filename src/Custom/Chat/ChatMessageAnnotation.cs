@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
 // CUSTOM: Added Experimental attribute.
-[Experimental("OPENAI001")]
 [CodeGenType("ChatCompletionResponseMessageAnnotation")]
 public partial class ChatMessageAnnotation
 {

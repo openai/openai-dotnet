@@ -3,10 +3,15 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Batch
 {
+    [Experimental("OPENAI001")]
     public partial class BatchClient
     {
         private readonly Uri _endpoint;
@@ -16,5 +21,21 @@ namespace OpenAI.Batch
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult GetBatch(string batchId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            using PipelineMessage message = CreateGetBatchRequest(batchId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            using PipelineMessage message = CreateGetBatchRequest(batchId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

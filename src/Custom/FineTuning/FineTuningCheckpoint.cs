@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.FineTuning;
 
-[Experimental("OPENAI001")]
 [CodeGenType("FineTuningJobCheckpoint")]
 public partial class FineTuningCheckpoint
 {

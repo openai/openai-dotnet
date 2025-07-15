@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
-[CodeGenSuppress("RetrieveBatch", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("RetrieveBatchAsync", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListBatches", typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("ListBatchesAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetBatches", typeof(string), typeof(int?), typeof(RequestOptions))]
+[CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
 public partial class BatchClient
 {
     /// <summary>
@@ -93,112 +91,5 @@ public partial class BatchClient
     public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options)
     {
         return new BatchCollectionResult(this, Pipeline, options, limit, after);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Retrieves a batch.
-    /// </summary>
-    /// <param name="batchId"> The ID of the batch to retrieve. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="batchId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual async Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
-
-        using PipelineMessage message = CreateRetrieveBatchRequest(batchId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-    }
-
-    /// <summary>
-    /// [Protocol Method] Retrieves a batch.
-    /// </summary>
-    /// <param name="batchId"> The ID of the batch to retrieve. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="batchId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual ClientResult GetBatch(string batchId, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
-
-        using PipelineMessage message = CreateRetrieveBatchRequest(batchId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
-    }
-
-    internal virtual PipelineMessage CreateCreateBatchRequest(BinaryContent content, RequestOptions options)
-    {
-        var message = Pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "POST";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches", false);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        request.Headers.Set("Content-Type", "application/json");
-        request.Content = content;
-        message.Apply(options);
-        return message;
-    }
-
-    internal virtual PipelineMessage CreateGetBatchesRequest(string after, int? limit, RequestOptions options)
-    {
-        var message = Pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches", false);
-        if (after != null)
-        {
-            uri.AppendQuery("after", after, true);
-        }
-        if (limit != null)
-        {
-            uri.AppendQuery("limit", limit.Value, true);
-        }
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
-
-    internal virtual PipelineMessage CreateRetrieveBatchRequest(string batchId, RequestOptions options)
-    {
-        var message = Pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "GET";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches/", false);
-        uri.AppendPath(batchId, true);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
-    }
-
-    internal virtual PipelineMessage CreateCancelBatchRequest(string batchId, RequestOptions options)
-    {
-        var message = Pipeline.CreateMessage();
-        message.ResponseClassifier = PipelineMessageClassifier200;
-        var request = message.Request;
-        request.Method = "POST";
-        var uri = new ClientUriBuilder();
-        uri.Reset(_endpoint);
-        uri.AppendPath("/batches/", false);
-        uri.AppendPath(batchId, true);
-        uri.AppendPath("/cancel", false);
-        request.Uri = uri.ToUri();
-        request.Headers.Set("Accept", "application/json");
-        message.Apply(options);
-        return message;
     }
 }

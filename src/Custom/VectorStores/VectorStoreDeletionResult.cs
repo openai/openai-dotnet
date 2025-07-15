@@ -1,11 +1,10 @@
-﻿using System.ClientModel;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.VectorStores;
 
-[Experimental("OPENAI001")]
 [CodeGenType("DeleteVectorStoreResponse")]
 public partial class VectorStoreDeletionResult
 {

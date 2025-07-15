@@ -12,7 +12,6 @@ namespace OpenAI.Realtime;
 /// received when a configured <c>input_audio_transcription</c> has completed its parallel processing of the user
 /// audio input buffer.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionCompleted")]
 public partial class InputAudioTranscriptionFinishedUpdate
 {

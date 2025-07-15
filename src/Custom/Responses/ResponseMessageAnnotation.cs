@@ -6,7 +6,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
 [CodeGenType("Annotation")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class ResponseMessageAnnotation

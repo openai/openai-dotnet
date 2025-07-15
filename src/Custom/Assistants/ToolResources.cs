@@ -4,7 +4,6 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("AssistantObjectToolResources1")]
 [CodeGenVisibility(nameof(ToolResources), CodeGenVisibility.Public)]
 public partial class ToolResources

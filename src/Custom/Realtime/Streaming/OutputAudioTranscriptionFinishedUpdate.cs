@@ -11,7 +11,6 @@ namespace OpenAI.Realtime;
 /// <see cref="InternalConversationOutputTranscriptionDeltaUpdate"/> commands for an output audio content part have been
 /// received.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseAudioTranscriptDone")]
 public partial class OutputAudioTranscriptionFinishedUpdate
 { }

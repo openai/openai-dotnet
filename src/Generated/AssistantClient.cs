@@ -3,10 +3,15 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
+    [Experimental("OPENAI001")]
     public partial class AssistantClient
     {
         private readonly Uri _endpoint;
@@ -16,5 +21,71 @@ namespace OpenAI.Assistants
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult CreateAssistant(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAssistantRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateAssistantAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAssistantRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetAssistant(string assistantId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+            using PipelineMessage message = CreateGetAssistantRequest(assistantId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetAssistantAsync(string assistantId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+            using PipelineMessage message = CreateGetAssistantRequest(assistantId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult ModifyAssistant(string assistantId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateModifyAssistantRequest(assistantId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> ModifyAssistantAsync(string assistantId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateModifyAssistantRequest(assistantId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteAssistant(string assistantId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+            using PipelineMessage message = CreateDeleteAssistantRequest(assistantId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteAssistantAsync(string assistantId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
+
+            using PipelineMessage message = CreateDeleteAssistantRequest(assistantId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

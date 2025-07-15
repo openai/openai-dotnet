@@ -12,7 +12,6 @@ namespace OpenAI.Realtime;
 /// <see cref="ItemCreatedUpdate"/> (<c>conversation.item.created</c>) commands.
 /// This update indicates that all streamed <c>delta</c> content has completed and the associated content part will soon be completed.
 /// </summary>
-[Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseAudioDone")]
 public partial class OutputAudioFinishedUpdate
 { }

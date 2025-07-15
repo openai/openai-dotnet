@@ -5,7 +5,6 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
 [CodeGenType("ThreadObject")]
 public partial class AssistantThread
 {
