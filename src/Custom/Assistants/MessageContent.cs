@@ -19,7 +19,7 @@ public partial class MessageContent
             => new InternalMessageContentImageFileObject(
                 imageFile: new(
                     fileId: imageFileId,
-                    detail: detail?.ToString(),
+                    detail: detail?.ToString().ToLowerInvariant(),
                     additionalBinaryDataProperties: null));
 
     /// <summary>
@@ -33,7 +33,7 @@ public partial class MessageContent
         => new InternalMessageContentImageUrlObject(
             imageUrl: new(
                 url: imageUri,
-                detail: detail?.ToString(),
+                detail: detail?.ToString().ToLowerInvariant(),
                 additionalBinaryDataProperties: null));
 
     /// <summary>
