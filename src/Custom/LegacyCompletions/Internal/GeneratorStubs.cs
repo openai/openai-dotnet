@@ -26,12 +26,6 @@ internal readonly partial struct InternalCreateCompletionRequestModel { }
 [CodeGenType("CreateCompletionResponse")]
 internal partial class InternalCreateCompletionResponse
 {
-    public static explicit operator InternalCreateCompletionResponse(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeInternalCreateCompletionResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }
 
 [CodeGenType("CreateCompletionResponseChoice")]

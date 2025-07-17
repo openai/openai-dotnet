@@ -5,8 +5,12 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Chat
 {
@@ -19,6 +23,58 @@ namespace OpenAI.Chat
         }
 
         public ClientPipeline Pipeline { get; }
+
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        {
+            return new ChatClientGetChatCompletionsCollectionResult(
+                this,
+                after,
+                limit,
+                order,
+                metadata,
+                model,
+                options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        {
+            return new ChatClientGetChatCompletionsAsyncCollectionResult(
+                this,
+                after,
+                limit,
+                order,
+                metadata,
+                model,
+                options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<ChatCompletion> GetChatCompletions(string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default, CancellationToken cancellationToken = default)
+        {
+            return new ChatClientGetChatCompletionsCollectionResultOfT(
+                this,
+                after,
+                limit,
+                order?.ToString(),
+                metadata,
+                model,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default, CancellationToken cancellationToken = default)
+        {
+            return new ChatClientGetChatCompletionsAsyncCollectionResultOfT(
+                this,
+                after,
+                limit,
+                order?.ToString(),
+                metadata,
+                model,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
 
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null)
         {

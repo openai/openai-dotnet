@@ -41,12 +41,6 @@ internal partial class InternalRunGraderRequest
 [CodeGenType("RunGraderResponse")]
 internal partial class InternalRunGraderResponse
 {
-    public static explicit operator InternalRunGraderResponse(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeInternalRunGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }
 [CodeGenType("RunGraderResponseMetadata")] internal partial class InternalRunGraderResponseMetadata {}
 [CodeGenType("RunGraderResponseMetadataErrors")] internal partial class InternalRunGraderResponseMetadataErrors {}
@@ -72,10 +66,4 @@ internal partial class InternalValidateGraderRequest
 [CodeGenType("ValidateGraderResponse")]
 internal partial class InternalValidateGraderResponse
 {
-    public static explicit operator InternalValidateGraderResponse(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeInternalValidateGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

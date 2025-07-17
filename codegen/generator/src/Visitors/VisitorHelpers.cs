@@ -35,6 +35,20 @@ internal static class VisitorHelpers
             {
                 // To do: traverse inside of "for"
             }
+            else if (statements[i] is WhileStatement whileStatement)
+            {
+                List<MethodBodyStatement> whileBodyStatements
+                    = whileStatement.Body
+                        .SelectMany(bodyStatement => bodyStatement)
+                        .ToList();
+                VisitExplodedMethodBodyStatements(whileBodyStatements!, visitorFunc);
+                var newWhileStatement = new WhileStatement(whileStatement.Condition);
+                foreach (MethodBodyStatement bodyStatement in whileBodyStatements)
+                {
+                    newWhileStatement.Add(bodyStatement);
+                }
+                statements[i] = newWhileStatement;
+            }
         }
     }
 

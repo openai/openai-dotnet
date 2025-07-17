@@ -38,12 +38,6 @@ internal readonly partial struct InternalDeleteFileResponseObject { }
 [CodeGenType("Upload")]
 internal partial class InternalUpload
 {
-    public static explicit operator InternalUpload(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeInternalUpload(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }
 [CodeGenType("UploadObject")] internal readonly partial struct InternalUploadObject { }
 [CodeGenType("UploadPart")] internal partial class InternalUploadPart { }

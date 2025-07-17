@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -156,5 +157,12 @@ namespace OpenAI.Files
         }
 
         string IPersistableModel<InternalUploadPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalUploadPart(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalUploadPart(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }
