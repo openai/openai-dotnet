@@ -302,6 +302,45 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task ThreadWithImageDetailWorks()
+    {
+        AssistantClient client = GetTestClient();
+
+        ThreadCreationOptions options = new()
+        {
+            InitialMessages =
+        {
+            new(
+                MessageRole.User,
+                [
+                    "Describe this image with auto detail:",
+                    MessageContent.FromImageUri(
+                        new Uri("https://test.openai.com/image.png"),
+                        MessageImageDetail.Auto)
+                ])
+        }
+        };
+
+        AssistantThread thread = IsAsync
+            ? await client.CreateThreadAsync(options)
+            : client.CreateThread(options);
+
+        Validate(thread);
+
+        MessageCollectionOptions collectionOptions = new() { Order = MessageCollectionOrder.Ascending };
+        List<ThreadMessage> messages = IsAsync
+            ? await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync()
+            : client.GetMessages(thread.Id, collectionOptions).ToList();
+
+        Assert.That(messages.Count, Is.EqualTo(1));
+        Assert.That(messages[0].Role, Is.EqualTo(MessageRole.User));
+        Assert.That(messages[0].Content?.Count, Is.EqualTo(2));
+
+        Assert.That(messages[0].Content[0].Text, Is.EqualTo("Describe this image with auto detail:"));
+        Assert.That(messages[0].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
+    }
+
+    [Test]
     public async Task BasicRunOperationsWork()
     {
         AssistantClient client = GetTestClient();
