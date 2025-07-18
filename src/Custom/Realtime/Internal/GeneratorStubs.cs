@@ -35,7 +35,6 @@ namespace OpenAI.Realtime;
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseStatusDetailsType")] internal readonly partial struct InternalRealtimeResponseStatusDetailsType { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseVoice")] internal readonly partial struct InternalRealtimeResponseVoice { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeSemanticVadTurnDetection")] internal partial class InternalRealtimeSemanticVadTurnDetection { }
-[Experimental("OPENAI002")][CodeGenType("RealtimeSemanticVadTurnDetectionEagerness")] internal readonly partial struct InternalRealtimeSemanticVadTurnDetectionEagerness { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationCreated")] internal partial class InternalRealtimeServerEventConversationCreated { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationCreatedConversation")] internal partial class InternalRealtimeServerEventConversationCreatedConversation { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionFailedError")] internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError { }

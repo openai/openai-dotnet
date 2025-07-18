@@ -35,8 +35,8 @@ public partial class TurnDetectionOptions
         };
     }
 
-    internal static TurnDetectionOptions CreateSemanticVoiceActivityTurnDetectionOptions(
-        InternalRealtimeSemanticVadTurnDetectionEagerness? eagernessLevel = null,
+    public static TurnDetectionOptions CreateSemanticVoiceActivityTurnDetectionOptions(
+        SemanticEagernessLevel? eagernessLevel = null,
         bool? enableAutomaticResponseCreation = null,
         bool? enableResponseInterruption = null)
     {

@@ -11,3 +11,4 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeResponseUsage")] public partial class ConversationTokenUsage { }
 [CodeGenType("RealtimeToolType")] public readonly partial struct ConversationToolKind { }
 [CodeGenType("DotNetRealtimeVoiceIds")] public readonly partial struct ConversationVoice { }
+[CodeGenType("RealtimeSemanticVadTurnDetectionEagerness")] public readonly partial struct SemanticEagernessLevel { }

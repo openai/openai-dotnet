@@ -198,6 +198,18 @@ public class RealtimeSmokeTests : RealtimeTestFixtureBase
         JsonNode serializedNode = JsonNode.Parse(serializedOptions);
         Assert.That(serializedNode["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("server_vad"));
         Assert.That(serializedNode["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
+
+        sessionOptions = new()
+        {
+            TurnDetectionOptions = TurnDetectionOptions.CreateSemanticVoiceActivityTurnDetectionOptions(
+                SemanticEagernessLevel.Medium, true, true)
+        };
+        serializedOptions = ModelReaderWriter.Write(sessionOptions);
+        serializedNode = JsonNode.Parse(serializedOptions);
+        Assert.That(serializedNode["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("semantic_vad"));
+        Assert.That(serializedNode["turn_detection"]?["eagerness"]?.GetValue<string>(), Is.EqualTo("medium"));
+        Assert.That(serializedNode["turn_detection"]?["create_response"]?.GetValue<bool>(), Is.EqualTo(true));
+        Assert.That(serializedNode["turn_detection"]?["interrupt_response"]?.GetValue<bool>(), Is.EqualTo(true));
     }
 
     [Test]

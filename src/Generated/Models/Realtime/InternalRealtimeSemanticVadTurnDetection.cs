@@ -13,11 +13,11 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal InternalRealtimeSemanticVadTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalRealtimeSemanticVadTurnDetectionEagerness? eagerness) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
+        internal InternalRealtimeSemanticVadTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties, SemanticEagernessLevel? eagerness) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
         {
             Eagerness = eagerness;
         }
 
-        internal InternalRealtimeSemanticVadTurnDetectionEagerness? Eagerness { get; set; }
+        public SemanticEagernessLevel? Eagerness { get; set; }
     }
 }
