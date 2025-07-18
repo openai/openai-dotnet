@@ -57,7 +57,7 @@ namespace OpenAI.Realtime
             bool? responseCreationEnabled = default;
             bool? responseInterruptionEnabled = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalRealtimeSemanticVadTurnDetectionEagerness? eagerness = default;
+            SemanticEagernessLevel? eagerness = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -89,7 +89,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    eagerness = new InternalRealtimeSemanticVadTurnDetectionEagerness(prop.Value.GetString());
+                    eagerness = new SemanticEagernessLevel(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
