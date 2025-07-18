@@ -143,14 +143,14 @@ AudioClient whisperClient = client.GetAudioClient("whisper-1");
 
 The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse.
 
-Register the `OpenAIClient` as a singleton in your `Program.cs`:
+Register the `ChatClient` as a singleton in your `Program.cs`:
 
 ```csharp
-builder.Services.AddSingleton<OpenAIClient>(serviceProvider =>
+builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 {
     var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
-    return new OpenAIClient(apiKey);
+    return new ChatClient(apiKey);
 });
 ```
 
@@ -161,18 +161,17 @@ Then inject and use the client in your controllers or services:
 [Route("api/[controller]")]
 public class ChatController : ControllerBase
 {
-    private readonly OpenAIClient _openAIClient;
+    private readonly ChatClient _chatClient;
 
-    public ChatController(OpenAIClient openAIClient)
+    public ChatController(ChatClient chatClient)
     {
-        _openAIClient = openAIClient;
+        _chatClient = chatClient;
     }
 
     [HttpPost("complete")]
     public async Task<IActionResult> CompleteChat([FromBody] string message)
     {
-        ChatClient chatClient = _openAIClient.GetChatClient("gpt-4o");
-        ChatCompletion completion = await chatClient.CompleteChatAsync(message);
+        ChatCompletion completion = await _chatClient.CompleteChatAsync(message);
         
         return Ok(new { response = completion.Content[0].Text });
     }
