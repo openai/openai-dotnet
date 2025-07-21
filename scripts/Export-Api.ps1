@@ -258,6 +258,9 @@ function Invoke-GenAPI {
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""
 
+    # Remove ModelReaderWriterBuildable attributes.
+    $content = $content -creplace '\[ModelReaderWriterBuildable\(typeof\([^\)]+\)\)\]\s*', ''
+
     # Remove internal APIs.
     $content = $content -creplace "  * internal.*`n", ""
 

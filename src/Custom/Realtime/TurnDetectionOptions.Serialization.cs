@@ -20,6 +20,7 @@ public partial class TurnDetectionOptions
             {
                 case "none": return InternalRealtimeNoTurnDetection.DeserializeInternalRealtimeNoTurnDetection(element, options);
                 case "server_vad": return InternalRealtimeServerVadTurnDetection.DeserializeInternalRealtimeServerVadTurnDetection(element, options);
+                case "semantic_vad": return InternalRealtimeSemanticVadTurnDetection.DeserializeInternalRealtimeSemanticVadTurnDetection(element, options);
                 default: return null;
             }
         }
