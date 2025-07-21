@@ -72,7 +72,6 @@ jobs:
   sign:
     needs: build
     runs-on: windows-latest # Code signing must run on a Windows agent for Authenticode signing (dll/exe)
-    if: github.event_name == 'release'
     environment: release # Needed for OIDC subject for releases triggered on release being created.
     permissions:
       id-token: write # Required for requesting the JWT
