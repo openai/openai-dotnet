@@ -3828,6 +3828,23 @@ namespace OpenAI.Realtime {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public readonly partial struct SemanticEagernessLevel : IEquatable<SemanticEagernessLevel> {
+        public SemanticEagernessLevel(string value);
+        public static SemanticEagernessLevel Auto { get; }
+        public static SemanticEagernessLevel High { get; }
+        public static SemanticEagernessLevel Low { get; }
+        public static SemanticEagernessLevel Medium { get; }
+        public readonly bool Equals(SemanticEagernessLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SemanticEagernessLevel left, SemanticEagernessLevel right);
+        public static implicit operator SemanticEagernessLevel(string value);
+        public static bool operator !=(SemanticEagernessLevel left, SemanticEagernessLevel right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
     public class TranscriptionSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<TranscriptionSessionConfiguredUpdate>, IPersistableModel<TranscriptionSessionConfiguredUpdate> {
         public RealtimeContentModalities ContentModalities { get; }
         public RealtimeAudioFormat InputAudioFormat { get; }
@@ -3862,6 +3879,7 @@ namespace OpenAI.Realtime {
     public class TurnDetectionOptions : IJsonModel<TurnDetectionOptions>, IPersistableModel<TurnDetectionOptions> {
         public TurnDetectionKind Kind { get; }
         public static TurnDetectionOptions CreateDisabledTurnDetectionOptions();
+        public static TurnDetectionOptions CreateSemanticVoiceActivityTurnDetectionOptions(SemanticEagernessLevel? eagernessLevel = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
         public static TurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
         protected virtual TurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
