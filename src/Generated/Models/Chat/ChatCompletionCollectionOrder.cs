@@ -4,11 +4,13 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder>
+    [Experimental("OPENAI001")]
+    public readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder>
     {
         private readonly string _value;
         private const string AscValue = "asc";
@@ -21,9 +23,9 @@ namespace OpenAI.Chat
             _value = value;
         }
 
-        internal static ChatCompletionCollectionOrder Asc { get; } = new ChatCompletionCollectionOrder(AscValue);
+        public static ChatCompletionCollectionOrder Asc { get; } = new ChatCompletionCollectionOrder(AscValue);
 
-        internal static ChatCompletionCollectionOrder Desc { get; } = new ChatCompletionCollectionOrder(DescValue);
+        public static ChatCompletionCollectionOrder Desc { get; } = new ChatCompletionCollectionOrder(DescValue);
 
         public static bool operator ==(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right) => left.Equals(right);
 

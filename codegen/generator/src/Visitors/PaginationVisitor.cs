@@ -19,7 +19,15 @@ public class PaginationVisitor : ScmLibraryVisitor
 {
 
     private static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
-
+    private static readonly Dictionary<string, string> _paramReplacementMap = new()
+    {
+        { "after", "AfterId" },
+        { "before", "LastId" },
+        { "limit", "PageSizeLimit" },
+        { "order", "Order" },
+        { "model", "Model" },
+        { "metadata", "Metadata" }
+    };
     private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
     {
         {
@@ -36,14 +44,15 @@ public class PaginationVisitor : ScmLibraryVisitor
     {
         // Check if the method is one of the pagination methods we want to modify.
         // If so, we will update its parameters to replace the specified parameters with the options type.
-        if (method.Signature.ReturnType is not null &&
+        if (
+            method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
             _optionsReplacements.TryGetValue(method.Signature.Name, out var options) &&
             method.Signature.ReturnType.IsGenericType &&
             method.Signature.ReturnType.Arguments.Count == 1 &&
             method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
         {
-            var optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.ReturnType);
+            var optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.OptionsType);
             if (optionsType is not null)
             {
                 // replace the method parameters with names in the _paramsToReplace array with the optionsType
@@ -78,7 +87,68 @@ public class PaginationVisitor : ScmLibraryVisitor
                     methodSignature.ExplicitInterface,
                     methodSignature.NonDocumentComment);
 
-                    method.Update(signature: newSignature);
+                    var optionsParam = newParameters[lastRemovedIndex];
+
+                    // Update the method body statements to replace the old parameters with the new options parameter.
+                    var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
+                    VisitExplodedMethodBodyStatements(statements!,
+                        statement =>
+                        {
+                            // Check if the statement is a return statement
+                            if (statement is ExpressionStatement exp && exp.Expression is KeywordExpression keyword && keyword.Keyword == "return")
+                            {
+                                // If it is, we will replace the parameters with the options parameter.
+                                if (keyword.Expression is NewInstanceExpression newInstance &&
+                                    newInstance.Parameters.Count > 0)
+                                {
+                                    // Create the new parameters with the options parameter.
+                                    var newParameters = new List<ValueExpression>();
+                                    foreach (var param in newInstance.Parameters)
+                                    {
+                                        if (param is VariableExpression varExpr && options.ParamsToReplace.Contains(varExpr.Declaration.RequestedName))
+                                        {
+                                            // Replace the parameter with the options parameter.
+                                            if (_paramReplacementMap.TryGetValue(varExpr.Declaration.RequestedName, out var replacement))
+                                            {
+                                                newParameters.Add(optionsParam.NullConditional().Property(replacement));
+                                                var foo = optionsParam.NullConditional().Property(replacement).NullConditional().Invoke("ToString", Array.Empty<ValueExpression>());
+                                            }
+                                        }
+                                        else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
+                                                 invokeMethod.InstanceReference is NullConditionalExpression nullConditional &&
+                                                 nullConditional.Inner is VariableExpression varExpr2 &&
+                                                 options.ParamsToReplace.Contains(varExpr2.Declaration.RequestedName))
+                                        {
+                                            // Replace the parameter with the options parameter.
+                                            if (_paramReplacementMap.TryGetValue(varExpr2.Declaration.RequestedName, out var replacement))
+                                            {
+                                                newParameters.Add(optionsParam.NullConditional().Property(replacement).NullConditional().Invoke("ToString", Array.Empty<ValueExpression>()));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Keep the original parameter.
+                                            newParameters.Add(param);
+                                        }
+                                    }
+                                    // Create a new ExpressionStatement with the same children as the original, but with the new parameters.
+                                    var newNewInstanceExpression = new NewInstanceExpression(
+                                        newInstance.Type,
+                                        newParameters);
+
+                                    var newKeywordExpression = new KeywordExpression(
+                                        keyword.Keyword,
+                                        newNewInstanceExpression);
+
+                                    var newExpressionStatement = new ExpressionStatement(newKeywordExpression);
+
+                                    return newExpressionStatement;
+                                }
+                            }
+                            return statement;
+                        });
+
+                    method.Update(signature: newSignature, bodyStatements: statements);
                 }
             }
         }

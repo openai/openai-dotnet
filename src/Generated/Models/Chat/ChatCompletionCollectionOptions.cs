@@ -4,11 +4,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class ChatCompletionCollectionOptions
+    [Experimental("OPENAI001")]
+    public partial class ChatCompletionCollectionOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
@@ -31,7 +33,7 @@ namespace OpenAI.Chat
 
         public int? PageSizeLimit { get; set; }
 
-        internal ChatCompletionCollectionOrder? Order { get; set; }
+        public ChatCompletionCollectionOrder? Order { get; set; }
 
         public IDictionary<string, string> Metadata { get; }
 

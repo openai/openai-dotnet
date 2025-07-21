@@ -50,28 +50,28 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletion options = default, CancellationToken cancellationToken = default)
+        public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new ChatClientGetChatCompletionsCollectionResultOfT(
                 this,
-                after,
-                limit,
-                order?.ToString(),
-                metadata,
-                model,
+                options?.AfterId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.Metadata,
+                options?.Model,
                 cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
         [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletion options = default, CancellationToken cancellationToken = default)
+        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             return new ChatClientGetChatCompletionsAsyncCollectionResultOfT(
                 this,
-                after,
-                limit,
-                order?.ToString(),
-                metadata,
-                model,
+                options?.AfterId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.Metadata,
+                options?.Model,
                 cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
