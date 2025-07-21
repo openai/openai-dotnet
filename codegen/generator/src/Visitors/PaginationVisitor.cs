@@ -1,27 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.TypeSpec.Generator.ClientModel;
-using Microsoft.TypeSpec.Generator.ClientModel.Providers;
 using Microsoft.TypeSpec.Generator.Expressions;
-using Microsoft.TypeSpec.Generator.Input;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
-using NuGet.Packaging.Signing;
 using static OpenAILibraryPlugin.Visitors.VisitorHelpers;
 
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
 /// This visitor modifies GetRawPagesAsync methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
+/// It also replaces specific parameters with an options type for pagination methods.
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
+    private static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
 
     private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
     {
@@ -37,6 +34,8 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     protected override MethodProvider? VisitMethod(MethodProvider method)
     {
+        // Check if the method is one of the pagination methods we want to modify.
+        // If so, we will update its parameters to replace the specified parameters with the options type.
         if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
             _optionsReplacements.TryGetValue(method.Signature.Name, out var options) &&
@@ -83,6 +82,9 @@ public class PaginationVisitor : ScmLibraryVisitor
                 }
             }
         }
+
+        // If the method is GetRawPagesAsync and is internal, we will modify the body statements to add a check for hasMore == false.
+        // This is to ensure that pagination stops when hasMore is false, in addition to checking LastId.
         if (method.Signature.Name == "GetRawPagesAsync" && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
             var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
