@@ -10,7 +10,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
-using OpenAI.VectorStores;
 
 namespace OpenAI.Chat
 {
@@ -51,7 +50,7 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult<ChatCompletion> GetChatCompletions(string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default, CancellationToken cancellationToken = default)
+        public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletion options = default, CancellationToken cancellationToken = default)
         {
             return new ChatClientGetChatCompletionsCollectionResultOfT(
                 this,
@@ -64,7 +63,7 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default, CancellationToken cancellationToken = default)
+        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletion options = default, CancellationToken cancellationToken = default)
         {
             return new ChatClientGetChatCompletionsAsyncCollectionResultOfT(
                 this,

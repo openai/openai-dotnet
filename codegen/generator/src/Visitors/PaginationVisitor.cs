@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,6 +10,7 @@ using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
+using NuGet.Packaging.Signing;
 using static OpenAILibraryPlugin.Visitors.VisitorHelpers;
 
 namespace OpenAILibraryPlugin.Visitors;
@@ -18,8 +20,69 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
 {
+
+    static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
+
+    private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
+    {
+        {
+            "GetChatCompletions",
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetChatCompletionsAsync",
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        }
+    };
+
     protected override MethodProvider? VisitMethod(MethodProvider method)
     {
+        if (method.Signature.ReturnType is not null &&
+            method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
+            _optionsReplacements.TryGetValue(method.Signature.Name, out var options) &&
+            method.Signature.ReturnType.IsGenericType &&
+            method.Signature.ReturnType.Arguments.Count == 1 &&
+            method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
+        {
+            var optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.ReturnType);
+            if (optionsType is not null)
+            {
+                // replace the method parameters with names in the _paramsToReplace array with the optionsType
+                var methodSignature = method.Signature;
+                var newParameters = methodSignature.Parameters.ToList();
+                int lastRemovedIndex = -1;
+                for (int i = 0; i < newParameters.Count; i++)
+                {
+                    if (_chatParamsToReplace.Contains(newParameters[i].Name))
+                    {
+                        newParameters.RemoveAt(i);
+                        lastRemovedIndex = i;
+                        i--;
+                    }
+                }
+                if (lastRemovedIndex >= 0)
+                {
+                    newParameters.Insert(
+                        lastRemovedIndex,
+                        new ParameterProvider("options", $"The pagination options", optionsType.Type, defaultValue: new KeywordExpression("default", null)));
+
+                    var newSignature = new MethodSignature(
+                    methodSignature.Name,
+                    methodSignature.Description,
+                    methodSignature.Modifiers,
+                    methodSignature.ReturnType,
+                    methodSignature.ReturnDescription,
+                    newParameters,
+                    methodSignature.Attributes,
+                    methodSignature.GenericArguments,
+                    methodSignature.GenericParameterConstraints,
+                    methodSignature.ExplicitInterface,
+                    methodSignature.NonDocumentComment);
+
+                    method.Update(signature: newSignature);
+                }
+            }
+        }
         if (method.Signature.Name == "GetRawPagesAsync" && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
             var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
