@@ -69,9 +69,63 @@ jobs:
           name: build-artifacts
           path: ${{ github.workspace }}/artifacts
 
+  sign:
+    needs: build
+    runs-on: windows-latest # Code signing must run on a Windows agent for Authenticode signing (dll/exe)
+    if: github.event_name == 'release'
+    environment: release # Needed for OIDC subject for releases triggered on release being created.
+    permissions:
+      id-token: write # Required for requesting the JWT
+      
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: ${{ github.workspace }}/build-artifacts
+    
+    # .NET is required on the agent for the tool to run
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.x'
+
+    # Install the code signing tool    
+    - name: Install Sign CLI tool
+      run: dotnet tool install --tool-path . --prerelease sign
+    
+    # Login to Azure using a ServicePrincipal configured to authenticate agaist a GitHub Action
+    - name: 'Az CLI login'
+      uses: azure/login@v2
+      with:
+        allow-no-subscriptions: true
+        client-id: 80125de0-6f58-4f16-bd05-b2fa621d36a5
+        tenant-id: 16076fdc-fcc1-4a15-b1ca-32c9a255900e
+        subscription-id: 997e7c30-fd83-4b3d-bcf5-492e194f9b98
+
+    # Run the signing command
+    - name: Sign artifacts
+      shell: pwsh
+      run: >
+        ./sign code azure-key-vault
+        **/*.nupkg
+        --base-directory "${{ github.workspace }}/build-artifacts/packages"
+        --publisher-name "OpenAI"
+        --description "OpenAI SDK for .NET"
+        --description-url "https://github.com/openai/openai-dotnet"
+        --azure-key-vault-managed-identity true
+        --azure-key-vault-url "https://sc-openaisdk.vault.azure.net/"
+        --azure-key-vault-certificate "OpenAISDKSCCert"
+    
+    - name: Upload signed artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-signed
+        path: ${{ github.workspace }}/artifacts
+        
   deploy:
     name: Publish Package
-    needs: build
+    needs: sign
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -79,6 +133,9 @@ jobs:
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-signed
+          path: ${{ github.workspace }}/build-artifacts
 
       - name: Upload release asset
         if: github.event_name == 'release'
