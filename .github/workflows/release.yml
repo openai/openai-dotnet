@@ -120,7 +120,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts-signed
-        path: ${{ github.workspace }}/artifacts
+        path: ${{ github.workspace }}/build-artifacts
         
   deploy:
     name: Publish Package
