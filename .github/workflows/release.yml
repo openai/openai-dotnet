@@ -110,7 +110,7 @@ jobs:
         **/*.nupkg
         --base-directory "${{ github.workspace }}/build-artifacts/packages"
         --publisher-name "OpenAI"
-        --description "OpenAI SDK for .NET"
+        --description "OpenAI library for .NET"
         --description-url "https://github.com/openai/openai-dotnet"
         --azure-key-vault-managed-identity true
         --azure-key-vault-url "https://sc-openaisdk.vault.azure.net/"
