@@ -148,6 +148,8 @@ jobs:
         run: |
           gh release edit "${{ github.event.release.tag_name }}" \
             --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: NuGet authenticate
         run: dotnet nuget add source
