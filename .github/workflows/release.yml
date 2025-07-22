@@ -112,7 +112,7 @@ jobs:
         --publisher-name "OpenAI"
         --description "OpenAI library for .NET"
         --description-url "https://github.com/openai/openai-dotnet"
-        --managed-identity-client-id 80125de0-6f58-4f16-bd05-b2fa621d36a5
+        --azure-credential-type "azure-cli"
         --azure-key-vault-url "https://sc-openaisdk.vault.azure.net/"
         --azure-key-vault-certificate "OpenAISDKSCCert"
     
