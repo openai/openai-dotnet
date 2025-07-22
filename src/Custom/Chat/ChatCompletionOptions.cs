@@ -151,6 +151,25 @@ public partial class ChatCompletionOptions
     [CodeGenMember("Store")]
     public bool? StoredOutputEnabled { get; set; }
 
+    /// <summary>
+    /// Additional properties to send with the request body. This can be used to add custom fields.
+    /// Values can be any JSON-serializable type (string, number, boolean, object, array).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var options = new ChatCompletionOptions();
+    /// options.ExtraBody["custom_parameter"] = BinaryData.FromString("\"custom_value\"");
+    /// options.ExtraBody["experimental_feature"] = BinaryData.FromObjectAsJson(new { enabled = true, threshold = 0.8 });
+    /// options.ExtraBody["numeric_param"] = BinaryData.FromObjectAsJson(42);
+    /// options.ExtraBody["boolean_param"] = BinaryData.FromObjectAsJson(true);
+    /// </code>
+    /// </example>
+    public IDictionary<string, BinaryData> ExtraBody
+    {
+        get => SerializedAdditionalRawData ??= new Dictionary<string, BinaryData>();
+        set => SerializedAdditionalRawData = value;
+    }
+
     // CUSTOM:
     // - Added Experimental attribute.
     // - Renamed.
