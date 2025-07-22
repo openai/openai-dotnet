@@ -97,7 +97,6 @@ jobs:
     - name: 'Az CLI login'
       uses: azure/login@v2
       with:
-        allow-no-subscriptions: true
         client-id: 80125de0-6f58-4f16-bd05-b2fa621d36a5
         tenant-id: 16076fdc-fcc1-4a15-b1ca-32c9a255900e
         subscription-id: 997e7c30-fd83-4b3d-bcf5-492e194f9b98
