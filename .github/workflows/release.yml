@@ -151,6 +151,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
+
       - name: NuGet authenticate
         run: dotnet nuget add source
           "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
