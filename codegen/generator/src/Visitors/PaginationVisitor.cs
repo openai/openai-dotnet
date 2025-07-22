@@ -42,10 +42,31 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     protected override MethodProvider? VisitMethod(MethodProvider method)
     {
+        // Try to handle pagination methods with options replacement
+        if (TryHandlePaginationMethodWithOptions(method))
+        {
+            return method;
+        }
+
+        // Try to handle GetRawPagesAsync methods for hasMore checks
+        if (TryHandleGetRawPagesAsyncMethod(method))
+        {
+            return method;
+        }
+
+        return base.VisitMethod(method);
+    }
+
+    /// <summary>
+    /// Handles pagination methods that need their parameters replaced with an options type.
+    /// </summary>
+    /// <param name="method">The method to potentially handle. Will be modified in place if handling is successful.</param>
+    /// <returns>True if the method was handled, false otherwise.</returns>
+    private bool TryHandlePaginationMethodWithOptions(MethodProvider method)
+    {
         // Check if the method is one of the pagination methods we want to modify.
         // If so, we will update its parameters to replace the specified parameters with the options type.
-        if (
-            method.Signature.ReturnType is not null &&
+        if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
             _optionsReplacements.TryGetValue(method.Signature.Name, out var options) &&
             method.Signature.ReturnType.IsGenericType &&
@@ -111,7 +132,6 @@ public class PaginationVisitor : ScmLibraryVisitor
                                             if (_paramReplacementMap.TryGetValue(varExpr.Declaration.RequestedName, out var replacement))
                                             {
                                                 newParameters.Add(optionsParam.NullConditional().Property(replacement));
-                                                var foo = optionsParam.NullConditional().Property(replacement).NullConditional().Invoke("ToString", Array.Empty<ValueExpression>());
                                             }
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
@@ -149,10 +169,21 @@ public class PaginationVisitor : ScmLibraryVisitor
                         });
 
                     method.Update(signature: newSignature, bodyStatements: statements);
+                    return true;
                 }
             }
         }
 
+        return false;
+    }
+
+    /// <summary>
+    /// Handles GetRawPagesAsync methods to add hasMore == false checks for pagination.
+    /// </summary>
+    /// <param name="method">The method to potentially handle. Will be modified in place if handling is successful.</param>
+    /// <returns>True if the method was handled, false otherwise.</returns>
+    private bool TryHandleGetRawPagesAsyncMethod(MethodProvider method)
+    {
         // If the method is GetRawPagesAsync and is internal, we will modify the body statements to add a check for hasMore == false.
         // This is to ensure that pagination stops when hasMore is false, in addition to checking LastId.
         if (method.Signature.Name == "GetRawPagesAsync" && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
@@ -197,6 +228,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                             .SelectMany(bodyStatement => bodyStatement)
                             .ToList();
 
+                        // Check for the assignment of nextToken and add hasMore assignment
                         for (int i = 0; i < statementList.Count; i++)
                         {
                             if (statementList[i] is ExpressionStatement expressionStatement &&
@@ -227,9 +259,9 @@ public class PaginationVisitor : ScmLibraryVisitor
                 });
 
             method.Update(bodyStatements: statements);
-            return method;
+            return true;
         }
 
-        return base.VisitMethod(method);
+        return false;
     }
 }
