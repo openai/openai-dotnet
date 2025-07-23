@@ -83,26 +83,21 @@ jobs:
         name: build-artifacts
         path: ${{ github.workspace }}/build-artifacts
     
-    # .NET is required on the agent for the tool to run
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '9.x'
-
-    # Install the code signing tool    
+  
     - name: Install Sign CLI tool
       run: dotnet tool install --tool-path . --prerelease sign
     
-    # Login to Azure using a ServicePrincipal configured to authenticate agaist a GitHub Action
     - name: 'Az CLI login'
       uses: azure/login@v2
       with:
         client-id: 80125de0-6f58-4f16-bd05-b2fa621d36a5
         tenant-id: 16076fdc-fcc1-4a15-b1ca-32c9a255900e
-        #subscription-id: 997e7c30-fd83-4b3d-bcf5-492e194f9b98
         allow-no-subscriptions: true
 
-    # Run the signing command
     - name: Sign artifacts
       shell: pwsh
       run: >
