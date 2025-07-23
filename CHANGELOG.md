@@ -4,9 +4,9 @@
 
 ### Other changes
 
-- Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses. 
-
+- Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses.
 - Removed explicit `net6.0` target framework, as this version reached end-of-life in November, 2024 and is no longer maintained nor supported by Microsoft.  This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
+- The NuGet package now contains signed binaries.
 
 ## 2.2.0 (2025-07-02)
 
@@ -283,7 +283,7 @@
 ### Features Added
 
 - Added a new `RealtimeConversationClient` in a corresponding scenario namespace. ([ff75da4](https://github.com/openai/openai-dotnet/commit/ff75da4167bc83fa85eb69ac142cab88a963ed06))
-  - This maps to the new `/realtime` beta endpoint and is thus marked with a new `[Experimental("OPENAI002")]` diagnostic tag. 
+  - This maps to the new `/realtime` beta endpoint and is thus marked with a new `[Experimental("OPENAI002")]` diagnostic tag.
   - This is a very early version of the convenience surface and thus subject to significant change
   - Documentation and samples will arrive soon; in the interim, see [the scenario test files](/tests/RealtimeConversation) for basic usage
   - You can also find an external sample employing this client, together with Azure OpenAI support, at https://github.com/Azure-Samples/aoai-realtime-audio-sdk/tree/main/dotnet/samples/console
@@ -441,7 +441,7 @@
 ### Breaking Changes
 
 - Renamed `AudioClient`'s `GenerateSpeechFromText` methods to simply `GenerateSpeech`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7))
-- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7)) 
+- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7))
 
 ### Bugs Fixed
 
