@@ -16,5 +16,6 @@ import "./client/models/audio.models.tsp";
 import "./client/models/common.models.tsp";
 import "./client/models/responses.models.tsp";
 import "./client/models/vector-stores.models.tsp";
+import "./client/models/chat.models.tsp";
 
 import "./base/entrypoints/sdk.dotnet";

@@ -38,13 +38,13 @@ namespace OpenAI.Chat
             }
             if (metadata != null && !(metadata is ChangeTrackingDictionary<string, string> changeTrackingDictionary && changeTrackingDictionary.IsUndefined))
             {
-                List<object> list = new List<object>();
+                // Plugin customization: remove unnecessary list declaration
                 foreach (var @param in metadata)
                 {
-                    list.Add(@param.Key);
-                    list.Add(@param.Value);
+                    // Plugin customization: Properly handle metadata query parameters
+                    uri.AppendQuery($"metadata[{@param.Key}]", @param.Value, true);
                 }
-                uri.AppendQueryDelimited("metadata", list, ",", null, true);
+                // Plugin customization: remove unnecessary AppendQueryDelimited for metadata
             }
             if (model != null)
             {

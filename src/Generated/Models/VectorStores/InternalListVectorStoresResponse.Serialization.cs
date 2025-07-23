@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -184,5 +185,12 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<InternalListVectorStoresResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListVectorStoresResponse(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalListVectorStoresResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

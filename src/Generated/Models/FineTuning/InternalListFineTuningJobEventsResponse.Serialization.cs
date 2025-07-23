@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -155,5 +156,12 @@ namespace OpenAI.FineTuning
         }
 
         string IPersistableModel<InternalListFineTuningJobEventsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListFineTuningJobEventsResponse(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalListFineTuningJobEventsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

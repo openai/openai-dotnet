@@ -16,7 +16,7 @@ internal static class VisitorHelpers
         for (int i = 0; i < statements.Count; i++)
         {
             statements[i] = visitorFunc.Invoke(statements[i]);
-            
+
             if (statements[i] is ForEachStatement foreachStatement)
             {
                 List<MethodBodyStatement> foreachBodyStatements
@@ -29,11 +29,35 @@ internal static class VisitorHelpers
             }
             else if (statements[i] is IfStatement ifStatement)
             {
-                // To do: traverse inside of "if"
+                List<MethodBodyStatement> ifBodyStatements
+                    = ifStatement.Body
+                        .SelectMany(bodyStatement => bodyStatement)
+                        .ToList();
+                VisitExplodedMethodBodyStatements(ifBodyStatements!, visitorFunc);
+                var newIfStatement = new IfStatement(ifStatement.Condition);
+                foreach (MethodBodyStatement bodyStatement in ifBodyStatements)
+                {
+                    newIfStatement.Add(bodyStatement);
+                }
+                statements[i] = newIfStatement;
             }
             else if (statements[i] is ForStatement forStatement)
             {
                 // To do: traverse inside of "for"
+            }
+            else if (statements[i] is WhileStatement whileStatement)
+            {
+                List<MethodBodyStatement> whileBodyStatements
+                    = whileStatement.Body
+                        .SelectMany(bodyStatement => bodyStatement)
+                        .ToList();
+                VisitExplodedMethodBodyStatements(whileBodyStatements!, visitorFunc);
+                var newWhileStatement = new WhileStatement(whileStatement.Condition);
+                foreach (MethodBodyStatement bodyStatement in whileBodyStatements)
+                {
+                    newWhileStatement.Add(bodyStatement);
+                }
+                statements[i] = newWhileStatement;
             }
         }
     }

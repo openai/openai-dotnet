@@ -22,8 +22,6 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("CompleteChatAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletionMessagesAsync", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(CancellationToken))]
-[CodeGenSuppress("GetChatCompletions", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(IDictionary<string, string>), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetChatCompletionsAsync", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(IDictionary<string, string>), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("UpdateChatCompletion", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 [CodeGenSuppress("UpdateChatCompletionAsync", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 public partial class ChatClient

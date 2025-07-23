@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -315,5 +316,12 @@ namespace OpenAI.Evals
         }
 
         string IPersistableModel<InternalEvalRunOutputItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalEvalRunOutputItem(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalEvalRunOutputItem(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

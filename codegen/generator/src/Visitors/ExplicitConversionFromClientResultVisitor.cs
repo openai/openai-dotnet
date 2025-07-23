@@ -15,7 +15,8 @@ public class ExplicitConversionFromClientResultVisitor : ScmLibraryVisitor
         if (method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Explicit) &&
             method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Operator) &&
             method.Signature.Parameters.Count == 1 &&
-            method.Signature.Parameters[0].Type.Name == nameof(ClientResult))
+            method.Signature.Parameters[0].Type.Name == nameof(ClientResult) &&
+            !method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
             return null;
         }
