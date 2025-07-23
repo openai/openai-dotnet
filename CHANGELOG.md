@@ -6,7 +6,7 @@
 
 - Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses.
 - Removed explicit `net6.0` target framework, as this version reached end-of-life in November, 2024 and is no longer maintained nor supported by Microsoft.  This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
-- The NuGet package is now code signed.
+- The NuGet package now contains signed binaries.
 
 ## 2.2.0 (2025-07-02)
 
