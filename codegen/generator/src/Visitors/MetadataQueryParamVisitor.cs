@@ -103,10 +103,10 @@ public class MetadataQueryParamVisitor : ScmLibraryVisitor
                         variable.Declaration.RequestedName == "metadata")
                     {
                         var formatString = new FormattableStringExpression("metadata[{0}]", [foreachStatement.ItemVariable.Property("Key")]);
-                        var appendQueryStatement = uri.Invoke("AppendQuery", [formatString, foreachStatement.ItemVariable.Property("Value"), new KeywordExpression("true", null)]);
+                        var appendQueryStatement = uri.Invoke("AppendQuery", [formatString, foreachStatement.ItemVariable.Property("Value"), Snippet.True]);
                         foreachStatement.Body.Clear();
                         foreachStatement.Body.Add(new SingleLineCommentStatement("Plugin customization: Properly handle metadata query parameters"));
-                        foreachStatement.Body.Add(new ExpressionStatement(appendQueryStatement));
+                        foreachStatement.Body.Add(appendQueryStatement.Terminate());
                     }
 
                     // Remove the call to AppendQueryDelimited for metadata

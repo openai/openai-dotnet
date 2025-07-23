@@ -93,20 +93,20 @@ public class PaginationVisitor : ScmLibraryVisitor
                 {
                     newParameters.Insert(
                         lastRemovedIndex,
-                        new ParameterProvider("options", $"The pagination options", optionsType.Type, defaultValue: new KeywordExpression("default", null)));
+                        new ParameterProvider("options", $"The pagination options", optionsType.Type, defaultValue: Snippet.Default));
 
                     var newSignature = new MethodSignature(
-                    methodSignature.Name,
-                    methodSignature.Description,
-                    methodSignature.Modifiers,
-                    methodSignature.ReturnType,
-                    methodSignature.ReturnDescription,
-                    newParameters,
-                    methodSignature.Attributes,
-                    methodSignature.GenericArguments,
-                    methodSignature.GenericParameterConstraints,
-                    methodSignature.ExplicitInterface,
-                    methodSignature.NonDocumentComment);
+                        methodSignature.Name,
+                        methodSignature.Description,
+                        methodSignature.Modifiers,
+                        methodSignature.ReturnType,
+                        methodSignature.ReturnDescription,
+                        newParameters,
+                        methodSignature.Attributes,
+                        methodSignature.GenericArguments,
+                        methodSignature.GenericParameterConstraints,
+                        methodSignature.ExplicitInterface,
+                        methodSignature.NonDocumentComment);
 
                     var optionsParam = newParameters[lastRemovedIndex];
 
@@ -212,7 +212,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     var hasMoreNullCheck = new BinaryOperatorExpression(
                                         "==",
                                         new MemberExpression(null, "hasMore"),
-                                        new KeywordExpression("false", null));
+                                        Snippet.False);
 
                                     // Return "nextToken == null || hasMore == null"
                                     return new BinaryOperatorExpression("||", binaryExpr, hasMoreNullCheck);
@@ -244,7 +244,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     new MemberExpression(memberExpression.Inner, "HasMore"));
 
                                 // Insert the new assignment before the existing one
-                                statementList.Insert(i, new ExpressionStatement(hasMoreAssignment));
+                                statementList.Insert(i, hasMoreAssignment.Terminate());
                                 statementList.Insert(i, new SingleLineCommentStatement("Plugin customization: add hasMore assignment"));
                                 var updatedWhileStatement = new WhileStatement(whileStatement.Condition);
                                 foreach (MethodBodyStatement bodyStatement in statementList)
