@@ -152,17 +152,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                         }
                                     }
                                     // Create a new ExpressionStatement with the same children as the original, but with the new parameters.
-                                    var newNewInstanceExpression = new NewInstanceExpression(
-                                        newInstance.Type,
-                                        newParameters);
-
-                                    var newKeywordExpression = new KeywordExpression(
-                                        keyword.Keyword,
-                                        newNewInstanceExpression);
-
-                                    var newExpressionStatement = new ExpressionStatement(newKeywordExpression);
-
-                                    return newExpressionStatement;
+                                    return Snippet.Return(Snippet.New.Instance(newInstance.Type!, newParameters));
                                 }
                             }
                             return statement;
