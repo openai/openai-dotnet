@@ -26,4 +26,8 @@
     <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
     <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\azure-sdk-for-net\sdk\core\Microsoft.ClientModel.TestFramework\src\Microsoft.ClientModel.TestFramework.csproj" />
+	</ItemGroup>
 </Project>

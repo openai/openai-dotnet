@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Responses;
-using OpenAI.Tests.Utility;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;

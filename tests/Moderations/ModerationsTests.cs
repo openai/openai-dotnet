@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Moderations;
-using OpenAI.Tests.Utility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;

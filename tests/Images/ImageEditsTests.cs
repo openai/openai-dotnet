@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using OpenAI.Images;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.IO;

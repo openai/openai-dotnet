@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -16,8 +16,7 @@ namespace OpenAI.Tests.VectorStores;
 
 #pragma warning disable OPENAI001
 
-[TestFixture(true)]
-[TestFixture(false)]
+[ClientTestFixture]
 [Category("Assistants")]
 public class VectorStoresTests : SyncAsyncTestBase
 {
@@ -118,11 +117,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         });
     }
 
+    [SyncOnly]
     [Test]
     public void CanEnumerateVectorStores()
     {
-        AssertSyncOnly();
-
         VectorStoreClient client = GetTestClient();
         for (int i = 0; i < 10; i++)
         {
@@ -158,11 +156,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(lastIdSeen, Is.EqualTo(0));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task CanEnumerateVectorStoresAsync()
     {
-        AssertAsyncOnly();
-
         VectorStoreClient client = GetTestClient();
         for (int i = 0; i < 5; i++)
         {
@@ -264,11 +261,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(count, Is.EqualTo(2));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanRehydrateFileAssociationCollectionAsync()
     {
-        AssertAsyncOnly();
-
         VectorStoreClient client = GetTestClient();
         CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: false);
         VectorStore vectorStore = createOperation.Value;
@@ -346,11 +342,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.EqualTo(2));
     }
 
+    [SyncOnly]
     [Test]
     public void Pagination_CanRehydrateFileAssociationCollection()
     {
-        AssertSyncOnly();
-
         VectorStoreClient client = GetTestClient();
         CreateVectorStoreOperation createOperation = client.CreateVectorStore(waitUntilCompleted: true);
         VectorStore vectorStore = createOperation.Value;

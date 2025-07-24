@@ -1,7 +1,8 @@
+using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -35,15 +36,18 @@ public class ChatSmokeTests : SyncAsyncTestBase
         string mockResponseId = Guid.NewGuid().ToString();
         long mockCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        BinaryData mockRequest = BinaryData.FromString($$"""
+        //BinaryData mockRequest = BinaryData.FromString($$"""
+        //{
+        //    "model": "gpt-4o-mini",
+        //    "messages": [
+        //    { "role": "user", "content": "Hello, assistant!" }
+        //    ]
+        //}
+        //"""); - TODO what is this for
+
+        MockPipelineTransport mockTransport = new((MockPipelineMessage m) =>
         {
-            "model": "gpt-4o-mini",
-            "messages": [
-            { "role": "user", "content": "Hello, assistant!" }
-            ]
-        }
-        """);
-        BinaryData mockResponse = BinaryData.FromString($$"""
+            MockPipelineResponse mockPipelineResponse = new MockPipelineResponse(200).WithContent($$"""
         {
             "id": "{{mockResponseId}}",
             "created": {{mockCreated}},
@@ -56,7 +60,8 @@ public class ChatSmokeTests : SyncAsyncTestBase
             "additional_property": "hello, additional world!"
         }
         """);
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+            return mockPipelineResponse;
+        });
 
         OpenAIClientOptions options = new()
         {
@@ -903,7 +908,7 @@ public class ChatSmokeTests : SyncAsyncTestBase
     [Test]
     public void TopLevelClientOptionsPersistence()
     {
-        MockPipelineTransport mockTransport = new(BinaryData.FromString("{}"), BinaryData.FromString("{}"));
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent("{}"));
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport,
