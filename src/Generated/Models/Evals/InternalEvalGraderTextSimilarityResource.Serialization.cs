@@ -13,7 +13,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderTextSimilarityResource : IJsonModel<InternalEvalGraderTextSimilarityResource>
     {
-        internal InternalEvalGraderTextSimilarityResource() : this(InternalGraderType.TextSimilarity, null, null, null, null, default, default)
+        internal InternalEvalGraderTextSimilarityResource() : this(GraderType.TextSimilarity, null, null, null, null, default, default)
         {
         }
 
@@ -78,18 +78,18 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            InternalGraderType kind = default;
+            GraderType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string name = default;
             string input = default;
             string reference = default;
-            InternalGraderTextSimilarityEvaluationMetric evaluationMetric = default;
+            GraderTextSimilarityEvaluationMetric evaluationMetric = default;
             float passThreshold = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalGraderType(prop.Value.GetString());
+                    kind = new GraderType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -109,7 +109,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("evaluation_metric"u8))
                 {
-                    evaluationMetric = new InternalGraderTextSimilarityEvaluationMetric(prop.Value.GetString());
+                    evaluationMetric = new GraderTextSimilarityEvaluationMetric(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("pass_threshold"u8))

@@ -53,13 +53,13 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            InternalGraderType kind = default;
+            GraderType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalGraderType(prop.Value.GetString());
+                    kind = new GraderType(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

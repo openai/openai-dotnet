@@ -90,7 +90,7 @@ namespace OpenAI.FineTuning
                 return null;
             }
             BinaryData grader = default;
-            InternalFineTuneReinforcementHyperparameters hyperparameters = default;
+            FineTuneReinforcementHyperparameters hyperparameters = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -105,7 +105,7 @@ namespace OpenAI.FineTuning
                     {
                         continue;
                     }
-                    hyperparameters = InternalFineTuneReinforcementHyperparameters.DeserializeInternalFineTuneReinforcementHyperparameters(prop.Value, options);
+                    hyperparameters = FineTuneReinforcementHyperparameters.DeserializeFineTuneReinforcementHyperparameters(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

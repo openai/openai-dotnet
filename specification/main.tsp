@@ -11,6 +11,8 @@ import "./client/moderations.client.tsp";
 import "./client/runs.client.tsp";
 import "./client/threads.client.tsp";
 import "./client/vector-stores.client.tsp";
+import "./client/graders.client.tsp";
+import "./client/containers.client.tsp";
 
 import "./client/models/audio.models.tsp";
 import "./client/models/common.models.tsp";

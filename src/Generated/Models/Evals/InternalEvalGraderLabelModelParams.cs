@@ -12,7 +12,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderLabelModelParams : InternalEvalGraderParams
     {
-        public InternalEvalGraderLabelModelParams(string name, string model, IEnumerable<BinaryData> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(InternalGraderType.LabelModel)
+        public InternalEvalGraderLabelModelParams(string name, string model, IEnumerable<BinaryData> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(GraderType.LabelModel)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(model, nameof(model));
@@ -27,7 +27,7 @@ namespace OpenAI.Evals
             PassingLabels = passingLabels.ToList();
         }
 
-        internal InternalEvalGraderLabelModelParams(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, IList<BinaryData> input, IList<string> labels, IList<string> passingLabels) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderLabelModelParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, IList<BinaryData> input, IList<string> labels, IList<string> passingLabels) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Name = name;

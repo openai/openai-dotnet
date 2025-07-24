@@ -12,7 +12,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderScoreModelResource : InternalEvalGraderResource
     {
-        internal InternalEvalGraderScoreModelResource(string name, string model, IEnumerable<InternalEvalItem> input) : base(InternalGraderType.ScoreModel)
+        internal InternalEvalGraderScoreModelResource(string name, string model, IEnumerable<InternalEvalItem> input) : base(GraderType.ScoreModel)
         {
             Name = name;
             Model = model;
@@ -20,7 +20,7 @@ namespace OpenAI.Evals
             Range = new ChangeTrackingList<float>();
         }
 
-        internal InternalEvalGraderScoreModelResource(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, BinaryData samplingParams, IList<InternalEvalItem> input, IList<float> range, float? passThreshold) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderScoreModelResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, BinaryData samplingParams, IList<InternalEvalItem> input, IList<float> range, float? passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Name = name;

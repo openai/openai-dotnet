@@ -11,7 +11,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderPythonParams : InternalEvalGraderParams
     {
-        public InternalEvalGraderPythonParams(string name, string source) : base(InternalGraderType.Python)
+        public InternalEvalGraderPythonParams(string name, string source) : base(GraderType.Python)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(source, nameof(source));
@@ -20,7 +20,7 @@ namespace OpenAI.Evals
             Source = source;
         }
 
-        internal InternalEvalGraderPythonParams(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string source, string imageTag, float? passThreshold) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderPythonParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string source, string imageTag, float? passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Source = source;

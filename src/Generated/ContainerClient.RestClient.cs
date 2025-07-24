@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class ContainerClient
+    public partial class ContainerClient
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 

@@ -20,7 +20,7 @@ namespace OpenAI.FineTuning
             Grader = grader;
         }
 
-        internal InternalFineTuneReinforcementMethod(BinaryData grader, InternalFineTuneReinforcementHyperparameters hyperparameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFineTuneReinforcementMethod(BinaryData grader, FineTuneReinforcementHyperparameters hyperparameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Grader = grader;
             Hyperparameters = hyperparameters;
@@ -29,7 +29,7 @@ namespace OpenAI.FineTuning
 
         public BinaryData Grader { get; set; }
 
-        internal InternalFineTuneReinforcementHyperparameters Hyperparameters { get; set; }
+        public FineTuneReinforcementHyperparameters Hyperparameters { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
