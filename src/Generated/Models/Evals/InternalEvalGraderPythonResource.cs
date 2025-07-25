@@ -10,13 +10,13 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderPythonResource : InternalEvalGraderResource
     {
-        internal InternalEvalGraderPythonResource(string name, string source) : base(InternalGraderType.Python)
+        internal InternalEvalGraderPythonResource(string name, string source) : base(GraderType.Python)
         {
             Name = name;
             Source = source;
         }
 
-        internal InternalEvalGraderPythonResource(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string source, string imageTag, float? passThreshold) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderPythonResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string source, string imageTag, float? passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Source = source;

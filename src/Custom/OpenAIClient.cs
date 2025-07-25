@@ -2,10 +2,12 @@ using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
+using OpenAI.Containers;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
 using OpenAI.FineTuning;
+using OpenAI.Graders;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
@@ -297,6 +299,22 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="GraderClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual GraderClient GetGraderClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="ContainerClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
 
     internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
     {

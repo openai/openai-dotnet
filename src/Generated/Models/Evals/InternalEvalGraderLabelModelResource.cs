@@ -12,7 +12,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderLabelModelResource : InternalEvalGraderResource
     {
-        internal InternalEvalGraderLabelModelResource(string name, string model, IEnumerable<InternalEvalItem> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(InternalGraderType.LabelModel)
+        internal InternalEvalGraderLabelModelResource(string name, string model, IEnumerable<InternalEvalItem> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(GraderType.LabelModel)
         {
             Name = name;
             Model = model;
@@ -21,7 +21,7 @@ namespace OpenAI.Evals
             PassingLabels = passingLabels.ToList();
         }
 
-        internal InternalEvalGraderLabelModelResource(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, IList<InternalEvalItem> input, IList<string> labels, IList<string> passingLabels) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderLabelModelResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string model, IList<InternalEvalItem> input, IList<string> labels, IList<string> passingLabels) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Name = name;

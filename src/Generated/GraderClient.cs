@@ -5,24 +5,19 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using OpenAI;
 
 namespace OpenAI.Graders
 {
-    internal partial class GraderClient
+    [Experimental("OPENAI001")]
+    public partial class GraderClient
     {
         private readonly Uri _endpoint;
 
         protected GraderClient()
         {
-        }
-
-        internal GraderClient(ClientPipeline pipeline, Uri endpoint)
-        {
-            _endpoint = endpoint;
-            Pipeline = pipeline;
         }
 
         public ClientPipeline Pipeline { get; }
@@ -43,22 +38,6 @@ namespace OpenAI.Graders
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult<InternalRunGraderResponse> RunGrader(InternalRunGraderRequest request, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(request, nameof(request));
-
-            ClientResult result = RunGrader(request, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-            return ClientResult.FromValue((InternalRunGraderResponse)result, result.GetRawResponse());
-        }
-
-        public virtual async Task<ClientResult<InternalRunGraderResponse>> RunGraderAsync(InternalRunGraderRequest request, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(request, nameof(request));
-
-            ClientResult result = await RunGraderAsync(request, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-            return ClientResult.FromValue((InternalRunGraderResponse)result, result.GetRawResponse());
-        }
-
         public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -73,22 +52,6 @@ namespace OpenAI.Graders
 
             using PipelineMessage message = CreateValidateGraderRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        public virtual ClientResult<InternalValidateGraderResponse> ValidateGrader(InternalValidateGraderRequest request, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(request, nameof(request));
-
-            ClientResult result = ValidateGrader(request, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-            return ClientResult.FromValue((InternalValidateGraderResponse)result, result.GetRawResponse());
-        }
-
-        public virtual async Task<ClientResult<InternalValidateGraderResponse>> ValidateGraderAsync(InternalValidateGraderRequest request, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(request, nameof(request));
-
-            ClientResult result = await ValidateGraderAsync(request, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-            return ClientResult.FromValue((InternalValidateGraderResponse)result, result.GetRawResponse());
         }
     }
 }

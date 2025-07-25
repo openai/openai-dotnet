@@ -13,7 +13,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderStringCheckParams : IJsonModel<InternalEvalGraderStringCheckParams>
     {
-        internal InternalEvalGraderStringCheckParams() : this(InternalGraderType.StringCheck, null, null, null, null, default)
+        internal InternalEvalGraderStringCheckParams() : this(GraderType.StringCheck, null, null, null, null, default)
         {
         }
 
@@ -73,17 +73,17 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            InternalGraderType kind = default;
+            GraderType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string name = default;
             string input = default;
             string reference = default;
-            InternalGraderStringCheckOperation operation = default;
+            GraderStringCheckOperation operation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalGraderType(prop.Value.GetString());
+                    kind = new GraderType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -103,7 +103,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("operation"u8))
                 {
-                    operation = new InternalGraderStringCheckOperation(prop.Value.GetString());
+                    operation = new GraderStringCheckOperation(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

@@ -13,7 +13,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderLabelModelParams : IJsonModel<InternalEvalGraderLabelModelParams>
     {
-        internal InternalEvalGraderLabelModelParams() : this(InternalGraderType.LabelModel, null, null, null, null, null, null)
+        internal InternalEvalGraderLabelModelParams() : this(GraderType.LabelModel, null, null, null, null, null, null)
         {
         }
 
@@ -115,7 +115,7 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            InternalGraderType kind = default;
+            GraderType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string name = default;
             string model = default;
@@ -126,7 +126,7 @@ namespace OpenAI.Evals
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalGraderType(prop.Value.GetString());
+                    kind = new GraderType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))

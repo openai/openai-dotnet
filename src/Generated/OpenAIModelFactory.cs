@@ -8,9 +8,11 @@ using System.Linq;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Chat;
+using OpenAI.Containers;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
+using OpenAI.Graders;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
@@ -356,6 +358,43 @@ namespace OpenAI
         public static HyperparametersForDPO HyperparametersForDPO(BinaryData batchSize = default, BinaryData nEpochs = default, BinaryData learningRateMultiplier = default, BinaryData beta = default)
         {
             return new HyperparametersForDPO(batchSize, nEpochs, learningRateMultiplier, beta, additionalBinaryDataProperties: null);
+        }
+
+        public static GraderStringCheck GraderStringCheck(string name = default, string input = default, string reference = default, GraderStringCheckOperation operation = default)
+        {
+            return new GraderStringCheck(
+                GraderType.StringCheck,
+                additionalBinaryDataProperties: null,
+                name,
+                input,
+                reference,
+                operation);
+        }
+
+        public static Grader Grader(string kind = default)
+        {
+            return new UnknownGrader(new GraderType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static GraderTextSimilarity GraderTextSimilarity(string name = default, string input = default, string reference = default, GraderTextSimilarityEvaluationMetric evaluationMetric = default)
+        {
+            return new GraderTextSimilarity(
+                GraderType.TextSimilarity,
+                additionalBinaryDataProperties: null,
+                name,
+                input,
+                reference,
+                evaluationMetric);
+        }
+
+        public static GraderPython GraderPython(string name = default, string source = default, string imageTag = default)
+        {
+            return new GraderPython(GraderType.Python, additionalBinaryDataProperties: null, name, source, imageTag);
+        }
+
+        public static GraderMulti GraderMulti(string name = default, BinaryData graders = default, string calculateOutput = default)
+        {
+            return new GraderMulti(GraderType.Multi, additionalBinaryDataProperties: null, name, graders, calculateOutput);
         }
 
         public static FineTuningError FineTuningError(string code = default, string message = default, string invalidParameter = default)
@@ -1034,6 +1073,142 @@ namespace OpenAI
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerListResource ContainerListResource(string @object = default, IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerResource>();
+
+            return new ContainerListResource(
+                @object,
+                data?.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
+        {
+            return new ContainerResource(
+                id,
+                @object,
+                name,
+                createdAt,
+                status,
+                expiresAfter,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
+        {
+            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerBody CreateContainerBody(string name = default, IEnumerable<string> fileIds = default, CreateContainerBodyExpiresAfter expiresAfter = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+
+            return new CreateContainerBody(name, fileIds?.ToList(), expiresAfter, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerBodyExpiresAfter CreateContainerBodyExpiresAfter(string anchor = default, int minutes = default)
+        {
+            return new CreateContainerBodyExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
+        }
+
+        public static DeleteContainerResponse DeleteContainerResponse(string id = default, string @object = default, bool deleted = default)
+        {
+            return new DeleteContainerResponse(id, @object, deleted, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerFileBody CreateContainerFileBody(string fileId = default, BinaryData @file = default)
+        {
+            return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
+        {
+            return new ContainerFileResource(
+                id,
+                @object,
+                containerId,
+                createdAt,
+                bytes,
+                path,
+                source,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileListResource ContainerFileListResource(string @object = default, IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerFileResource>();
+
+            return new ContainerFileListResource(
+                @object,
+                data?.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static DeleteContainerFileResponse DeleteContainerFileResponse(string id = default, string @object = default, bool deleted = default)
+        {
+            return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)
+        {
+            return new RunGraderRequest(grader, item, modelSample, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponse RunGraderResponse(float reward = default, RunGraderResponseMetadata metadata = default, BinaryData subRewards = default, BinaryData modelGraderTokenUsagePerModel = default)
+        {
+            return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadata RunGraderResponseMetadata(string name = default, string kind = default, RunGraderResponseMetadataErrors errors = default, float executionTime = default, BinaryData scores = default, int? tokenUsage = default, string sampledModelName = default)
+        {
+            return new RunGraderResponseMetadata(
+                name,
+                kind,
+                errors,
+                executionTime,
+                scores,
+                tokenUsage,
+                sampledModelName,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadataErrors RunGraderResponseMetadataErrors(bool formulaParseError = default, bool sampleParseError = default, bool truncatedObservationError = default, bool unresponsiveRewardError = default, bool invalidVariableError = default, bool otherError = default, bool pythonGraderServerError = default, string pythonGraderServerErrorType = default, bool pythonGraderRuntimeError = default, string pythonGraderRuntimeErrorDetails = default, bool modelGraderServerError = default, bool modelGraderRefusalError = default, bool modelGraderParseError = default, string modelGraderServerErrorDetails = default)
+        {
+            return new RunGraderResponseMetadataErrors(
+                formulaParseError,
+                sampleParseError,
+                truncatedObservationError,
+                unresponsiveRewardError,
+                invalidVariableError,
+                otherError,
+                pythonGraderServerError,
+                pythonGraderServerErrorType,
+                pythonGraderRuntimeError,
+                pythonGraderRuntimeErrorDetails,
+                modelGraderServerError,
+                modelGraderRefusalError,
+                modelGraderParseError,
+                modelGraderServerErrorDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderRequest ValidateGraderRequest(BinaryData grader = default)
+        {
+            return new ValidateGraderRequest(grader, additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderResponse ValidateGraderResponse(BinaryData grader = default)
+        {
+            return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
         }
     }
 }
