@@ -102,6 +102,11 @@ public partial class ChatClient
         _telemetry = new OpenTelemetrySource(model, _endpoint);
     }
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
+
     /// <summary> Generates a completion for the given chat. </summary>
     /// <param name="messages"> The messages comprising the chat so far. </param>
     /// <param name="options"> The options to configure the chat completion. </param>

@@ -89,6 +89,11 @@ public partial class ModerationClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
+
     /// <summary> Classifies if the text input is potentially harmful across several categories. </summary>
     /// <param name="input"> The text input to classify. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>

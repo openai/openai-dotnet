@@ -89,6 +89,11 @@ public partial class EmbeddingClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
+
     // CUSTOM: Added to simplify generating a single embedding from a string input.
     /// <summary> Generates an embedding representing the text input. </summary>
     /// <param name="input"> The text input to generate an embedding for. </param>
