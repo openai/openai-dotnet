@@ -50,19 +50,19 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RetrieveContainer(string containerId, RequestOptions options = null)
+        public virtual ClientResult GetContainer(string containerId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateRetrieveContainerRequest(containerId, options);
+            using PipelineMessage message = CreateGetContainerRequest(containerId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RetrieveContainerAsync(string containerId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateRetrieveContainerRequest(containerId, options);
+            using PipelineMessage message = CreateGetContainerRequest(containerId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -116,21 +116,21 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RetrieveContainerFile(string containerId, string fileId, RequestOptions options = null)
+        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRetrieveContainerFileRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateGetContainerFileRequest(containerId, fileId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RetrieveContainerFileAsync(string containerId, string fileId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRetrieveContainerFileRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateGetContainerFileRequest(containerId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -152,21 +152,21 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RetrieveContainerFileContent(string containerId, string fileId, RequestOptions options = null)
+        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRetrieveContainerFileContentRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateGetContainerFileContentRequest(containerId, fileId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RetrieveContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRetrieveContainerFileContentRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateGetContainerFileContentRequest(containerId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

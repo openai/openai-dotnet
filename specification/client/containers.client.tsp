@@ -13,3 +13,7 @@ using Azure.ClientGenerator.Core;
 @@convenientAPI(Containers.retrieveContainerFile, false);
 @@convenientAPI(Containers.deleteContainerFile, false);
 @@convenientAPI(Containers.retrieveContainerFileContent, false);
+
+@@clientName(Containers.retrieveContainer, "GetContainer");
+@@clientName(Containers.retrieveContainerFile, "GetContainerFile");
+@@clientName(Containers.retrieveContainerFileContent, "GetContainerFileContent");

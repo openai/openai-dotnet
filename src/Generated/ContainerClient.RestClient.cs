@@ -58,7 +58,7 @@ namespace OpenAI.Containers
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveContainerRequest(string containerId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetContainerRequest(string containerId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -138,7 +138,7 @@ namespace OpenAI.Containers
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveContainerFileRequest(string containerId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetContainerFileRequest(string containerId, string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
@@ -174,7 +174,7 @@ namespace OpenAI.Containers
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveContainerFileContentRequest(string containerId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetContainerFileContentRequest(string containerId, string fileId, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;

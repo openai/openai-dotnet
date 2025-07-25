@@ -13,14 +13,14 @@ namespace OpenAI {
         public virtual BatchClient GetBatchClient();
         public virtual ChatClient GetChatClient(string model);
         [Experimental("OPENAI001")]
-        public virtual Containers.ContainerClient GetContainerClient();
+        public virtual ContainerClient GetContainerClient();
         public virtual EmbeddingClient GetEmbeddingClient(string model);
         [Experimental("OPENAI001")]
         public virtual EvaluationClient GetEvaluationClient();
         [Experimental("OPENAI001")]
         public virtual FineTuningClient GetFineTuningClient();
         [Experimental("OPENAI001")]
-        public virtual Graders.GraderClient GetGraderClient();
+        public virtual GraderClient GetGraderClient();
         public virtual ImageClient GetImageClient(string model);
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
@@ -2115,16 +2115,16 @@ namespace OpenAI.Containers {
         public virtual Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options = null);
         public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainer(string containerId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null);
         public virtual ClientResult GetContainerFiles(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetContainerFilesAsync(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual ClientResult GetContainers(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetContainersAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual ClientResult RetrieveContainer(string containerId, RequestOptions options = null);
-        public virtual Task<ClientResult> RetrieveContainerAsync(string containerId, RequestOptions options = null);
-        public virtual ClientResult RetrieveContainerFile(string containerId, string fileId, RequestOptions options = null);
-        public virtual Task<ClientResult> RetrieveContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
-        public virtual ClientResult RetrieveContainerFileContent(string containerId, string fileId, RequestOptions options = null);
-        public virtual Task<ClientResult> RetrieveContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null);
     }
     [Experimental("OPENAI001")]
     public class ContainerFileListResource : IJsonModel<ContainerFileListResource>, IPersistableModel<ContainerFileListResource> {
