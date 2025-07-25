@@ -93,6 +93,11 @@ public partial class OpenAIResponseClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
+
     public virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));

@@ -88,6 +88,11 @@ public partial class AudioClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
+
     #region GenerateSpeech
 
     /// <summary> Generates a life-like, spoken audio recording of the input text. </summary>
