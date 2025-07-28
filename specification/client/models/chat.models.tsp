@@ -17,8 +17,8 @@ alias ChatCompletionCollectionOrderQueryParameter = {
 
 union ChatCompletionCollectionOrder {
   string,
-  Asc: "asc",
-  Desc: "desc",
+  Ascending: "asc",
+  Descending: "desc",
 }
 
 @access(Access.public)

@@ -13,8 +13,8 @@ namespace OpenAI.Chat
     public readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder>
     {
         private readonly string _value;
-        private const string AscValue = "asc";
-        private const string DescValue = "desc";
+        private const string AscendingValue = "asc";
+        private const string DescendingValue = "desc";
 
         public ChatCompletionCollectionOrder(string value)
         {
@@ -23,9 +23,9 @@ namespace OpenAI.Chat
             _value = value;
         }
 
-        public static ChatCompletionCollectionOrder Asc { get; } = new ChatCompletionCollectionOrder(AscValue);
+        public static ChatCompletionCollectionOrder Ascending { get; } = new ChatCompletionCollectionOrder(AscendingValue);
 
-        public static ChatCompletionCollectionOrder Desc { get; } = new ChatCompletionCollectionOrder(DescValue);
+        public static ChatCompletionCollectionOrder Descending { get; } = new ChatCompletionCollectionOrder(DescendingValue);
 
         public static bool operator ==(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right) => left.Equals(right);
 

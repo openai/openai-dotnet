@@ -121,5 +121,3 @@ internal partial class InternalUnknownChatCompletionRequestMessageContentPart { 
 [CodeGenType("ChatCompletionMessageListObject")] internal readonly partial struct InternalChatCompletionMessageListObject {}
 [CodeGenType("ChatCompletionList")] internal partial class InternalChatCompletionList {}
 [CodeGenType("ChatCompletionMessageList")] internal partial class InternalChatCompletionMessageList {}
-[CodeGenType("ChatCompletionCollectionOptions")] public partial class ChatCompletionCollectionOptions {}
-[CodeGenType("ChatCompletionCollectionOrder")] public readonly partial struct ChatCompletionCollectionOrder { }

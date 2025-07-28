@@ -1213,7 +1213,7 @@ public class ChatTests : SyncAsyncTestBase
         // Test ascending order
         ChatCompletionCollectionOptions ascOptions = new()
         {
-            Order = ChatCompletionCollectionOrder.Asc,
+            Order = ChatCompletionCollectionOrder.Ascending,
             PageSizeLimit = 5
         };
 
@@ -1227,7 +1227,7 @@ public class ChatTests : SyncAsyncTestBase
         // Test descending order
         ChatCompletionCollectionOptions descOptions = new()
         {
-            Order = ChatCompletionCollectionOrder.Desc,
+            Order = ChatCompletionCollectionOrder.Descending,
             PageSizeLimit = 5
         };
 
@@ -1430,7 +1430,7 @@ public class ChatTests : SyncAsyncTestBase
         ChatCompletionCollectionOptions combinedOptions = new()
         {
             PageSizeLimit = 5,
-            Order = ChatCompletionCollectionOrder.Desc,
+            Order = ChatCompletionCollectionOrder.Descending,
             Metadata = { [testKey] = "combined_value" }
         };
 
