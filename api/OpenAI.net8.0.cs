@@ -12,11 +12,15 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual BatchClient GetBatchClient();
         public virtual ChatClient GetChatClient(string model);
+        [Experimental("OPENAI001")]
+        public virtual ContainerClient GetContainerClient();
         public virtual EmbeddingClient GetEmbeddingClient(string model);
         [Experimental("OPENAI001")]
         public virtual EvaluationClient GetEvaluationClient();
         [Experimental("OPENAI001")]
         public virtual FineTuningClient GetFineTuningClient();
+        [Experimental("OPENAI001")]
+        public virtual GraderClient GetGraderClient();
         public virtual ImageClient GetImageClient(string model);
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
@@ -2094,6 +2098,143 @@ namespace OpenAI.Chat {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
+namespace OpenAI.Containers {
+    [Experimental("OPENAI001")]
+    public class ContainerClient {
+        protected ContainerClient();
+        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential);
+        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public ContainerClient(string apiKey);
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteContainer(string containerId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options = null);
+        public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainer(string containerId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFiles(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFilesAsync(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult GetContainers(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainersAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerFileListResource : IJsonModel<ContainerFileListResource>, IPersistableModel<ContainerFileListResource> {
+        public IList<ContainerFileResource> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        public string Object { get; }
+        protected virtual ContainerFileListResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerFileListResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
+        public int Bytes { get; }
+        public string ContainerId { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string Id { get; }
+        public string Object { get; }
+        public string Path { get; }
+        public string Source { get; }
+        protected virtual ContainerFileResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerListResource : IJsonModel<ContainerListResource>, IPersistableModel<ContainerListResource> {
+        public IList<ContainerResource> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        public string Object { get; }
+        protected virtual ContainerListResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerListResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
+        public DateTimeOffset CreatedAt { get; }
+        public ContainerResourceExpiresAfter ExpiresAfter { get; }
+        public string Id { get; }
+        public string Name { get; }
+        public string Object { get; }
+        public string Status { get; }
+        protected virtual ContainerResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerResourceExpiresAfter : IJsonModel<ContainerResourceExpiresAfter>, IPersistableModel<ContainerResourceExpiresAfter> {
+        public string Anchor { get; }
+        public int? Minutes { get; }
+        protected virtual ContainerResourceExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerResourceExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerBody : IJsonModel<CreateContainerBody>, IPersistableModel<CreateContainerBody> {
+        public CreateContainerBodyExpiresAfter ExpiresAfter { get; }
+        public IList<string> FileIds { get; }
+        public string Name { get; }
+        protected virtual CreateContainerBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerBodyExpiresAfter : IJsonModel<CreateContainerBodyExpiresAfter>, IPersistableModel<CreateContainerBodyExpiresAfter> {
+        public string Anchor { get; }
+        public int Minutes { get; }
+        protected virtual CreateContainerBodyExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerBodyExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>, IPersistableModel<CreateContainerFileBody> {
+        public BinaryData File { get; }
+        public string FileId { get; }
+        protected virtual CreateContainerFileBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerFileBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DeleteContainerFileResponse : IJsonModel<DeleteContainerFileResponse>, IPersistableModel<DeleteContainerFileResponse> {
+        public bool Deleted { get; }
+        public string Id { get; }
+        public string Object { get; }
+        protected virtual DeleteContainerFileResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DeleteContainerFileResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DeleteContainerResponse : IJsonModel<DeleteContainerResponse>, IPersistableModel<DeleteContainerResponse> {
+        public bool Deleted { get; }
+        public string Id { get; }
+        public string Object { get; }
+        protected virtual DeleteContainerResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DeleteContainerResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+}
 namespace OpenAI.Embeddings {
     public class EmbeddingClient {
         protected EmbeddingClient();
@@ -2669,6 +2810,248 @@ namespace OpenAI.FineTuning {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override FineTuningIntegration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+}
+namespace OpenAI.Graders {
+    [Experimental("OPENAI001")]
+    public class FineTuneReinforcementHyperparameters : IJsonModel<FineTuneReinforcementHyperparameters>, IPersistableModel<FineTuneReinforcementHyperparameters> {
+        public BinaryData BatchSize { get; set; }
+        public BinaryData ComputeMultiplier { get; set; }
+        public BinaryData EvalInterval { get; set; }
+        public BinaryData EvalSamples { get; set; }
+        public BinaryData LearningRateMultiplier { get; set; }
+        public BinaryData NEpochs { get; set; }
+        protected virtual FineTuneReinforcementHyperparameters JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual FineTuneReinforcementHyperparameters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    [PersistableModelProxy(typeof(UnknownGrader))]
+    public class Grader : IJsonModel<Grader>, IPersistableModel<Grader> {
+        protected virtual Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderClient {
+        protected GraderClient();
+        public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public GraderClient(ApiKeyCredential credential);
+        protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public GraderClient(string apiKey);
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult RunGrader(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> RunGraderAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> ValidateGraderAsync(BinaryContent content, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderLabelModel : Grader, IJsonModel<GraderLabelModel>, IPersistableModel<GraderLabelModel> {
+        public IList<string> Labels { get; }
+        public string Model { get; set; }
+        public string Name { get; set; }
+        public IList<string> PassingLabels { get; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderMulti : Grader, IJsonModel<GraderMulti>, IPersistableModel<GraderMulti> {
+        public GraderMulti(string name, BinaryData graders, string calculateOutput);
+        public string CalculateOutput { get; set; }
+        public BinaryData Graders { get; set; }
+        public string Name { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderPython : Grader, IJsonModel<GraderPython>, IPersistableModel<GraderPython> {
+        public GraderPython(string name, string source);
+        public string ImageTag { get; set; }
+        public string Name { get; set; }
+        public string Source { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderScoreModel : Grader, IJsonModel<GraderScoreModel>, IPersistableModel<GraderScoreModel> {
+        public string Model { get; set; }
+        public string Name { get; set; }
+        public IList<float> Range { get; }
+        public BinaryData SamplingParams { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>, IPersistableModel<GraderStringCheck> {
+        public GraderStringCheck(string name, string input, string reference, GraderStringCheckOperation operation);
+        public string Input { get; set; }
+        public string Name { get; set; }
+        public GraderStringCheckOperation Operation { get; set; }
+        public string Reference { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderStringCheckOperation : IEquatable<GraderStringCheckOperation> {
+        public GraderStringCheckOperation(string value);
+        public static GraderStringCheckOperation Eq { get; }
+        public static GraderStringCheckOperation Ilike { get; }
+        public static GraderStringCheckOperation Like { get; }
+        public static GraderStringCheckOperation Ne { get; }
+        public readonly bool Equals(GraderStringCheckOperation other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderStringCheckOperation left, GraderStringCheckOperation right);
+        public static implicit operator GraderStringCheckOperation(string value);
+        public static bool operator !=(GraderStringCheckOperation left, GraderStringCheckOperation right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>, IPersistableModel<GraderTextSimilarity> {
+        public GraderTextSimilarity(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric);
+        public GraderTextSimilarityEvaluationMetric EvaluationMetric { get; set; }
+        public string Input { get; set; }
+        public string Name { get; set; }
+        public string Reference { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderTextSimilarityEvaluationMetric : IEquatable<GraderTextSimilarityEvaluationMetric> {
+        public GraderTextSimilarityEvaluationMetric(string value);
+        public static GraderTextSimilarityEvaluationMetric Bleu { get; }
+        public static GraderTextSimilarityEvaluationMetric FuzzyMatch { get; }
+        public static GraderTextSimilarityEvaluationMetric Gleu { get; }
+        public static GraderTextSimilarityEvaluationMetric Meteor { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge1 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge2 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge3 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge4 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge5 { get; }
+        public static GraderTextSimilarityEvaluationMetric RougeL { get; }
+        public readonly bool Equals(GraderTextSimilarityEvaluationMetric other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
+        public static implicit operator GraderTextSimilarityEvaluationMetric(string value);
+        public static bool operator !=(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderType : IEquatable<GraderType> {
+        public GraderType(string value);
+        public static GraderType LabelModel { get; }
+        public static GraderType Multi { get; }
+        public static GraderType Python { get; }
+        public static GraderType ScoreModel { get; }
+        public static GraderType StringCheck { get; }
+        public static GraderType TextSimilarity { get; }
+        public readonly bool Equals(GraderType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderType left, GraderType right);
+        public static implicit operator GraderType(string value);
+        public static bool operator !=(GraderType left, GraderType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderRequest : IJsonModel<RunGraderRequest>, IPersistableModel<RunGraderRequest> {
+        public BinaryData Grader { get; }
+        public BinaryData Item { get; }
+        public string ModelSample { get; }
+        protected virtual RunGraderRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponse : IJsonModel<RunGraderResponse>, IPersistableModel<RunGraderResponse> {
+        public RunGraderResponseMetadata Metadata { get; }
+        public BinaryData ModelGraderTokenUsagePerModel { get; }
+        public float Reward { get; }
+        public BinaryData SubRewards { get; }
+        protected virtual RunGraderResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponseMetadata : IJsonModel<RunGraderResponseMetadata>, IPersistableModel<RunGraderResponseMetadata> {
+        public RunGraderResponseMetadataErrors Errors { get; }
+        public float ExecutionTime { get; }
+        public string Kind { get; }
+        public string Name { get; }
+        public string SampledModelName { get; }
+        public BinaryData Scores { get; }
+        public int? TokenUsage { get; }
+        protected virtual RunGraderResponseMetadata JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponseMetadata PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponseMetadataErrors : IJsonModel<RunGraderResponseMetadataErrors>, IPersistableModel<RunGraderResponseMetadataErrors> {
+        public bool FormulaParseError { get; }
+        public bool InvalidVariableError { get; }
+        public bool ModelGraderParseError { get; }
+        public bool ModelGraderRefusalError { get; }
+        public bool ModelGraderServerError { get; }
+        public string ModelGraderServerErrorDetails { get; }
+        public bool OtherError { get; }
+        public bool PythonGraderRuntimeError { get; }
+        public string PythonGraderRuntimeErrorDetails { get; }
+        public bool PythonGraderServerError { get; }
+        public string PythonGraderServerErrorType { get; }
+        public bool SampleParseError { get; }
+        public bool TruncatedObservationError { get; }
+        public bool UnresponsiveRewardError { get; }
+        protected virtual RunGraderResponseMetadataErrors JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponseMetadataErrors PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class UnknownGrader : Grader, IJsonModel<Grader>, IPersistableModel<Grader> {
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ValidateGraderRequest : IJsonModel<ValidateGraderRequest>, IPersistableModel<ValidateGraderRequest> {
+        public BinaryData Grader { get; }
+        protected virtual ValidateGraderRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ValidateGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ValidateGraderResponse : IJsonModel<ValidateGraderResponse>, IPersistableModel<ValidateGraderResponse> {
+        public BinaryData Grader { get; }
+        protected virtual ValidateGraderResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ValidateGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
 namespace OpenAI.Images {
@@ -3828,6 +4211,23 @@ namespace OpenAI.Realtime {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public readonly partial struct SemanticEagernessLevel : IEquatable<SemanticEagernessLevel> {
+        public SemanticEagernessLevel(string value);
+        public static SemanticEagernessLevel Auto { get; }
+        public static SemanticEagernessLevel High { get; }
+        public static SemanticEagernessLevel Low { get; }
+        public static SemanticEagernessLevel Medium { get; }
+        public readonly bool Equals(SemanticEagernessLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SemanticEagernessLevel left, SemanticEagernessLevel right);
+        public static implicit operator SemanticEagernessLevel(string value);
+        public static bool operator !=(SemanticEagernessLevel left, SemanticEagernessLevel right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
     public class TranscriptionSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<TranscriptionSessionConfiguredUpdate>, IPersistableModel<TranscriptionSessionConfiguredUpdate> {
         public RealtimeContentModalities ContentModalities { get; }
         public RealtimeAudioFormat InputAudioFormat { get; }
@@ -3862,6 +4262,7 @@ namespace OpenAI.Realtime {
     public class TurnDetectionOptions : IJsonModel<TurnDetectionOptions>, IPersistableModel<TurnDetectionOptions> {
         public TurnDetectionKind Kind { get; }
         public static TurnDetectionOptions CreateDisabledTurnDetectionOptions();
+        public static TurnDetectionOptions CreateSemanticVoiceActivityTurnDetectionOptions(SemanticEagernessLevel? eagernessLevel = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
         public static TurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
         protected virtual TurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

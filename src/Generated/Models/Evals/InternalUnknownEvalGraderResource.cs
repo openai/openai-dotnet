@@ -10,7 +10,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource
     {
-        internal InternalUnknownEvalGraderResource(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownEvalGraderResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

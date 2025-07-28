@@ -244,10 +244,12 @@ function Invoke-GenAPI {
     $content = $content -creplace "Batch\.", ""
     $content = $content -creplace "Chat\.", ""
     $content = $content -creplace "Common\.", ""
+    $content = $content -creplace "Containers\.", ""
     $content = $content -creplace "Embeddings\.", ""
     $content = $content -creplace "Evals\.", ""
     $content = $content -creplace "Files\.", ""
     $content = $content -creplace "FineTuning\.", ""
+    $content = $content -creplace "Graders\.", ""
     $content = $content -creplace "Images\.", ""
     $content = $content -creplace "Models\.", ""
     $content = $content -creplace "Moderations\.", ""
@@ -257,6 +259,9 @@ function Invoke-GenAPI {
 
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""
+
+    # Remove ModelReaderWriterBuildable attributes.
+    $content = $content -creplace '\[ModelReaderWriterBuildable\(typeof\([^\)]+\)\)\]\s*', ''
 
     # Remove internal APIs.
     $content = $content -creplace "  * internal.*`n", ""

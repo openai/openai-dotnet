@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    internal partial class GraderClient
+    public partial class GraderClient
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 

@@ -7,6 +7,13 @@
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+    
+  <ItemGroup>
+    <!-- Exclude the aspnet-core subdirectory from compilation -->
+    <Compile Remove="aspnet-core/**" />
+    <Content Remove="aspnet-core/**" />
+    <None Remove="aspnet-core/**" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />
   </ItemGroup>
