@@ -3,7 +3,6 @@
 #:package OpenAI@2.2.*-*
 #:property PublishAot=false
 
-using System.Net.NetworkInformation;
 using OpenAI.Chat; 
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -32,36 +31,34 @@ List<ChatMessage> messages = [
     ChatMessage.CreateUserMessage("what is the current local time?")
 ];
 
-while (true)
+complete:
+ChatCompletion completion = client.CompleteChat(messages, options);
+messages.AddRange(ChatMessage.CreateAssistantMessage(completion));
+switch(completion.FinishReason)
 {
-    complete:
-    ChatCompletion completion = client.CompleteChat(messages, options);
-    messages.AddRange(ChatMessage.CreateAssistantMessage(completion));
-    switch(completion.FinishReason)
-    {
-        case ChatFinishReason.ToolCalls:
-            Console.WriteLine($"{completion.ToolCalls.Count} tool call[s] detected.");
-            foreach (ChatToolCall toolCall in completion.ToolCalls)
+    case ChatFinishReason.ToolCalls:
+        Console.WriteLine($"{completion.ToolCalls.Count} tool call[s] detected.");
+        foreach (ChatToolCall toolCall in completion.ToolCalls)
+        {
+            if (toolCall.FunctionName == nameof(MyTools.GetCurrentTime))
             {
-                if (toolCall.FunctionName == nameof(MyTools.GetCurrentTime))
-                {
-                    string result = MyTools.GetCurrentTime();
-                    messages.Add(ChatMessage.CreateToolMessage(toolCall.Id, result));
-                }
-                else
-                {
-                    Console.WriteLine($"Unknown tool call: {toolCall.FunctionName}");
-                }
+                string result = MyTools.GetCurrentTime();
+                messages.Add(ChatMessage.CreateToolMessage(toolCall.Id, result));
             }
-            goto complete;
-        case ChatFinishReason.Stop:
-            Console.WriteLine(completion.Content[0].Text);
-            return;
-        default:
-            Console.WriteLine("Unexpected finish reason: " + completion.FinishReason);
-            return;
-    }
+            else
+            {
+                Console.WriteLine($"Unknown tool call: {toolCall.FunctionName}");
+            }
+        }
+        goto complete;
+    case ChatFinishReason.Stop:
+        Console.WriteLine(completion.Content[0].Text);
+        return;
+    default:
+        Console.WriteLine("Unexpected finish reason: " + completion.FinishReason);
+        return;
 }
+
 public static class MyTools
 {
     public static string GetCurrentTime(bool utc = false) => utc ? DateTime.UtcNow.ToString("HH:mm") : DateTime.Now.ToString("HH:mm");
