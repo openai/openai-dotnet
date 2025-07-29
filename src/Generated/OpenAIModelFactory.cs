@@ -1070,6 +1070,19 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ChatCompletionCollectionOptions(
+                afterId,
+                pageSizeLimit,
+                order,
+                metadata,
+                model,
+                additionalBinaryDataProperties: null);
+        }
+
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);

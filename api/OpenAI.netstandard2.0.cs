@@ -1285,6 +1285,10 @@ namespace OpenAI.Chat {
         public virtual ClientResult<ChatCompletion> GetChatCompletion(string completionId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetChatCompletionAsync(string completionId, RequestOptions options);
         public virtual Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
@@ -1307,6 +1311,31 @@ namespace OpenAI.Chat {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatCompletion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class ChatCompletionCollectionOptions : IJsonModel<ChatCompletionCollectionOptions>, IPersistableModel<ChatCompletionCollectionOptions> {
+        public string AfterId { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; set; }
+        public ChatCompletionCollectionOrder? Order { get; set; }
+        public int? PageSizeLimit { get; set; }
+        protected virtual ChatCompletionCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ChatCompletionCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder> {
+        public ChatCompletionCollectionOrder(string value);
+        public static ChatCompletionCollectionOrder Ascending { get; }
+        public static ChatCompletionCollectionOrder Descending { get; }
+        public readonly bool Equals(ChatCompletionCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
+        public static implicit operator ChatCompletionCollectionOrder(string value);
+        public static bool operator !=(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
+        public override readonly string ToString();
     }
     public class ChatCompletionDeletionResult : IJsonModel<ChatCompletionDeletionResult>, IPersistableModel<ChatCompletionDeletionResult> {
         public string ChatCompletionId { get; }
