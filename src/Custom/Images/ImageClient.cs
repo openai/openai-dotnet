@@ -86,6 +86,11 @@ public partial class ImageClient
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
+    
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    public string Model => _model;
 
     #region GenerateImages
 
