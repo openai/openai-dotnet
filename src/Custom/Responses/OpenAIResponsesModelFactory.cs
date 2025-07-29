@@ -6,11 +6,11 @@ using System.Linq;
 namespace OpenAI.Responses;
 
 /// <summary> Model factory for models. </summary>
+[Experimental("OPENAI001")]
 public static partial class OpenAIResponsesModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.OpenAIResponse"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Responses.OpenAIResponse"/> instance for mocking. </returns>
-    [Experimental("OPENAI001")]
     public static OpenAIResponse OpenAIResponse(
         string id = null,
         DateTimeOffset createdAt = default,
