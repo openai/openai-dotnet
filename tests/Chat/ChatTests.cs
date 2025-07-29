@@ -1352,7 +1352,7 @@ public class ChatTests : SyncAsyncTestBase
         {
             count++;
             Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
-            // Note: The actual model filtering behavior depends on the service implementation
+            Assert.That(fetchedCompletion.Model, Is.EqualTo(filterOptions.Model));
             if (count >= 5) break; // Limit results for test performance
         }
 
