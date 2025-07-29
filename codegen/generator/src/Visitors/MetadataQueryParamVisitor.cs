@@ -12,33 +12,12 @@ using static OpenAILibraryPlugin.Visitors.VisitorHelpers;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor modifies GetRawPagesAsync methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
-/// It also replaces specific parameters with an options type for pagination methods.
+/// This visitor fixes up usage of the metadata query parameter into the proper format.
 /// </summary>
 public class MetadataQueryParamVisitor : ScmLibraryVisitor
 {
 
     private static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
-    private static readonly Dictionary<string, string> _paramReplacementMap = new()
-    {
-        { "after", "AfterId" },
-        { "before", "LastId" },
-        { "limit", "PageSizeLimit" },
-        { "order", "Order" },
-        { "model", "Model" },
-        { "metadata", "Metadata" }
-    };
-    private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
-    {
-        {
-            "GetChatCompletions",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
-        },
-        {
-            "GetChatCompletionsAsync",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
-        }
-    };
 
     /// <summary>
     /// Visits Create*Request methods to modify how metadata query parameters are handled.
