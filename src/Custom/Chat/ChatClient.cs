@@ -76,6 +76,7 @@ public partial class ChatClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
     public ChatClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
     {
     }
@@ -87,6 +88,7 @@ public partial class ChatClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
     public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
