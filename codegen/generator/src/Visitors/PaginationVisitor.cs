@@ -212,7 +212,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     var hasMoreNullCheck = Snippet.Not(hasMoreVariable);
 
                                     // Return "nextToken == null || !hasMore"
-                                    return new BinaryOperatorExpression("||", binaryExpr, hasMoreNullCheck);
+                                    return BoolSnippets.Or(binaryExpr.As<bool>(), hasMoreNullCheck);
                                 }
                             }
                             return expression;
