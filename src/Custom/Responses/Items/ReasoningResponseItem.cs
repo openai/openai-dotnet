@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Responses;
@@ -12,7 +11,7 @@ public partial class ReasoningResponseItem
 {
     // CUSTOM: Retain optionality of OpenAPI read-only property value
     [CodeGenMember("Status")]
-    public ReasoningStatus? Status { get; }
+    public ReasoningStatus? Status { get; internal set; }
 
     // CUSTOM: Rename for collection clarity
     [CodeGenMember("Summary")]
