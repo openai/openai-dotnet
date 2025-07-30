@@ -170,7 +170,7 @@ public partial class ModerationClient
         writer.WriteStringValue(input);
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
     }
 
@@ -189,7 +189,7 @@ public partial class ModerationClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
     }
 }
