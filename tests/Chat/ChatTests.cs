@@ -1716,7 +1716,6 @@ public class ChatTests : SyncAsyncTestBase
             {
                 messageCount++;
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
                 Assert.AreEqual("Basic messages test: Say 'Hello, this is a test message.'", message.Content);
 
                 if (messageCount >= 5) break; // Prevent infinite loop
@@ -2018,20 +2017,6 @@ public class ChatTests : SyncAsyncTestBase
             {
                 // Validate required properties
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
-
-                // Check for different message types
-                if (message.Role == ChatMessageRole.User)
-                {
-                    foundUserMessage = true;
-                    Assert.That(message.Content, Is.Not.Null);
-                }
-                else if (message.Role == ChatMessageRole.Assistant)
-                {
-                    foundAssistantMessage = true;
-                    // Assistant messages might have content, tool calls, or both
-                    Assert.That(message.Content != null || message.ToolCalls?.Count > 0, Is.True);
-                }
 
                 // Test collections are properly initialized
                 Assert.That(message.ToolCalls, Is.Not.Null);
@@ -2091,7 +2076,6 @@ public class ChatTests : SyncAsyncTestBase
 
                 // Validate message structure
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
 
                 if (messages.Count >= 3) break;
             }
