@@ -217,7 +217,7 @@ public partial class EmbeddingClient
         writer.WriteStringValue(input);
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
@@ -237,7 +237,7 @@ public partial class EmbeddingClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
@@ -264,7 +264,7 @@ public partial class EmbeddingClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }

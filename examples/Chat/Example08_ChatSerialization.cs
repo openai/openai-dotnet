@@ -39,7 +39,7 @@ public partial class ChatExamples
         writer.WriteEndArray();
         writer.Flush();
 
-        return BinaryData.FromBytes(stream.ToArray());
+        return BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
     }
     #endregion
 
