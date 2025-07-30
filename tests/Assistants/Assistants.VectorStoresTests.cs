@@ -297,7 +297,7 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         // We added 6 files and will get pages with 2 items, so expect three pages in the collection.
 
-        // Use enumerators instead of enumerables to faciliate advancing the collections
+        // Use enumerators instead of enumerables to facilitate advancing the collections
         // at the same time.
         AsyncCollectionResult<VectorStoreFileAssociation> fileAssociations = client.GetFileAssociationsAsync(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions() { PageSizeLimit = 2 });
         IAsyncEnumerable<ClientResult> pages = fileAssociations.GetRawPagesAsync();
