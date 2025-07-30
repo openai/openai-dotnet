@@ -186,6 +186,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         // This is to ensure that pagination stops when hasMore is false, in addition to checking LastId.
         if ((method.Signature.Name == "GetRawPagesAsync" || method.Signature.Name == "GetRawPages") && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
+            VariableExpression? hasMoreVariable = null;
             var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
             VisitExplodedMethodBodyStatements(
                 statements!,
@@ -206,11 +207,9 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
                                     rightKeyword.Keyword == "null")
                                 {
-                                    // Create "!hasMore" condition
-                                    var hasMoreNullCheck = new UnaryOperatorExpression(
-                                        "!",
-                                        new MemberExpression(null, "hasMore"),
-                                        OperandOnTheLeft: false);
+                                    // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
+                                    // in the WhileStatement handler below.
+                                    var hasMoreNullCheck = Snippet.Not(hasMoreVariable);
 
                                     // Return "nextToken == null || !hasMore"
                                     return new BinaryOperatorExpression("||", binaryExpr, hasMoreNullCheck);
@@ -238,7 +237,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                             {
                                 // Create a new assignment for hasMore
                                 var hasMoreAssignment = new AssignmentExpression(
-                                    new DeclarationExpression(typeof(bool), "hasMore"),
+                                    Snippet.Declare("hasMore", typeof(bool), out hasMoreVariable),
                                     new MemberExpression(memberExpression.Inner, "HasMore"));
 
                                 // Insert the new assignment before the existing one
