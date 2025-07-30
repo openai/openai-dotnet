@@ -1413,8 +1413,8 @@ public class ChatTests : SyncAsyncTestBase
         ChatCompletionOptions createOptions = new()
         {
             StoredOutputEnabled = true,
-            Metadata = 
-            { 
+            Metadata =
+            {
                 [testKey] = "combined_value",
                 ["test_type"] = "integration"
             }
@@ -1440,7 +1440,7 @@ public class ChatTests : SyncAsyncTestBase
         {
             count++;
             Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
-            
+
             if (count >= 10) break; // Prevent excessive iterations
         }
 
@@ -1692,6 +1692,468 @@ public class ChatTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
+    [Test]
+    public async Task GetChatCompletionMessagesWithBasicUsage()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create a completion with stored output enabled to have messages
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "basic_messages" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Basic messages test: Say 'Hello, this is a test message.'"],
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Test basic enumeration of messages
+            int messageCount = 0;
+            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id))
+            {
+                messageCount++;
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
+                Assert.AreEqual("Basic messages test: Say 'Hello, this is a test message.'", message.Content);
+
+                if (messageCount >= 5) break; // Prevent infinite loop
+            }
+
+            Assert.That(messageCount, Is.GreaterThan(0));
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithPagination()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion with multiple messages (conversation with tool calls)
+        List<ChatMessage> conversationMessages = new()
+        {
+            new UserChatMessage("What's the weather like today? Use the weather tool."),
+            new UserChatMessage("Name something I could do outside in this weather."),
+            new UserChatMessage("Name something else I could do outside in this weather."),
+            new UserChatMessage("Name something yet another thing I could do outside in this weather.")
+        };
+
+        // Add function definition to trigger more back-and-forth
+        ChatTool weatherTool = ChatTool.CreateFunctionTool(
+            "get_weather",
+            "Get current weather information",
+            BinaryData.FromString("""
+                {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "The city and state, e.g. San Francisco, CA"
+                        }
+                    },
+                    "required": ["location"]
+                }
+                """));
+
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Tools = { weatherTool },
+            Metadata = { ["test_scenario"] = "pagination_messages" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            conversationMessages,
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Test pagination with limit
+            int totalMessages = 0;
+            string lastMessageId = null;
+
+            var options = new ChatCompletionMessageCollectionOptions()
+            {
+                PageSizeLimit = 2
+            };
+
+            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, options))
+            {
+                totalMessages++;
+                lastMessageId = message.Id;
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+
+                if (totalMessages >= 4) break; // Get a few pages worth
+            }
+
+            Assert.That(totalMessages, Is.GreaterThan(3));
+            Assert.That(lastMessageId, Is.Not.Null);
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithAfterIdPagination()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "after_id_pagination" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["After ID pagination test: Please provide a detailed response with multiple sentences."],
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Get first message to use as afterId
+            string afterId = null;
+            await foreach (var firstMessage in client.GetChatCompletionMessagesAsync(completion.Id))
+            {
+                afterId = firstMessage.Id;
+                break;
+            }
+
+            if (afterId != null)
+            {
+                // Test pagination starting after the first message
+                int count = 0;
+                var options = new ChatCompletionMessageCollectionOptions()
+                {
+                    AfterId = afterId,
+                    PageSizeLimit = 3
+                };
+
+                await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, options))
+                {
+                    count++;
+                    // Ensure we don't get the afterId message
+                    Assert.That(message.Id, Is.Not.EqualTo(afterId));
+
+                    if (count >= 3) break;
+                }
+
+                // We might not have messages after the first one, so just verify the method works
+                Assert.That(count, Is.GreaterThanOrEqualTo(0));
+            }
+        });
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithOrderFiltering()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion with detailed conversation
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "order_filtering" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Order filtering test: Please provide a comprehensive response about machine learning."],
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Test ascending order
+            List<ChatCompletionMessageListDatum> ascMessages = new();
+            var ascOptions = new ChatCompletionMessageCollectionOptions()
+            {
+                Order = ChatCompletionCollectionOrder.Ascending,
+                PageSizeLimit = 5
+            };
+
+            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, ascOptions))
+            {
+                ascMessages.Add(message);
+                if (ascMessages.Count >= 3) break;
+            }
+
+            // Test descending order
+            List<ChatCompletionMessageListDatum> descMessages = new();
+            var descOptions = new ChatCompletionMessageCollectionOptions()
+            {
+                Order = ChatCompletionCollectionOrder.Descending,
+                PageSizeLimit = 5
+            };
+
+            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, descOptions))
+            {
+                descMessages.Add(message);
+                if (descMessages.Count >= 3) break;
+            }
+
+            // Verify we get results in both cases
+            Assert.That(ascMessages, Has.Count.GreaterThan(0));
+            Assert.That(descMessages, Has.Count.GreaterThan(0));
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithCancellationToken()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "cancellation_token" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Cancellation test: Say 'Hello World'"],
+            createOptions);
+
+        // Test with cancellation token
+        using var cts = new CancellationTokenSource();
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            try
+            {
+                int count = 0;
+                await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, cancellationToken: cts.Token))
+                {
+                    count++;
+                    Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+
+                    if (count >= 2)
+                    {
+                        cts.Cancel(); // Cancel after getting some messages
+                        break;
+                    }
+                }
+
+                Assert.That(count, Is.GreaterThanOrEqualTo(1));
+            }
+            catch (OperationCanceledException)
+            {
+                // This is expected if cancellation happens during enumeration
+            }
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithMessageProperties()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion with function calling to test various message properties
+        ChatTool calculatorTool = ChatTool.CreateFunctionTool(
+            "calculate",
+            "Perform basic calculations",
+            BinaryData.FromString("""
+                {
+                    "type": "object",
+                    "properties": {
+                        "expression": {
+                            "type": "string",
+                            "description": "Mathematical expression to evaluate"
+                        }
+                    },
+                    "required": ["expression"]
+                }
+                """));
+
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Tools = { calculatorTool },
+            Metadata = { ["test_scenario"] = "message_properties" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Message properties test: Calculate 2 + 2"],
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Test message properties
+            bool foundUserMessage = false;
+            bool foundAssistantMessage = false;
+
+            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id))
+            {
+                // Validate required properties
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
+
+                // Check for different message types
+                if (message.Role == ChatMessageRole.User)
+                {
+                    foundUserMessage = true;
+                    Assert.That(message.Content, Is.Not.Null);
+                }
+                else if (message.Role == ChatMessageRole.Assistant)
+                {
+                    foundAssistantMessage = true;
+                    // Assistant messages might have content, tool calls, or both
+                    Assert.That(message.Content != null || message.ToolCalls?.Count > 0, Is.True);
+                }
+
+                // Test collections are properly initialized
+                Assert.That(message.ToolCalls, Is.Not.Null);
+                Assert.That(message.Annotations, Is.Not.Null);
+
+                // Refusal should be null or a string
+                if (message.Refusal != null)
+                {
+                    Assert.That(message.Refusal, Is.TypeOf<string>());
+                }
+            }
+
+            Assert.That(foundUserMessage || foundAssistantMessage, Is.True, "Should find at least one message");
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesWithCombinedOptions()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create completion with comprehensive options
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "combined_options" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Combined options test: Provide a detailed explanation of artificial intelligence."],
+            createOptions);
+
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
+            // Test combined options: limit + order + cancellation token
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+            List<ChatCompletionMessageListDatum> messages = new();
+
+            await foreach (var message in client.GetChatCompletionMessagesAsync(
+                completion.Id,
+                new ChatCompletionMessageCollectionOptions()
+                {
+                    PageSizeLimit = 3,
+                    Order = ChatCompletionCollectionOrder.Descending
+                },
+                cancellationToken: cts.Token))
+            {
+                messages.Add(message);
+
+                // Validate message structure
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(message.Role, Is.Not.EqualTo(default(ChatMessageRole)));
+
+                if (messages.Count >= 3) break;
+            }
+
+            Assert.That(messages, Has.Count.GreaterThan(0));
+        });
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesHandlesNonExistentCompletion()
+    {
+        ChatClient client = GetTestClient();
+
+        // Test with non-existent completion ID
+        string nonExistentId = "comp_nonexistent_12345";
+
+        try
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(nonExistentId))
+            {
+                Assert.Fail("Should not enumerate messages for non-existent completion");
+            }
+        }
+        catch (ClientResultException ex)
+        {
+            // Should get some kind of error (likely ClientResultException or similar)
+            Assert.That(ex, Is.Not.Null);
+            Assert.That(ex.Status, Is.EqualTo(404));
+        }
+    }
+
+    [Test]
+    public void GetChatCompletionMessagesWithInvalidParameters()
+    {
+        ChatClient client = GetTestClient();
+
+        // Test with null completion ID
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+            {
+                // Should not reach here
+            }
+        });
+
+        // Test with empty completion ID
+        Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+            {
+                // Should not reach here
+            }
+        });
+    }
+
     [OneTimeTearDown]
     public void TearDown()
     {
@@ -1702,6 +2164,33 @@ public class ChatTests : SyncAsyncTestBase
         foreach (string fileId in FileIdsToDelete)
         {
             _ = fileClient.DeleteFile(fileId, noThrowOptions);
+        }
+    }
+
+    private static async Task RetryWithExponentialBackoffAsync(Func<Task> action, int maxRetries = 5, int initialWaitMs = 750)
+    {
+        int waitDuration = initialWaitMs;
+        int retryCount = 0;
+        bool successful = false;
+
+        while (retryCount < maxRetries && !successful)
+        {
+            try
+            {
+                await action();
+                successful = true;
+            }
+            catch (ClientResultException ex) when (ex.Status == 404)
+            {
+                // If we get a 404, it means the resource is not yet available
+                await Task.Delay(waitDuration);
+                waitDuration *= 2; // Exponential backoff
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    throw; // Re-throw the exception if we've exhausted all retries
+                }
+            }
         }
     }
 

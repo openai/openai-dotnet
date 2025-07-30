@@ -4,15 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionMessageListDatum
+    [Experimental("OPENAI001")]
+    public partial class ChatCompletionMessageListDatum
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
+        internal ChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
         {
             Content = content;
             Refusal = refusal;
@@ -22,7 +24,7 @@ namespace OpenAI.Chat
             Role = role;
         }
 
-        internal InternalChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio audio, string id, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio audio, string id, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;

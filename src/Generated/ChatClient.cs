@@ -90,5 +90,61 @@ namespace OpenAI.Chat
             using PipelineMessage message = CreateCompleteChatRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
+
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            return new ChatClientGetChatCompletionMessagesCollectionResult(
+                this,
+                completionId,
+                after,
+                limit,
+                order,
+                options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
+                this,
+                completionId,
+                after,
+                limit,
+                order,
+                options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            return new ChatClientGetChatCompletionMessagesCollectionResultOfT(
+                this,
+                completionId,
+                options?.AfterId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessagesAsync(string completionId, ChatCompletionMessageCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            return new ChatClientGetChatCompletionMessagesAsyncCollectionResultOfT(
+                this,
+                completionId,
+                options?.AfterId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
     }
 }

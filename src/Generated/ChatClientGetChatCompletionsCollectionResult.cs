@@ -39,8 +39,11 @@ namespace OpenAI.Chat
                 ClientResult result = ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
                 yield return result;
 
+                // Plugin customization: add hasMore assignment
+                bool hasMore = ((InternalChatCompletionList)result).HasMore;
                 nextToken = ((InternalChatCompletionList)result).LastId;
-                if (nextToken == null)
+                // Plugin customization: add hasMore == false check to pagination condition
+                if (nextToken == null || hasMore == false)
                 {
                     yield break;
                 }

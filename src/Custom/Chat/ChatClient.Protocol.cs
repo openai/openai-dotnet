@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 namespace OpenAI.Chat;
 
 /// <summary> The service client for the OpenAI Chat Completions endpoint. </summary>
-[CodeGenSuppress("GetChatCompletionMessagesAsync", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("UpdateChatCompletionAsync", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("UpdateChatCompletion", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
 public partial class ChatClient

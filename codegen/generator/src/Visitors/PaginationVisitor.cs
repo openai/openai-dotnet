@@ -12,7 +12,7 @@ using static OpenAILibraryPlugin.Visitors.VisitorHelpers;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor modifies GetRawPagesAsync methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
+/// This visitor modifies GetRawPagesAsync and GetRawPages methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
 /// It also replaces specific parameters with an options type for pagination methods.
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
@@ -37,6 +37,14 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetChatCompletionsAsync",
             ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetChatCompletionMessages",
+            ("ChatCompletionMessageListDatum", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetChatCompletionMessagesAsync",
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
         }
     };
 
@@ -174,9 +182,9 @@ public class PaginationVisitor : ScmLibraryVisitor
     /// <returns>True if the method was handled, false otherwise.</returns>
     private bool TryHandleGetRawPagesAsyncMethod(MethodProvider method)
     {
-        // If the method is GetRawPagesAsync and is internal, we will modify the body statements to add a check for hasMore == false.
+        // If the method is GetRawPagesAsync or GetRawPages and is internal, we will modify the body statements to add a check for hasMore == false.
         // This is to ensure that pagination stops when hasMore is false, in addition to checking LastId.
-        if (method.Signature.Name == "GetRawPagesAsync" && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
+        if ((method.Signature.Name == "GetRawPagesAsync" || method.Signature.Name == "GetRawPages") && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
             var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
             VisitExplodedMethodBodyStatements(

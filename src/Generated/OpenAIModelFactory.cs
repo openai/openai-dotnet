@@ -1083,6 +1083,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default)
+        {
+            return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
