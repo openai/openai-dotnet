@@ -11,7 +11,7 @@ public partial class ReasoningResponseItem
 {
     // CUSTOM: Retain optionality of OpenAPI read-only property value
     [CodeGenMember("Status")]
-    public ReasoningStatus? Status { get; internal set; }
+    public ReasoningStatus? Status { get; }
 
     // CUSTOM: Rename for collection clarity
     [CodeGenMember("Summary")]
