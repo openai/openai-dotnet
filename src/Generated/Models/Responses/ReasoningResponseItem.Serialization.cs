@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : IJsonModel<ReasoningResponseItem>
     {
-        internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, null, null)
+        internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, null, default, null)
         {
         }
 
@@ -35,6 +35,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("encrypted_content"u8);
                 writer.WriteStringValue(EncryptedContent);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("summary") != true)
             {
@@ -71,6 +76,7 @@ namespace OpenAI.Responses
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string encryptedContent = default;
+            ReasoningStatus? status = default;
             IReadOnlyList<ReasoningSummaryPart> summaryParts = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -94,6 +100,11 @@ namespace OpenAI.Responses
                     encryptedContent = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToReasoningStatus();
+                    continue;
+                }
                 if (prop.NameEquals("summary"u8))
                 {
                     List<ReasoningSummaryPart> array = new List<ReasoningSummaryPart>();
@@ -107,7 +118,13 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ReasoningResponseItem(kind, id, additionalBinaryDataProperties, encryptedContent, summaryParts);
+            return new ReasoningResponseItem(
+                kind,
+                id,
+                additionalBinaryDataProperties,
+                encryptedContent,
+                status,
+                summaryParts);
         }
 
         BinaryData IPersistableModel<ReasoningResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
