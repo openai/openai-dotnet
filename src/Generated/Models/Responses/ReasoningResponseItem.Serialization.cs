@@ -36,7 +36,8 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("encrypted_content"u8);
                 writer.WriteStringValue(EncryptedContent);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
