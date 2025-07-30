@@ -123,6 +123,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     }
 
     [Test]
+    [Ignore("gpt-image-1 is not enabled in the test instance")]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images);
@@ -166,6 +167,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     }
 
     [Test]
+    [Ignore("gpt-image-1 is not enabled in the test instance")]
     public async Task GptImage1Works()
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "gpt-image-1");
