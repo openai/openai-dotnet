@@ -1,5 +1,6 @@
 // SAMPLE: Generate text from a simple prompt
-// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start 
+// GUIDANCE: https://platform.openai.com/docs/guides/text?api-mode=responses 
+// HOWTO: Instructions to run this code: https://aka.ms/oai/net/start 
 #:package OpenAI@2.2.*-*
 #:property PublishAot false
 
