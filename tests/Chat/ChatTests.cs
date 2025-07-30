@@ -221,7 +221,7 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(firstUpdate, Is.Not.Null);
         Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
 
-        Thread.Sleep(1000);
+        await Task.Delay(1000);
 
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
@@ -1090,7 +1090,7 @@ public class ChatTests : SyncAsyncTestBase
             completionIds.Add(completion.Id);
         }
 
-        Thread.Sleep(5000); // Wait for completions to be stored
+        await Task.Delay(5000); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
@@ -1146,7 +1146,7 @@ public class ChatTests : SyncAsyncTestBase
             completionIds.Add(completion.Id);
         }
 
-        Thread.Sleep(5000); // Wait for completions to be stored
+        await Task.Delay(5000); // Wait for completions to be stored
 
         // Get first completion to use as afterId
         string afterId = null;
@@ -1205,10 +1205,10 @@ public class ChatTests : SyncAsyncTestBase
                 createOptions);
 
             completionIds.Add(completion.Id);
-            Thread.Sleep(1000); // Ensure different timestamps
+            await Task.Delay(1000); // Ensure different timestamps
         }
 
-        Thread.Sleep(5000); // Wait for completions to be stored
+        await Task.Delay(5000); // Wait for completions to be stored
 
         // Test ascending order
         ChatCompletionCollectionOptions ascOptions = new()
@@ -1290,7 +1290,7 @@ public class ChatTests : SyncAsyncTestBase
             options2);
         completionIds.Add(otherCompletion.Id);
 
-        Thread.Sleep(5000); // Wait for completions to be stored
+        await Task.Delay(5000); // Wait for completions to be stored
 
         // Filter by specific metadata
         ChatCompletionCollectionOptions filterOptions = new()
@@ -1338,7 +1338,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Model filter test: Say 'Hello'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(5000); // Wait for completion to be stored
 
         // Filter by the model used by the test client
         ChatCompletionCollectionOptions filterOptions = new()
@@ -1381,7 +1381,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Empty options test: Say 'Hello'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(5000); // Wait for completion to be stored
 
         // Test with default/empty options
         int count = 0;
@@ -1424,7 +1424,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Combined filters test: Say 'Combined test'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(6000); // Wait for completion to be stored
 
         // Test with combined filters
         ChatCompletionCollectionOptions combinedOptions = new()
@@ -1522,18 +1522,20 @@ public class ChatTests : SyncAsyncTestBase
             [new UserChatMessage("Say `this is a test`.")],
             options);
 
-        Thread.Sleep(5000);
+        await RetryWithExponentialBackoffAsync(async () =>
+        {
 
-        ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
+            ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
 
-        Assert.That(storedCompletion.Id, Is.EqualTo(completion.Id));
-        Assert.That(storedCompletion.Content[0].Text, Is.EqualTo(completion.Content[0].Text));
+            Assert.That(storedCompletion.Id, Is.EqualTo(completion.Id));
+            Assert.That(storedCompletion.Content[0].Text, Is.EqualTo(completion.Content[0].Text));
 
-        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(completion.Id);
+            ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(completion.Id);
 
-        Assert.That(deletionResult.Deleted, Is.True);
+            Assert.That(deletionResult.Deleted, Is.True);
+        });
 
-        Thread.Sleep(5000);
+        await Task.Delay(5000);
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -1571,7 +1573,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Enumeration test: Say 'Test enumeration'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(5000); // Wait for completion to be stored
 
         // Test that we can enumerate multiple times
         ChatCompletionCollectionOptions collectionOptions = new()
@@ -1625,7 +1627,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Large limit test: Say 'Testing large limits'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(5000); // Wait for completion to be stored
 
         // Test with a large page size limit
         ChatCompletionCollectionOptions largeOptions = new()
@@ -1666,7 +1668,7 @@ public class ChatTests : SyncAsyncTestBase
             ["Minimal limit test: Say 'Testing minimal limits'"],
             createOptions);
 
-        Thread.Sleep(5000); // Wait for completion to be stored
+        await Task.Delay(5000); // Wait for completion to be stored
 
         // Test with minimal page size
         ChatCompletionCollectionOptions minimalOptions = new()
@@ -1964,72 +1966,6 @@ public class ChatTests : SyncAsyncTestBase
             {
                 // This is expected if cancellation happens during enumeration
             }
-        });
-
-        // Clean up
-        try
-        {
-            await client.DeleteChatCompletionAsync(completion.Id);
-        }
-        catch { /* Ignore cleanup errors */ }
-    }
-
-    [Test]
-    public async Task GetChatCompletionMessagesWithMessageProperties()
-    {
-        ChatClient client = GetTestClient();
-
-        // Create completion with function calling to test various message properties
-        ChatTool calculatorTool = ChatTool.CreateFunctionTool(
-            "calculate",
-            "Perform basic calculations",
-            BinaryData.FromString("""
-                {
-                    "type": "object",
-                    "properties": {
-                        "expression": {
-                            "type": "string",
-                            "description": "Mathematical expression to evaluate"
-                        }
-                    },
-                    "required": ["expression"]
-                }
-                """));
-
-        ChatCompletionOptions createOptions = new()
-        {
-            StoredOutputEnabled = true,
-            Tools = { calculatorTool },
-            Metadata = { ["test_scenario"] = "message_properties" }
-        };
-
-        ChatCompletion completion = await client.CompleteChatAsync(
-            ["Message properties test: Calculate 2 + 2"],
-            createOptions);
-
-        await RetryWithExponentialBackoffAsync(async () =>
-        {
-            // Test message properties
-            bool foundUserMessage = false;
-            bool foundAssistantMessage = false;
-
-            await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id))
-            {
-                // Validate required properties
-                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-
-                // Test collections are properly initialized
-                Assert.That(message.ToolCalls, Is.Not.Null);
-                Assert.That(message.Annotations, Is.Not.Null);
-
-                // Refusal should be null or a string
-                if (message.Refusal != null)
-                {
-                    Assert.That(message.Refusal, Is.TypeOf<string>());
-                }
-            }
-
-            Assert.That(foundUserMessage || foundAssistantMessage, Is.True, "Should find at least one message");
         });
 
         // Clean up

@@ -206,13 +206,13 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
                                     rightKeyword.Keyword == "null")
                                 {
-                                    // Create "hasMore == null" condition
-                                    var hasMoreNullCheck = new BinaryOperatorExpression(
-                                        "==",
+                                    // Create "!hasMore" condition
+                                    var hasMoreNullCheck = new UnaryOperatorExpression(
+                                        "!",
                                         new MemberExpression(null, "hasMore"),
-                                        Snippet.False);
+                                        OperandOnTheLeft: false);
 
-                                    // Return "nextToken == null || hasMore == null"
+                                    // Return "nextToken == null || !hasMore"
                                     return new BinaryOperatorExpression("||", binaryExpr, hasMoreNullCheck);
                                 }
                             }
