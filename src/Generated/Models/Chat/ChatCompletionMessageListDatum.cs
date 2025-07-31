@@ -4,15 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionMessageListDatum
+    [Experimental("OPENAI001")]
+    public partial class ChatCompletionMessageListDatum
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
+        internal ChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
         {
             Content = content;
             Refusal = refusal;
@@ -22,7 +24,7 @@ namespace OpenAI.Chat
             Role = role;
         }
 
-        internal InternalChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio audio, string id, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, string id, ChatMessageRole role, ChatOutputAudio outputAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
@@ -30,9 +32,9 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             FunctionCall = functionCall;
-            Audio = audio;
             Id = id;
             Role = role;
+            OutputAudio = outputAudio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -42,11 +44,9 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
 
-        public IList<ChatMessageAnnotation> Annotations { get; }
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
-
-        public ChatOutputAudio Audio { get; }
 
         public string Id { get; }
 

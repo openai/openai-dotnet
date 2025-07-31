@@ -22,7 +22,7 @@ namespace OpenAI.Chat
             Content = content ?? new ChatMessageContent();
         }
 
-        internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, ChatOutputAudio audio, ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatOutputAudio audio, ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Refusal = refusal;
@@ -39,7 +39,7 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
 
-        public IList<ChatMessageAnnotation> Annotations { get; }
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         public ChatOutputAudio Audio { get; }
 

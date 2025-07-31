@@ -6,33 +6,34 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class ChatClientGetChatCompletionsCollectionResult : CollectionResult
+    internal partial class ChatClientGetChatCompletionMessagesCollectionResultOfT : CollectionResult<ChatCompletionMessageListDatum>
     {
         private readonly ChatClient _client;
+        private readonly string _completionId;
         private readonly string _after;
         private readonly int? _limit;
         private readonly string _order;
-        private readonly IDictionary<string, string> _metadata;
-        private readonly string _model;
         private readonly RequestOptions _options;
 
-        public ChatClientGetChatCompletionsCollectionResult(ChatClient client, string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        public ChatClientGetChatCompletionMessagesCollectionResultOfT(ChatClient client, string completionId, string after, int? limit, string order, RequestOptions options)
         {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
             _client = client;
+            _completionId = completionId;
             _after = after;
             _limit = limit;
             _order = order;
-            _metadata = metadata;
-            _model = model;
             _options = options;
         }
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetChatCompletionsRequest(_after, _limit, _order, _metadata, _model, _options);
+            PipelineMessage message = _client.CreateGetChatCompletionMessagesRequest(_completionId, _after, _limit, _order, _options);
             string nextToken = null;
             while (true)
             {
@@ -40,20 +41,20 @@ namespace OpenAI.Chat
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((InternalChatCompletionList)result).HasMore;
-                nextToken = ((InternalChatCompletionList)result).LastId;
+                bool hasMore = ((InternalChatCompletionMessageList)result).HasMore;
+                nextToken = ((InternalChatCompletionMessageList)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (nextToken == null || !hasMore)
                 {
                     yield break;
                 }
-                message = _client.CreateGetChatCompletionsRequest(nextToken, _limit, _order, _metadata, _model, _options);
+                message = _client.CreateGetChatCompletionMessagesRequest(_completionId, nextToken, _limit, _order, _options);
             }
         }
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((InternalChatCompletionList)page).LastId;
+            string nextPage = ((InternalChatCompletionMessageList)page).LastId;
             if (nextPage != null)
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
@@ -62,6 +63,11 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+        }
+
+        protected override IEnumerable<ChatCompletionMessageListDatum> GetValuesFromPage(ClientResult page)
+        {
+            return ((InternalChatCompletionMessageList)page).Data;
         }
     }
 }
