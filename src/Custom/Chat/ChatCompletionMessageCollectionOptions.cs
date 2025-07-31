@@ -1,4 +1,3 @@
-
 namespace OpenAI.Chat;
 
 // CUSTOM: Use the correct namespace.

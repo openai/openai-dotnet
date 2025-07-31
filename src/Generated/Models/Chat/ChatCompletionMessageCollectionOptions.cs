@@ -17,7 +17,7 @@ namespace OpenAI.Chat
         {
         }
 
-        internal ChatCompletionMessageCollectionOptions(string afterId, int? pageSizeLimit, ChatCompletionCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageCollectionOptions(string afterId, int? pageSizeLimit, ChatCompletionMessageCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             AfterId = afterId;
             PageSizeLimit = pageSizeLimit;
@@ -29,7 +29,7 @@ namespace OpenAI.Chat
 
         public int? PageSizeLimit { get; set; }
 
-        public ChatCompletionCollectionOrder? Order { get; set; }
+        public ChatCompletionMessageCollectionOrder? Order { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

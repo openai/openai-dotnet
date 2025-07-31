@@ -69,7 +69,7 @@ namespace OpenAI.Chat
             }
             string afterId = default;
             int? pageSizeLimit = default;
-            ChatCompletionCollectionOrder? order = default;
+            ChatCompletionMessageCollectionOrder? order = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {

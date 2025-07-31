@@ -1887,7 +1887,7 @@ public class ChatTests : SyncAsyncTestBase
             List<ChatCompletionMessageListDatum> ascMessages = new();
             var ascOptions = new ChatCompletionMessageCollectionOptions()
             {
-                Order = ChatCompletionCollectionOrder.Ascending,
+                Order = ChatCompletionMessageCollectionOrder.Ascending,
                 PageSizeLimit = 5
             };
 
@@ -1901,7 +1901,7 @@ public class ChatTests : SyncAsyncTestBase
             List<ChatCompletionMessageListDatum> descMessages = new();
             var descOptions = new ChatCompletionMessageCollectionOptions()
             {
-                Order = ChatCompletionCollectionOrder.Descending,
+                Order = ChatCompletionMessageCollectionOrder.Descending,
                 PageSizeLimit = 5
             };
 
@@ -2004,7 +2004,7 @@ public class ChatTests : SyncAsyncTestBase
                 new ChatCompletionMessageCollectionOptions()
                 {
                     PageSizeLimit = 3,
-                    Order = ChatCompletionCollectionOrder.Descending
+                    Order = ChatCompletionMessageCollectionOrder.Descending
                 },
                 cancellationToken: cts.Token))
             {

@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, null, null, default, null)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, null, default, null, null)
         {
         }
 
@@ -65,6 +65,7 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Annotations) && _additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 writer.WritePropertyName("annotations"u8);
@@ -80,11 +81,6 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
-            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
-            {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(Audio, options);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
@@ -94,6 +90,11 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
+            }
+            if (Optional.IsDefined(OutputAudio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            {
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(OutputAudio, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -139,11 +140,11 @@ namespace OpenAI.Chat
             string content = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
-            IList<ChatMessageAnnotation> annotations = default;
+            IReadOnlyList<ChatMessageAnnotation> annotations = default;
             InternalChatCompletionResponseMessageFunctionCall functionCall = default;
-            ChatOutputAudio audio = default;
             string id = default;
             ChatMessageRole role = default;
+            ChatOutputAudio outputAudio = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -204,16 +205,6 @@ namespace OpenAI.Chat
                     functionCall = InternalChatCompletionResponseMessageFunctionCall.DeserializeInternalChatCompletionResponseMessageFunctionCall(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("audio"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        audio = null;
-                        continue;
-                    }
-                    audio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
@@ -222,6 +213,16 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputAudio = null;
+                        continue;
+                    }
+                    outputAudio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -233,9 +234,9 @@ namespace OpenAI.Chat
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),
                 functionCall,
-                audio,
                 id,
                 role,
+                outputAudio,
                 additionalBinaryDataProperties);
         }
 

@@ -1083,7 +1083,7 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default)
+        public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }

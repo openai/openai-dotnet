@@ -24,7 +24,7 @@ namespace OpenAI.Chat
             Role = role;
         }
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio audio, string id, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, string id, ChatMessageRole role, ChatOutputAudio outputAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
@@ -32,9 +32,9 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             FunctionCall = functionCall;
-            Audio = audio;
             Id = id;
             Role = role;
+            OutputAudio = outputAudio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -44,11 +44,9 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
 
-        public IList<ChatMessageAnnotation> Annotations { get; }
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
-
-        public ChatOutputAudio Audio { get; }
 
         public string Id { get; }
 
