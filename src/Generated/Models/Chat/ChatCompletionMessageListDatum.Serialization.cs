@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
+    public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, null)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, null, default, null, null)
         {
         }
 
-        void IJsonModel<InternalChatCompletionResponseMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ChatCompletionMessageListDatum>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,22 @@ namespace OpenAI.Chat
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageListDatum>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support writing '{format}' format.");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                if (Optional.IsDefined(Content))
+                {
+                    writer.WritePropertyName("content"u8);
+                    writer.WriteStringValue(Content);
+                }
+                else
+                {
+                    writer.WriteNull("content"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
@@ -64,32 +76,25 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(Audio, options);
+                writer.WritePropertyName("function_call"u8);
+                writer.WriteObjectValue(FunctionCall, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsDefined(OutputAudio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
-                if (Optional.IsDefined(Content))
-                {
-                    writer.WritePropertyName("content"u8);
-                    SerializeContentValue(writer, options);
-                }
-                else
-                {
-                    writer.WriteNull("content"u8);
-                }
-            }
-            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
-            {
-                writer.WritePropertyName("function_call"u8);
-                writer.WriteObjectValue(FunctionCall, options);
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(OutputAudio, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -113,35 +118,46 @@ namespace OpenAI.Chat
             }
         }
 
-        InternalChatCompletionResponseMessage IJsonModel<InternalChatCompletionResponseMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ChatCompletionMessageListDatum IJsonModel<ChatCompletionMessageListDatum>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalChatCompletionResponseMessage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionMessageListDatum JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageListDatum>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
+            return DeserializeChatCompletionMessageListDatum(document.RootElement, options);
         }
 
-        internal static InternalChatCompletionResponseMessage DeserializeInternalChatCompletionResponseMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatCompletionMessageListDatum DeserializeChatCompletionMessageListDatum(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            string content = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
-            ChatOutputAudio audio = default;
+            InternalChatCompletionResponseMessageFunctionCall functionCall = default;
+            string id = default;
             ChatMessageRole role = default;
-            ChatMessageContent content = default;
-            ChatFunctionCall functionCall = default;
+            ChatOutputAudio outputAudio = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("content"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        content = null;
+                        continue;
+                    }
+                    content = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("refusal"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -180,14 +196,18 @@ namespace OpenAI.Chat
                     annotations = array;
                     continue;
                 }
-                if (prop.NameEquals("audio"u8))
+                if (prop.NameEquals("function_call"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        audio = null;
                         continue;
                     }
-                    audio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
+                    functionCall = InternalChatCompletionResponseMessageFunctionCall.DeserializeInternalChatCompletionResponseMessageFunctionCall(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("role"u8))
@@ -195,65 +215,62 @@ namespace OpenAI.Chat
                     role = prop.Value.GetString().ToChatMessageRole();
                     continue;
                 }
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
-                if (prop.NameEquals("function_call"u8))
+                if (prop.NameEquals("audio"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        outputAudio = null;
                         continue;
                     }
-                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
+                    outputAudio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionResponseMessage(
+            return new ChatCompletionMessageListDatum(
+                content,
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),
-                audio,
-                role,
-                content,
                 functionCall,
+                id,
+                role,
+                outputAudio,
                 additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalChatCompletionResponseMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ChatCompletionMessageListDatum>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageListDatum>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalChatCompletionResponseMessage IPersistableModel<InternalChatCompletionResponseMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ChatCompletionMessageListDatum IPersistableModel<ChatCompletionMessageListDatum>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual InternalChatCompletionResponseMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionMessageListDatum PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageListDatum>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, options);
+                        return DeserializeChatCompletionMessageListDatum(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalChatCompletionResponseMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ChatCompletionMessageListDatum>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

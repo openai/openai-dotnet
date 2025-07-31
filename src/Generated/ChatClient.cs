@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Chat
 {
@@ -145,6 +146,42 @@ namespace OpenAI.Chat
 
             using PipelineMessage message = CreateDeleteChatCompletionRequest(completionId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateGetChatCompletionMessagesRequest(completionId, after, limit, order, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateGetChatCompletionMessagesRequest(completionId, after, limit, order, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<InternalChatCompletionMessageList> GetChatCompletionMessages(string completionId, string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            ClientResult result = GetChatCompletionMessages(completionId, after, limit, order?.ToString(), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((InternalChatCompletionMessageList)result, result.GetRawResponse());
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult<InternalChatCompletionMessageList>> GetChatCompletionMessagesAsync(string completionId, string after = default, int? limit = default, VectorStoreCollectionOrder? order = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            ClientResult result = await GetChatCompletionMessagesAsync(completionId, after, limit, order?.ToString(), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((InternalChatCompletionMessageList)result, result.GetRawResponse());
         }
     }
 }

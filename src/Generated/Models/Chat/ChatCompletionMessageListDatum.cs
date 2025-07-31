@@ -4,36 +4,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionResponseMessage
+    [Experimental("OPENAI001")]
+    public partial class ChatCompletionMessageListDatum
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionResponseMessage(string refusal, ChatMessageRole role, ChatMessageContent content)
+        internal ChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
         {
-            // Plugin customization: ensure initialization of collections
+            Content = content;
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
+            Id = id;
             Role = role;
-            Content = content ?? new ChatMessageContent();
         }
 
-        internal InternalChatCompletionResponseMessage(string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatOutputAudio audio, ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, string id, ChatMessageRole role, ChatOutputAudio outputAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Content = content;
             Refusal = refusal;
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
-            Audio = audio;
-            Role = role;
-            Content = content ?? new ChatMessageContent();
             FunctionCall = functionCall;
+            Id = id;
+            Role = role;
+            OutputAudio = outputAudio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public string Content { get; }
 
         public string Refusal { get; }
 
@@ -41,7 +46,9 @@ namespace OpenAI.Chat
 
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
-        public ChatOutputAudio Audio { get; }
+        internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
+
+        public string Id { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

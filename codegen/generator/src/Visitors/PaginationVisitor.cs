@@ -12,7 +12,7 @@ using static OpenAILibraryPlugin.Visitors.VisitorHelpers;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor modifies GetRawPagesAsync methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
+/// This visitor modifies GetRawPagesAsync and GetRawPages methods to consider HasMore in addition to LastId when deciding whether to continue pagination.
 /// It also replaces specific parameters with an options type for pagination methods.
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
@@ -37,6 +37,14 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetChatCompletionsAsync",
             ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetChatCompletionMessages",
+            ("ChatCompletionMessageListDatum", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetChatCompletionMessagesAsync",
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
         }
     };
 
@@ -174,10 +182,11 @@ public class PaginationVisitor : ScmLibraryVisitor
     /// <returns>True if the method was handled, false otherwise.</returns>
     private bool TryHandleGetRawPagesAsyncMethod(MethodProvider method)
     {
-        // If the method is GetRawPagesAsync and is internal, we will modify the body statements to add a check for hasMore == false.
+        // If the method is GetRawPagesAsync or GetRawPages and is internal, we will modify the body statements to add a check for hasMore == false.
         // This is to ensure that pagination stops when hasMore is false, in addition to checking LastId.
-        if (method.Signature.Name == "GetRawPagesAsync" && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
+        if ((method.Signature.Name == "GetRawPagesAsync" || method.Signature.Name == "GetRawPages") && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
+            VariableExpression? hasMoreVariable = null;
             var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
             VisitExplodedMethodBodyStatements(
                 statements!,
@@ -198,14 +207,12 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
                                     rightKeyword.Keyword == "null")
                                 {
-                                    // Create "hasMore == null" condition
-                                    var hasMoreNullCheck = new BinaryOperatorExpression(
-                                        "==",
-                                        new MemberExpression(null, "hasMore"),
-                                        Snippet.False);
+                                    // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
+                                    // in the WhileStatement handler below.
+                                    var hasMoreNullCheck = Snippet.Not(hasMoreVariable);
 
-                                    // Return "nextToken == null || hasMore == null"
-                                    return new BinaryOperatorExpression("||", binaryExpr, hasMoreNullCheck);
+                                    // Return "nextToken == null || !hasMore"
+                                    return BoolSnippets.Or(binaryExpr.As<bool>(), hasMoreNullCheck);
                                 }
                             }
                             return expression;
@@ -230,7 +237,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                             {
                                 // Create a new assignment for hasMore
                                 var hasMoreAssignment = new AssignmentExpression(
-                                    new DeclarationExpression(typeof(bool), "hasMore"),
+                                    Snippet.Declare("hasMore", typeof(bool), out hasMoreVariable),
                                     new MemberExpression(memberExpression.Inner, "HasMore"));
 
                                 // Insert the new assignment before the existing one

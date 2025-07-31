@@ -44,7 +44,7 @@ namespace OpenAI.Chat
                 bool hasMore = ((InternalChatCompletionList)result).HasMore;
                 nextToken = ((InternalChatCompletionList)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || hasMore == false)
+                if (nextToken == null || !hasMore)
                 {
                     yield break;
                 }
