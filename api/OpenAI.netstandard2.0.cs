@@ -3,6 +3,8 @@ namespace OpenAI {
         protected OpenAIClient();
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
+        public OpenAIClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public OpenAIClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -57,6 +59,8 @@ namespace OpenAI.Assistants {
         protected AssistantClient();
         public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy);
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -966,6 +970,8 @@ namespace OpenAI.Audio {
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
@@ -1206,6 +1212,8 @@ namespace OpenAI.Batch {
         protected BatchClient();
         public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public BatchClient(ApiKeyCredential credential);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy);
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -1856,6 +1864,8 @@ namespace OpenAI.Containers {
         protected ContainerClient();
         public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy);
         protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public ContainerClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -1983,6 +1993,8 @@ namespace OpenAI.Embeddings {
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
@@ -2038,6 +2050,8 @@ namespace OpenAI.Evals {
         protected EvaluationClient();
         public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy);
         protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public EvaluationClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -2133,6 +2147,8 @@ namespace OpenAI.Files {
         protected OpenAIFileClient();
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -2216,6 +2232,8 @@ namespace OpenAI.FineTuning {
         protected FineTuningClient();
         public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy);
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
@@ -2514,6 +2532,8 @@ namespace OpenAI.Graders {
         protected GraderClient();
         public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public GraderClient(ApiKeyCredential credential);
+        public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public GraderClient(AuthenticationPolicy authenticationPolicy);
         protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public GraderClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -2844,6 +2864,8 @@ namespace OpenAI.Images {
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
@@ -2962,6 +2984,8 @@ namespace OpenAI.Models {
         protected OpenAIModelClient();
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -3000,6 +3024,8 @@ namespace OpenAI.Moderations {
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
@@ -4057,6 +4083,8 @@ namespace OpenAI.Responses {
         protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, ApiKeyCredential credential);
+        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
@@ -4844,6 +4872,8 @@ namespace OpenAI.VectorStores {
         protected VectorStoreClient();
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
         public ClientPipeline Pipeline { get; }

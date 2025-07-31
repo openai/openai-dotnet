@@ -112,13 +112,32 @@ public partial class OpenAIClient
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
+        _keyCredential = credential;
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        _keyCredential = credential;
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
@@ -320,13 +339,6 @@ public partial class OpenAIClient
     {
         Argument.AssertNotNull(credential, nameof(credential));
         return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
-    }
-
-    internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
-    {
-        return CreatePipeline(
-            authenticationPolicy: ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix),
-            options);
     }
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)

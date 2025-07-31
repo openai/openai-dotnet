@@ -2,7 +2,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace OpenAI.Containers;
 
@@ -35,12 +34,29 @@ public partial class ContainerClient
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ContainerClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    public ContainerClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ContainerClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 

@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,12 +47,31 @@ public partial class OpenAIFileClient
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIFileClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _internalUploadsClient = new(Pipeline, options);
     }
