@@ -43,6 +43,7 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         ["FunctionCallResponseItem"] = [_readonlyStatusReplacementInfo],
         ["FunctionCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
         ["MessageResponseItem"] = [_readonlyStatusReplacementInfo],
+        ["ReasoningResponseItem"] = [_readonlyStatusReplacementInfo],
         ["WebSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
     };
 

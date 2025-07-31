@@ -1266,6 +1266,8 @@ namespace OpenAI.Chat {
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
@@ -4110,6 +4112,13 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
+    }
+    public static class OpenAIResponsesModelFactory {
+        public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
+        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, string previousResponseId = null, bool? background = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
+        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
+        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
+        public static ReferenceResponseItem ReferenceResponseItem(string id = null);
     }
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);

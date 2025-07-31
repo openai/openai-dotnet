@@ -6,7 +6,7 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [Experimental("OPENAI001")]
-[CodeGenType("ReasoningItemStatus")]
+[CodeGenType("ReasoningItemResourceStatus")]
 public enum ReasoningStatus
 {
     InProgress,

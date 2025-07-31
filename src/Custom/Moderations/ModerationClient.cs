@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -92,6 +93,7 @@ public partial class ModerationClient
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
+    [Experimental("OPENAI001")]
     public string Model => _model;
 
     /// <summary> Classifies if the text input is potentially harmful across several categories. </summary>
@@ -170,7 +172,7 @@ public partial class ModerationClient
         writer.WriteStringValue(input);
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
     }
 
@@ -189,7 +191,7 @@ public partial class ModerationClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
     }
 }
