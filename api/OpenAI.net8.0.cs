@@ -1458,6 +1458,14 @@ namespace OpenAI.Chat {
         public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult UpdateChatCompletion(string completionId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<ChatCompletion> UpdateChatCompletion(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
         [Experimental("OPENAI001")]

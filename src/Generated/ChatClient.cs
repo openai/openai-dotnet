@@ -90,5 +90,61 @@ namespace OpenAI.Chat
             using PipelineMessage message = CreateCompleteChatRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult GetChatCompletion(string completionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateGetChatCompletionRequest(completionId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> GetChatCompletionAsync(string completionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateGetChatCompletionRequest(completionId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult UpdateChatCompletion(string completionId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateChatCompletionRequest(completionId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateChatCompletionRequest(completionId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult DeleteChatCompletion(string completionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateDeleteChatCompletionRequest(completionId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> DeleteChatCompletionAsync(string completionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+
+            using PipelineMessage message = CreateDeleteChatCompletionRequest(completionId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

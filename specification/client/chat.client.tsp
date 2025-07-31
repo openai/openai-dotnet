@@ -17,3 +17,5 @@ using Azure.ClientGenerator.Core;
 @@visibility(ChatCompletionStreamResponseDelta.tool_calls, Lifecycle.Read);
 
 @@clientName(Chat.createChatCompletion, "CompleteChat");
+
+@@scope(Chat.getChatCompletionMessages, "!csharp");
