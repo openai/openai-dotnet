@@ -4,6 +4,7 @@ using System.Buffers.Binary;
 using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace OpenAI.Embeddings;
 
@@ -107,13 +108,18 @@ public partial class OpenAIEmbedding
     // CUSTOM: Implemented custom logic to transform from BinaryData to ReadOnlyMemory<float>.
     private static ReadOnlyMemory<float> ConvertToVectorOfFloats(BinaryData binaryData)
     {
-        ReadOnlySpan<byte> base64 = binaryData.ToMemory().Span;
+        ReadOnlySpan<byte> bytes = binaryData.ToMemory().Span;
 
         // Remove quotes around base64 string.
-        if (base64.Length < 2 || base64[0] != (byte)'"' || base64[base64.Length - 1] != (byte)'"')
+        if (bytes.Length > 2 && bytes[0] == (byte)'"' && bytes[bytes.Length - 1] == (byte)'"')
         {
-            ThrowInvalidData();
+            return ConvertFromBase64(bytes);
         }
+        return ConvertFromJsonArray(binaryData);
+    }
+
+    private static ReadOnlyMemory<float> ConvertFromBase64(ReadOnlySpan<byte> base64)
+    {
         base64 = base64.Slice(1, base64.Length - 2);
 
         // Decode base64 string to bytes.
@@ -153,7 +159,33 @@ public partial class OpenAIEmbedding
             }
         }
 
-        static void ThrowInvalidData() =>
-            throw new FormatException("The input is not a valid Base64 string of encoded floats.");
+        static void ThrowInvalidData()
+            => throw new FormatException("The input is not a valid Base64 string of encoded floats.");
+    }
+
+    private static ReadOnlyMemory<float> ConvertFromJsonArray(BinaryData jsonArray)
+    {
+        using JsonDocument document = JsonDocument.Parse(jsonArray);
+        JsonElement array = document.RootElement;
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            throw new FormatException("The input is not a valid JSON array");
+        }
+
+        int arrayLength = array.GetArrayLength();
+        float[] vector = new float[arrayLength];
+        int index = 0;
+        try
+        {
+            foreach (JsonElement value in array.EnumerateArray())
+            {
+                vector[index++] = value.GetSingle();
+            }
+            return vector.AsMemory();
+        }
+        catch
+        {
+            throw new FormatException("The input is not a valid JSON array of float values");
+        }
     }
 }
