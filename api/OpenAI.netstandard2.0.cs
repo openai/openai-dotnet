@@ -1266,6 +1266,8 @@ namespace OpenAI.Chat {
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
         public string Model { get; }
         public ClientPipeline Pipeline { get; }

@@ -316,18 +316,26 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
 
+    internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
+    {
+        Argument.AssertNotNull(credential, nameof(credential));
+        return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
+    }
+
     internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
     {
+        return CreatePipeline(
+            authenticationPolicy: ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix),
+            options);
+    }
+
+    internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
         return ClientPipeline.Create(
-            options,
-            perCallPolicies: [
-                CreateAddCustomHeadersPolicy(options),
-            ],
-            perTryPolicies: [
-                ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix)
-            ],
-            beforeTransportPolicies: [
-            ]);
+            options: options,
+            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
+            perTryPolicies: [authenticationPolicy],
+            beforeTransportPolicies: []);
     }
 
     internal static Uri GetEndpoint(OpenAIClientOptions options = null)
