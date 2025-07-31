@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -86,10 +87,11 @@ public partial class ImageClient
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
-    
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
+    [Experimental("OPENAI001")]
     public string Model => _model;
 
     #region GenerateImages
