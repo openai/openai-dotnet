@@ -91,6 +91,7 @@ public partial class AudioClient
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
+    [Experimental("OPENAI001")]
     public string Model => _model;
 
     #region GenerateSpeech

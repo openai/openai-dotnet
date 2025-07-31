@@ -102,9 +102,9 @@ public static partial class OpenAIResponsesModelFactory
             id: id,
             additionalBinaryDataProperties: null,
             encryptedContent: encryptedContent,
+            status: status,
             summaryParts: summaryParts.ToList());
         
-        item.Status = status;
         return item;
     }
 
@@ -129,9 +129,9 @@ public static partial class OpenAIResponsesModelFactory
             id: id,
             additionalBinaryDataProperties: null,
             encryptedContent: encryptedContent,
+            status: status,
             summaryParts: summaryParts);
         
-        item.Status = status;
         return item;
     }
 
