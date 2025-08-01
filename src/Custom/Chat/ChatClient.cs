@@ -1,4 +1,3 @@
-using OpenAI.Evals;
 using OpenAI.Telemetry;
 using System;
 using System.ClientModel;
@@ -20,8 +19,6 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("ChatClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("CompleteChat", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CompleteChatAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("UpdateChatCompletion", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
-[CodeGenSuppress("UpdateChatCompletionAsync", typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 public partial class ChatClient
 {
     private readonly string _model;
@@ -304,6 +301,32 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = GetChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+    }
+
+    // CUSTOM:
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<ChatCompletion> UpdateChatCompletion(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+        Argument.AssertNotNull(metadata, nameof(metadata));
+
+        InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
+        ClientResult result = this.UpdateChatCompletion(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+    }
+
+    // CUSTOM:
+    // - Call FromClientResult.
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
+        Argument.AssertNotNull(metadata, nameof(metadata));
+
+        InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
+        ClientResult result = await this.UpdateChatCompletionAsync(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
     }
 

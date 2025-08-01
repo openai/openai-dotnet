@@ -1543,6 +1543,46 @@ public class ChatTests : SyncAsyncTestBase
         });
     }
 
+    [Test]
+    public async Task UpdateChatCompletionWorks()
+    {
+        ChatClient client = GetTestClient();
+
+        var testMetadataKey = $"test_key_{Guid.NewGuid():N}";
+        var initialOptions = new ChatCompletionOptions
+        {
+            StoredOutputEnabled = true,
+            Metadata = { [testMetadataKey] = "initial_value" }
+        };
+
+        ChatCompletion chatCompletion = await client.CompleteChatAsync(
+            [new UserChatMessage("Say `this is a test`.")],
+            initialOptions);
+
+        await Task.Delay(5000);
+
+        var newMetadata = new Dictionary<string, string>
+        {
+            [testMetadataKey] = "updated_value",
+            ["updated_by"] = "unit_test"
+        };
+
+        ChatCompletion updated = await client.UpdateChatCompletionAsync(chatCompletion.Id, newMetadata);
+
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
+
+        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
+        Assert.That(deletionResult.Deleted, Is.True);
+
+        await Task.Delay(5000);
+
+        Assert.ThrowsAsync<ClientResultException>(async () =>
+        {
+            _ = await client.GetChatCompletionAsync(chatCompletion.Id);
+        });
+    }
+
     private List<string> FileIdsToDelete = [];
     private void Validate<T>(T item)
     {

@@ -1305,6 +1305,10 @@ namespace OpenAI.Chat {
         public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
         public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        public virtual ClientResult UpdateChatCompletion(string completionId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<ChatCompletion> UpdateChatCompletion(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
@@ -1363,18 +1367,32 @@ namespace OpenAI.Chat {
     }
     public class ChatCompletionMessageCollectionOptions : IJsonModel<ChatCompletionMessageCollectionOptions>, IPersistableModel<ChatCompletionMessageCollectionOptions> {
         public string AfterId { get; set; }
-        public ChatCompletionCollectionOrder? Order { get; set; }
+        public ChatCompletionMessageCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
         protected virtual ChatCompletionMessageCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatCompletionMessageCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public readonly partial struct ChatCompletionMessageCollectionOrder : IEquatable<ChatCompletionMessageCollectionOrder> {
+        public ChatCompletionMessageCollectionOrder(string value);
+        public static ChatCompletionMessageCollectionOrder Ascending { get; }
+        public static ChatCompletionMessageCollectionOrder Descending { get; }
+        public readonly bool Equals(ChatCompletionMessageCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
+        public static implicit operator ChatCompletionMessageCollectionOrder(string value);
+        public static bool operator !=(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
+        public override readonly string ToString();
+    }
     public class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>, IPersistableModel<ChatCompletionMessageListDatum> {
-        public IList<ChatMessageAnnotation> Annotations { get; }
-        public ChatOutputAudio Audio { get; }
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
         public string Content { get; }
         public string Id { get; }
+        public ChatOutputAudio OutputAudio { get; }
         public string Refusal { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         protected virtual ChatCompletionMessageListDatum JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);

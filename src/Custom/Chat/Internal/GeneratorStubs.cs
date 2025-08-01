@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+using System.ClientModel;
 
 namespace OpenAI.Chat;
 
@@ -49,6 +49,19 @@ internal partial class InternalChatCompletionRequestMessageContentPartRefusal { 
 
 [CodeGenType("CreateChatCompletionRequestModel")]
 internal readonly partial struct InternalCreateChatCompletionRequestModel { }
+
+[CodeGenType("UpdateChatCompletionRequest")]
+internal partial class InternalUpdateChatCompletionRequest
+{
+    public static implicit operator BinaryContent(InternalUpdateChatCompletionRequest internalUpdateChatCompletionRequest)
+    {
+        if (internalUpdateChatCompletionRequest == null)
+        {
+            return null;
+        }
+        return BinaryContent.Create(internalUpdateChatCompletionRequest, ModelSerializationExtensions.WireOptions);
+    }
+}
 
 [CodeGenType("CreateChatCompletionRequestToolChoice")]
 internal readonly partial struct InternalCreateChatCompletionRequestToolChoice { }
