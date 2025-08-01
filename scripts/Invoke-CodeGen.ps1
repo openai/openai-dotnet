@@ -7,7 +7,7 @@ param(
     [string]$GitHubRepository,
 
     [Parameter(Mandatory = $false, ParameterSetName = 'GitHub')]
-    [string]$CommitHash = "1be53165a901cfdd40d20363f311e5d5fee84f7a",
+    [string]$CommitHash = "706a4fb91ea18b441723f8a57a7e2c67e3061bb6",
 
     [Parameter(Mandatory = $false, ParameterSetName = 'GitHub')]
     [string]$GitHubToken,
