@@ -151,8 +151,9 @@ Register the `ChatClient` as a singleton in your `Program.cs`:
 builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 {
     var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+    var model = "gpt-4o";
 
-    return new ChatClient(apiKey);
+    return new ChatClient(model, apiKey);
 });
 ```
 
