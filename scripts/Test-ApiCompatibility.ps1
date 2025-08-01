@@ -162,8 +162,20 @@ $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
 $projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
 $releasePath = Join-Path $repoRootPath "src\bin\Release"
 
+$experimentalNamespaces = @(
+    "OpenAI.Assistants",
+    "OpenAI.Batch",
+    "OpenAI.Containers",
+    "OpenAI.Evals",
+    "OpenAI.FineTuning",
+    "OpenAI.Graders",
+    "OpenAI.Realtime",
+    "OpenAI.Responses",
+    "OpenAI.VectorStores"
+)
+
 Invoke-APICompat -ProjectPath $projectPath `
     -ReleasePath $releasePath `
     -PackageName "OpenAI" `
-    -BaselineVersion "2.1.0" `
-    -IgnoredNamespaces "OpenAI.Assistants", "OpenAI.Batch", "OpenAI.FineTuning", "OpenAI.Realtime", "OpenAI.VectorStores"
+    -BaselineVersion "2.2.0" `
+    -IgnoredNamespaces $experimentalNamespaces

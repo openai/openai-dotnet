@@ -1,12 +1,80 @@
 # Release History
 
-## 2.3.0-beta.1 (Unreleased)
+## 2.3.0 (2025-08-01)
 
-### Other changes
+### Features Added
 
-- Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses.
-- Removed explicit `net6.0` target framework, as this version reached end-of-life in November, 2024 and is no longer maintained nor supported by Microsoft.  This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
-- The NuGet package now contains signed binaries.
+- OpenAI.Audio:
+  - Added the `Model` property to `AudioClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `AudioClient`.
+- OpenAI.Batch:
+  - Added new methods to `BatchClient`:
+    - `GetBatch` and `GetBatchAsync`
+  - Added constructors that can take a custom `AuthenticationPolicy` to `BatchClient`.
+- OpenAI.Chat:
+  - Added new methods to `ChatClient`:
+    - `UpdateChatCompletion` and `UpdateChatCompletionAsync`
+    - `GetChatCompletions` and `GetChatCompletionsAsync`
+    - `GetChatCompletionMessages` and `GetChatCompletionMessagesAsync`
+  - Added the `Model` property to `ChatClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ChatClient`.
+- OpenAI.Containers:
+  - Introduced the new `ContainersClient` to support the Containers API with protocol methods for the following operations:
+    - `CreateContainer` and `CreateContainerAsync`
+    - `GetContainers` and `GetContainersAsync`
+    - `GetContainer` and `GetContainerAsync`
+    - `DeleteContainer` and `DeleteContainerAsync`
+    - `CreateContainerFile` and `CreateContainerFileAsync`
+    - `GetContainerFiles` and `GetContainerFilesAsync`
+    - `GetContainerFile` and `GetContainerFileAsync`
+    - `GetContainerFileContent` and `GetContainerFileContentAsync`
+    - `DeleteContainerFile` and `DeleteContainerFileAsync`
+- OpenAI.Embeddings:
+  - Added the `Model` property to `EmbeddingClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `EmbeddingClient`.
+- OpenAI.Evals:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `EvaluationClient`.
+- OpenAI.Files:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIFileClient`.
+- OpenAI.FineTuning:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `FineTuningClient`.
+- OpenAI.Graders:
+  - Introduced the new `GraderClient` to support the Graders API with protocol methods for the following operations:
+    - `RunGrader` and `RunGraderAsync`
+    - `ValidateGrader` and `ValidateGraderAsync`
+- OpenAI.Images:
+  - Added the `Model` property to `ImageClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ImageClient`.
+- OpenAI.Models:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIModelClient`.
+- OpenAI.Moderations:
+  - Added the `Model` property to `ModerationClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ModerationClient`.
+- OpenAI.Realtime:
+  - Enabled support for semantic voice activity detection (VAD) via the new `CreateSemanticVoiceActivityTurnDetectionOptions` method of `TurnDetectionOptions`.
+- OpenAI.Responses:
+  - Added a model factory.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIResponseClient`.
+- OpenAI.VectorStores:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `VectorStoreClient`.
+
+### Bug Fixed
+
+- OpenAI.Assistants:
+  - Fixed an issue causing the `ImageDetail` property of `MessageContent` to not be serialized correctly.
+- OpenAI.Audio:
+  - Added a check to all overloads of `TranscribeAudioStreaming` and `TranscribeAudioStreamingAsync` in the `AudioClient` to prevent using the `whisper-1` model, which does not support streaming and simply ignores the `stream` parameter.
+- OpenAI.Realtime:
+  - Improved the disposal logic in `AsyncWebsocketMessageResultEnumerator` to prevent multiple disposals.
+- OpenAI.Responses:
+  - Fixed an issue in code generation that caused the `StreamingResponseTextAnnotationAddedUpdate` class to not be generated correctly as part of the set of possible handles when streaming.
+  - Fixed an issue in code generation that caused the `Status` property of `ReasoningResponseItem` and the `ReasoningStatus` enum to not be generated correctly and lead to incorrect behavior.
+
+### Other Changes
+
+- The `OpenAI` NuGet package now contains signed binaries.
+- Updated the `System.ClientModel` dependency to version 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses.
+- Removed the explicit `net6.0` target framework, as this version reached end-of-life in November 2024 and is no longer maintained nor supported by Microsoft. This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
 
 ## 2.2.0 (2025-07-02)
 
