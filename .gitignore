@@ -178,10 +178,6 @@ artifacts
 # Temporary typespec folders for typespec generation
 TempTypeSpecFiles/
 
-# Artifacts from the generator
-tspCodeModel.json
-Configuration.json
-
 # Base specification files
 specification/base/
 
