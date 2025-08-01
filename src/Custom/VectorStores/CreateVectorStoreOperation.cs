@@ -12,6 +12,13 @@ namespace OpenAI.VectorStores;
 [Experimental("OPENAI001")]
 public partial class CreateVectorStoreOperation : OperationResult
 {
+    protected CreateVectorStoreOperation() : base(default!)
+    {
+        _parentClient = default!;
+        _endpoint = default!;
+        _vectorStoreId = default!;
+    }
+
     internal CreateVectorStoreOperation(
         VectorStoreClient parentClient,
         Uri endpoint,

@@ -11,15 +11,11 @@ using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
+using OpenAI.Tests.Utility;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
 
 [assembly: LevelOfParallelism(8)]
 
@@ -27,27 +23,6 @@ namespace OpenAI.Tests;
 
 internal static class TestHelpers
 {
-    public enum TestScenario
-    {
-        Assistants,
-        Audio_TTS,
-        Audio_Whisper,
-        Audio_Gpt_4o_Mini_Transcribe,
-        Batch,
-        Chat,
-        Embeddings,
-        Files,
-        FineTuning,
-        Images,
-        LegacyCompletions,
-        Models,
-        Moderations,
-        Realtime,
-        Responses,
-        VectorStores,
-        TopLevel,
-    }
-
     public static string GetModelForScenario(TestScenario testScenario) => testScenario switch
     {
         TestScenario.Assistants => null,
@@ -78,7 +53,7 @@ internal static class TestHelpers
     {
         options ??= new();
         ApiKeyCredential credential = GetTestApiKeyCredential();
-        options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+        options.AddPolicy(new DumpPolicy(), PipelinePosition.BeforeTransport);
         string model = overrideModel ?? GetModelForScenario(scenario);
         object clientObject = scenario switch
         {
@@ -109,56 +84,5 @@ internal static class TestHelpers
             _ => throw new NotImplementedException(),
         };
         return (T)clientObject;
-    }
-
-    private static PipelinePolicy GetDumpPolicy()
-    {
-        return new TestPipelinePolicy((message) =>
-        {
-            if (message.Request is not null && message.Response is null)
-            {
-                Console.WriteLine($"--- New request ---");
-                IEnumerable<string> headerPairs = message?.Request?.Headers?.Select(header => $"{header.Key}={(header.Key.ToLower().Contains("auth") ? "***" : header.Value)}");
-                string headers = string.Join(',', headerPairs);
-                Console.WriteLine($"Headers: {headers}");
-                Console.WriteLine($"{message?.Request?.Method} URI: {message?.Request?.Uri}");
-                if (message.Request?.Content != null)
-                {
-                    string contentType = "Unknown Content Type";
-                    if (message.Request.Headers?.TryGetValue("Content-Type", out contentType) == true
-                        && contentType == "application/json")
-                    {
-                        using MemoryStream stream = new();
-                        message.Request.Content.WriteTo(stream, default);
-                        stream.Position = 0;
-                        using StreamReader reader = new(stream);
-                        string requestDump = reader.ReadToEnd();
-                        stream.Position = 0;
-                        requestDump = Regex.Replace(requestDump, @"""data"":[\\w\\r\\n]*""[^""]*""", @"""data"":""...""");
-                        Console.WriteLine(requestDump);
-                    }
-                    else
-                    {
-                        string length = message.Request.Content.TryComputeLength(out long numberLength)
-                            ? $"{numberLength} bytes"
-                            : "unknown length";
-                        Console.WriteLine($"<< Non-JSON content: {contentType} >> {length}");
-                    }
-                }
-            }
-            if (message.Response != null)
-            {
-                if (message.BufferResponse)
-                {
-                    Console.WriteLine("--- Begin response content ---");
-                    Console.WriteLine(message.Response.Content?.ToString());
-                    Console.WriteLine("--- End of response content ---");
-                }
-                else
-                {
-                    Console.WriteLine("--- Response (unbuffered, content not rendered) ---");
-                }
-            }
-        });
     }
 }

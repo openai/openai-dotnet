@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.VectorStores;
@@ -7,6 +8,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +20,7 @@ namespace OpenAI.Tests.VectorStores;
 
 [ClientTestFixture]
 [Category("Assistants")]
-public class VectorStoresTests : SyncAsyncTestBase
+public class VectorStoresTests : RecordedTestBase<OpenAITestEnvironment>
 {
     private readonly List<CreateBatchFileJobOperation> _jobsToCancel = [];
     private readonly List<VectorStoreFileAssociation> _associationsToRemove = [];
@@ -27,10 +29,10 @@ public class VectorStoresTests : SyncAsyncTestBase
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-    private static VectorStoreClient GetTestClient() => GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+    private VectorStoreClient GetTestClient() => CreateProxyFromClient(GetTestClient<VectorStoreClient>(TestScenario.VectorStores), null);
 
     public VectorStoresTests(bool isAsync)
-        : base(isAsync)
+        : base(isAsync, RecordedTestMode.Record)
     {
     }
 
@@ -669,6 +671,10 @@ public class VectorStoresTests : SyncAsyncTestBase
     /// <exception cref="NotImplementedException"> The provided instance type isn't supported. </exception>
     private void Validate<T>(T target)
     {
+        if (target is IProxiedOperationResult result)
+        {
+            target = (T)result.Original;
+        }
         if (target is CreateBatchFileJobOperation job)
         {
             Assert.That(job.BatchId, Is.Not.Null);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Files;
@@ -22,9 +23,9 @@ namespace OpenAI.Tests.Responses;
 [TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponsesTests : SyncAsyncTestBase
+public partial class ResponsesTests : OpenAIRecordedTestBase
 {
-    public ResponsesTests(bool isAsync) : base(isAsync)
+    public ResponsesTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
     {
     }
 
@@ -75,7 +76,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
     [Test]
     public async Task FileSearch()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
                     Travis's favorite food is pizza.
@@ -84,7 +86,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
             FileUploadPurpose.UserData);
         Validate(testFile);
 
-        VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
+
         CreateVectorStoreOperation createStoreOp = await vscClient.CreateVectorStoreAsync(
             waitUntilCompleted: true,
             new VectorStoreCreationOptions()
@@ -530,7 +533,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             BinaryData.FromBytes(File.ReadAllBytes(filePath)),
             "test_favorite_foods.pdf",
             FileUploadPurpose.UserData);
-                Validate(newFileToUse);
+        Validate(newFileToUse);
 
         ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
             [
@@ -904,5 +907,5 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 """),
             false);
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null, OpenAIClientOptions options = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel, options);
 }
