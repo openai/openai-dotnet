@@ -178,9 +178,6 @@ artifacts
 # Temporary typespec folders for typespec generation
 TempTypeSpecFiles/
 
-# Base specification files
-specification/base/
-
 # Generator default TypeSpec output
 codegen/tsp-output/
 codegen/temp/

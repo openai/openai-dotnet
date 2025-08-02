@@ -1,4 +1,4 @@
-[CmdletBinding(DefaultParameterSetName = 'GitHub')]
+[CmdletBinding(DefaultParameterSetName = 'Default')]
 param(
     [Parameter(Mandatory = $true, ParameterSetName = 'GitHub')]
     [string]$GitHubOwner,
@@ -214,42 +214,54 @@ $codegenFolderPath = Join-Path $repoRootPath "codegen"
 
 $scriptStartTime = Get-Date
 
-$shouldDownload = $true
-if (Test-Path $baseSpecificationFolderPath) {
-    Write-Host "Base specification already exists at: $baseSpecificationFolderPath"
-    Write-Host ""
+if ($PSCmdlet.ParameterSetName -eq 'Default') {
+    if (-not (Test-Path $baseSpecificationFolderPath)) {
+        Write-Error "Base specification path does not exist: $baseSpecificationFolderPath"
+        throw "Default specification path not found"
+    }
 
-    if ($Force) {
-        Write-Host "Overwriting existing base specification..."
-        Write-Host ""
-        Remove-Item -Path $baseSpecificationFolderPath -Recurse -Force
-    }
-    else {
-        $shouldDownload = $false
-    }
+    Write-Host "Using existing base specification at: $baseSpecificationFolderPath"
+    Write-Host ""
 }
+else {
+    $shouldDownload = $true
 
-if ($shouldDownload) {
-    Write-Host "Retrieving base specification..."
-    Write-Host ""
+    if (Test-Path $baseSpecificationFolderPath) {
+        Write-Host "Base specification already exists at: $baseSpecificationFolderPath"
+        Write-Host ""
 
-    if ($PSCmdlet.ParameterSetName -eq 'GitHub') {
-        $success = Get-GitHubRepoContent -GitHubOwner $GitHubOwner `
-            -GitHubRepository $GitHubRepository `
-            -CommitHash $CommitHash `
-            -GitHubToken $GitHubToken `
-            -SubdirectoryPath "openai-in-typespec" `
-            -Destination $baseSpecificationFolderPath
-    }
-    elseif ($PSCmdlet.ParameterSetName -eq 'Local') {
-        $success = Get-LocalRepoContent -LocalRepositoryPath $LocalRepositoryPath `
-            -SubdirectoryPath "openai-in-typespec" `
-            -Destination $baseSpecificationFolderPath
+        if ($Force) {
+            Write-Host "Overwriting existing base specification..."
+            Write-Host ""
+            Remove-Item -Path $baseSpecificationFolderPath -Recurse -Force
+        }
+        else {
+            $shouldDownload = $false
+        }
     }
 
-    if (-not $success) {
-        Write-Error "Failed to get repository contents."
-        throw "Repository content retrieval failed."
+    if ($shouldDownload) {
+        Write-Host "Retrieving base specification..."
+        Write-Host ""
+
+        if ($PSCmdlet.ParameterSetName -eq 'GitHub') {
+            $success = Get-GitHubRepoContent -GitHubOwner $GitHubOwner `
+                -GitHubRepository $GitHubRepository `
+                -CommitHash $CommitHash `
+                -GitHubToken $GitHubToken `
+                -SubdirectoryPath "openai-in-typespec" `
+                -Destination $baseSpecificationFolderPath
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'Local') {
+            $success = Get-LocalRepoContent -LocalRepositoryPath $LocalRepositoryPath `
+                -SubdirectoryPath "openai-in-typespec" `
+                -Destination $baseSpecificationFolderPath
+        }
+
+        if (-not $success) {
+            Write-Error "Failed to get repository contents."
+            throw "Repository content retrieval failed."
+        }
     }
 }
 
