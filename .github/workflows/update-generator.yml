@@ -1,0 +1,85 @@
+name: Update TypeSpec Generator Version
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+  repository_dispatch:
+    # Allow triggering from TypeSpec repository on new releases
+    types: [typespec-release]
+
+jobs:
+  update-generator:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+          
+      - name: Check for generator updates
+        id: check-updates
+        run: |
+          # Get current version from both package.json files
+          CURRENT_VERSION_OPENAI=$(node -p "require('./dotnet/.plugin/package.json').dependencies['@typespec/http-client-csharp']" 2>/dev/null || echo "unknown")
+          CURRENT_VERSION_AZURE=$(node -p "require('./dotnet/.plugin.azure/package.json').dependencies['@typespec/http-client-csharp']" 2>/dev/null || echo "unknown")
+          
+          echo "Current OpenAI version: $CURRENT_VERSION_OPENAI"
+          echo "Current Azure version: $CURRENT_VERSION_AZURE"
+          
+          # Ensure both files have the same version
+          if [ "$CURRENT_VERSION_OPENAI" != "$CURRENT_VERSION_AZURE" ]; then
+            echo "Warning: Version mismatch between OpenAI and Azure package.json files"
+            echo "Using OpenAI version as current: $CURRENT_VERSION_OPENAI"
+          fi
+          
+          CURRENT_VERSION="$CURRENT_VERSION_OPENAI"
+          
+          # Get latest version from npm registry
+          LATEST_VERSION=$(npm view @typespec/http-client-csharp version 2>/dev/null || echo "unknown")
+          echo "Latest version from npm: $LATEST_VERSION"
+          
+          # Validate we got valid versions
+          if [ "$CURRENT_VERSION" = "unknown" ] || [ "$LATEST_VERSION" = "unknown" ]; then
+            echo "Error: Failed to get version information"
+            echo "Current: $CURRENT_VERSION, Latest: $LATEST_VERSION"
+            exit 1
+          fi
+          
+          # Compare versions (simple string comparison for alpha versions)
+          if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "Update needed: $CURRENT_VERSION -> $LATEST_VERSION"
+            echo "needs-update=true" >> $GITHUB_OUTPUT
+            echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No update needed - already at latest version: $CURRENT_VERSION"
+            echo "needs-update=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Update generator version and create PR
+        if: steps.check-updates.outputs.needs-update == 'true'
+        run: |
+          LATEST_VERSION="${{ steps.check-updates.outputs.latest-version }}"
+          
+          # Use the PowerShell script to handle the entire update process (following TypeSpec pattern)
+          pwsh ./scripts/Submit-GeneratorUpdatePr.ps1 \
+            -PackageVersion "$LATEST_VERSION" \
+            -AuthToken "${{ secrets.GITHUB_TOKEN }}" \
+            -RepoPath "."
