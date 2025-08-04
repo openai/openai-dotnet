@@ -178,8 +178,11 @@ artifacts
 # Temporary typespec folders for typespec generation
 TempTypeSpecFiles/
 
-# Base specification files
-specification/base/
+# Azure specification files
+specification/base/entrypoints/azure.v1
+specification/base/entrypoints/sdk.dotnet.azure
+specification/base/typespec.azure
+specification/base/typespec.azure.v1
 
 # Generator default TypeSpec output
 codegen/tsp-output/
