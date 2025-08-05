@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseErrorResponse : IJsonModel<InternalResponseErrorResponse>
+    public partial class InternalResponseErrorResponse : IJsonModel<InternalResponseErrorResponse>
     {
         internal InternalResponseErrorResponse()
         {

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalAnnotationFileCitation : IJsonModel<InternalAnnotationFileCitation>
     {
-        internal InternalAnnotationFileCitation() : this(ResponseMessageAnnotationKind.FileCitation, null, null, default)
+        internal InternalAnnotationFileCitation() : this(ResponseMessageAnnotationKind.FileCitation, null, null, default, default)
         {
         }
 
@@ -35,6 +35,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(FileName);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
             {
@@ -66,6 +71,8 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string fileId = default;
             int index = default;
+            string fileName = default;
+
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -78,6 +85,11 @@ namespace OpenAI.Responses
                     fileId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("filename"u8))
+                {
+                    fileName = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("index"u8))
                 {
                     index = prop.Value.GetInt32();
@@ -86,7 +98,7 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalAnnotationFileCitation(kind, additionalBinaryDataProperties, fileId, index);
+            return new InternalAnnotationFileCitation(kind, additionalBinaryDataProperties, fileId, index, fileName);
         }
 
         BinaryData IPersistableModel<InternalAnnotationFileCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
