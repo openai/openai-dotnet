@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
 using OpenAI.Images;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.IO;
@@ -576,12 +577,11 @@ public class ImagesMockTests : SyncAsyncTestBase
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
-        MockPipelineResponse response = new MockPipelineResponse(status);
-        response.SetContent(content);
+        MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
 
         return new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
     }
 }

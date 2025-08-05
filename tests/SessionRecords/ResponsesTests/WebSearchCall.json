@@ -1,0 +1,174 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What was a positive news story from today?"
+              }
+            ]
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682e3074a857609-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4680",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:20:37 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "5655",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "5663",
+        "X-Request-ID": "req_32c27430111c609f903dee986e87c785"
+      },
+      "ResponseBody": {
+        "id": "Sanitized",
+        "object": "response",
+        "created_at": 1754025631,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_688c4e9ffd6c819ba542ba0727285325059e1d173e0d8f8b",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "What was a positive news story from today?"
+            }
+          },
+          {
+            "id": "msg_688c4ea1f778819bbfa740e07d7cba7c059e1d173e0d8f8b",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 603,
+                    "start_index": 460,
+                    "title": "7 Positive Environmental News Stories That Give Us Hope In 2025 — Home Planet By Grove",
+                    "url": "https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1117,
+                    "start_index": 974,
+                    "title": "7 Positive Environmental News Stories That Give Us Hope In 2025 — Home Planet By Grove",
+                    "url": "https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1621,
+                    "start_index": 1478,
+                    "title": "7 Positive Environmental News Stories That Give Us Hope In 2025 — Home Planet By Grove",
+                    "url": "https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 2075,
+                    "start_index": 1932,
+                    "title": "7 Positive Environmental News Stories That Give Us Hope In 2025 — Home Planet By Grove",
+                    "url": "https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "As of August 1, 2025, several positive news stories have emerged:\n\n1. **U.S. Introduces New Limits on 'Forever Chemicals' in Drinking Water**: The Environmental Protection Agency (EPA) has set its first-ever national legally enforceable limits on per- and polyfluoroalkyl substances (PFAS) in drinking water. This regulation aims to reduce PFAS exposure for approximately 100 million people by requiring public water systems to decrease contamination by 2029. ([homeplanet.grove.co](https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai))\n\n2. **EU's Nature Restoration Law**: The European Union has enacted the Nature Restoration Law, a comprehensive initiative to restore damaged ecosystems and boost biodiversity. The law targets restoring 20% of the EU's land and sea areas by 2030 and all degraded ecosystems by 2050, addressing the decline of Europe's habitats, with over 80% reported in poor condition. ([homeplanet.grove.co](https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai))\n\n3. **Record Sea Turtle Nests on Anna Maria Island**: Conservation efforts on Anna Maria Island, Florida, have led to a record 546 sea turtle nests, surpassing a 42-year-old record. Additionally, the return of the least tern, a threatened bird species, for the first time in 15 years highlights the positive impact of long-term conservation on local wildlife. ([homeplanet.grove.co](https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai))\n\n4. **UK Closes Its Last Coal-Fired Power Plant**: The United Kingdom has closed its last coal-fired power plant, marking a significant step in its transition to cleaner energy sources. This move is both monumental and symbolic, as the UK was the birthplace of coal power and now leads in moving away from it. ([homeplanet.grove.co](https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai))\n\nThese stories reflect significant strides in environmental conservation and sustainable practices, offering hope for a healthier planet. "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 312,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 501,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 813
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Audio;
-using OpenAI.Tests.Utility;
 using System;
 using System.Text;
 using System.Threading.Tasks;

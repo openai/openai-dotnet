@@ -1,12 +1,13 @@
 using NUnit.Framework;
 using OpenAI.Moderations;
-using OpenAI.Tests.Utility;
 using System.ClientModel;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 
 namespace OpenAI.Tests.Moderations;
 
@@ -24,12 +25,12 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
     [Test]
     public async Task ClassifySingleInputSmokeTest()
     {
-        BinaryData mockRequest = BinaryData.FromString($$"""
-        {
-            "input": "I am killing all my houseplants!"
-        }
-        """);
-        BinaryData mockResponse = BinaryData.FromString($$"""
+        //BinaryData mockRequest = BinaryData.FromString($$"""
+        //{
+        //    "input": "I am killing all my houseplants!"
+        //}
+        //"""); TODO
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent($$"""
         {
             "results": [
                 {   
@@ -43,8 +44,7 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
                 }
             ]
         }
-        """);
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        """));
 
         OpenAIClientOptions options = new()
         {
@@ -73,7 +73,8 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
             ]
         }
         """);
-        BinaryData mockResponse = BinaryData.FromString("""
+
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent("""
         {
             "results": [
                 {   
@@ -111,9 +112,7 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
                 }
             ]
         }
-        """);
-
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        """));
 
         OpenAIClientOptions options = new()
         {

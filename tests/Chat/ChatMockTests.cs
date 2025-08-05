@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -217,11 +218,10 @@ public class ChatMockTests : SyncAsyncTestBase
         }
     }
 
+    [AsyncOnly]
     [Test]
     public void CompleteChatStreamingAsyncRespectsTheCancellationToken()
     {
-        AssertAsyncOnly();
-
         ChatClient client = new ChatClient("model", s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
@@ -233,11 +233,10 @@ public class ChatMockTests : SyncAsyncTestBase
         Assert.That(async () => await enumerator.MoveNextAsync(), Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [SyncOnly]
     [Test]
     public void CompleteChatStreamingRespectsTheCancellationToken()
     {
-        AssertSyncOnly();
-
         ChatClient client = new ChatClient("model", s_fakeCredential);
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
@@ -273,12 +272,12 @@ public class ChatMockTests : SyncAsyncTestBase
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
-        MockPipelineResponse response = new MockPipelineResponse(status);
-        response.SetContent(content);
+        MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
+ 
 
         return new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
     }
 }
