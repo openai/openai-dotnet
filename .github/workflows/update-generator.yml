@@ -37,7 +37,7 @@ jobs:
         id: check-updates
         run: |
           # Get current version from the OpenAI package.json file
-          CURRENT_VERSION=$(node -p "require('./package.json').dependencies['@typespec/http-client-csharp']" 2>/dev/null || echo "unknown")
+          CURRENT_VERSION=$(node -p "require('.codegen/package.json').dependencies['@typespec/http-client-csharp']" 2>/dev/null || echo "unknown")
           
           echo "Current OpenAI version: $CURRENT_VERSION"
           

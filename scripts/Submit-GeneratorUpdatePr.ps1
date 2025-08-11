@@ -66,7 +66,7 @@ try {
     Push-Location $RepoPath
 
     # Get current version from package.json files
-    $openAiPackageJsonPath = "package.json"
+    $openAiPackageJsonPath = "codegen/package.json"
     
     if (-not (Test-Path $openAiPackageJsonPath)) {
         throw "OpenAI package.json not found at: $openAiPackageJsonPath"
@@ -153,7 +153,7 @@ try {
     
     # Add and commit changes
     Write-Log "Adding and committing changes"
-    git add package.json
+    git add codegen/package.json
     git add codegen/generator/src/OpenAI.Library.Plugin.csproj
     git add package-lock.json
     git add ./ # Add any generated code changes
