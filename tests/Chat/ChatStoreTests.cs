@@ -694,12 +694,15 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         ChatClient client = GetTestClient();
 
         // Create completion with multiple messages (conversation with tool calls)
+        // and one with multiple content parts
         List<ChatMessage> conversationMessages = new()
         {
             new UserChatMessage("What's the weather like today? Use the weather tool."),
             new UserChatMessage("Name something I could do outside in this weather."),
             new UserChatMessage("Name something else I could do outside in this weather."),
-            new UserChatMessage("Name something yet another thing I could do outside in this weather.")
+            new UserChatMessage([
+                ChatMessageContentPart.CreateTextPart("Whose logo is this?: "),
+                ChatMessageContentPart.CreateImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png"))]),
         };
 
         // Add function definition to trigger more back-and-forth
@@ -741,15 +744,26 @@ public class ChatStoreToolTests : SyncAsyncTestBase
                 PageSizeLimit = 2
             };
 
+            bool foundContentParts = false;
+
             await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, options))
             {
                 totalMessages++;
                 lastMessageId = message.Id;
+
+                // Check if the message contains any content parts
+                if (message.ContentParts.Count > 0)
+                {
+                    foundContentParts = true;
+                    Assert.That(message.ContentParts[0].Text, Is.EqualTo("Whose logo is this?: "));
+                    Assert.That(message.ContentParts[1].ImageBytes, Is.Not.Null);
+                }
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
 
                 if (totalMessages >= 4) break; // Get a few pages worth
             }
 
+            Assert.That(foundContentParts, Is.True);
             Assert.That(totalMessages, Is.GreaterThan(3));
             Assert.That(lastMessageId, Is.Not.Null);
         });

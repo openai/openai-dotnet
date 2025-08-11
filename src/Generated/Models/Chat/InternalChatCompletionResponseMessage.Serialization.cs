@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
     {
-        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, null)
+        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, null, default, null, null, null)
         {
         }
 
@@ -29,6 +29,16 @@ namespace OpenAI.Chat
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{format}' format.");
+            }
+            if (Optional.IsCollectionDefined(ContentParts) && _additionalBinaryDataProperties?.ContainsKey("content_parts") != true)
+            {
+                writer.WritePropertyName("content_parts"u8);
+                writer.WriteStartArray();
+                foreach (ChatMessageContentPart item in ContentParts)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
@@ -132,6 +142,7 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            IList<ChatMessageContentPart> contentParts = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
@@ -142,6 +153,20 @@ namespace OpenAI.Chat
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("content_parts"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+                    }
+                    contentParts = array;
+                    continue;
+                }
                 if (prop.NameEquals("refusal"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -213,6 +238,7 @@ namespace OpenAI.Chat
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionResponseMessage(
+                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),

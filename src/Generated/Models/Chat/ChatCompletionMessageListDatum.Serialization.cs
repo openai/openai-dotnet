@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, null, default, null, null)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, null, null, default, null, null)
         {
         }
 
@@ -41,6 +41,16 @@ namespace OpenAI.Chat
                 {
                     writer.WriteNull("content"u8);
                 }
+            }
+            if (Optional.IsCollectionDefined(ContentParts) && _additionalBinaryDataProperties?.ContainsKey("content_parts") != true)
+            {
+                writer.WritePropertyName("content_parts"u8);
+                writer.WriteStartArray();
+                foreach (ChatMessageContentPart item in ContentParts)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
@@ -138,6 +148,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string content = default;
+            IList<ChatMessageContentPart> contentParts = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
@@ -156,6 +167,20 @@ namespace OpenAI.Chat
                         continue;
                     }
                     content = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("content_parts"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+                    }
+                    contentParts = array;
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -230,6 +255,7 @@ namespace OpenAI.Chat
             }
             return new ChatCompletionMessageListDatum(
                 content,
+                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),

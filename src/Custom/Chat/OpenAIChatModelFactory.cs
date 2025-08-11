@@ -69,7 +69,9 @@ public static partial class OpenAIChatModelFactory
         refusalTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
         messageAnnotations ??= new List<ChatMessageAnnotation>();
 
-        InternalChatCompletionResponseMessage message = new(
+        InternalChatCompletionResponseMessage message =
+        new(
+            null,
             refusal,
             toolCalls.ToList(),
             messageAnnotations.ToList(),

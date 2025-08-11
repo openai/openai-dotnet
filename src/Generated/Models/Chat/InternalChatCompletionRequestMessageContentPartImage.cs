@@ -22,6 +22,6 @@ namespace OpenAI.Chat
             ImageUrl = imageUrl;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartImageImageUrl ImageUrl { get; }
+        internal InternalChatCompletionRequestMessageContentPartImageImageUrl ImageUrl { get; set; }
     }
 }
