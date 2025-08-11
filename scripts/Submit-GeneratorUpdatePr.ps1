@@ -134,7 +134,7 @@ try {
     Write-Log "Regenerating OpenAI SDK code"
     Push-Location "."
     try {
-        pwsh .scripts/Invoke-CodeGen.ps1
+        pwsh scripts/Invoke-CodeGen.ps1
     } catch {
         Write-Warning-Log "OpenAI code generation failed: $_"
     }
