@@ -29,8 +29,16 @@ public partial class ReasoningResponseItem
     {
     }
 
-    // CUSTOM: Provide convenience for typical single-item or text-concatenation scenario
-    public string GetSummaryText()
+	// CUSTOM: Facilitate typical single-item summary text input model use
+    // <GP> Added contructor to provide encrypted reasoning
+	public ReasoningResponseItem(string id, IReadOnlyList<ReasoningSummaryPart> summaryParts, string encryptedContent)
+		: this(kind: InternalItemType.Reasoning, id: id, additionalBinaryDataProperties: null, encryptedContent: encryptedContent, status: null, summaryParts: summaryParts)
+	{
+	}
+	// </GP> Added contructor to provide encrypted reasoning
+
+	// CUSTOM: Provide convenience for typical single-item or text-concatenation scenario
+	public string GetSummaryText()
         => string.Join(
             separator: string.Empty,
             SummaryParts.Select(part => (part as ReasoningSummaryTextPart)?.Text ?? string.Empty));
