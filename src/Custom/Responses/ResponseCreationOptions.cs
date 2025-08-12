@@ -15,13 +15,15 @@ namespace OpenAI.Responses;
 public partial class ResponseCreationOptions
 {
     // CUSTOM: Temporarily made internal.
+    // <GP> Made public 
     [CodeGenMember("Include")]
-    internal IList<InternalIncludable> Include { get; set; }
+    public IList<InternalIncludable> Include { get; set; }
+	// </GP>
 
-    // CUSTOM:
-    // - Made internal. This value comes from a parameter on the client method.
-    // - Added setter.
-    [CodeGenMember("Model")]
+	// CUSTOM:
+	// - Made internal. This value comes from a parameter on the client method.
+	// - Added setter.
+	[CodeGenMember("Model")]
     internal string Model { get; set; }
 
     // CUSTOM:

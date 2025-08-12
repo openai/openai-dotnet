@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPApprovalResponseItemResource : ResponseItem
+	public partial class InternalMCPApprovalResponseItemResource : ResponseItem
     {
         internal InternalMCPApprovalResponseItemResource(string id, string approvalRequestId, bool approve) : base(InternalItemType.McpApprovalResponse, id)
         {

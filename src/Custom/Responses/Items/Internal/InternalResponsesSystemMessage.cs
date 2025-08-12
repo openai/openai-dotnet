@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace OpenAI.Responses;
 
 [CodeGenType("ResponsesSystemMessageItemResource")]
-internal partial class InternalResponsesSystemMessage
+public partial class InternalResponsesSystemMessage
 {
     // CUSTOM: Use generalized content type.
     [CodeGenMember("Content")]

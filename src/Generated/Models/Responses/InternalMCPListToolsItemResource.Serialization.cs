@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPListToolsItemResource : IJsonModel<InternalMCPListToolsItemResource>
+	public partial class InternalMCPListToolsItemResource : IJsonModel<InternalMCPListToolsItemResource>
     {
-        internal InternalMCPListToolsItemResource() : this(InternalItemType.McpListTools, null, null, null, null, null)
+		public InternalMCPListToolsItemResource() : this(InternalItemType.McpListTools, null, null, null, null, null)
         {
         }
 
