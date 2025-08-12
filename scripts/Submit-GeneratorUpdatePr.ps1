@@ -114,8 +114,9 @@ try {
         Write-Warning-Log "OpenAI csproj not found at: $openAiCsprojPath"
     }
     
-    # Install dependencies from root (using workspaces)
-    Write-Log "Installing dependencies from root (using npm workspaces)"
+    # Install dependencies from codegen directory (using workspaces)
+    Write-Log "Installing dependencies from codegen directory (using npm workspaces)"
+    Push-Location "codegen"
     npm install
     if ($LASTEXITCODE -ne 0) {
         throw "npm install failed"
@@ -123,7 +124,6 @@ try {
     
     # Build OpenAI plugin
     Write-Log "Building OpenAI plugin"
-    Push-Location "."
     npm run clean && npm run build
     if ($LASTEXITCODE -ne 0) {
         Write-Warning-Log "OpenAI plugin build failed, but continuing..."
