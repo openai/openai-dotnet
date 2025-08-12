@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalIncludable : IEquatable<InternalIncludable>
+    public readonly partial struct InternalIncludable : IEquatable<InternalIncludable>
     {
         private readonly string _value;
         private const string FileSearchCallResultsValue = "file_search_call.results";
@@ -24,17 +24,19 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        internal static InternalIncludable FileSearchCallResults { get; } = new InternalIncludable(FileSearchCallResultsValue);
+		// <GP> made public 
+		public static InternalIncludable FileSearchCallResults { get; } = new InternalIncludable(FileSearchCallResultsValue);
 
-        internal static InternalIncludable MessageInputImageImageUrl { get; } = new InternalIncludable(MessageInputImageImageUrlValue);
+		public static InternalIncludable MessageInputImageImageUrl { get; } = new InternalIncludable(MessageInputImageImageUrlValue);
 
-        internal static InternalIncludable ComputerCallOutputOutputImageUrl { get; } = new InternalIncludable(ComputerCallOutputOutputImageUrlValue);
+		public static InternalIncludable ComputerCallOutputOutputImageUrl { get; } = new InternalIncludable(ComputerCallOutputOutputImageUrlValue);
 
-        internal static InternalIncludable ReasoningEncryptedContent { get; } = new InternalIncludable(ReasoningEncryptedContentValue);
+		public static InternalIncludable ReasoningEncryptedContent { get; } = new InternalIncludable(ReasoningEncryptedContentValue);
 
-        internal static InternalIncludable CodeInterpreterCallOutputs { get; } = new InternalIncludable(CodeInterpreterCallOutputsValue);
+		public static InternalIncludable CodeInterpreterCallOutputs { get; } = new InternalIncludable(CodeInterpreterCallOutputsValue);
+		// </GP>
 
-        public static bool operator ==(InternalIncludable left, InternalIncludable right) => left.Equals(right);
+		public static bool operator ==(InternalIncludable left, InternalIncludable right) => left.Equals(right);
 
         public static bool operator !=(InternalIncludable left, InternalIncludable right) => !left.Equals(right);
 

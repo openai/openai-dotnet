@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCodeInterpreterToolCallItemResource : ResponseItem
+    public partial class InternalCodeInterpreterToolCallItemResource : ResponseItem
     {
         internal InternalCodeInterpreterToolCallItemResource(string id, InternalCodeInterpreterToolCallItemResourceStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall, id)
         {

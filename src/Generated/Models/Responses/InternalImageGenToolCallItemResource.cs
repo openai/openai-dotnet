@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolCallItemResource : ResponseItem
+	public partial class InternalImageGenToolCallItemResource : ResponseItem
     {
         internal InternalImageGenToolCallItemResource(string id, InternalImageGenToolCallItemResourceStatus status, string result) : base(InternalItemType.ImageGenerationCall, id)
         {

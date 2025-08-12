@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPListToolsItemResource : ResponseItem
+	public partial class InternalMCPListToolsItemResource : ResponseItem
     {
         internal InternalMCPListToolsItemResource(string id, string serverLabel, IEnumerable<InternalMCPListToolsTool> tools) : base(InternalItemType.McpListTools, id)
         {

@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownResponsesMessageItemResource : IJsonModel<MessageResponseItem>
+	public partial class InternalUnknownResponsesMessageItemResource : IJsonModel<MessageResponseItem>
     {
-        internal InternalUnknownResponsesMessageItemResource() : this(default, null, null, default, default)
+		public InternalUnknownResponsesMessageItemResource() : this(default, null, null, default, default)
         {
         }
 

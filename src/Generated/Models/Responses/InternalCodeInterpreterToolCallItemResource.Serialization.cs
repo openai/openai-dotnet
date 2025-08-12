@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCodeInterpreterToolCallItemResource : IJsonModel<InternalCodeInterpreterToolCallItemResource>
+	public partial class InternalCodeInterpreterToolCallItemResource : IJsonModel<InternalCodeInterpreterToolCallItemResource>
     {
-        internal InternalCodeInterpreterToolCallItemResource() : this(InternalItemType.CodeInterpreterCall, null, null, default, null, null, null)
+		public InternalCodeInterpreterToolCallItemResource() : this(InternalItemType.CodeInterpreterCall, null, null, default, null, null, null)
         {
         }
 

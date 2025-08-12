@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalLocalShellToolCallOutputItemResource : ResponseItem
+	public partial class InternalLocalShellToolCallOutputItemResource : ResponseItem
     {
         internal InternalLocalShellToolCallOutputItemResource(string id, InternalLocalShellToolCallOutputItemResourceStatus status, string output) : base(InternalItemType.LocalShellCallOutput, id)
         {

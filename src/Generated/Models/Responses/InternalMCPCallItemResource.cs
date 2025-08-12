@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPCallItemResource : ResponseItem
+	public partial class InternalMCPCallItemResource : ResponseItem
     {
         internal InternalMCPCallItemResource(string id, string serverLabel, string name, string arguments) : base(InternalItemType.McpCall, id)
         {

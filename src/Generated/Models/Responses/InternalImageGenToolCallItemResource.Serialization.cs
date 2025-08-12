@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolCallItemResource : IJsonModel<InternalImageGenToolCallItemResource>
+	public partial class InternalImageGenToolCallItemResource : IJsonModel<InternalImageGenToolCallItemResource>
     {
-        internal InternalImageGenToolCallItemResource() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
+		public InternalImageGenToolCallItemResource() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
         {
         }
 
