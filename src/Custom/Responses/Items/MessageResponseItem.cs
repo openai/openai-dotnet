@@ -24,7 +24,7 @@ public partial class MessageResponseItem
 
     // CUSTOM: Recombined content from derived types.
     public IList<ResponseContentPart> Content
-        => (this as InternalResponsesUserMessage)?.InternalContent
+        => (this as ResponsesUserMessage)?.Content
         ?? (this as InternalResponsesDeveloperMessage)?.InternalContent
         ?? (this as InternalResponsesSystemMessage)?.InternalContent
         ?? (this as InternalResponsesAssistantMessage)?.InternalContent

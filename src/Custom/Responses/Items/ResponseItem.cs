@@ -17,13 +17,13 @@ public partial class ResponseItem
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
-        return new InternalResponsesUserMessage(contentParts);
+        return new ResponsesUserMessage(contentParts);
     }
 
     public static MessageResponseItem CreateUserMessageItem(string inputTextContent)
     {
         Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
-        return new InternalResponsesUserMessage(
+        return new ResponsesUserMessage(
             internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
     }
 

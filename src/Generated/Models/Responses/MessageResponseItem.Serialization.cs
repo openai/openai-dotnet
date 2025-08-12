@@ -67,7 +67,7 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "user":
-                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, options);
+                        return ResponsesUserMessage.DeserializeResponsesUserMessage(element, options);
                     case "system":
                         return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, options);
                     case "developer":
