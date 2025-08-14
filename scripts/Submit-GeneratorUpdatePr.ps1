@@ -57,6 +57,40 @@ function Write-Error-Log {
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): ERROR: $Message" -ForegroundColor Red
 }
 
+# Function to get package dependencies using npm view
+function Get-PackageDependencies {
+    param([string]$PackageName, [string]$PackageVersion)
+    
+    Write-Log "Fetching dependencies for $PackageName version $PackageVersion"
+    
+    try {
+        # Properly format the package specification for npm view
+        $packageSpec = "$PackageName@$PackageVersion"
+        
+        # Run npm view command and parse JSON output
+        $npmViewOutput = & npm view $packageSpec devDependencies --json 2>&1
+        
+        # Check if there was an error
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning-Log "Failed to get dependencies for $PackageName version $PackageVersion. Error: $npmViewOutput"
+            return $null
+        }
+        
+        # Parse the JSON output
+        $dependencies = $npmViewOutput | ConvertFrom-Json
+        
+        return $dependencies
+    }
+    catch {
+        Write-Warning-Log "Error fetching dependencies for $PackageName version $PackageVersion $_"
+        return $null
+    }
+}
+
+$InjectedDependencies = @(
+    '@azure-tools/typespec-client-generator-core'
+)
+
 Write-Log "Starting TypeSpec generator update process"
 Write-Log "Target version: $PackageVersion"
 Write-Log "Repository: $RepoOwner/$RepoName"
@@ -96,6 +130,34 @@ try {
     
     # Update OpenAI package.json
     Write-Log "Updating OpenAI package.json"
+    # Fetch dependencies of the http-client-csharp package
+    $httpClientDependencies = Get-PackageDependencies -PackageName '@typespec/http-client-csharp' -PackageVersion $PackageVersion
+    
+    # Update the injected dependencies in the package.json
+    if ($httpClientDependencies -ne $null) {
+        Write-Log "Updating injected dependencies in OpenAI package.json"
+        
+        foreach ($dependency in $InjectedDependencies) {
+            if ($httpClientDependencies.PSObject.Properties.Name -contains $dependency) {
+                $dependencyVersion = $httpClientDependencies.$dependency
+                Write-Log "Updating $dependency to version $dependencyVersion"
+                
+                # Update the dependency in the package.json
+                if ($openAiPackageJson.dependencies.PSObject.Properties.Name -contains $dependency) {
+                    $openAiPackageJson.dependencies.$dependency = $dependencyVersion
+                    Write-Log "Updated $dependency to version $dependencyVersion"
+                } else {
+                    Write-Warning-Log "Dependency $dependency not found in package.json"
+                }
+            } else {
+                Write-Warning-Log "Dependency $dependency not found in @typespec/http-client-csharp version $PackageVersion"
+            }
+        }
+    } else {
+        Write-Warning-Log "Could not fetch dependencies for @typespec/http-client-csharp version $PackageVersion"
+    }
+    
+
     $openAiPackageJson.dependencies.'@typespec/http-client-csharp' = $PackageVersion
     $openAiPackageJson | ConvertTo-Json -Depth 10 | Set-Content -Path $openAiPackageJsonPath
 
@@ -114,9 +176,14 @@ try {
         Write-Warning-Log "OpenAI csproj not found at: $openAiCsprojPath"
     }
     
-    # Install dependencies from codegen directory (using workspaces)
-    Write-Log "Installing dependencies from codegen directory (using npm workspaces)"
-    Push-Location "codegen"
+    # Delete previous package-lock.json
+    Write-Log "Deleting previous package-lock.json"
+    if (Test-Path "package-lock.json") {
+        Remove-Item -Path "package-lock.json" -Force
+    }
+
+    # Install dependencies from root directory (using workspaces)
+    Write-Log "Installing dependencies from root directory"
     npm install
     if ($LASTEXITCODE -ne 0) {
         throw "npm install failed"
@@ -124,6 +191,7 @@ try {
     
     # Build OpenAI plugin
     Write-Log "Building OpenAI plugin"
+    Push-Location "codegen"
     npm run clean && npm run build
     if ($LASTEXITCODE -ne 0) {
         Write-Warning-Log "OpenAI plugin build failed, but continuing..."
