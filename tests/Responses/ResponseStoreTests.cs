@@ -100,9 +100,9 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             lastId = item.Id;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
 
-            if(item is ResponsesUserMessage userMessage)
+            if (item is MessageResponseItem ri)
             {
-                hasMultipleContentParts = userMessage.InternalContent.Count > 1;
+                hasMultipleContentParts = ri.Content.Count > 1;
             }
 
             if (totalCount >= 3) break; // Read more than a page to validate pagination
@@ -110,6 +110,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(totalCount, Is.GreaterThanOrEqualTo(2));
         Assert.That(lastId, Is.Not.Null);
+        Assert.IsTrue(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
     [Test]

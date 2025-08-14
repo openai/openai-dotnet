@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponsesUserMessage : IJsonModel<ResponsesUserMessage>
+    internal partial class InternalResponsesUserMessage : IJsonModel<InternalResponsesUserMessage>
     {
-        internal ResponsesUserMessage() : this(default, null, null, default, default, null)
+        internal InternalResponsesUserMessage() : this(default, null, null, default, default, null)
         {
         }
 
-        void IJsonModel<ResponsesUserMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalResponsesUserMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,17 +25,17 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponsesUserMessage)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalResponsesUserMessage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
-                foreach (ResponseContentPart item in Content)
+                foreach (ResponseContentPart item in InternalContent)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -43,20 +43,20 @@ namespace OpenAI.Responses
             }
         }
 
-        ResponsesUserMessage IJsonModel<ResponsesUserMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponsesUserMessage)JsonModelCreateCore(ref reader, options);
+        InternalResponsesUserMessage IJsonModel<InternalResponsesUserMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesUserMessage)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponsesUserMessage)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalResponsesUserMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponsesUserMessage(document.RootElement, options);
+            return DeserializeInternalResponsesUserMessage(document.RootElement, options);
         }
 
-        internal static ResponsesUserMessage DeserializeResponsesUserMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponsesUserMessage DeserializeInternalResponsesUserMessage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -67,7 +67,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalResponsesMessageRole internalRole = default;
             MessageStatus? status = default;
-            IList<ResponseContentPart> content = default;
+            IList<ResponseContentPart> internalContent = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,52 +97,52 @@ namespace OpenAI.Responses
                     {
                         array.Add(ResponseContentPart.DeserializeResponseContentPart(item, options));
                     }
-                    content = array;
+                    internalContent = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponsesUserMessage(
+            return new InternalResponsesUserMessage(
                 kind,
                 id,
                 additionalBinaryDataProperties,
                 internalRole,
                 status,
-                content);
+                internalContent);
         }
 
-        BinaryData IPersistableModel<ResponsesUserMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<InternalResponsesUserMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ResponsesUserMessage)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalResponsesUserMessage)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ResponsesUserMessage IPersistableModel<ResponsesUserMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponsesUserMessage)PersistableModelCreateCore(data, options);
+        InternalResponsesUserMessage IPersistableModel<InternalResponsesUserMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponsesUserMessage)PersistableModelCreateCore(data, options);
 
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeResponsesUserMessage(document.RootElement, options);
+                        return DeserializeInternalResponsesUserMessage(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ResponsesUserMessage)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalResponsesUserMessage)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ResponsesUserMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalResponsesUserMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }
