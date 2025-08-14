@@ -29,10 +29,10 @@
     ],
     "dependencies": {
         "@open-ai/plugin": "file:",
-        "@azure-tools/typespec-client-generator-core": "~0.57.0",
         "@typespec/http-client-csharp": "1.0.0-alpha.20250626.7"
     },
     "devDependencies": {
+        "@azure-tools/typespec-client-generator-core": "~0.59.0",
         "@types/node": "^22.8.1",
         "@vitest/coverage-v8": "^1.4.0",
         "@vitest/ui": "^1.4.0",
