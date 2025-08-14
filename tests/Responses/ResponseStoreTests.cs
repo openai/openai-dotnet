@@ -102,7 +102,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
             if (item is MessageResponseItem ri)
             {
-                hasMultipleContentParts = ri.Content.Count > 1;
+                hasMultipleContentParts |= ri.Content.Count > 1;
             }
 
             if (totalCount >= 3) break; // Read more than a page to validate pagination
