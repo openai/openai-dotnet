@@ -45,6 +45,14 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetChatCompletionMessagesAsync",
             ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetBatches",
+            ("BatchJob", "BatchCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetBatchesAsync",
+            ("BatchJob", "BatchCollectionOptions", _chatParamsToReplace)
         }
     };
 

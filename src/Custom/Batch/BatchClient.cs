@@ -24,8 +24,6 @@ namespace OpenAI.Batch;
 [CodeGenSuppress("CancelBatchAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatch", typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CancelBatchAsync", typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetBatches", typeof(string), typeof(int?), typeof(CancellationToken))]
-[CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?), typeof(CancellationToken))]
 public partial class BatchClient
 {
     // CUSTOM: Added as a convenience.
