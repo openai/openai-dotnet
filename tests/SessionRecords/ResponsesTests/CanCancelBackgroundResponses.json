@@ -1,0 +1,159 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "142",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "background": true,
+        "model": "gpt-4.1-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, model!"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682e08dcb8bdefd-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "608",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:18:50 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "215",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "223",
+        "X-Request-ID": "req_754a2be7612cad81036add4ed468e010"
+      },
+      "ResponseBody": {
+        "id": "Sanitized",
+        "object": "response",
+        "created_at": 1754025530,
+        "status": "queued",
+        "background": true,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "output": [],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": null,
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_688c4e3a95e8819986c7210de3b1a64b0ff55cb4dd8c7e29/cancel",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "0",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682e0924f80defd-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "611",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:18:51 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "353",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "359",
+        "X-Request-ID": "req_e909bfb8c0137e8d95fa386564e5d972"
+      },
+      "ResponseBody": {
+        "id": "Sanitized",
+        "object": "response",
+        "created_at": 1754025530,
+        "status": "cancelled",
+        "background": true,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "output": [],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": null,
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}
