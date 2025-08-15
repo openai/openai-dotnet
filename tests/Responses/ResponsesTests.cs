@@ -905,4 +905,55 @@ public partial class ResponsesTests : SyncAsyncTestBase
             false);
 
     private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+
+    [Test]
+    public void ResponsePromptSerializationWorks()
+    {
+        ResponsePrompt prompt = new ResponsePrompt
+        {
+            Id = "test-prompt-id",
+            Version = "v1.0"
+        };
+        prompt.Variables["location"] = "San Francisco";
+        prompt.Variables["unit"] = "celsius";
+
+        string json = BinaryData.FromObjectAsJson(prompt).ToString();
+        JsonDocument document = JsonDocument.Parse(json);
+
+        Assert.IsTrue(document.RootElement.TryGetProperty("id", out JsonElement idElement));
+        Assert.AreEqual("test-prompt-id", idElement.GetString());
+
+        Assert.IsTrue(document.RootElement.TryGetProperty("version", out JsonElement versionElement));
+        Assert.AreEqual("v1.0", versionElement.GetString());
+
+        Assert.IsTrue(document.RootElement.TryGetProperty("variables", out JsonElement variablesElement));
+        Assert.IsTrue(variablesElement.TryGetProperty("location", out JsonElement locationElement));
+        Assert.AreEqual("San Francisco", locationElement.GetString());
+
+        Assert.IsTrue(variablesElement.TryGetProperty("unit", out JsonElement unitElement));
+        Assert.AreEqual("celsius", unitElement.GetString());
+    }
+
+    [Test]
+    public void ResponsePromptDeserializationWorks()
+    {
+        string json = """
+        {
+            "id": "test-prompt-id",
+            "version": "v1.0",
+            "variables": {
+                "location": "San Francisco",
+                "unit": "celsius"
+            }
+        }
+        """;
+
+        ResponsePrompt prompt = BinaryData.FromString(json).ToObjectFromJson<ResponsePrompt>();
+
+        Assert.AreEqual("test-prompt-id", prompt.Id);
+        Assert.AreEqual("v1.0", prompt.Version);
+        Assert.AreEqual(2, prompt.Variables.Count);
+        Assert.AreEqual("San Francisco", prompt.Variables["location"].ToString());
+        Assert.AreEqual("celsius", prompt.Variables["unit"].ToString());
+    }
 }
