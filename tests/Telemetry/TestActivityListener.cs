@@ -38,28 +38,28 @@ internal class TestActivityListener : IDisposable
     public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         Assert.NotNull(activity);
-        Assert.AreEqual($"chat {requestModel}", activity.DisplayName);
-        Assert.AreEqual("chat", activity.GetTagItem("gen_ai.operation.name"));
-        Assert.AreEqual("openai", activity.GetTagItem("gen_ai.system"));
-        Assert.AreEqual(requestModel, activity.GetTagItem("gen_ai.request.model"));
+        Assert.That(activity.DisplayName, Is.EqualTo($"chat {requestModel}"));
+        Assert.That(activity.GetTagItem("gen_ai.operation.name"), Is.EqualTo("chat"));
+        Assert.That(activity.GetTagItem("gen_ai.system"), Is.EqualTo("openai"));
+        Assert.That(activity.GetTagItem("gen_ai.request.model"), Is.EqualTo(requestModel));
 
-        Assert.AreEqual(host, activity.GetTagItem("server.address"));
-        Assert.AreEqual(port, activity.GetTagItem("server.port"));
+        Assert.That(activity.GetTagItem("server.address"), Is.EqualTo(host));
+        Assert.That(activity.GetTagItem("server.port"), Is.EqualTo(port));
 
         if (response != null)
         {
-            Assert.AreEqual(response.Model, activity.GetTagItem("gen_ai.response.model"));
-            Assert.AreEqual(response.Id, activity.GetTagItem("gen_ai.response.id"));
-            Assert.AreEqual(new[] { response.FinishReason.ToString().ToLower() }, activity.GetTagItem("gen_ai.response.finish_reasons"));
-            Assert.AreEqual(response.Usage.OutputTokenCount, activity.GetTagItem("gen_ai.usage.output_tokens"));
-            Assert.AreEqual(response.Usage.InputTokenCount, activity.GetTagItem("gen_ai.usage.input_tokens"));
-            Assert.AreEqual(ActivityStatusCode.Unset, activity.Status);
+            Assert.That(activity.GetTagItem("gen_ai.response.model"), Is.EqualTo(response.Model));
+            Assert.That(activity.GetTagItem("gen_ai.response.id"), Is.EqualTo(response.Id));
+            Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.EqualTo(new[] { response.FinishReason.ToString().ToLower() }));
+            Assert.That(activity.GetTagItem("gen_ai.usage.output_tokens"), Is.EqualTo(response.Usage.OutputTokenCount));
+            Assert.That(activity.GetTagItem("gen_ai.usage.input_tokens"), Is.EqualTo(response.Usage.InputTokenCount));
+            Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Unset));
             Assert.Null(activity.StatusDescription);
             Assert.Null(activity.GetTagItem("error.type"));
         }
         else
         {
-            Assert.AreEqual(ActivityStatusCode.Error, activity.Status);
+            Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Error));
             Assert.NotNull(activity.GetTagItem("error.type"));
         }
     }
@@ -67,6 +67,6 @@ internal class TestActivityListener : IDisposable
     public static void ValidateChatActivity(Activity activity, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         ValidateChatActivity(activity, (ChatCompletion)null, requestModel, host, port);
-        Assert.AreEqual(ex.GetType().FullName, activity.GetTagItem("error.type"));
+        Assert.That(activity.GetTagItem("error.type"), Is.EqualTo(ex.GetType().FullName));
     }
 }

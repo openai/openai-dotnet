@@ -62,15 +62,15 @@ internal class TestMeterListener : IDisposable
 
     public static void ValidateChatMetricTags(TestMeasurement measurement, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
-        Assert.AreEqual("openai", measurement.tags["gen_ai.system"]);
-        Assert.AreEqual("chat", measurement.tags["gen_ai.operation.name"]);
-        Assert.AreEqual(host, measurement.tags["server.address"]);
-        Assert.AreEqual(requestModel, measurement.tags["gen_ai.request.model"]);
-        Assert.AreEqual(port, measurement.tags["server.port"]);
+        Assert.That(measurement.tags["gen_ai.system"], Is.EqualTo("openai"));
+        Assert.That(measurement.tags["gen_ai.operation.name"], Is.EqualTo("chat"));
+        Assert.That(measurement.tags["server.address"], Is.EqualTo(host));
+        Assert.That(measurement.tags["gen_ai.request.model"], Is.EqualTo(requestModel));
+        Assert.That(measurement.tags["server.port"], Is.EqualTo(port));
 
         if (response != null)
         {
-            Assert.AreEqual(response.Model, measurement.tags["gen_ai.response.model"]);
+            Assert.That(measurement.tags["gen_ai.response.model"], Is.EqualTo(response.Model));
             Assert.False(measurement.tags.ContainsKey("error.type"));
         }
     }
@@ -79,6 +79,6 @@ internal class TestMeterListener : IDisposable
     {
         ValidateChatMetricTags(measurement, (ChatCompletion)null, requestModel, host, port);
         Assert.True(measurement.tags.ContainsKey("error.type"));
-        Assert.AreEqual(ex.GetType().FullName, measurement.tags["error.type"]);
+        Assert.That(measurement.tags["error.type"], Is.EqualTo(ex.GetType().FullName));
     }
 }

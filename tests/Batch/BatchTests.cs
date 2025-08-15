@@ -233,13 +233,13 @@ public class BatchTests : SyncAsyncTestBase
         // We don't test wait for completion live because this is documented to
         // sometimes take 24 hours.
 
-        Assert.AreEqual(batchOperation.HasCompleted, rehydratedOperation.HasCompleted);
+        Assert.That(rehydratedOperation.HasCompleted, Is.EqualTo(batchOperation.HasCompleted));
 
         using JsonDocument originalOperationJson = JsonDocument.Parse(batchOperation.GetRawResponse().Content);
         using JsonDocument rehydratedOperationJson = JsonDocument.Parse(rehydratedOperation.GetRawResponse().Content);
 
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("id").GetString(), rehydratedOperationJson.RootElement.GetProperty("id").GetString());
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("created_at").GetInt64(), rehydratedOperationJson.RootElement.GetProperty("created_at").GetInt64());
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("status").GetString(), rehydratedOperationJson.RootElement.GetProperty("status").GetString());
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("id").GetString(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("id").GetString()));
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("created_at").GetInt64(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("created_at").GetInt64()));
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("status").GetString(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("status").GetString()));
     }
 }

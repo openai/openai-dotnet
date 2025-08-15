@@ -672,7 +672,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             {
                 messageCount++;
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.AreEqual("Basic messages test: Say 'Hello, this is a test message.'", message.Content);
+                Assert.That(message.Content, Is.EqualTo("Basic messages test: Say 'Hello, this is a test message.'"));
 
                 if (messageCount >= 5) break; // Prevent infinite loop
             }

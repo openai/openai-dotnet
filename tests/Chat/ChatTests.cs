@@ -903,15 +903,15 @@ public class ChatTests : SyncAsyncTestBase
             ? await client.CompleteChatAsync(messages)
             : client.CompleteChat(messages);
 
-        Assert.AreEqual(1, activityListener.Activities.Count);
+        Assert.That(activityListener.Activities.Count, Is.EqualTo(1));
         TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value);
 
         List<TestMeasurement> durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
-        Assert.AreEqual(1, durations.Count);
+        Assert.That(durations.Count, Is.EqualTo(1));
         ValidateChatMetricTags(durations.Single(), result.Value);
 
         List<TestMeasurement> usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
-        Assert.AreEqual(2, usages.Count);
+        Assert.That(usages.Count, Is.EqualTo(2));
 
         Assert.True(usages[0].tags.TryGetValue("gen_ai.token.type", out var type));
         Assert.IsInstanceOf<string>(type);
@@ -919,8 +919,8 @@ public class ChatTests : SyncAsyncTestBase
         TestMeasurement input = (type is "input") ? usages[0] : usages[1];
         TestMeasurement output = (type is "input") ? usages[1] : usages[0];
 
-        Assert.AreEqual(result.Value.Usage.InputTokenCount, input.value);
-        Assert.AreEqual(result.Value.Usage.OutputTokenCount, output.value);
+        Assert.That(input.value, Is.EqualTo(result.Value.Usage.InputTokenCount));
+        Assert.That(output.value, Is.EqualTo(result.Value.Usage.OutputTokenCount));
     }
 
     [Test]
