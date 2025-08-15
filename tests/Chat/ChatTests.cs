@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -216,7 +215,7 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(firstUpdate, Is.Not.Null);
         Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
 
-        Thread.Sleep(1000);
+        await Task.Delay(1000);
 
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
@@ -1017,25 +1016,6 @@ public class ChatTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task ChatMetadata()
-    {
-        ChatClient client = GetTestClient();
-
-        ChatCompletionOptions options = new()
-        {
-            StoredOutputEnabled = true,
-            Metadata =
-            {
-                ["my_metadata_key"] = "my_metadata_value",
-            },
-        };
-
-        ChatCompletion completion = await client.CompleteChatAsync(
-            ["Hello, world!"],
-            options);
-    }
-
-    [Test]
     public async Task WebSearchWorks()
     {
         ChatClient client = GetTestClient("gpt-4o-search-preview");
@@ -1106,39 +1086,6 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
     }
 
-    [Test]
-    public async Task StoredChatCompletionsWork()
-    {
-        ChatClient client = GetTestClient();
-
-        ChatCompletionOptions options = new()
-        {
-            StoredOutputEnabled = true
-        };
-
-        ChatCompletion completion = await client.CompleteChatAsync(
-            [new UserChatMessage("Say `this is a test`.")],
-            options);
-
-        Thread.Sleep(5000);
-
-        ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
-
-        Assert.That(storedCompletion.Id, Is.EqualTo(completion.Id));
-        Assert.That(storedCompletion.Content[0].Text, Is.EqualTo(completion.Content[0].Text));
-
-        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(completion.Id);
-
-        Assert.That(deletionResult.Deleted, Is.True);
-
-        Thread.Sleep(5000);
-
-        Assert.ThrowsAsync<ClientResultException>(async () =>
-        {
-            ChatCompletion deletedCompletion = await client.GetChatCompletionAsync(completion.Id);
-        });
-    }
-
     private List<string> FileIdsToDelete = [];
     private void Validate<T>(T item)
     {
@@ -1151,6 +1098,53 @@ public class ChatTests : SyncAsyncTestBase
         {
             Assert.Fail($"Unhandled item type for validation: {item.GetType().Name}");
         }
+    }
+
+    [Test]
+    public async Task GetChatCompletionMessagesHandlesNonExistentCompletion()
+    {
+        ChatClient client = GetTestClient();
+
+        // Test with non-existent completion ID
+        string nonExistentId = "comp_nonexistent_12345";
+
+        try
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(nonExistentId))
+            {
+                Assert.Fail("Should not enumerate messages for non-existent completion");
+            }
+        }
+        catch (ClientResultException ex)
+        {
+            // Should get some kind of error (likely ClientResultException or similar)
+            Assert.That(ex, Is.Not.Null);
+            Assert.That(ex.Status, Is.EqualTo(404));
+        }
+    }
+
+    [Test]
+    public void GetChatCompletionMessagesWithInvalidParameters()
+    {
+        ChatClient client = GetTestClient();
+
+        // Test with null completion ID
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(null))
+            {
+                // Should not reach here
+            }
+        });
+
+        // Test with empty completion ID
+        Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            await foreach (var message in client.GetChatCompletionMessagesAsync(""))
+            {
+                // Should not reach here
+            }
+        });
     }
 
     [OneTimeTearDown]

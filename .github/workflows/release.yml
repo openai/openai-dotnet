@@ -55,7 +55,7 @@ jobs:
       - name: Run Live Tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
+          --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=StoredChat&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Conversation&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}
@@ -69,9 +69,57 @@ jobs:
           name: build-artifacts
           path: ${{ github.workspace }}/artifacts
 
+  sign:
+    needs: build
+    runs-on: windows-latest # Code signing must run on a Windows agent for Authenticode signing (dll/exe)
+    environment: release # Needed for OIDC subject for releases triggered on release being created.
+    permissions:
+      id-token: write # Required for requesting the JWT
+      
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: ${{ github.workspace }}/build-artifacts
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.x'
+  
+    - name: Install Sign CLI tool
+      run: dotnet tool install --tool-path . --prerelease sign
+    
+    - name: 'Az CLI login'
+      uses: azure/login@v2
+      with:
+        client-id: 80125de0-6f58-4f16-bd05-b2fa621d36a5
+        tenant-id: 16076fdc-fcc1-4a15-b1ca-32c9a255900e
+        allow-no-subscriptions: true
+
+    - name: Sign artifacts
+      shell: pwsh
+      run: >
+        ./sign code azure-key-vault
+        **/*.nupkg
+        --base-directory "${{ github.workspace }}/build-artifacts/packages"
+        --publisher-name "OpenAI"
+        --description "OpenAI library for .NET"
+        --description-url "https://github.com/openai/openai-dotnet"
+        --azure-credential-type "azure-cli"
+        --azure-key-vault-url "https://sc-openaisdk.vault.azure.net/"
+        --azure-key-vault-certificate "OpenAISDKSCCert"
+    
+    - name: Upload signed artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-signed
+        path: ${{ github.workspace }}/build-artifacts
+        
   deploy:
     name: Publish Package
-    needs: build
+    needs: sign
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -79,6 +127,9 @@ jobs:
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-signed
+          path: ${{ github.workspace }}/build-artifacts
 
       - name: Upload release asset
         if: github.event_name == 'release'
@@ -92,6 +143,13 @@ jobs:
         run: |
           gh release edit "${{ github.event.release.tag_name }}" \
             --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
 
       - name: NuGet authenticate
         run: dotnet nuget add source

@@ -3,6 +3,10 @@ namespace OpenAI {
         protected OpenAIClient();
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public OpenAIClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public OpenAIClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -12,11 +16,15 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual BatchClient GetBatchClient();
         public virtual ChatClient GetChatClient(string model);
+        [Experimental("OPENAI001")]
+        public virtual ContainerClient GetContainerClient();
         public virtual EmbeddingClient GetEmbeddingClient(string model);
         [Experimental("OPENAI001")]
         public virtual EvaluationClient GetEvaluationClient();
         [Experimental("OPENAI001")]
         public virtual FineTuningClient GetFineTuningClient();
+        [Experimental("OPENAI001")]
+        public virtual GraderClient GetGraderClient();
         public virtual ImageClient GetImageClient(string model);
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
@@ -65,6 +73,8 @@ namespace OpenAI.Assistants {
         protected AssistantClient();
         public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy);
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -1051,7 +1061,13 @@ namespace OpenAI.Audio {
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -1330,6 +1346,8 @@ namespace OpenAI.Batch {
         protected BatchClient();
         public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public BatchClient(ApiKeyCredential credential);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy);
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -1398,7 +1416,13 @@ namespace OpenAI.Chat {
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null);
@@ -1426,6 +1450,30 @@ namespace OpenAI.Chat {
         public virtual Task<ClientResult> GetChatCompletionAsync(string completionId, RequestOptions options);
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessagesAsync(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult UpdateChatCompletion(string completionId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<ChatCompletion> UpdateChatCompletion(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
         [Experimental("OPENAI001")]
@@ -1456,12 +1504,77 @@ namespace OpenAI.Chat {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
+    public class ChatCompletionCollectionOptions : IJsonModel<ChatCompletionCollectionOptions>, IPersistableModel<ChatCompletionCollectionOptions> {
+        public string AfterId { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; set; }
+        public ChatCompletionCollectionOrder? Order { get; set; }
+        public int? PageSizeLimit { get; set; }
+        protected virtual ChatCompletionCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ChatCompletionCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder> {
+        public ChatCompletionCollectionOrder(string value);
+        public static ChatCompletionCollectionOrder Ascending { get; }
+        public static ChatCompletionCollectionOrder Descending { get; }
+        public readonly bool Equals(ChatCompletionCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
+        public static implicit operator ChatCompletionCollectionOrder(string value);
+        public static bool operator !=(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class ChatCompletionDeletionResult : IJsonModel<ChatCompletionDeletionResult>, IPersistableModel<ChatCompletionDeletionResult> {
         public string ChatCompletionId { get; }
         public bool Deleted { get; }
         protected virtual ChatCompletionDeletionResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatCompletionDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ChatCompletionMessageCollectionOptions : IJsonModel<ChatCompletionMessageCollectionOptions>, IPersistableModel<ChatCompletionMessageCollectionOptions> {
+        public string AfterId { get; set; }
+        public ChatCompletionMessageCollectionOrder? Order { get; set; }
+        public int? PageSizeLimit { get; set; }
+        protected virtual ChatCompletionMessageCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ChatCompletionMessageCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ChatCompletionMessageCollectionOrder : IEquatable<ChatCompletionMessageCollectionOrder> {
+        public ChatCompletionMessageCollectionOrder(string value);
+        public static ChatCompletionMessageCollectionOrder Ascending { get; }
+        public static ChatCompletionMessageCollectionOrder Descending { get; }
+        public readonly bool Equals(ChatCompletionMessageCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
+        public static implicit operator ChatCompletionMessageCollectionOrder(string value);
+        public static bool operator !=(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>, IPersistableModel<ChatCompletionMessageListDatum> {
+        public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
+        public string Content { get; }
+        public string Id { get; }
+        public ChatOutputAudio OutputAudio { get; }
+        public string Refusal { get; }
+        public IReadOnlyList<ChatToolCall> ToolCalls { get; }
+        protected virtual ChatCompletionMessageListDatum JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ChatCompletionMessageListDatum PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>, IPersistableModel<ChatCompletionOptions> {
@@ -2094,13 +2207,158 @@ namespace OpenAI.Chat {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
+namespace OpenAI.Containers {
+    [Experimental("OPENAI001")]
+    public class ContainerClient {
+        protected ContainerClient();
+        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy);
+        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public ContainerClient(string apiKey);
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteContainer(string containerId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options = null);
+        public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainer(string containerId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null);
+        public virtual ClientResult GetContainerFiles(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainerFilesAsync(string containerId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult GetContainers(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetContainersAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerFileListResource : IJsonModel<ContainerFileListResource>, IPersistableModel<ContainerFileListResource> {
+        public IList<ContainerFileResource> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        public string Object { get; }
+        protected virtual ContainerFileListResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerFileListResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
+        public int Bytes { get; }
+        public string ContainerId { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string Id { get; }
+        public string Object { get; }
+        public string Path { get; }
+        public string Source { get; }
+        protected virtual ContainerFileResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerListResource : IJsonModel<ContainerListResource>, IPersistableModel<ContainerListResource> {
+        public IList<ContainerResource> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        public string Object { get; }
+        protected virtual ContainerListResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerListResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
+        public DateTimeOffset CreatedAt { get; }
+        public ContainerResourceExpiresAfter ExpiresAfter { get; }
+        public string Id { get; }
+        public string Name { get; }
+        public string Object { get; }
+        public string Status { get; }
+        protected virtual ContainerResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ContainerResourceExpiresAfter : IJsonModel<ContainerResourceExpiresAfter>, IPersistableModel<ContainerResourceExpiresAfter> {
+        public string Anchor { get; }
+        public int? Minutes { get; }
+        protected virtual ContainerResourceExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ContainerResourceExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerBody : IJsonModel<CreateContainerBody>, IPersistableModel<CreateContainerBody> {
+        public CreateContainerBodyExpiresAfter ExpiresAfter { get; }
+        public IList<string> FileIds { get; }
+        public string Name { get; }
+        protected virtual CreateContainerBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerBodyExpiresAfter : IJsonModel<CreateContainerBodyExpiresAfter>, IPersistableModel<CreateContainerBodyExpiresAfter> {
+        public string Anchor { get; }
+        public int Minutes { get; }
+        protected virtual CreateContainerBodyExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerBodyExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>, IPersistableModel<CreateContainerFileBody> {
+        public BinaryData File { get; }
+        public string FileId { get; }
+        protected virtual CreateContainerFileBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CreateContainerFileBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DeleteContainerFileResponse : IJsonModel<DeleteContainerFileResponse>, IPersistableModel<DeleteContainerFileResponse> {
+        public bool Deleted { get; }
+        public string Id { get; }
+        public string Object { get; }
+        protected virtual DeleteContainerFileResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DeleteContainerFileResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DeleteContainerResponse : IJsonModel<DeleteContainerResponse>, IPersistableModel<DeleteContainerResponse> {
+        public bool Deleted { get; }
+        public string Id { get; }
+        public string Object { get; }
+        protected virtual DeleteContainerResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DeleteContainerResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+}
 namespace OpenAI.Embeddings {
     public class EmbeddingClient {
         protected EmbeddingClient();
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbedding>> GenerateEmbeddingAsync(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2171,6 +2429,8 @@ namespace OpenAI.Evals {
         protected EvaluationClient();
         public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy);
         protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public EvaluationClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -2278,6 +2538,10 @@ namespace OpenAI.Files {
         protected OpenAIFileClient();
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -2377,6 +2641,8 @@ namespace OpenAI.FineTuning {
         protected FineTuningClient();
         public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy);
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
@@ -2671,6 +2937,250 @@ namespace OpenAI.FineTuning {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
+namespace OpenAI.Graders {
+    [Experimental("OPENAI001")]
+    public class FineTuneReinforcementHyperparameters : IJsonModel<FineTuneReinforcementHyperparameters>, IPersistableModel<FineTuneReinforcementHyperparameters> {
+        public BinaryData BatchSize { get; set; }
+        public BinaryData ComputeMultiplier { get; set; }
+        public BinaryData EvalInterval { get; set; }
+        public BinaryData EvalSamples { get; set; }
+        public BinaryData LearningRateMultiplier { get; set; }
+        public BinaryData NEpochs { get; set; }
+        protected virtual FineTuneReinforcementHyperparameters JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual FineTuneReinforcementHyperparameters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    [PersistableModelProxy(typeof(UnknownGrader))]
+    public class Grader : IJsonModel<Grader>, IPersistableModel<Grader> {
+        protected virtual Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderClient {
+        protected GraderClient();
+        public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public GraderClient(ApiKeyCredential credential);
+        public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public GraderClient(AuthenticationPolicy authenticationPolicy);
+        protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public GraderClient(string apiKey);
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult RunGrader(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> RunGraderAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> ValidateGraderAsync(BinaryContent content, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderLabelModel : Grader, IJsonModel<GraderLabelModel>, IPersistableModel<GraderLabelModel> {
+        public IList<string> Labels { get; }
+        public string Model { get; set; }
+        public string Name { get; set; }
+        public IList<string> PassingLabels { get; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderMulti : Grader, IJsonModel<GraderMulti>, IPersistableModel<GraderMulti> {
+        public GraderMulti(string name, BinaryData graders, string calculateOutput);
+        public string CalculateOutput { get; set; }
+        public BinaryData Graders { get; set; }
+        public string Name { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderPython : Grader, IJsonModel<GraderPython>, IPersistableModel<GraderPython> {
+        public GraderPython(string name, string source);
+        public string ImageTag { get; set; }
+        public string Name { get; set; }
+        public string Source { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderScoreModel : Grader, IJsonModel<GraderScoreModel>, IPersistableModel<GraderScoreModel> {
+        public string Model { get; set; }
+        public string Name { get; set; }
+        public IList<float> Range { get; }
+        public BinaryData SamplingParams { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>, IPersistableModel<GraderStringCheck> {
+        public GraderStringCheck(string name, string input, string reference, GraderStringCheckOperation operation);
+        public string Input { get; set; }
+        public string Name { get; set; }
+        public GraderStringCheckOperation Operation { get; set; }
+        public string Reference { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderStringCheckOperation : IEquatable<GraderStringCheckOperation> {
+        public GraderStringCheckOperation(string value);
+        public static GraderStringCheckOperation Eq { get; }
+        public static GraderStringCheckOperation Ilike { get; }
+        public static GraderStringCheckOperation Like { get; }
+        public static GraderStringCheckOperation Ne { get; }
+        public readonly bool Equals(GraderStringCheckOperation other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderStringCheckOperation left, GraderStringCheckOperation right);
+        public static implicit operator GraderStringCheckOperation(string value);
+        public static bool operator !=(GraderStringCheckOperation left, GraderStringCheckOperation right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>, IPersistableModel<GraderTextSimilarity> {
+        public GraderTextSimilarity(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric);
+        public GraderTextSimilarityEvaluationMetric EvaluationMetric { get; set; }
+        public string Input { get; set; }
+        public string Name { get; set; }
+        public string Reference { get; set; }
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderTextSimilarityEvaluationMetric : IEquatable<GraderTextSimilarityEvaluationMetric> {
+        public GraderTextSimilarityEvaluationMetric(string value);
+        public static GraderTextSimilarityEvaluationMetric Bleu { get; }
+        public static GraderTextSimilarityEvaluationMetric FuzzyMatch { get; }
+        public static GraderTextSimilarityEvaluationMetric Gleu { get; }
+        public static GraderTextSimilarityEvaluationMetric Meteor { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge1 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge2 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge3 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge4 { get; }
+        public static GraderTextSimilarityEvaluationMetric Rouge5 { get; }
+        public static GraderTextSimilarityEvaluationMetric RougeL { get; }
+        public readonly bool Equals(GraderTextSimilarityEvaluationMetric other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
+        public static implicit operator GraderTextSimilarityEvaluationMetric(string value);
+        public static bool operator !=(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GraderType : IEquatable<GraderType> {
+        public GraderType(string value);
+        public static GraderType LabelModel { get; }
+        public static GraderType Multi { get; }
+        public static GraderType Python { get; }
+        public static GraderType ScoreModel { get; }
+        public static GraderType StringCheck { get; }
+        public static GraderType TextSimilarity { get; }
+        public readonly bool Equals(GraderType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GraderType left, GraderType right);
+        public static implicit operator GraderType(string value);
+        public static bool operator !=(GraderType left, GraderType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderRequest : IJsonModel<RunGraderRequest>, IPersistableModel<RunGraderRequest> {
+        public BinaryData Grader { get; }
+        public BinaryData Item { get; }
+        public string ModelSample { get; }
+        protected virtual RunGraderRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponse : IJsonModel<RunGraderResponse>, IPersistableModel<RunGraderResponse> {
+        public RunGraderResponseMetadata Metadata { get; }
+        public BinaryData ModelGraderTokenUsagePerModel { get; }
+        public float Reward { get; }
+        public BinaryData SubRewards { get; }
+        protected virtual RunGraderResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponseMetadata : IJsonModel<RunGraderResponseMetadata>, IPersistableModel<RunGraderResponseMetadata> {
+        public RunGraderResponseMetadataErrors Errors { get; }
+        public float ExecutionTime { get; }
+        public string Kind { get; }
+        public string Name { get; }
+        public string SampledModelName { get; }
+        public BinaryData Scores { get; }
+        public int? TokenUsage { get; }
+        protected virtual RunGraderResponseMetadata JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponseMetadata PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class RunGraderResponseMetadataErrors : IJsonModel<RunGraderResponseMetadataErrors>, IPersistableModel<RunGraderResponseMetadataErrors> {
+        public bool FormulaParseError { get; }
+        public bool InvalidVariableError { get; }
+        public bool ModelGraderParseError { get; }
+        public bool ModelGraderRefusalError { get; }
+        public bool ModelGraderServerError { get; }
+        public string ModelGraderServerErrorDetails { get; }
+        public bool OtherError { get; }
+        public bool PythonGraderRuntimeError { get; }
+        public string PythonGraderRuntimeErrorDetails { get; }
+        public bool PythonGraderServerError { get; }
+        public string PythonGraderServerErrorType { get; }
+        public bool SampleParseError { get; }
+        public bool TruncatedObservationError { get; }
+        public bool UnresponsiveRewardError { get; }
+        protected virtual RunGraderResponseMetadataErrors JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RunGraderResponseMetadataErrors PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class UnknownGrader : Grader, IJsonModel<Grader>, IPersistableModel<Grader> {
+        protected override Grader JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ValidateGraderRequest : IJsonModel<ValidateGraderRequest>, IPersistableModel<ValidateGraderRequest> {
+        public BinaryData Grader { get; }
+        protected virtual ValidateGraderRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ValidateGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class ValidateGraderResponse : IJsonModel<ValidateGraderResponse>, IPersistableModel<ValidateGraderResponse> {
+        public BinaryData Grader { get; }
+        protected virtual ValidateGraderResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ValidateGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+}
 namespace OpenAI.Images {
     public class GeneratedImage : IJsonModel<GeneratedImage>, IPersistableModel<GeneratedImage> {
         public BinaryData ImageBytes { get; }
@@ -2820,7 +3330,13 @@ namespace OpenAI.Images {
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageAsync(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2964,6 +3480,10 @@ namespace OpenAI.Models {
         protected OpenAIModelClient();
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         public ClientPipeline Pipeline { get; }
@@ -3006,7 +3526,13 @@ namespace OpenAI.Moderations {
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
@@ -4156,6 +4682,8 @@ namespace OpenAI.Responses {
         protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, ApiKeyCredential credential);
+        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
@@ -4186,6 +4714,14 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options = null);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
+    }
+    [Experimental("OPENAI001")]
+    public static class OpenAIResponsesModelFactory {
+        public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
+        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, string previousResponseId = null, bool? background = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
+        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
+        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
+        public static ReferenceResponseItem ReferenceResponseItem(string id = null);
     }
     [Experimental("OPENAI001")]
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
@@ -5014,6 +5550,8 @@ namespace OpenAI.VectorStores {
         protected VectorStoreClient();
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
         public ClientPipeline Pipeline { get; }

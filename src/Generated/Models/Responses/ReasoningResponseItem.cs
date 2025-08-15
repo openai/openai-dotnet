@@ -13,15 +13,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningResponseItem : ResponseItem
     {
-        internal ReasoningResponseItem(string id, IEnumerable<ReasoningSummaryPart> summaryParts) : base(InternalItemType.Reasoning, id)
+        internal ReasoningResponseItem(string id, ReasoningStatus? status, IEnumerable<ReasoningSummaryPart> summaryParts) : base(InternalItemType.Reasoning, id)
         {
+            Status = status;
             SummaryParts = summaryParts.ToList();
         }
 
-        internal ReasoningResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string encryptedContent, IReadOnlyList<ReasoningSummaryPart> summaryParts) : base(kind, id, additionalBinaryDataProperties)
+        internal ReasoningResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string encryptedContent, ReasoningStatus? status, IReadOnlyList<ReasoningSummaryPart> summaryParts) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             EncryptedContent = encryptedContent;
+            Status = status;
             SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
         }
 

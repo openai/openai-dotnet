@@ -2,10 +2,12 @@ using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
+using OpenAI.Containers;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
 using OpenAI.FineTuning;
+using OpenAI.Graders;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
@@ -110,13 +112,32 @@ public partial class OpenAIClient
     /// <param name="credential"> The API key to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
+        _keyCredential = credential;
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        _keyCredential = credential;
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
@@ -298,18 +319,35 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
 
-    internal static ClientPipeline CreatePipeline(ApiKeyCredential credential, OpenAIClientOptions options)
+    /// <summary>
+    /// Gets a new instance of <see cref="GraderClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual GraderClient GetGraderClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="ContainerClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
+
+    internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
+    {
+        Argument.AssertNotNull(credential, nameof(credential));
+        return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
+    }
+
+    internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
         return ClientPipeline.Create(
-            options,
-            perCallPolicies: [
-                CreateAddCustomHeadersPolicy(options),
-            ],
-            perTryPolicies: [
-                ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix)
-            ],
-            beforeTransportPolicies: [
-            ]);
+            options: options,
+            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
+            perTryPolicies: [authenticationPolicy],
+            beforeTransportPolicies: []);
     }
 
     internal static Uri GetEndpoint(OpenAIClientOptions options = null)

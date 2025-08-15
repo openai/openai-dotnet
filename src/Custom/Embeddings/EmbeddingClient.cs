@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -56,14 +57,37 @@ public partial class EmbeddingClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+    public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient"/>. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="EmbeddingClient"/>. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
-        Argument.AssertNotNull(credential, nameof(credential));
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
         _model = model;
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
@@ -88,6 +112,12 @@ public partial class EmbeddingClient
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
+
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public string Model => _model;
 
     // CUSTOM: Added to simplify generating a single embedding from a string input.
     /// <summary> Generates an embedding representing the text input. </summary>
@@ -212,7 +242,7 @@ public partial class EmbeddingClient
         writer.WriteStringValue(input);
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
@@ -232,7 +262,7 @@ public partial class EmbeddingClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }
@@ -259,7 +289,7 @@ public partial class EmbeddingClient
         writer.WriteEndArray();
         writer.Flush();
 
-        options.Input = BinaryData.FromBytes(stream.ToArray());
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
         options.Model = _model;
         options.EncodingFormat = InternalCreateEmbeddingRequestEncodingFormat.Base64;
     }

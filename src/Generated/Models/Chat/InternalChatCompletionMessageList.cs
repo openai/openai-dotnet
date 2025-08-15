@@ -13,7 +13,7 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionMessageList(IEnumerable<InternalChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
+        internal InternalChatCompletionMessageList(IEnumerable<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -21,11 +21,11 @@ namespace OpenAI.Chat
             HasMore = hasMore;
         }
 
-        internal InternalChatCompletionMessageList(string @object, IList<InternalChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionMessageList(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data ?? new ChangeTrackingList<InternalChatCompletionMessageListDatum>();
+            Data = data ?? new ChangeTrackingList<ChatCompletionMessageListDatum>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
@@ -34,7 +34,7 @@ namespace OpenAI.Chat
 
         public string Object { get; } = "list";
 
-        internal IList<InternalChatCompletionMessageListDatum> Data { get; }
+        public IList<ChatCompletionMessageListDatum> Data { get; }
 
         public string FirstId { get; }
 

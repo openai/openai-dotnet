@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -184,5 +185,12 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<InternalListAssistantsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListAssistantsResponse(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeInternalListAssistantsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

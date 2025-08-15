@@ -11,7 +11,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderStringCheckParams : InternalEvalGraderParams
     {
-        internal InternalEvalGraderStringCheckParams(string name, string input, string reference, InternalGraderStringCheckOperation operation) : base(InternalGraderType.StringCheck)
+        public InternalEvalGraderStringCheckParams(string name, string input, string reference, GraderStringCheckOperation operation) : base(GraderType.StringCheck)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(input, nameof(input));
@@ -23,7 +23,7 @@ namespace OpenAI.Evals
             Operation = operation;
         }
 
-        internal InternalEvalGraderStringCheckParams(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, InternalGraderStringCheckOperation operation) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderStringCheckParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, GraderStringCheckOperation operation) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Input = input;
@@ -37,6 +37,6 @@ namespace OpenAI.Evals
 
         public string Reference { get; }
 
-        internal InternalGraderStringCheckOperation Operation { get; }
+        public GraderStringCheckOperation Operation { get; }
     }
 }

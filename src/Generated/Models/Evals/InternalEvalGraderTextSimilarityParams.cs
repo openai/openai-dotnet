@@ -11,7 +11,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderTextSimilarityParams : InternalEvalGraderParams
     {
-        internal InternalEvalGraderTextSimilarityParams(string name, string input, string reference, InternalGraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(InternalGraderType.TextSimilarity)
+        public InternalEvalGraderTextSimilarityParams(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(GraderType.TextSimilarity)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(input, nameof(input));
@@ -24,7 +24,7 @@ namespace OpenAI.Evals
             PassThreshold = passThreshold;
         }
 
-        internal InternalEvalGraderTextSimilarityParams(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, InternalGraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderTextSimilarityParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Input = input;
@@ -39,7 +39,7 @@ namespace OpenAI.Evals
 
         public string Reference { get; }
 
-        internal InternalGraderTextSimilarityEvaluationMetric EvaluationMetric { get; }
+        public GraderTextSimilarityEvaluationMetric EvaluationMetric { get; }
 
         public float PassThreshold { get; }
     }

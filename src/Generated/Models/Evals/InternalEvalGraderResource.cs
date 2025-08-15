@@ -12,18 +12,18 @@ namespace OpenAI.Evals
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalEvalGraderResource(InternalGraderType kind)
+        private protected InternalEvalGraderResource(GraderType kind)
         {
             Kind = kind;
         }
 
-        internal InternalEvalGraderResource(InternalGraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalGraderResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalGraderType Kind { get; set; }
+        internal GraderType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

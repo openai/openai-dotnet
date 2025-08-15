@@ -1,3 +1,4 @@
+using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -6,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenAI.VectorStores;
 
 namespace OpenAI.FineTuning;
 
@@ -71,12 +71,29 @@ public partial class FineTuningClient
     /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
     /// <param name="options"> Additional options to customize the client. </param>
     /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
-    public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FineTuningClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    public FineTuningClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="FineTuningClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(credential, options);
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 

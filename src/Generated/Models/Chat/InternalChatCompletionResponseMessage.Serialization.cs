@@ -53,6 +53,7 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
+            // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Annotations) && _additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 writer.WritePropertyName("annotations"u8);
@@ -133,7 +134,7 @@ namespace OpenAI.Chat
             }
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
-            IList<ChatMessageAnnotation> annotations = default;
+            IReadOnlyList<ChatMessageAnnotation> annotations = default;
             ChatOutputAudio audio = default;
             ChatMessageRole role = default;
             ChatMessageContent content = default;

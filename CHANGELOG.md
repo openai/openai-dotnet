@@ -1,12 +1,80 @@
 # Release History
 
-## 2.3.0-beta.1 (Unreleased)
+## 2.3.0 (2025-08-01)
 
-### Other changes
+### Features Added
 
-- Updated to `System.ClientModel` 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses. 
+- OpenAI.Audio:
+  - Added the `Model` property to `AudioClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `AudioClient`.
+- OpenAI.Batch:
+  - Added new methods to `BatchClient`:
+    - `GetBatch` and `GetBatchAsync`
+  - Added constructors that can take a custom `AuthenticationPolicy` to `BatchClient`.
+- OpenAI.Chat:
+  - Added new methods to `ChatClient`:
+    - `UpdateChatCompletion` and `UpdateChatCompletionAsync`
+    - `GetChatCompletions` and `GetChatCompletionsAsync`
+    - `GetChatCompletionMessages` and `GetChatCompletionMessagesAsync`
+  - Added the `Model` property to `ChatClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ChatClient`.
+- OpenAI.Containers:
+  - Introduced the new `ContainersClient` to support the Containers API with protocol methods for the following operations:
+    - `CreateContainer` and `CreateContainerAsync`
+    - `GetContainers` and `GetContainersAsync`
+    - `GetContainer` and `GetContainerAsync`
+    - `DeleteContainer` and `DeleteContainerAsync`
+    - `CreateContainerFile` and `CreateContainerFileAsync`
+    - `GetContainerFiles` and `GetContainerFilesAsync`
+    - `GetContainerFile` and `GetContainerFileAsync`
+    - `GetContainerFileContent` and `GetContainerFileContentAsync`
+    - `DeleteContainerFile` and `DeleteContainerFileAsync`
+- OpenAI.Embeddings:
+  - Added the `Model` property to `EmbeddingClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `EmbeddingClient`.
+- OpenAI.Evals:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `EvaluationClient`.
+- OpenAI.Files:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIFileClient`.
+- OpenAI.FineTuning:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `FineTuningClient`.
+- OpenAI.Graders:
+  - Introduced the new `GraderClient` to support the Graders API with protocol methods for the following operations:
+    - `RunGrader` and `RunGraderAsync`
+    - `ValidateGrader` and `ValidateGraderAsync`
+- OpenAI.Images:
+  - Added the `Model` property to `ImageClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ImageClient`.
+- OpenAI.Models:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIModelClient`.
+- OpenAI.Moderations:
+  - Added the `Model` property to `ModerationClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `ModerationClient`.
+- OpenAI.Realtime:
+  - Enabled support for semantic voice activity detection (VAD) via the new `CreateSemanticVoiceActivityTurnDetectionOptions` method of `TurnDetectionOptions`.
+- OpenAI.Responses:
+  - Added a model factory.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `OpenAIResponseClient`.
+- OpenAI.VectorStores:
+  - Added constructors that can take a custom `AuthenticationPolicy` to `VectorStoreClient`.
 
-- Removed explicit `net6.0` target framework, as this version reached end-of-life in November, 2024 and is no longer maintained nor supported by Microsoft.  This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
+### Bug Fixed
+
+- OpenAI.Assistants:
+  - Fixed an issue causing the `ImageDetail` property of `MessageContent` to not be serialized correctly.
+- OpenAI.Audio:
+  - Added a check to all overloads of `TranscribeAudioStreaming` and `TranscribeAudioStreamingAsync` in the `AudioClient` to prevent using the `whisper-1` model, which does not support streaming and simply ignores the `stream` parameter.
+- OpenAI.Realtime:
+  - Improved the disposal logic in `AsyncWebsocketMessageResultEnumerator` to prevent multiple disposals.
+- OpenAI.Responses:
+  - Fixed an issue in code generation that caused the `StreamingResponseTextAnnotationAddedUpdate` class to not be generated correctly as part of the set of possible handles when streaming.
+  - Fixed an issue in code generation that caused the `Status` property of `ReasoningResponseItem` and the `ReasoningStatus` enum to not be generated correctly and lead to incorrect behavior.
+
+### Other Changes
+
+- The `OpenAI` NuGet package now contains signed binaries.
+- Updated the `System.ClientModel` dependency to version 1.5.1, which contains a fix for a concurrency bug which could cause some applications running on the legacy .NET Framework to experience an infinite loop while deserializing service responses.
+- Removed the explicit `net6.0` target framework, as this version reached end-of-life in November 2024 and is no longer maintained nor supported by Microsoft. This does not prevent using the OpenAI library on .NET 6, as the runtime will fallback to the `netstandard2.0` target.
 
 ## 2.2.0 (2025-07-02)
 
@@ -283,7 +351,7 @@
 ### Features Added
 
 - Added a new `RealtimeConversationClient` in a corresponding scenario namespace. ([ff75da4](https://github.com/openai/openai-dotnet/commit/ff75da4167bc83fa85eb69ac142cab88a963ed06))
-  - This maps to the new `/realtime` beta endpoint and is thus marked with a new `[Experimental("OPENAI002")]` diagnostic tag. 
+  - This maps to the new `/realtime` beta endpoint and is thus marked with a new `[Experimental("OPENAI002")]` diagnostic tag.
   - This is a very early version of the convenience surface and thus subject to significant change
   - Documentation and samples will arrive soon; in the interim, see [the scenario test files](/tests/RealtimeConversation) for basic usage
   - You can also find an external sample employing this client, together with Azure OpenAI support, at https://github.com/Azure-Samples/aoai-realtime-audio-sdk/tree/main/dotnet/samples/console
@@ -441,7 +509,7 @@
 ### Breaking Changes
 
 - Renamed `AudioClient`'s `GenerateSpeechFromText` methods to simply `GenerateSpeech`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7))
-- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7)) 
+- Changed the type of `OpenAIFileInfo`'s `SizeInBytes` property from `long?` to `int?`. ([d84bf54](https://github.com/openai/openai-dotnet/commit/d84bf54df14ddac4c49f6efd61467b600d34ecd7))
 
 ### Bugs Fixed
 
