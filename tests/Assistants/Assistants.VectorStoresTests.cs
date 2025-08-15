@@ -319,14 +319,14 @@ public class VectorStoresTests : SyncAsyncTestBase
             List<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page).ToList();
             List<VectorStoreFile> itemsInRehydratedPage = GetVectorStoreFilesFromPage(rehydratedPage).ToList();
 
-            Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
+            Assert.That(itemsInRehydratedPage.Count, Is.EqualTo(itemsInPage.Count));
 
             for (int i = 0; i < itemsInPage.Count; i++)
             {
-                Assert.AreEqual(itemsInPage[0].FileId, itemsInRehydratedPage[0].FileId);
-                Assert.AreEqual(itemsInPage[0].VectorStoreId, itemsInRehydratedPage[0].VectorStoreId);
-                Assert.AreEqual(itemsInPage[0].CreatedAt, itemsInRehydratedPage[0].CreatedAt);
-                Assert.AreEqual(itemsInPage[0].Size, itemsInRehydratedPage[0].Size);
+                Assert.That(itemsInRehydratedPage[0].FileId, Is.EqualTo(itemsInPage[0].FileId));
+                Assert.That(itemsInRehydratedPage[0].VectorStoreId, Is.EqualTo(itemsInPage[0].VectorStoreId));
+                Assert.That(itemsInRehydratedPage[0].CreatedAt, Is.EqualTo(itemsInPage[0].CreatedAt));
+                Assert.That(itemsInRehydratedPage[0].Size, Is.EqualTo(itemsInPage[0].Size));
             }
 
             pageCount++;
@@ -395,14 +395,14 @@ public class VectorStoresTests : SyncAsyncTestBase
             List<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page).ToList();
             List<VectorStoreFile> itemsInRehydratedPage = GetVectorStoreFilesFromPage(rehydratedPage).ToList();
 
-            Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
+            Assert.That(itemsInRehydratedPage.Count, Is.EqualTo(itemsInPage.Count));
 
             for (int i = 0; i < itemsInPage.Count; i++)
             {
-                Assert.AreEqual(itemsInPage[0].FileId, itemsInRehydratedPage[0].FileId);
-                Assert.AreEqual(itemsInPage[0].VectorStoreId, itemsInRehydratedPage[0].VectorStoreId);
-                Assert.AreEqual(itemsInPage[0].CreatedAt, itemsInRehydratedPage[0].CreatedAt);
-                Assert.AreEqual(itemsInPage[0].Size, itemsInRehydratedPage[0].Size);
+                Assert.That(itemsInRehydratedPage[0].FileId, Is.EqualTo(itemsInPage[0].FileId));
+                Assert.That(itemsInRehydratedPage[0].VectorStoreId, Is.EqualTo(itemsInPage[0].VectorStoreId));
+                Assert.That(itemsInRehydratedPage[0].CreatedAt, Is.EqualTo(itemsInPage[0].CreatedAt));
+                Assert.That(itemsInRehydratedPage[0].Size, Is.EqualTo(itemsInPage[0].Size));
             }
 
             pageCount++;

@@ -121,7 +121,7 @@ public class ChatTelemetryTests
         }
 
         Assert.Null(Activity.Current);
-        Assert.AreEqual(1, listener.Activities.Count);
+        Assert.That(listener.Activities.Count, Is.EqualTo(1));
 
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
     }
@@ -144,9 +144,9 @@ public class ChatTelemetryTests
 
         using (var scope = telemetry.StartChatScope(options))
         {
-            Assert.AreEqual(options.Temperature.Value, (float)Activity.Current.GetTagItem("gen_ai.request.temperature"), 0.01);
-            Assert.AreEqual(options.TopP.Value, (float)Activity.Current.GetTagItem("gen_ai.request.top_p"), 0.01);
-            Assert.AreEqual(options.MaxOutputTokenCount.Value, Activity.Current.GetTagItem("gen_ai.request.max_tokens"));
+            Assert.That((float)Activity.Current.GetTagItem("gen_ai.request.temperature"), Is.EqualTo(options.Temperature.Value).Within(0.01));
+            Assert.That((float)Activity.Current.GetTagItem("gen_ai.request.top_p"), Is.EqualTo(options.TopP.Value).Within(0.01));
+            Assert.That(Activity.Current.GetTagItem("gen_ai.request.max_tokens"), Is.EqualTo(options.MaxOutputTokenCount.Value));
             scope.RecordChatCompletion(chatCompletion);
         }
         Assert.Null(Activity.Current);
@@ -215,23 +215,23 @@ public class ChatTelemetryTests
 
         await Task.WhenAll(tasks);
 
-        Assert.AreEqual(tasks.Length, activityListener.Activities.Count);
+        Assert.That(activityListener.Activities.Count, Is.EqualTo(tasks.Length));
 
         var durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
-        Assert.AreEqual(tasks.Length, durations.Count);
-        Assert.AreEqual(numberOfSuccessfulResponses, durations.Count(d => !d.tags.ContainsKey("error.type")));
+        Assert.That(durations.Count, Is.EqualTo(tasks.Length));
+        Assert.That(durations.Count(d => !d.tags.ContainsKey("error.type")), Is.EqualTo(numberOfSuccessfulResponses));
 
         var usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
         // we don't report usage if there was no response
-        Assert.AreEqual(numberOfSuccessfulResponses * 2, usages.Count);
+        Assert.That(usages.Count, Is.EqualTo(numberOfSuccessfulResponses * 2));
         Assert.IsEmpty(usages.Where(u => u.tags.ContainsKey("error.type")));
 
-        Assert.AreEqual(totalPromptTokens, usages
+        Assert.That(usages
             .Where(u => u.tags.Contains(new KeyValuePair<string, object>("gen_ai.token.type", "input")))
-            .Sum(u => (long)u.value));
-        Assert.AreEqual(totalCompletionTokens, usages
+            .Sum(u => (long)u.value), Is.EqualTo(totalPromptTokens));
+        Assert.That(usages
             .Where(u => u.tags.Contains(new KeyValuePair<string, object>("gen_ai.token.type", "output")))
-            .Sum(u => (long)u.value));
+            .Sum(u => (long)u.value), Is.EqualTo(totalCompletionTokens));
     }
 
     private void SetMessages(ChatCompletionOptions options, params ChatMessage[] messages)
@@ -248,7 +248,7 @@ public class ChatTelemetryTests
 
         var measurements = listener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.IsNotNull(measurements);
-        Assert.AreEqual(1, measurements.Count);
+        Assert.That(measurements.Count, Is.EqualTo(1));
 
         var measurement = measurements[0];
         Assert.IsInstanceOf<double>(measurement.value);
@@ -266,7 +266,7 @@ public class ChatTelemetryTests
 
         var measurements = listener.GetMeasurements("gen_ai.client.token.usage");
         Assert.IsNotNull(measurements);
-        Assert.AreEqual(2, measurements.Count);
+        Assert.That(measurements.Count, Is.EqualTo(2));
 
         foreach (var measurement in measurements)
         {
@@ -280,8 +280,8 @@ public class ChatTelemetryTests
         TestMeasurement input = (type is "input") ? measurements[0] : measurements[1];
         TestMeasurement output = (type is "input") ? measurements[1] : measurements[0];
 
-        Assert.AreEqual(inputTokens, input.value);
-        Assert.AreEqual(outputTokens, output.value);
+        Assert.That(input.value, Is.EqualTo(inputTokens));
+        Assert.That(output.value, Is.EqualTo(outputTokens));
     }
 
     private static ChatCompletion CreateChatCompletion(int promptTokens = PromptTokens, int completionTokens = CompletionTokens)
