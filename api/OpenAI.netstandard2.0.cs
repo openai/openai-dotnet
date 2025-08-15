@@ -1221,8 +1221,41 @@ namespace OpenAI.Batch {
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual ClientResult GetBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
+        public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options);
+        public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
+    }
+    public class BatchCollectionOptions : IJsonModel<BatchCollectionOptions>, IPersistableModel<BatchCollectionOptions> {
+        public string AfterId { get; set; }
+        public int? PageSizeLimit { get; set; }
+        protected virtual BatchCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual BatchCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class BatchJob : IJsonModel<BatchJob>, IPersistableModel<BatchJob> {
+        public DateTimeOffset? CancelledAt { get; }
+        public DateTimeOffset? CancellingAt { get; }
+        public DateTimeOffset? CompletedAt { get; }
+        public string CompletionWindow { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string Endpoint { get; }
+        public string ErrorFileId { get; }
+        public DateTimeOffset? ExpiredAt { get; }
+        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? FinalizingAt { get; }
+        public string Id { get; }
+        public DateTimeOffset? InProgressAt { get; }
+        public string InputFileId { get; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Object { get; }
+        public string OutputFileId { get; }
+        protected virtual BatchJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual BatchJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class CreateBatchOperation : OperationResult {
         public string BatchId { get; }
