@@ -31,7 +31,8 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.x
+          # Automatically read .NET SDK version from global.json to stay in sync
+          global-json-file: global.json
           
       - name: Check for generator updates
         id: check-updates
