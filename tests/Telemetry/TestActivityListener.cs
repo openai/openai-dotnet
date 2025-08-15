@@ -37,7 +37,7 @@ internal class TestActivityListener : IDisposable
 
     public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
-        Assert.NotNull(activity);
+        Assert.That(activity, Is.Not.Null);
         Assert.That(activity.DisplayName, Is.EqualTo($"chat {requestModel}"));
         Assert.That(activity.GetTagItem("gen_ai.operation.name"), Is.EqualTo("chat"));
         Assert.That(activity.GetTagItem("gen_ai.system"), Is.EqualTo("openai"));
@@ -54,13 +54,13 @@ internal class TestActivityListener : IDisposable
             Assert.That(activity.GetTagItem("gen_ai.usage.output_tokens"), Is.EqualTo(response.Usage.OutputTokenCount));
             Assert.That(activity.GetTagItem("gen_ai.usage.input_tokens"), Is.EqualTo(response.Usage.InputTokenCount));
             Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Unset));
-            Assert.Null(activity.StatusDescription);
-            Assert.Null(activity.GetTagItem("error.type"));
+            Assert.That(activity.StatusDescription, Is.Null);
+            Assert.That(activity.GetTagItem("error.type"), Is.Null);
         }
         else
         {
             Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Error));
-            Assert.NotNull(activity.GetTagItem("error.type"));
+            Assert.That(activity.GetTagItem("error.type"), Is.Not.Null);
         }
     }
 

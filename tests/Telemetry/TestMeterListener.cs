@@ -71,14 +71,14 @@ internal class TestMeterListener : IDisposable
         if (response != null)
         {
             Assert.That(measurement.tags["gen_ai.response.model"], Is.EqualTo(response.Model));
-            Assert.False(measurement.tags.ContainsKey("error.type"));
+            Assert.That(measurement.tags.ContainsKey("error.type"), Is.False);
         }
     }
 
     public static void ValidateChatMetricTags(TestMeasurement measurement, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
     {
         ValidateChatMetricTags(measurement, (ChatCompletion)null, requestModel, host, port);
-        Assert.True(measurement.tags.ContainsKey("error.type"));
+        Assert.That(measurement.tags.ContainsKey("error.type"));
         Assert.That(measurement.tags["error.type"], Is.EqualTo(ex.GetType().FullName));
     }
 }

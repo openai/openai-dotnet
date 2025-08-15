@@ -179,8 +179,8 @@ public class ChatTests : SyncAsyncTestBase
         Assert.Throws<OperationCanceledException>(() =>
         {
             // Should throw for the second update.
-            Assert.True(cancellationTokenSource.IsCancellationRequested);
-            Assert.True(cancellationTokenSource.Token.IsCancellationRequested);
+            Assert.That(cancellationTokenSource.IsCancellationRequested);
+            Assert.That(cancellationTokenSource.Token.IsCancellationRequested);
             enumerator.MoveNext();
             enumerator.MoveNext();
         });
@@ -225,8 +225,8 @@ public class ChatTests : SyncAsyncTestBase
         Assert.ThrowsAsync<OperationCanceledException>(async () =>
         {
             // Should throw for the second update.
-            Assert.True(cancellationTokenSource.IsCancellationRequested);
-            Assert.True(cancellationTokenSource.Token.IsCancellationRequested);
+            Assert.That(cancellationTokenSource.IsCancellationRequested);
+            Assert.That(cancellationTokenSource.Token.IsCancellationRequested);
             await enumerator.MoveNextAsync();
             await enumerator.MoveNextAsync();
         });
@@ -261,7 +261,7 @@ public class ChatTests : SyncAsyncTestBase
         CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages);
 
         Assert.That(streamingResult, Is.InstanceOf<CollectionResult<StreamingChatCompletionUpdate>>());
-        Assert.IsFalse(response.IsDisposed);
+        Assert.That(response.IsDisposed, Is.False);
 
         foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
         {
@@ -274,7 +274,7 @@ public class ChatTests : SyncAsyncTestBase
 
         stopwatch.Stop();
 
-        Assert.IsTrue(response.IsDisposed);
+        Assert.That(response.IsDisposed);
     }
 
     [Test]
@@ -306,7 +306,7 @@ public class ChatTests : SyncAsyncTestBase
         AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
 
         Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
-        Assert.IsFalse(response.IsDisposed);
+        Assert.That(response.IsDisposed, Is.False);
 
         await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
         {
@@ -319,7 +319,7 @@ public class ChatTests : SyncAsyncTestBase
 
         stopwatch.Stop();
 
-        Assert.IsTrue(response.IsDisposed);
+        Assert.That(response.IsDisposed);
     }
 
     [Test]
@@ -751,10 +751,10 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(completion.Content?.Count, Is.EqualTo(1));
         JsonDocument contentDocument = null;
         Assert.DoesNotThrow(() => contentDocument = JsonDocument.Parse(completion.Content[0].Text));
-        Assert.IsTrue(contentDocument.RootElement.TryGetProperty("answer", out JsonElement answerProperty));
-        Assert.IsTrue(answerProperty.ValueKind == JsonValueKind.String);
-        Assert.IsTrue(contentDocument.RootElement.TryGetProperty("steps", out JsonElement stepsProperty));
-        Assert.IsTrue(stepsProperty.ValueKind == JsonValueKind.Array);
+        Assert.That(contentDocument.RootElement.TryGetProperty("answer", out JsonElement answerProperty));
+        Assert.That(answerProperty.ValueKind == JsonValueKind.String);
+        Assert.That(contentDocument.RootElement.TryGetProperty("steps", out JsonElement stepsProperty));
+        Assert.That(stepsProperty.ValueKind == JsonValueKind.Array);
     }
 
     [Test]
@@ -913,8 +913,8 @@ public class ChatTests : SyncAsyncTestBase
         List<TestMeasurement> usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
         Assert.That(usages.Count, Is.EqualTo(2));
 
-        Assert.True(usages[0].tags.TryGetValue("gen_ai.token.type", out var type));
-        Assert.IsInstanceOf<string>(type);
+        Assert.That(usages[0].tags.TryGetValue("gen_ai.token.type", out var type));
+        Assert.That(type, Is.InstanceOf<string>());
 
         TestMeasurement input = (type is "input") ? usages[0] : usages[1];
         TestMeasurement output = (type is "input") ? usages[1] : usages[0];
@@ -1098,7 +1098,7 @@ public class ChatTests : SyncAsyncTestBase
     private List<string> FileIdsToDelete = [];
     private void Validate<T>(T item)
     {
-        Assert.IsNotNull(item);
+        Assert.That(item, Is.Not.Null);
         if (item is OpenAIFile file)
         {
             FileIdsToDelete.Add(file.Id);

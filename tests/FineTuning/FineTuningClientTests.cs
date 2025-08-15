@@ -71,16 +71,16 @@ public class FineTuningClientTests
             : client.FineTune("gpt-3.5-turbo", sampleFile.Id, false);
 
         // Assert.AreEqual(0, ft.Hyperparameters.CycleCount);
-        Assert.True(ft.Status.InProgress);
-        Assert.False(ft.HasCompleted);
+        Assert.That(ft.Status.InProgress);
+        Assert.That(ft.HasCompleted, Is.False);
 
         _ = method.IsAsync()
             ? await ft.CancelAndUpdateAsync()
             : ft.CancelAndUpdate();
 
         Assert.That(ft.Status, Is.EqualTo(FineTuningStatus.Cancelled));
-        Assert.False(ft.Status.InProgress);
-        Assert.True(ft.HasCompleted);
+        Assert.That(ft.Status.InProgress, Is.False);
+        Assert.That(ft.HasCompleted);
     }
 
 
@@ -211,14 +211,14 @@ public class FineTuningClientTests
         {
             Console.WriteLine($"{counter} jobs");
             Console.WriteLine($"Job: {job.JobId}");
-            Assert.IsTrue(job.JobId.StartsWith("ftjob"));
+            Assert.That(job.JobId.StartsWith("ftjob"));
             counter++;
         }
         Console.WriteLine($"Got {counter} jobs");
 
         // Assert
-        Assert.Greater(counter, 0);
-        Assert.LessOrEqual(counter, 10);
+        Assert.That(counter, Is.GreaterThan(0));
+        Assert.That(counter, Is.LessThanOrEqualTo(10));
     }
 
     [Test]
@@ -293,8 +293,8 @@ public class FineTuningClientTests
         }
 
         FineTuningCheckpointMetrics metrics = first.Metrics;
-        Assert.NotNull(metrics);
-        Assert.Greater(metrics.StepNumber, 0);
+        Assert.That(metrics, Is.Not.Null);
+        Assert.That(metrics.StepNumber, Is.GreaterThan(0));
     }
 
     private static FineTuningClient GetTestClient() => GetTestClient<FineTuningClient>(TestScenario.FineTuning);

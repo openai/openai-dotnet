@@ -228,8 +228,9 @@ public class VectorStoresTests : SyncAsyncTestBase
             ? await client.RemoveFileFromVectorStoreAsync(vectorStore.Id, files[0].Id)
             : client.RemoveFileFromVectorStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
-        Assert.True(removalResult.Removed);
-        _vectorStoreFilesToRemove.RemoveAt(0);
+
+        Assert.That(removalResult.Removed);
+        _associationsToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);
@@ -284,8 +285,9 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         FileFromStoreRemovalResult removalResult = await client.RemoveFileFromVectorStoreAsync(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
-        Assert.True(removalResult.Removed);
-        _vectorStoreFilesToRemove.RemoveAt(0);
+
+        Assert.That(removalResult.Removed);
+        _associationsToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);
@@ -364,8 +366,9 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         FileFromStoreRemovalResult removalResult = client.RemoveFileFromVectorStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
-        Assert.True(removalResult.Removed);
-        _vectorStoreFilesToRemove.RemoveAt(0);
+
+        Assert.That(removalResult.Removed);
+        _associationsToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);

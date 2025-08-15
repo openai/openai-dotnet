@@ -37,8 +37,8 @@ public class ChatTelemetryTests
     public void AllTelemetryOff()
     {
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        Assert.IsNull(telemetry.StartChatScope(new ChatCompletionOptions()));
-        Assert.IsNull(Activity.Current);
+        Assert.That(telemetry.StartChatScope(new ChatCompletionOptions()), Is.Null);
+        Assert.That(Activity.Current, Is.Null);
     }
 
     [Test]
@@ -47,8 +47,8 @@ public class ChatTelemetryTests
         using var activityListener = new TestActivityListener("OpenAI.ChatClient");
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
-        Assert.IsNull(telemetry.StartChatScope(new ChatCompletionOptions()));
-        Assert.IsNull(Activity.Current);
+        Assert.That(telemetry.StartChatScope(new ChatCompletionOptions()), Is.Null);
+        Assert.That(Activity.Current, Is.Null);
     }
 
     [Test]
@@ -64,8 +64,8 @@ public class ChatTelemetryTests
         using var scope = telemetry.StartChatScope(new ChatCompletionOptions());
         var elapsedMin = Stopwatch.StartNew();
 
-        Assert.Null(Activity.Current);
-        Assert.NotNull(scope);
+        Assert.That(Activity.Current, Is.Null);
+        Assert.That(scope, Is.Not.Null);
 
         // so we have some duration to measure
         Thread.Sleep(20);
@@ -94,7 +94,7 @@ public class ChatTelemetryTests
         }
 
         ValidateDuration(meterListener, null, TimeSpan.MinValue, TimeSpan.MaxValue);
-        Assert.IsNull(meterListener.GetMeasurements("gen_ai.client.token.usage"));
+        Assert.That(meterListener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
     }
 
     [Test]
@@ -111,16 +111,16 @@ public class ChatTelemetryTests
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             activity = Activity.Current;
-            Assert.IsNull(activity.GetTagItem("gen_ai.request.temperature"));
-            Assert.IsNull(activity.GetTagItem("gen_ai.request.top_p"));
-            Assert.IsNull(activity.GetTagItem("gen_ai.request.max_tokens"));
+            Assert.That(activity.GetTagItem("gen_ai.request.temperature"), Is.Null);
+            Assert.That(activity.GetTagItem("gen_ai.request.top_p"), Is.Null);
+            Assert.That(activity.GetTagItem("gen_ai.request.max_tokens"), Is.Null);
 
-            Assert.NotNull(scope);
+            Assert.That(scope, Is.Not.Null);
 
             scope.RecordChatCompletion(chatCompletion);
         }
 
-        Assert.Null(Activity.Current);
+        Assert.That(Activity.Current, Is.Null);
         Assert.That(listener.Activities.Count, Is.EqualTo(1));
 
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
@@ -149,7 +149,7 @@ public class ChatTelemetryTests
             Assert.That(Activity.Current.GetTagItem("gen_ai.request.max_tokens"), Is.EqualTo(options.MaxOutputTokenCount.Value));
             scope.RecordChatCompletion(chatCompletion);
         }
-        Assert.Null(Activity.Current);
+        Assert.That(Activity.Current, Is.Null);
 
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
     }
@@ -168,7 +168,7 @@ public class ChatTelemetryTests
             scope.RecordException(error);
         }
 
-        Assert.Null(Activity.Current);
+        Assert.That(Activity.Current, Is.Null);
 
         ValidateChatActivity(listener.Activities.Single(), error, RequestModel, Host, Port);
     }
@@ -224,7 +224,7 @@ public class ChatTelemetryTests
         var usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
         // we don't report usage if there was no response
         Assert.That(usages.Count, Is.EqualTo(numberOfSuccessfulResponses * 2));
-        Assert.IsEmpty(usages.Where(u => u.tags.ContainsKey("error.type")));
+        Assert.That(usages.Where(u => u.tags.ContainsKey("error.type")), Is.Empty);
 
         Assert.That(usages
             .Where(u => u.tags.Contains(new KeyValuePair<string, object>("gen_ai.token.type", "input")))
@@ -243,17 +243,17 @@ public class ChatTelemetryTests
     private void ValidateDuration(TestMeterListener listener, ChatCompletion response, TimeSpan durationMin, TimeSpan durationMax)
     {
         var duration = listener.GetInstrument("gen_ai.client.operation.duration");
-        Assert.IsNotNull(duration);
-        Assert.IsInstanceOf<Histogram<double>>(duration);
+        Assert.That(duration, Is.Not.Null);
+        Assert.That(duration, Is.InstanceOf<Histogram<double>>());
 
         var measurements = listener.GetMeasurements("gen_ai.client.operation.duration");
-        Assert.IsNotNull(measurements);
+        Assert.That(measurements, Is.Not.Null);
         Assert.That(measurements.Count, Is.EqualTo(1));
 
         var measurement = measurements[0];
-        Assert.IsInstanceOf<double>(measurement.value);
-        Assert.GreaterOrEqual((double)measurement.value, durationMin.TotalSeconds);
-        Assert.LessOrEqual((double)measurement.value, durationMax.TotalSeconds);
+        Assert.That(measurement.value, Is.InstanceOf<double>());
+        Assert.That((double)measurement.value, Is.GreaterThanOrEqualTo(durationMin.TotalSeconds));
+        Assert.That((double)measurement.value, Is.LessThanOrEqualTo(durationMax.TotalSeconds));
 
         ValidateChatMetricTags(measurement, response, RequestModel, Host, Port);
     }
@@ -261,21 +261,21 @@ public class ChatTelemetryTests
     private void ValidateUsage(TestMeterListener listener, ChatCompletion response, int inputTokens, int outputTokens)
     {
         var usage = listener.GetInstrument("gen_ai.client.token.usage");
-        Assert.IsNotNull(usage);
-        Assert.IsInstanceOf<Histogram<long>>(usage);
+        Assert.That(usage, Is.Not.Null);
+        Assert.That(usage, Is.InstanceOf<Histogram<long>>());
 
         var measurements = listener.GetMeasurements("gen_ai.client.token.usage");
-        Assert.IsNotNull(measurements);
+        Assert.That(measurements, Is.Not.Null);
         Assert.That(measurements.Count, Is.EqualTo(2));
 
         foreach (var measurement in measurements)
         {
-            Assert.IsInstanceOf<long>(measurement.value);
+            Assert.That(measurement.value, Is.InstanceOf<long>());
             ValidateChatMetricTags(measurement, response, RequestModel, Host, Port);
         }
 
-        Assert.True(measurements[0].tags.TryGetValue("gen_ai.token.type", out var type));
-        Assert.IsInstanceOf<string>(type);
+        Assert.That(measurements[0].tags.TryGetValue("gen_ai.token.type", out var type));
+        Assert.That(type, Is.InstanceOf<string>());
 
         TestMeasurement input = (type is "input") ? measurements[0] : measurements[1];
         TestMeasurement output = (type is "input") ? measurements[1] : measurements[0];
