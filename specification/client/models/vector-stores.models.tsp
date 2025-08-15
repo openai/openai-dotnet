@@ -2,6 +2,7 @@ import "../../base/typespec/vector-stores/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
+using TypeSpec.Http;
 
 namespace OpenAI;
 
@@ -31,4 +32,13 @@ model DotNetCombinedStaticChunkingStrategyParam
 model DotNetCombinedOtherChunkingStrategyParam
   extends DotNetCombinedChunkingStrategyParam {
   ...OtherChunkingStrategyResponseParam;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model VectorStoreCollectionOptions {
+  ...CollectionAfterQueryParameter,
+  ...CollectionBeforeQueryParameter,
+  ...CollectionLimitQueryParameter,
+  ...PageOrderQueryParameter,
 }

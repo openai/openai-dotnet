@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
-[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
@@ -23,63 +21,6 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("ListFilesInVectorStoreBatches", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 public partial class VectorStoreClient
 {
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector-stores.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        return new AsyncVectorStoreCollectionResult(this, Pipeline, options, limit, order, after, before);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector-stores.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        return new VectorStoreCollectionResult(this, Pipeline, options, limit, order, after, before);
-    }
 
     /// <summary>
     /// [Protocol Method] Creates a vector store.

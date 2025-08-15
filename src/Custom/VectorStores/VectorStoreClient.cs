@@ -19,8 +19,6 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
@@ -255,20 +253,6 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(
-        VectorStoreCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        return GetVectorStoresAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStore>;
-    }
-
-    /// <summary>
     /// Rehydrates a page collection holding <see cref="VectorStore"/> instances from a page token.
     /// </summary>
     /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
@@ -283,20 +267,6 @@ public partial class VectorStoreClient
         VectorStoreCollectionPageToken pageToken = VectorStoreCollectionPageToken.FromToken(firstPageToken);
         return GetVectorStoresAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
             as AsyncCollectionResult<VectorStore>;
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual CollectionResult<VectorStore> GetVectorStores(
-        VectorStoreCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        return GetVectorStores(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStore>;
     }
 
     /// <summary>

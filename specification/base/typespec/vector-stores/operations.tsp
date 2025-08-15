@@ -16,6 +16,7 @@ interface VectorStores {
   @get
   @operationId("listVectorStores")
   @summary("Returns a list of vector stores.")
+  @list
   listVectorStores(
     ...AcceptJsonHeader,
     ...CommonPageQueryParameters,

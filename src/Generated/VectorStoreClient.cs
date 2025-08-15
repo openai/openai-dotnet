@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,6 +22,50 @@ namespace OpenAI.VectorStores
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
 
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null)
         {
