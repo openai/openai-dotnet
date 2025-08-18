@@ -110,6 +110,7 @@ interface VectorStores {
   @get
   @operationId("listFilesInVectorStoreBatch")
   @summary("Returns a list of vector store files in a batch.")
+  @list
   listFilesInVectorStoreBatch(
     ...AcceptJsonHeader,
 

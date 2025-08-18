@@ -14,3 +14,4 @@ using Azure.ClientGenerator.Core;
 @@clientName(VectorStores.getVectorStoreFile, "GetFileAssociation");
 @@clientName(VectorStores.listVectorStores, "GetVectorStores");
 @@clientName(VectorStores.listVectorStoreFiles, "GetFileAssociations");
+@@clientName(VectorStores.listFilesInVectorStoreBatch, "GetFileAssociationsInBatch");

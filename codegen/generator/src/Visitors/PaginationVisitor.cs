@@ -62,6 +62,14 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetFileAssociationsAsync",
             ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatch",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatchAsync",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
         }
     };
 
