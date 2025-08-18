@@ -42,3 +42,14 @@ model VectorStoreCollectionOptions {
   ...CollectionLimitQueryParameter,
   ...PageOrderQueryParameter,
 }
+
+@access(Access.public)
+@usage(Usage.input)
+model VectorStoreFileAssociationCollectionOptions {
+  ...CollectionAfterQueryParameter,
+  ...CollectionBeforeQueryParameter,
+  ...CollectionLimitQueryParameter,
+  ...PageOrderQueryParameter,
+
+  @query filter?: ListVectorStoreFilesFilter;
+}

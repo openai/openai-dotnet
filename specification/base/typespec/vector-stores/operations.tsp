@@ -126,6 +126,7 @@ interface VectorStores {
   @get
   @operationId("listVectorStoreFiles")
   @summary("Returns a list of vector store files.")
+  @list
   listVectorStoreFiles(
     ...AcceptJsonHeader,
 

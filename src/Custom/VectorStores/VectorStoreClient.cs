@@ -19,8 +19,6 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatch", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
@@ -348,82 +346,6 @@ public partial class VectorStoreClient
         InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
         ClientResult result = await UpdateVectorStoreFileAttributesAsync(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         return ClientResult.FromValue(VectorStoreFileAssociation.FromClientResult(result), result.GetRawResponse());
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
-    /// specified vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store to enumerate the file associations of.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return GetFileAssociationsAsync(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileCollectionPageToken pageToken = VectorStoreFileCollectionPageToken.FromToken(firstPageToken);
-        return GetFileAssociationsAsync(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
-    /// specified vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store to enumerate the file associations of.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return GetFileAssociations(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileCollectionPageToken pageToken = VectorStoreFileCollectionPageToken.FromToken(firstPageToken);
-        return GetFileAssociations(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
     }
 
     /// <summary>

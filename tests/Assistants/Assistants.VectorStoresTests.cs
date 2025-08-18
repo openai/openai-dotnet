@@ -314,7 +314,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         BinaryData rehydrationBytes = nextPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        AsyncCollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociationsAsync(rehydrationToken);
+        AsyncCollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociationsAsync(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
         IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetAsyncEnumerator();
 
@@ -392,7 +392,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         BinaryData rehydrationBytes = nextPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        CollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociations(rehydrationToken);
+        CollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociations(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
         IEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPages();
         IEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetEnumerator();
 
@@ -615,6 +615,63 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
     }
 
+    [Test]
+    public async Task CanGetFileAssociations()
+    {
+        VectorStoreClient client = GetTestClient();
+
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(5);
+        VectorStoreCreationOptions creationOptions = new VectorStoreCreationOptions()
+        {
+            Name = "test vector store",
+            ExpirationPolicy = new VectorStoreExpirationPolicy(VectorStoreExpirationAnchor.LastActiveAt, 3),
+            Metadata =
+            {
+                ["test-key"] = "test-value",
+            },
+        };
+        foreach (var file in testFiles)
+        {
+            creationOptions.FileIds.Add(file.Id);
+        }
+
+        var createOperation = IsAsync
+            ? await client.CreateVectorStoreAsync(waitUntilCompleted: false, creationOptions)
+            : client.CreateVectorStore(waitUntilCompleted: false, creationOptions);
+
+        Validate(createOperation.Value);
+        VectorStore vectorStore = createOperation.Value;
+
+        if (IsAsync)
+        {
+            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsAsync(vectorStore.Id))
+            {
+                Assert.Multiple(() =>
+                {
+                    Assert.That(association.FileId, Is.Not.Null);
+                    Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                    Assert.That(association.LastError, Is.Null);
+                    Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
+                    Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.InProgress));
+                });
+            }
+        }
+
+        var deletionResult = IsAsync
+            ? await client.DeleteVectorStoreAsync(vectorStore.Id)
+            : client.DeleteVectorStore(vectorStore.Id);
+        Assert.That(deletionResult.Value.VectorStoreId, Is.EqualTo(vectorStore.Id));
+        Assert.That(deletionResult.Value.Deleted, Is.True);
+        _vectorStoresToDelete.RemoveAt(_vectorStoresToDelete.Count - 1);
+
+        creationOptions = new VectorStoreCreationOptions();
+        foreach (var file in testFiles)
+        {
+            creationOptions.FileIds.Add(file.Id);
+        }
+
+    }
+
     private IReadOnlyList<OpenAIFile> GetNewTestFiles(int count)
     {
         List<OpenAIFile> files = [];
@@ -623,7 +680,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         for (int i = 0; i < count; i++)
         {
             OpenAIFile file = client.UploadFile(
-                BinaryData.FromString("This is a test file").ToStream(),
+                BinaryData.FromString($"This is a test file {i}").ToStream(),
                 $"test_file_{i.ToString().PadLeft(3, '0')}.txt",
                 FileUploadPurpose.Assistants);
             Validate(file);

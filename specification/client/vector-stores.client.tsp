@@ -13,3 +13,4 @@ using Azure.ClientGenerator.Core;
 @@clientName(VectorStores.cancelVectorStoreFileBatch, "CancelBatchFileJob");
 @@clientName(VectorStores.getVectorStoreFile, "GetFileAssociation");
 @@clientName(VectorStores.listVectorStores, "GetVectorStores");
+@@clientName(VectorStores.listVectorStoreFiles, "GetFileAssociations");

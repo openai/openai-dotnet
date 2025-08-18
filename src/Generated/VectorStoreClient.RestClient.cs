@@ -207,7 +207,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetVectorStoreFilesRequest(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFileAssociationsRequest(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
             PipelineMessage message = Pipeline.CreateMessage();
             message.ResponseClassifier = PipelineMessageClassifier200;
