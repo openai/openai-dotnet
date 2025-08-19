@@ -422,6 +422,249 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
+    [Test]
+    public async Task CanPaginateGetFileAssociationsInBatchAsync()
+    {
+        AssertAsyncOnly();
+
+        VectorStoreClient client = GetTestClient();
+        CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: true);
+        VectorStore vectorStore = createOperation.Value;
+        Validate(vectorStore);
+
+        // Create enough files to ensure we get multiple pages
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(10);
+
+        CreateBatchFileJobOperation batchFileJobOperation = client.CreateBatchFileJob(vectorStore.Id, testFiles?.Select(file => file.Id), waitUntilCompleted: false);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(batchFileJobOperation.BatchId, Is.Not.Null);
+            Assert.That(batchFileJobOperation.VectorStoreId, Is.EqualTo(vectorStore.Id));
+        });
+
+        // Test basic pagination with PageSizeLimit
+        var options = new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 3 };
+        AsyncCollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociationsInBatchAsync(
+            vectorStore.Id, batchFileJobOperation.BatchId, options);
+
+        int totalItemsCount = 0;
+        int pageCount = 0;
+        List<string> seenFileIds = new List<string>();
+
+        await foreach (VectorStoreFileAssociation association in associations)
+        {
+            totalItemsCount++;
+            seenFileIds.Add(association.FileId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(association.FileId, Is.Not.Null);
+                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
+            });
+        }
+
+        // Verify we got all the files
+        Assert.That(totalItemsCount, Is.EqualTo(10));
+        Assert.That(seenFileIds.Distinct().Count(), Is.EqualTo(10));
+
+        // Now test pagination by examining raw pages
+        AsyncCollectionResult<VectorStoreFileAssociation> pagedAssociations = client.GetFileAssociationsInBatchAsync(
+            vectorStore.Id, batchFileJobOperation.BatchId, new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 3 });
+
+        IAsyncEnumerable<ClientResult> pages = pagedAssociations.GetRawPagesAsync();
+        IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
+
+        pageCount = 0;
+        int itemsInPages = 0;
+
+        while (await pageEnumerator.MoveNextAsync())
+        {
+            ClientResult page = pageEnumerator.Current;
+            pageCount++;
+
+            IEnumerable<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page);
+            int pageItemCount = itemsInPage.Count();
+            itemsInPages += pageItemCount;
+
+            // Each page should have at most 3 items (except possibly the last page)
+            Assert.That(pageItemCount, Is.LessThanOrEqualTo(3));
+            Assert.That(pageItemCount, Is.GreaterThan(0));
+        }
+
+        // We should have at least 4 pages (10 items with page size 3)
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(4));
+        Assert.That(itemsInPages, Is.EqualTo(10));
+    }
+
+    [Test]
+    public async Task CanTestGetFileAssociationsInBatchAsyncCollectionOptions()
+    {
+        AssertAsyncOnly();
+
+        VectorStoreClient client = GetTestClient();
+        CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: true);
+        VectorStore vectorStore = createOperation.Value;
+        Validate(vectorStore);
+
+        // Create files for testing
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(8);
+
+        CreateBatchFileJobOperation batchFileJobOperation = client.CreateBatchFileJob(vectorStore.Id, testFiles?.Select(file => file.Id), waitUntilCompleted: false);
+        Validate(batchFileJobOperation);
+
+        // Test Order property - Ascending vs Descending
+        var ascendingOptions = new VectorStoreFileAssociationCollectionOptions 
+        { 
+            Order = VectorStoreCollectionOrder.Ascending,
+            PageSizeLimit = 5 
+        };
+        var descendingOptions = new VectorStoreFileAssociationCollectionOptions 
+        { 
+            Order = VectorStoreCollectionOrder.Descending,
+            PageSizeLimit = 5 
+        };
+
+        List<string> ascendingIds = new List<string>();
+        List<string> descendingIds = new List<string>();
+
+        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJobOperation.BatchId, ascendingOptions))
+        {
+            ascendingIds.Add(association.FileId);
+        }
+
+        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJobOperation.BatchId, descendingOptions))
+        {
+            descendingIds.Add(association.FileId);
+        }
+
+        // The lists should be reverse of each other
+        Assert.That(ascendingIds.Count, Is.EqualTo(descendingIds.Count));
+        Assert.That(ascendingIds.SequenceEqual(descendingIds.AsEnumerable().Reverse()), Is.True);
+
+        // Test Filter property - only get completed files (which should be all of them after batch completion)
+        var filterOptions = new VectorStoreFileAssociationCollectionOptions 
+        { 
+            Filter = VectorStoreFileStatusFilter.Completed 
+        };
+
+        int completedCount = 0;
+        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJobOperation.BatchId, filterOptions))
+        {
+            completedCount++;
+            Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.Completed));
+        }
+
+        Assert.That(completedCount, Is.EqualTo(8)); // Should match the number of files we uploaded
+
+        // Test AfterId property - get associations after a specific ID
+        var firstAssociation = ascendingIds.FirstOrDefault();
+        if (!string.IsNullOrEmpty(firstAssociation))
+        {
+            var afterOptions = new VectorStoreFileAssociationCollectionOptions 
+            { 
+                AfterId = firstAssociation,
+                Order = VectorStoreCollectionOrder.Ascending 
+            };
+
+            List<string> afterIds = new List<string>();
+            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJobOperation.BatchId, afterOptions))
+            {
+                afterIds.Add(association.FileId);
+            }
+
+            // Should have one less item (excluding the first one)
+            Assert.That(afterIds.Count, Is.EqualTo(ascendingIds.Count - 1));
+            // Should not contain the first ID
+            Assert.That(afterIds.Contains(firstAssociation), Is.False);
+        }
+
+        // Test BeforeId property - get associations before a specific ID
+        var lastAssociation = ascendingIds.LastOrDefault();
+        if (!string.IsNullOrEmpty(lastAssociation))
+        {
+            var beforeOptions = new VectorStoreFileAssociationCollectionOptions 
+            { 
+                BeforeId = lastAssociation,
+                Order = VectorStoreCollectionOrder.Ascending 
+            };
+
+            List<string> beforeIds = new List<string>();
+            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJobOperation.BatchId, beforeOptions))
+            {
+                beforeIds.Add(association.FileId);
+            }
+
+            // Should have one less item (excluding the last one)
+            Assert.That(beforeIds.Count, Is.EqualTo(ascendingIds.Count - 1));
+            // Should not contain the last ID
+            Assert.That(beforeIds.Contains(lastAssociation), Is.False);
+        }
+    }
+
+    [Test]
+    public async Task CanRehydrateGetFileAssociationsInBatchAsyncPagination()
+    {
+        AssertAsyncOnly();
+
+        VectorStoreClient client = GetTestClient();
+        CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: true);
+        VectorStore vectorStore = createOperation.Value;
+        Validate(vectorStore);
+
+        IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(6);
+
+        CreateBatchFileJobOperation batchFileJobOperation = client.CreateBatchFileJob(vectorStore.Id, testFiles?.Select(file => file.Id), waitUntilCompleted: false);
+        Validate(batchFileJobOperation);
+
+        // We added 6 files and will get pages with 2 items, so expect three pages in the collection.
+        AsyncCollectionResult<VectorStoreFileAssociation> fileAssociations = client.GetFileAssociationsInBatchAsync(
+            vectorStore.Id, batchFileJobOperation.BatchId, new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 2 });
+
+        IAsyncEnumerable<ClientResult> pages = fileAssociations.GetRawPagesAsync();
+        IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
+        await pageEnumerator.MoveNextAsync();
+        ClientResult firstPage = pageEnumerator.Current;
+        ContinuationToken nextPageToken = fileAssociations.GetContinuationToken(firstPage);
+
+        // Simulate rehydration of the collection
+        BinaryData rehydrationBytes = nextPageToken.ToBytes();
+        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
+
+        AsyncCollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociationsInBatchAsync(
+            vectorStore.Id, batchFileJobOperation.BatchId, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
+
+        IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPagesAsync();
+        IAsyncEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetAsyncEnumerator();
+
+        int pageCount = 0;
+
+        while (await pageEnumerator.MoveNextAsync() && await rehydratedPageEnumerator.MoveNextAsync())
+        {
+            ClientResult page = pageEnumerator.Current;
+            ClientResult rehydratedPage = rehydratedPageEnumerator.Current;
+
+            List<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page).ToList();
+            List<VectorStoreFileAssociation> itemsInRehydratedPage = GetFileAssociationsFromPage(rehydratedPage).ToList();
+
+            Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
+
+            for (int i = 0; i < itemsInPage.Count; i++)
+            {
+                Assert.AreEqual(itemsInPage[i].FileId, itemsInRehydratedPage[i].FileId);
+                Assert.AreEqual(itemsInPage[i].VectorStoreId, itemsInRehydratedPage[i].VectorStoreId);
+                Assert.AreEqual(itemsInPage[i].CreatedAt, itemsInRehydratedPage[i].CreatedAt);
+                Assert.AreEqual(itemsInPage[i].Status, itemsInRehydratedPage[i].Status);
+            }
+
+            pageCount++;
+        }
+
+        // Since we rehydrated the collection at the second page, we expect to
+        // see two of the remaining three pages in the collection.
+        Assert.That(pageCount, Is.EqualTo(2));
+    }
+
     private static IEnumerable<VectorStoreFileAssociation> GetFileAssociationsFromPage(ClientResult page)
     {
         PipelineResponse response = page.GetRawResponse();
