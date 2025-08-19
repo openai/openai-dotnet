@@ -611,7 +611,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         CreateVectorStoreOperation createOperation = await client.CreateVectorStoreAsync(waitUntilCompleted: true);
         VectorStore vectorStore = createOperation.Value;
         Validate(vectorStore);
-
+        
         IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(6);
 
         CreateBatchFileJobOperation batchFileJobOperation = client.CreateBatchFileJob(vectorStore.Id, testFiles?.Select(file => file.Id), waitUntilCompleted: false);
