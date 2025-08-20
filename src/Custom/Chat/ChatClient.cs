@@ -361,7 +361,14 @@ public partial class ChatClient
         if (stream)
         {
             options.Stream = true;
-            options.StreamOptions = s_includeUsageStreamOptions;
+
+			// <GP> For MistralAI, we need to disable `include_usage` when streaming otherwise
+			// mistral returns 422. See https://github.com/openai/openai-dotnet/issues/616
+			// original would prevent this by always setting StreamOptions to the default with
+			// include_usage set to true.
+			if (options.StreamOptions == null)
+                options.StreamOptions = s_includeUsageStreamOptions;
+            // </GP>
         }
         else
         {

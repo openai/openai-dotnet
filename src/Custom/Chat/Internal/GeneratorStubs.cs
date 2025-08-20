@@ -30,7 +30,7 @@ internal partial class InternalChatCompletionResponseMessageFunctionCall { }
 internal readonly partial struct InternalChatCompletionResponseMessageRole { }
 
 [CodeGenType("ChatCompletionStreamOptions")]
-internal partial class InternalChatCompletionStreamOptions { }
+public partial class InternalChatCompletionStreamOptions { }
 
 [CodeGenType("CreateChatCompletionFunctionResponse")]
 internal partial class InternalCreateChatCompletionFunctionResponse { }
