@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalResponsesTextFormatType(string value) => new InternalResponsesTextFormatType(value);
 
+        public static implicit operator InternalResponsesTextFormatType?(string value) => value == null ? null : new InternalResponsesTextFormatType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalResponsesTextFormatType other && Equals(other);
 

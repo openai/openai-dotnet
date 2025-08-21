@@ -36,6 +36,8 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatReasoningEffortLevel(string value) => new ChatReasoningEffortLevel(value);
 
+        public static implicit operator ChatReasoningEffortLevel?(string value) => value == null ? null : new ChatReasoningEffortLevel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatReasoningEffortLevel other && Equals(other);
 

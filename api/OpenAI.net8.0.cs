@@ -42,7 +42,6 @@ namespace OpenAI {
         public string ProjectId { get; set; }
         public string UserAgentApplicationId { get; set; }
     }
-    [Experimental("OPENAI001")]
     public class OpenAIContext : ModelReaderWriterContext {
         public static OpenAIContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
@@ -315,6 +314,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(FileSearchRanker left, FileSearchRanker right);
         public static implicit operator FileSearchRanker(string value);
+        public static implicit operator FileSearchRanker?(string value);
         public static bool operator !=(FileSearchRanker left, FileSearchRanker right);
         public override readonly string ToString();
     }
@@ -461,6 +461,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(MessageFailureReason left, MessageFailureReason right);
         public static implicit operator MessageFailureReason(string value);
+        public static implicit operator MessageFailureReason?(string value);
         public static bool operator !=(MessageFailureReason left, MessageFailureReason right);
         public override readonly string ToString();
     }
@@ -496,6 +497,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(MessageStatus left, MessageStatus right);
         public static implicit operator MessageStatus(string value);
+        public static implicit operator MessageStatus?(string value);
         public static bool operator !=(MessageStatus left, MessageStatus right);
         public override readonly string ToString();
     }
@@ -580,6 +582,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(RunErrorCode left, RunErrorCode right);
         public static implicit operator RunErrorCode(string value);
+        public static implicit operator RunErrorCode?(string value);
         public static bool operator !=(RunErrorCode left, RunErrorCode right);
         public override readonly string ToString();
     }
@@ -603,6 +606,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(RunIncompleteReason left, RunIncompleteReason right);
         public static implicit operator RunIncompleteReason(string value);
+        public static implicit operator RunIncompleteReason?(string value);
         public static bool operator !=(RunIncompleteReason left, RunIncompleteReason right);
         public override readonly string ToString();
     }
@@ -634,6 +638,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(RunStatus left, RunStatus right);
         public static implicit operator RunStatus(string value);
+        public static implicit operator RunStatus?(string value);
         public static bool operator !=(RunStatus left, RunStatus right);
         public override readonly string ToString();
     }
@@ -734,6 +739,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(RunStepErrorCode left, RunStepErrorCode right);
         public static implicit operator RunStepErrorCode(string value);
+        public static implicit operator RunStepErrorCode?(string value);
         public static bool operator !=(RunStepErrorCode left, RunStepErrorCode right);
         public override readonly string ToString();
     }
@@ -781,6 +787,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(RunStepStatus left, RunStepStatus right);
         public static implicit operator RunStepStatus(string value);
+        public static implicit operator RunStepStatus?(string value);
         public static bool operator !=(RunStepStatus left, RunStepStatus right);
         public override readonly string ToString();
     }
@@ -1142,6 +1149,7 @@ namespace OpenAI.Audio {
         public override readonly int GetHashCode();
         public static bool operator ==(AudioTranscriptionFormat left, AudioTranscriptionFormat right);
         public static implicit operator AudioTranscriptionFormat(string value);
+        public static implicit operator AudioTranscriptionFormat?(string value);
         public static bool operator !=(AudioTranscriptionFormat left, AudioTranscriptionFormat right);
         public override readonly string ToString();
     }
@@ -1197,6 +1205,7 @@ namespace OpenAI.Audio {
         public override readonly int GetHashCode();
         public static bool operator ==(AudioTranslationFormat left, AudioTranslationFormat right);
         public static implicit operator AudioTranslationFormat(string value);
+        public static implicit operator AudioTranslationFormat?(string value);
         public static bool operator !=(AudioTranslationFormat left, AudioTranslationFormat right);
         public override readonly string ToString();
     }
@@ -1228,6 +1237,7 @@ namespace OpenAI.Audio {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
         public static implicit operator GeneratedSpeechFormat(string value);
+        public static implicit operator GeneratedSpeechFormat?(string value);
         public static bool operator !=(GeneratedSpeechFormat left, GeneratedSpeechFormat right);
         public override readonly string ToString();
     }
@@ -1256,6 +1266,7 @@ namespace OpenAI.Audio {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedSpeechVoice left, GeneratedSpeechVoice right);
         public static implicit operator GeneratedSpeechVoice(string value);
+        public static implicit operator GeneratedSpeechVoice?(string value);
         public static bool operator !=(GeneratedSpeechVoice left, GeneratedSpeechVoice right);
         public override readonly string ToString();
     }
@@ -1319,6 +1330,7 @@ namespace OpenAI.Audio {
         public override readonly int GetHashCode();
         public static bool operator ==(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
         public static implicit operator StreamingAudioTranscriptionUpdateKind(string value);
+        public static implicit operator StreamingAudioTranscriptionUpdateKind?(string value);
         public static bool operator !=(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
         public override readonly string ToString();
     }
@@ -1527,6 +1539,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
         public static implicit operator ChatCompletionCollectionOrder(string value);
+        public static implicit operator ChatCompletionCollectionOrder?(string value);
         public static bool operator !=(ChatCompletionCollectionOrder left, ChatCompletionCollectionOrder right);
         public override readonly string ToString();
     }
@@ -1561,6 +1574,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
         public static implicit operator ChatCompletionMessageCollectionOrder(string value);
+        public static implicit operator ChatCompletionMessageCollectionOrder?(string value);
         public static bool operator !=(ChatCompletionMessageCollectionOrder left, ChatCompletionMessageCollectionOrder right);
         public override readonly string ToString();
     }
@@ -1681,6 +1695,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatImageDetailLevel left, ChatImageDetailLevel right);
         public static implicit operator ChatImageDetailLevel(string value);
+        public static implicit operator ChatImageDetailLevel?(string value);
         public static bool operator !=(ChatImageDetailLevel left, ChatImageDetailLevel right);
         public override readonly string ToString();
     }
@@ -1696,6 +1711,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatInputAudioFormat left, ChatInputAudioFormat right);
         public static implicit operator ChatInputAudioFormat(string value);
+        public static implicit operator ChatInputAudioFormat?(string value);
         public static bool operator !=(ChatInputAudioFormat left, ChatInputAudioFormat right);
         public override readonly string ToString();
     }
@@ -1847,6 +1863,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatOutputAudioFormat left, ChatOutputAudioFormat right);
         public static implicit operator ChatOutputAudioFormat(string value);
+        public static implicit operator ChatOutputAudioFormat?(string value);
         public static bool operator !=(ChatOutputAudioFormat left, ChatOutputAudioFormat right);
         public override readonly string ToString();
     }
@@ -1880,6 +1897,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatOutputAudioVoice left, ChatOutputAudioVoice right);
         public static implicit operator ChatOutputAudioVoice(string value);
+        public static implicit operator ChatOutputAudioVoice?(string value);
         public static bool operator !=(ChatOutputAudioVoice left, ChatOutputAudioVoice right);
         public override readonly string ToString();
     }
@@ -1921,6 +1939,7 @@ namespace OpenAI.Chat {
         public override readonly int GetHashCode();
         public static bool operator ==(ChatReasoningEffortLevel left, ChatReasoningEffortLevel right);
         public static implicit operator ChatReasoningEffortLevel(string value);
+        public static implicit operator ChatReasoningEffortLevel?(string value);
         public static bool operator !=(ChatReasoningEffortLevel left, ChatReasoningEffortLevel right);
         public override readonly string ToString();
     }
@@ -2507,6 +2526,7 @@ namespace OpenAI.Files {
         public override readonly int GetHashCode();
         public static bool operator ==(FileUploadPurpose left, FileUploadPurpose right);
         public static implicit operator FileUploadPurpose(string value);
+        public static implicit operator FileUploadPurpose?(string value);
         public static bool operator !=(FileUploadPurpose left, FileUploadPurpose right);
         public override readonly string ToString();
     }
@@ -2766,6 +2786,7 @@ namespace OpenAI.FineTuning {
         public override readonly int GetHashCode();
         public static bool operator ==(FineTuningJobEventKind left, FineTuningJobEventKind right);
         public static implicit operator FineTuningJobEventKind(string value);
+        public static implicit operator FineTuningJobEventKind?(string value);
         public static bool operator !=(FineTuningJobEventKind left, FineTuningJobEventKind right);
         public override readonly string ToString();
     }
@@ -2800,6 +2821,7 @@ namespace OpenAI.FineTuning {
         public override readonly int GetHashCode();
         public static bool operator ==(FineTuningStatus left, FineTuningStatus right);
         public static implicit operator FineTuningStatus(string value);
+        public static implicit operator FineTuningStatus?(string value);
         public static bool operator !=(FineTuningStatus left, FineTuningStatus right);
         public override readonly string ToString();
     }
@@ -3044,6 +3066,7 @@ namespace OpenAI.Graders {
         public override readonly int GetHashCode();
         public static bool operator ==(GraderStringCheckOperation left, GraderStringCheckOperation right);
         public static implicit operator GraderStringCheckOperation(string value);
+        public static implicit operator GraderStringCheckOperation?(string value);
         public static bool operator !=(GraderStringCheckOperation left, GraderStringCheckOperation right);
         public override readonly string ToString();
     }
@@ -3079,6 +3102,7 @@ namespace OpenAI.Graders {
         public override readonly int GetHashCode();
         public static bool operator ==(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
         public static implicit operator GraderTextSimilarityEvaluationMetric(string value);
+        public static implicit operator GraderTextSimilarityEvaluationMetric?(string value);
         public static bool operator !=(GraderTextSimilarityEvaluationMetric left, GraderTextSimilarityEvaluationMetric right);
         public override readonly string ToString();
     }
@@ -3098,6 +3122,7 @@ namespace OpenAI.Graders {
         public override readonly int GetHashCode();
         public static bool operator ==(GraderType left, GraderType right);
         public static implicit operator GraderType(string value);
+        public static implicit operator GraderType?(string value);
         public static bool operator !=(GraderType left, GraderType right);
         public override readonly string ToString();
     }
@@ -3208,6 +3233,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageBackground left, GeneratedImageBackground right);
         public static implicit operator GeneratedImageBackground(string value);
+        public static implicit operator GeneratedImageBackground?(string value);
         public static bool operator !=(GeneratedImageBackground left, GeneratedImageBackground right);
         public override readonly string ToString();
     }
@@ -3237,6 +3263,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageFileFormat left, GeneratedImageFileFormat right);
         public static implicit operator GeneratedImageFileFormat(string value);
+        public static implicit operator GeneratedImageFileFormat?(string value);
         public static bool operator !=(GeneratedImageFileFormat left, GeneratedImageFileFormat right);
         public override readonly string ToString();
     }
@@ -3251,6 +3278,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageFormat left, GeneratedImageFormat right);
         public static implicit operator GeneratedImageFormat(string value);
+        public static implicit operator GeneratedImageFormat?(string value);
         public static bool operator !=(GeneratedImageFormat left, GeneratedImageFormat right);
         public override readonly string ToString();
     }
@@ -3266,6 +3294,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageModerationLevel left, GeneratedImageModerationLevel right);
         public static implicit operator GeneratedImageModerationLevel(string value);
+        public static implicit operator GeneratedImageModerationLevel?(string value);
         public static bool operator !=(GeneratedImageModerationLevel left, GeneratedImageModerationLevel right);
         public override readonly string ToString();
     }
@@ -3286,6 +3315,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageQuality left, GeneratedImageQuality right);
         public static implicit operator GeneratedImageQuality(string value);
+        public static implicit operator GeneratedImageQuality?(string value);
         public static bool operator !=(GeneratedImageQuality left, GeneratedImageQuality right);
         public override readonly string ToString();
     }
@@ -3322,6 +3352,7 @@ namespace OpenAI.Images {
         public override readonly int GetHashCode();
         public static bool operator ==(GeneratedImageStyle left, GeneratedImageStyle right);
         public static implicit operator GeneratedImageStyle(string value);
+        public static implicit operator GeneratedImageStyle?(string value);
         public static bool operator !=(GeneratedImageStyle left, GeneratedImageStyle right);
         public override readonly string ToString();
     }
@@ -3615,6 +3646,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationContentPartKind left, ConversationContentPartKind right);
         public static implicit operator ConversationContentPartKind(string value);
+        public static implicit operator ConversationContentPartKind?(string value);
         public static bool operator !=(ConversationContentPartKind left, ConversationContentPartKind right);
         public override readonly string ToString();
     }
@@ -3643,6 +3675,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationIncompleteReason left, ConversationIncompleteReason right);
         public static implicit operator ConversationIncompleteReason(string value);
+        public static implicit operator ConversationIncompleteReason?(string value);
         public static bool operator !=(ConversationIncompleteReason left, ConversationIncompleteReason right);
         public override readonly string ToString();
     }
@@ -3669,6 +3702,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationItemStatus left, ConversationItemStatus right);
         public static implicit operator ConversationItemStatus(string value);
+        public static implicit operator ConversationItemStatus?(string value);
         public static bool operator !=(ConversationItemStatus left, ConversationItemStatus right);
         public override readonly string ToString();
     }
@@ -3694,6 +3728,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationMessageRole left, ConversationMessageRole right);
         public static implicit operator ConversationMessageRole(string value);
+        public static implicit operator ConversationMessageRole?(string value);
         public static bool operator !=(ConversationMessageRole left, ConversationMessageRole right);
         public override readonly string ToString();
     }
@@ -3808,6 +3843,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationStatus left, ConversationStatus right);
         public static implicit operator ConversationStatus(string value);
+        public static implicit operator ConversationStatus?(string value);
         public static bool operator !=(ConversationStatus left, ConversationStatus right);
         public override readonly string ToString();
     }
@@ -3871,6 +3907,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationToolKind left, ConversationToolKind right);
         public static implicit operator ConversationToolKind(string value);
+        public static implicit operator ConversationToolKind?(string value);
         public static bool operator !=(ConversationToolKind left, ConversationToolKind right);
         public override readonly string ToString();
     }
@@ -3895,6 +3932,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ConversationVoice left, ConversationVoice right);
         public static implicit operator ConversationVoice(string value);
+        public static implicit operator ConversationVoice?(string value);
         public static bool operator !=(ConversationVoice left, ConversationVoice right);
         public override readonly string ToString();
     }
@@ -3993,6 +4031,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(InputTranscriptionModel left, InputTranscriptionModel right);
         public static implicit operator InputTranscriptionModel(string value);
+        public static implicit operator InputTranscriptionModel?(string value);
         public static bool operator !=(InputTranscriptionModel left, InputTranscriptionModel right);
         public override readonly string ToString();
     }
@@ -4160,6 +4199,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(RealtimeAudioFormat left, RealtimeAudioFormat right);
         public static implicit operator RealtimeAudioFormat(string value);
+        public static implicit operator RealtimeAudioFormat?(string value);
         public static bool operator !=(RealtimeAudioFormat left, RealtimeAudioFormat right);
         public override readonly string ToString();
     }
@@ -4326,6 +4366,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseConversationSelection left, ResponseConversationSelection right);
         public static implicit operator ResponseConversationSelection(string value);
+        public static implicit operator ResponseConversationSelection?(string value);
         public static bool operator !=(ResponseConversationSelection left, ResponseConversationSelection right);
         public override readonly string ToString();
     }
@@ -4367,6 +4408,7 @@ namespace OpenAI.Realtime {
         public override readonly int GetHashCode();
         public static bool operator ==(SemanticEagernessLevel left, SemanticEagernessLevel right);
         public static implicit operator SemanticEagernessLevel(string value);
+        public static implicit operator SemanticEagernessLevel?(string value);
         public static bool operator !=(SemanticEagernessLevel left, SemanticEagernessLevel right);
         public override readonly string ToString();
     }
@@ -4532,6 +4574,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public static implicit operator ComputerToolEnvironment(string value);
+        public static implicit operator ComputerToolEnvironment?(string value);
         public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public override readonly string ToString();
     }
@@ -4577,6 +4620,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(FileSearchToolRanker left, FileSearchToolRanker right);
         public static implicit operator FileSearchToolRanker(string value);
+        public static implicit operator FileSearchToolRanker?(string value);
         public static bool operator !=(FileSearchToolRanker left, FileSearchToolRanker right);
         public override readonly string ToString();
     }
@@ -4869,6 +4913,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseErrorCode left, ResponseErrorCode right);
         public static implicit operator ResponseErrorCode(string value);
+        public static implicit operator ResponseErrorCode?(string value);
         public static bool operator !=(ResponseErrorCode left, ResponseErrorCode right);
         public override readonly string ToString();
     }
@@ -4885,6 +4930,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
         public static implicit operator ResponseImageDetailLevel(string value);
+        public static implicit operator ResponseImageDetailLevel?(string value);
         public static bool operator !=(ResponseImageDetailLevel left, ResponseImageDetailLevel right);
         public override readonly string ToString();
     }
@@ -4908,6 +4954,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseIncompleteStatusReason left, ResponseIncompleteStatusReason right);
         public static implicit operator ResponseIncompleteStatusReason(string value);
+        public static implicit operator ResponseIncompleteStatusReason?(string value);
         public static bool operator !=(ResponseIncompleteStatusReason left, ResponseIncompleteStatusReason right);
         public override readonly string ToString();
     }
@@ -5016,6 +5063,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseReasoningEffortLevel left, ResponseReasoningEffortLevel right);
         public static implicit operator ResponseReasoningEffortLevel(string value);
+        public static implicit operator ResponseReasoningEffortLevel?(string value);
         public static bool operator !=(ResponseReasoningEffortLevel left, ResponseReasoningEffortLevel right);
         public override readonly string ToString();
     }
@@ -5041,6 +5089,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
         public static implicit operator ResponseReasoningSummaryVerbosity(string value);
+        public static implicit operator ResponseReasoningSummaryVerbosity?(string value);
         public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
         public override readonly string ToString();
     }
@@ -5139,6 +5188,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ResponseTruncationMode left, ResponseTruncationMode right);
         public static implicit operator ResponseTruncationMode(string value);
+        public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
     }
@@ -5406,6 +5456,7 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(WebSearchContextSize left, WebSearchContextSize right);
         public static implicit operator WebSearchContextSize(string value);
+        public static implicit operator WebSearchContextSize?(string value);
         public static bool operator !=(WebSearchContextSize left, WebSearchContextSize right);
         public override readonly string ToString();
     }
@@ -5542,6 +5593,7 @@ namespace OpenAI.VectorStores {
         public override readonly int GetHashCode();
         public static bool operator ==(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
         public static implicit operator VectorStoreBatchFileJobStatus(string value);
+        public static implicit operator VectorStoreBatchFileJobStatus?(string value);
         public static bool operator !=(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
         public override readonly string ToString();
     }
@@ -5638,6 +5690,7 @@ namespace OpenAI.VectorStores {
         public override readonly int GetHashCode();
         public static bool operator ==(VectorStoreCollectionOrder left, VectorStoreCollectionOrder right);
         public static implicit operator VectorStoreCollectionOrder(string value);
+        public static implicit operator VectorStoreCollectionOrder?(string value);
         public static bool operator !=(VectorStoreCollectionOrder left, VectorStoreCollectionOrder right);
         public override readonly string ToString();
     }
@@ -5737,6 +5790,7 @@ namespace OpenAI.VectorStores {
         public override readonly int GetHashCode();
         public static bool operator ==(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
         public static implicit operator VectorStoreFileAssociationErrorCode(string value);
+        public static implicit operator VectorStoreFileAssociationErrorCode?(string value);
         public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
         public override readonly string ToString();
     }
@@ -5774,6 +5828,7 @@ namespace OpenAI.VectorStores {
         public override readonly int GetHashCode();
         public static bool operator ==(VectorStoreFileStatusFilter left, VectorStoreFileStatusFilter right);
         public static implicit operator VectorStoreFileStatusFilter(string value);
+        public static implicit operator VectorStoreFileStatusFilter?(string value);
         public static bool operator !=(VectorStoreFileStatusFilter left, VectorStoreFileStatusFilter right);
         public override readonly string ToString();
     }

@@ -33,6 +33,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator ResponseConversationSelection(string value) => new ResponseConversationSelection(value);
 
+        public static implicit operator ResponseConversationSelection?(string value) => value == null ? null : new ResponseConversationSelection(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseConversationSelection other && Equals(other);
 

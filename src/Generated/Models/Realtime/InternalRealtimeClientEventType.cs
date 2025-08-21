@@ -61,6 +61,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeClientEventType(string value) => new InternalRealtimeClientEventType(value);
 
+        public static implicit operator InternalRealtimeClientEventType?(string value) => value == null ? null : new InternalRealtimeClientEventType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeClientEventType other && Equals(other);
 

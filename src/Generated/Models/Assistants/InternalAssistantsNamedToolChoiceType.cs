@@ -34,6 +34,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalAssistantsNamedToolChoiceType(string value) => new InternalAssistantsNamedToolChoiceType(value);
 
+        public static implicit operator InternalAssistantsNamedToolChoiceType?(string value) => value == null ? null : new InternalAssistantsNamedToolChoiceType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAssistantsNamedToolChoiceType other && Equals(other);
 
