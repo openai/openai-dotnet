@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalReasoningGenerateSummary(string value) => new InternalReasoningGenerateSummary(value);
 
+        public static implicit operator InternalReasoningGenerateSummary?(string value) => value == null ? null : new InternalReasoningGenerateSummary(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalReasoningGenerateSummary other && Equals(other);
 

@@ -35,6 +35,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator ConversationContentPartKind(string value) => new ConversationContentPartKind(value);
 
+        public static implicit operator ConversationContentPartKind?(string value) => value == null ? null : new ConversationContentPartKind(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ConversationContentPartKind other && Equals(other);
 

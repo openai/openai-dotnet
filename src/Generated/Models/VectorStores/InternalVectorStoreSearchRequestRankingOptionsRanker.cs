@@ -31,6 +31,8 @@ namespace OpenAI.VectorStores
 
         public static implicit operator InternalVectorStoreSearchRequestRankingOptionsRanker(string value) => new InternalVectorStoreSearchRequestRankingOptionsRanker(value);
 
+        public static implicit operator InternalVectorStoreSearchRequestRankingOptionsRanker?(string value) => value == null ? null : new InternalVectorStoreSearchRequestRankingOptionsRanker(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVectorStoreSearchRequestRankingOptionsRanker other && Equals(other);
 

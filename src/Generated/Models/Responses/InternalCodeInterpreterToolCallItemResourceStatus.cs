@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalCodeInterpreterToolCallItemResourceStatus(string value) => new InternalCodeInterpreterToolCallItemResourceStatus(value);
 
+        public static implicit operator InternalCodeInterpreterToolCallItemResourceStatus?(string value) => value == null ? null : new InternalCodeInterpreterToolCallItemResourceStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCodeInterpreterToolCallItemResourceStatus other && Equals(other);
 

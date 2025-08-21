@@ -36,6 +36,8 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseReasoningEffortLevel(string value) => new ResponseReasoningEffortLevel(value);
 
+        public static implicit operator ResponseReasoningEffortLevel?(string value) => value == null ? null : new ResponseReasoningEffortLevel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseReasoningEffortLevel other && Equals(other);
 

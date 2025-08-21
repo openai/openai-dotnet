@@ -28,6 +28,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalWebSearchUserLocationKind(string value) => new InternalWebSearchUserLocationKind(value);
 
+        public static implicit operator InternalWebSearchUserLocationKind?(string value) => value == null ? null : new InternalWebSearchUserLocationKind(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalWebSearchUserLocationKind other && Equals(other);
 

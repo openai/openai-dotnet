@@ -31,6 +31,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionType(string value) => new InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionType(value);
 
+        public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionType?(string value) => value == null ? null : new InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionType other && Equals(other);
 

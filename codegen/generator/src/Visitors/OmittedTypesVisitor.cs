@@ -1,5 +1,7 @@
 using Microsoft.TypeSpec.Generator.ClientModel;
+using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Providers;
+using Microsoft.TypeSpec.Generator.Statements;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,10 +22,29 @@ public class OmittedTypesVisitor : ScmLibraryVisitor
 
     protected override TypeProvider? VisitType(TypeProvider type)
     {
-        if (TypeNamesToOmit.Any(typeName => type.Name == typeName))
+        // Strip buildable attributes for omitted types from OpenAIContext
+        if (type.Name == "OpenAIContext")
         {
-            return null;
+            var filtered = new List<AttributeStatement>(type.Attributes.Count);
+            foreach (var a in type.Attributes)
+            {
+                bool drop =
+                    a.Type.Name == "ModelReaderWriterBuildableAttribute" &&
+                    a.Arguments.Count == 1 &&
+                    a.Arguments[0] is TypeOfExpression tof &&
+                    TypeNamesToOmit.Contains(tof.Type.Name);
+
+                if (!drop) filtered.Add(a);
+            }
+
+            if (filtered.Count != type.Attributes.Count)
+                type.Update(attributes: filtered);
         }
-        return type;
+
+        // Omit the types themselves
+        if (TypeNamesToOmit.Contains(type.Name))
+            return null;
+
+        return base.VisitType(type);
     }
 }

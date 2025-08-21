@@ -30,6 +30,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InputTranscriptionModel(string value) => new InputTranscriptionModel(value);
 
+        public static implicit operator InputTranscriptionModel?(string value) => value == null ? null : new InputTranscriptionModel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InputTranscriptionModel other && Equals(other);
 

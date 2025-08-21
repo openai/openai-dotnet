@@ -31,6 +31,8 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalGetEvalRunOutputItemsRequestStatus(string value) => new InternalGetEvalRunOutputItemsRequestStatus(value);
 
+        public static implicit operator InternalGetEvalRunOutputItemsRequestStatus?(string value) => value == null ? null : new InternalGetEvalRunOutputItemsRequestStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalGetEvalRunOutputItemsRequestStatus other && Equals(other);
 
