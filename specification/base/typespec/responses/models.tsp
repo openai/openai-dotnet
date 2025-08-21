@@ -1272,7 +1272,7 @@ model ResponseItemList {
   object: "list";
 
   /** A list of items used to generate this response. */
-  data: ItemResource[];
+  @pageItems data: ItemResource[];
 
   /** Whether there are more items available. */
   has_more: boolean;
@@ -1281,7 +1281,7 @@ model ResponseItemList {
   first_id: string;
 
   /** The ID of the last item in the list. */
-  last_id: string;
+  @continuationToken last_id: string;
 }
 
 // Tool customization: Establish discriminated type base

@@ -981,32 +981,5 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private static async Task RetryWithExponentialBackoffAsync(Func<Task> action, int maxRetries = 5, int initialWaitMs = 750)
-    {
-        int waitDuration = initialWaitMs;
-        int retryCount = 0;
-        bool successful = false;
-
-        while (retryCount < maxRetries && !successful)
-        {
-            try
-            {
-                await action();
-                successful = true;
-            }
-            catch (ClientResultException ex) when (ex.Status == 404)
-            {
-                // If we get a 404, it means the resource is not yet available
-                await Task.Delay(waitDuration);
-                waitDuration *= 2; // Exponential backoff
-                retryCount++;
-                if (retryCount >= maxRetries)
-                {
-                    throw; // Re-throw the exception if we've exhausted all retries
-                }
-            }
-        }
-    }
-
     private static ChatClient GetTestClient(string overrideModel = null) => GetTestClient<ChatClient>(TestScenario.Chat, overrideModel);
 }
