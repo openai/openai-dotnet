@@ -13,16 +13,16 @@ namespace OpenAI.Batch
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalListBatchesResponse(IEnumerable<InternalBatchJob> data, bool hasMore)
+        internal InternalListBatchesResponse(IEnumerable<BatchJob> data, bool hasMore)
         {
             Data = data.ToList();
             HasMore = hasMore;
         }
 
-        internal InternalListBatchesResponse(IList<InternalBatchJob> data, string firstId, string lastId, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalListBatchesResponse(IList<BatchJob> data, string firstId, string lastId, bool hasMore, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Data = data ?? new ChangeTrackingList<InternalBatchJob>();
+            Data = data ?? new ChangeTrackingList<BatchJob>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
@@ -30,7 +30,7 @@ namespace OpenAI.Batch
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal IList<InternalBatchJob> Data { get; }
+        public IList<BatchJob> Data { get; }
 
         public string FirstId { get; }
 
