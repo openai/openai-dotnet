@@ -96,4 +96,50 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         Assert.That(NodesOfType("response.content_part.done"), Has.Count.EqualTo(1));
         Assert.That(NodesOfType("response.output_item.done"), Has.Count.EqualTo(1));
     }
+
+    [Test]
+    public async Task CreateEphemeralToken()
+    {
+        RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
+
+        BinaryData input = BinaryData.FromBytes("""
+            {
+               "model": "gpt-4o-realtime-preview",
+               "instructions": "You are a friendly assistant."
+            }
+            """u8.ToArray());
+
+        using BinaryContent content = BinaryContent.Create(input);
+        ClientResult result = await client.CreateEphemeralTokenAsync(content);
+        BinaryData output = result.GetRawResponse().Content;
+
+        using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
+        string objectKind = outputAsJson.RootElement
+            .GetProperty("object"u8)
+            .GetString();
+
+        Assert.That(objectKind, Is.EqualTo("realtime.session"));
+    }
+
+    [Test]
+    public async Task CreateEphemeralTranscriptionToken()
+    {
+        RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
+
+        BinaryData input = BinaryData.FromBytes("""
+            {
+            }
+            """u8.ToArray());
+
+        using BinaryContent content = BinaryContent.Create(input);
+        ClientResult result = await client.CreateEphemeralTranscriptionTokenAsync(content);
+        BinaryData output = result.GetRawResponse().Content;
+
+        using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
+        string objectKind = outputAsJson.RootElement
+            .GetProperty("object"u8)
+            .GetString();
+
+        Assert.That(objectKind, Is.EqualTo("realtime.transcription_session"));
+    }
 }
