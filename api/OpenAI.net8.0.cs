@@ -44,6 +44,7 @@ namespace OpenAI {
         public string ProjectId { get; set; }
         public string UserAgentApplicationId { get; set; }
     }
+    [Experimental("OPENAI001")]
     public class OpenAIContext : ModelReaderWriterContext {
         public static OpenAIContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
@@ -3511,7 +3512,11 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
+        [Experimental("OPENAI001")]
+        public GeneratedImageBackground? Background { get; set; }
         public string EndUserId { get; set; }
+        [Experimental("OPENAI001")]
+        public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
         [Experimental("OPENAI001")]

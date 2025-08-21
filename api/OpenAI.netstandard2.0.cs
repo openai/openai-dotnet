@@ -3063,7 +3063,9 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
+        public GeneratedImageBackground? Background { get; set; }
         public string EndUserId { get; set; }
+        public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
         protected virtual ImageEditOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
