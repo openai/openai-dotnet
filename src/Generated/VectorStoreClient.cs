@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,6 +22,50 @@ namespace OpenAI.VectorStores
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
 
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null)
         {
@@ -88,6 +133,134 @@ namespace OpenAI.VectorStores
 
             using PipelineMessage message = CreateCancelBatchFileJobRequest(vectorStoreId, batchId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual CollectionResult GetFileAssociationsInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetFileAssociationsInBatchCollectionResult(
+                this,
+                vectorStoreId,
+                batchId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetFileAssociationsInBatchAsyncCollectionResult(
+                this,
+                vectorStoreId,
+                batchId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatch(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetFileAssociationsInBatchCollectionResultOfT(
+                this,
+                vectorStoreId,
+                batchId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetFileAssociationsInBatchAsyncCollectionResultOfT(
+                this,
+                vectorStoreId,
+                batchId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetFileAssociationsCollectionResult(
+                this,
+                vectorStoreId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetFileAssociationsAsyncCollectionResult(
+                this,
+                vectorStoreId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetFileAssociationsCollectionResultOfT(
+                this,
+                vectorStoreId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetFileAssociationsAsyncCollectionResultOfT(
+                this,
+                vectorStoreId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
         public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options)

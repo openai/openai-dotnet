@@ -128,9 +128,9 @@ model ListVectorStoresResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: VectorStoreObject[];
+  @pageItems data: VectorStoreObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 
@@ -200,9 +200,9 @@ model ListVectorStoreFilesResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: VectorStoreFileObject[];
+  @pageItems data: VectorStoreFileObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 

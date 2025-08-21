@@ -1093,6 +1093,22 @@ namespace OpenAI
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
         }
 
+        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
+        {
+            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileAssociationCollectionOptions VectorStoreFileAssociationCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        {
+            return new VectorStoreFileAssociationCollectionOptions(
+                afterId,
+                beforeId,
+                pageSizeLimit,
+                order,
+                filter,
+                additionalBinaryDataProperties: null);
+        }
+
         public static ContainerListResource ContainerListResource(string @object = default, IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
         {
             data ??= new ChangeTrackingList<ContainerResource>();

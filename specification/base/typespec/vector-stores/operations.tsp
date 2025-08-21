@@ -16,6 +16,7 @@ interface VectorStores {
   @get
   @operationId("listVectorStores")
   @summary("Returns a list of vector stores.")
+  @list
   listVectorStores(
     ...AcceptJsonHeader,
     ...CommonPageQueryParameters,
@@ -109,6 +110,7 @@ interface VectorStores {
   @get
   @operationId("listFilesInVectorStoreBatch")
   @summary("Returns a list of vector store files in a batch.")
+  @list
   listFilesInVectorStoreBatch(
     ...AcceptJsonHeader,
 
@@ -125,6 +127,7 @@ interface VectorStores {
   @get
   @operationId("listVectorStoreFiles")
   @summary("Returns a list of vector store files.")
+  @list
   listVectorStoreFiles(
     ...AcceptJsonHeader,
 

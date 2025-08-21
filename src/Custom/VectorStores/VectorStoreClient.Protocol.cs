@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI.VectorStores;
 
-[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
@@ -19,67 +15,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListFilesInVectorStoreBatchesAsync", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
-[CodeGenSuppress("ListFilesInVectorStoreBatches", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 public partial class VectorStoreClient
 {
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector-stores.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        return new AsyncVectorStoreCollectionResult(this, Pipeline, options, limit, order, after, before);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector-stores.
-    /// </summary>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
-    {
-        return new VectorStoreCollectionResult(this, Pipeline, options, limit, order, after, before);
-    }
 
     /// <summary>
     /// [Protocol Method] Creates a vector store.
@@ -164,77 +101,6 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector store files.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store that the files belong to. </param>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="filter"> Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return new AsyncVectorStoreFileCollectionResult(this, Pipeline, options, vectorStoreId, limit, order, after, before, filter);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector store files.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store that the files belong to. </param>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="filter"> Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return new VectorStoreFileCollectionResult(this, Pipeline, options, vectorStoreId, limit, order, after, before, filter);
-    }
-
-
-    /// <summary>
     /// [Protocol Method] Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object).
     /// </summary>
     /// <param name="waitUntilCompleted"> Value indicating whether the method
@@ -290,80 +156,6 @@ public partial class VectorStoreClient
 
         AddFileToVectorStoreOperation operation = this.CreateAddFileToVectorStoreOperation(ClientResult.FromValue(value, response));
         return operation.WaitUntil(waitUntilCompleted, options);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector store files in a batch.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store that the file batch belongs to. </param>
-    /// <param name="batchId"> The ID of the file batch that the files belong to. </param>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="filter"> Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
-
-        return new AsyncVectorStoreFileBatchCollectionResult(this, Pipeline, options, vectorStoreId, batchId, limit, order, after, before, filter);
-    }
-
-    /// <summary>
-    /// [Protocol Method] Returns a paginated collection of vector store files in a batch.
-    /// </summary>
-    /// <param name="vectorStoreId"> The ID of the vector store that the file batch belongs to. </param>
-    /// <param name="batchId"> The ID of the file batch that the files belong to. </param>
-    /// <param name="limit">
-    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-    /// default is 20.
-    /// </param>
-    /// <param name="order">
-    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-    /// for descending order. Allowed values: "asc" | "desc"
-    /// </param>
-    /// <param name="after">
-    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
-    /// </param>
-    /// <param name="before">
-    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-    /// </param>
-    /// <param name="filter"> Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="vectorStoreId"/> or <paramref name="batchId"/> is an empty string, and was expected to be non-empty. </exception>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> A collection of service responses, each holding a page of values. </returns>
-    public virtual CollectionResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
-
-        return new VectorStoreFileBatchCollectionResult(this, Pipeline, options, vectorStoreId, batchId, limit, order, after, before, filter);
     }
 
     /// <summary>
