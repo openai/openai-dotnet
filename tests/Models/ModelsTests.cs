@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Models;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Linq;

@@ -1,0 +1,159 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "448",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Write a JSON document with a list of five animals"
+              }
+            ]
+          }
+        ],
+        "text": {
+          "format": {
+            "type": "json_schema",
+            "name": "data_list",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "animal_data_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "animal_data_list"
+              ],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682ee553a0075a8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1828",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:28:15 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "991",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "1000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999932",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_688c506efbe4819a89afdfd67974017d053685b825a823a2",
+        "object": "response",
+        "created_at": 1754026095,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_688c506f7b44819ab7f440e9af858a44053685b825a823a2",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "{\"animal_data_list\":[\"Elephant\",\"Giraffe\",\"Lion\",\"Dolphin\",\"Kangaroo\"]}"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "data_list",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "animal_data_list": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "animal_data_list"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 48,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 24,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 72
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

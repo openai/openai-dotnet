@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Batch;
 using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -24,11 +24,10 @@ public class BatchTests : SyncAsyncTestBase
     {
     }
 
+    [SyncOnly]
     [Test]
     public void ListBatchesProtocol()
     {
-        AssertSyncOnly();
-
         BatchClient client = GetTestClient();
         CollectionResult batches = client.GetBatches(after: null, limit: null, options: null);
 
@@ -56,11 +55,10 @@ public class BatchTests : SyncAsyncTestBase
         Assert.GreaterOrEqual(pageCount, 1);
     }
 
+    [AsyncOnly]
     [Test]
     public async Task ListBatchesProtocolAsync()
     {
-        AssertAsyncOnly();
-
         BatchClient client = GetTestClient();
         AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
 

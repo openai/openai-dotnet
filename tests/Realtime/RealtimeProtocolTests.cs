@@ -3,7 +3,6 @@ using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Realtime;
 using OpenAI.Tests.Telemetry;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;

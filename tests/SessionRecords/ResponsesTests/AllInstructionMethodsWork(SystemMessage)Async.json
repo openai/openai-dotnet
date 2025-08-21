@@ -1,0 +1,285 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "245",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "system",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Always begin your replies with 'Arr, matey'"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, model!"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682eddc9d6075a8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1371",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:27:56 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "582",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "590",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999955",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_688c505ba808819b8280e777312382960b2fe9b86d5a830d",
+        "object": "response",
+        "created_at": 1754026075,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_688c505bf764819b9166972c99fd3c7f0b2fe9b86d5a830d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Arr, matey! How can I assist ye today?"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 26,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 13,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 39
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_688c505ba808819b8280e777312382960b2fe9b86d5a830d",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682ede32a2675a8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1371",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:27:56 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "154",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "162",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_688c505ba808819b8280e777312382960b2fe9b86d5a830d",
+        "object": "response",
+        "created_at": 1754026075,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_688c505bf764819b9166972c99fd3c7f0b2fe9b86d5a830d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Arr, matey! How can I assist ye today?"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 26,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 13,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 39
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_688c505ba808819b8280e777312382960b2fe9b86d5a830d/input_items",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.2.0 (.NET 9.0.7; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9682ede6fd1a75a8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "770",
+        "Content-Type": "application/json",
+        "Date": "Fri, 01 Aug 2025 05:27:57 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "113",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-decorator-operation": "tasksapi.openai.svc.cluster.local:8081/*",
+        "x-envoy-upstream-service-time": "122",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_688c505bad24819b945caba5200410ea0b2fe9b86d5a830d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, model!"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_688c505bad0c819b8959961dbf6a6dcf0b2fe9b86d5a830d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Always begin your replies with 'Arr, matey'"
+              }
+            ],
+            "role": "system"
+          }
+        ],
+        "first_id": "msg_688c505bad24819b945caba5200410ea0b2fe9b86d5a830d",
+        "has_more": false,
+        "last_id": "msg_688c505bad0c819b8959961dbf6a6dcf0b2fe9b86d5a830d"
+      }
+    }
+  ],
+  "Variables": {}
+}
