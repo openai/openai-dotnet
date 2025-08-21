@@ -21,4 +21,4 @@ if (-not $Path) {
 Write-Host "Updating snippets in $Path"
 
 dotnet tool restore
-dotnet tool run snippet-generator -b $Path $additionalArgs
+dotnet tool run snippet-generator -b $Path
