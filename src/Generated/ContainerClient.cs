@@ -6,8 +6,10 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
+using OpenAI.VectorStores;
 
 namespace OpenAI.Containers
 {
@@ -22,16 +24,24 @@ namespace OpenAI.Containers
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetContainers(int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetContainersRequest(limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new ContainerClientGetContainersCollectionResult(this, limit, order, after, options);
         }
 
-        public virtual async Task<ClientResult> GetContainersAsync(int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetContainersRequest(limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new ContainerClientGetContainersAsyncCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual CollectionResult<ContainerResource> GetContainers(int? limit = default, VectorStoreCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new ContainerClientGetContainersCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(int? limit = default, VectorStoreCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new ContainerClientGetContainersAsyncCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null)
@@ -100,20 +110,56 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetContainerFiles(string containerId, int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateGetContainerFilesRequest(containerId, limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new ContainerClientGetContainerFilesCollectionResult(
+                this,
+                containerId,
+                limit,
+                order,
+                after,
+                options);
         }
 
-        public virtual async Task<ClientResult> GetContainerFilesAsync(string containerId, int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? limit, string order, string after, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateGetContainerFilesRequest(containerId, limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new ContainerClientGetContainerFilesAsyncCollectionResult(
+                this,
+                containerId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, int? limit = default, VectorStoreCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            return new ContainerClientGetContainerFilesCollectionResultOfT(
+                this,
+                containerId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, int? limit = default, VectorStoreCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            return new ContainerClientGetContainerFilesAsyncCollectionResultOfT(
+                this,
+                containerId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
         public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null)

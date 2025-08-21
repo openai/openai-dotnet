@@ -300,6 +300,62 @@ namespace OpenAI
             return new ChatCompletionDeletionResult(deleted, @object, chatCompletionId, additionalBinaryDataProperties: null);
         }
 
+        public static ContainerListResource ContainerListResource(string @object = default, IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerResource>();
+
+            return new ContainerListResource(
+                @object,
+                data?.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
+        {
+            return new ContainerResource(
+                id,
+                @object,
+                name,
+                createdAt,
+                status,
+                expiresAfter,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
+        {
+            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
+        {
+            return new ContainerFileResource(
+                id,
+                @object,
+                containerId,
+                createdAt,
+                bytes,
+                path,
+                source,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileListResource ContainerFileListResource(string @object = default, IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerFileResource>();
+
+            return new ContainerFileListResource(
+                @object,
+                data?.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
             data ??= new ChangeTrackingList<OpenAIEmbedding>();
@@ -1083,6 +1139,16 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        {
+            return new ContainerCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        {
+            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
@@ -1091,36 +1157,6 @@ namespace OpenAI
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerListResource ContainerListResource(string @object = default, IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
-        {
-            data ??= new ChangeTrackingList<ContainerResource>();
-
-            return new ContainerListResource(
-                @object,
-                data?.ToList(),
-                firstId,
-                lastId,
-                hasMore,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
-        {
-            return new ContainerResource(
-                id,
-                @object,
-                name,
-                createdAt,
-                status,
-                expiresAfter,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
-        {
-            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
         }
 
         public static CreateContainerBody CreateContainerBody(string name = default, IEnumerable<string> fileIds = default, CreateContainerBodyExpiresAfter expiresAfter = default)
@@ -1143,32 +1179,6 @@ namespace OpenAI
         public static CreateContainerFileBody CreateContainerFileBody(string fileId = default, BinaryData @file = default)
         {
             return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
-        {
-            return new ContainerFileResource(
-                id,
-                @object,
-                containerId,
-                createdAt,
-                bytes,
-                path,
-                source,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerFileListResource ContainerFileListResource(string @object = default, IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
-        {
-            data ??= new ChangeTrackingList<ContainerFileResource>();
-
-            return new ContainerFileListResource(
-                @object,
-                data?.ToList(),
-                firstId,
-                lastId,
-                hasMore,
-                additionalBinaryDataProperties: null);
         }
 
         public static DeleteContainerFileResponse DeleteContainerFileResponse(string id = default, string @object = default, bool deleted = default)

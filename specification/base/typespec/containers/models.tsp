@@ -13,13 +13,13 @@ model ContainerFileListResource {
   object: "list";
 
   /** A list of container files. */
-  data: ContainerFileResource[];
+  @pageItems data: ContainerFileResource[];
 
   /** The ID of the first file in the list. */
   first_id: string;
 
   /** The ID of the last file in the list. */
-  last_id: string;
+  @continuationToken last_id: string;
 
   /** Whether there are more files available. */
   has_more: boolean;
@@ -59,13 +59,13 @@ model ContainerListResource {
   object: "list";
 
   /** A list of containers. */
-  data: ContainerResource[];
+  @pageItems data: ContainerResource[];
 
   /** The ID of the first container in the list. */
   first_id: string;
 
   /** The ID of the last container in the list. */
-  last_id: string;
+  @continuationToken last_id: string;
 
   /** Whether there are more containers available. */
   has_more: boolean;
