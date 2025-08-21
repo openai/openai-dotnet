@@ -60,6 +60,48 @@ public partial class ImageEditsTests : ImageTestFixtureBase
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
+    public async Task GptImage1Works(ImageSourceKind imageSourceKind)
+    {
+        ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "gpt-image-1");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
+        {
+            Background = GeneratedImageBackground.Opaque,
+            Quality = GeneratedImageQuality.Low,
+            Size = GeneratedImageSize.W1024xH1024
+        };
+
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
+
+            image = IsAsync
+                ? await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options)
+                : client.GenerateImageEdit(mask, maskFilename, CatPrompt, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = IsAsync
+                ? await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options)
+                : client.GenerateImageEdit(maskImagePath, CatPrompt, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+
+        ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+    }
+
+    [Test]
+    [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
         ImageClient client = GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2");
