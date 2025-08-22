@@ -6,15 +6,15 @@ using TypeSpec.Http;
 
 namespace OpenAI;
 
-alias ChatCompletionMessageCollectionOrderQueryParameter = {
+alias ContainerCollectionOrderQueryParameter = {
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
    * for descending order.
    */
-  @query order?: ChatCompletionMessageCollectionOrder;
+  @query order?: ContainerCollectionOrder;
 };
 
-union ChatCompletionMessageCollectionOrder {
+union ContainerCollectionOrder {
   string,
   Ascending: "asc",
   Descending: "desc",
@@ -22,8 +22,30 @@ union ChatCompletionMessageCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model ChatCompletionMessageCollectionOptions {
+model ContainerCollectionOptions {
   ...CollectionAfterQueryParameter,
   ...CollectionLimitQueryParameter,
-  ...ChatCompletionMessageCollectionOrderQueryParameter,
+  ...ContainerCollectionOrderQueryParameter,
+}
+
+alias ContainerFileCollectionOrderQueryParameter = {
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: ContainerCollectionOrder;
+};
+
+union ContainerFileCollectionOrder {
+  string,
+  Ascending: "asc",
+  Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model ContainerFileCollectionOptions {
+  ...CollectionAfterQueryParameter,
+  ...CollectionLimitQueryParameter,
+  ...ContainerFileCollectionOrderQueryParameter,
 }

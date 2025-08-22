@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI;
 
 namespace OpenAI.Containers
 {
@@ -38,8 +37,8 @@ namespace OpenAI.Containers
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((ContainerListResource)result).HasMore;
-                nextToken = ((ContainerListResource)result).LastId;
+                bool hasMore = ((InternalContainerListResource)result).HasMore;
+                nextToken = ((InternalContainerListResource)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (nextToken == null || !hasMore)
                 {
@@ -51,7 +50,7 @@ namespace OpenAI.Containers
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((ContainerListResource)page).LastId;
+            string nextPage = ((InternalContainerListResource)page).LastId;
             if (nextPage != null)
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
@@ -64,7 +63,7 @@ namespace OpenAI.Containers
 
         protected override async IAsyncEnumerable<ContainerResource> GetValuesFromPageAsync(ClientResult page)
         {
-            foreach (ContainerResource item in ((ContainerListResource)page).Data)
+            foreach (ContainerResource item in ((InternalContainerListResource)page).Data)
             {
                 yield return item;
                 await Task.Yield();

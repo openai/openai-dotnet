@@ -31,15 +31,15 @@ model ChatCompletionCollectionOptions {
   @query `model`?: string,
 }
 
-alias ContainerCollectionOrderQueryParameter = {
+alias ChatCompletionMessageCollectionOrderQueryParameter = {
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
    * for descending order.
    */
-  @query order?: ContainerCollectionOrder;
+  @query order?: ChatCompletionMessageCollectionOrder;
 };
 
-union ContainerCollectionOrder {
+union ChatCompletionMessageCollectionOrder {
   string,
   Ascending: "asc",
   Descending: "desc",
@@ -47,31 +47,10 @@ union ContainerCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model ContainerCollectionOptions {
+model ChatCompletionMessageCollectionOptions {
   ...CollectionAfterQueryParameter,
   ...CollectionLimitQueryParameter,
-  ...ContainerCollectionOrderQueryParameter,
+  ...ChatCompletionMessageCollectionOrderQueryParameter,
 }
 
-alias ContainerFileCollectionOrderQueryParameter = {
-  /**
-   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-   * for descending order.
-   */
-  @query order?: ContainerCollectionOrder;
-};
-
-union ContainerFileCollectionOrder {
-  string,
-  Ascending: "asc",
-  Descending: "desc",
-}
-
-@access(Access.public)
-@usage(Usage.input)
-model ContainerFileCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionLimitQueryParameter,
-  ...ContainerFileCollectionOrderQueryParameter,
-}
 
