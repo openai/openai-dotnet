@@ -15,11 +15,4 @@ public partial class ModelDeletionResult
     /// <summary> The object type, which is always `model`. </summary>
     [CodeGenMember("Object")]
     internal string Object { get; } = "model";
-
-    internal static ModelDeletionResult FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeModelDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

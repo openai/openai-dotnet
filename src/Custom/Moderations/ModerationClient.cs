@@ -133,7 +133,7 @@ public partial class ModerationClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(ModerationResultCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
     /// <summary> Classifies if the text input is potentially harmful across several categories. </summary>
@@ -150,7 +150,7 @@ public partial class ModerationClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(ModerationResultCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
     /// <summary> Classifies if the text inputs are potentially harmful across several categories. </summary>
@@ -167,7 +167,7 @@ public partial class ModerationClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(ModerationResultCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
     }
 
     /// <summary> Classifies if the text inputs are potentially harmful across several categories. </summary>
@@ -184,7 +184,7 @@ public partial class ModerationClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(ModerationResultCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
     }
 
     private void CreateModerationOptions(string input, ref ModerationOptions options)
