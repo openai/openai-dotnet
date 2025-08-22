@@ -10,17 +10,17 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class ExplicitConversionFromClientResultVisitor : ScmLibraryVisitor
 {
-    protected override MethodProvider VisitMethod(MethodProvider method)
-    {
-        if (method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Explicit) &&
-            method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Operator) &&
-            method.Signature.Parameters.Count == 1 &&
-            method.Signature.Parameters[0].Type.Name == nameof(ClientResult) &&
-            !method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
-        {
-            return null;
-        }
+    // protected override MethodProvider VisitMethod(MethodProvider method)
+    // {
+    //     if (method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Explicit) &&
+    //         method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Operator) &&
+    //         method.Signature.Parameters.Count == 1 &&
+    //         method.Signature.Parameters[0].Type.Name == nameof(ClientResult) &&
+    //         !method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
+    //     {
+    //         return null;
+    //     }
 
-        return method;
-    }
+    //     return method;
+    // }
 }

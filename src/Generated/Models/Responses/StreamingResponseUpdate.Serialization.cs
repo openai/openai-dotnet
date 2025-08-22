@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 using OpenAI;
@@ -220,5 +221,12 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<StreamingResponseUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator StreamingResponseUpdate(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeStreamingResponseUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }
