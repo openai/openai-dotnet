@@ -110,13 +110,13 @@ namespace OpenAI.Responses
                     case "local_shell_call_output":
                         return InternalLocalShellToolCallOutputItemResource.DeserializeInternalLocalShellToolCallOutputItemResource(element, options);
                     case "mcp_list_tools":
-                        return InternalMCPListToolsItemResource.DeserializeInternalMCPListToolsItemResource(element, options);
+                        return MCPToolDefinitionListItem.DeserializeMCPToolDefinitionListItem(element, options);
                     case "mcp_approval_request":
-                        return InternalMCPApprovalRequestItemResource.DeserializeInternalMCPApprovalRequestItemResource(element, options);
+                        return MCPToolCallApprovalRequestItem.DeserializeMCPToolCallApprovalRequestItem(element, options);
                     case "mcp_approval_response":
-                        return InternalMCPApprovalResponseItemResource.DeserializeInternalMCPApprovalResponseItemResource(element, options);
+                        return MCPToolCallApprovalResponseItem.DeserializeMCPToolCallApprovalResponseItem(element, options);
                     case "mcp_call":
-                        return InternalMCPCallItemResource.DeserializeInternalMCPCallItemResource(element, options);
+                        return MCPToolCallItem.DeserializeMCPToolCallItem(element, options);
                     case "message":
                         return MessageResponseItem.DeserializeMessageResponseItem(element, options);
                     case "item_reference":

@@ -40,7 +40,7 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (InternalMCPListToolsTool item in Tools)
+                foreach (MCPToolDefinition item in Tools)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -75,7 +75,7 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
-            IList<InternalMCPListToolsTool> tools = default;
+            IList<MCPToolDefinition> tools = default;
             string error = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -91,10 +91,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("tools"u8))
                 {
-                    List<InternalMCPListToolsTool> array = new List<InternalMCPListToolsTool>();
+                    List<MCPToolDefinition> array = new List<MCPToolDefinition>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalMCPListToolsTool.DeserializeInternalMCPListToolsTool(item, options));
+                        array.Add(MCPToolDefinition.DeserializeMCPToolDefinition(item, options));
                     }
                     tools = array;
                     continue;

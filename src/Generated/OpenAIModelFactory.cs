@@ -561,6 +561,13 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static MCPToolFilter MCPToolFilter(IEnumerable<string> toolNames = default)
+        {
+            toolNames ??= new ChangeTrackingList<string>();
+
+            return new MCPToolFilter(toolNames.ToList(), additionalBinaryDataProperties: null);
+        }
+
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
             return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
@@ -613,6 +620,11 @@ namespace OpenAI
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
         {
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static MCPToolDefinition MCPToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
+        {
+            return new MCPToolDefinition(name, description, inputSchema, annotations, additionalBinaryDataProperties: null);
         }
 
         public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? background = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, string @object = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
@@ -1271,6 +1283,16 @@ namespace OpenAI
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
         {
             return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static CustomMCPToolCallApprovalPolicy CustomMCPToolCallApprovalPolicy(MCPToolFilter toolsAlwaysRequiringApproval = default, MCPToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new CustomMCPToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, additionalBinaryDataProperties: null);
+        }
+
+        public static MCPToolCallApprovalPolicy MCPToolCallApprovalPolicy(GlobalMCPToolCallApprovalPolicy? globalPolicy = default, CustomMCPToolCallApprovalPolicy customPolicy = default)
+        {
+            return new MCPToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

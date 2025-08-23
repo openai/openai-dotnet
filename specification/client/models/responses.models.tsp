@@ -35,3 +35,33 @@ model ResponseItemCollectionOptions {
   ...CollectionLimitQueryParameter,
   ...ResponseItemCollectionOrderQueryParameter,
 }
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+union DotNetGlobalToolCallApprovalPolicy {
+  string,
+  AlwaysRequireApproval: "always",
+  NeverRequireApproval: "never",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCustomToolCallApprovalPolicy {
+  /** A list of tools that always require approval. */
+  always?: {
+    /** List of tools that require approval. */
+    tool_names?: string[];
+  };
+  /** A list of tools that never require approval. */
+  `never`?: {
+    /** List of tools that do not require approval. */
+    tool_names?: string[];
+  };
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetToolCallApprovalPolicy{
+  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  custom_policy?: DotNetCustomToolCallApprovalPolicy;
+}

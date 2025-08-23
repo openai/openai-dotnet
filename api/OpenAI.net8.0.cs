@@ -4716,6 +4716,15 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class CustomMCPToolCallApprovalPolicy : IJsonModel<CustomMCPToolCallApprovalPolicy>, IPersistableModel<CustomMCPToolCallApprovalPolicy> {
+        public MCPToolFilter ToolsAlwaysRequiringApproval { get; set; }
+        public MCPToolFilter ToolsNeverRequiringApproval { get; set; }
+        protected virtual CustomMCPToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CustomMCPToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
         public FileCitationMessageAnnotation(string fileId, int index);
         public string FileId { get; set; }
@@ -4849,6 +4858,112 @@ namespace OpenAI.Responses {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct GlobalMCPToolCallApprovalPolicy : IEquatable<GlobalMCPToolCallApprovalPolicy> {
+        public GlobalMCPToolCallApprovalPolicy(string value);
+        public static GlobalMCPToolCallApprovalPolicy AlwaysRequireApproval { get; }
+        public static GlobalMCPToolCallApprovalPolicy NeverRequireApproval { get; }
+        public readonly bool Equals(GlobalMCPToolCallApprovalPolicy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GlobalMCPToolCallApprovalPolicy left, GlobalMCPToolCallApprovalPolicy right);
+        public static implicit operator GlobalMCPToolCallApprovalPolicy(string value);
+        public static implicit operator GlobalMCPToolCallApprovalPolicy?(string value);
+        public static bool operator !=(GlobalMCPToolCallApprovalPolicy left, GlobalMCPToolCallApprovalPolicy right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class MCPTool : ResponseTool, IJsonModel<MCPTool>, IPersistableModel<MCPTool> {
+        public MCPTool(string serverLabel, Uri serverUri);
+        public MCPToolFilter AllowedTools { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
+        public string ServerLabel { get; set; }
+        public Uri ServerUri { get; set; }
+        public MCPToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolCallApprovalPolicy : IJsonModel<MCPToolCallApprovalPolicy>, IPersistableModel<MCPToolCallApprovalPolicy> {
+        public MCPToolCallApprovalPolicy(CustomMCPToolCallApprovalPolicy customPolicy);
+        public MCPToolCallApprovalPolicy(GlobalMCPToolCallApprovalPolicy globalPolicy);
+        public CustomMCPToolCallApprovalPolicy CustomPolicy { get; }
+        public GlobalMCPToolCallApprovalPolicy? GlobalPolicy { get; }
+        protected virtual MCPToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual MCPToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolCallApprovalRequestItem : ResponseItem, IJsonModel<MCPToolCallApprovalRequestItem>, IPersistableModel<MCPToolCallApprovalRequestItem> {
+        public MCPToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolCallApprovalResponseItem : ResponseItem, IJsonModel<MCPToolCallApprovalResponseItem>, IPersistableModel<MCPToolCallApprovalResponseItem> {
+        public MCPToolCallApprovalResponseItem(string approvalRequestId, bool approved);
+        public string ApprovalRequestId { get; set; }
+        public bool Approved { get; set; }
+        public string Reason { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolCallItem : ResponseItem, IJsonModel<MCPToolCallItem>, IPersistableModel<MCPToolCallItem> {
+        public MCPToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public BinaryData Error { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        public string ToolOutput { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolDefinition : IJsonModel<MCPToolDefinition>, IPersistableModel<MCPToolDefinition> {
+        public MCPToolDefinition(string name, BinaryData inputSchema);
+        public BinaryData Annotations { get; set; }
+        public string Description { get; set; }
+        public BinaryData InputSchema { get; set; }
+        public string Name { get; set; }
+        protected virtual MCPToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual MCPToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolDefinitionListItem : ResponseItem, IJsonModel<MCPToolDefinitionListItem>, IPersistableModel<MCPToolDefinitionListItem> {
+        public MCPToolDefinitionListItem(string serverLabel, IEnumerable<MCPToolDefinition> toolDefinitions);
+        public BinaryData Error { get; set; }
+        public string ServerLabel { get; set; }
+        public IList<MCPToolDefinition> ToolDefinitions { get; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class MCPToolFilter : IJsonModel<MCPToolFilter>, IPersistableModel<MCPToolFilter> {
+        public IList<string> ToolNames { get; }
+        protected virtual MCPToolFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual MCPToolFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
@@ -5174,6 +5289,10 @@ namespace OpenAI.Responses {
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static MCPToolCallApprovalRequestItem CreateMCPApprovalRequestItem(string serverLabel, string name, BinaryData arguments);
+        public static MCPToolCallApprovalResponseItem CreateMCPApprovalResponseItem(string approvalRequestId, bool approved);
+        public static MCPToolCallItem CreateMCPToolCallItem(string serverLabel, string name, BinaryData arguments);
+        public static MCPToolDefinitionListItem CreateMCPToolDefinitionListItem(string serverLabel, IEnumerable<MCPToolDefinition> toolDefinitions);
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
         public static ReferenceResponseItem CreateReferenceItem(string id);
@@ -5351,6 +5470,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
+        public static MCPTool CreateMCPTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, MCPToolFilter allowedTools = null, MCPToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
