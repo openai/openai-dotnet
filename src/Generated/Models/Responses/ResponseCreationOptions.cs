@@ -15,7 +15,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<InternalIncludable> include, string model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, string instructions, IList<InternalIncludable> include, string model, IList<ResponseItem> input, bool? stream, bool? backgroundModeEnabled, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -23,12 +23,12 @@ namespace OpenAI.Responses
             TopP = topP;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
-            Background = background;
             Instructions = instructions;
             Include = include ?? new ChangeTrackingList<InternalIncludable>();
             Model = model;
             Input = input ?? new ChangeTrackingList<ResponseItem>();
             Stream = stream;
+            BackgroundModeEnabled = backgroundModeEnabled;
             EndUserId = endUserId;
             ReasoningOptions = reasoningOptions;
             MaxOutputTokenCount = maxOutputTokenCount;
@@ -50,8 +50,6 @@ namespace OpenAI.Responses
         internal InternalServiceTier? ServiceTier { get; set; }
 
         public string PreviousResponseId { get; set; }
-
-        public bool? Background { get; set; }
 
         public string Instructions { get; set; }
 

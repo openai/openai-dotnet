@@ -34,6 +34,10 @@ public partial class ResponseCreationOptions
     internal bool? Stream { get; set; }
 
     // CUSTOM: Renamed.
+    [CodeGenMember("Background")]
+    public bool? BackgroundModeEnabled { get; set; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 

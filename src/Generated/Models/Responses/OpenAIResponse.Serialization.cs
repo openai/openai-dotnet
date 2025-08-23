@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class OpenAIResponse : IJsonModel<OpenAIResponse>
     {
-        internal OpenAIResponse() : this(null, default, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, default, null, null, default, null, null, null, null)
+        internal OpenAIResponse() : this(null, default, default, default, null, null, null, null, default, default, null, null, default, null, null, default, null, default, null, null, default, null, null, null, null)
         {
         }
 
@@ -88,11 +88,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
-            {
-                writer.WritePropertyName("background"u8);
-                writer.WriteBooleanValue(Background.Value);
-            }
             if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
@@ -139,6 +134,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
+            }
+            if (Optional.IsDefined(BackgroundModeEnabled) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteBooleanValue(BackgroundModeEnabled.Value);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
@@ -260,7 +260,6 @@ namespace OpenAI.Responses
             float? topP = default;
             InternalServiceTier? serviceTier = default;
             string previousResponseId = default;
-            bool? background = default;
             string instructions = default;
             IList<ResponseTool> tools = default;
             string id = default;
@@ -268,6 +267,7 @@ namespace OpenAI.Responses
             DateTimeOffset createdAt = default;
             ResponseError error = default;
             ResponseTokenUsage usage = default;
+            bool? backgroundModeEnabled = default;
             string endUserId = default;
             ResponseReasoningOptions reasoningOptions = default;
             int? maxOutputTokenCount = default;
@@ -343,16 +343,6 @@ namespace OpenAI.Responses
                     previousResponseId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("background"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        background = null;
-                        continue;
-                    }
-                    background = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("instructions"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -413,6 +403,16 @@ namespace OpenAI.Responses
                         continue;
                     }
                     usage = ResponseTokenUsage.DeserializeResponseTokenUsage(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        backgroundModeEnabled = null;
+                        continue;
+                    }
+                    backgroundModeEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("user"u8))
@@ -517,7 +517,6 @@ namespace OpenAI.Responses
                 topP,
                 serviceTier,
                 previousResponseId,
-                background,
                 instructions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
                 id,
@@ -525,6 +524,7 @@ namespace OpenAI.Responses
                 createdAt,
                 error,
                 usage,
+                backgroundModeEnabled,
                 endUserId,
                 reasoningOptions,
                 maxOutputTokenCount,
