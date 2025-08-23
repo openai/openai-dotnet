@@ -875,47 +875,64 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task CanUseStreamingBackgroundResponses()
+    public async Task CanStreamBackgroundResponses()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
 
-        string queuedResponseId = null;
+        ResponseCreationOptions options = new()
+        {
+            BackgroundModeEnabled = true,
+        };
 
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(
-                "Hello, model!",
-                new ResponseCreationOptions()
-                {
-                    Background = true,
-                }))
+        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync("Hello, model!", options);
+
+        string queuedResponseId = null;
+        int lastSequenceNumber = 0;
+
+        await foreach (StreamingResponseUpdate update in updates)
         {
             if (update is StreamingResponseQueuedUpdate queuedUpdate)
             {
+                // Confirm that the response has been queued and break.
                 queuedResponseId = queuedUpdate.Response.Id;
+                lastSequenceNumber = queuedUpdate.SequenceNumber;
                 break;
             }
         }
 
         Assert.That(queuedResponseId, Is.Not.Null.And.Not.Empty);
+        Assert.That(lastSequenceNumber, Is.GreaterThan(0));
 
+        // Try getting the response without streaming it.
         OpenAIResponse retrievedResponse = await client.GetResponseAsync(queuedResponseId);
-        Assert.That(retrievedResponse?.Id, Is.EqualTo(queuedResponseId));
 
-        OpenAIResponse finalStreamedResponse = null;
+        Assert.That(retrievedResponse, Is.Not.Null);
+        Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));
+        Assert.That(retrievedResponse.BackgroundModeEnabled, Is.True);
+        Assert.That(retrievedResponse.Status, Is.EqualTo(ResponseStatus.Queued));
 
-        await foreach (StreamingResponseUpdate update
-            in client.GetResponseStreamingAsync(queuedResponseId, startingAfter: 2))
+        // Now try continuing the stream.
+        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(queuedResponseId, startingAfter: lastSequenceNumber);
+
+        OpenAIResponse completedResponse = null;
+        int? firstContinuedSequenceNumber = null;
+
+        await foreach (StreamingResponseUpdate update in continuedUpdates)
         {
-            Assert.That(update.SequenceNumber, Is.GreaterThan(2));
+            if (firstContinuedSequenceNumber is null)
+            {
+                firstContinuedSequenceNumber = update.SequenceNumber;
+            }
 
             if (update is StreamingResponseCompletedUpdate completedUpdate)
             {
-                finalStreamedResponse = completedUpdate.Response;
+                completedResponse = completedUpdate.Response;
             }
         }
 
-        Assert.That(finalStreamedResponse?.Id, Is.EqualTo(queuedResponseId));
-        Assert.That(finalStreamedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
+        Assert.That(firstContinuedSequenceNumber, Is.EqualTo(lastSequenceNumber + 1));
+        Assert.That(completedResponse?.Id, Is.EqualTo(queuedResponseId));
+        Assert.That(completedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
     }
 
     [Test]
@@ -923,14 +940,17 @@ public partial class ResponsesTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
 
-        OpenAIResponse response = await client.CreateResponseAsync(
-            "Hello, model!",
-            new ResponseCreationOptions()
-            {
-                Background = true,
-            });
-        Assert.That(response?.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response?.Status, Is.EqualTo(ResponseStatus.Queued));
+        ResponseCreationOptions options = new()
+        {
+            BackgroundModeEnabled = true,
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync("Hello, model!", options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.BackgroundModeEnabled, Is.True);
+        Assert.That(response.Status, Is.EqualTo(ResponseStatus.Queued));
 
         OpenAIResponse cancelledResponse = await client.CancelResponseAsync(response.Id);
         Assert.That(cancelledResponse.Id, Is.EqualTo(response.Id));
