@@ -31,6 +31,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalTruncationObjectType(string value) => new InternalTruncationObjectType(value);
 
+        public static implicit operator InternalTruncationObjectType?(string value) => value == null ? null : new InternalTruncationObjectType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalTruncationObjectType other && Equals(other);
 

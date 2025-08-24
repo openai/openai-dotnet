@@ -31,6 +31,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestModality(string value) => new InternalRealtimeTranscriptionSessionCreateRequestModality(value);
 
+        public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestModality?(string value) => value == null ? null : new InternalRealtimeTranscriptionSessionCreateRequestModality(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeTranscriptionSessionCreateRequestModality other && Equals(other);
 

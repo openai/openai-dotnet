@@ -28,6 +28,8 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalTranscriptionInclude(string value) => new InternalTranscriptionInclude(value);
 
+        public static implicit operator InternalTranscriptionInclude?(string value) => value == null ? null : new InternalTranscriptionInclude(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalTranscriptionInclude other && Equals(other);
 

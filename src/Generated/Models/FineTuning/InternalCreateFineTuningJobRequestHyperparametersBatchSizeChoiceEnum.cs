@@ -28,6 +28,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum(string value) => new InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum(value);
 
+        public static implicit operator InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum?(string value) => value == null ? null : new InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum other && Equals(other);
 

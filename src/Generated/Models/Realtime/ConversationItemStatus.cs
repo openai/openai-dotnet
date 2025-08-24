@@ -36,6 +36,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator ConversationItemStatus(string value) => new ConversationItemStatus(value);
 
+        public static implicit operator ConversationItemStatus?(string value) => value == null ? null : new ConversationItemStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ConversationItemStatus other && Equals(other);
 

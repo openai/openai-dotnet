@@ -45,6 +45,8 @@ namespace OpenAI.Graders
 
         public static implicit operator GraderType(string value) => new GraderType(value);
 
+        public static implicit operator GraderType?(string value) => value == null ? null : new GraderType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GraderType other && Equals(other);
 

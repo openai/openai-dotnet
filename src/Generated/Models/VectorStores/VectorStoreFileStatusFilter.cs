@@ -39,6 +39,8 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreFileStatusFilter(string value) => new VectorStoreFileStatusFilter(value);
 
+        public static implicit operator VectorStoreFileStatusFilter?(string value) => value == null ? null : new VectorStoreFileStatusFilter(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreFileStatusFilter other && Equals(other);
 

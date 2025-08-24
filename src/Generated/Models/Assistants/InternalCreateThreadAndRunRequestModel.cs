@@ -121,6 +121,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalCreateThreadAndRunRequestModel(string value) => new InternalCreateThreadAndRunRequestModel(value);
 
+        public static implicit operator InternalCreateThreadAndRunRequestModel?(string value) => value == null ? null : new InternalCreateThreadAndRunRequestModel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateThreadAndRunRequestModel other && Equals(other);
 

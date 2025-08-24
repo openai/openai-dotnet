@@ -33,6 +33,8 @@ namespace OpenAI.Audio
 
         public static implicit operator StreamingAudioTranscriptionUpdateKind(string value) => new StreamingAudioTranscriptionUpdateKind(value);
 
+        public static implicit operator StreamingAudioTranscriptionUpdateKind?(string value) => value == null ? null : new StreamingAudioTranscriptionUpdateKind(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is StreamingAudioTranscriptionUpdateKind other && Equals(other);
 

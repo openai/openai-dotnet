@@ -36,6 +36,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator MessageStatus(string value) => new MessageStatus(value);
 
+        public static implicit operator MessageStatus?(string value) => value == null ? null : new MessageStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is MessageStatus other && Equals(other);
 

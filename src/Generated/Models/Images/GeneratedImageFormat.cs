@@ -27,6 +27,8 @@ namespace OpenAI.Images
 
         public static implicit operator GeneratedImageFormat(string value) => new GeneratedImageFormat(value);
 
+        public static implicit operator GeneratedImageFormat?(string value) => value == null ? null : new GeneratedImageFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedImageFormat other && Equals(other);
 

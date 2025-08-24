@@ -57,6 +57,8 @@ namespace OpenAI.Graders
 
         public static implicit operator GraderTextSimilarityEvaluationMetric(string value) => new GraderTextSimilarityEvaluationMetric(value);
 
+        public static implicit operator GraderTextSimilarityEvaluationMetric?(string value) => value == null ? null : new GraderTextSimilarityEvaluationMetric(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GraderTextSimilarityEvaluationMetric other && Equals(other);
 

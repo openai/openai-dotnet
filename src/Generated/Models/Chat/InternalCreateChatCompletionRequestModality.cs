@@ -31,6 +31,8 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalCreateChatCompletionRequestModality(string value) => new InternalCreateChatCompletionRequestModality(value);
 
+        public static implicit operator InternalCreateChatCompletionRequestModality?(string value) => value == null ? null : new InternalCreateChatCompletionRequestModality(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateChatCompletionRequestModality other && Equals(other);
 

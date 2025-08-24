@@ -43,6 +43,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalComparisonFilterType(string value) => new InternalComparisonFilterType(value);
 
+        public static implicit operator InternalComparisonFilterType?(string value) => value == null ? null : new InternalComparisonFilterType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalComparisonFilterType other && Equals(other);
 

@@ -36,6 +36,8 @@ namespace OpenAI.Responses
 
         public static implicit operator ResponseReasoningSummaryVerbosity(string value) => new ResponseReasoningSummaryVerbosity(value);
 
+        public static implicit operator ResponseReasoningSummaryVerbosity?(string value) => value == null ? null : new ResponseReasoningSummaryVerbosity(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ResponseReasoningSummaryVerbosity other && Equals(other);
 

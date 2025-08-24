@@ -28,6 +28,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalFineTuningIntegrationType(string value) => new InternalFineTuningIntegrationType(value);
 
+        public static implicit operator InternalFineTuningIntegrationType?(string value) => value == null ? null : new InternalFineTuningIntegrationType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFineTuningIntegrationType other && Equals(other);
 

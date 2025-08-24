@@ -36,6 +36,8 @@ namespace OpenAI.Images
 
         public static implicit operator GeneratedImageBackground(string value) => new GeneratedImageBackground(value);
 
+        public static implicit operator GeneratedImageBackground?(string value) => value == null ? null : new GeneratedImageBackground(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedImageBackground other && Equals(other);
 
