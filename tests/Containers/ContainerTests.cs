@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
-    
+
 namespace OpenAI.Tests.Containers;
 
 [TestFixture(true)]
@@ -28,7 +28,6 @@ public class ContainerTests : SyncAsyncTestBase
     [OneTimeSetUp]
     public async Task SetUp()
     {
-        var members = typeof(OpenAI.Chat.StreamingChatCompletionUpdate).GetMembers();
         // Skip setup if there is no API key (e.g., if we are not running live tests).
         if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
