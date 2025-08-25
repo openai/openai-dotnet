@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ReferenceResponseItem : IJsonModel<ReferenceResponseItem>
     {
-        internal ReferenceResponseItem() : this(InternalItemType.ItemReference, null, null)
-        {
-        }
-
         void IJsonModel<ReferenceResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();

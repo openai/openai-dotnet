@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string callId = default;
             IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default;
-            ComputerOutput output = default;
+            ComputerCallOutput output = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -105,7 +105,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    output = ComputerOutput.DeserializeComputerOutput(prop.Value, options);
+                    output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

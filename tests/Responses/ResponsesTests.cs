@@ -155,9 +155,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        [],
-                        screenshotBytes,
-                        "image/png");
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes,"image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     response = await client.CreateResponseAsync([screenshotReply], responseOptions);

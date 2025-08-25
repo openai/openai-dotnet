@@ -612,7 +612,7 @@ namespace OpenAILibraryPlugin.Visitors
             "ComputerCallResponseItem",
             "ComputerCallSafetyCheck",
             "ComputerCallStatus",
-            "ComputerOutput",
+            "ComputerCallOutput",
             "ComputerToolEnvironment",
         };
 

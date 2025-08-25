@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : IJsonModel<ReasoningResponseItem>
     {
-        internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, null, default, null)
+        internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, null, null, default)
         {
         }
 
@@ -36,12 +36,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("encrypted_content"u8);
                 writer.WriteStringValue(EncryptedContent);
             }
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("summary") != true)
             {
                 writer.WritePropertyName("summary"u8);
@@ -51,6 +45,13 @@ namespace OpenAI.Responses
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
+            }
+            // Plugin customization: remove options.Format != "W" check
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
@@ -77,8 +78,8 @@ namespace OpenAI.Responses
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string encryptedContent = default;
+            IList<ReasoningSummaryPart> summaryParts = default;
             ReasoningStatus? status = default;
-            IReadOnlyList<ReasoningSummaryPart> summaryParts = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -101,11 +102,6 @@ namespace OpenAI.Responses
                     encryptedContent = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = prop.Value.GetString().ToReasoningStatus();
-                    continue;
-                }
                 if (prop.NameEquals("summary"u8))
                 {
                     List<ReasoningSummaryPart> array = new List<ReasoningSummaryPart>();
@@ -116,6 +112,11 @@ namespace OpenAI.Responses
                     summaryParts = array;
                     continue;
                 }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToReasoningStatus();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -124,8 +125,8 @@ namespace OpenAI.Responses
                 id,
                 additionalBinaryDataProperties,
                 encryptedContent,
-                status,
-                summaryParts);
+                summaryParts,
+                status);
         }
 
         BinaryData IPersistableModel<ReasoningResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -4,13 +4,18 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalMCPCallItemResource : ResponseItem
     {
-        internal InternalMCPCallItemResource(string id, string serverLabel, string name, string arguments) : base(InternalItemType.McpCall, id)
+        public InternalMCPCallItemResource(string serverLabel, string name, string arguments) : base(InternalItemType.McpCall)
         {
+            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(arguments, nameof(arguments));
+
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;
@@ -25,14 +30,14 @@ namespace OpenAI.Responses
             Error = error;
         }
 
-        public string ServerLabel { get; }
+        public string ServerLabel { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string Arguments { get; }
+        public string Arguments { get; set; }
 
-        public string Output { get; }
+        public string Output { get; set; }
 
-        public string Error { get; }
+        public string Error { get; set; }
     }
 }

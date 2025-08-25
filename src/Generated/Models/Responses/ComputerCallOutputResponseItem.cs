@@ -12,15 +12,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAICUA001")]
     public partial class ComputerCallOutputResponseItem : ResponseItem
     {
-        internal ComputerCallOutputResponseItem(string id, string callId, ComputerOutput output, ComputerCallOutputStatus? status) : base(InternalItemType.ComputerCallOutput, id)
+        public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(InternalItemType.ComputerCallOutput)
         {
+            Argument.AssertNotNull(callId, nameof(callId));
+            Argument.AssertNotNull(output, nameof(output));
+
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
-            Status = status;
         }
 
-        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output, ComputerCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output, ComputerCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
@@ -29,10 +31,10 @@ namespace OpenAI.Responses
             Status = status;
         }
 
-        public string CallId { get; }
+        public string CallId { get; set; }
 
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
 
-        public ComputerOutput Output { get; }
+        public ComputerCallOutput Output { get; set; }
     }
 }

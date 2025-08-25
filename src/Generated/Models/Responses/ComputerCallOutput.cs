@@ -9,16 +9,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAICUA001")]
-    public partial class ComputerOutput
+    public partial class ComputerCallOutput
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ComputerOutput(InternalComputerUsePreviewToolCallOutputOutputType kind)
+        private protected ComputerCallOutput(InternalComputerUsePreviewToolCallOutputOutputType kind)
         {
             Kind = kind;
         }
 
-        internal ComputerOutput(InternalComputerUsePreviewToolCallOutputOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ComputerCallOutput(InternalComputerUsePreviewToolCallOutputOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

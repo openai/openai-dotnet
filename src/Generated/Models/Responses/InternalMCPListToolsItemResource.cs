@@ -11,8 +11,11 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemResource : ResponseItem
     {
-        internal InternalMCPListToolsItemResource(string id, string serverLabel, IEnumerable<InternalMCPListToolsTool> tools) : base(InternalItemType.McpListTools, id)
+        internal InternalMCPListToolsItemResource(string serverLabel, IEnumerable<InternalMCPListToolsTool> tools) : base(InternalItemType.McpListTools)
         {
+            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+            Argument.AssertNotNull(tools, nameof(tools));
+
             ServerLabel = serverLabel;
             Tools = tools.ToList();
         }
@@ -25,10 +28,10 @@ namespace OpenAI.Responses
             Error = error;
         }
 
-        public string ServerLabel { get; }
+        public string ServerLabel { get; set; }
 
         internal IList<InternalMCPListToolsTool> Tools { get; }
 
-        public string Error { get; }
+        public string Error { get; set; }
     }
 }
