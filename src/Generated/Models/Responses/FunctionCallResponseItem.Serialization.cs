@@ -44,8 +44,16 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
-                SerializeFunctionArgumentsValue(writer, options);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(FunctionArguments);
+#else
+                using (JsonDocument document = JsonDocument.Parse(FunctionArguments))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -104,7 +112,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
+                    functionArguments = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

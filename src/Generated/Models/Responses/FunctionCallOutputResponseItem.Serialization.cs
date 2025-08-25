@@ -41,6 +41,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(FunctionOutput);
             }
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {

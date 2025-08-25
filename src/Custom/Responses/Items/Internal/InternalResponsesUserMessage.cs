@@ -9,8 +9,8 @@ internal partial class InternalResponsesUserMessage
     [CodeGenMember("Content")]
     public IList<ResponseContentPart> InternalContent { get; }
 
-    // CUSTOM: For reuse as an input model
-    internal InternalResponsesUserMessage(IEnumerable<ResponseContentPart> internalContent)
-        : this(id: null, status: null, internalContent)
-    { }
+    //// CUSTOM: For reuse as an input model
+    //internal InternalResponsesUserMessage(IEnumerable<ResponseContentPart> internalContent)
+    //    : this(status: null, internalContent)
+    //{ }
 }
