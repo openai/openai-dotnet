@@ -63,7 +63,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = this.CreateContainer(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = CreateContainer(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
@@ -71,7 +71,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = await this.CreateContainerAsync(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await CreateContainerAsync(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 

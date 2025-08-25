@@ -6,18 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI
+namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
-    public partial class ContainerCollectionOptions
+    public partial class ContainerFileCollectionOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ContainerCollectionOptions()
+        public ContainerFileCollectionOptions()
         {
         }
 
-        internal ContainerCollectionOptions(string afterId, int? pageSizeLimit, ContainerCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ContainerFileCollectionOptions(string afterId, int? pageSizeLimit, ContainerCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             AfterId = afterId;
             PageSizeLimit = pageSizeLimit;

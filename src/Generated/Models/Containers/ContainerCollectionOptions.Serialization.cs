@@ -6,8 +6,9 @@ using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using OpenAI;
 
-namespace OpenAI
+namespace OpenAI.Containers
 {
     public partial class ContainerCollectionOptions : IJsonModel<ContainerCollectionOptions>
     {

@@ -5,8 +5,9 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
-namespace OpenAI
+namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public readonly partial struct ContainerCollectionOrder : IEquatable<ContainerCollectionOrder>
