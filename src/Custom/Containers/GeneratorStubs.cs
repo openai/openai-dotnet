@@ -16,8 +16,11 @@ public partial class CreateContainerBody
         return BinaryContent.Create(createContainerBody, ModelSerializationExtensions.WireOptions);
     }
 }
-[CodeGenType("CreateContainerBodyExpiresAfter")] public partial class CreateContainerBodyExpiresAfter { }
-[CodeGenType("DeleteContainerResponse")] public partial class DeleteContainerResponse { }
-[CodeGenType("CreateContainerFileBody")] public partial class CreateContainerFileBody { }
+[CodeGenType("ContainerCollectionOptions")] public partial class ContainerCollectionOptions { }
+[CodeGenType("ContainerCollectionOrder")] public partial struct ContainerCollectionOrder { }
+[CodeGenType("ContainerFileCollectionOptions")] public partial class ContainerFileCollectionOptions { }
 [CodeGenType("ContainerFileResource")] public partial class ContainerFileResource { }
+[CodeGenType("CreateContainerBodyExpiresAfter")] public partial class CreateContainerBodyExpiresAfter { }
+[CodeGenType("CreateContainerFileBody")] public partial class CreateContainerFileBody { }
 [CodeGenType("DeleteContainerFileResponse")] public partial class DeleteContainerFileResponse { }
+[CodeGenType("DeleteContainerResponse")] public partial class DeleteContainerResponse { }
